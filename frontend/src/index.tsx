@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { ChakraProvider } from '@chakra-ui/react'
 import { RecoilRoot } from 'recoil';
 import reportWebVitals from './reportWebVitals';
 
@@ -10,9 +11,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <RecoilRoot>
-      <App />
-    </RecoilRoot>
+    <ChakraProvider>
+      <RecoilRoot>
+        <App />
+      </RecoilRoot>
+    </ChakraProvider>
   </React.StrictMode>
 );
 
