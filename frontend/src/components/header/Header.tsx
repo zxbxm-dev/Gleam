@@ -4,7 +4,7 @@ import {
   SideMenu,
   Logo,
   UserIcon,
-  MenuArrow,
+  MenuArrow_down,
 } from "../../assets/images/index";
 import {
   Popover,
@@ -48,7 +48,7 @@ const Header = () => {
           <Popover >
             <PopoverTrigger>
               <div className="ArrowIcon">
-                <img src={MenuArrow} alt="MenuArrow" />
+                <img src={MenuArrow_down} alt="MenuArrow" />
               </div>
             </PopoverTrigger>
             <Portal>
