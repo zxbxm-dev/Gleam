@@ -62,7 +62,7 @@ const Announcement = () => {
               <tbody>
                 <tr className="board_content">
                   <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>2025년 인사평가 공지</td>
+                  <td style={{textAlign: 'left', paddingLeft: '20px'}}><Link to={"/detailAnnounce"}>2025년 인사평가 공지</Link></td>
                   <td>567</td>
                   <td>2099-99-99</td>
                 </tr>

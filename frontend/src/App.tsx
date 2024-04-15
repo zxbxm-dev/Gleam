@@ -5,6 +5,7 @@ import {
   ActivityManage,
   Announcement,
   WriteAnnounce,
+  DetailAnnounce,
   OrgChart,
   Regulations,
   PageNotFound } from "./screens";
@@ -18,6 +19,7 @@ function App() {
             <Route path="/activitymanage" element={<ActivityManage />} />
             <Route path="/announcement" element={<Announcement />} />
             <Route path="/writeAnnounce" element={<WriteAnnounce />} />
+            <Route path="/detailAnnounce" element={<DetailAnnounce />} />
             <Route path="/orgchart" element={<OrgChart />} />
             <Route path="/regulations" element={<Regulations />} />
             <Route path="*" element={<PageNotFound />} />

@@ -2,13 +2,18 @@ import "./Announcement.scss";
 import {
   DeleteIcon,
 } from "../../../assets/images/index";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
 const WriteAnnounce = () => {
+  let navigate = useNavigate();
+
+  const handleWriteAnnounce = () => {
+    navigate("/announcement")
+  }
   
   return (
     <div className="content">
@@ -54,7 +59,7 @@ const WriteAnnounce = () => {
                 <img src={DeleteIcon} alt="DeleteIcon" />
               </div>
               <div>
-                <button className="second_button">등록</button>
+                <button className="second_button" onClick={handleWriteAnnounce}>등록</button>
               </div>
             </div>
           </div>
