@@ -7,11 +7,13 @@ import { ReactComponent as RightIcon } from "../../../assets/images/RightIcon.sv
 import { ReactComponent as LeftIcon } from "../../../assets/images/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../../assets/images/LastRightIcon.svg";
 import { ReactComponent as FirstLeftIcon } from "../../../assets/images/FirstLeftIcon.svg";
-
+import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
 
+
 const Announcement = () => {
+  let navigate = useNavigate();
   const [page, setPage] = useState<number>(1); 
 
   const postPerPage: number = 10;
@@ -19,12 +21,16 @@ const Announcement = () => {
   const handlePageChange = (page: number) => {
     setPage(page);
   }
+
+  const handleWriteAnnounce = () => {
+    navigate("/writeAnnounce")
+  }
   return (
     <div className="content">
       <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
-        <div className="sub_header">공지사항</div>
+        <Link to={"/announcement"} className="sub_header">공지사항</Link>
       </div>
       
       <div className="content_container">
@@ -131,7 +137,7 @@ const Announcement = () => {
                 onChange={handlePageChange}
               />
 
-              <button className="primary_button">게시물 작성</button>
+              <button className="primary_button" onClick={handleWriteAnnounce}>게시물 작성</button>
             </div>
           </div>
 

@@ -5,6 +5,7 @@ export { default as RightIcon } from "./RightIcon.svg";
 export { default as LeftIcon } from "./LeftIcon.svg";
 export { default as LastRightIcon } from "./LastRightIcon.svg";
 export { default as FirstLeftIcon } from "./FirstLeftIcon.svg";
+export { default as DeleteIcon } from "./DeleteIcon.svg";
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";

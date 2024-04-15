@@ -185,6 +185,11 @@ ul {
         color: #C7C7C7;
         margin-top: 15px;
       }
+      .header_name_sm {
+        font-size: 16px;
+        color: #C7C7C7;
+        margin-top: 15px;
+      }
     
       .input-wrapper {
         position: relative;
@@ -254,7 +259,7 @@ ul {
     }
   }
   .primary_button {
-    width: 120px;
+    width: 140px;
     height: 40px;
     border: 2px solid #746E58;
     border-radius: 8px;
@@ -262,5 +267,16 @@ ul {
     font-size: 16px;
     font-weight: bold;
     color: #746E58;
+  }
+  .second_button {
+    width: 80px;
+    height: 40px;
+    background-color: #746E58;
+    border: 1px solid #746E58;
+    border-radius: 8px;
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
   }
 }

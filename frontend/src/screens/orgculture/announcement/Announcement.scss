@@ -21,4 +21,44 @@
 
 .main_bottom {
   display: flex;
+  justify-content: space-between;
+  margin: 5px 10px;
+
+  .attachment_content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+  .attachment_name {
+    color: #9E9E9E;
+  }
+}
+
+.write_container {
+
+  .write_title {
+    font-size: 32px;
+    color: #000;
+  }
+  .write_title::placeholder {
+    color: #000;
+    font-weight: 500;
+  }
+  .write_title:focus-visible {
+    outline: none!important;
+  }
+
+  .writor_container {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+
+    .write_info {
+      color: #9E9E9E
+    }
+    .write_border {
+      border-right: 1px solid black;
+    }
+  }
 }
