@@ -183,6 +183,7 @@ ul {
         font-size: 32px;
         font-weight: bold;
         color: #C7C7C7;
+        margin-top: 15px;
       }
     
       .input-wrapper {
@@ -213,5 +214,53 @@ ul {
         height: 20px;
       }
     }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 15px auto;
+      padding-left: 120px;
+  
+      li {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        transform: all 0.3s;
+        font-size: 16px;
+        text-align: center;
+        display: flex; 
+        justify-content: center;
+        align-items: center;
+      }
+
+      svg {
+        width: 16px; // 아이콘의 너비 조정
+        height: 16px; // 아이콘의 높이 조정
+      }
+    }
+    .pagination li:nth-child(3),
+    .pagination li:nth-child(4),
+    .pagination li:nth-child(5),
+    .pagination li:nth-child(6),
+    .pagination li:nth-child(7) {
+      &:hover,
+      &:active,
+      &.active {
+        background-color: #746E58;
+        color: white;
+      }
+    }
+  }
+  .primary_button {
+    width: 120px;
+    height: 40px;
+    border: 2px solid #746E58;
+    border-radius: 8px;
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #746E58;
   }
 }

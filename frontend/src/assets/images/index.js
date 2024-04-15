@@ -1,5 +1,10 @@
 export { default as FourchainsLogo } from "./FourchainsLogo.svg";
 export { default as SearchIcon } from "./SearchIcon.svg";
+export { default as AttachmentIcon } from "./AttachmentIcon.svg";
+export { default as RightIcon } from "./RightIcon.svg";
+export { default as LeftIcon } from "./LeftIcon.svg";
+export { default as LastRightIcon } from "./LastRightIcon.svg";
+export { default as FirstLeftIcon } from "./FirstLeftIcon.svg";
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";
