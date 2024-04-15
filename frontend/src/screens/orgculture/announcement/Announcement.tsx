@@ -22,9 +22,6 @@ const Announcement = () => {
     setPage(page);
   }
 
-  const handleWriteAnnounce = () => {
-    navigate("/writeAnnounce")
-  }
   return (
     <div className="content">
       <div className="content_header">
@@ -137,7 +134,7 @@ const Announcement = () => {
                 onChange={handlePageChange}
               />
 
-              <button className="primary_button" onClick={handleWriteAnnounce}>게시물 작성</button>
+              <button className="primary_button" onClick={() => {navigate("/writeAnnounce")}}>게시물 작성</button>
             </div>
           </div>
 

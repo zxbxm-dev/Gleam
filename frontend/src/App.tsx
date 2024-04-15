@@ -8,6 +8,8 @@ import {
   DetailAnnounce,
   OrgChart,
   Regulations,
+  WriteRegulation,
+  DetailRegulation,
   PageNotFound } from "./screens";
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
             <Route path="/detailAnnounce" element={<DetailAnnounce />} />
             <Route path="/orgchart" element={<OrgChart />} />
             <Route path="/regulations" element={<Regulations />} />
+            <Route path="/writeRegulation" element={<WriteRegulation />} />
+            <Route path="/detailRegulation" element={<DetailRegulation />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>

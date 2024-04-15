@@ -1,4 +1,4 @@
-import "./Announcement.scss";
+import "./Regulations.scss";
 import {
   DeleteIcon,
 } from "../../../assets/images/index";
@@ -8,7 +8,7 @@ import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-const WriteAnnounce = () => {
+const WriteRegulation = () => {
   let navigate = useNavigate();
   
   return (
@@ -55,7 +55,7 @@ const WriteAnnounce = () => {
                 <img src={DeleteIcon} alt="DeleteIcon" />
               </div>
               <div>
-                <button className="second_button" onClick={() => {navigate("/announcement")}}>등록</button>
+                <button className="second_button" onClick={() => {navigate("/regulations")}}>등록</button>
               </div>
             </div>
           </div>
@@ -67,4 +67,4 @@ const WriteAnnounce = () => {
   );
 };
 
-export default WriteAnnounce;
+export default WriteRegulation;
