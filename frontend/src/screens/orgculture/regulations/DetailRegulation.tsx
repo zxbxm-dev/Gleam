@@ -10,7 +10,7 @@ const DetailRegulation = () => {
       <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
-        <Link to={"/announcement"} className="sub_header">공지사항</Link>
+        <Link to={"/regulations"} className="sub_header">사내규정</Link>
       </div>
       
       <div className="content_container">

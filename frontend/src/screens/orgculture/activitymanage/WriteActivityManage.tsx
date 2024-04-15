@@ -1,14 +1,15 @@
-import "./Regulations.scss";
+import "./ActivityManage.scss";
 import {
   DeleteIcon,
 } from "../../../assets/images/index";
 import { useNavigate, Link } from "react-router-dom";
+import { Select } from '@chakra-ui/react'
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-const WriteRegulation = () => {
+const WriteActivityManage = () => {
   let navigate = useNavigate();
   
   return (
@@ -16,7 +17,7 @@ const WriteRegulation = () => {
       <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
-        <Link to={"/regulations"} className="sub_header">사내규정</Link>
+        <Link to={"/activitymanage"} className="sub_header">활동관리</Link>
       </div>
       
       <div className="content_container">
@@ -34,6 +35,12 @@ const WriteRegulation = () => {
                 <div className="write_border" />
                 <div className="write_info">작성일</div>
                 <div className="write_info">2024/04/09</div>
+                <div className="write_border" />
+                <div className="write_info">종류구분</div>
+                <Select placeholder='선택없음' width='100px' size='xs'>
+                  <option value='option1'>직원공지</option>
+                  <option value='option2'>자유게시판</option>
+                </Select>
               </div>
               <div>
               <Editor
@@ -55,7 +62,7 @@ const WriteRegulation = () => {
                 <img src={DeleteIcon} alt="DeleteIcon" />
               </div>
               <div>
-                <button className="second_button" onClick={() => {navigate("/regulations")}}>등록</button>
+                <button className="second_button" onClick={() => {navigate("/announcement")}}>등록</button>
               </div>
             </div>
           </div>
@@ -67,4 +74,4 @@ const WriteRegulation = () => {
   );
 };
 
-export default WriteRegulation;
+export default WriteActivityManage;

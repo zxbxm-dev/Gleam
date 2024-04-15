@@ -1,4 +1,5 @@
 import "./OrgChart.scss";
+import { Link } from "react-router-dom";
 import {
   FourchainsLogo
 } from "../../../assets/images/index";
@@ -11,7 +12,7 @@ const OrgChart = () => {
       <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
-        <div className="sub_header">인사조직도</div>
+        <Link to={"/orgchart"} className="sub_header">인사조직도</Link>
       </div>
       
       <div className="content_container">

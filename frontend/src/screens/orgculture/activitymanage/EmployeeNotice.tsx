@@ -1,7 +1,7 @@
 import { useState } from "react";
-import "./Regulations.scss";
+import "./ActivityManage.scss";
 import {
-  SearchIcon
+  SearchIcon,
 } from "../../../assets/images/index";
 import { ReactComponent as RightIcon } from "../../../assets/images/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../../assets/images/LeftIcon.svg";
@@ -10,7 +10,9 @@ import { ReactComponent as FirstLeftIcon } from "../../../assets/images/FirstLef
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
-const Regulations = () => {
+
+
+const EmployeeNotice = () => {
   let navigate = useNavigate();
   const [page, setPage] = useState<number>(1); 
 
@@ -25,13 +27,15 @@ const Regulations = () => {
       <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
-        <Link to={"/regulations"} className="sub_header">사내규정</Link>
+        <Link to={"/activitymanage"} className="main_header">활동관리</Link>
+        <div className="main_header">＞</div>
+        <Link to={"/employeeNotice"} className="sub_header">직원공지</Link>
       </div>
       
       <div className="content_container">
         <div className="container">
           <div className="main_header">
-            <div className="header_name">사내규정</div>
+            <div className="header_name">직원 공지</div>
             <div className="input-wrapper">
               <input type="search" className="input_form" />
               <img src={SearchIcon} alt="SearchIcon" className="search-icon" />
@@ -130,4 +134,4 @@ const Regulations = () => {
   );
 };
 
-export default Regulations;
+export default EmployeeNotice;
