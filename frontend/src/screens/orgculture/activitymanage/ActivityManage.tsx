@@ -8,7 +8,10 @@ const ActivityManage = () => {
       </div>
       
       <div className="content_container">
+        <div className="container">
       
+        
+        </div>
       </div>  
     </div>
   );

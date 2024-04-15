@@ -1,3 +1,8 @@
+import "./Announcement.scss";
+import {
+  SearchIcon
+} from "../../../assets/images/index";
+
 const Announcement = () => {
   return (
     <div className="content">
@@ -8,7 +13,18 @@ const Announcement = () => {
       </div>
       
       <div className="content_container">
-      
+        <div className="container">
+          <div className="main_header">
+            <div className="header_name">공지사항</div>
+            <div className="input-wrapper">
+              <input type="search" className="input_form" />
+              <img src={SearchIcon} alt="SearchIcon" className="search-icon" />
+            </div>
+
+            
+          </div>
+        
+        </div>
       </div>  
     </div>
   );

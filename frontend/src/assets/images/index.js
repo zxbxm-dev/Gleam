@@ -1,4 +1,5 @@
 export { default as FourchainsLogo } from "./FourchainsLogo.svg";
+export { default as SearchIcon } from "./SearchIcon.svg";
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";
