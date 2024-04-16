@@ -4,4 +4,45 @@
   border: 1px solid #DEDEDE;
   border-radius: 10px;
   padding: 20px;
+
+  .fc .fc-toolbar.fc-header-toolbar {
+    flex-direction: row;
+    font-size: 18px;
+    color: #000;
+  }
+
+  .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk {
+    display: flex;
+    font-family: var(--font-family-Noto-M);
+  }
+
+  // toolbar 버튼
+  .fc .fc-button-primary {
+    background-color: #fff;
+    color: #969696;
+    border: none;
+  }
+
+  // 요일 헤더
+  .fc-theme-standard th {
+    font-family: var(--font-family-Noto-M);
+    color: #969696;
+  }
+
+  // 날짜  ex) 2일
+  .fc .fc-daygrid-day-top {
+    flex-direction: row;
+    font-family: var(--font-family-Noto-M);
+    color: #969696;
+  }
+}
+
+/* 일요일 날짜: 빨간색 */
+.fc-day-sun a {
+  color: red;
+}
+
+/* 토요일 날짜: 파란색 */
+.fc-day-sat a {
+  color: blue;
 }
