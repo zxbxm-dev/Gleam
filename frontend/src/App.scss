@@ -1,5 +1,20 @@
-// google fonts
-@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+// fonts
+@font-face {
+  font-family: 'Noto sans KR-light';
+  src: url('./assets/fonts/NotoSansKR-Light.ttf');
+}
+@font-face {
+  font-family: 'Noto sans KR-Regular';
+  src: url('./assets/fonts/NotoSansKR-Regular.ttf');
+}
+@font-face {
+  font-family: 'Noto sans KR-Medium';
+  src: url('./assets/fonts/NotoSansKR-Medium.ttf');
+}
+@font-face {
+  font-family: 'Noto sans KR-Bold';
+  src: url('./assets/fonts/NotoSansKR-Bold.ttf');
+}
 
 /*** Common variables ***/
 :root {
@@ -11,8 +26,10 @@
   --dark-color: #292929;
   --light-color: #ffffff;
   // typography
-  --font-family-lato: "Lato", sans-serif;
-  --font-family-manrope: "Manrope", sans-serif;
+  --font-family-Noto-L: "Noto sans KR-Light";
+  --font-family-Noto-R: "Noto sans KR-Regular";
+  --font-family-Noto-M: "Noto sans KR-Medium";
+  --font-family-Noto-B: "Noto sans KR-Bold";
   --font-size: 16px;
   --line-height: 1.6;
   --font-weight: 400;
@@ -79,7 +96,7 @@
 
 // color mode toggle in body
 body {
-  font-family: var(--font-family-lato);
+  font-family: var(--font-family-Noto-R);
   font-size: var(--font-size);
   font-weight: var(--font-weight);
   // by default light mode is on
@@ -151,14 +168,16 @@ ul {
     align-items: center;
     font-size: 14px;
     margin-bottom: 10px;
+    gap: 5px;
 
     .main_header {
       color: #8F8F8F;
+      font-family: var(--font-family-Noto-R);
     }
 
     .sub_header {
       color: #000000;
-      font-weight: bold;
+      font-family: var(--font-family-Noto-B);
     }
   }
 
@@ -180,12 +199,13 @@ ul {
       justify-content: space-between;
     
       .header_name {
+        font-family: var(--font-family-Noto-B);
         font-size: 32px;
-        font-weight: bold;
         color: #C7C7C7;
         margin-top: 15px;
       }
       .header_name_sm {
+        font-family: var(--font-family-Noto-R);
         font-size: 16px;
         color: #C7C7C7;
         margin-top: 15px;
@@ -222,8 +242,8 @@ ul {
     .main_header2 {
       
       .header_name_bg {
+        font-family: var(--font-family-Noto-M);
         font-size: 32px;
-        font-weight: bold;
         color: #000;
         margin-top: 15px;
         padding: 0 15px;
@@ -273,8 +293,8 @@ ul {
     border: 2px solid #746E58;
     border-radius: 8px;
     margin-top: 5px;
+    font-family: var(--font-family-Noto-B);
     font-size: 16px;
-    font-weight: bold;
     color: #746E58;
   }
   .second_button {
@@ -285,7 +305,7 @@ ul {
     border-radius: 8px;
     margin-top: 5px;
     font-size: 16px;
-    font-weight: bold;
+    font-family: var(--font-family-Noto-B);
     color: #fff;
   }
   .white_button {
@@ -296,7 +316,7 @@ ul {
     border-radius: 8px;
     margin-top: 5px;
     font-size: 16px;
-    font-weight: bold;
+    font-family: var(--font-family-Noto-B);
     color: #746E58;
   }
 }

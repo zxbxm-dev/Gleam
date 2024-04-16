@@ -91,8 +91,8 @@ const Sidebar = () => {
                   </ul>
                 )}
               </li>
-              <li className={`menu-item ${selectedMenu === 'vacation' ? 'active' : ''}`}>
-                <Link to="/vacation" className="menu-link" onClick={() => handleMenuClick('vacation')}>
+              <li className={`menu-item ${selectedMenu === 'calendar' ? 'active' : ''}`}>
+                <Link to="/calendar" className="menu-link" onClick={() => handleMenuClick('calendar')}>
                   <span className="menu-link-text">휴가 관리</span>
                 </Link>
               </li>

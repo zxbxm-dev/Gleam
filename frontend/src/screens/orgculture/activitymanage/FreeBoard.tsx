@@ -59,7 +59,7 @@ const FreeBoard = () => {
               <tbody>
                 <tr className="board_content">
                   <td>1</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}><Link to={"/detailRegulation"}>취업 규칙</Link></td>
+                  <td style={{textAlign: 'left', paddingLeft: '20px'}}><Link to={"/detailFreeBoard"}>취업 규칙</Link></td>
                   <td>2099-99-99</td>
                 </tr>
                 <tr className="board_content">
@@ -124,7 +124,7 @@ const FreeBoard = () => {
                 onChange={handlePageChange}
               />
 
-              <button className="primary_button" onClick={() => {navigate("/writeRegulation")}}>게시물 작성</button>
+              <button className="primary_button" onClick={() => {navigate("/writeActivityManage")}}>게시물 작성</button>
             </div>
           </div>
 

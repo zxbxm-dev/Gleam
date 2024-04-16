@@ -18,8 +18,8 @@ const OrgChart = () => {
       <div className="content_container">
       <Tabs variant='enclosed'>
         <TabList>
-          <Tab _selected={{bg: '#FFFFFF'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE'>본사</Tab>
-          <Tab _selected={{bg: '#FFFFFF'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE'>R&D 연구센터</Tab>
+          <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>본사</Tab>
+          <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>R&D 연구센터</Tab>
         </TabList>
 
         <TabPanels bg='white' height='790px' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px'>

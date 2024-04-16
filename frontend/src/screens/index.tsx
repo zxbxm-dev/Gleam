@@ -3,7 +3,9 @@ export { default as PageNotFound } from "./error/PageNotFound";
 export { default as ActivityManage } from "./orgculture/activitymanage/ActivityManage";
 export { default as WriteActivityManage } from "./orgculture/activitymanage/WriteActivityManage";
 export { default as EmployeeNotice } from "./orgculture/activitymanage/EmployeeNotice";
+export { default as DetailEmployeeNotice } from "./orgculture/activitymanage/DetailEmployeeNotice";
 export { default as FreeBoard } from "./orgculture/activitymanage/FreeBoard";
+export { default as DetailFreeBoard } from "./orgculture/activitymanage/DetailFreeBoard";
 
 export { default as Announcement } from "./orgculture/announcement/Announcement";
 export { default as WriteAnnounce } from "./orgculture/announcement/WriteAnnounce";
@@ -14,3 +16,5 @@ export { default as OrgChart } from "./orgculture/orgChart/OrgChart";
 export { default as Regulations } from "./orgculture/regulations/Regulations";
 export { default as WriteRegulation } from "./orgculture/regulations/WriteRegulation";
 export { default as DetailRegulation } from "./orgculture/regulations/DetailRegulation";
+
+export { default as Calendar } from "./calendar/Calendar";

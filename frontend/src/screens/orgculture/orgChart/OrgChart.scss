@@ -4,13 +4,13 @@
   width: 140px;
   
   .MenuName {
-    font-size: 24px;
-    font-weight: bold;
+    font-family: var(--font-family-Noto-M);
+    font-size: 28px;
     color: #DEDEDE;
   }
   .MenuName2 {
+    font-family: var(--font-family-Noto-M);
     font-size: 21px;
-    font-weight: bold;
     color: #DEDEDE;
   }
 }
@@ -22,18 +22,19 @@
   width: 140px;
   
   .MenuName {
+    font-family: var(--font-family-Noto-M);
     font-size: 24px;
-    font-weight: bold;
     color: #DEDEDE;
   }
   .MenuName2 {
-    font-size: 21px;
-    font-weight: bold;
+    font-family: var(--font-family-Noto-M);
+    font-size: 22px;
     color: #DEDEDE;
   }
 }
 
 .nodeicon {
+  font-family: var(--font-family-Noto-B);
   height: 150px;
   width: 140px;
   padding: 5px;
@@ -41,11 +42,11 @@
   display: inline-block;
   border: 1px solid #DEDEDE;
   font-size: 14px;
-  font-weight: bold;
   padding: 10px;
 }
 
 .nodeicon2 {
+  font-family: var(--font-family-Noto-B);
   height: 150px;
   width: 140px;
   padding: 5px;
@@ -59,6 +60,7 @@
 }
 
 .nodeicon3 {
+  font-family: var(--font-family-Noto-B);
   height: 50px;
   width: 200px;
   padding: 5px;
@@ -71,6 +73,7 @@
 }
 
 .nodeicon4 {
+  font-family: var(--font-family-Noto-B);
   height: 50px;
   width: 200px;
   padding: 5px;

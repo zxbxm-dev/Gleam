@@ -62,7 +62,7 @@ const WriteActivityManage = () => {
                 <img src={DeleteIcon} alt="DeleteIcon" />
               </div>
               <div>
-                <button className="second_button" onClick={() => {navigate("/announcement")}}>등록</button>
+                <button className="second_button" onClick={() => {navigate("/activitymanage")}}>등록</button>
               </div>
             </div>
           </div>

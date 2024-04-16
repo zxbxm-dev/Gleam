@@ -7,12 +7,15 @@ import {
   Announcement,
   WriteAnnounce,
   EmployeeNotice,
+  DetailEmployeeNotice,
   FreeBoard,
+  DetailFreeBoard,
   DetailAnnounce,
   OrgChart,
   Regulations,
   WriteRegulation,
   DetailRegulation,
+  Calendar,
   PageNotFound } from "./screens";
 
 function App() {
@@ -24,7 +27,9 @@ function App() {
             <Route path="/activitymanage" element={<ActivityManage />} />
             <Route path="/writeActivityManage" element={<WriteActivityManage />} />
             <Route path="/employeeNotice" element={<EmployeeNotice />} />
+            <Route path="/detailEmployeeNotice" element={<DetailEmployeeNotice />} />
             <Route path="/freeBoard" element={<FreeBoard />} />
+            <Route path="/detailFreeBoard" element={<DetailFreeBoard />} />
 
             <Route path="/announcement" element={<Announcement />} />
             <Route path="/writeAnnounce" element={<WriteAnnounce />} />
@@ -35,6 +40,8 @@ function App() {
             <Route path="/regulations" element={<Regulations />} />
             <Route path="/writeRegulation" element={<WriteRegulation />} />
             <Route path="/detailRegulation" element={<DetailRegulation />} />
+
+            <Route path="/calendar" element={<Calendar />} />
 
             <Route path="*" element={<PageNotFound />} />
           </Route>

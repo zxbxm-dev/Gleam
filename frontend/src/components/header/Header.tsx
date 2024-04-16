@@ -53,19 +53,19 @@ const Header = () => {
             </PopoverTrigger>
             <Portal>
               <PopoverContent width='400px' height='200px' border='0' borderRadius='1px' marginTop='10px' marginRight='10px'>
-                <PopoverHeader color='white' bg='#746E58' border='0' fontWeight='bold'>개발부 - 개발 1팀</PopoverHeader>
+                <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)'>개발부 - 개발 1팀</PopoverHeader>
                 <PopoverCloseButton color='white' />
                 <PopoverBody display='flex' flexDirection='row' alignItems='center'>
                   <div style={{width: '140px', height: '150px', display: 'flex', flexDirection: 'column', alignItems: 'center' ,justifyContent: 'center'}}>
                     <img src={UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px' }}/>
-                    <div style={{fontSize: '16px', fontWeight: 'bold'}}>구민석</div>
-                    <div style={{fontSize: '16px', fontWeight: 'bold'}}>사원</div>
+                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>구민석</div>
+                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>사원</div>
                   </div>
                   <div style={{width: '300px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                    <div style={{fontSize: '14px', color: '#909090', fontWeight: 'bold'}}>연락처</div>
-                    <div style={{fontSize: '16px', fontWeight: 'bold'}}>010-0000-0000</div>
-                    <div style={{fontSize: '14px', color: '#909090', fontWeight: 'bold', marginTop: '20px'}}>이메일</div>
-                    <div style={{fontSize: '16px', fontWeight: 'bold'}}>OOOO123456@four-chains.com</div>
+                    <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)'}}>연락처</div>
+                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>010-0000-0000</div>
+                    <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', marginTop: '20px'}}>이메일</div>
+                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>OOOO123456@four-chains.com</div>
                   </div>
                 </PopoverBody>
               </PopoverContent>
