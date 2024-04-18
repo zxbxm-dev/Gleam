@@ -16,6 +16,17 @@ import {
   WriteRegulation,
   DetailRegulation,
   Calendar,
+  Report,
+  Approval,
+  Employment,
+  PerFormReport,
+  MemberEval,
+  ReaderEval,
+  SelfAssessment,
+  FinalResult,
+  HumanResource,
+  AnnualManage,
+  AttendanceRegist,
   PageNotFound } from "./screens";
 
 function App() {
@@ -24,6 +35,7 @@ function App() {
       <Router>
         <Routes>
           <Route element={<BaseLayout />}>
+            {/* 활동관리 */}
             <Route path="/activitymanage" element={<ActivityManage />} />
             <Route path="/writeActivityManage" element={<WriteActivityManage />} />
             <Route path="/employeeNotice" element={<EmployeeNotice />} />
@@ -41,7 +53,31 @@ function App() {
             <Route path="/writeRegulation" element={<WriteRegulation />} />
             <Route path="/detailRegulation" element={<DetailRegulation />} />
 
+            {/* 휴가 관리 */}
             <Route path="/calendar" element={<Calendar />} />
+
+            {/* 보고서 */}
+            <Route path="/report" element={<Report />} />
+
+            {/* 보고서 결재 */}
+            <Route path="/approval" element={<Approval />} />
+            
+            {/* 채용공고 */}
+            <Route path="/employment" element={<Employment />} />
+
+            {/* 인사평가 */}
+            <Route path="/performance-report" element={<PerFormReport />} />
+            <Route path="/member-evaluation" element={<MemberEval />} />
+            <Route path="/reader-evaluation" element={<ReaderEval />} />
+            <Route path="/self-assessment" element={<SelfAssessment />} />
+            <Route path="/final-result" element={<FinalResult />} />
+
+            {/* 인사 정보 관리 */}
+            <Route path="/human-resources" element={<HumanResource />} />
+
+            {/* 근태 관리 */}
+            <Route path="/annual-manage" element={<AnnualManage />} />
+            <Route path="/attendance-regist" element={<AttendanceRegist />} />
 
             <Route path="*" element={<PageNotFound />} />
           </Route>

@@ -66,7 +66,7 @@ const Sidebar = () => {
           <div className="sidebar-menu">
             <ul className="menu-list">
               <li className='menu-item'>
-                <Link to="/orgculture" className={`menu-link2 ${isOrgCultureMenuOpen ? 'active' : ''}`} onClick={() => {toggleOrgCultureMenu(); handleMenuClick('orgculture')}} >
+                <Link to="/announcement" className={`menu-link2 ${isOrgCultureMenuOpen ? 'active' : ''}`} onClick={() => {toggleOrgCultureMenu(); handleMenuClick('orgculture')}} >
                   {isOrgCultureMenuOpen ? (
                     <img src={MenuArrow_right} alt="MenuArrow" style={{paddingLeft: '5px'}}/>
                   ) : (
@@ -108,11 +108,11 @@ const Sidebar = () => {
               </li>
               <li className={`menu-item ${selectedMenu === 'employment' ? 'active' : ''}`}>
                 <Link to="/employment" className="menu-link" onClick={() => handleMenuClick('employment')}>
-                  <span className="menu-link-text">채용 및 인재관리</span>
+                  <span className="menu-link-text">채용공고</span>
                 </Link>
               </li>
               <li className="menu-item">
-                <Link to="/performance" className="menu-link2" onClick={() => {togglePerformanceMenu(); handleMenuClick('performance')}}>
+                <Link to="/performance-report" className="menu-link2" onClick={() => {togglePerformanceMenu(); handleMenuClick('performance')}}>
                   <img src={MenuArrow_down} alt="MenuArrow" />
                   <span className="menu-link-text">인사평가</span>
                 </Link>
@@ -142,7 +142,7 @@ const Sidebar = () => {
                 </Link>
               </li>
               <li className="menu-item">
-                <Link to="/attendance" className="menu-link2" onClick={() => {toggleAttendanceMenu(); handleMenuClick('attendance')}}>
+                <Link to="/annual-manage" className="menu-link2" onClick={() => {toggleAttendanceMenu(); handleMenuClick('attendance')}}>
                   <img src={MenuArrow_down} alt="MenuArrow" />
                   <span className="menu-link-text">근태 관리</span>
                 </Link>

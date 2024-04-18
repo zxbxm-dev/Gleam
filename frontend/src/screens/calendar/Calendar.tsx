@@ -4,8 +4,33 @@ import { Link } from "react-router-dom";
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react'
+
 
 const Calendar = () => {
+  const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: isAddModalClose } = useDisclosure();
+  const { isOpen: isViewModalOpen, onOpen: onViewModalOpen, onClose: onViewModalClose } = useDisclosure();
+
+  const events = [
+    { title: '구민석 반차', start: new Date('2024-4-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF' , textColor: '#000'},
+    { title: '구민석 연차', start: new Date('2024-4-17'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
+    { title: '구민석 외근', start: new Date('2024-4-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2' , textColor: '#000'},
+    { title: '구민석 워크숍', start: new Date('2024-4-17'), backgroundColor: '#FFD8B5', borderColor: '#FFD8B5' , textColor: '#000'},
+    { title: '구민석 출장', start: new Date('2024-4-17'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF' , textColor: '#000'},
+  	{ title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
+  	{ title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
+  	{ title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
+  	{ title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
+  ]
 
   return (
     <div className="content">
@@ -19,10 +44,18 @@ const Calendar = () => {
             plugins={[ dayGridPlugin ]}
             initialView="dayGridMonth"
             height="100%"
+            customButtons={{
+              Addschedule: {
+                text: '일정 추가　+',
+                click: function() {
+                  onAddModalOpen();
+                },
+              },
+            }}
             headerToolbar={{
               start: 'prev title next',
               center: '',
-              end: '',
+              end: 'Addschedule',
             }} // 달력 상단 헤더
             dayHeaderFormat={{
               weekday: 'long'
@@ -47,9 +80,69 @@ const Calendar = () => {
             }} // 날짜에 '일' 제거
             locale='kr' // 한국어
             fixedWeekCount={false} // 5주 표기
+            events={events}
+            eventContent={(arg) => {
+              return (
+                <>
+                  <div>{arg.event.title.replace('오전 12시 ', '')}</div>
+                </>
+
+              );
+            }}
+            dayMaxEventRows={true}
+            eventDisplay="block"
+            eventClick={onViewModalOpen}
+            moreLinkText='개 일정 더보기'
           />
         </div>  
       </div>  
+      <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl'>
+        <ModalOverlay />
+        <ModalContent height='400px' borderRadius='10px'>
+          <ModalHeader height='55px' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='10px'>일정 등록하기</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div>
+              제목
+            </div>
+            <div>
+              기간
+            </div>
+            <div>
+              메모
+            </div>
+          </ModalBody>
+          <ModalFooter gap='10px' display='flex' justifyContent='center'>
+            <button className="add_button">등록</button>
+            <button className="cancle_button">취소</button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+
+      <Modal isOpen={isViewModalOpen} onClose={onViewModalClose} size='xl'>
+        <ModalOverlay />
+        <ModalContent height='400px' borderRadius='10px'>
+          <ModalHeader height='55px' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='10px'>일정 확인</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div>
+              제목
+            </div>
+            <div>
+              기간
+            </div>
+            <div>
+              메모
+            </div>
+          </ModalBody>
+          <ModalFooter gap='10px' display='flex' justifyContent='center'>
+            <button className="cancle_button">취소</button>
+            <button className="cancle_button">삭제</button>
+            <button className="cancle_button">수정</button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
