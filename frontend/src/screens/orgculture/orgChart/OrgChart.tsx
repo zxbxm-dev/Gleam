@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   FourchainsLogo
 } from "../../../assets/images/index";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Tree, TreeNode } from 'react-organizational-chart';
 
 const OrgChart = () => {
