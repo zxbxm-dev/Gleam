@@ -10,16 +10,19 @@ const AttendanceRegist = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
+    name: string | null;
     year: number | null;
     month: number | null;
     date: number | null;
     dayOfWeek: string | null;
   }>({
+    name: null,
     year: null,
     month: null,
     date: null,
     dayOfWeek: null
   });
+
 
   // 전체 연도의 정보
   const yearData = [];
@@ -66,21 +69,41 @@ const AttendanceRegist = () => {
     );
   };
 
+  const isThreeColumns = (j: number) => {
+    return j % 3 === 0;
+  };
+
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number) => {
     const tableRows = [];
     for (let i = 0; i < numberOfDaysInMonth; i++) {
       const rowCells = [];
+      const date = i + 1;
       for (let j = 0; j < 54; j++) {
-        const date = j + 1;
-        rowCells.push(
-          <td 
-            className="conta" 
+        const personIndex = j / 3;
+        const ThreeColumns = isThreeColumns(j);
+  
+        if (j % 3 === 0) {
+          rowCells.push(
+            <tr
+            className={`conta ${ThreeColumns ? 'spanning-three-columns' : ''}`} 
+            onClick={() => handleDivClick(date, year, month, personIndex)}
             key={`${i}-${j}`} 
-            onClick={() => handleDivClick(date, year, month)}
-          >
-            &nbsp;
-          </td>
-        );
+              >
+              <td> &nbsp; </td>
+              <td> &nbsp; </td>
+              <td> &nbsp; </td>
+            </tr>
+          );
+        } else {
+          rowCells.push(
+            <td 
+              className="conta" 
+              key={`${i}-${j}`}
+            >
+              &nbsp;
+            </td>
+          );
+        }
       }
       tableRows.push(<td className="sconta" key={i}>{rowCells}</td>);
     }
@@ -92,6 +115,7 @@ const AttendanceRegist = () => {
       </table>
     );
   };
+  
 
   const months = [
     { name: '1월', key: 'january' },
@@ -108,24 +132,32 @@ const AttendanceRegist = () => {
     { name: '12월', key: 'december' },
   ];
 
+  const names = [
+    '권상원', '김도환', '권준우', '진유빈', '장현지', '권채림', '구민석', '변도일',
+    '이로운', '김현지', '서주희', '전아름', '함다슬', '김효은', '우현지', '염승희',
+    '김태희', '홍길동'
+  ];
+
   // 년도 변경
   const handleYearChange = (event: any) => {
     setSelectedYear(parseInt(event.target.value));
   };
 
-  const handleDivClick = (date: number, year: number, month: number) => {
+  const handleDivClick = (date: number, year: number, month: number, personIndex: number) => {
     onOpen();
     const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
     const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
     const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
+    const name = names[personIndex];
     setSelectedDateInfo({
+      name: name,
       year: year,
       month: month,
       date: date,
       dayOfWeek: dayOfWeek
     });
-    // 여기서 Modal에 해당 날짜 정보를 전달하거나 처리할 수 있습니다.
   };
+
 
   return (
     <div className="content">
@@ -152,84 +184,84 @@ const AttendanceRegist = () => {
             {yearData.map(monthData => (
               <TabPanel key={monthData.month} className="container_attendance">
                 <div className="Excel">
-                <table className="Explan">
-                  <tbody>
-                    <tr>
-                      <td className="TopS" colSpan={2}>부서</td>
-                      <td className="TopS">성명</td>
-                    </tr>
-                    <tr>
-                      <td rowSpan={3}>블록체인<br/>사업부</td>
-                      <td rowSpan={3}>블록체인<br/>1팀</td>
-                      <td>권상원</td>
-                    </tr>
-                    <tr>
-                      <td>김도환</td>
-                    </tr>
-                    <tr>
-                      <td>권준우</td>
-                    </tr>
-                    <tr>
-                      <td rowSpan={6}>개발부</td>
-                      <td rowSpan={4}>개발 1팀</td>
-                      <td>진유빈</td>
-                    </tr>
-                    <tr>
-                      <td>장현지</td>
-                    </tr>
-                    <tr>
-                      <td>권채림</td>
-                    </tr>
-                    <tr>
-                      <td>구민석</td>
-                    </tr>
-                    <tr>
-                      <td rowSpan={2}>개발 2팀</td>
-                      <td>변도일</td>
-                    </tr>
-                    <tr>
-                      <td>이로운</td>
-                    </tr>
-                    <tr>
-                      <td rowSpan={4}>마케팅부</td>
-                      <td rowSpan={2}>디자인팀</td>
-                      <td>김현지</td>
-                    </tr>
-                    <tr>
-                      <td>서주희</td>
-                    </tr>
-                    <tr>
-                      <td rowSpan={2}>기획팀</td>
-                      <td>전아름</td>
-                    </tr>
-                    <tr>
-                      <td>함다슬</td>
-                    </tr>
-                    <tr>
-                      <td rowSpan={5}>관리부</td>
-                      <td rowSpan={3}>관리팀</td>
-                      <td>김효은</td>
-                    </tr>
-                    <tr>
-                      <td>우현지</td>
-                    </tr>
-                    <tr>
-                      <td>염승희</td>
-                    </tr>
-                    <tr>
-                      <td rowSpan={2}>지원팀</td>
-                      <td>김태희</td>
-                    </tr>
-                    <tr>
-                      <td>홍길동</td>
-                    </tr>
-                  
-                  </tbody>
-                </table>
-                <div>
-                  {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
-                  {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month)}
-                </div>
+                  <table className="Explan">
+                    <tbody>
+                      <tr>
+                        <td className="TopS" colSpan={2}>부서</td>
+                        <td className="TopS">성명</td>
+                      </tr>
+                      <tr>
+                        <td rowSpan={3}>블록체인<br/>사업부</td>
+                        <td rowSpan={3}>블록체인<br/>1팀</td>
+                        <td>권상원</td>
+                      </tr>
+                      <tr>
+                        <td>김도환</td>
+                      </tr>
+                      <tr>
+                        <td>권준우</td>
+                      </tr>
+                      <tr>
+                        <td rowSpan={6}>개발부</td>
+                        <td rowSpan={4}>개발 1팀</td>
+                        <td>진유빈</td>
+                      </tr>
+                      <tr>
+                        <td>장현지</td>
+                      </tr>
+                      <tr>
+                        <td>권채림</td>
+                      </tr>
+                      <tr>
+                        <td>구민석</td>
+                      </tr>
+                      <tr>
+                        <td rowSpan={2}>개발 2팀</td>
+                        <td>변도일</td>
+                      </tr>
+                      <tr>
+                        <td>이로운</td>
+                      </tr>
+                      <tr>
+                        <td rowSpan={4}>마케팅부</td>
+                        <td rowSpan={2}>디자인팀</td>
+                        <td>김현지</td>
+                      </tr>
+                      <tr>
+                        <td>서주희</td>
+                      </tr>
+                      <tr>
+                        <td rowSpan={2}>기획팀</td>
+                        <td>전아름</td>
+                      </tr>
+                      <tr>
+                        <td>함다슬</td>
+                      </tr>
+                      <tr>
+                        <td rowSpan={5}>관리부</td>
+                        <td rowSpan={3}>관리팀</td>
+                        <td>김효은</td>
+                      </tr>
+                      <tr>
+                        <td>우현지</td>
+                      </tr>
+                      <tr>
+                        <td>염승희</td>
+                      </tr>
+                      <tr>
+                        <td rowSpan={2}>지원팀</td>
+                        <td>김태희</td>
+                      </tr>
+                      <tr>
+                        <td>홍길동</td>
+                      </tr>
+                    
+                    </tbody>
+                  </table>
+                  <div>
+                    {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
+                    {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month)}
+                  </div>
                 </div>
               </TabPanel>
             ))}
@@ -244,6 +276,8 @@ const AttendanceRegist = () => {
             <span>{selectedDateInfo.month}.</span>
             <span>{selectedDateInfo.date}.</span>
             <span>{selectedDateInfo.dayOfWeek}</span>
+            <span>{selectedDateInfo.name}</span>
+
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody fontSize='30px' className="modal_content">

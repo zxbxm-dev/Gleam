@@ -11,6 +11,13 @@
   width: 100px;
   height: 40px;
   display: grid;
+  
+}
+
+.conta.spanning-three-columns:hover,
+.conta.spanning-three-columns:hover + .conta,
+.conta.spanning-three-columns:hover + .conta + .conta {
+  background-color: #D9D9D9;
 }
 
 .dateconta{
@@ -41,8 +48,10 @@
   .Explan{
     width: 300px;
     border: 1px solid #000;
-  
+    overflow-x: auto;
+
     tr{
+
       .TopS{
         height: 40px;
       }
