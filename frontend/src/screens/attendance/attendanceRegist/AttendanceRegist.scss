@@ -4,21 +4,67 @@
   display: grid;
   overflow-x: scroll;
   overflow-y: scroll;
-  grid-template-columns: repeat(31, 100px);
-  grid-template-rows: repeat(30, 40px);
+}
 
+.conta{
+  border: 1px solid #000;
+  width: 100px;
+  height: 40px;
+  display: grid;
+}
 
-  .conta{
+.dateconta{
+  border: 1px solid #000;
+  width: 100px;
+  text-align: center;
+  font-size: 12px;
+  display: flex;
+
+  .date{
+    width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+  }
+}
+
+.dateTable{
+  height: 40px;
+  tbody{
+    display: flex;
+    height: 40px;
+  }
+}
+.Excel{
+  display: flex;
+
+  .Explan{
+    width: 300px;
     border: 1px solid #000;
-    width: 100px;
+  
+    tr{
+      .TopS{
+        height: 40px;
+      }
+      td{
+        border: 1px solid #000;
+        text-align: center;
+        height: 120px;
+      }
+    }
   }
   
-  .dateconta{
-    border: 1px solid #000;
-    width: 100px;
-    text-align: center;
-    font-size: 12px;
-  }
+}
 
+.modal_content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .modal_input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 }
 
