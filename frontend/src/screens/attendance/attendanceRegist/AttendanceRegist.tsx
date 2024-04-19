@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react'
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react'
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
+import { Tooltip } from '@chakra-ui/react';
 
 const AttendanceRegist = () => {
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
@@ -69,26 +71,81 @@ const AttendanceRegist = () => {
     );
   };
 
+  const virtualData = [
+    ['권상원', 1, ['09:00', '18:00', '반차']],
+    ['김도환', 3, ['09:30', '18:30', '연차']],
+    ['권준우', 5, ['10:00', '19:00', '당일반차']],
+    ['진유빈', 7, ['09:00', '18:00', '재택']],
+  ];
 
-  const generateDivs = (numberOfDaysInMonth: number, year: number, month: number) => {
+
+  const generateDivs = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
     const tableRows = [];
     for (let i = 0; i < numberOfDaysInMonth; i++) {
       const rowCells = [];
       const date = i + 1;
       for (let j = 0; j < 18; j++) {
         const personIndex = j;
+        const dayOfWeekIndex = new Date(year, month - 1, date).getDay();
+        const backgroundColor = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? '#D9D9D9' : 'inherit';
+        const pointerEvents = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? 'none' : 'auto';
+        
+        let itemBackgroundColor = '#FFFFFF';
+        let selectedItem: string | null = '반차';
+
+        switch (selectedItem) {
+          case '반차':
+            itemBackgroundColor = '#ABF0FF';
+            break;
+          case '당일반차':
+            itemBackgroundColor = 'yellow';
+            break;
+          case '연차':
+            itemBackgroundColor = '#7AE1A9';
+            break;
+          case '재택':
+            itemBackgroundColor = 'purple';
+            break;
+          case '서울출근':
+            itemBackgroundColor = 'orange';
+            break;
+          case '입사':
+            itemBackgroundColor = 'pink';
+            break;
+          default:
+            itemBackgroundColor = '#FFFFFF';
+            break;
+        }
+
+        // 토요일 또는 일요일이 아닌 경우
+        if (dayOfWeekIndex !== 0 && dayOfWeekIndex !== 6) {
+          rowCells.push(
+            <Tooltip label={`${month}월 ${date}일`}>
+              <tr
+                className="conta_three"
+                onClick={() => handleDivClick(date, year, month, personIndex)}
+                key={`${i}-${j}`}
+              >
+                <td className='conta'> &nbsp; </td>
+                <td className='conta'> &nbsp; </td>
+                <td className='conta' style={{ backgroundColor: itemBackgroundColor }}>{selectedItem}</td>
+              </tr>
+            </Tooltip>
+          );
+        } else {
+          // 토요일과 일요일에는 빈 셀
           rowCells.push(
             <tr
-            className="conta_three"
-            onClick={() => handleDivClick(date, year, month, personIndex)}
-            key={`${i}-${j}`} 
-              >
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor, pointerEvents: pointerEvents }}
+            >
               <td className='conta'> &nbsp; </td>
               <td className='conta'> &nbsp; </td>
-              <td className='conta'> &nbsp; </td>
+              <td className='conta'>&nbsp;</td>
             </tr>
           );
-       
+        }
       }
       tableRows.push(<td className="sconta" key={i}>{rowCells}</td>);
     }
@@ -100,6 +157,7 @@ const AttendanceRegist = () => {
       </table>
     );
   };
+  
   
 
   const months = [
@@ -151,8 +209,6 @@ const AttendanceRegist = () => {
         <div className="main_header">＞</div>
         <Link to={"/attendance-regist"} className="sub_header">출근부</Link>
         <Select width='120px' value={selectedYear} onChange={handleYearChange} position='absolute' top='5px' right='20px' bg='#EEEEEE'>
-          <option value={2022}>2022년</option>
-          <option value={2023}>2023년</option>
           <option value={2024}>2024년</option>
         </Select>
       </div>
@@ -245,7 +301,7 @@ const AttendanceRegist = () => {
                   </table>
                   <div>
                     {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
-                    {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month)}
+                    {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month, virtualData)}
                   </div>
                 </div>
               </TabPanel>
@@ -276,13 +332,13 @@ const AttendanceRegist = () => {
             </div>
             <div className="modal_input">
               <div>기타 값 :</div>
-              <Select width='200px' value={selectedYear} onChange={handleYearChange} borderColor='black'>
-                <option value=''>반차</option>
-                <option value=''>당일반차</option> 
-                <option value=''>연차</option>
-                <option value=''>재택</option>
-                <option value=''>서울출근</option>
-                <option value=''>입사</option>
+              <Select width='200px' borderColor='black'>
+                <option value='반차'>반차</option>
+                <option value='당일반차'>당일반차</option> 
+                <option value='연차'>연차</option>
+                <option value='재택'>재택</option>
+                <option value='서울출근'>서울출근</option>
+                <option value='입사'>입사</option>
               </Select>
             </div>
           </ModalBody>
