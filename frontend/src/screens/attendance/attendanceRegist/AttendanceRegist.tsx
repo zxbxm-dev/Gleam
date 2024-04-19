@@ -69,41 +69,26 @@ const AttendanceRegist = () => {
     );
   };
 
-  const isThreeColumns = (j: number) => {
-    return j % 3 === 0;
-  };
 
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number) => {
     const tableRows = [];
     for (let i = 0; i < numberOfDaysInMonth; i++) {
       const rowCells = [];
       const date = i + 1;
-      for (let j = 0; j < 54; j++) {
-        const personIndex = j / 3;
-        const ThreeColumns = isThreeColumns(j);
-  
-        if (j % 3 === 0) {
+      for (let j = 0; j < 18; j++) {
+        const personIndex = j;
           rowCells.push(
             <tr
-            className={`conta ${ThreeColumns ? 'spanning-three-columns' : ''}`} 
+            className="conta_three"
             onClick={() => handleDivClick(date, year, month, personIndex)}
             key={`${i}-${j}`} 
               >
-              <td> &nbsp; </td>
-              <td> &nbsp; </td>
-              <td> &nbsp; </td>
+              <td className='conta'> &nbsp; </td>
+              <td className='conta'> &nbsp; </td>
+              <td className='conta'> &nbsp; </td>
             </tr>
           );
-        } else {
-          rowCells.push(
-            <td 
-              className="conta" 
-              key={`${i}-${j}`}
-            >
-              &nbsp;
-            </td>
-          );
-        }
+       
       }
       tableRows.push(<td className="sconta" key={i}>{rowCells}</td>);
     }
