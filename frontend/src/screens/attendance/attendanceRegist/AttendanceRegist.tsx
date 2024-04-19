@@ -69,41 +69,26 @@ const AttendanceRegist = () => {
     );
   };
 
-  const isThreeColumns = (j: number) => {
-    return j % 3 === 0;
-  };
 
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number) => {
     const tableRows = [];
     for (let i = 0; i < numberOfDaysInMonth; i++) {
       const rowCells = [];
       const date = i + 1;
-      for (let j = 0; j < 54; j++) {
-        const personIndex = j / 3;
-        const ThreeColumns = isThreeColumns(j);
-  
-        if (j % 3 === 0) {
+      for (let j = 0; j < 18; j++) {
+        const personIndex = j;
           rowCells.push(
             <tr
-            className={`conta ${ThreeColumns ? 'spanning-three-columns' : ''}`} 
+            className="conta_three"
             onClick={() => handleDivClick(date, year, month, personIndex)}
             key={`${i}-${j}`} 
               >
-              <td> &nbsp; </td>
-              <td> &nbsp; </td>
-              <td> &nbsp; </td>
+              <td className='conta'> &nbsp; </td>
+              <td className='conta'> &nbsp; </td>
+              <td className='conta'> &nbsp; </td>
             </tr>
           );
-        } else {
-          rowCells.push(
-            <td 
-              className="conta" 
-              key={`${i}-${j}`}
-            >
-              &nbsp;
-            </td>
-          );
-        }
+       
       }
       tableRows.push(<td className="sconta" key={i}>{rowCells}</td>);
     }
@@ -135,7 +120,7 @@ const AttendanceRegist = () => {
   const names = [
     '권상원', '김도환', '권준우', '진유빈', '장현지', '권채림', '구민석', '변도일',
     '이로운', '김현지', '서주희', '전아름', '함다슬', '김효은', '우현지', '염승희',
-    '김태희', '홍길동'
+    '김태희', '이주범'
   ];
 
   // 년도 변경
@@ -253,7 +238,7 @@ const AttendanceRegist = () => {
                         <td>김태희</td>
                       </tr>
                       <tr>
-                        <td>홍길동</td>
+                        <td>이주범</td>
                       </tr>
                     
                     </tbody>
