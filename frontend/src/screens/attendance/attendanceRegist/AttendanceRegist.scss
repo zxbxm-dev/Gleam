@@ -1,3 +1,5 @@
+@import "../../../style/mixin";
+
 .container_attendance {
   font-family: var(--font-family-Noto-R);
   width: 100%;
@@ -10,6 +12,7 @@
 
 .conta_three {
   border-bottom: 2px solid #858585;
+
   &:hover {
     background-color: #D9D9D9;
   }
@@ -42,7 +45,7 @@
   border-right: 1px solid #858585;
 }
 
-.dateconta{
+.dateconta {
   font-family: var(--font-family-Noto-M);
   width: 70px;
   height: 42px;
@@ -53,15 +56,15 @@
   border-bottom: 2px solid #858585;
   border-right: 1px solid #858585;
 
-  .date{
-   width: 100%;
-   display: flex;
-   align-items: center;
-   justify-content: center;
+  .date {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
-.countTotal{
+.countTotal {
   font-family: var(--font-family-Noto-M);
   width: 70px;
   height: 42px;
@@ -72,27 +75,28 @@
   border-bottom: 2px solid #858585;
   border-right: 1px solid #858585;
 
-  .total{
-   width: 100%;
-   display: flex;
-   align-items: center;
-   justify-content: center;
+  .total {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
-.dateTable{
+.dateTable {
   height: 40px;
 
-  tbody{
+  tbody {
     display: flex;
     height: 42px;
-   
+
   }
 }
-.Excel{
+
+.Excel {
   display: flex;
 
-  .Explan{
+  .Explan {
     font-family: var(--font-family-Noto-M);
     width: 250px;
     border: 2px solid #858585;
@@ -102,21 +106,22 @@
     background-color: #fff;
     z-index: 999;
 
-    tr{
+    tr {
 
-      .TopS{
+      .TopS {
         height: 40px;
       }
-      td{
+
+      td {
         border-right: 2px solid #858585;
         border-bottom: 2px solid #858585;
-        
+
         text-align: center;
         height: 91px;
       }
     }
   }
-  
+
 }
 
 .modal_content {
@@ -142,3 +147,14 @@
   }
 }
 
+.TabKey {
+  width: 5%;
+}
+
+
+//예시입니다!
+@include laptop {
+  .TabKey {
+    width: 7%;
+  }
+}
