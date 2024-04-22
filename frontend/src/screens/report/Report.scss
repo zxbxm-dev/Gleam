@@ -5,6 +5,35 @@
 
   .report_type {
     width: 90%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 20px;
+
+    .report_content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .report_title {
+        font-family: var(--font-family-Noto-B);
+        font-size: 18px;
+        color: #929292;
+      }
+  
+      .report_name {
+        display: flex;
+        align-items: center;
+        font-family: var(--font-family-Noto-M);
+        font-size: 18px;
+        width: 50%;
+        height: 50px;
+        padding-left: 20px;
+        border: 2px solid #DCDCDC;
+        border-radius: 5px;
+      }
+    }
   }
 
   .report_btn {
