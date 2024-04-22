@@ -54,56 +54,130 @@ const AttendanceRegist = () => {
   const DateDivs = (numberOfDaysInMonth: number, firstDayOfWeek: number) => {
     const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
     const tableRows = [];
+    const countTotal = ["근무일수", "휴가일수", "반차일수", "지각", "재택", "지각2", "지각총분"]
+    const totalRows = [];
+
     for (let j = 0; j < numberOfDaysInMonth; j++) {
       const dayOfWeek = daysOfWeek[(firstDayOfWeek + j) % 7];
+      const backgroundColor = dayOfWeek === '토' || dayOfWeek === '일' ? '#E9E9E9' : 'inherit';
       tableRows.push(
-        <tr className="dateconta" key={`${j}`}>
-          <td className="date">{j + 1}일<br/>{dayOfWeek}요일</td>
+        <tr className="dateconta" key={`${j}`} style={{ backgroundColor: backgroundColor }}>
+          <td className="date">{j + 1}<br/>{dayOfWeek}</td>
         </tr>
       );
     }
+
+    for (let k = 0; k < 7; k++) {
+      let backgroundColor = 'inherit'; // 기본 배경색은 inherit로 설정
+      
+      // k 값에 따라 배경색을 다르게 설정
+      switch (k) {
+        case 3:
+          backgroundColor = '#D1E4FF';
+          break;
+        case 5:
+          backgroundColor = '#D1FFEF';
+          break;
+        case 6:
+          backgroundColor = '#FFD3D3';
+          break;
+        default:
+          backgroundColor = '#ffffff'; // 기본 배경색은 #E9E9E9로 설정
+          break;
+      }
+    
+      totalRows.push(
+        <tr className="countTotal" key={`${k}`} style={{ backgroundColor: backgroundColor }}>
+          <td className="total">{countTotal[k]}</td>
+        </tr>
+      )
+    }
+
     return (
       <table className="dateTable">
         <tbody>
           {tableRows}
+          {totalRows}
         </tbody>
       </table>
     );
   };
 
   const virtualData = [
-    ['권상원', 1, ['09:00', '18:00', '반차']],
-    ['김도환', 3, ['09:30', '18:30', '연차']],
-    ['권준우', 5, ['10:00', '19:00', '당일반차']],
-    ['진유빈', 7, ['09:00', '18:00', '재택']],
+    ['권상원', '2024-1-1', ['09:00', '17:00', '반차']],
+    ['권상원', '2024-1-2', ['09:00', '17:00', '연차']],
+    ['권상원', '2024-1-3', ['09:00', '17:00', '재택']],
+    ['권상원', '2024-1-4', ['09:00', '17:00', '반차']],
+    ['권상원', '2024-1-5', ['10:30', '17:00', '']],
+    ['권상원', '2024-1-8', ['10:10', '17:00', '']],
+    ['권상원', '2024-1-9', ['10:00', '17:00', '']],
+    ['김도환', '2024-1-1', ['09:30', '17:00', '연차']],
+    ['권준우', '2024-1-2', ['10:00', '17:00', '당일반차']],
+    ['진유빈', '2024-1-2', ['09:00', '17:00', '재택']],
+    ['권상원', '2024-2-1', ['09:00', '17:00', '반차']],
+    ['김도환', '2024-2-1', ['09:30', '17:00', '연차']],
+    ['권준우', '2024-2-2', ['10:00', '17:00', '당일반차']],
+    ['진유빈', '2024-2-2', ['09:00', '17:00', '재택']],
+    ['권상원', '2024-3-1', ['09:00', '17:00', '반차']],
+    ['김도환', '2024-3-1', ['09:30', '17:00', '연차']],
+    ['권준우', '2024-3-2', ['10:00', '17:00', '당일반차']],
+    ['진유빈', '2024-3-2', ['09:00', '17:00', '재택']],
   ];
 
 
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
     const tableRows = [];
+    const totalRows = [];
+    
+    const countWorkingDay = new Array(names.length).fill(0); // 근무일수 집계
+    const countDayoff = new Array(names.length).fill(0); // 연차 집계
+    const countHalfDayOff = new Array(names.length).fill(0); // 반차 집계
+    const countRemoteWork = new Array(names.length).fill(0); // 재택 집계
+    const countLateWork = new Array(names.length).fill(0); // 지각 집계
+    const TotalLateWork = new Array(names.length).fill(0); // 지각총분 집계
+
     for (let i = 0; i < numberOfDaysInMonth; i++) {
       const rowCells = [];
       const date = i + 1;
-      for (let j = 0; j < 18; j++) {
+      for (let j = 0; j < names.length; j++) {
         const personIndex = j;
         const dayOfWeekIndex = new Date(year, month - 1, date).getDay();
-        const backgroundColor = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? '#D9D9D9' : 'inherit';
+        const backgroundColor = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? '#E9E9E9' : 'inherit';
         const pointerEvents = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? 'none' : 'auto';
         
-        let itemBackgroundColor = '#FFFFFF';
-        let selectedItem: string | null = '반차';
+        let personData = ['', '', ['', '' ,'']];
+        
+        for (const data of attendanceData) {
+          if (data[1] === `${year}-${month}-${date}` && data[0] === names[personIndex]) {
+            personData = data;
+            break;
+          }
+        }
 
-        switch (selectedItem) {
+        if (personData[2][0]) {
+          countWorkingDay[j]++;
+        }
+        
+        if (personData[2][0] > '10:00') {
+          countLateWork[j]++
+        }
+        
+        let itemBackgroundColor = '#000000';
+
+        switch (personData[2][2]) {
           case '반차':
+            countHalfDayOff[j]++;
             itemBackgroundColor = '#ABF0FF';
             break;
           case '당일반차':
             itemBackgroundColor = 'yellow';
             break;
           case '연차':
+            countDayoff[j]++;
             itemBackgroundColor = '#7AE1A9';
             break;
           case '재택':
+            countRemoteWork[j]++;
             itemBackgroundColor = 'purple';
             break;
           case '서울출근':
@@ -113,7 +187,7 @@ const AttendanceRegist = () => {
             itemBackgroundColor = 'pink';
             break;
           default:
-            itemBackgroundColor = '#FFFFFF';
+            itemBackgroundColor = '#000000';
             break;
         }
 
@@ -126,9 +200,9 @@ const AttendanceRegist = () => {
                 onClick={() => handleDivClick(date, year, month, personIndex)}
                 key={`${i}-${j}`}
               >
-                <td className='conta'> &nbsp; </td>
-                <td className='conta'> &nbsp; </td>
-                <td className='conta' style={{ backgroundColor: itemBackgroundColor }}>{selectedItem}</td>
+                <td className='conta'>{personData[2][0]} </td>
+                <td className='conta_border'>{personData[2][1]} </td>
+                <td className='conta' style={{ color: itemBackgroundColor }}>{personData[2][2]} </td>
               </tr>
             </Tooltip>
           );
@@ -141,18 +215,131 @@ const AttendanceRegist = () => {
               style={{ backgroundColor: backgroundColor, pointerEvents: pointerEvents }}
             >
               <td className='conta'> &nbsp; </td>
+              <td className='conta_border'> &nbsp; </td>
               <td className='conta'> &nbsp; </td>
-              <td className='conta'>&nbsp;</td>
             </tr>
           );
         }
       }
       tableRows.push(<td className="sconta" key={i}>{rowCells}</td>);
     }
+
+    for (let i = 0; i < 7; i++) {
+      const rowCells = [];
+
+      let backgroundColor = 'inherit'; // 기본 배경색은 inherit로 설정
+      
+      // k 값에 따라 배경색을 다르게 설정
+      switch (i) {
+        case 3:
+          backgroundColor = '#D1E4FF';
+          break;
+        case 5:
+          backgroundColor = '#D1FFEF';
+          break;
+        case 6:
+          backgroundColor = '#FFD3D3';
+          break;
+        default:
+          backgroundColor = '#ffffff'; // 기본 배경색은 #E9E9E9로 설정
+          break;
+      }
+
+      for (let j = 0; j < names.length; j++) {
+        if (i === 0) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countWorkingDay[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 1) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countDayoff[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 2) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countHalfDayOff[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 3) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countLateWork[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 4) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countRemoteWork[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 5) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countLateWork[j]}
+              </td>
+            </tr>
+          );
+        } else {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                지각총분
+              </td>
+            </tr>
+          );
+        }
+      }
+      totalRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
     return (
       <table className="table">
         <tbody>
           {tableRows}
+          {totalRows}
         </tbody>
       </table>
     );
@@ -217,7 +404,7 @@ const AttendanceRegist = () => {
         <Tabs variant='enclosed'>
           <TabList>
             {yearData.map(monthData => (
-              <Tab key={monthData.month} _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} width='10%' bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>{months[monthData.month - 1].name}</Tab>
+              <Tab key={monthData.month} _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} width='5%' bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' >{months[monthData.month - 1].name}</Tab>
             ))}
           </TabList>
 
@@ -311,28 +498,27 @@ const AttendanceRegist = () => {
       </div>  
       <Modal isOpen={isOpen} onClose={onClose} size='lg'>
         <ModalOverlay />
-        <ModalContent height='400px' bg='#D9D9D9'>
-          <ModalHeader>
+        <ModalContent height='350px' bg='#fff' borderTopRadius='10px'>
+          <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>
             <span>{selectedDateInfo.year}.</span>
             <span>{selectedDateInfo.month}.</span>
             <span>{selectedDateInfo.date}.</span>
             <span>{selectedDateInfo.dayOfWeek}</span>
             <span>{selectedDateInfo.name}</span>
-
           </ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton color='#fff'/>
           <ModalBody fontSize='30px' className="modal_content">
             <div className="modal_input">
-              <div>출근시간 :</div>
-              <Input htmlSize={4} width='auto' borderColor='black'/>
+              <div className="input_title">출근시간</div>
+              <Input size='md' width='380px' borderRadius='5px'/>
             </div>
             <div className="modal_input">
-              <div>퇴근시간 :</div>
-              <Input htmlSize={4} width='auto' borderColor='black'/>
+              <div className="input_title">퇴근시간</div>
+              <Input size='md' width='380px' borderRadius='5px'/>
             </div>
             <div className="modal_input">
-              <div>기타 값 :</div>
-              <Select width='200px' borderColor='black'>
+              <div className="input_title">기타 값</div>
+              <Select size='md' width='380px' borderRadius='5px'>
                 <option value='반차'>반차</option>
                 <option value='당일반차'>당일반차</option> 
                 <option value='연차'>연차</option>
