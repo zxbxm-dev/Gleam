@@ -92,14 +92,14 @@ const AttendanceRegist = () => {
       const backgroundColor = dayOfWeek === '토' || dayOfWeek === '일' ? '#E9E9E9' : 'inherit';
       tableRows.push(
         <tr className="dateconta" key={`${j}`} style={{ backgroundColor: backgroundColor }}>
-          <td className="date">{j + 1}<br/>{dayOfWeek}</td>
+          <td className="date">{j + 1}<br />{dayOfWeek}</td>
         </tr>
       );
     }
 
     for (let k = 0; k < 6; k++) {
       let backgroundColor = 'inherit'; // 기본 배경색은 inherit로 설정
-      
+
       // k 값에 따라 배경색을 다르게 설정
       switch (k) {
         case 4:
@@ -112,7 +112,7 @@ const AttendanceRegist = () => {
           backgroundColor = '#ffffff'; // 기본 배경색은 #E9E9E9로 설정
           break;
       }
-    
+
       totalRows.push(
         <tr className="countTotal" key={`${k}`} style={{ backgroundColor: backgroundColor }}>
           <td className="total">{countTotal[k]}</td>
@@ -150,11 +150,11 @@ const AttendanceRegist = () => {
     ['권준우', '2024-5-2', ['10:00', '17:00', '당일반차']],
     ['진유빈', '2024-5-2', ['10:00', '17:00', '재택']],
   ];
-  
+
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
     const tableRows = [];
     const totalRows = [];
-    
+
     const countWorkingDay = new Array(names.length).fill(0); // 근무일수 집계
     const countDayoff = new Array(names.length).fill(0); // 연차 집계
     const countHalfDayOff = new Array(names.length).fill(0); // 반차 집계
@@ -170,9 +170,9 @@ const AttendanceRegist = () => {
         const dayOfWeekIndex = new Date(year, month - 1, date).getDay();
         const backgroundColor = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? '#E9E9E9' : 'inherit';
         const pointerEvents = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? 'none' : 'auto';
-        
-        let personData = ['', '', ['', '' ,'']];
-        
+
+        let personData = ['', '', ['', '', '']];
+
         for (const data of attendanceData) {
           if (data[1] === `${year}-${month}-${date}` && data[0] === names[personIndex]) {
             personData = data;
@@ -184,7 +184,7 @@ const AttendanceRegist = () => {
         if (personData[2][0]) {
           countWorkingDay[j]++;
         }
-        
+
         let itemBackgroundColor = '#000000';
 
         switch (personData[2][2]) {
@@ -299,7 +299,7 @@ const AttendanceRegist = () => {
       const rowCells = [];
 
       let backgroundColor = 'inherit'; // 기본 배경색은 inherit로 설정
-      
+
       // k 값에 따라 배경색을 다르게 설정
       switch (i) {
         case 4:
@@ -432,12 +432,12 @@ const AttendanceRegist = () => {
           <option value={2024}>2024년</option>
         </Select>
       </div>
-      
+
       <div className="content_container">
         <Tabs variant='enclosed'>
           <TabList>
             {yearData.map(monthData => (
-              <Tab key={monthData.month} _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} width='5%' bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' >{months[monthData.month - 1].name}</Tab>
+              <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' >{months[monthData.month - 1].name}</Tab>
             ))}
           </TabList>
 
@@ -452,8 +452,8 @@ const AttendanceRegist = () => {
                         <td className="TopS">성명</td>
                       </tr>
                       <tr>
-                        <td rowSpan={3}>블록체인<br/>사업부</td>
-                        <td rowSpan={3}>블록체인<br/>1팀</td>
+                        <td rowSpan={3}>블록체인<br />사업부</td>
+                        <td rowSpan={3}>블록체인<br />1팀</td>
                         <td>권상원</td>
                       </tr>
                       <tr>
@@ -516,7 +516,7 @@ const AttendanceRegist = () => {
                       <tr>
                         <td>이주범</td>
                       </tr>
-                    
+
                     </tbody>
                   </table>
                   <div>
@@ -528,7 +528,7 @@ const AttendanceRegist = () => {
             ))}
           </TabPanels>
         </Tabs>
-      </div>  
+      </div>
       <Modal isOpen={isOpen} onClose={onClose} size='lg'>
         <ModalOverlay />
         <ModalContent height='350px' bg='#fff' borderTopRadius='10px'>
@@ -539,15 +539,15 @@ const AttendanceRegist = () => {
             <span>{selectedDateInfo.dayOfWeek}</span>
             <span>{selectedDateInfo.name}</span>
           </ModalHeader>
-          <ModalCloseButton color='#fff'/>
+          <ModalCloseButton color='#fff' />
           <ModalBody fontSize='30px' className="modal_content">
             <div className="modal_input">
               <div className="input_title">출근시간</div>
-              <Input size='md' width='380px' borderRadius='5px'/>
+              <Input size='md' width='380px' borderRadius='5px' />
             </div>
             <div className="modal_input">
               <div className="input_title">퇴근시간</div>
-              <Input size='md' width='380px' borderRadius='5px'/>
+              <Input size='md' width='380px' borderRadius='5px' />
             </div>
             <div className="modal_input">
               <div className="input_title">기타 값</div>
