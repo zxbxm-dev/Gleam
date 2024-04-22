@@ -7,6 +7,27 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
 import { Tooltip } from '@chakra-ui/react';
 
+const months = [
+  { name: '1월', key: 'january' },
+  { name: '2월', key: 'february' },
+  { name: '3월', key: 'march' },
+  { name: '4월', key: 'april' },
+  { name: '5월', key: 'may' },
+  { name: '6월', key: 'june' },
+  { name: '7월', key: 'july' },
+  { name: '8월', key: 'august' },
+  { name: '9월', key: 'september' },
+  { name: '10월', key: 'october' },
+  { name: '11월', key: 'november' },
+  { name: '12월', key: 'december' },
+];
+
+const names = [
+  '권상원', '김도환', '권준우', '진유빈', '장현지', '권채림', '구민석', '변도일',
+  '이로운', '김현지', '서주희', '전아름', '함다슬', '김효은', '우현지', '염승희',
+  '김태희', '이주범'
+];
+
 const AttendanceRegist = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -25,36 +46,45 @@ const AttendanceRegist = () => {
     dayOfWeek: null
   });
 
+  const currentMonthIndex = new Date().getMonth(); // 현재 월 인덱스
 
-  // 전체 연도의 정보
-  const yearData = [];
+  // 시작 월과 끝 월 계산
+  const startMonthIndex = Math.max(currentMonthIndex - 1, 0); // 현재 월에서 1개월 전
+  const endMonthIndex = Math.min(currentMonthIndex + 1, 11); // 현재 월에서 1개월 후
 
-  // 1월 ~ 12월 정보
-  for (let month = 0; month < 12; month++) {
-    const currentYear = selectedYear;
-
-    // 월별 날짜 계산
-    const firstDayOfMonth = new Date(currentYear, month, 1);
-    const lastDayOfMonth = new Date(currentYear, month + 1, 0);
-
-    // 월 일수 계산
-    const numberOfDaysInMonth = lastDayOfMonth.getDate();
-
-    // 첫 날 요일 계산
-    const firstDayOfWeek = firstDayOfMonth.getDay();
-
-    // 월 정보 저장
-    yearData.push({
-      month: month + 1,
-      numberOfDaysInMonth,
-      firstDayOfWeek
-    });
+  // 시작 월부터 끝 월 정보
+  const selectedMonths = [];
+  for (let monthIndex = startMonthIndex; monthIndex <= endMonthIndex; monthIndex++) {
+    selectedMonths.push(months[monthIndex]);
   }
+
+ // 선택된 월에 대한 yearData 생성
+  const yearData = selectedMonths.map(month => {
+  const currentYear = selectedYear;
+  const monthIndex = months.findIndex(item => item === month);
+
+  // 월별 날짜 계산
+  const firstDayOfMonth = new Date(currentYear, monthIndex, 1);
+  const lastDayOfMonth = new Date(currentYear, monthIndex + 1, 0);
+
+  // 월 일수 계산
+  const numberOfDaysInMonth = lastDayOfMonth.getDate();
+
+  // 첫 날 요일 계산
+  const firstDayOfWeek = firstDayOfMonth.getDay();
+
+  // 월 정보 저장
+  return {
+    month: monthIndex + 1,
+    numberOfDaysInMonth,
+    firstDayOfWeek
+    };
+  });
 
   const DateDivs = (numberOfDaysInMonth: number, firstDayOfWeek: number) => {
     const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
     const tableRows = [];
-    const countTotal = ["근무일수", "휴가일수", "반차일수", "지각", "재택", "지각2", "지각총분"]
+    const countTotal = ["근무일수", "휴가일수", "반차일수", "재택", "지각", "지각총분"]
     const totalRows = [];
 
     for (let j = 0; j < numberOfDaysInMonth; j++) {
@@ -67,18 +97,15 @@ const AttendanceRegist = () => {
       );
     }
 
-    for (let k = 0; k < 7; k++) {
+    for (let k = 0; k < 6; k++) {
       let backgroundColor = 'inherit'; // 기본 배경색은 inherit로 설정
 
       // k 값에 따라 배경색을 다르게 설정
       switch (k) {
-        case 3:
+        case 4:
           backgroundColor = '#D1E4FF';
           break;
         case 5:
-          backgroundColor = '#D1FFEF';
-          break;
-        case 6:
           backgroundColor = '#FFD3D3';
           break;
         default:
@@ -104,61 +131,25 @@ const AttendanceRegist = () => {
   };
 
   const virtualData = [
-    ['권상원', '2024-1-1', ['09:00', '17:00', '반차']],
-    ['권상원', '2024-1-2', ['09:00', '17:00', '연차']],
-    ['권상원', '2024-1-3', ['09:00', '17:00', '재택']],
-    ['권상원', '2024-1-4', ['09:00', '17:00', '반차']],
-    ['권상원', '2024-1-5', ['10:30', '17:00', '']],
-    ['권상원', '2024-1-8', ['10:10', '17:00', '']],
-    ['권상원', '2024-1-9', ['10:00', '17:00', '']],
-    ['김도환', '2024-1-1', ['09:30', '17:00', '연차']],
-    ['권준우', '2024-1-2', ['10:00', '17:00', '당일반차']],
-    ['진유빈', '2024-1-2', ['09:00', '17:00', '재택']],
-    ['권상원', '2024-2-1', ['09:00', '17:00', '반차']],
-    ['김도환', '2024-2-1', ['09:30', '17:00', '연차']],
-    ['권준우', '2024-2-2', ['10:00', '17:00', '당일반차']],
-    ['진유빈', '2024-2-2', ['09:00', '17:00', '재택']],
-    ['권상원', '2024-3-1', ['09:00', '17:00', '반차']],
-    ['김도환', '2024-3-1', ['09:30', '17:00', '연차']],
-    ['권준우', '2024-3-2', ['10:00', '17:00', '당일반차']],
-    ['진유빈', '2024-3-2', ['09:00', '17:00', '재택']],
+    ['권상원', '2024-3-1', ['14:20', '17:00', '오전반차']],
+    ['권상원', '2024-3-4', ['10:00', '17:00', '연차']],
+    ['권상원', '2024-3-5', ['10:00', '17:00', '재택']],
+    ['권상원', '2024-3-6', ['10:05', '14:00', '오후반차']],
+    ['권상원', '2024-3-7', ['10:30', '17:00', '']],
+    ['권상원', '2024-3-8', ['10:10', '17:00', '']],
+    ['권상원', '2024-3-11', ['11:20', '17:00', '']],
+    ['김도환', '2024-3-1', ['10:30', '17:00', '연차']],
+    ['권준우', '2024-3-4', ['10:00', '17:00', '당일반차']],
+    ['진유빈', '2024-3-5', ['10:00', '17:00', '재택']],
+    ['권상원', '2024-4-1', ['10:00', '17:00', '반차']],
+    ['김도환', '2024-4-1', ['10:30', '17:00', '연차']],
+    ['권준우', '2024-4-2', ['10:00', '17:00', '당일반차']],
+    ['진유빈', '2024-4-2', ['10:00', '17:00', '재택']],
+    ['권상원', '2024-5-1', ['10:00', '17:00', '반차']],
+    ['김도환', '2024-5-1', ['10:30', '17:00', '연차']],
+    ['권준우', '2024-5-2', ['10:00', '17:00', '당일반차']],
+    ['진유빈', '2024-5-2', ['10:00', '17:00', '재택']],
   ];
-
-  // 이름을 기준으로 그룹화, 각 사람의 시간 배열 계산
-  const groupedData: { [key: string]: string[] } = virtualData.reduce((acc: { [key: string]: string[] }, [name, date, time]) => {
-    // name이 문자열이 아닌 경우 문자열로 변환하여 사용
-    const key = Array.isArray(name) ? name[0] : name;
-
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    acc[key].push(time[0]);
-    return acc;
-  }, {});
-
-  Object.entries(groupedData).forEach(([name, timeArray]) => {
-    const startTimeArray = timeArray.map(timeString => parseTimeStringToDate(timeString));
-    const calculatedTimeArray = startTimeArray.map(startTime => {
-      const hours = startTime.getHours();
-      const minutes = startTime.getMinutes();
-      let newHours = hours - 10;
-      const newMinutes = minutes;
-      if (newHours < 0) {
-        return '0';
-      }
-      // 시간과 분을 문자열로 변환
-      return `${newHours}:${newMinutes < 10 ? '0' : ''}${newMinutes}`;
-    });
-    console.log(`${name}: `, calculatedTimeArray);
-  });
-
-  // 시간 문자열을 날짜 객체로 변환
-  function parseTimeStringToDate(timeString: any) {
-    // 시간 문자열을 시간과 분으로 분리
-    const [hours, minutes] = timeString.split(':').map(Number);
-    return new Date(0, 0, 0, hours, minutes);
-  }
-
 
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
     const tableRows = [];
@@ -188,40 +179,85 @@ const AttendanceRegist = () => {
             break;
           }
         }
+        
 
         if (personData[2][0]) {
           countWorkingDay[j]++;
         }
 
-        if (personData[2][0] > '10:00') {
-          countLateWork[j]++
-        }
-
         let itemBackgroundColor = '#000000';
 
         switch (personData[2][2]) {
-          case '반차':
+          case '오전반차':
             countHalfDayOff[j]++;
-            itemBackgroundColor = '#ABF0FF';
+            if (personData[2][0] > '14:00') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T14:00`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 14) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
+            itemBackgroundColor = '#FFB800';
+            break;
+          case '오후반차':
+            countHalfDayOff[j]++;
+            if (personData[2][0] > '10:00') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T10:00`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
+            itemBackgroundColor = '#FFB800';
             break;
           case '당일반차':
-            itemBackgroundColor = 'yellow';
+            countHalfDayOff[j]++;
+            itemBackgroundColor = '#5162FF';
             break;
           case '연차':
             countDayoff[j]++;
-            itemBackgroundColor = '#7AE1A9';
+            itemBackgroundColor = '#0D994D';
             break;
           case '재택':
             countRemoteWork[j]++;
-            itemBackgroundColor = 'purple';
+            if (personData[2][0] > '10:00') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T10:00`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
+            itemBackgroundColor = '#7000C9';
             break;
           case '서울출근':
-            itemBackgroundColor = 'orange';
+            itemBackgroundColor = '#3DC6C6';
             break;
           case '입사':
-            itemBackgroundColor = 'pink';
+            itemBackgroundColor = '#FF4747';
+            break;
+          case '지문X':
+            itemBackgroundColor = '#EF0AD8';
             break;
           default:
+            if (personData[2][0] > '10:00') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T10:00`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
             itemBackgroundColor = '#000000';
             break;
         }
@@ -259,20 +295,17 @@ const AttendanceRegist = () => {
       tableRows.push(<td className="sconta" key={i}>{rowCells}</td>);
     }
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 6; i++) {
       const rowCells = [];
 
       let backgroundColor = 'inherit'; // 기본 배경색은 inherit로 설정
 
       // k 값에 따라 배경색을 다르게 설정
       switch (i) {
-        case 3:
+        case 4:
           backgroundColor = '#D1E4FF';
           break;
         case 5:
-          backgroundColor = '#D1FFEF';
-          break;
-        case 6:
           backgroundColor = '#FFD3D3';
           break;
         default:
@@ -325,23 +358,11 @@ const AttendanceRegist = () => {
               style={{ backgroundColor: backgroundColor }}
             >
               <td className='conta_merge'>
-                {countLateWork[j]}
-              </td>
-            </tr>
-          );
-        } else if (i === 4) {
-          rowCells.push(
-            <tr
-              className="conta_three"
-              key={`${i}-${j}`}
-              style={{ backgroundColor: backgroundColor }}
-            >
-              <td className='conta_merge'>
                 {countRemoteWork[j]}
               </td>
             </tr>
           );
-        } else if (i === 5) {
+        } else if (i === 4) {
           rowCells.push(
             <tr
               className="conta_three"
@@ -361,7 +382,7 @@ const AttendanceRegist = () => {
               style={{ backgroundColor: backgroundColor }}
             >
               <td className='conta_merge'>
-                지각총분
+                {TotalLateWork[j]}
               </td>
             </tr>
           );
@@ -379,29 +400,6 @@ const AttendanceRegist = () => {
       </table>
     );
   };
-
-
-
-  const months = [
-    { name: '1월', key: 'january' },
-    { name: '2월', key: 'february' },
-    { name: '3월', key: 'march' },
-    { name: '4월', key: 'april' },
-    { name: '5월', key: 'may' },
-    { name: '6월', key: 'june' },
-    { name: '7월', key: 'july' },
-    { name: '8월', key: 'august' },
-    { name: '9월', key: 'september' },
-    { name: '10월', key: 'october' },
-    { name: '11월', key: 'november' },
-    { name: '12월', key: 'december' },
-  ];
-
-  const names = [
-    '권상원', '김도환', '권준우', '진유빈', '장현지', '권채림', '구민석', '변도일',
-    '이로운', '김현지', '서주희', '전아름', '함다슬', '김효은', '우현지', '염승희',
-    '김태희', '이주범'
-  ];
 
   // 년도 변경
   const handleYearChange = (event: any) => {
@@ -554,12 +552,15 @@ const AttendanceRegist = () => {
             <div className="modal_input">
               <div className="input_title">기타 값</div>
               <Select size='md' width='380px' borderRadius='5px'>
-                <option value='반차'>반차</option>
-                <option value='당일반차'>당일반차</option>
+                <option value=''>선택안함(비워두기)</option>
+                <option value='오전반차'>오전반차</option>
+                <option value='오후반차'>오후반차</option>
+                <option value='당일반차'>당일반차</option> 
                 <option value='연차'>연차</option>
                 <option value='재택'>재택</option>
                 <option value='서울출근'>서울출근</option>
                 <option value='입사'>입사</option>
+                <option value='지문X'>지문X</option>
               </Select>
             </div>
           </ModalBody>
