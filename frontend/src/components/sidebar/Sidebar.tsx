@@ -118,7 +118,7 @@ const Sidebar = () => {
                 </Link>
                 {isPerformanceMenuOpen && (
                   <ul className="menu-list">
-                    <li className={`sub-menu menu-item ${selectedMenu === 'performance-report' ? 'active' : ''}`}>
+                    {/* <li className={`sub-menu menu-item ${selectedMenu === 'performance-report' ? 'active' : ''}`}>
                       <Link to="/performance-report" className='menu-link' onClick={() => handleMenuClick('performance-report')}>성과보고서</Link>
                     </li>
                     <li className={`sub-menu menu-item ${selectedMenu === 'member-evaluation' ? 'active' : ''}`}>
@@ -129,7 +129,7 @@ const Sidebar = () => {
                     </li>
                     <li className={`sub-menu menu-item ${selectedMenu === 'self-assessment' ? 'active' : ''}`}>
                       <Link to="/self-assessment" className='menu-link' onClick={() => handleMenuClick('self-assessment')}>자기신고서</Link>
-                    </li>
+                    </li> */}
                     <li className={`sub-menu menu-item ${selectedMenu === 'final-result' ? 'active' : ''}`}>
                       <Link to="/final-result" className='menu-link' onClick={() => handleMenuClick('final-result')}>최종 결과 확인(관리팀장)</Link>
                     </li>
