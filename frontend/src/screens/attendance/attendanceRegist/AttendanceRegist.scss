@@ -152,8 +152,10 @@
 }
 
 
-//예시입니다!
 @include laptop {
+  .container_attendance{
+    height: 75%;
+  }
   .TabKey {
     width: 7%;
   }
