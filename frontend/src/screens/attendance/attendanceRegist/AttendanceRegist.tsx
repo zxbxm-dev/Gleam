@@ -131,7 +131,7 @@ const AttendanceRegist = () => {
   };
 
   const virtualData = [
-    ['권상원', '2024-3-1', ['14:20', '17:00', '오전반차']],
+    ['권상원', '2024-3-1', ['14:00', '17:00', '오전반차']],
     ['권상원', '2024-3-4', ['10:00', '17:00', '연차']],
     ['권상원', '2024-3-5', ['10:00', '17:00', '재택']],
     ['권상원', '2024-3-6', ['10:05', '14:00', '오후반차']],
@@ -543,24 +543,24 @@ const AttendanceRegist = () => {
           <ModalBody fontSize='30px' className="modal_content">
             <div className="modal_input">
               <div className="input_title">출근시간</div>
-              <Input size='md' width='380px' borderRadius='5px' />
+              <Input size='md' width='380px' borderRadius='5px' placeholder="00:00"/>
             </div>
             <div className="modal_input">
               <div className="input_title">퇴근시간</div>
-              <Input size='md' width='380px' borderRadius='5px' />
+              <Input size='md' width='380px' borderRadius='5px' placeholder="00:00"/>
             </div>
             <div className="modal_input">
               <div className="input_title">기타 값</div>
               <Select size='md' width='380px' borderRadius='5px'>
                 <option value=''>선택안함(비워두기)</option>
-                <option value='오전반차'>오전반차</option>
-                <option value='오후반차'>오후반차</option>
-                <option value='당일반차'>당일반차</option> 
-                <option value='연차'>연차</option>
-                <option value='재택'>재택</option>
-                <option value='서울출근'>서울출근</option>
-                <option value='입사'>입사</option>
-                <option value='지문X'>지문X</option>
+                <option value='오전반차' style={{ color: '#FFB800' }}>오전반차</option>
+                <option value='오후반차' style={{ color: '#FFB800' }}>오후반차</option>
+                <option value='당일반차' style={{ color: '#5162FF' }}>당일반차</option> 
+                <option value='연차' style={{ color: '#0D994D' }}>연차</option>
+                <option value='재택' style={{ color: '#7000C9' }}>재택</option>
+                <option value='서울출근' style={{ color: '#3DC6C6' }}>서울출근</option>
+                <option value='입사' style={{ color: '#FF4747' }}>입사</option>
+                <option value='지문X' style={{ color: '#EF0AD8' }}>지문X</option>
               </Select>
             </div>
           </ModalBody>

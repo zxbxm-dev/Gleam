@@ -4,7 +4,7 @@
   display: flex;
 
   .report_type {
-    width: 90%;
+    width: 35%;
     height: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -27,20 +27,21 @@
         align-items: center;
         font-family: var(--font-family-Noto-M);
         font-size: 18px;
-        width: 50%;
-        height: 50px;
+        width: 90%;
+        height: 55px;
         padding-left: 20px;
         border: 2px solid #DCDCDC;
         border-radius: 5px;
       }
     }
   }
-
   .report_btn {
-    width: 10%;
+    width: 30%;
+    height: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: row-reverse;
   }
+
 
   .temp_button {
     width: 180px;
