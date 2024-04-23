@@ -41,7 +41,7 @@ const Announcement = () => {
           </div>
 
           <div>
-            <table className="board_list">
+            <table className="announce_board_list">
               <colgroup>
                 <col width="6%"/>
                 <col width="74%"/>

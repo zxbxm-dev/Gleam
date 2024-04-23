@@ -1,9 +1,60 @@
 import "./Announcement.scss";
+import { useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
+import testPDF from '../../../assets/pdf/취업규칙_포체인스_001.pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.js',
+  import.meta.url,
+).toString();
+
+type PDFFile = string | File | null;
 
 const DetailAnnounce = () => {
   let navigate = useNavigate();
+  const [file, setFile] = useState<PDFFile>(testPDF);
+  const [numPages, setNumPages] = useState<number>(0);
+  const [pageWidth, setPageWidth] = useState<number>(800); // 초기 페이지 너비
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
+
+  const downloadPDF = () => {
+    const link = document.createElement('a');
+    link.href = testPDF;
+    link.download = 'test.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleWidthIncrease = () => {
+    setPageWidth(pageWidth + 100); // 너비 증가
+  };
+
+  const handleWidthDecrease = () => {
+    setPageWidth(pageWidth - 100); // 너비 감소
+  };
+
+  // 전체 페이지 렌더링 함수
+  const renderPages = () => {
+    const pages = [];
+    for (let i = 1; i <= numPages; i++) {
+      pages.push(
+        <Page 
+          key={`page_${i}`}
+          pageNumber={i} 
+          width={pageWidth}
+        />
+      );
+    }
+    return pages;
+  };
 
   return (
     <div className="content">
@@ -32,6 +83,8 @@ const DetailAnnounce = () => {
               </div>
 
               <div className="btn_content">
+                <button onClick={handleWidthIncrease}>+</button>
+                <button onClick={handleWidthDecrease}>-</button>
                 <button className="white_button">삭제</button>
                 <button className="white_button">수정</button>
                 <button className="second_button" onClick={() => navigate("/announcement")}>목록</button>
@@ -39,10 +92,13 @@ const DetailAnnounce = () => {
             </div>
           </div>
 
-          <div className="content_container">
-            
+          <div className="detail_content">
+            <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+              {renderPages()}
+            </Document>
           </div>
         
+          <button onClick={downloadPDF}>다운로드</button>
 
         </div>
       </div>  

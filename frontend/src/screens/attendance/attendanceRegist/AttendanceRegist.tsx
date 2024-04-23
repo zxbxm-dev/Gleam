@@ -441,7 +441,7 @@ const AttendanceRegist = () => {
             ))}
           </TabList>
 
-          <TabPanels bg='white' height='790px' border='1px solid #DEDEDE' borderBottomRadius='10px'>
+          <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="tab_container">
             {yearData.map(monthData => (
               <TabPanel key={monthData.month} className="container_attendance">
                 <div className="Excel">

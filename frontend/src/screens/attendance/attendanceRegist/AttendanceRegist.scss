@@ -157,8 +157,13 @@
 
 @include laptop {
   .container_attendance{
-    height: 75%;
-  }
+    font-family: var(--font-family-Noto-R);
+    width: 100%;
+    height: 100%;
+    display: grid;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    }
   .TabKey {
     width: 7%;
   }
