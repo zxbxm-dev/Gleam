@@ -7,14 +7,15 @@
     margin-top: 10px;
   
     .board_header {
+      font-family: var(--font-family-Noto-M);
       height: 45px;
       font-size: 17px;
-      font-weight: bold;
       border-top: 2px solid #DCDCDC;
       background-color: #EEEEEE;
     }
   
     .board_content {
+      font-family: var(--font-family-Noto-R);
       height: 60px;
       font-size: 17px;
       border-top: 1px solid #DCDCDC;
@@ -23,10 +24,11 @@
   }
   
   .regulation_main_bottom {
+    font-family: var(--font-family-Noto-R);
     display: flex;
     justify-content: space-between;
     margin: 5px 10px;
-    margin-top: 4%;
+    margin-top: 11%;
   
     .attachment_content {
       display: flex;
@@ -103,15 +105,16 @@
     margin-top: 10px;
   
     .board_header {
-      height: 45px;
+      font-family: var(--font-family-Noto-M);
+      height: 40px;
       font-size: 17px;
-      font-weight: bold;
       border-top: 2px solid #DCDCDC;
       background-color: #EEEEEE;
     }
   
     .board_content {
-      height: 55px;
+      font-family: var(--font-family-Noto-R);
+      height: 44px;
       font-size: 17px;
       border-top: 1px solid #DCDCDC;
       text-align: center;
@@ -119,10 +122,11 @@
   }
   
   .regulation_main_bottom {
+    font-family: var(--font-family-Noto-R);
     display: flex;
     justify-content: space-between;
     margin: 5px 10px;
-    margin-top: 6%;
+    margin-top: 4%;
   
     .attachment_content {
       display: flex;

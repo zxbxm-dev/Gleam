@@ -45,7 +45,7 @@ const WriteActivityManage = () => {
               <div>
               <Editor
                 initialValue="내용을 입력해 주세요."
-                height="530px"
+                height="430px"
                 initialEditType="wysiwyg"
                 useCommandShortcut={false}
                 hideModeSwitch={true}
