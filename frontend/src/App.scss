@@ -1,3 +1,5 @@
+@import "./style/mixin";
+
 // fonts
 @font-face {
   font-family: 'Noto sans KR-light';
@@ -155,180 +157,372 @@ ul {
   }
 }
 
-// content
-.content {
-  width: 100%;
-  height: 100%;
-  padding: 20px 15px;
-
-  .content_header {
+// 데스크탑 기준 전체 레이아웃
+@include desktop {
+  .content {
     width: 100%;
-    height: 20%;
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    margin-bottom: 10px;
-    gap: 5px;
-
-    .main_header {
-      color: #8F8F8F;
-      font-family: var(--font-family-Noto-R);
-    }
-
-    .sub_header {
-      color: #000000;
-      font-family: var(--font-family-Noto-B);
-    }
-  }
-
-  .content_container {
-    width: 100%;
-    height: 80%;
-    .css-a5mhaz {
-      padding: 0px;
-    }
-    .container {
-      height: 86vh;
-      background-color: white;
-      border: 1px solid #DEDEDE;
-      border-radius: 10px;
-      padding: 20px;
-    }
-
-    .main_header {
+    height: 100%;
+    padding: 20px 15px;
+  
+    .content_header {
+      width: 100%;
+      height: 20%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-    
-      .header_name {
-        font-family: var(--font-family-Noto-B);
-        font-size: 32px;
-        color: #C7C7C7;
-        margin-top: 15px;
-      }
-      .header_name_sm {
+      font-size: 14px;
+      margin-bottom: 10px;
+      gap: 5px;
+  
+      .main_header {
+        color: #8F8F8F;
         font-family: var(--font-family-Noto-R);
-        font-size: 16px;
-        color: #C7C7C7;
-        margin-top: 15px;
       }
-    
-      .input-wrapper {
-        position: relative;
+  
+      .sub_header {
+        color: #000000;
+        font-family: var(--font-family-Noto-B);
       }
-    
-      .input_form {
-        width: 350px;
-        height: 40px;
+    }
+  
+    .content_container {
+      width: 100%;
+      height: 80%;
+      
+      .tab_container {
+        height: 790px;
+      }
+
+      .css-a5mhaz {
+        padding: 0px;
+      }
+      .container {
+        height: 86vh;
+        background-color: white;
         border: 1px solid #DEDEDE;
         border-radius: 10px;
-        padding: 10px;
-        padding-right: 30px;
+        padding: 20px;
       }
-      .input_form:hover {
-        border: 1px solid #DEDEDE;
-      }
-      .input_form:focus-visible {
-        outline: none!important;
-        border: 1px solid #DEDEDE;
-      }
-      .search-icon {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 20px;
-        height: 20px;
-      }
-    }
-    .main_header2 {
-      
-      .header_name_bg {
-        font-family: var(--font-family-Noto-M);
-        font-size: 32px;
-        color: #000;
-        margin-top: 15px;
-        padding: 0 15px;
-      }
-    }
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin: 15px auto;
-      padding-left: 120px;
   
-      li {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        transform: all 0.3s;
-        font-size: 16px;
-        text-align: center;
-        display: flex; 
+      .main_header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      
+        .header_name {
+          font-family: var(--font-family-Noto-B);
+          font-size: 32px;
+          color: #C7C7C7;
+          margin-top: 15px;
+        }
+        .header_name_sm {
+          font-family: var(--font-family-Noto-R);
+          font-size: 16px;
+          color: #C7C7C7;
+          margin-top: 15px;
+        }
+      
+        .input-wrapper {
+          position: relative;
+        }
+      
+        .input_form {
+          width: 350px;
+          height: 40px;
+          border: 1px solid #DEDEDE;
+          border-radius: 10px;
+          padding: 10px;
+          padding-right: 30px;
+        }
+        .input_form:hover {
+          border: 1px solid #DEDEDE;
+        }
+        .input_form:focus-visible {
+          outline: none!important;
+          border: 1px solid #DEDEDE;
+        }
+        .search-icon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 20px;
+          height: 20px;
+        }
+      }
+      .main_header2 {
+        
+        .header_name_bg {
+          font-family: var(--font-family-Noto-M);
+          font-size: 32px;
+          color: #000;
+          margin-top: 15px;
+          padding: 0 15px;
+        }
+      }
+      .pagination {
+        display: flex;
         justify-content: center;
         align-items: center;
+        gap: 8px;
+        margin: 15px auto;
+        padding-left: 120px;
+    
+        li {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          transform: all 0.3s;
+          font-size: 16px;
+          text-align: center;
+          display: flex; 
+          justify-content: center;
+          align-items: center;
+        }
+  
+        svg {
+          width: 16px; // 아이콘의 너비 조정
+          height: 16px; // 아이콘의 높이 조정
+        }
+      }
+      .pagination li:nth-child(3),
+      .pagination li:nth-child(4),
+      .pagination li:nth-child(5),
+      .pagination li:nth-child(6),
+      .pagination li:nth-child(7) {
+        &:hover,
+        &:active,
+        &.active {
+          background-color: #746E58;
+          color: white;
+        }
+      }
+    }
+    .primary_button {
+      width: 140px;
+      height: 40px;
+      border: 2px solid #746E58;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-family: var(--font-family-Noto-B);
+      font-size: 16px;
+      color: #746E58;
+    }
+    .second_button {
+      width: 80px;
+      height: 40px;
+      background-color: #746E58;
+      border: 1px solid #746E58;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+      font-family: var(--font-family-Noto-B);
+      color: #fff;
+    }
+    .white_button {
+      width: 80px;
+      height: 40px;
+      background-color: #fff;
+      border: 1px solid #746E58;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+      font-family: var(--font-family-Noto-B);
+      color: #746E58;
+    }
+    .delete_button {
+      width: 110px;
+      height: 40px;
+      border: 2px solid #D56D6D;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-family: var(--font-family-Noto-B);
+      font-size: 16px;
+      color: #D56D6D;
+    }
+  }
+}
+
+// 노트북 기준 전체 레이아웃
+@include laptop {
+  .content {
+    width: 100%;
+    height: 100%;
+    padding: 20px 15px;
+  
+    .content_header {
+      width: 100%;
+      height: 20%;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 10px;
+      gap: 5px;
+  
+      .main_header {
+        color: #8F8F8F;
+        font-family: var(--font-family-Noto-R);
+      }
+  
+      .sub_header {
+        color: #000000;
+        font-family: var(--font-family-Noto-B);
+      }
+    }
+  
+    .content_container {
+      width: 100%;
+      height: 80%;
+      
+      .tab_container {
+        height: 704px;
       }
 
-      svg {
-        width: 16px; // 아이콘의 너비 조정
-        height: 16px; // 아이콘의 높이 조정
+      .css-a5mhaz {
+        padding: 0px;
+      }
+      .container {
+        height: 86vh;
+        background-color: white;
+        border: 1px solid #DEDEDE;
+        border-radius: 10px;
+        padding: 20px;
+      }
+  
+      .main_header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      
+        .header_name {
+          font-family: var(--font-family-Noto-B);
+          font-size: 28px;
+          color: #C7C7C7;
+          margin-top: 15px;
+        }
+        .header_name_sm {
+          font-family: var(--font-family-Noto-R);
+          font-size: 16px;
+          color: #C7C7C7;
+          margin-top: 15px;
+        }
+      
+        .input-wrapper {
+          position: relative;
+        }
+      
+        .input_form {
+          width: 350px;
+          height: 40px;
+          border: 1px solid #DEDEDE;
+          border-radius: 10px;
+          padding: 10px;
+          padding-right: 30px;
+        }
+        .input_form:hover {
+          border: 1px solid #DEDEDE;
+        }
+        .input_form:focus-visible {
+          outline: none!important;
+          border: 1px solid #DEDEDE;
+        }
+        .search-icon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 20px;
+          height: 20px;
+        }
+      }
+      .main_header2 {
+        
+        .header_name_bg {
+          font-family: var(--font-family-Noto-M);
+          font-size: 32px;
+          color: #000;
+          margin-top: 15px;
+          padding: 0 15px;
+        }
+      }
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin: 15px auto;
+        padding-left: 120px;
+    
+        li {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          transform: all 0.3s;
+          font-size: 16px;
+          text-align: center;
+          display: flex; 
+          justify-content: center;
+          align-items: center;
+        }
+  
+        svg {
+          width: 16px; // 아이콘의 너비 조정
+          height: 16px; // 아이콘의 높이 조정
+        }
+      }
+      .pagination li:nth-child(3),
+      .pagination li:nth-child(4),
+      .pagination li:nth-child(5),
+      .pagination li:nth-child(6),
+      .pagination li:nth-child(7) {
+        &:hover,
+        &:active,
+        &.active {
+          background-color: #746E58;
+          color: white;
+        }
       }
     }
-    .pagination li:nth-child(3),
-    .pagination li:nth-child(4),
-    .pagination li:nth-child(5),
-    .pagination li:nth-child(6),
-    .pagination li:nth-child(7) {
-      &:hover,
-      &:active,
-      &.active {
-        background-color: #746E58;
-        color: white;
-      }
+    .primary_button {
+      width: 140px;
+      height: 40px;
+      border: 2px solid #746E58;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-family: var(--font-family-Noto-B);
+      font-size: 16px;
+      color: #746E58;
     }
-  }
-  .primary_button {
-    width: 140px;
-    height: 40px;
-    border: 2px solid #746E58;
-    border-radius: 8px;
-    margin-top: 5px;
-    font-family: var(--font-family-Noto-B);
-    font-size: 16px;
-    color: #746E58;
-  }
-  .second_button {
-    width: 80px;
-    height: 40px;
-    background-color: #746E58;
-    border: 1px solid #746E58;
-    border-radius: 8px;
-    margin-top: 5px;
-    font-size: 16px;
-    font-family: var(--font-family-Noto-B);
-    color: #fff;
-  }
-  .white_button {
-    width: 80px;
-    height: 40px;
-    background-color: #fff;
-    border: 1px solid #746E58;
-    border-radius: 8px;
-    margin-top: 5px;
-    font-size: 16px;
-    font-family: var(--font-family-Noto-B);
-    color: #746E58;
-  }
-  .delete_button {
-    width: 110px;
-    height: 40px;
-    border: 2px solid #D56D6D;
-    border-radius: 8px;
-    margin-top: 5px;
-    font-family: var(--font-family-Noto-B);
-    font-size: 16px;
-    color: #D56D6D;
+    .second_button {
+      width: 80px;
+      height: 40px;
+      background-color: #746E58;
+      border: 1px solid #746E58;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+      font-family: var(--font-family-Noto-B);
+      color: #fff;
+    }
+    .white_button {
+      width: 80px;
+      height: 40px;
+      background-color: #fff;
+      border: 1px solid #746E58;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+      font-family: var(--font-family-Noto-B);
+      color: #746E58;
+    }
+    .delete_button {
+      width: 110px;
+      height: 40px;
+      border: 2px solid #D56D6D;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-family: var(--font-family-Noto-B);
+      font-size: 16px;
+      color: #D56D6D;
+    }
   }
 }

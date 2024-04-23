@@ -22,10 +22,10 @@ const OrgChart = () => {
           <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>R&D 연구센터</Tab>
         </TabList>
 
-        <TabPanels bg='white' height='790px' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px'>
+        <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="tab_container">
           <TabPanel display='flex' justifyContent='center' marginTop='150px'>
             <div className="FC_logo">
-              <img src={FourchainsLogo} alt="FourchainsLogo" width='130px'/>
+              <img src={FourchainsLogo} alt="FourchainsLogo" className="Logoimg"/>
               <p className="MenuName">인사 조직도</p>
             </div>
             <Tree lineWidth={'1px'} lineColor={'#D3D3D3'} label={<div className="nodeicon">대표이사</div>}>

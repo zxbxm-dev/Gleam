@@ -39,7 +39,7 @@ const Regulations = () => {
           </div>
 
           <div>
-            <table className="board_list">
+            <table className="regulation_board_list">
               <colgroup>
                 <col width="6%"/>
                 <col width="84%"/>
