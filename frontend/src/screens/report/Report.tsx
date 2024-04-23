@@ -16,7 +16,7 @@ const Report = () => {
             <div className="report_type">
               <div className="report_content">
                 <div className="report_title">공통 보고서</div>
-                <div className="report_name">주간업무일지</div>
+                <div className="report_name"><Link to={"/tempReportStorage"}>주간업무일지</Link></div>
                 <div className="report_name">지출품의서</div>
                 <div className="report_name">휴가신청서</div>
               </div>
@@ -35,7 +35,8 @@ const Report = () => {
                 <div className="report_name">기획서</div>
                 <div className="report_name">최종보고서</div>
               </div>
-              
+            </div>
+            <div className="report_type">
               <div className="report_content">
                 <div className="report_title">기타</div>
                 <div className="report_name">시말서</div>
@@ -43,7 +44,6 @@ const Report = () => {
                 <div className="report_name">휴직원</div>
                 <div className="report_name">복직원</div>
               </div>
-              
             </div>
             <div className="report_btn">
               <button className="temp_button">임시저장 파일 보기</button>

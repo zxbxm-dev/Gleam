@@ -17,6 +17,7 @@ import {
   DetailRegulation,
   Calendar,
   Report,
+  TempReportStorage,
   Approval,
   Employment,
   PerFormReport,
@@ -58,6 +59,7 @@ function App() {
 
             {/* 보고서 */}
             <Route path="/report" element={<Report />} />
+            <Route path="/tempReportStorage" element={<TempReportStorage />} />
 
             {/* 보고서 결재 */}
             <Route path="/approval" element={<Approval />} />
