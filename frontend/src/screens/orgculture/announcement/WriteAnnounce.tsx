@@ -38,7 +38,7 @@ const WriteAnnounce = () => {
               <div>
               <Editor
                 initialValue="내용을 입력해 주세요."
-                height="600px"
+                height="530px"
                 initialEditType="wysiwyg"
                 useCommandShortcut={false}
                 hideModeSwitch={true}
@@ -48,7 +48,7 @@ const WriteAnnounce = () => {
               </div>
             </div>
 
-            <div className="main_bottom">
+            <div className="announce_main_bottom">
               <div className="attachment_content">
                 <button className="primary_button">파일 첨부하기</button>
                 <div className="attachment_name">워크숍 규정.pdf</div>

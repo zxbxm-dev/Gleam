@@ -1,19 +1,15 @@
 import { useState } from "react";
 import "./Report.scss";
-import {
-  SearchIcon,
-} from "../../assets/images/index";
 import { ReactComponent as RightIcon } from "../../assets/images/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../assets/images/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/LastRightIcon.svg";
 import { ReactComponent as FirstLeftIcon } from "../../assets/images/FirstLeftIcon.svg";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
 
 
 const TempReportStorage = () => {
-  let navigate = useNavigate();
   const [page, setPage] = useState<number>(1); 
 
   const postPerPage: number = 10;
