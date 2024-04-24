@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
-import { Input } from '@chakra-ui/react'
+import { Input } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
 import { Tooltip } from '@chakra-ui/react';
@@ -551,7 +551,7 @@ const AttendanceRegist = () => {
             </div>
             <div className="modal_input">
               <div className="input_title">기타 값</div>
-              <Select size='md' width='380px' borderRadius='5px'>
+              <Select size='md' width='380px' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
                 <option value=''>선택안함(비워두기)</option>
                 <option value='오전반차' style={{ color: '#FFB800' }}>오전반차</option>
                 <option value='오후반차' style={{ color: '#FFB800' }}>오후반차</option>

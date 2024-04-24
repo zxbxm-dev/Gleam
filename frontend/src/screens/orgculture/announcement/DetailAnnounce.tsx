@@ -83,6 +83,7 @@ const DetailAnnounce = () => {
               </div>
 
               <div className="btn_content">
+                <button onClick={downloadPDF}>다운로드</button>
                 <button onClick={handleWidthIncrease}>+</button>
                 <button onClick={handleWidthDecrease}>-</button>
                 <button className="white_button">삭제</button>
@@ -97,8 +98,6 @@ const DetailAnnounce = () => {
               {renderPages()}
             </Document>
           </div>
-        
-          <button onClick={downloadPDF}>다운로드</button>
 
         </div>
       </div>  
