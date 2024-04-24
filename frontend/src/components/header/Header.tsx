@@ -41,14 +41,14 @@ const Header = () => {
 
       <div className="header-right">  
         <div className="UserTab">
-          <div className="UserInfo">
-            <img src={UserIcon} alt="UserIcon" />
-            <div className="UserName">구민석</div>
-          </div>
           <Popover >
             <PopoverTrigger>
-              <div className="ArrowIcon">
-                <img src={MenuArrow_down} alt="MenuArrow" />
+              <div className="UserInfo">
+                <img src={UserIcon} alt="UserIcon" />
+                <div className="UserName">구민석</div>
+                <div className="ArrowIcon">
+                  <img src={MenuArrow_down} alt="MenuArrow" />
+                </div>
               </div>
             </PopoverTrigger>
             <Portal>

@@ -59,7 +59,7 @@
   .fc .fc-daygrid-day-frame {
     
     &:hover {
-        background-color: #746E58;
+      box-shadow: 0 0 0 3px #746E58 inset;
     }
 }
 

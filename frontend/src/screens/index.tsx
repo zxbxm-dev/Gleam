@@ -24,6 +24,7 @@ export { default as Calendar } from "./calendar/Calendar";
 // 보고서
 export { default as Report } from "./report/Report";
 export { default as TempReportStorage } from "./report/TempReportStorage";
+export { default as WriteReport } from "./report/WriteReport";
 
 // 보고서 결재
 export { default as Approval } from "./approval/Approval";

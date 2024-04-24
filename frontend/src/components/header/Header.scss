@@ -21,6 +21,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
   
       &:hover{
         background-color: var(--base-text-color);
@@ -52,7 +53,7 @@
       width: 150px;
       height: 50px;
       padding-left: 12px;
-      margin-right: 12px;
+      margin-right: 5px;
       border-left: 2px solid #9E9E9E;
       display: flex;
       align-items: center;
@@ -63,6 +64,7 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
+        cursor: pointer;
 
         .UserName {
           color: #fff;

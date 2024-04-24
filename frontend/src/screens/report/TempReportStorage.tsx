@@ -21,9 +21,9 @@ const TempReportStorage = () => {
   return (
     <div className="content">
       <div className="content_header">
-        <div className="main_header">보고서</div>
+        <Link to={"/report"} className="main_header">보고서</Link>
         <div className="main_header">＞</div>
-        <Link to={"/announcement"} className="sub_header">임시저장 파일 보기</Link>
+        <Link to={"/tempReportStorage"} className="sub_header">임시저장 파일 보기</Link>
       </div>
       
       <div className="content_container">
@@ -33,7 +33,7 @@ const TempReportStorage = () => {
           </div>
 
           <div>
-            <table className="board_list">
+            <table className="regulation_board_list">
               <colgroup>
                 <col width="6%"/>
                 <col width="64%"/>
