@@ -26,6 +26,7 @@ const DetailAnnounce = () => {
 
   const downloadPDF = () => {
     const link = document.createElement('a');
+    setFile(testPDF)
     link.href = testPDF;
     link.download = 'test.pdf';
     document.body.appendChild(link);
