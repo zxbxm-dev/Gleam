@@ -69,11 +69,10 @@ const Sidebar = () => {
                 <li className='menu-item'>
                   <Link to="/announcement" className={`menu-link2 ${isOrgCultureMenuOpen ? 'active' : ''}`}
                     onClick={() => {
-                      {
                         toggleOrgCultureMenu();
-                        handleMenuClick('orgculture')
-                      };
-                      setActiveTab('FirstActiveTab');
+                        handleMenuClick('orgculture');
+                        setActiveTab('FirstActiveTab');
+                      ;
                     }}
                   >
                     {isOrgCultureMenuOpen ? (
@@ -138,10 +137,7 @@ const Sidebar = () => {
                 <li className="menu-item">
                   <Link to="/performance-report" className="menu-link2"
                     onClick={() => {
-                      {
-                        togglePerformanceMenu(); handleMenuClick('performance')
-                      };
-                      setActiveTab('SecActiveTab');
+                      togglePerformanceMenu(); handleMenuClick('performance'); setActiveTab('SecActiveTab');
                     }}
                   >
                     <img src={MenuArrow_down} alt="MenuArrow" />
@@ -163,10 +159,7 @@ const Sidebar = () => {
                 <li className="menu-item">
                   <Link to="/annual-manage" className="menu-link2"
                     onClick={() => {
-                      {
-                        toggleAttendanceMenu(); handleMenuClick('attendance');
-                        setActiveTab('ThirdActiveTab');
-                      }
+                      toggleAttendanceMenu(); handleMenuClick('attendance'); setActiveTab('ThirdActiveTab');
                     }}
                   >
                     <img src={MenuArrow_down} alt="MenuArrow" />

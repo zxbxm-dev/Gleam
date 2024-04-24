@@ -150,6 +150,14 @@
   }
 }
 
+.cancle_modal_content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-family: var(--font-family-Noto-B);
+}
+
 .TabKey {
   width: 5%;
 }

@@ -1,9 +1,8 @@
 import "./Report.scss";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
 
 const WriteReport = () => {
-  let navigate = useNavigate();
 
   return (
     <div className="content">

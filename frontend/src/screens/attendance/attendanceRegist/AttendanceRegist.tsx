@@ -539,7 +539,7 @@ const AttendanceRegist = () => {
             <span>{selectedDateInfo.dayOfWeek}</span>
             <span>{selectedDateInfo.name}</span>
           </ModalHeader>
-          <ModalCloseButton color='#fff' />
+          <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
           <ModalBody fontSize='30px' className="modal_content">
             <div className="modal_input">
               <div className="input_title">출근시간</div>
