@@ -140,7 +140,11 @@ const Sidebar = () => {
                       togglePerformanceMenu(); handleMenuClick('performance'); setActiveTab('SecActiveTab');
                     }}
                   >
-                    <img src={MenuArrow_down} alt="MenuArrow" />
+                    {isPerformanceMenuOpen ? (
+                      <img src={MenuArrow_right} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
+                    ) : (
+                      <img src={MenuArrow_down} alt="MenuArrow" />
+                    )}
                     <span className="menu-link-text">인사평가</span>
                   </Link>
                   {isPerformanceMenuOpen && (
@@ -162,7 +166,11 @@ const Sidebar = () => {
                       toggleAttendanceMenu(); handleMenuClick('attendance'); setActiveTab('ThirdActiveTab');
                     }}
                   >
-                    <img src={MenuArrow_down} alt="MenuArrow" />
+                    {isAttendanceMenuOpen ? (
+                      <img src={MenuArrow_right} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
+                    ) : (
+                      <img src={MenuArrow_down} alt="MenuArrow" />
+                    )}
                     <span className="menu-link-text">근태 관리</span>
                   </Link>
                   {isAttendanceMenuOpen && (

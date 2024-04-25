@@ -6,11 +6,21 @@ import { ReactComponent as LastRightIcon } from "../../assets/images/LastRightIc
 import { ReactComponent as FirstLeftIcon } from "../../assets/images/FirstLeftIcon.svg";
 import { Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
-
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react';
 
 
 const TempReportStorage = () => {
   const [page, setPage] = useState<number>(1); 
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const postPerPage: number = 10;
 
@@ -53,7 +63,7 @@ const TempReportStorage = () => {
                   <td>10</td>
                   <td style={{textAlign: 'left', paddingLeft: '20px'}}><Link to={"/detailAnnounce"}>2025년 인사평가 공지</Link></td>
                   <td>2099-99-99 22:22</td>
-                  <td><button className="delete_button">삭제하기</button></td>
+                  <td><button className="delete_button" onClick={onOpen}>삭제하기</button></td>
                 </tr>
                 <tr className="board_content">
                   <td>9</td>
@@ -129,7 +139,22 @@ const TempReportStorage = () => {
           </div>
 
         </div>
-      </div>  
+      </div>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent height='250px' bg='#fff' borderTopRadius='10px'>
+          <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
+          <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
+          <ModalBody className="cancle_modal_content">
+            삭제하시겠습니까?
+          </ModalBody>
+
+          <ModalFooter gap='10px' justifyContent='center'>
+            <button className="del_button">삭제</button>
+            <button className="cle_button">취소</button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

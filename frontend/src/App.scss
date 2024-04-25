@@ -101,6 +101,9 @@ body {
   font-family: var(--font-family-Noto-R);
   font-size: var(--font-size);
   font-weight: var(--font-weight);
+  
+  scrollbar-color: #929292 #fff;
+
   // by default light mode is on
   @include lightMode();
 
