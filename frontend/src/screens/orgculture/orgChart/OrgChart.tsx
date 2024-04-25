@@ -29,6 +29,8 @@ const OrgChart = () => {
               <p className="MenuName">인사 조직도</p>
             </div>
             <Tree lineWidth={'1px'} lineColor={'#D3D3D3'} label={<div className="nodeicon">대표이사</div>}>
+              <TreeNode label={<div className="nodeicon">임원</div>}>
+              </TreeNode>
               <TreeNode label={<div className="nodeicon">관리부</div>}>
                 <TreeNode label={<div className="nodeicon">관리팀</div>}/>
                 <TreeNode label={<div className="nodeicon">지원팀</div>}/>

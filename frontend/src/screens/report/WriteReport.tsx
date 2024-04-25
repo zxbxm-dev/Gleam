@@ -1,8 +1,110 @@
+import React, { useState } from 'react';
 import "./Report.scss";
-import { Link } from "react-router-dom";
+import {
+  FileUploadIcon,
+  UserIcon_dark,
+} from "../../assets/images/index";
+import { useNavigate, Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverCloseButton,
+  Portal,
+} from '@chakra-ui/react';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react';
+
+import HrSidebar from "../../components/sidebar/HrSidebar";
+
+type Member = [string, string, string, string];
 
 const WriteReport = () => {
+  let navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [selectedApproval, setSelectedApproval] = useState('');
+  // HrSidebar에서 멤버를 클릭할 때 호출되는 함수
+  
+  const [approvalLines, setApprovalLines] = useState([
+    { name: '최종결재', checked: false, selectedMember: null as Member | null },
+    { name: '결재라인 1', checked: false, selectedMember: null as Member | null },
+    { name: '결재라인 2', checked: false, selectedMember: null as Member | null },
+    { name: '결재라인 3', checked: false, selectedMember: null as Member | null },
+    { name: '결재라인 4', checked: false, selectedMember: null as Member | null },
+    { name: '결재라인 5', checked: false, selectedMember: null as Member | null },
+    { name: '참조', checked: false, selectedMember: null as Member | null },
+  ]);
+
+  const handleCheckboxChange = (index: number) => {
+    const updatedApprovalLines = [...approvalLines];
+    updatedApprovalLines[index].checked = !updatedApprovalLines[index].checked;
+  
+    if (!updatedApprovalLines[index].checked) {
+      // 체크박스가 해제되면 selectedMember 초기화
+      updatedApprovalLines[index].selectedMember = null;
+    }
+  
+    setSelectedApproval(updatedApprovalLines[index].name);
+    setApprovalLines(updatedApprovalLines);
+  };
+  
+
+  const handleMemberClick = (name: string, dept: string, team: string, position: string, lineName: string) => {
+    // 선택된 멤버 정보를 새로운 Member 배열로 생성
+    const newMember: Member = [name, dept, team, position];
+  
+    // approvalLines 배열을 복사하여 새로운 배열 생성
+    const updatedApprovalLines = [...approvalLines];
+  
+    // lineName에 해당하는 결재 라인의 인덱스 찾기
+    const index = updatedApprovalLines.findIndex(line => line.name === lineName);
+  
+    if (index !== -1) {
+      // 해당 인덱스의 결재 라인의 selectedMember 속성을 새로운 멤버로 업데이트
+      updatedApprovalLines[index].selectedMember = newMember;
+  
+      // 새로운 배열을 상태로 설정
+      setApprovalLines(updatedApprovalLines);
+    } else {
+      console.error(`결재 라인 "${lineName}"을 찾을 수 없습니다.`);
+    }
+  };
+  
+  
+
+  const members: Member[] = [
+    ['이정훈', '포체인스 주식회사', '', '대표'],
+    ['안후상', '포체인스 주식회사', '', '이사'],
+    ['이정열', '관리부', '', '부서장'],
+    ['김효은', '관리부', '관리팀', '팀장'],
+    ['우현지', '관리부', '관리팀', '사원'],
+    ['염승희', '관리부', '관리팀', '사원'],
+    ['김태희', '관리부', '지원팀', '팀장'],
+    ['진유빈', '개발부', '', '부서장'],
+    ['장현지', '개발부', '개발 1팀', '사원'],
+    ['권채림', '개발부', '개발 1팀', '사원'],
+    ['구민석', '개발부', '개발 1팀', '사원'],
+    ['변도일', '개발부', '개발 2팀', '팀장'],
+    ['이로운', '개발부', '개발 2팀', '사원'],
+    ['권상원', '블록체인 사업부', '', '부서장'],
+    ['권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
+    ['김도환', '블록체인 사업부', '블록체인 1팀', '사원'],
+    ['김현지', '마케팅부', '', '부서장'],
+    ['전아름', '마케팅부', '기획팀', '팀장'],
+    ['홍다슬', '마케팅부', '기획팀', '사원'],
+    ['서주희', '마케팅부', '디자인팀', '사원'],
+  ];
 
   return (
     <div className="content">
@@ -18,7 +120,7 @@ const WriteReport = () => {
                 <div className="sub_title">양식 선택</div>
                 <Select size='md' width='380px' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
                   <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>공통보고서</option>
-                  <option value=''>&nbsp;&nbsp; 주간업무일지</option>
+                  <option value='' >&nbsp;&nbsp; 주간업무일지</option>
                   <option value=''>&nbsp;&nbsp; 지출품의서</option>
                   <option value=''>&nbsp;&nbsp; 휴가신청서</option>
 
@@ -42,19 +144,89 @@ const WriteReport = () => {
               </div>
 
               <div className="top_right_content">
-                <button className="approval_button">결제라인 선택</button>
-                <button className="save_button">임시저장</button>
-                <button className="upload_button">파일 업로드</button>
+                <Popover placement="left-start">
+                  <PopoverTrigger>
+                    <button className="approval_button">결제라인 선택</button>
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent width='27vw' height='80vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
+                      <PopoverCloseButton color='white'/>
+                      <PopoverBody display='flex' flexDirection='row' padding= '0px'>
+                        <div style={{width: '13vw', height: '75.8vh', overflowY: 'scroll', scrollbarWidth: 'thin'}}>
+                          <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        </div>
+                        <div style={{width: '14vw', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0'}}>
+                          {approvalLines.map((line, index) => (
+                            <div key={index} className="approval_content">
+                              <div className='approval_line'>
+                                <input
+                                  type="checkbox"
+                                  checked={line.checked}
+                                  onChange={() => handleCheckboxChange(index)}
+                                  className='approval_checkbox'
+                                  id={`check${index}`}
+                                />
+                                <label htmlFor={`check${index}`}>{line.name}</label>
+                              </div>
+                              {line.checked ? (
+                                line.selectedMember ? (
+                                  <div className='approval_name'>
+                                    <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/>
+                                    <div className='name_text'>{line.selectedMember[0]}</div>
+                                    <div className='name_border'></div>
+                                    <div className='name_text'>{line.selectedMember[3]}</div>
+                                  </div>
+                                ) : (
+                                  <div className='approval_checked'>
+                                    <div>&nbsp;</div>
+                                  </div>
+                                )
+                              ) : (
+                                <div className='approval_checked'>
+                                  칸 선택후 좌측 리스트에서<br/>
+                                  결제라인을 선택해주세요
+                                </div>
+                              )}
+                            </div>
+                            ))}
+                          <div>
+                            <button className="second_button">제출</button>
+                            <button className="white_button">취소</button>
+                          </div>
+                        </div>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Portal>
+                </Popover>
+                <button className="save_button" onClick={onOpen}>임시저장</button>
+                <button className="upload_button">
+                  <img src={FileUploadIcon} alt="FileUploadIcon" />
+                  파일 업로드
+                </button>
               </div>
             </div>
 
             <div className="write_btm_container">
-              하단
+              
             </div>
           </div>
         </div>
       </div>  
-      
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent height='250px' bg='#fff' borderTopRadius='10px'>
+          <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
+          <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
+          <ModalBody className="cancle_modal_content">
+            임시저장이 완료되었습니다.
+          </ModalBody>
+
+          <ModalFooter justifyContent='center'>
+            <button className="del_button" onClick={() => {navigate('/tempReportStorage')}}>확인</button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

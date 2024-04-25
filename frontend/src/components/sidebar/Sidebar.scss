@@ -1,3 +1,5 @@
+@import "../../style/mixin";
+
 .sidebar {
   position: fixed;
   left: 0;
@@ -9,7 +11,6 @@
   flex-direction: column;
   z-index: 999;
   transition: var(--default-transition);
-  overflow-y: scroll;
 
   &::-webkit-scrollbar {
     width: 0px;
@@ -172,5 +173,116 @@
 
   .sidebar-menu2{
     margin-top: auto;
+  }
+}
+
+@include desktop {
+  .hrsidebar {
+    font-family: var(--font-family-Noto-M);
+    
+    .department {
+      color: #717171;
+      background-color: #DDDDDD;
+      border-bottom: 1px solid #DCDCDC;
+  
+      .department_name {
+        padding-left: 10px;
+      }
+    }
+    .team {
+      display: flex;
+      align-items: center;
+      color: #717171;
+      background-color: #EEEEEE;
+      border-bottom: 1px solid #DCDCDC;
+      gap: 10px;
+      padding-left: 10px;
+    }
+  
+    .name {
+      display: flex;
+      align-items: center;
+      height: 50px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #ECECEC;
+      color: #000;
+      padding: 0 20px;
+      gap: 8px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #FFF8E0;
+      }
+      
+      .name_img {
+        margin-right: 10px;
+      }
+      
+      .name_text {
+        font-size: 16px;
+      }
+  
+      .name_border {
+        height: 20px;
+        border-right: 1px solid black;
+      }
+    }
+  }
+}
+
+
+@include laptop {
+  .hrsidebar {
+    font-family: var(--font-family-Noto-M);
+    
+    .department {
+      color: #717171;
+      background-color: #DDDDDD;
+      border-bottom: 1px solid #DCDCDC;
+      font-size: 14px;
+  
+      .department_name {
+        padding-left: 10px;
+      }
+    }
+    .team {
+      display: flex;
+      align-items: center;
+      color: #717171;
+      background-color: #EEEEEE;
+      border-bottom: 1px solid #DCDCDC;
+      gap: 10px;
+      padding-left: 10px;
+      font-size: 14px;
+    }
+  
+    .name {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #ECECEC;
+      color: #000;
+      padding: 0 20px;
+      gap: 8px;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: #FFF8E0;
+      }
+      
+      .name_img {
+        margin-right: 10px;
+      }
+      
+      .name_text {
+        font-size: 14px;
+      }
+  
+      .name_border {
+        height: 16px;
+        border-right: 1px solid black;
+      }
+    }
   }
 }
