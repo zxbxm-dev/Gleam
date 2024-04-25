@@ -146,7 +146,7 @@ const WriteReport = () => {
               <div className="top_right_content">
                 <Popover placement="left-start">
                   <PopoverTrigger>
-                    <button className="approval_button">결제라인 선택</button>
+                    <button className="approval_button">결재라인 선택</button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='27vw' height='80vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
