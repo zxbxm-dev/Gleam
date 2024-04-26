@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 
 
-const PerFormReport = () => {
+const ManagePerform = () => {
   
 
   return (
     <div className="content">
       <div className="content_header">
-        <Link to={"/performance-report"} className="sub_header">성과보고서</Link>
+        <Link to={"/submitPerform"} className="sub_header">인사평가 관리</Link>
       </div>
       
       <div className="content_container">
@@ -20,4 +20,4 @@ const PerFormReport = () => {
   );
 };
 
-export default PerFormReport;
+export default ManagePerform;

@@ -56,7 +56,7 @@ const Announcement = () => {
                   <th>등록일</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="board_container">
                 <tr className="board_content">
                   <td style={{color: '#D56D6D'}}>공지</td>
                   <td style={{textAlign: 'left', paddingLeft: '20px'}}><Link to={"/detailAnnounce"}>2025년 인사평가 공지</Link></td>
@@ -111,7 +111,7 @@ const Announcement = () => {
                   <td>567</td>
                   <td>2099-99-99</td>
                 </tr>
-                <tr className="board_content" style={{borderBottom: '2px solid #DCDCDC'}}>
+                <tr className="board_content">
                   <td style={{color: '#D56D6D'}}>공지</td>
                   <td style={{textAlign: 'left', paddingLeft: '20px'}}>2024년 사내 워크숍</td>
                   <td>567</td>
@@ -133,9 +133,8 @@ const Announcement = () => {
                 lastPageText={<LastRightIcon />}
                 onChange={handlePageChange}
               />
-
-              <button className="primary_button" onClick={() => {navigate("/writeAnnounce")}}>게시물 작성</button>
             </div>
+            <button className="primary_button" onClick={() => {navigate("/writeAnnounce")}}>게시물 작성</button>
           </div>
 
         </div>

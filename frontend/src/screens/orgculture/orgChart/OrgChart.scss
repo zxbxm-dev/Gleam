@@ -4,15 +4,17 @@
   .FC_logo {
     position: relative;
     top: -80px;
-    width: 140px;
+    right: -70px;
+    width: 135px;
     
     .Logoimg {
-      width: 130px;
+      width: 135px;
     }
 
     .MenuName {
       font-family: var(--font-family-Noto-M);
-      font-size: 28px;
+      font-size: 26px;
+      width: 135px;
       color: #DEDEDE;
     }
     .MenuName2 {
@@ -25,21 +27,23 @@
   .FC_logo2 {
     position: relative;
     top: -80px;
-    left: -75px;
+    left: -70px;
     width: 140px;
     
     .Logoimg {
-      width: 130px;
+      width: 140px;
     }
 
     .MenuName {
       font-family: var(--font-family-Noto-M);
-      font-size: 24px;
+      font-size: 26px;
+      width: 140px;
       color: #DEDEDE;
     }
     .MenuName2 {
       font-family: var(--font-family-Noto-M);
-      font-size: 22px;
+      font-size: 21px;
+      width: 140px;
       color: #DEDEDE;
     }
   }

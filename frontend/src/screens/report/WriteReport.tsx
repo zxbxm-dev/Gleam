@@ -6,6 +6,10 @@ import {
 } from "../../assets/images/index";
 import { useNavigate, Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
+import HrSidebar from "../../components/sidebar/HrSidebar";
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 import {
   Popover,
   PopoverTrigger,
@@ -26,15 +30,63 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 
-import HrSidebar from "../../components/sidebar/HrSidebar";
-
 type Member = [string, string, string, string];
+
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.js',
+  import.meta.url,
+).toString();
+
+type PDFFile = string | File | null;
 
 const WriteReport = () => {
   let navigate = useNavigate();
+  const [file, setFile] = useState<PDFFile>('');
+  const [numPages, setNumPages] = useState<number>(0);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedApproval, setSelectedApproval] = useState('');
   // HrSidebar에서 멤버를 클릭할 때 호출되는 함수
+  
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
+
+  // 전체 페이지 렌더링 함수
+  const renderPages = () => {
+    const pages = [];
+    for (let i = 1; i <= numPages; i++) {
+      pages.push(
+        <Page 
+          key={`page_${i}`}
+          pageNumber={i} 
+          width={1000}
+        />
+      );
+    }
+    return pages;
+  };
+
+  // 파일 선택 핸들러
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+    }
+  };
+
+  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const droppedFile = event.dataTransfer.files[0];
+    console.log(droppedFile)
+    if (droppedFile) {
+      setFile(droppedFile);
+    }
+  };
+  
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
   
   const [approvalLines, setApprovalLines] = useState([
     { name: '최종결재', checked: false, selectedMember: null as Member | null },
@@ -120,9 +172,15 @@ const WriteReport = () => {
                 <div className="sub_title">양식 선택</div>
                 <Select size='md' width='380px' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
                   <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>공통보고서</option>
-                  <option value='' >&nbsp;&nbsp; 주간업무일지</option>
+                  <option value=''>&nbsp;&nbsp; 주간업무일지</option>
                   <option value=''>&nbsp;&nbsp; 지출품의서</option>
                   <option value=''>&nbsp;&nbsp; 휴가신청서</option>
+
+                  <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>기타</option>
+                  <option value=''>&nbsp;&nbsp; 시말서</option>
+                  <option value=''>&nbsp;&nbsp; 사직서</option>
+                  <option value=''>&nbsp;&nbsp; 휴직원</option>
+                  <option value=''>&nbsp;&nbsp; 복직원</option>
 
                   <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>워크숍</option>
                   <option value=''>&nbsp;&nbsp; 워크숍 신청서</option>
@@ -134,12 +192,8 @@ const WriteReport = () => {
                   <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>기획서</option>
                   <option value=''>&nbsp;&nbsp; 기획서</option>
                   <option value=''>&nbsp;&nbsp; 최종보고서</option>
+                  <option value=''>&nbsp;&nbsp; 프로젝트 기획서</option>
 
-                  <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>기타</option>
-                  <option value=''>&nbsp;&nbsp; 시말서</option>
-                  <option value=''>&nbsp;&nbsp; 사직서</option>
-                  <option value=''>&nbsp;&nbsp; 휴직원</option>
-                  <option value=''>&nbsp;&nbsp; 복직원</option>
                 </Select>
               </div>
 
@@ -166,8 +220,9 @@ const WriteReport = () => {
                                   onChange={() => handleCheckboxChange(index)}
                                   className='approval_checkbox'
                                   id={`check${index}`}
+                                  style={{cursor: 'pointer'}}
                                 />
-                                <label htmlFor={`check${index}`}>{line.name}</label>
+                                <label htmlFor={`check${index}`} style={{cursor: 'pointer'}}>{line.name}</label>
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
@@ -190,7 +245,7 @@ const WriteReport = () => {
                               )}
                             </div>
                             ))}
-                          <div>
+                          <div className='button-wrap'>
                             <button className="second_button">제출</button>
                             <button className="white_button">취소</button>
                           </div>
@@ -201,14 +256,47 @@ const WriteReport = () => {
                 </Popover>
                 <button className="save_button" onClick={onOpen}>임시저장</button>
                 <button className="upload_button">
-                  <img src={FileUploadIcon} alt="FileUploadIcon" />
-                  파일 업로드
+                  <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileChange}
+                      style={{ display: 'none' }}
+                    />
+                    <img src={FileUploadIcon} alt="FileUploadIcon" />
+                    파일 업로드
+                  </label>
                 </button>
               </div>
             </div>
 
             <div className="write_btm_container">
-              
+              { file ? (
+                <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                  {renderPages()}
+                </Document>
+              ) : (
+                <div
+                  className="upload-area"
+                  onDrop={handleFileDrop}
+                  onDragOver={handleDragOver}
+                >
+                  <div className='upload-text-top'>
+                    <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
+                      <input
+                        id="file-upload"
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileChange}
+                        style={{ display: 'none' }}
+                      />
+                      파일 첨부하기 +
+                    </label>
+                  </div>
+                  <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
+                </div>
+              )}
             </div>
           </div>
         </div>
