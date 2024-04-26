@@ -225,38 +225,38 @@ const Employment = () => {
                 onChange={handlePageChange}
               />
 
-              <Popover placement="left-start">
-                <PopoverTrigger>
-                  <button className="primary_button">게시물 작성</button>
-                </PopoverTrigger>
-                <Portal>
-                  <PopoverContent width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                    <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 등록하기</PopoverHeader>
-                    <PopoverCloseButton color='white'/>
-                    <PopoverBody display='flex' flexDirection='column' alignItems='center'>
-                      <div style={{width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px'}}>
-                        <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
-                          <div style={{width: '80px', textAlign: 'right'}}>공고제목</div>
-                          <Input placeholder='ex) 디자인 채용공고' size='sm' />
-                        </div>
-                        <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
-                          <div style={{width: '80px', textAlign: 'right'}}>링크</div>
-                          <Input placeholder='내용을 입력해주세요.' size='sm' />
-                        </div>
-                        <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
-                          <div style={{width: '80px', textAlign: 'right'}}>사이트명</div>
-                          <Input placeholder='내용을 입력해주세요.' size='sm' />
-                        </div>
-                      </div>
-                      <div style={{display: 'flex', gap: '10px'}}>
-                        <button style={{width: '70px', height: '35px', color: '#fff', backgroundColor: '#746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>등록</button>
-                        <button style={{width: '70px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>취소</button>
-                      </div>
-                    </PopoverBody>
-                  </PopoverContent>
-                </Portal>
-              </Popover>
             </div>
+            <Popover placement="left-start">
+              <PopoverTrigger>
+                <button className="primary_button">게시물 작성</button>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                  <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 등록하기</PopoverHeader>
+                  <PopoverCloseButton color='white'/>
+                  <PopoverBody display='flex' flexDirection='column' alignItems='center'>
+                    <div style={{width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px'}}>
+                      <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                        <div style={{width: '80px', textAlign: 'right'}}>공고제목</div>
+                        <Input placeholder='ex) 디자인 채용공고' size='sm' />
+                      </div>
+                      <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                        <div style={{width: '80px', textAlign: 'right'}}>링크</div>
+                        <Input placeholder='내용을 입력해주세요.' size='sm' />
+                      </div>
+                      <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                        <div style={{width: '80px', textAlign: 'right'}}>사이트명</div>
+                        <Input placeholder='내용을 입력해주세요.' size='sm' />
+                      </div>
+                    </div>
+                    <div style={{display: 'flex', gap: '10px'}}>
+                      <button style={{width: '70px', height: '35px', color: '#fff', backgroundColor: '#746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>등록</button>
+                      <button style={{width: '70px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>취소</button>
+                    </div>
+                  </PopoverBody>
+                </PopoverContent>
+              </Portal>
+            </Popover>
           </div>
         </div>
       </div>  

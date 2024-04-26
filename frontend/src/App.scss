@@ -515,6 +515,9 @@ ul {
       font-family: var(--font-family-Noto-B);
       font-size: 16px;
       color: #746E58;
+      position: fixed;
+      bottom: 5%;
+      left: 89%;
     }
     .second_button {
       width: 80px;
@@ -547,6 +550,26 @@ ul {
       font-family: var(--font-family-Noto-B);
       font-size: 16px;
       color: #D56D6D;
+    }
+    .approval_button {
+      width: 100px;
+      height: 33px;
+      background-color: #746E58;
+      border: 1px solid #746E58;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: var(--font-family-Noto-B);
+      color: #fff;
+    }
+    .document_button {
+      width: 100px;
+      height: 33px;
+      background-color: #fff;
+      border: 1px solid #746E58;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: var(--font-family-Noto-B);
+      color: #746E58;
     }
   }
 }
