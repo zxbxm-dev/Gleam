@@ -142,18 +142,24 @@
   
     .board_content {
       font-family: var(--font-family-Noto-R);
-      height: 44px;
+      height: 48px;
       font-size: 17px;
       border-top: 1px solid #DCDCDC;
+      border-bottom: 1px solid #DCDCDC;
       text-align: center;
     }
   }
   
   .main_bottom {
-    font-family: var(--font-family-Noto-R);
     display: flex;
-    justify-content: space-between;
-    margin: 5px 10px;
+    align-items: center;
+    width: 80%;
+    height: 15%;
+    font-family: var(--font-family-Noto-R);
+    position: fixed;
+    bottom: 0;
+    left: 53.5%;
+    transform: translateX(-50%);
   }
 
   .announce_main_bottom {

@@ -132,7 +132,7 @@ const Sidebar = () => {
                   </Link>
                 </li>
                 <li className="menu-item">
-                  <Link to="/performance-report" className="menu-link2"
+                  <Link to="/submit-perform" className="menu-link2"
                     onClick={() => {
                       togglePerformanceMenu(); handleMenuClick('performance'); setActiveTab('SecActiveTab');
                     }}
