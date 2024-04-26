@@ -28,16 +28,14 @@ export { default as WriteReport } from "./report/WriteReport";
 
 // 보고서 결재
 export { default as Approval } from "./approval/Approval";
+export { default as DetailApproval } from "./approval/DetailApproval";
 
 // 채용 공고
 export { default as Employment } from "./employment/Employment";
 
 // 인사 평가
-export { default as PerFormReport } from "./performance/performReport/PerFormReport";
-export { default as MemberEval } from "./performance/memberEval/MemberEval";
-export { default as ReaderEval } from "./performance/readerEval/ReaderEval";
-export { default as SelfAssessment } from "./performance/selfAssessment/SelfAssessment";
-export { default as FinalResult } from "./performance/finalResult/FinalResult";
+export { default as SubmitPerform } from "./performance/submitPerform/SubmitPerform"
+export { default as ManagePerform } from "./performance/managePerform/ManagePerform"
 
 // 인사 정보 관리
 export { default as HumanResource } from "./humanResource/HumanResource";

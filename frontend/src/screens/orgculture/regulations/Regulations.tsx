@@ -98,7 +98,7 @@ const Regulations = () => {
                   <td style={{textAlign: 'left', paddingLeft: '20px'}}>취업 규칙</td>
                   <td>2099-99-99</td>
                 </tr>
-                <tr className="board_content" style={{borderBottom: '2px solid #DCDCDC'}}>
+                <tr className="board_content">
                   <td>10</td>
                   <td style={{textAlign: 'left', paddingLeft: '20px'}}>취업 규칙</td>
                   <td>2099-99-99</td>
@@ -120,8 +120,8 @@ const Regulations = () => {
                 onChange={handlePageChange}
               />
 
-              <button className="primary_button" onClick={() => {navigate("/writeRegulation")}}>게시물 작성</button>
             </div>
+            <button className="primary_button" onClick={() => {navigate("/writeRegulation")}}>게시물 작성</button>
           </div>
 
         </div>

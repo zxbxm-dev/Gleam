@@ -27,11 +27,8 @@ const Sidebar = () => {
         setIsOrgCultureMenuOpen(false);
     }
     if (menu !== 'performance' &&
-      menu !== 'performance-report' &&
-      menu !== 'member-evaluation' &&
-      menu !== 'reader-evaluation' &&
-      menu !== 'self-assessment' &&
-      menu !== 'final-result'
+      menu !== 'submit-perform' &&
+      menu !== 'manage-perform' 
     ) {
       setIsPerformanceMenuOpen(false);
     }
@@ -149,8 +146,11 @@ const Sidebar = () => {
                   </Link>
                   {isPerformanceMenuOpen && (
                     <ul className="menu-list">
-                      <li className={`sub-menu menu-item ${selectedMenu === 'final-result' || activeTab === "SecActiveTab" ? 'active' : ''}`}>
-                        <Link to="/final-result" className='menu-link' onClick={() => handleMenuClick('final-result')}>최종 결과 확인(관리팀장)</Link>
+                      <li className={`sub-menu menu-item ${selectedMenu === 'submit-perform' || activeTab === "SecActiveTab" ? 'active' : ''}`}>
+                        <Link to="/submit-perform" className='menu-link' onClick={() => handleMenuClick('submit-perform')}>인사평가 제출</Link>
+                      </li>
+                      <li className={`sub-menu menu-item ${selectedMenu === 'manage-perform' ? 'active' : ''}`}>
+                        <Link to="/manage-perform" className='menu-link' onClick={() => handleMenuClick('manage-perform')}>인사평가 관리</Link>
                       </li>
                     </ul>
                   )}

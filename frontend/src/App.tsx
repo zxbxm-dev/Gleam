@@ -20,12 +20,10 @@ import {
   WriteReport,
   TempReportStorage,
   Approval,
+  DetailApproval,
   Employment,
-  PerFormReport,
-  MemberEval,
-  ReaderEval,
-  SelfAssessment,
-  FinalResult,
+  SubmitPerform,
+  ManagePerform,
   HumanResource,
   AnnualManage,
   AttendanceRegist,
@@ -65,16 +63,15 @@ function App() {
 
             {/* 보고서 결재 */}
             <Route path="/approval" element={<Approval />} />
+            <Route path="/detailApproval" element={<DetailApproval />} />
             
             {/* 채용공고 */}
             <Route path="/employment" element={<Employment />} />
 
             {/* 인사평가 */}
-            <Route path="/performance-report" element={<PerFormReport />} />
-            <Route path="/member-evaluation" element={<MemberEval />} />
-            <Route path="/reader-evaluation" element={<ReaderEval />} />
-            <Route path="/self-assessment" element={<SelfAssessment />} />
-            <Route path="/final-result" element={<FinalResult />} />
+            <Route path="/submit-perform" element={<SubmitPerform />} />
+            <Route path="/manage-perform" element={<ManagePerform />} />
+
 
             {/* 인사 정보 관리 */}
             <Route path="/human-resources" element={<HumanResource />} />
