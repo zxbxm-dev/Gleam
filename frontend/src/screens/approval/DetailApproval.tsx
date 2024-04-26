@@ -106,12 +106,12 @@ const DetailApproval = () => {
                       <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center'}}>
                           <div style={{display: 'flex', gap: '10px'}}>
-                            <div style={{width: '4vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려자</div>
+                            <div style={{width: '6vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려자</div>
                             <div style={{color: '#323232', fontFamily: 'var(--font-family-Noto-M)'}}>김효은 팀장</div>
                           </div>
                           <div style={{display: 'flex', gap: '10px'}}>
-                            <div style={{width: '4vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려 사유</div>
-                            <Textarea placeholder='내용을 입력해주세요.' size='sm' width='19vw' height='15vh' fontFamily='var(--font-family-Noto-R)'/>
+                            <div style={{width: '6vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려 사유</div>
+                            <Textarea placeholder='내용을 입력해주세요.' size='sm' width='17vw' height='15vh' fontFamily='var(--font-family-Noto-R)'/>
                           </div>
                         </div>
                         <div className='button-wrap'>
