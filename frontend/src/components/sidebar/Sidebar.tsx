@@ -6,10 +6,12 @@ import {
 } from "../../assets/images/index";
 import { Link } from "react-router-dom";
 import { useRecoilState } from 'recoil';
-import { isSidebarVisibleState } from '../../recoil/atoms';
+import { isSidebarVisibleState, isHrSidebarVisibleState } from '../../recoil/atoms';
 
 const Sidebar = () => {
   const [isSidebarVisible] = useRecoilState(isSidebarVisibleState);
+  const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
+
   const [isOrgCultureMenuOpen, setIsOrgCultureMenuOpen] = useState(false);
   const [isPerformanceMenuOpen, setIsPerformanceMenuOpen] = useState(false);
   const [isAttendanceMenuOpen, setIsAttendanceMenuOpen] = useState(false);
@@ -38,6 +40,8 @@ const Sidebar = () => {
     ) {
       setIsAttendanceMenuOpen(false);
     }
+
+    setIsHrSidebarVisible(false);
   };
 
   const toggleOrgCultureMenu = () => {
@@ -54,6 +58,10 @@ const Sidebar = () => {
     setIsAttendanceMenuOpen(!isAttendanceMenuOpen);
     setIsOrgCultureMenuOpen(false);
     setIsPerformanceMenuOpen(false);
+  };
+
+  const handleHrSideClick = () => {
+    setIsHrSidebarVisible(!isHrSidebarVisible);
   };
 
   return (
@@ -150,13 +158,13 @@ const Sidebar = () => {
                         <Link to="/submit-perform" className='menu-link' onClick={() => handleMenuClick('submit-perform')}>인사평가 제출</Link>
                       </li>
                       <li className={`sub-menu menu-item ${selectedMenu === 'manage-perform' ? 'active' : ''}`}>
-                        <Link to="/manage-perform" className='menu-link' onClick={() => { handleMenuClick('manage-perform'); setActiveTab(""); }}>인사평가 관리</Link>
+                        <Link to="/manage-perform" className='menu-link' onClick={() => { handleMenuClick('manage-perform'); setActiveTab(""); handleHrSideClick(); }}>인사평가 관리</Link>
                       </li>
                     </ul>
                   )}
                 </li>
                 <li className={`menu-item ${selectedMenu === 'human-resources' ? 'active' : ''}`}>
-                  <Link to="/human-resources" className="menu-link" onClick={() => handleMenuClick('human-resources')}>
+                  <Link to="/human-resources" className="menu-link" onClick={() => { handleMenuClick('human-resources'); handleHrSideClick();}}>
                     <span className="menu-link-text">인사 정보 관리</span>
                   </Link>
                 </li>

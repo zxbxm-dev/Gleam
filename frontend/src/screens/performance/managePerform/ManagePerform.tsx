@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 
-
 const ManagePerform = () => {
-  
 
   return (
     <div className="content">
