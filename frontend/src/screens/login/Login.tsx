@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import {
   Login_Logo,
 } from "../../assets/images/index";
-import { useRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { Input } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
 
 type Member = [string, string, string, string, string, string];
 

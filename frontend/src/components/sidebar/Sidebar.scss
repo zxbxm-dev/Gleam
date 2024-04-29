@@ -176,6 +176,72 @@
   }
 }
 
+.memberSidebar {
+  font-family: var(--font-family-Noto-M);
+  position: fixed;
+  left: 250px;
+  top: 50px;
+  width: 250px;
+  height: calc(100% - 50px);
+  background-color: var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  overflow-y: scroll;
+  transition: var(--default-transition);
+  scrollbar-width: thin;
+
+  .department {
+    color: #717171;
+    background-color: #DDDDDD;
+    border-bottom: 1px solid #DCDCDC;
+    font-size: 14px;
+
+    .department_name {
+      padding-left: 10px;
+    }
+  }
+  .team {
+    display: flex;
+    align-items: center;
+    color: #717171;
+    background-color: #EEEEEE;
+    border-bottom: 1px solid #DCDCDC;
+    gap: 10px;
+    padding-left: 10px;
+    font-size: 14px;
+  }
+
+  .name {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ECECEC;
+    color: #000;
+    padding: 0 20px;
+    gap: 8px;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #FFF8E0;
+    }
+    
+    .name_img {
+      margin-right: 10px;
+    }
+    
+    .name_text {
+      font-size: 14px;
+    }
+
+    .name_border {
+      height: 16px;
+      border-right: 1px solid black;
+    }
+  }
+}
+
 @include desktop {
   .hrsidebar {
     font-family: var(--font-family-Noto-M);
