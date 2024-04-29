@@ -1,5 +1,9 @@
 import "./Announcement.scss";
 import { useState } from 'react';
+import {
+  Plus_btn,
+  Minus_btn,
+} from "../../../assets/images/index";
 import { useNavigate, Link } from "react-router-dom";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -84,10 +88,10 @@ const DetailAnnounce = () => {
               </div>
 
               <div className="btn_content">
-                <button onClick={downloadPDF}>다운로드</button>
-                <button onClick={handleWidthIncrease}>+</button>
-                <button onClick={handleWidthDecrease}>-</button>
-                <button className="white_button">삭제</button>
+                <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn"/></button>
+                <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn"/></button>
+                <button className="red_button">삭제</button>
+                <button className="download_button" onClick={downloadPDF}>다운로드</button>
                 <button className="white_button">수정</button>
                 <button className="second_button" onClick={() => navigate("/announcement")}>목록</button>
               </div>

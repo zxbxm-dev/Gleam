@@ -13,7 +13,7 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
-import { Textarea } from '@chakra-ui/react'
+import { Textarea } from '@chakra-ui/react';
 
 import testPDF from '../../assets/pdf/[서식-A101]주간업무일지.pdf';
 

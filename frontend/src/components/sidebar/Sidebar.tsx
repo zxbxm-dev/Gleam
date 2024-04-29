@@ -150,7 +150,7 @@ const Sidebar = () => {
                         <Link to="/submit-perform" className='menu-link' onClick={() => handleMenuClick('submit-perform')}>인사평가 제출</Link>
                       </li>
                       <li className={`sub-menu menu-item ${selectedMenu === 'manage-perform' ? 'active' : ''}`}>
-                        <Link to="/manage-perform" className='menu-link' onClick={() => handleMenuClick('manage-perform')}>인사평가 관리</Link>
+                        <Link to="/manage-perform" className='menu-link' onClick={() => { handleMenuClick('manage-perform'); setActiveTab(""); }}>인사평가 관리</Link>
                       </li>
                     </ul>
                   )}
