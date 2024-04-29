@@ -24,6 +24,7 @@ import {
   DetailApproval,
   Employment,
   SubmitPerform,
+  DetailSubmit,
   ManagePerform,
   HumanResource,
   AnnualManage,
@@ -79,6 +80,7 @@ function App() {
 
             {/* 인사평가 */}
             <Route path="/submit-perform" element={<SubmitPerform />} />
+            <Route path="/detailSubmit" element={<DetailSubmit />} />
             <Route path="/manage-perform" element={ userInfo.team === '관리팀' ? <ManagePerform /> : <PageNotFound />} />
 
 
