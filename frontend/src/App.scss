@@ -192,7 +192,7 @@ ul {
       height: 80%;
       
       .tab_container {
-        height: 705px;
+        height: 779px;
       }
 
       .css-a5mhaz {
@@ -335,6 +335,17 @@ ul {
       font-family: var(--font-family-Noto-B);
       color: #746E58;
     }
+    .red_button {
+      width: 80px;
+      height: 40px;
+      background-color: #fff;
+      border: 1px solid #D56D6D;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+      font-family: var(--font-family-Noto-B);
+      color: #D56D6D;
+    }
     .delete_button {
       width: 110px;
       height: 40px;
@@ -364,6 +375,18 @@ ul {
       font-family: var(--font-family-Noto-B);
       color: #746E58;
     }
+    .download_button {
+      width: 100px;
+      height: 40px;
+      background-color: #fff;
+      border: 1px solid #746E58;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+      font-family: var(--font-family-Noto-B);
+      color: #746E58;
+    }
+
   }
 }
 

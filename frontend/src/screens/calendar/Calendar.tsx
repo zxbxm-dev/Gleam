@@ -13,7 +13,9 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
+import { Select } from '@chakra-ui/react';
+import { Textarea } from '@chakra-ui/react';
 
 
 const Calendar = () => {
@@ -98,12 +100,23 @@ const Calendar = () => {
       </div>  
       <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl'>
         <ModalOverlay />
-        <ModalContent height='400px' borderRadius='10px'>
-          <ModalHeader height='55px' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='10px'>일정 등록하기</ModalHeader>
+        <ModalContent height='40vh' borderRadius='10px'>
+          <ModalHeader height='6vh' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='10px'>일정 등록하기</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody display='flex' flexDirection='column' gap='10px' fontFamily='var(--font-family-Noto-M)'>
             <div>
-              제목
+              <div>
+                <Select size='md' width='5vw' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
+                  <option value='반차' style={{ color: '#FFB800' }}>반차</option>
+                  <option value='연차' style={{ color: '#0D994D' }}>연차</option>
+                  <option value='외근' style={{ color: '#7000C9' }}>외근</option>
+                  <option value='워크숍' style={{ color: '#3DC6C6' }}>워크숍</option>
+                  <option value='출장' style={{ color: '#FF4747' }}>출장</option>
+                </Select>
+              </div>
+              <div>
+
+              </div>
             </div>
             <div>
               기간

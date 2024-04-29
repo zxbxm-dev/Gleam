@@ -31,7 +31,6 @@ const names = [
 const AttendanceRegist = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
     name: string | null;
     year: number | null;
@@ -47,22 +46,22 @@ const AttendanceRegist = () => {
   });
 
   const currentMonthIndex = new Date().getMonth(); // 현재 월 인덱스
-
+  
   // 시작 월과 끝 월 계산
-  const startMonthIndex = Math.max(currentMonthIndex - 1, 0); // 현재 월에서 1개월 전
   const endMonthIndex = Math.min(currentMonthIndex + 1, 11); // 현재 월에서 1개월 후
-
+  
   // 시작 월부터 끝 월 정보
   const selectedMonths = [];
-  for (let monthIndex = startMonthIndex; monthIndex <= endMonthIndex; monthIndex++) {
+  for (let monthIndex = currentMonthIndex; monthIndex <= endMonthIndex; monthIndex++) {
     selectedMonths.push(months[monthIndex]);
   }
-
- // 선택된 월에 대한 yearData 생성
+  
+  // 선택된 월에 대한 yearData 생성
+  const selectedYear = new Date().getFullYear();
   const yearData = selectedMonths.map(month => {
-  const currentYear = selectedYear;
-  const monthIndex = months.findIndex(item => item === month);
-
+    const currentYear = selectedYear;
+    const monthIndex = months.findIndex(item => item === month);
+    
   // 월별 날짜 계산
   const firstDayOfMonth = new Date(currentYear, monthIndex, 1);
   const lastDayOfMonth = new Date(currentYear, monthIndex + 1, 0);
@@ -131,24 +130,24 @@ const AttendanceRegist = () => {
   };
 
   const virtualData = [
-    ['권상원', '2024-3-1', ['14:00', '17:00', '오전반차']],
-    ['권상원', '2024-3-4', ['10:00', '17:00', '연차']],
-    ['권상원', '2024-3-5', ['10:00', '17:00', '재택']],
-    ['권상원', '2024-3-6', ['10:05', '14:00', '오후반차']],
-    ['권상원', '2024-3-7', ['10:30', '17:00', '']],
-    ['권상원', '2024-3-8', ['10:10', '17:00', '']],
-    ['권상원', '2024-3-11', ['11:20', '17:00', '']],
-    ['김도환', '2024-3-1', ['10:30', '17:00', '연차']],
-    ['권준우', '2024-3-4', ['10:00', '17:00', '당일반차']],
-    ['진유빈', '2024-3-5', ['10:00', '17:00', '재택']],
-    ['권상원', '2024-4-1', ['10:00', '17:00', '반차']],
+    ['권상원', '2024-4-1', ['14:00', '17:00', '오전반차']],
+    ['권상원', '2024-4-2', ['10:00', '17:00', '연차']],
+    ['권상원', '2024-4-3', ['10:00', '17:00', '재택']],
+    ['권상원', '2024-4-4', ['10:05', '14:00', '오후반차']],
+    ['권상원', '2024-4-5', ['10:30', '17:00', '']],
+    ['권상원', '2024-4-8', ['10:10', '17:00', '']],
+    ['권상원', '2024-4-9', ['11:20', '17:00', '']],
     ['김도환', '2024-4-1', ['10:30', '17:00', '연차']],
-    ['권준우', '2024-4-2', ['10:00', '17:00', '당일반차']],
-    ['진유빈', '2024-4-2', ['10:00', '17:00', '재택']],
+    ['권준우', '2024-4-4', ['10:00', '17:00', '당일반차']],
+    ['진유빈', '2024-4-5', ['10:00', '17:00', '재택']],
     ['권상원', '2024-5-1', ['10:00', '17:00', '반차']],
     ['김도환', '2024-5-1', ['10:30', '17:00', '연차']],
     ['권준우', '2024-5-2', ['10:00', '17:00', '당일반차']],
     ['진유빈', '2024-5-2', ['10:00', '17:00', '재택']],
+    ['권상원', '2024-5-3', ['10:00', '17:00', '반차']],
+    ['김도환', '2024-5-3', ['10:30', '17:00', '연차']],
+    ['권준우', '2024-5-3', ['10:00', '17:00', '당일반차']],
+    ['진유빈', '2024-5-3', ['10:00', '17:00', '재택']],
   ];
 
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
@@ -401,11 +400,6 @@ const AttendanceRegist = () => {
     );
   };
 
-  // 년도 변경
-  const handleYearChange = (event: any) => {
-    setSelectedYear(parseInt(event.target.value));
-  };
-
   const handleDivClick = (date: number, year: number, month: number, personIndex: number) => {
     onOpen();
     const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
@@ -428,9 +422,6 @@ const AttendanceRegist = () => {
         <div className="main_header">근태관리</div>
         <div className="main_header">＞</div>
         <Link to={"/attendance-regist"} className="sub_header">출근부</Link>
-        <Select width='120px' value={selectedYear} onChange={handleYearChange} position='absolute' top='5px' right='20px' bg='#EEEEEE'>
-          <option value={2024}>2024년</option>
-        </Select>
       </div>
 
       <div className="content_container">
@@ -555,7 +546,7 @@ const AttendanceRegist = () => {
                 <option value=''>선택안함(비워두기)</option>
                 <option value='오전반차' style={{ color: '#FFB800' }}>오전반차</option>
                 <option value='오후반차' style={{ color: '#FFB800' }}>오후반차</option>
-                <option value='당일반차' style={{ color: '#5162FF' }}>당일반차</option> 
+                <option value='무급휴가' style={{ color: '#5162FF' }}>무급휴가</option> 
                 <option value='연차' style={{ color: '#0D994D' }}>연차</option>
                 <option value='재택' style={{ color: '#7000C9' }}>재택</option>
                 <option value='서울출근' style={{ color: '#3DC6C6' }}>서울출근</option>

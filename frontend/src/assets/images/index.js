@@ -7,6 +7,8 @@ export { default as LastRightIcon } from "./LastRightIcon.svg";
 export { default as FirstLeftIcon } from "./FirstLeftIcon.svg";
 export { default as DeleteIcon } from "./DeleteIcon.svg";
 export { default as FileUploadIcon } from "./FileUploadIcon.svg";
+export { default as Plus_btn } from "./Plus_btn.svg";
+export { default as Minus_btn } from "./Minus_btn.svg";
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";
