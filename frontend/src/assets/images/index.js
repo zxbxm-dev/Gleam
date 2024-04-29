@@ -9,6 +9,8 @@ export { default as DeleteIcon } from "./DeleteIcon.svg";
 export { default as FileUploadIcon } from "./FileUploadIcon.svg";
 export { default as Plus_btn } from "./Plus_btn.svg";
 export { default as Minus_btn } from "./Minus_btn.svg";
+export { default as Login_Logo } from "./Login_Logo.svg";
+
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";
