@@ -14,8 +14,7 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Select } from '@chakra-ui/react';
-import { Textarea } from '@chakra-ui/react';
+import { Select, Textarea, Input } from '@chakra-ui/react';
 
 
 const Calendar = () => {
@@ -103,10 +102,10 @@ const Calendar = () => {
         <ModalContent height='40vh' borderRadius='10px'>
           <ModalHeader height='6vh' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='10px'>일정 등록하기</ModalHeader>
           <ModalCloseButton />
-          <ModalBody display='flex' flexDirection='column' gap='10px' fontFamily='var(--font-family-Noto-M)'>
-            <div>
+          <ModalBody display='flex' flexDirection='column' gap='15px' fontFamily='var(--font-family-Noto-M)'>
+            <div style={{display: 'flex', gap: '10px'}}>
               <div>
-                <Select size='md' width='5vw' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
+                <Select size='sm' width='4vw' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
                   <option value='반차' style={{ color: '#FFB800' }}>반차</option>
                   <option value='연차' style={{ color: '#0D994D' }}>연차</option>
                   <option value='외근' style={{ color: '#7000C9' }}>외근</option>
@@ -115,14 +114,24 @@ const Calendar = () => {
                 </Select>
               </div>
               <div>
+                <Input size='sm' width='22vw' placeholder='ex) OOO 반차' />
+              </div>
+            </div>
+            <div style={{display: 'flex', gap: '10px'}}>
+              <div style={{width: '4vw', textAlign: 'right'}}>
+                기간
+              </div>
+              <div>
 
               </div>
             </div>
-            <div>
-              기간
-            </div>
-            <div>
-              메모
+            <div style={{display: 'flex', gap: '10px'}}>
+              <div style={{width: '4vw', textAlign: 'right'}}>
+                메모
+              </div>
+              <div>
+                <Textarea placeholder='내용을 입력해주세요.' size='sm' width='22vw' height='15vh' fontFamily='var(--font-family-Noto-R)'/>
+              </div>
             </div>
           </ModalBody>
           <ModalFooter gap='10px' display='flex' justifyContent='center'>

@@ -2,6 +2,7 @@ import "./App.scss";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BaseLayout from "./layout/BaseLayout";
 import { 
+  Login,
   ActivityManage,
   WriteActivityManage,
   Announcement,
@@ -29,11 +30,19 @@ import {
   AttendanceRegist,
   PageNotFound } from "./screens";
 
+import { useRecoilState } from 'recoil';
+import { userState } from './recoil/atoms';
+
 function App() {
+
+  const [userInfo] = useRecoilState(userState);
+  console.log(userInfo);
   return (
     <>
       <Router>
         <Routes>
+          <Route path="*" element={<Login />} />
+
           <Route element={<BaseLayout />}>
             {/* 활동관리 */}
             <Route path="/activitymanage" element={<ActivityManage />} />
@@ -70,17 +79,17 @@ function App() {
 
             {/* 인사평가 */}
             <Route path="/submit-perform" element={<SubmitPerform />} />
-            <Route path="/manage-perform" element={<ManagePerform />} />
+            <Route path="/manage-perform" element={ userInfo.team === '관리팀' ? <ManagePerform /> : <PageNotFound />} />
 
 
             {/* 인사 정보 관리 */}
-            <Route path="/human-resources" element={<HumanResource />} />
+            <Route path="/human-resources" element={ userInfo.team === '관리팀' ? <HumanResource /> : <PageNotFound />} />
 
             {/* 근태 관리 */}
-            <Route path="/annual-manage" element={<AnnualManage />} />
-            <Route path="/attendance-regist" element={<AttendanceRegist />} />
+            <Route path="/annual-manage" element={ userInfo.team === '관리팀' ? <AnnualManage /> : <PageNotFound />} />
+            <Route path="/attendance-regist" element={ userInfo.team === '관리팀' ? <AttendanceRegist /> : <PageNotFound />} />
 
-            <Route path="*" element={<PageNotFound />} />
+            <Route path="/404" element={<PageNotFound />} />
           </Route>
         </Routes>
       </Router>
