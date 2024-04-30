@@ -1,11 +1,31 @@
 import React, { useState } from "react";
 import "./HumanResource.scss";
 import { Link } from "react-router-dom";
+import { Input } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverCloseButton,
+  Portal,
+} from '@chakra-ui/react';
 
 const HumanResource = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleToggleEdit = () => {
     setIsEditing(!isEditing);
@@ -66,14 +86,165 @@ const HumanResource = () => {
                 
               </TabPanel>
 
-              <TabPanel display='flex' justifyContent='center'>
+              <TabPanel display='flex' flexDirection='column'>
+                <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh'}}>
+                  <Popover placement="left-start">
+                    <PopoverTrigger>
+                      <button className="adds_button">등록</button>
+                    </PopoverTrigger>
+                    <Portal>
+                      <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                        <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 등록하기</PopoverHeader>
+                        <PopoverCloseButton color='white'/>
+                        <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
+                          <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
+                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                              <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
+                              <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' />
+                            </div>
+                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                              <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
+                              <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
+                            </div>
+                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                              <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
+                              <Input placeholder='small size' size='sm' width='20vw'/>
+                            </div>
+                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                              <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>구분</div>
+                              <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw'/>
+                            </div>
+                          </div>
+                          <div className='button-wrap'>
+                            <button className="adds_button">등록</button>
+                            <button className="edits_button">취소</button>
+                          </div>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Portal>
+                  </Popover>
+                </div>
                 
+                <div>
+                  <table className="announce_board_list">
+                    <colgroup>
+                      <col width="20%"/>
+                      <col width="20%"/>
+                      <col width="20%"/>
+                      <col width="20%"/>
+                      <col width="20%"/>
+                    </colgroup>
+                    <thead>
+                      <tr className="board_header">
+                        <th>부서</th>
+                        <th>직위</th>
+                        <th>날짜</th>
+                        <th>구분</th>
+                        <th>수정/삭제</th>
+                      </tr>
+                    </thead>
+                    <tbody className="board_container">
+                      <tr className="board_content">
+                        <td>마케팅부 디자인팀</td>
+                        <td>팀장</td>
+                        <td>2024-05-04</td>
+                        <td>승진</td>
+                        <td>
+                          <Popover placement="left-start">
+                            <PopoverTrigger>
+                              <button className="edits_button">수정</button>
+                            </PopoverTrigger>
+                            <Portal>
+                              <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                                <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
+                                <PopoverCloseButton color='white'/>
+                                <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
+                                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                      <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
+                                      <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' />
+                                    </div>
+                                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                      <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
+                                      <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
+                                    </div>
+                                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                      <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
+                                      <Input placeholder='small size' size='sm' width='20vw'/>
+                                    </div>
+                                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                      <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>구분</div>
+                                      <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw'/>
+                                    </div>
+                                  </div>
+                                  <div className='button-wrap'>
+                                    <button className="edits_button">수정</button>
+                                    <button className="edits_button">취소</button>
+                                  </div>
+                                </PopoverBody>
+                              </PopoverContent>
+                            </Portal>
+                          </Popover>
+                          <button className="dels_button" onClick={onOpen}>삭제</button>
+                        </td>
+                      </tr>
+
+                      <tr className="board_content">
+                        <td>관리부 지원팀</td>
+                        <td>사원</td>
+                        <td>2024-05-04</td>
+                        <td>부서이동</td>
+                        <td>
+                          <button className="edits_button">수정</button>
+                          <button className="dels_button">삭제</button>
+                        </td>
+                      </tr>
+
+                      <tr className="board_content">
+                        <td>개발부 개발 1팀</td>
+                        <td>사원</td>
+                        <td>2024-05-04</td>
+                        <td>강등</td>
+                        <td>
+                          <button className="edits_button">수정</button>
+                          <button className="dels_button">삭제</button>
+                        </td>
+                      </tr>
+
+                      <tr className="board_content">
+                        <td>개발부 개발 1팀</td>
+                        <td>팀장</td>
+                        <td>2024-05-04</td>
+                        <td>부서이동</td>
+                        <td>
+                          <button className="edits_button">수정</button>
+                          <button className="dels_button">삭제</button>
+                        </td>
+                      </tr>
+                     
+                    </tbody>
+                  </table>
+                </div>
                 
               </TabPanel>
             </TabPanels>
           </Tabs>
       </div>  
-      
+      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
+        <ModalOverlay />
+        <ModalContent height='250px' bg='#fff' borderTopRadius='10px'>
+          <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
+          <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
+          <ModalBody className="cancle_modal_content">
+            삭제하시겠습니까?
+          </ModalBody>
+
+          <ModalFooter gap='10px' justifyContent='center'>
+            <button className="del_button">삭제</button>
+            <button className="cle_button">취소</button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

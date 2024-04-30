@@ -26,14 +26,14 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
 
 const Employment = () => {
   const [page, setPage] = useState<number>(1); 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
   
   const postPerPage: number = 10;
 
@@ -260,7 +260,7 @@ const Employment = () => {
           </div>
         </div>
       </div>  
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
         <ModalOverlay />
         <ModalContent height='250px' bg='#fff' borderTopRadius='10px'>
           <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>

@@ -13,5 +13,5 @@ export const isHrSidebarVisibleState = atom({
 
 export const userState = atom({
   key: 'userState',
-  default: {id: '', pw: '', name: '', department: '', team: '', position: ''},
+  default: {id: '', pw: '', name: '', department: '', team: '', position: '', company: ''},
 });

@@ -97,7 +97,7 @@ const Calendar = () => {
           />
         </div>  
       </div>  
-      <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl'>
+      <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
         <ModalOverlay />
         <ModalContent height='40vh' borderRadius='10px'>
           <ModalHeader height='6vh' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='10px'>일정 등록하기</ModalHeader>
@@ -142,7 +142,7 @@ const Calendar = () => {
       </Modal>
 
 
-      <Modal isOpen={isViewModalOpen} onClose={onViewModalClose} size='xl'>
+      <Modal isOpen={isViewModalOpen} onClose={onViewModalClose} size='xl' isCentered={true}>
         <ModalOverlay />
         <ModalContent height='400px' borderRadius='10px'>
           <ModalHeader height='55px' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='10px'>일정 확인</ModalHeader>
