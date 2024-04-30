@@ -520,7 +520,7 @@ const AttendanceRegist = () => {
           </TabPanels>
         </Tabs>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose} size='lg'>
+      <Modal isOpen={isOpen} onClose={onClose} size='lg' isCentered={true}>
         <ModalOverlay />
         <ModalContent height='350px' bg='#fff' borderTopRadius='10px'>
           <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>

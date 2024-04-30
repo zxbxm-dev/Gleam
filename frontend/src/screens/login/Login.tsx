@@ -8,7 +8,7 @@ import { userState } from '../../recoil/atoms';
 import { Input } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 
-type Member = [string, string, string, string, string, string];
+type Member = [string, string, string, string, string, string, string];
 
 interface User {
   id: string;
@@ -17,6 +17,7 @@ interface User {
   department: string;
   team: string;
   position: string;
+  company: string;
 }
 
 const Login = () => {
@@ -26,39 +27,43 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const members: Member[] = [
-    ['id1', 'pw1', '이정훈', '포체인스 주식회사', '', '대표'],
-    ['id2', 'pw2', '안후상', '포체인스 주식회사', '', '이사'],
-    ['id3', 'pw3', '이정열', '관리부', '', '부서장'],
-    ['id4', 'pw4', '김효은', '관리부', '관리팀', '팀장'],
-    ['id5', 'pw5', '우현지', '관리부', '관리팀', '사원'],
-    ['id6', 'pw6', '염승희', '관리부', '관리팀', '사원'],
-    ['id7', 'pw7', '김태희', '관리부', '지원팀', '팀장'],
-    ['id8', 'pw8', '진유빈', '개발부', '', '부서장'],
-    ['id9', 'pw9', '장현지', '개발부', '개발 1팀', '사원'],
-    ['id10', 'pw10', '권채림', '개발부', '개발 1팀', '사원'],
-    ['id11', 'pw11', '구민석', '개발부', '개발 1팀', '사원'],
-    ['id12', 'pw12', '변도일', '개발부', '개발 2팀', '팀장'],
-    ['id13', 'pw13', '이로운', '개발부', '개발 2팀', '사원'],
-    ['id14', 'pw14', '권상원', '블록체인 사업부', '', '부서장'],
-    ['id15', 'pw15', '권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
-    ['id16', 'pw16', '김도환', '블록체인 사업부', '블록체인 1팀', '사원'],
-    ['id17', 'pw17', '김현지', '마케팅부', '', '부서장'],
-    ['id18', 'pw18', '전아름', '마케팅부', '기획팀', '팀장'],
-    ['id19', 'pw19', '홍다슬', '마케팅부', '기획팀', '사원'],
-    ['id20', 'pw20', '서주희', '마케팅부', '디자인팀', '사원'],
+    ['id1', 'pw1', '이정훈', '포체인스 주식회사', '', '대표', '본사'],
+    ['id2', 'pw2', '안후상', '포체인스 주식회사', '', '이사', '본사'],
+    ['id3', 'pw3', '이정열', '관리부', '', '부서장', '본사'],
+    ['id4', 'pw4', '김효은', '관리부', '관리팀', '팀장', '본사'],
+    ['id5', 'pw5', '우현지', '관리부', '관리팀', '사원', '본사'],
+    ['id6', 'pw6', '염승희', '관리부', '관리팀', '사원', '본사'],
+    ['id7', 'pw7', '김태희', '관리부', '지원팀', '팀장', '본사'],
+    ['id8', 'pw8', '진유빈', '개발부', '', '부서장', '본사'],
+    ['id9', 'pw9', '장현지', '개발부', '개발 1팀', '사원', '본사'],
+    ['id10', 'pw10', '권채림', '개발부', '개발 1팀', '사원', '본사'],
+    ['id11', 'pw11', '구민석', '개발부', '개발 1팀', '사원', '본사'],
+    ['id12', 'pw12', '변도일', '개발부', '개발 2팀', '팀장', '본사'],
+    ['id13', 'pw13', '이로운', '개발부', '개발 2팀', '사원', '본사'],
+    ['id14', 'pw14', '권상원', '블록체인 사업부', '', '부서장', '본사'],
+    ['id15', 'pw15', '권준우', '블록체인 사업부', '블록체인 1팀', '사원', '본사'],
+    ['id16', 'pw16', '김도환', '블록체인 사업부', '블록체인 1팀', '사원', '본사'],
+    ['id17', 'pw17', '김현지', '마케팅부', '', '부서장', '본사'],
+    ['id18', 'pw18', '전아름', '마케팅부', '기획팀', '팀장', '본사'],
+    ['id19', 'pw19', '홍다슬', '마케팅부', '기획팀', '사원', '본사'],
+    ['id20', 'pw20', '서주희', '마케팅부', '디자인팀', '사원', '본사'],
+    ['id21', 'pw21', '이유정', '연구 총괄', '', '센터장', 'R&D'],
+    ['id22', 'pw22', '심민지', '알고리즘 연구실', '', '연구실장', 'R&D'],
+    ['id23', 'pw23', '윤민지', '동형분석 연구실', '', '연구실장', 'R&D'],
   ];
 
   const handleLogin = () => {
     const foundMember = members.find(member => member[0] === username && member[1] === password);
     if (foundMember) {
-      const [userId, userPw, name, department, team, position] = foundMember;
+      const [userId, userPw, name, department, team, position, company] = foundMember;
       setUser({
         id: userId,
         pw: userPw,
         name,
         department,
         team,
-        position
+        position,
+        company
       });
       console.log(user);
       navigate('/announcement');

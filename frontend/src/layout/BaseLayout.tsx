@@ -18,7 +18,7 @@ const BaseLayout = () => {
   const handleMemberClick = (name: string, dept: string, team: string, position: string) => {
     // 선택된 멤버 정보를 새로운 Member 배열로 생성
     const newMember = [name, dept, team, position];
-    console.log('선택된 사람', newMember);
+    console.log('선택한 멤버 정보', newMember)
   };
 
   return (

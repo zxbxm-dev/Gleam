@@ -37,7 +37,6 @@ import { userState } from './recoil/atoms';
 function App() {
 
   const [userInfo] = useRecoilState(userState);
-  console.log(userInfo);
   return (
     <>
       <Router>
