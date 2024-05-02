@@ -197,6 +197,11 @@ const Sidebar = () => {
                     </ul>
                   )}
                 </li>
+                <li className={`menu-item ${selectedMenu === 'operating-manage' ? 'active' : ''}`}>
+                  <Link to="/operating-manage" className="menu-link" onClick={() => handleMenuClick('operating-manage')}>
+                    <span className="menu-link-text">운영비 관리</span>
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

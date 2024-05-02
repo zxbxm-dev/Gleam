@@ -46,3 +46,6 @@ export { default as HumanResource } from "./humanResource/HumanResource";
 // 근태 관리
 export { default as AnnualManage } from "./attendance/annualManage/AnnualManage";
 export { default as AttendanceRegist } from "./attendance/attendanceRegist/AttendanceRegist";
+
+// 운영비 관리
+export { default as Operating } from "./operating/Operating";
