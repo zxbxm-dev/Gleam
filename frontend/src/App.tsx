@@ -29,6 +29,7 @@ import {
   HumanResource,
   AnnualManage,
   AttendanceRegist,
+  Operating,
   PageNotFound } from "./screens";
 
 import { useRecoilState } from 'recoil';
@@ -89,6 +90,9 @@ function App() {
             {/* 근태 관리 */}
             <Route path="/annual-manage" element={ userInfo.team === '관리팀' ? <AnnualManage /> : <PageNotFound />} />
             <Route path="/attendance-regist" element={ userInfo.team === '관리팀' ? <AttendanceRegist /> : <PageNotFound />} />
+            
+            {/* 운영비 관리 */}
+            <Route path="/operating-manage" element={<Operating />} />
 
             <Route path="/404" element={<PageNotFound />} />
           </Route>
