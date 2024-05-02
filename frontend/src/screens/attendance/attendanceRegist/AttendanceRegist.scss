@@ -96,6 +96,113 @@
   }
 }
 
+
+.conta_three_annual {
+  border-bottom: 2px solid #858585;
+
+  &:hover {
+    background-color: #D9D9D9;
+  }
+}
+
+.conta_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 70px;
+  height: 45px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #858585;
+}
+
+.conta_name_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 100px;
+  height: 45px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #858585;
+}
+
+.conta_date_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 130px;
+  height: 45px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #858585;
+}
+
+
+.countTotal_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 70px;
+  height: 44px;
+  text-align: center;
+  font-size: 16px;
+  display: flex;
+  border-top: 2px solid #858585;
+  border-bottom: 2px solid #858585;
+  border-right: 1px solid #858585;
+  
+  .total_annual {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.countName_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 100px;
+  height: 44px;
+  text-align: center;
+  font-size: 16px;
+  display: flex;
+  border-top: 2px solid #858585;
+  border-bottom: 2px solid #858585;
+  border-right: 1px solid #858585;
+  
+  .total_annual {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.countDate_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 130px;
+  height: 44px;
+  text-align: center;
+  font-size: 16px;
+  display: flex;
+  border-top: 2px solid #858585;
+  border-bottom: 2px solid #858585;
+  border-right: 1px solid #858585;
+  
+  .total_annual {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.CountTable {
+  height: 40px;
+
+  tbody {
+    display: flex;
+    height: 42px;
+
+  }
+}
+
 .Excel {
   display: flex;
 
@@ -121,6 +228,34 @@
 
         text-align: center;
         height: 91px;
+      }
+    }
+  }
+}
+
+.Excel_annual {
+  display: flex;
+
+  .Explan_annual {
+    font-family: var(--font-family-Noto-M);
+    width: 250px;
+    height: 794px;
+    border: 2px solid #858585;
+    overflow-x: auto;
+
+    tr {
+
+      .TopS_annual {
+        height: 22px;
+        font-size: 14px;
+      }
+
+      td {
+        border-right: 2px solid #858585;
+        border-bottom: 2px solid #858585;
+
+        text-align: center;
+        height: 25px;
       }
     }
   }

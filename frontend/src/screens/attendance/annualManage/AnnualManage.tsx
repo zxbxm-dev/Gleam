@@ -1,9 +1,221 @@
+import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 
-
+type Member = [string, number, number, number, string[], string, string];
 
 const AnnualManage = () => {
-  
+
+  const members: Member[] = [
+    ['권상원', 15, 2, 13.0, ['04.17', '04.18'], '2099-01-01', '2099-01-01'],
+    ['진유빈', 15, 1, 14.0, ['04.20'], '2099-01-01', '2099-01-01'],
+    ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['권채림', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['변도일', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['이로운', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['김현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['서주희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['전아름', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['함다슬', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['김효은', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['우현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['김태희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+  ]
+
+
+  const CountDivs = () => {
+    const countTotal = ["성명", "입사일", "퇴사일", "사용가능", "사용", "잔여"]
+    const totalRows = [];
+    const tableRows = [];
+    const DateRows = [];
+
+    totalRows.push(
+      <>
+        <tr className="countName_annual">
+          <td className="total_annual">{countTotal[0]}</td>
+        </tr>
+        <tr className="countTotal_annual">
+          <td className="total_annual">{countTotal[3]}</td>
+        </tr>
+        <tr className="countTotal_annual">
+          <td className="total_annual">{countTotal[4]}</td>
+        </tr>
+        <tr className="countTotal_annual">
+          <td className="total_annual">{countTotal[5]}</td>
+        </tr>
+      </>
+    )
+
+    DateRows.push(
+      <>
+        <tr className="countDate_annual">
+          <td className="total_annual">{countTotal[1]}</td>
+        </tr>
+        <tr className="countDate_annual">
+          <td className="total_annual">{countTotal[2]}</td>
+        </tr>
+      </>
+    )
+
+
+    for (let k = 0; k < 30; k++) {
+      tableRows.push(
+        <tr className="countTotal_annual" key={`${k}`}>
+          <td className="total_annual" style={{backgroundColor: '#FFF5DC'}}>{k + 1}</td>
+        </tr>
+      )
+    }
+    return (
+      <table className="CountTable">
+        <tbody>
+          {totalRows}
+          {tableRows}
+          {DateRows}
+        </tbody>
+      </table>
+    );
+  }
+
+  const generateDivs = () => {
+    const nameRows = [];
+    const countfirstRows = [];
+    const countsecondRows = [];
+    const countthirdRows = [];
+    const totalRows = [];
+    const datefirstRows = [];
+    const datesecondRows = [];
+
+    
+    for (let i = 0; i < 1; i++) {
+      const rowCells = [];
+      for (let j = 0; j < 16; j++) {
+
+        rowCells.push(
+          <tr
+            className="conta_three_annual"
+            key={`${i}-${j}`}
+          >
+            <td className='conta_name_annual'> {members[j][0]} </td>
+          </tr>
+        );
+      }
+      nameRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
+    for (let i = 0; i < 1; i++) {
+      const rowCells = [];
+      for (let j = 0; j < 16; j++) {
+
+        rowCells.push(
+          <tr
+            className="conta_three_annual"
+            key={`${i}-${j}`}
+          >
+            <td className='conta_annual'> {members[j][1]} </td>
+          </tr>
+        );
+      }
+      countfirstRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
+    for (let i = 0; i < 1; i++) {
+      const rowCells = [];
+      for (let j = 0; j < 16; j++) {
+
+        rowCells.push(
+          <tr
+            className="conta_three_annual"
+            key={`${i}-${j}`}
+          >
+            <td className='conta_annual'> {members[j][2]} </td>
+          </tr>
+        );
+      }
+      countsecondRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
+    for (let i = 0; i < 1; i++) {
+      const rowCells = [];
+      for (let j = 0; j < 16; j++) {
+
+        rowCells.push(
+          <tr
+            className="conta_three_annual"
+            key={`${i}-${j}`}
+          >
+            <td className='conta_annual'> {members[j][3].toFixed(1)} </td>
+          </tr>
+        );
+      }
+      countthirdRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
+    for (let i = 0; i < 30; i++) {
+      const rowCells = [];
+
+      for (let j = 0; j < 16; j++) {
+        const eventDates = members[j][4]; // 해당 멤버의 이벤트 날짜 배열
+        const eventDate = eventDates && eventDates[i] ? eventDates[i] : '';
+        rowCells.push(
+          <tr
+            className="conta_three_annual"
+            key={`${i}-${j}`}
+          >
+            <td className='conta_annual'> {eventDate} </td>
+          </tr>
+        );
+      }
+      totalRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
+    for (let i = 0; i < 1; i++) {
+      const rowCells = [];
+      for (let j = 0; j < 16; j++) {
+
+        rowCells.push(
+          <tr
+            className="conta_three_annual"
+            key={`${i}-${j}`}
+          >
+            <td className='conta_date_annual'> {members[j][5]} </td>
+          </tr>
+        );
+      }
+      datefirstRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
+    for (let i = 0; i < 1; i++) {
+      const rowCells = [];
+      for (let j = 0; j < 16; j++) {
+
+        rowCells.push(
+          <tr
+            className="conta_three_annual"
+            key={`${i}-${j}`}
+          >
+            <td className='conta_date_annual'> {members[j][6]} </td>
+          </tr>
+        );
+      }
+      datesecondRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+    
+    return (
+      <table className="table">
+        <tbody>
+          {nameRows}
+          {countfirstRows}
+          {countsecondRows}
+          {countthirdRows}
+          {totalRows}
+          {datefirstRows}
+          {datesecondRows}
+        </tbody>
+      </table>
+    );
+  };
 
   return (
     <div className="content">
@@ -15,7 +227,82 @@ const AnnualManage = () => {
       
       <div className="content_container">
         <div className="container">
-          
+          <div className="container_attendance">
+            <div className="Excel_annual">
+              <table className="Explan_annual">
+                <tbody>
+                  <tr>
+                    <td className="TopS_annual">NO.</td>
+                    <td className="TopS_annual" colSpan={2}>부서</td>
+                  </tr>
+                  <tr style={{ fontSize: '14.5px'}}>
+                    <td>1</td>
+                    <td>블록체인 사업부</td>
+                    <td>블록체인 1팀</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td rowSpan={6}>개발부</td>
+                    <td rowSpan={4}>개발 1팀</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td rowSpan={2}>개발 2팀</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td rowSpan={4}>마케팅부</td>
+                    <td rowSpan={2}>디자인팀</td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td rowSpan={2}>기획팀</td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                  </tr>
+                  <tr>
+                    <td>12</td>
+                    <td rowSpan={5}>관리부</td>
+                    <td rowSpan={3}>관리팀</td>
+                  </tr>
+                  <tr>
+                    <td>13</td>
+                  </tr>
+                  <tr>
+                    <td>14</td>
+                  </tr>
+                  <tr>
+                    <td>15</td>
+                    <td rowSpan={2}>지원팀</td>
+                  </tr>
+                  <tr>
+                    <td>16</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div>
+                {CountDivs()}
+                {generateDivs()}
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>  
       
