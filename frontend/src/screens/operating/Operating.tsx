@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./Operating.scss";
 import { Link } from "react-router-dom";
+import { evaluate } from "mathjs";
 
 const Operating = () => {
+  const accountCode = {
+    81101 : '비품-사무용가구',
+    81102 : '비품-업무용비품'
+  }
+
 
   const [commonTeam, setCommonTeam] = useState<string[][]>([['', '', '', '']]);
   const [managementTeam, setManagementTeam] = useState<string[][]>([['', '', '', '']]);
@@ -12,9 +18,11 @@ const Operating = () => {
   const [blockchainTeam, setBlockChainTeam] = useState<string[][]>([['', '', '', '']]);
   const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', '']]);
   const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', '']]);
+  
 
   const addRow = (team: 'common' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
     let newTeam: string[][];
+
     if (team === 'common') {
       newTeam = [...commonTeam, ['', '', '', '']];
       setCommonTeam(newTeam);
@@ -43,85 +51,113 @@ const Operating = () => {
   
   };
 
-  const handleInputChange = (
-    team: 'common' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning',
+
+  const setTeamState = <T extends string[][]>(
+    teamStateSetter: React.Dispatch<React.SetStateAction<T>>,
+    teamName: string,
     index: number,
     column: number,
     value: string
   ) => {
-    if (team === 'common') {
-      const updatedCommonTeam = commonTeam.map((row, i) => {
-        if (i === index) {
-          return [...row.slice(0, column), value, ...row.slice(column + 1)];
+    teamStateSetter((prevState: T) => {
+      if (column === 0) {
+        const accountEntries = Object.entries(accountCode);
+        const selectedAccountEntry = accountEntries.find(([code]) => code === value);
+        if (selectedAccountEntry) {
+          return prevState.map((team, i) => {
+            if (i === index) {
+              return [value, selectedAccountEntry[1], ...team.slice(column + 2)];
+            }
+            return team;
+          }) as T;
         }
-        return row;
-      });
-      setCommonTeam(updatedCommonTeam);
-    } else if (team === 'management') {
-      const updatedManagementTeam = managementTeam.map((row, i) => {
+      } else if (column === 2) {
+        return prevState.map((team, i) => {
+          if (i === index) {
+            return [...team.slice(0, column), value, ...team.slice(column + 1)];
+          }
+          return team;
+        }) as T;
+      } else {
+        return prevState.map((team, i) => {
+          if (i === index) {
+            return [...team.slice(0, column), value, ...team.slice(column + 1)];
+          }
+          return team;
+        }) as T;
+      }
+      return prevState.map((team, i) => {
         if (i === index) {
-          return [...row.slice(0, column), value, ...row.slice(column + 1)];
+          return [...team.slice(0, column), value, ...team.slice(column + 1)];
         }
-        return row;
-      });
-      setManagementTeam(updatedManagementTeam);
-    } else if (team === 'support') {
-      const updatedSupportTeam = supportTeam.map((row, i) => {
-        if (i === index) {
-          return [...row.slice(0, column), value, ...row.slice(column + 1)];
-        }
-        return row;
-      });
-      setSupportTeam(updatedSupportTeam);
-    } else if (team === 'devOne') {
-      const updatedDevOneTeam = devOneTeam.map((row, i) => {
-        if (i === index) {
-          return [...row.slice(0, column), value, ...row.slice(column + 1)];
-        }
-        return row;
-      });
-      setDevOneTeam(updatedDevOneTeam);
-    } else if (team === 'devTwo') {
-      const updatedDevTwoTeam = devTwoTeam.map((row, i) => {
-        if (i === index) {
-          return [...row.slice(0, column), value, ...row.slice(column + 1)];
-        }
-        return row;
-      });
-      setDevOneTeam(updatedDevTwoTeam);
-    } else if (team === 'blockchain') {
-      const updatedBlockchain = blockchainTeam.map((row, i) => {
-        if (i === index) {
-          return [...row.slice(0, column), value, ...row.slice(column + 1)];
-        }
-        return row;
-      });
-      setDevOneTeam(updatedBlockchain);
-    } else if (team === 'design') {
-      const updatedDesign = designTeam.map((row, i) => {
-        if (i === index) {
-          return [...row.slice(0, column), value, ...row.slice(column + 1)];
-        }
-        return row;
-      });
-      setDevOneTeam(updatedDesign);
-    } else if (team === 'planning') {
-      const updatedPlanning = planningTeam.map((row, i) => {
-        if (i === index) {
-          return [...row.slice(0, column), value, ...row.slice(column + 1)];
-        }
-        return row;
-      });
-      setDevOneTeam(updatedPlanning);
-    }
-
-
+        return team;
+      }) as T;
+    });
   };
+  
+  
+  const handleInputChange = (team: string, index: number, column: number, value: string) => {
+    switch (team) {
+      case 'common':
+        setTeamState(setCommonTeam, team, index, column, value);
+        break;
+      case 'management':
+        setTeamState(setManagementTeam, team, index, column, value);
+        break;
+      case 'support':
+        setTeamState(setSupportTeam, team, index, column, value);
+        break;
+      case 'devOne':
+        setTeamState(setDevOneTeam, team, index, column, value);
+        break;
+      case 'devTwo':
+        setTeamState(setDevTwoTeam, team, index, column, value);
+        break;
+      case 'blockchain':
+        setTeamState(setBlockChainTeam, team, index, column, value);
+        break;
+      case 'design':
+        setTeamState(setDesignTeam, team, index, column, value);
+        break;
+      case 'planning':
+        setTeamState(setPlanningTeam, team, index, column, value);
+        break;
+      default:
+        break;
+    }
+  };
+  
+  const handleInputKeyDown = (team: string, index: number, column: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const inputValue = e.currentTarget.value;
+  
+      // 입력 값이 비어있는지 확인, 빈 값이면 무시
+      if (!inputValue.trim()) {
+        return;
+      }
+  
+      // 계산 수식 처리
+      try {
+        const calculatedValue = evaluate(inputValue);
+        
+        handleInputChange(team, index, column, calculatedValue.toLocaleString());
+      } catch (error) {
+        window.alert('수식이 잘못 입력됐습니다.')
+        // 수식 에러 처리
+      }
+    }
+  };
+
+
   const CommonRowSpan = commonTeam.length;
   const ManageRowSpan = managementTeam.length + supportTeam.length;
   const DevRowSpan = devOneTeam.length + devTwoTeam.length;
   const BlockChainRowSpan = blockchainTeam.length;
   const MarketingRowSpan = designTeam.length + planningTeam.length;
+
+  useEffect(() => {
+    
+  },);
 
   return (
     <div className="content">
@@ -146,9 +182,9 @@ const Operating = () => {
                     <th className="table_header_totalAccount">합계</th>
                     <th className="table_header_totalAccount">부서 합계</th>
                   </tr>
-
+                  
                   {commonTeam.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={index === commonTeam.length-1 ? 'border_line' : 'dashed_line'}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={CommonRowSpan} colSpan={2}>공통 <br /> (1000) </th>
@@ -161,6 +197,8 @@ const Operating = () => {
                             type="text"
                             value={item}
                             onChange={(e) => handleInputChange('common', index, i, e.target.value)}
+                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('common', index, i, e) : undefined}
+                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                           />
                         </td>
                       ))}
@@ -174,7 +212,7 @@ const Operating = () => {
                   ))}
 
                   {managementTeam.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={index === managementTeam.length-1 ? 'border_line' : 'dashed_line'}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={ManageRowSpan}>관리부 <br /> (10) </th>
@@ -188,6 +226,8 @@ const Operating = () => {
                             type="text"
                             value={item}
                             onChange={(e) => handleInputChange('management', index, i, e.target.value)}
+                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('management', index, i, e) : undefined}
+                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                           />
                         </td>
                       ))}
@@ -201,7 +241,7 @@ const Operating = () => {
                   ))}
 
                   {supportTeam.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={index === supportTeam.length-1 ? 'border_line' : 'dashed_line'}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={supportTeam.length}>지원팀 <br /> (02) </th>
@@ -214,6 +254,8 @@ const Operating = () => {
                             type="text"
                             value={item}
                             onChange={(e) => handleInputChange('support', index, i, e.target.value)}
+                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('support', index, i, e) : undefined}
+                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                           />
                         </td>
                       ))}
@@ -226,7 +268,7 @@ const Operating = () => {
                   ))}
 
                   {devOneTeam.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={index === devOneTeam.length-1 ? 'border_line' : 'dashed_line'}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={DevRowSpan}>개발부 <br /> (20) </th>
@@ -240,6 +282,8 @@ const Operating = () => {
                             type="text"
                             value={item}
                             onChange={(e) => handleInputChange('devOne', index, i, e.target.value)}
+                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('devOne', index, i, e) : undefined}
+                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                           />
                         </td>
                       ))}
@@ -254,7 +298,7 @@ const Operating = () => {
 
 
                   {devTwoTeam.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={index === devTwoTeam.length-1 ? 'border_line' : 'dashed_line'}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={devTwoTeam.length}>개발 2팀 <br /> (02) </th>
@@ -266,7 +310,9 @@ const Operating = () => {
                           <input
                             type="text"
                             value={item}
-                            onChange={(e) => handleInputChange('support', index, i, e.target.value)}
+                            onChange={(e) => handleInputChange('devTwo', index, i, e.target.value)}
+                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('devTwo', index, i, e) : undefined}
+                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                           />
                         </td>
                       ))}
@@ -279,7 +325,7 @@ const Operating = () => {
                   ))}
 
                   {blockchainTeam.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={index === blockchainTeam.length-1 ? 'border_line' : 'dashed_line'}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={BlockChainRowSpan}>블록체인 <br />사업부 <br /> (30) </th>
@@ -292,7 +338,9 @@ const Operating = () => {
                           <input
                             type="text"
                             value={item}
-                            onChange={(e) => handleInputChange('design', index, i, e.target.value)}
+                            onChange={(e) => handleInputChange('blockchain', index, i, e.target.value)}
+                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('blockchain', index, i, e) : undefined}
+                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                           />
                         </td>
                       ))}
@@ -306,7 +354,7 @@ const Operating = () => {
                   ))}
                   
                   {designTeam.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={index === designTeam.length-1 ? 'border_line' : 'dashed_line'}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={MarketingRowSpan}>마케팅부 <br /> (40) </th>
@@ -320,6 +368,8 @@ const Operating = () => {
                             type="text"
                             value={item}
                             onChange={(e) => handleInputChange('design', index, i, e.target.value)}
+                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('design', index, i, e) : undefined}
+                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                           />
                         </td>
                       ))}
@@ -334,7 +384,7 @@ const Operating = () => {
 
                   
                   {planningTeam.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={index === planningTeam.length-1 ? 'border_line' : 'dashed_line'}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={planningTeam.length}>기획팀 <br /> (02) </th>
@@ -347,6 +397,8 @@ const Operating = () => {
                             type="text"
                             value={item}
                             onChange={(e) => handleInputChange('planning', index, i, e.target.value)}
+                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('planning', index, i, e) : undefined}
+                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                           />
                         </td>
                       ))}
