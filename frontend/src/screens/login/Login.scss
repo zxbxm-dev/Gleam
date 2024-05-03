@@ -6,12 +6,31 @@
   justify-content: center;
   align-items: center;
   background-color: #F5F5F5;
-  gap: 2vh;
+
+  .Linker {
+    margin-bottom: 60px;
+  }
+
+  .InputClass {
+    background-color: #fff;
+    width: 400px;
+    padding-left: 17px;
+    margin-bottom: 20px;
+    height: 60px;
+  }
+
+  .InputClass::placeholder {
+    color: #c7c7c7;
+  }
+
+  .InputClass:hover {
+    border: 2px solid #746E58;
+  }
 
 
   .login_btn {
-    width: 10vw;
-    height: 5vh;
+    margin-top: 5px;
+    padding: 7px 92px 8px 91px;
     background-color: #746E58;
     border: 1px solid #746E58;
     border-radius: 8px;

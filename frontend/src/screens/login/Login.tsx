@@ -7,6 +7,7 @@ import {
 import { userState } from '../../recoil/atoms';
 import { Input } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
+import {LoginServices} from "../../services/login/LoginService";
 
 type Member = [string, string, string, string, string, string, string];
 
@@ -52,23 +53,35 @@ const Login = () => {
     ['id23', 'pw23', '윤민지', '동형분석 연구실', '', '연구실장', 'R&D'],
   ];
 
-  const handleLogin = () => {
-    const foundMember = members.find(member => member[0] === username && member[1] === password);
-    if (foundMember) {
-      const [userId, userPw, name, department, team, position, company] = foundMember;
-      setUser({
-        id: userId,
-        pw: userPw,
-        name,
-        department,
-        team,
-        position,
-        company
-      });
-      console.log(user);
+  // const handleLogin = () => {
+  //   const foundMember = members.find(member => member[0] === username && member[1] === password);
+  //   if (foundMember) {
+  //     const [userId, userPw, name, department, team, position, company] = foundMember;
+  //     setUser({
+  //       id: userId,
+  //       pw: userPw,
+  //       name,
+  //       department,
+  //       team,
+  //       position,
+  //       company
+  //     });
+  //     console.log(user);
+  //     navigate('/announcement');
+  //   } else {
+  //     alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+  //   }
+  // };
+
+  const handleLogin = async () => {
+    console.log(password);
+    
+    try {
+    await LoginServices(username, password);
+
       navigate('/announcement');
-    } else {
-      alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+    } catch (error) {
+      console.error('Login failed:', error);
     }
   };
 
@@ -80,23 +93,25 @@ const Login = () => {
   
   return (
     <div className="login_container">
-      <img src={Login_Logo} alt="Login_Logo" />
+      <img className='Linker' src={Login_Logo} alt="Login_Logo" />
       <Input
-        width='20vw'
-        placeholder='아이디'
+        placeholder='아이디를 입력해 주세요. '
         size='lg'
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         onKeyPress={handleKeyPress}
+        className='InputClass'
+        focusBorderColor='#746E58.400'
       />
       <Input
-        width='20vw'
-        placeholder='비밀번호'
+        placeholder='패스워드를 입력해 주세요.'
         size='lg'
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyPress}
+        className='InputClass'
+        focusBorderColor='#746E58.400'
       />
       <button className="login_btn" onClick={handleLogin}>로그인</button>
     </div>
