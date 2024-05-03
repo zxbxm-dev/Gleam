@@ -3,7 +3,7 @@
 .sidebar {
   position: fixed;
   left: 0;
-  top: 50px;
+  top: 60px;
   width: 250px;
   height: calc(100% - 50px);
   background-color: var(--secondary-color);
@@ -180,9 +180,9 @@
   font-family: var(--font-family-Noto-M);
   position: fixed;
   left: 250px;
-  top: 50px;
+  top: 60px;
   width: 250px;
-  height: calc(100% - 50px);
+  height: calc(100% - 60px);
   background-color: var(--secondary-color);
   display: flex;
   flex-direction: column;
