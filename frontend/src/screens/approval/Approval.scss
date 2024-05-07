@@ -21,8 +21,8 @@
         border-radius: 8px;
         color: #929292;
         font-family: var(--font-family-Noto-R);
-        font-size: 18px;
-        padding: 0 2%;
+        font-size: 20px;
+        padding: 20px;
         cursor: pointer;
 
         &:hover {
@@ -39,8 +39,8 @@
         border-radius: 8px;
         color: #323232;
         font-family: var(--font-family-Noto-M);
-        font-size: 18px;
-        padding: 0 2%;
+        font-size: 20px;
+        padding: 20px;
         cursor: pointer;
       }
 
@@ -65,8 +65,8 @@
         border-radius: 8px;
         color: #929292;
         font-family: var(--font-family-Noto-R);
-        font-size: 18px;
-        padding: 0 2%;
+        font-size: 20px;
+        padding: 20px;
         cursor: pointer;
 
         &:hover {
@@ -83,13 +83,14 @@
         border-radius: 8px;
         color: #323232;
         font-family: var(--font-family-Noto-M);
-        font-size: 18px;
-        padding: 0 2%;
+        font-size: 20px;
+        padding: 20px;
         cursor: pointer;
       }
     }
     .document_count {
       color: #D56D6D;
+      font-size: 20px;
     }
  }
 
@@ -123,7 +124,7 @@
       }
       .approval_main_bottom {
         width: 100%;
-        height: 10%;
+        height: 8%;
         font-family: var(--font-family-Noto-R);
         position: fixed;
         bottom: 0;
@@ -158,7 +159,7 @@
         color: #929292;
         font-family: var(--font-family-Noto-R);
         font-size: 18px;
-        padding: 0 2%;
+        padding: 18px;
         cursor: pointer;
 
         &:hover {
@@ -176,7 +177,7 @@
         color: #323232;
         font-family: var(--font-family-Noto-M);
         font-size: 18px;
-        padding: 0 2%;
+        padding: 18px;
         cursor: pointer;
       }
 
@@ -202,7 +203,7 @@
         color: #929292;
         font-family: var(--font-family-Noto-R);
         font-size: 18px;
-        padding: 0 2%;
+        padding: 18px;
         cursor: pointer;
 
         &:hover {
@@ -220,7 +221,7 @@
         color: #323232;
         font-family: var(--font-family-Noto-M);
         font-size: 18px;
-        padding: 0 2%;
+        padding: 18px;
         cursor: pointer;
       }
     }
