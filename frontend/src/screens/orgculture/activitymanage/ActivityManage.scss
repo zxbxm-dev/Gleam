@@ -11,15 +11,15 @@
     .board_container {
       display: flex;
       justify-content: center;
-      gap: 1%;
+      gap: 20px;
     }
     .board_content {
       font-family: var(--font-family-Noto-R);
-      width: 49%;
+      width: 100%;
       height: 75.5vh;
       border: 1px solid #DEDEDE;
       border-radius: 10px;
-      padding: 30px;
+      padding: 20px 40px 20px 30px;
   
       .board_top {
         font-family: var(--font-family-Noto-M);
@@ -28,11 +28,11 @@
         justify-content: space-between;
   
         .board_name { 
-          font-size: 36px;
+          font-size: 32px;
         }
   
         .board_add {
-          font-size: 22px;
+          font-size: 20px;
           color: #C7C7C7;
   
           &:hover {
@@ -44,18 +44,23 @@
       .board_btm {
         display: flex;
         flex-direction: column;
-        margin: 30px 0;
-        gap: 15px;
+        margin: 49px 0;
+        gap: 20px;
   
         .board_unit {
           display: flex;
           justify-content: space-between;
   
           .board_title {
-            font-size: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            color: #323232;
+          }
+          .board_title:hover{
+            text-decoration: underline;
           }
           .board_date {
-            font-size: 18px;
+            font-size: 16px;
             color: #C7C7C7
           }
         }
@@ -65,8 +70,10 @@
 
     .btn_wrap{
       display: flex;
-      flex-direction: row-reverse;
-      margin: 5px 10px;
+      width: 100%;
+  justify-content: flex-end;
+margin-top: 15px;
+margin-bottom: 15px;
     }
   }
   
@@ -75,7 +82,6 @@
     display: flex;
     justify-content: space-between;
     margin: 5px 10px;
-    margin-top: 11%;
   
     .attachment_content {
       display: flex;
@@ -301,7 +307,6 @@
     display: flex;
     justify-content: space-between;
     margin: 5px 10px;
-    margin-top: 6%;
   
     .attachment_content {
       display: flex;
