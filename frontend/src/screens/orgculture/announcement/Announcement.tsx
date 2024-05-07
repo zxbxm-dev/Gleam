@@ -1,8 +1,6 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Announcement.scss";
-import {
-  SearchIcon,
-} from "../../../assets/images/index";
+import { SearchIcon } from "../../../assets/images/index";
 import { ReactComponent as RightIcon } from "../../../assets/images/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../../assets/images/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../../assets/images/LastRightIcon.svg";
@@ -10,32 +8,66 @@ import { ReactComponent as FirstLeftIcon } from "../../../assets/images/FirstLef
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
-
-
 const Announcement = () => {
   let navigate = useNavigate();
-  const [page, setPage] = useState<number>(1); 
+  const [page, setPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [announcements, setAnnouncements] = useState<any[]>([]);
 
   const postPerPage: number = 10;
 
+  useEffect(() => {
+    const initialAnnouncements = [
+      { id: 1, title: "Announcement 1", views: 100, date: "2024-05-01" },
+      { id: 2, title: "Announcement 2", views: 200, date: "2024-05-02" },
+      { id: 3, title: "Announcement 3", views: 300, date: "2024-05-03" },
+      { id: 1, title: "Announcement 1", views: 100, date: "2024-05-01" },
+      { id: 2, title: "Announcement 2", views: 200, date: "2024-05-02" },
+      { id: 3, title: "Announcement 3", views: 300, date: "2024-05-03" },
+      { id: 1, title: "Announcement 1", views: 100, date: "2024-05-01" },
+      { id: 2, title: "Announcement 2", views: 200, date: "2024-05-02" },
+      { id: 1, title: "Announcement 1", views: 100, date: "2024-05-01" },
+      { id: 2, title: "Announcement 2", views: 200, date: "2024-05-02" },
+      { id: 1, title: "Announcement 1", views: 100, date: "2024-05-01" },
+      { id: 2, title: "Announcement 2", views: 200, date: "2024-05-02" },
+    ];
+    setAnnouncements(initialAnnouncements);
+  }, []);
+
   const handlePageChange = (page: number) => {
     setPage(page);
-  }
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredAnnouncements = announcements.filter((announcement) =>
+    announcement.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="content">
       <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
-        <Link to={"/announcement"} className="sub_header">공지사항</Link>
+        <Link to={"/announcement"} className="sub_header">
+          공지사항
+        </Link>
       </div>
-      
+
       <div className="content_container">
         <div className="container">
           <div className="main_header">
             <div className="header_name">공지사항</div>
             <div className="input-wrapper">
-              <input type="search" className="input_form" />
+              <input
+                type="search"
+                className="input_form"
+                placeholder="검색할 내용을 입력하세요."
+                value={searchTerm}
+                onChange={handleSearch}
+              />
               <img src={SearchIcon} alt="SearchIcon" className="search-icon" />
             </div>
           </div>
@@ -43,10 +75,10 @@ const Announcement = () => {
           <div>
             <table className="announce_board_list">
               <colgroup>
-                <col width="6%"/>
-                <col width="74%"/>
-                <col width="10%"/>
-                <col width="10%"/>
+                <col width="6%" />
+                <col width="74%" />
+                <col width="10%" />
+                <col width="10%" />
               </colgroup>
               <thead>
                 <tr className="board_header">
@@ -57,88 +89,45 @@ const Announcement = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}><Link to={"/detailAnnounce"}>2025년 인사평가 공지</Link></td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>24/01/08 사내 행사 변경</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>휴가서 양식 변경 사항</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>각 부서 채용 예정 인원</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>하계 휴가 공지</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>2025년 법정의무교육 시행 예정</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>2025년 인사발령</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>기획팀 신입사원</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>2024년 사내 행사</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
-                <tr className="board_content">
-                  <td style={{color: '#D56D6D'}}>공지</td>
-                  <td style={{textAlign: 'left', paddingLeft: '20px'}}>2024년 사내 워크숍</td>
-                  <td>567</td>
-                  <td>2099-99-99</td>
-                </tr>
+                {filteredAnnouncements
+                  .slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((announcement) => (
+                    <tr key={announcement.id} className="board_content">
+                      <td style={{ color: "#D56D6D" }}>공지</td>
+                      <td style={{ textAlign: "left", paddingLeft: "20px" }}>
+                        <Link to={"/detailAnnounce"}>{announcement.title}</Link>
+                      </td>
+                      <td>{announcement.views}</td>
+                      <td>{announcement.date}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
 
-
             <div className="main_bottom">
-              <Pagination 
+              <Pagination
                 activePage={page}
                 itemsCountPerPage={postPerPage}
-                totalItemsCount={100}
-                pageRangeDisplayed={5}
+                totalItemsCount={filteredAnnouncements.length}
+                pageRangeDisplayed={Math.ceil(filteredAnnouncements.length / postPerPage)}
                 prevPageText={<LeftIcon />}
                 nextPageText={<RightIcon />}
                 firstPageText={<FirstLeftIcon />}
                 lastPageText={<LastRightIcon />}
                 onChange={handlePageChange}
               />
+              <button
+                className="primary_button"
+                onClick={() => {
+                  navigate("/writeAnnounce");
+                }}
+              >
+                게시물 작성
+              </button>
             </div>
-            <button className="primary_button" onClick={() => {navigate("/writeAnnounce")}}>게시물 작성</button>
           </div>
-
         </div>
-      </div>  
+      </div>
     </div>
   );
 };
