@@ -143,7 +143,7 @@ ul {
   min-height: 100vh;
 
   @media (max-width: 1400px) {
-    padding: 32px;
+    padding: 15px 20px;
   }
 
   @media (max-width: 1200px) {
@@ -179,7 +179,7 @@ ul {
       display: flex;
       align-items: center;
       font-size: 14px;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       gap: 5px;
   
       .main_header {
@@ -209,7 +209,7 @@ ul {
         background-color: white;
         border: 1px solid #DEDEDE;
         border-radius: 10px;
-        padding: 15px 20px;
+        padding: 39px 40px 30px 40px;
       }
   
       .main_header {
@@ -279,6 +279,7 @@ ul {
         li {
           width: 30px;
           height: 30px;
+          cursor: pointer;
           border-radius: 50%;
           transform: all 0.3s;
           font-size: 16px;
@@ -315,9 +316,10 @@ ul {
       font-family: var(--font-family-Noto-B);
       font-size: 16px;
       color: #746E58;
-      position: fixed;
-      bottom: 5%;
-      left: 91%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
     .second_button {
       width: 80px;
@@ -435,7 +437,7 @@ ul {
         padding: 0px;
       }
       .container {
-        height: 86vh;
+        height: 84.5vh;
         background-color: white;
         border: 1px solid #DEDEDE;
         border-radius: 10px;
@@ -544,9 +546,9 @@ ul {
       font-family: var(--font-family-Noto-B);
       font-size: 16px;
       color: #746E58;
-      position: fixed;
-      bottom: 2%;
-      left: 89%;
+      // position: fixed;
+      // bottom: 2%;
+      // left: 89%;
     }
     .second_button {
       width: 80px;
