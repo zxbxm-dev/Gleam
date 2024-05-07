@@ -4,9 +4,38 @@ import { Link } from "react-router-dom";
 import { evaluate } from "mathjs";
 
 const Operating = () => {
-  const accountCode = {
+  const accountCode: { [key: string]: string } = {
+    '' : '',
     81101 : '비품-사무용가구',
-    81102 : '비품-업무용비품'
+    81102 : '비품-업무용비품',
+    81190 : '비품-기타',
+    81201 : '소모품비-전산소모품비',
+    81202 : '소모품비-사무용품대',
+    81290 : '소모품비-기타',
+    81301 : '복리후생비-도시락,간식비',
+    81302 : '복리후생비-야유회비',
+    81303 : '복리후생비-프로젝트회의비',
+    81304 : '복리후생비-회식비',
+    81305 : '복리후생비-자기개발비',
+    81390 : '복리후생비-기타',
+    81401 : '여비교통비-교통비',
+    81402 : '여비교통비-주차비',
+    81403 : '여비교통비-건물주차비',
+    81404 : '여비교통비-국내출장비',
+    81490 : '여비교통비-기타',
+    81501 : '통신비-우편비',
+    81502 : '통신비-운송비',
+    81590 : '통신비-기타',
+    81801 : '도서인쇄비-도서대금',
+    81802 : '도서인쇄비-인쇄/복사비',
+    81803 : '도서인쇄비-제본비',
+    81804 : '도서인쇄비-명함인쇄대금',
+    81890 : '도서인쇄비-기타',
+    81901 : '지급수수료-증명서발급수수료',
+    81902 : '지급수수료-도메인등록수수료',
+    81990 : '지급수수료-기타',
+    82001 : '임차료-장소대관료',
+    890 : '잡비',
   }
 
 
@@ -19,6 +48,15 @@ const Operating = () => {
   const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', '']]);
   const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', '']]);
   
+
+  const [commonCost, setCommonCost] = useState<number>(0);
+  const [managementCost, setManagementCost] = useState<number>(0);
+  const [supportCost, setSupportCost] = useState<number>(0);
+  const [devOneCost, setDevOneCost] = useState<number>(0);
+  const [devTwoCost, setDevTwoCost] = useState<number>(0);
+  const [blockchainCost, setBlockChainCost] = useState<number>(0);
+  const [designCost, setDesignCost] = useState<number>(0);
+  const [planningCost, setPlanningnCost] = useState<number>(0);
 
   const addRow = (team: 'common' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
     let newTeam: string[][];
@@ -139,7 +177,34 @@ const Operating = () => {
       // 계산 수식 처리
       try {
         const calculatedValue = evaluate(inputValue);
-        
+        switch (team) {
+          case 'common':
+            setCommonCost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'management':
+            setManagementCost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'support':
+            setSupportCost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'devOne':
+            setDevOneCost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'devTwo':
+            setDevTwoCost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'blockchain':
+            setBlockChainCost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'design':
+            setDesignCost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'planning':
+            setPlanningnCost(prevCost => prevCost + calculatedValue);
+            break;
+          default:
+            break;
+        }
         handleInputChange(team, index, column, calculatedValue.toLocaleString());
       } catch (error) {
         window.alert('수식이 잘못 입력됐습니다.')
@@ -148,7 +213,18 @@ const Operating = () => {
     }
   };
 
+  const handleAccountNameChange = (team: string, index: number, value: string) => {
+    // 선택된 계정명에 해당하는 계정코드
+    const code = Object.keys(accountCode).find(key => accountCode[key] === value);
 
+    // 계정코드가 있으면 변경
+    if (code) {
+      handleInputChange(team, index, 0, code);
+    } else if (code === '') {
+      handleInputChange(team, index, 0, '');
+    }
+  };
+  
   const CommonRowSpan = commonTeam.length;
   const ManageRowSpan = managementTeam.length + supportTeam.length;
   const DevRowSpan = devOneTeam.length + devTwoTeam.length;
@@ -192,20 +268,38 @@ const Operating = () => {
                         </>
                       ) : null}
                       {row.map((item, i) => (
-                        <td key={i}>
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleInputChange('common', index, i, e.target.value)}
-                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('common', index, i, e) : undefined}
-                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                          />
-                        </td>
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('common', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('common', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={CommonRowSpan}> </th>
-                          <th rowSpan={commonTeam.length}></th>
+                          <th rowSpan={CommonRowSpan}> {commonCost.toLocaleString()} </th>
+                          <th rowSpan={commonTeam.length}> {commonCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -221,20 +315,38 @@ const Operating = () => {
                         </>
                       ) : null}
                       {row.map((item, i) => (
-                        <td key={i}>
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleInputChange('management', index, i, e.target.value)}
-                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('management', index, i, e) : undefined}
-                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                          />
-                        </td>
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('management', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('management', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('management', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={managementTeam.length}></th>
-                          <th rowSpan={ManageRowSpan}> </th>
+                          <th rowSpan={managementTeam.length}> {managementCost.toLocaleString()} </th>
+                          <th rowSpan={ManageRowSpan}> {(managementCost + supportCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -249,19 +361,37 @@ const Operating = () => {
                         </>
                       ) : null}
                       {row.map((item, i) => (
-                        <td key={i}>
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleInputChange('support', index, i, e.target.value)}
-                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('support', index, i, e) : undefined}
-                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                          />
-                        </td>
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('support', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('support', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('support', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={supportTeam.length}></th>
+                          <th rowSpan={supportTeam.length}> {supportCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -277,20 +407,38 @@ const Operating = () => {
                         </>
                       ) : null}
                       {row.map((item, i) => (
-                        <td key={i}>
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleInputChange('devOne', index, i, e.target.value)}
-                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('devOne', index, i, e) : undefined}
-                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                          />
-                        </td>
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('devOne', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('devOne', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('devOne', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devOneTeam.length}></th>
-                          <th rowSpan={DevRowSpan}> </th>
+                          <th rowSpan={devOneTeam.length}> {devOneCost.toLocaleString()} </th>
+                          <th rowSpan={DevRowSpan}> {(devOneCost + devTwoCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -306,19 +454,37 @@ const Operating = () => {
                         </>
                       ) : null}
                       {row.map((item, i) => (
-                        <td key={i}>
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleInputChange('devTwo', index, i, e.target.value)}
-                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('devTwo', index, i, e) : undefined}
-                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                          />
-                        </td>
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('devTwo', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('devTwo', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('devTwo', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devTwoTeam.length}></th>
+                          <th rowSpan={devTwoTeam.length}> {devTwoCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -334,20 +500,38 @@ const Operating = () => {
                         </>
                       ) : null}
                       {row.map((item, i) => (
-                        <td key={i}>
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleInputChange('blockchain', index, i, e.target.value)}
-                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('blockchain', index, i, e) : undefined}
-                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                          />
-                        </td>
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('blockchain', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('blockchain', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('blockchain', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={BlockChainRowSpan}></th>
-                          <th rowSpan={blockchainTeam.length}></th>
+                          <th rowSpan={BlockChainRowSpan}> {blockchainCost.toLocaleString()} </th>
+                          <th rowSpan={blockchainTeam.length}> {blockchainCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -363,20 +547,38 @@ const Operating = () => {
                         </>
                       ) : null}
                       {row.map((item, i) => (
-                        <td key={i}>
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleInputChange('design', index, i, e.target.value)}
-                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('design', index, i, e) : undefined}
-                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                          />
-                        </td>
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('design', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('design', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('design', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={designTeam.length}></th>
-                          <th rowSpan={MarketingRowSpan}></th>
+                          <th rowSpan={designTeam.length}> {designCost.toLocaleString()} </th>
+                          <th rowSpan={MarketingRowSpan}> {(designCost + planningCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -392,25 +594,41 @@ const Operating = () => {
                         </>
                       ) : null}
                       {row.map((item, i) => (
-                        <td key={i}>
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleInputChange('planning', index, i, e.target.value)}
-                            onKeyDown={i === 2 ? (e) => handleInputKeyDown('planning', index, i, e) : undefined}
-                            className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                          />
-                        </td>
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('planning', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('planning', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('planning', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={planningTeam.length}></th>
+                          <th rowSpan={planningTeam.length}> {planningCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
-
-
 
                 </tbody>
               </table>
