@@ -24,6 +24,7 @@
     "html2pdf.js": "^0.10.1",
     "mathjs": "^12.4.2",
     "react": "^18.2.0",
+    "react-datepicker": "^6.9.0",
     "react-dom": "^18.2.0",
     "react-js-pagination": "^3.0.3",
     "react-organizational-chart": "^2.2.1",
@@ -59,5 +60,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-datepicker": "^6.2.0"
   }
 }
