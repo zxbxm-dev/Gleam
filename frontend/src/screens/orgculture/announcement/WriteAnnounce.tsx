@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Announcement.scss";
 import {
   DeleteIcon,
@@ -8,11 +8,14 @@ import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
+import { WriteAnnounce } from "../../../services/announcement/Announce";
 
-const WriteAnnounce = () => {
+const WriteAnnouncement = () => {
   let navigate = useNavigate();
-
+  const editorRef = useRef<any>(null);
   const [attachment, setAttachment] = useState<File | null>(null);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -21,14 +24,53 @@ const WriteAnnounce = () => {
     }
   };
 
-  const formatDate = (date:any) => {
+  const formatDate = (date: any) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}/${month}/${day}`;
   };
 
+  const handleTitleChange = (event: any) => {
+    setTitle(event.target.value);
+  };
+
   const currentDate = formatDate(new Date());
+
+  const handleSubmit = () => {
+    
+    if (title === "") {
+      alert("게시물 제목을 입력해 주세요.")
+      return;
+    } else if (content === "") {
+      alert("내용을 입력해 주세요.")
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    if (attachment) {
+      formData.append("attachment", attachment);
+      formData.append("attachmentName", attachment.name);
+    }
+    formData.append("date", currentDate);
+  
+    WriteAnnounce(formData)
+      .then(response => {
+        // 성공적으로 등록되었을 때 처리
+        navigate("/announcement");
+      })
+      .catch(error => {
+        // 실패 시 처리
+        console.error("등록에 실패했습니다.");
+      });
+  };
+
+  const onChange = () => {
+    const data = editorRef.current.getInstance().getHTML();
+    setContent(data);
+  };
 
   return (
     <div className="content">
@@ -46,7 +88,7 @@ const WriteAnnounce = () => {
 
           <div className="content_container">
             <div className="write_container">
-              <input type="text" className="write_title" placeholder="제목을 입력해 주세요." />
+              <input type="text" className="write_title" placeholder="제목을 입력해 주세요." onChange={handleTitleChange} />
               <div className="writor_container">
                 <div className="write_info">작성자</div>
                 <div className="write_info">구민석</div>
@@ -56,8 +98,10 @@ const WriteAnnounce = () => {
               </div>
               <div className="DesktopInput">
                 <Editor
+                  ref={editorRef}
                   initialValue="내용을 입력해 주세요."
-                  height='60vh'
+                  height="60vh"
+                  onChange={onChange}
                   initialEditType="wysiwyg"
                   useCommandShortcut={false}
                   hideModeSwitch={true}
@@ -68,6 +112,8 @@ const WriteAnnounce = () => {
 
               <div className="LaptopInput">
                 <Editor
+                  ref={editorRef}
+                  onChange={onChange}
                   initialValue="내용을 입력해 주세요."
                   height='53vh'
                   initialEditType="wysiwyg"
@@ -93,7 +139,7 @@ const WriteAnnounce = () => {
                   {attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setAttachment(null)} />}
                 </div>
                 <div>
-                  <button className="second_button" onClick={() => { navigate("/announcement") }}>등록</button>
+                  <button className="second_button" onClick={handleSubmit}>등록</button>
                 </div>
               </div>
             </div>
@@ -104,4 +150,4 @@ const WriteAnnounce = () => {
   );
 };
 
-export default WriteAnnounce;
+export default WriteAnnouncement;

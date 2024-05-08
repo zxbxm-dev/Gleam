@@ -38,4 +38,28 @@
     font-family: var(--font-family-Noto-M);
     color: #fff;
   }
+
+  .GoRegis{
+    margin-top: 15px;
+    color: #929292;
+
+    .span:hover{
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
+
+.ModalHeader{
+  display: flex;
+  align-items: center;
+}
+
+.ModalBody{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #3B3B3B;
+  font-family: var(--font-family-Noto-B);
 }

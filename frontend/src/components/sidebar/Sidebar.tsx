@@ -72,7 +72,7 @@ const Sidebar = () => {
             <div className="sidebar-menu">
               <ul className="menu-list">
                 <li className='menu-item'>
-                  <Link to="/announcement" className={`menu-link2 ${isOrgCultureMenuOpen ? 'active' : ''}`}
+                  <Link to="/" className={`menu-link2 ${isOrgCultureMenuOpen ? 'active' : ''}`}
                     onClick={() => {
                         toggleOrgCultureMenu();
                         handleMenuClick('orgculture');
@@ -90,7 +90,7 @@ const Sidebar = () => {
                   {isOrgCultureMenuOpen && (
                     <ul className="menu-list">
                       <li className={`sub-menu menu-item ${selectedMenu === 'announcement' || activeTab === "FirstActiveTab" ? 'active' : ''}`}>
-                        <Link to="/announcement" className='menu-link' onClick={() => handleMenuClick('announcement')}>공지사항</Link>
+                        <Link to="/" className='menu-link' onClick={() => handleMenuClick('announcement')}>공지사항</Link>
                       </li>
                       <li className={`sub-menu menu-item ${selectedMenu === 'regulations' ? 'active' : ''}`}>
                         <Link to="/regulations" className='menu-link'

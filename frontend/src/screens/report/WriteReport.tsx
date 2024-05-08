@@ -97,6 +97,10 @@ const WriteReport = () => {
     { name: '참조', checked: false, selectedMember: null as Member | null },
   ]);
 
+  // const [referenceLine, setReferenceLine] = useState([
+  //   { name: '참조', checked: false, selectedMember: null as Member | null },
+  // ]);
+
   const handleCheckboxChange = (index: number) => {
     const updatedApprovalLines = [...approvalLines];
     updatedApprovalLines[index].checked = !updatedApprovalLines[index].checked;
