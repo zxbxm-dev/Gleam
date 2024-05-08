@@ -33,7 +33,7 @@ const DetailEmployeeNotice = () => {
                 <div className="write_border" />
                 <div className="write_info">작성일</div>
                 <div className="write_info">2024/04/09</div>
-              </div>          
+              </div>
               <div className="btn_content">
                 <button className="white_button">삭제</button>
                 <button className="white_button">수정</button>

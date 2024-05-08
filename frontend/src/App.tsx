@@ -1,7 +1,7 @@
 import "./App.scss";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BaseLayout from "./layout/BaseLayout";
-import { 
+import {
   Login,
   ActivityManage,
   WriteActivityManage,
@@ -30,7 +30,11 @@ import {
   AnnualManage,
   AttendanceRegist,
   Operating,
-  PageNotFound } from "./screens";
+  PageNotFound,
+  Register,
+  FindID,
+  ResetPw
+} from "./screens";
 
 import { useRecoilState } from 'recoil';
 import { userState } from './recoil/atoms';
@@ -42,8 +46,10 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="*" element={<Login />} />
-
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/findId" element={<FindID />} />
+          <Route path="/resetpw" element={<ResetPw />} />
           <Route element={<BaseLayout />}>
             {/* 활동관리 */}
             <Route path="/activitymanage" element={<ActivityManage />} />
@@ -53,7 +59,7 @@ function App() {
             <Route path="/freeBoard" element={<FreeBoard />} />
             <Route path="/detailFreeBoard" element={<DetailFreeBoard />} />
 
-            <Route path="/announcement" element={<Announcement />} />
+            <Route path="/" element={<Announcement />} />
             <Route path="/writeAnnounce" element={<WriteAnnounce />} />
             <Route path="/detailAnnounce" element={<DetailAnnounce />} />
 
@@ -74,23 +80,23 @@ function App() {
             {/* 보고서 결재 */}
             <Route path="/approval" element={<Approval />} />
             <Route path="/detailApproval" element={<DetailApproval />} />
-            
+
             {/* 채용공고 */}
             <Route path="/employment" element={<Employment />} />
 
             {/* 인사평가 */}
             <Route path="/submit-perform" element={<SubmitPerform />} />
             <Route path="/detailSubmit" element={<DetailSubmit />} />
-            <Route path="/manage-perform" element={ userInfo.team === '관리팀' ? <ManagePerform /> : <PageNotFound />} />
+            <Route path="/manage-perform" element={userInfo.team === '관리팀' ? <ManagePerform /> : <PageNotFound />} />
 
 
             {/* 인사 정보 관리 */}
-            <Route path="/human-resources" element={ userInfo.team === '관리팀' ? <HumanResource /> : <PageNotFound />} />
+            <Route path="/human-resources" element={userInfo.team === '관리팀' ? <HumanResource /> : <PageNotFound />} />
 
             {/* 근태 관리 */}
-            <Route path="/annual-manage" element={ userInfo.team === '관리팀' ? <AnnualManage /> : <PageNotFound />} />
-            <Route path="/attendance-regist" element={ userInfo.team === '관리팀' ? <AttendanceRegist /> : <PageNotFound />} />
-            
+            <Route path="/annual-manage" element={userInfo.team === '관리팀' ? <AnnualManage /> : <PageNotFound />} />
+            <Route path="/attendance-regist" element={userInfo.team === '관리팀' ? <AttendanceRegist /> : <PageNotFound />} />
+
             {/* 운영비 관리 */}
             <Route path="/operating-manage" element={<Operating />} />
 

@@ -17,12 +17,15 @@ import {
 import { Select, Textarea, Input } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { writeCalen } from "../../services/calender/calender";
 
 const Calendar = () => {
   const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: isAddModalClose } = useDisclosure();
   const { isOpen: isViewModalOpen, onOpen: onViewModalOpen, onClose: onViewModalClose } = useDisclosure();
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [title, setTitle] = useState("");
+const [memo, setMemo] = useState("")
 
   const events = [
     { title: '구민석 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
@@ -36,6 +39,41 @@ const Calendar = () => {
     // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
   ]
 
+  const handleTitleChange = (event: any) => {
+    setTitle(event.target.value);
+  };
+
+  const handleMemoChange = (event: any) => {
+    setMemo(event.target.value);
+  };
+  const handleAddEvent = () => {
+    if (!startDate || !endDate) {
+      console.error("Start date or end date is null.");
+      return;
+    }
+  
+    // 날짜 부분만 추출
+    const isoStartDate = startDate.toISOString().substring(0, 10);
+    const isoEndDate = endDate.toISOString().substring(0, 10);
+    
+    const eventData = {
+      title: title,
+      startDate: isoStartDate,
+      endDate: isoEndDate,
+      memo: memo
+    };
+    
+    writeCalen(eventData)
+      .then(response => {
+        console.log("Event added successfully:", response);
+      })
+      .catch(error => {
+        console.error('Error adding event:', error);
+      });
+  
+    isAddModalClose();
+  };
+  
   return (
     <div className="content">
       <div className="content_header">
@@ -117,7 +155,7 @@ const Calendar = () => {
                 </Select>
               </div>
               <div>
-                <Input size='sm' width='22vw' placeholder='ex) OOO 반차' />
+                <Input size='sm' width='22vw' placeholder='ex) OOO 반차' onChange={handleTitleChange} />
               </div>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
@@ -152,12 +190,12 @@ const Calendar = () => {
                 메모
               </div>
               <div>
-                <Textarea placeholder='내용을 입력해주세요.' size='sm' width='22vw' height='15vh' fontFamily='var(--font-family-Noto-R)' />
+                <Textarea placeholder='내용을 입력해주세요.' size='sm' width='22vw' height='15vh' fontFamily='var(--font-family-Noto-R)' onChange={handleMemoChange} />
               </div>
             </div>
           </ModalBody>
           <ModalFooter gap='10px' display='flex' justifyContent='center'>
-            <button className="add_button">등록</button>
+            <button className="add_button" onClick={handleAddEvent}>등록</button>
             <button className="cancle_button">취소</button>
           </ModalFooter>
         </ModalContent>

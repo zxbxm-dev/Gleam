@@ -93,7 +93,7 @@ const Regulations = () => {
                     <tr key={announcement.id} className="board_content">
                       <td style={{ color: "#D56D6D" }}>공지</td>
                       <td style={{ textAlign: "left", paddingLeft: "20px" }}>
-                        <Link to={"/detailAnnounce"}>{announcement.title}</Link>
+                        <Link to={"/writeRegulation"}>{announcement.title}</Link>
                       </td>
                       <td>{announcement.date}</td>
                     </tr>
