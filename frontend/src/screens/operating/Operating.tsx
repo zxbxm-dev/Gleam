@@ -3,7 +3,31 @@ import "./Operating.scss";
 import { Link } from "react-router-dom";
 import { evaluate } from "mathjs";
 
+type TeamType = "common" | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
+
 const Operating = () => {
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
+  const [dropdownTeam, setDropdownTeam] = useState<TeamType>();
+  const [reserveFund, setReserveFund] = useState<number>(0);
+  const [customInputValue, setCustomInputValue] = useState('');
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  const handleYearChange = (event: any) => {
+    setSelectedYear(parseInt(event.target.value));
+  };
+
+  const handleCustomInputChange = (value: string) => {
+    setCustomInputValue(value);
+  };
+
+  const handleRightClick = (event: React.MouseEvent<HTMLTableRowElement>, team: TeamType) => {
+    event.preventDefault();
+    setDropdownTeam(team);
+    setDropdownOpen(true);
+    setDropdownPosition({ x: event.pageX, y: event.pageY });
+  };
+
   const accountCode: { [key: string]: string } = {
     '' : '',
     81101 : '비품-사무용가구',
@@ -86,10 +110,75 @@ const Operating = () => {
       newTeam = [...planningTeam, ['', '', '', '']];
       setPlanningTeam(newTeam);
     }
-  
+    setDropdownOpen(false);
   };
 
+  const removeRow = (team: 'common' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
+    switch (team) {
+      case 'common':
+        setCommonTeam(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'management':
+        setManagementTeam(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'support':
+        setSupportTeam(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'devOne':
+        setDevOneTeam(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'devTwo':
+        setDevTwoTeam(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'blockchain':
+        setBlockChainTeam(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'design':
+        setDesignTeam(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'planning':
+        setPlanningTeam(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      default:
+        break;
+    }
+    setDropdownOpen(false);
+  };
+  
 
+  
   const setTeamState = <T extends string[][]>(
     teamStateSetter: React.Dispatch<React.SetStateAction<T>>,
     teamName: string,
@@ -232,15 +321,38 @@ const Operating = () => {
   const MarketingRowSpan = designTeam.length + planningTeam.length;
 
   useEffect(() => {
-    
-  },);
+    const handleClickOutside = (event: any) => {
+      if (dropdownOpen && !event.target.closest('.dropdown-menu')) {
+        setDropdownOpen(false);
+      }
+    };
+  
+    document.addEventListener('click', handleClickOutside);
+  
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [dropdownOpen]);
 
   return (
     <div className="content">
       <div className="content_header">
         <Link to={"/operating-manage"} className="sub_header">운영비 관리</Link>
       </div>
-      
+      <div className='oper_header_right'>
+        <select
+          name="yearSelect"
+          id="yearSelect"
+          className='oper_year_select'
+          value={selectedYear}
+          onChange={handleYearChange}
+        >
+          <option value={2024}>2024</option>
+          <option value={2023}>2023</option>
+        </select>
+        <button className='oper_edit_button'>수정</button>
+        <button className='oper_download_button'>다운로드</button>
+      </div>
       <div className="content_container">
         <div className="container">
           <div className="container_operating">
@@ -260,7 +372,7 @@ const Operating = () => {
                   </tr>
                   
                   {commonTeam.map((row, index) => (
-                    <tr key={index} className={index === commonTeam.length-1 ? 'border_line' : 'dashed_line'}>
+                    <tr key={index} className={index === commonTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={CommonRowSpan} colSpan={2}>공통 <br /> (1000) </th>
@@ -298,15 +410,16 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={CommonRowSpan}> {commonCost.toLocaleString()} </th>
-                          <th rowSpan={commonTeam.length}> {commonCost.toLocaleString()} </th>
+                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {commonCost.toLocaleString()} </th>
+                          <th rowSpan={commonTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {commonCost.toLocaleString()} </th>
                         </>
                       ) : null}
+                      
                     </tr>
                   ))}
-
+                  
                   {managementTeam.map((row, index) => (
-                    <tr key={index} className={index === managementTeam.length-1 ? 'border_line' : 'dashed_line'}>
+                    <tr key={index} className={index === managementTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'management')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={ManageRowSpan}>관리부 <br /> (10) </th>
@@ -345,15 +458,15 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={managementTeam.length}> {managementCost.toLocaleString()} </th>
-                          <th rowSpan={ManageRowSpan}> {(managementCost + supportCost).toLocaleString()} </th>
+                          <th rowSpan={managementTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {managementCost.toLocaleString()} </th>
+                          <th rowSpan={ManageRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(managementCost + supportCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
 
                   {supportTeam.map((row, index) => (
-                    <tr key={index} className={index === supportTeam.length-1 ? 'border_line' : 'dashed_line'}>
+                    <tr key={index} className={index === supportTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'support')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={supportTeam.length}>지원팀 <br /> (02) </th>
@@ -391,14 +504,14 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={supportTeam.length}> {supportCost.toLocaleString()} </th>
+                          <th rowSpan={supportTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {supportCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
 
                   {devOneTeam.map((row, index) => (
-                    <tr key={index} className={index === devOneTeam.length-1 ? 'border_line' : 'dashed_line'}>
+                    <tr key={index} className={index === devOneTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'devOne')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={DevRowSpan}>개발부 <br /> (20) </th>
@@ -437,8 +550,8 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devOneTeam.length}> {devOneCost.toLocaleString()} </th>
-                          <th rowSpan={DevRowSpan}> {(devOneCost + devTwoCost).toLocaleString()} </th>
+                          <th rowSpan={devOneTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {devOneCost.toLocaleString()} </th>
+                          <th rowSpan={DevRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(devOneCost + devTwoCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -446,7 +559,7 @@ const Operating = () => {
 
 
                   {devTwoTeam.map((row, index) => (
-                    <tr key={index} className={index === devTwoTeam.length-1 ? 'border_line' : 'dashed_line'}>
+                    <tr key={index} className={index === devTwoTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'devTwo')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={devTwoTeam.length}>개발 2팀 <br /> (02) </th>
@@ -484,14 +597,14 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devTwoTeam.length}> {devTwoCost.toLocaleString()} </th>
+                          <th rowSpan={devTwoTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {devTwoCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
 
                   {blockchainTeam.map((row, index) => (
-                    <tr key={index} className={index === blockchainTeam.length-1 ? 'border_line' : 'dashed_line'}>
+                    <tr key={index} className={index === blockchainTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'blockchain')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={BlockChainRowSpan}>블록체인 <br />사업부 <br /> (30) </th>
@@ -530,15 +643,15 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={BlockChainRowSpan}> {blockchainCost.toLocaleString()} </th>
-                          <th rowSpan={blockchainTeam.length}> {blockchainCost.toLocaleString()} </th>
+                          <th rowSpan={BlockChainRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {blockchainCost.toLocaleString()} </th>
+                          <th rowSpan={blockchainTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {blockchainCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
                   
                   {designTeam.map((row, index) => (
-                    <tr key={index} className={index === designTeam.length-1 ? 'border_line' : 'dashed_line'}>
+                    <tr key={index} className={index === designTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'design')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={MarketingRowSpan}>마케팅부 <br /> (40) </th>
@@ -577,8 +690,8 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={designTeam.length}> {designCost.toLocaleString()} </th>
-                          <th rowSpan={MarketingRowSpan}> {(designCost + planningCost).toLocaleString()} </th>
+                          <th rowSpan={designTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {designCost.toLocaleString()} </th>
+                          <th rowSpan={MarketingRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(designCost + planningCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -586,7 +699,7 @@ const Operating = () => {
 
                   
                   {planningTeam.map((row, index) => (
-                    <tr key={index} className={index === planningTeam.length-1 ? 'border_line' : 'dashed_line'}>
+                    <tr key={index} className={index === planningTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'planning')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={planningTeam.length}>기획팀 <br /> (02) </th>
@@ -624,7 +737,7 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={planningTeam.length}> {planningCost.toLocaleString()} </th>
+                          <th rowSpan={planningTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {planningCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -632,23 +745,93 @@ const Operating = () => {
 
                 </tbody>
               </table>
+                
+              <table className='Excel_total'>
+                <tbody>
+                  <tr>
+                    <td style={{ width: '588px'}}>부서(팀)별 편성액 합계</td>
+                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>{( commonCost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost).toLocaleString()}</td>
+                    <td>  </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: '588px'}}>예비비</td>
+                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>
+                      {reserveFund ? (
+                        <div onClick={() => setReserveFund(0)}>
+                          {reserveFund.toLocaleString()}
+                        </div>
+                      ) : (
+                        <select
+                          name="예비비"
+                          id="예비비"
+                          className='dropdown_select'
+                          onChange={(e) => {
+                            const ratio = parseFloat(e.target.value) || 0;
+                            const reserveFund = (commonCost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) * ratio / 100;
+                            setReserveFund(reserveFund);
+                          }}
+                        >
+                          <option value=""></option>
+                          <option value="5">5%</option>
+                          <option value="10">10%</option>
+                          <option value="15">15%</option>
+                          <option value="20">20%</option>
+                          <option value="25">25%</option>
+                          <option value="30">30%</option>
+                        </select>
+                      )}
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={customInputValue}
+                        onChange={(e) => handleCustomInputChange(e.target.value)}
+                        className='dropdown_input'
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: '588px'}}>{selectedYear}년 총 예산</td>
+                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>{(( commonCost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) + reserveFund).toLocaleString()}</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-
-          <div>
-            <input type='button' value='공통 행 추가' onClick={() => addRow('common')} />--
-            <input type='button' value='관리팀 행 추가' onClick={() => addRow('management')} />--
-            <input type='button' value='지원팀 행 추가' onClick={() => addRow('support')} />--
-            <input type='button' value='개발1팀 행 추가' onClick={() => addRow('devOne')} />--
-            <input type='button' value='개발2팀 행 추가' onClick={() => addRow('devTwo')} />--
-            <input type='button' value='블록체인팀 행 추가' onClick={() => addRow('blockchain')} />--
-            <input type='button' value='디자인팀 행 추가' onClick={() => addRow('design')} />--
-            <input type='button' value='기획팀 행 추가' onClick={() => addRow('planning')} />
-          </div>
-
         </div>
       </div>  
-      
+      {dropdownOpen && dropdownTeam && (
+        <span className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
+          <div className="dropdown_title">
+            {(() => {
+              switch (dropdownTeam) {
+                case 'common':
+                  return '공통';
+                case 'management':
+                  return '관리팀';
+                case 'support':
+                  return '지원팀';
+                case 'devOne':
+                  return '개발 1팀';
+                case 'devTwo':
+                  return '개발 2팀';
+                case 'blockchain':
+                  return '블록체인 1팀';
+                case 'design':
+                  return '디자인팀';
+                case 'planning':
+                  return '기획팀';
+                  default:
+                  return '';
+              }
+            })()}
+          </div>
+          <div className="dropdown_border"></div>
+          <div className="dropdown_add" onClick={() => addRow(dropdownTeam)}>행 추가</div>
+          <div className="dropdown_del" onClick={() => removeRow(dropdownTeam)}>행 삭제</div>
+        </span>
+      )}
     </div>
   );
 };
