@@ -43,11 +43,15 @@ const SubmitPerform = () => {
       <div className="content_container">
         <div className="container">
           <div className="perform_content">
-            <Document file={testPDF} onLoadSuccess={onDocumentLoadSuccess}>
-              {renderPages()}
-            </Document>
-            <div>* 위 내용을 읽고 확인했습니다.</div>
-            <button className='approval_button' onClick={() => navigate('/detailSubmit')}>제출하기</button>
+            <div className="pdf-container">
+              <Document file={testPDF} onLoadSuccess={onDocumentLoadSuccess}>
+                {renderPages()}
+                <div className='pdf-button'>
+                  <div>* 위 내용을 읽고 확인했습니다.</div>
+                  <button className='approval_button' onClick={() => navigate('/detailSubmit')}>제출하기</button>
+                </div>
+              </Document>
+            </div>
           </div>
         </div>
       </div>  
