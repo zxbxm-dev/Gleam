@@ -274,7 +274,7 @@ const WriteReport = () => {
               </div>
             </div>
 
-            <div className="write_btm_container">
+            <div className="write_btm_container2">
               { file ? (
                 <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                   {renderPages()}

@@ -163,8 +163,54 @@
       width: 100%;
       height: 90%;
       overflow-y: scroll;
+      scrollbar-width: thin;
       display: flex;
       justify-content: center;
+
+      .upload-area {
+        width: 100%;
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #C7C7C7;
+        font-family: var(--font-family-Noto-M);
+
+        .upload-text-top {
+          font-size: 36px;
+        }
+        .upload-text-btm {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .write_btm_container2 {
+      position: relative;
+      width: 100%;
+      height: 90%;
+      display: flex;
+      justify-content: center;
+
+      .attachment-area {
+        width: 100%;
+        height: auto;
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
+
+        .attachment-title {
+          font-size: 14px;
+          color: #746E58;
+          font-family: var(--font-family-Noto-B);
+        }
+
+        .attachment-content {
+          font-size: 14px;
+          color: #9E9E9E;
+        }
+      }
 
       .upload-area {
         width: 100%;
