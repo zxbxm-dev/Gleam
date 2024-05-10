@@ -1,11 +1,13 @@
 import { Outlet } from "react-router-dom";
 import { Header, Sidebar, MemberSidebar } from "../components";
 import { useRecoilState } from 'recoil';
-import { isSidebarVisibleState, isHrSidebarVisibleState } from '../recoil/atoms';
+import { isSidebarVisibleState, isHrSidebarVisibleState, isSelectMemberState } from '../recoil/atoms';
 
 const BaseLayout = () => {
   const [isSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [isHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
+  const [isSelectMember, setIsSelectMember] = useRecoilState(isSelectMemberState);
+
 
   let marginLeft = 0;
   if (isSidebarVisible) {
@@ -18,7 +20,8 @@ const BaseLayout = () => {
   const handleMemberClick = (name: string, dept: string, team: string, position: string) => {
     // 선택된 멤버 정보를 새로운 Member 배열로 생성
     const newMember = [name, dept, team, position];
-    console.log('선택한 멤버 정보', newMember)
+    setIsSelectMember(newMember);
+    console.log(isSelectMember)
   };
 
   return (

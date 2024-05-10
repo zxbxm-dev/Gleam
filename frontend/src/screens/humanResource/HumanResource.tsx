@@ -5,7 +5,6 @@ import { Input } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import {
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalFooter,
@@ -22,8 +21,11 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
+import { isSelectMemberState } from '../../recoil/atoms';
 
 const HumanResource = () => {
+  const [isSelectMember] = useRecoilState(isSelectMemberState);
   const [isEditing, setIsEditing] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -31,10 +33,25 @@ const HumanResource = () => {
     setIsEditing(!isEditing);
   };
 
+  const handleHumanInfoDelete = () => {
+    onClose();
+  }
+
+
   return (
     <div className="content">
       <div className="content_header">
-        <Link to={"/human-resources"} className="sub_header">인사 정보 관리</Link>
+        {isSelectMember[0] === '' ? (
+          <>
+            <Link to={"/human-resources"} className="sub_header">인사 정보 관리</Link>
+          </>
+        ) : (
+          <>
+            <Link to={"/human-resources"} className="sub_header">인사 정보 관리</Link>
+            <div className="main_header">＞</div>
+            <div className="sub_header">{isSelectMember[0]}</div>
+          </>
+        )}
       </div>
       
       <div className="content_container">
@@ -231,17 +248,16 @@ const HumanResource = () => {
           </Tabs>
       </div>  
       <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalOverlay />
-        <ModalContent height='250px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
+        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
+          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
+          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
           <ModalBody className="cancle_modal_content">
             삭제하시겠습니까?
           </ModalBody>
 
           <ModalFooter gap='10px' justifyContent='center'>
-            <button className="del_button">삭제</button>
-            <button className="cle_button">취소</button>
+            <button className="del_button" onClick={handleHumanInfoDelete}>삭제</button>
+            <button className="cle_button" onClick={onClose}>취소</button>
           </ModalFooter>
         </ModalContent>
       </Modal>
