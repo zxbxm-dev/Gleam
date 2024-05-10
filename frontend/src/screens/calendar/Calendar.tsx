@@ -25,7 +25,7 @@ const Calendar = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [title, setTitle] = useState("");
-const [memo, setMemo] = useState("")
+  const [memo, setMemo] = useState("")
 
   const events = [
     { title: '구민석 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
@@ -51,18 +51,18 @@ const [memo, setMemo] = useState("")
       console.error("Start date or end date is null.");
       return;
     }
-  
+
     // 날짜 부분만 추출
     const isoStartDate = startDate.toISOString().substring(0, 10);
     const isoEndDate = endDate.toISOString().substring(0, 10);
-    
+
     const eventData = {
       title: title,
       startDate: isoStartDate,
       endDate: isoEndDate,
       memo: memo
     };
-    
+
     writeCalen(eventData)
       .then(response => {
         console.log("Event added successfully:", response);
@@ -70,10 +70,10 @@ const [memo, setMemo] = useState("")
       .catch(error => {
         console.error('Error adding event:', error);
       });
-  
+
     isAddModalClose();
   };
-  
+
   return (
     <div className="content">
       <div className="content_header">
@@ -162,7 +162,7 @@ const [memo, setMemo] = useState("")
               <div style={{ width: '4vw', textAlign: 'right' }}>
                 기간
               </div>
-              <div style={{display:'flex', width:'80%'}}>
+              <div style={{ display: 'flex', width: '80%' }}>
                 <DatePicker
                   selected={startDate}
                   onChange={date => setStartDate(date)}

@@ -10,6 +10,8 @@ export { default as FileUploadIcon } from "./FileUploadIcon.svg";
 export { default as Plus_btn } from "./Plus_btn.svg";
 export { default as Minus_btn } from "./Minus_btn.svg";
 export { default as Login_Logo } from "./Login_Logo.svg";
+export { default as ArrowDown } from "./ArrowDown.svg";
+export { default as ArrowUp } from "./ArrowUp.svg";
 
 
 // header
