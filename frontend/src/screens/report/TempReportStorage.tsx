@@ -151,7 +151,7 @@ const TempReportStorage = () => {
 
           <ModalFooter gap='10px' justifyContent='center'>
             <button className="del_button">삭제</button>
-            <button className="cle_button">취소</button>
+            <button className="cle_button" onClick={onClose}>취소</button>
           </ModalFooter>
         </ModalContent>
       </Modal>

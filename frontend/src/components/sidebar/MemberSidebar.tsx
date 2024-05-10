@@ -15,6 +15,7 @@ interface Props {
 
 const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
   const user = useRecoilState(userState);
+  const [clickedMember, setClickedMember] = useState<Member | null>(null); // 클릭된 멤버 상태 추가
   const members: Member[] = [
     ['id1', 'pw1', '이정훈', '포체인스 주식회사', '', '대표', ['본사', 'R&D']],
     ['id2', 'pw2', '안후상', '포체인스 주식회사', '', '이사', ['본사', 'R&D']],
@@ -52,11 +53,10 @@ const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
       } else if (user[0].company === 'R&D') {
         return members.filter(member =>member[6].includes('R&D'));
       } else {
-        return members; // 다른 회사의 경우 모든 멤버들 반환
+        return members;
       }
     } 
   };
-  console.log('로그인한 사람', user)
   // 부서별로 팀을 묶어주는 함수
   const renderDepartmentsWithTeams = () => {
     const filteredMembers = getFilteredMembers();
@@ -99,7 +99,11 @@ const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
                   <div className="team-placeholder">
                     <ul>
                       {members.map(({ name, position }, index) => (
-                        <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
+                        <li 
+                          key={index}
+                          className={`name ${clickedMember && clickedMember[0] === name ? 'clicked' : ''}`}
+                          onClick={() => handleMemberClick(name, dept, team, position)}
+                        >
                           <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/>
                           <span className="name_text">{name}</span>
                           <div className="name_border"></div>
@@ -112,7 +116,11 @@ const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
                 {expandedTeams.includes(team) && (
                   <ul>
                     {members.map(({ name, position }, index) => (
-                      <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
+                      <li 
+                        key={index} 
+                        className={`name ${clickedMember && clickedMember[0] === name ? 'clicked' : ''}`}
+                        onClick={() => handleMemberClick(name, dept, team, position)}
+                      >
                         <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/>
                         <span className="name_text">{name}</span>
                         <div className="name_border"></div>
@@ -142,6 +150,8 @@ const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
   };
 
   const handleMemberClick = (name: string, dept: string, team: string, position: string) => {
+    setClickedMember([name, dept, team, position, '', '', []]);
+
     // 클릭된 멤버의 정보를 부모 컴포넌트로 전달
     onClickMember(name, dept, team, position);
   };

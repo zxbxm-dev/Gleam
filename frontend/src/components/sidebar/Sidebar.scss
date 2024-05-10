@@ -240,6 +240,10 @@
       border-right: 1px solid black;
     }
   }
+
+  .clicked {
+    background-color: #FFF8E0;
+  }
 }
 
 @include desktop {

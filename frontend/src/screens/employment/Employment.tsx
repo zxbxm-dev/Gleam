@@ -81,7 +81,7 @@ const Employment = () => {
 
   const handleDelete = () => {
     // 삭제하기 기능 추가
-    onOpen();
+    onClose();
     setDropdownOpen(false);
   };
 
@@ -184,7 +184,7 @@ const Employment = () => {
                                   </PopoverContent>
                                 </Portal>
                               </Popover>
-                              <div className="dropdown_del" onClick={handleDelete}>삭제하기</div>
+                              <div className="dropdown_del" onClick={onOpen}>삭제하기</div>
                             </div>
                           )}
                         </div>
@@ -258,8 +258,8 @@ const Employment = () => {
           </ModalBody>
 
           <ModalFooter gap='10px' justifyContent='center'>
-            <button className="del_button">삭제</button>
-            <button className="cle_button">취소</button>
+            <button className="del_button" onClick={handleDelete}>삭제</button>
+            <button className="cle_button" onClick={onClose}>취소</button>
           </ModalFooter>
         </ModalContent>
       </Modal>

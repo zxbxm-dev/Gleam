@@ -6,9 +6,10 @@ import {
 } from "../../assets/images/index";
 import { Link } from "react-router-dom";
 import { useRecoilState } from 'recoil';
-import { isSidebarVisibleState, isHrSidebarVisibleState } from '../../recoil/atoms';
+import { isSidebarVisibleState, isHrSidebarVisibleState, isSelectMemberState } from '../../recoil/atoms';
 
 const Sidebar = () => {
+  const [isSelectMember, setIsSelectMember] = useRecoilState(isSelectMemberState);
   const [isSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
 
@@ -33,6 +34,8 @@ const Sidebar = () => {
       menu !== 'manage-perform' 
     ) {
       setIsPerformanceMenuOpen(false);
+      setIsSelectMember(['', '', '', ''])
+      console.log(isSelectMember)
     }
     if (menu !== 'attendance' &&
       menu !== 'annual-manage' &&

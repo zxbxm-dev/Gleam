@@ -22,8 +22,11 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
+import { isSelectMemberState } from '../../recoil/atoms';
 
 const HumanResource = () => {
+  const [isSelectMember] = useRecoilState(isSelectMemberState);
   const [isEditing, setIsEditing] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -31,10 +34,25 @@ const HumanResource = () => {
     setIsEditing(!isEditing);
   };
 
+  const handleHumanInfoDelete = () => {
+    onClose();
+  }
+
+
   return (
     <div className="content">
       <div className="content_header">
-        <Link to={"/human-resources"} className="sub_header">인사 정보 관리</Link>
+        {isSelectMember[0] === '' ? (
+          <>
+            <Link to={"/human-resources"} className="sub_header">인사 정보 관리</Link>
+          </>
+        ) : (
+          <>
+            <Link to={"/human-resources"} className="sub_header">인사 정보 관리</Link>
+            <div className="main_header">＞</div>
+            <div className="sub_header">{isSelectMember[0]}</div>
+          </>
+        )}
       </div>
       
       <div className="content_container">
@@ -240,8 +258,8 @@ const HumanResource = () => {
           </ModalBody>
 
           <ModalFooter gap='10px' justifyContent='center'>
-            <button className="del_button">삭제</button>
-            <button className="cle_button">취소</button>
+            <button className="del_button" onClick={handleHumanInfoDelete}>삭제</button>
+            <button className="cle_button" onClick={onClose}>취소</button>
           </ModalFooter>
         </ModalContent>
       </Modal>
