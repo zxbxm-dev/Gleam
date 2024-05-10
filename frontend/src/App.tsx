@@ -33,7 +33,8 @@ import {
   PageNotFound,
   Register,
   FindID,
-  ResetPw
+  ResetPw,
+  EditRegis
 } from "./screens";
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/findId" element={<FindID />} />
           <Route path="/resetpw" element={<ResetPw />} />
+          <Route path="/editres" element={<EditRegis />} />
           <Route element={<BaseLayout />}>
             {/* 활동관리 */}
             <Route path="/activitymanage" element={<ActivityManage />} />

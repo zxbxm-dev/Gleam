@@ -5,6 +5,12 @@ const RegisterServices = (formData) => {
     return api.post("/postResData", formData);
 };
 
+//회원가입 수정 데이터 전송
+const RegisterEditServices = (formData) => {
+    return api.post("/postResEditData", formData);
+};
+
+
 
 //아이디 찾기 데이터 전송
 const FindIDServices = (formData) => {
@@ -16,4 +22,4 @@ const ResetPwServices = (formData) => {
     return api.post("/postresetpw", formData);
 };
 
-export { RegisterServices, FindIDServices, ResetPwServices };
+export { RegisterServices,RegisterEditServices, FindIDServices, ResetPwServices };

@@ -68,7 +68,7 @@ const Login = () => {
       <button className="login_btn" onClick={handleLogin}>로그인</button>
 
       <div className='GoRegis'>
-        <Link to="/register" className='span'>회원가입</Link>&nbsp; | &nbsp;<Link to="/findId" className='span'>아이디 찾기</Link>&nbsp; | &nbsp;<Link to="resetpw" className='span'>비밀번호 재설정</Link>
+        <Link to="/register" className='span'>회원가입</Link>&nbsp; | &nbsp;<Link to="/findId" className='span'>아이디 찾기</Link>&nbsp; | &nbsp;<Link to="/resetpw" className='span'>비밀번호 재설정</Link>
       </div>
       <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
         <ModalContent width="400px" height='200px' borderRadius='5px'>

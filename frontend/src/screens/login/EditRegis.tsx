@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Register.scss";
-import { Login_Logo, ArrowDown, ArrowUp } from "../../assets/images/index";
-import { RegisterServices } from "../../services/login/RegisterServices";
+import { Login_Logo, DeleteIcon, ArrowDown, ArrowUp, FileUploadIcon } from "../../assets/images/index";
+import { RegisterEditServices } from "../../services/login/RegisterServices";
 import {
     Modal,
     ModalContent,
@@ -9,9 +9,9 @@ import {
     useDisclosure,
     ModalBody,
 } from '@chakra-ui/react';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const Register = () => {
+const EditRegis = () => {
     const [selectedOptions, setSelectedOptions] = useState({
         company: '',
         department: '',
@@ -30,15 +30,40 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
-    const [id, setUserID] = useState("");
-    const [question1, setQuestion1] = useState("");
-    const [question2, setQuestion2] = useState("");
-    const [name, setName] = useState("");
-    const [mail, setMail] = useState("");
-    const [Agree, setAgree] = useState(false);
+    const [attachment, setAttachment] = useState<File | null>(null);
+    const [Sign, setSign] = useState<File | null>(null);
+    const [formData, setFormData] = useState({
+        password: '',
+        company: '',
+        department: '',
+        team: '',
+        spot: '',
+        position: '',
+        phoneNumber: '',
+    });
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setAttachment(file);
+        }
+    };
+
+    const handleSignFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setSign(file);
+        }
+    };
 
     const handleInputChange = (event: any, field: any) => {
         const value = event.target.value;
+
+        setFormData(prevData => ({
+            ...prevData,
+            [field]: value
+        }));
+
         switch (field) {
             case 'password':
                 setPassword(value);
@@ -170,73 +195,47 @@ const Register = () => {
         }
     };
 
-    const handleIDChange = (event: any) => {
-        setUserID(event.target.value);
-    };
-    const handleques1Change = (event: any) => {
-        setQuestion1(event.target.value);
-    };
-    const handleques2Change = (event: any) => {
-        setQuestion2(event.target.value);
-    };
-    const handleNameChange = (event: any) => {
-        setName(event.target.value);
-    };
-    const handleMailChange = (event: any) => {
-        setMail(event.target.value + "@four-chains.com");
-    };
-
-    const handleAgree = (event: any) => {
-        setAgree(!Agree);
-    };
-
     const handleSubmit = () => {
+        const filteredData = Object.fromEntries(
+            Object.entries(formData).filter(([_, value]) => value !== '')
+        );
 
-        if (!id || !password || !confirmPassword || !question1 || !question2 || !name || !mail || !phoneNumber ||
-            !selectedOptions.company || !selectedOptions.department || !selectedOptions.team ||
-            !selectedOptions.spot || !selectedOptions.position || !Agree) {
-            console.error("필수 항목을 모두 작성해주세요.");
-            return;
+        // FormData 생성
+        const formDataToSend = new FormData();
+        for (const key in filteredData) {
+            formDataToSend.append(key, filteredData[key]);
+        }
+        // 이미지 파일 추가
+        if (attachment) {
+            formDataToSend.append('attachment', attachment);
+        }
+        if (Sign) {
+            formDataToSend.append('sign', Sign);
         }
 
-        const formData = {
-            userID: id,
-            password: password,
-            question1: question1,
-            question2: question2,
-            username: name,
-            usermail: mail,
-            company: selectedOptions.company,
-            department: selectedOptions.department,
-            team: selectedOptions.team,
-            spot: selectedOptions.spot,
-            position: selectedOptions.position,
-            phoneNumber: phoneNumber
-        };
-
         // API 호출
-        RegisterServices(formData)
+        RegisterEditServices(formDataToSend)
             .then(response => {
                 onAddModalOpen();
             })
             .catch(error => {
                 // 오류 발생 시
-                console.error("회원가입 오류:", error);
+                console.error("오류:", error);
             });
     };
 
     return (
         <div className="Register">
-            <Link to="/login">
-            <img className="ResLogo" src={Login_Logo} />
+            <Link to="/">
+                <img className="ResLogo" src={Login_Logo} />
             </Link>
-            <span className="ResText">회원가입</span>
+            <span className="ResText">회원정보 수정</span>
 
             <div className="RegistorBox">
                 <div className="LeftFlex">
                     <div className="MiniBox">
                         <span>아이디 입력</span>
-                        <input type="text" className="TextInput" placeholder="아이디를 입력해 주세요." onChange={handleIDChange} />
+                        <span className="localinput">로컬 아이디</span>
                     </div>
                     <div className="MiniphoneBox">
                         <div className="Phone">
@@ -298,17 +297,16 @@ const Register = () => {
                         <div className="Question">
                             <div className="Ques">
                                 <span>어머니의 성은 무엇입니까?</span>
-                                <input type="text" className="TextInput" placeholder="답을 입력해 주세요." onChange={handleques1Change} />
+                                <span className="localinput">로컬질문1</span>
                             </div>
                             <div className="Ques">
                                 <span>졸업한 초등학교는 어디입니까?</span>
-                                <input type="text" className="TextInput" placeholder="답을 입력해 주세요." onChange={handleques2Change} />
-                            </div>
+                                <span className="localinput">로컬질문2</span>                            </div>
                         </div>
                     </div>
                     <div className="MiniBox">
                         <span>성명 입력</span>
-                        <input type="text" className="TextInput" placeholder="성명을 입력해 주세요." onChange={handleNameChange} />
+                        <span className="localinput">로컬성명</span>
                     </div>
                     <div className="MiniphoneBox">
                         <div className="Phone">
@@ -336,12 +334,51 @@ const Register = () => {
                             {phoneNumberError && <div className="ErrorMessage">{phoneNumberError}</div>}
                         </div>
                     </div>
-                    <div className="MinimBox">
-                        <span>메일 입력</span>
-                        <input type="text" className="ShortTextInput" onChange={handleMailChange} placeholder="두레이 메일주소 입력" /> @four-chains.com
-                    </div>
+
                 </div>
                 <div className="RightFlex">
+                    <div className="MinimBox">
+                        <span>메일 입력</span>
+                        <div className="localinput">로컬메일</div>
+                    </div>
+                    <div className="UploadBox">
+                        <span>증명사진 업로드</span>
+                        <div className="attachment_content">
+                            <label htmlFor="fileInput" className="primary_button">
+                                <img src={FileUploadIcon} alt="FileUploadIcon" />
+                                파일 첨부하기
+                                <input
+                                    id="fileInput"
+                                    type="file"
+                                    style={{ display: "none" }}
+                                    onChange={handleFileChange}
+                                />
+                            </label>
+                            <div className="attachmentBox">
+                                {attachment ? <div className="attachment_name">{attachment.name}</div> : <div className="attachment_name">파일을 선택해 주세요.</div>}
+                                {attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setAttachment(null)} />}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="UploadBox">
+                        <span>서명 업로드</span>
+                        <div className="attachment_content">
+                            <label htmlFor="signfileInput" className="primary_button">
+                                <img src={FileUploadIcon} alt="FileUploadIcon" />
+                                파일 첨부하기
+                                <input
+                                    id="signfileInput"
+                                    type="file"
+                                    style={{ display: "none" }}
+                                    onChange={handleSignFileChange}
+                                />
+                            </label>
+                            <div className="attachmentBox">
+                                {Sign ? <div className="attachment_name">{Sign.name}</div> : <div className="attachment_name">파일을 선택해 주세요.</div>}
+                                {Sign && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setAttachment(null)} />}
+                            </div>
+                        </div>
+                    </div>
                     <div className="flexbox">
                         <span className="FlexSpan">회사 구분</span>
                         <fieldset>
@@ -445,42 +482,10 @@ const Register = () => {
                             )}
                         </div>
                     </div>
-                    <div className="flexsbox">
-                        <span className="FlexSpan">
-                            개인정보<br />
-                            수집·이용 동의<br />
-                            (필수)
-                        </span>
-                        <div className="Bo">
-                            <div className="First">
-                                1. 수집하는 개인정보 항목
-                                • 필수 정보: 성명, 직위, 소속 부서, 연락처(핸드폰 번호),
-                                이메일, 서명 이미지<br /><br />
-
-                                2. 개인정보의 수집 및 이용 목적
-                                • 회원가입 및 서비스 이용을 위한 식별 및 인증
-                                • 업무 목적에 따른 연락 및 안내
-                                • 업무 협업을 위한 사내 메신저 및 업무 관리 시스템 이용<br /><br />
-
-                                3. 개인정보의 보유 및 이용 기간
-                                • 수집된 개인정보는 회원 탈퇴 시까지 보유되며, 이후
-                                해당 정보는 안전하게 파기됩니다.<br /><br />
-
-                                4. 동의 거부 권리 및 거부 시 불이익 내용
-                                • 필수 정보의 제공에 동의하지 않을 경우 회원가입 및
-                                서비스 이용이 불가능합니다.
-                            </div>
-                            <label className="Radio">
-                                <input type="checkbox" name="contactss" value="Bovalue" />
-                                <span onClick={handleAgree}>동의합니다.</span>
-                            </label>
-
-                        </div>
-                    </div>
                 </div>
             </div>
             <div className="ResBtnBox">
-                <button className="ResBtn" onClick={handleSubmit}>회원가입 승인 요청</button>
+                <button className="ResBtn" onClick={handleSubmit}>회원정보 수정</button>
             </div>
 
             <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
@@ -494,4 +499,4 @@ const Register = () => {
         </div>
     )
 }
-export default Register;
+export default EditRegis;

@@ -9,6 +9,7 @@ import {
     ModalBody,
 } from '@chakra-ui/react';
 import { ResetPwServices } from "../../services/login/RegisterServices";
+import { Link } from "react-router-dom";
 
 const ResetPw = () => {
     const [selectedOptions, setSelectedOptions] = useState({
@@ -65,7 +66,7 @@ const ResetPw = () => {
     };
 
     const handleSubmit = () => {
-        if (!id || !name || !selectedOptions.spot || !phoneNumber || !question1 || !question2 || !resetpassword ||!confirmPassword) {
+        if (!id || !name || !selectedOptions.spot || !phoneNumber || !question1 || !question2 || !resetpassword || !confirmPassword) {
             console.error("필수 항목을 모두 작성해주세요.");
             return;
         }
@@ -95,7 +96,9 @@ const ResetPw = () => {
     return (
         <div className="FindID">
             <div className="LogoBox">
-                <img className="ResLogo" src={Login_Logo} />
+                <Link to="/login">
+                    <img className="ResLogo" src={Login_Logo} />
+                </Link>
                 <span className="ResText">패스워드 재설정</span>
             </div>
             <div className="RegistorBox">
@@ -224,7 +227,6 @@ const ResetPw = () => {
 
             <div className="ResBtnBox">
                 <button className="ResBtn" onClick={handleSubmit}>확인</button>
-                <button className="ResBtn">취소</button>
             </div>
 
             <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>

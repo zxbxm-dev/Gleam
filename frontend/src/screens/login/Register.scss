@@ -40,6 +40,14 @@
                 display: flex;
                 align-items: flex-start;
 
+                .localinput{
+                    width: 300px;
+                    height: 35px;
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                }
+
                 span {
                     font-size: 14px;
                     color: #3b3b3b;
@@ -81,6 +89,16 @@
             }
 
             .MinimBox {
+display: flex;
+align-items: center;
+                .localinput{
+                    width: 300px;
+                    height: 35px;
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                }
+
                 span {
                     margin-right: 20px;
                     font-size: 14px;
@@ -163,6 +181,14 @@
                 display: flex;
                 align-items: center;
 
+                .localinput{
+                    width: 300px;
+                    height: 35px;
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                }
+
                 span {
                     font-size: 14px;
                     color: #3b3b3b;
@@ -193,6 +219,83 @@
             gap: 20px;
             display: flex;
             flex-direction: column;
+            align-items: flex-end;
+
+            .MinimBox {
+                display: flex;
+                align-items: center;
+                                .localinput{
+                                    width: 300px;
+                                    height: 35px;
+                                    display: flex;
+                                    align-items: center;
+                                    font-size: 14px;
+                                }
+                
+                                span {
+                                    margin-right: 20px;
+                                    font-size: 14px;
+                                    color: #3b3b3b;
+                                }
+                
+                                .ShortTextInput {
+                                    width: 173px;
+                                    height: 35px;
+                                    border: 1px solid #dcdcdc;
+                                    background-color: #fff;
+                                    border-radius: 5px;
+                                    padding-left: 15px;
+                                    font-size: 14px;
+                                }
+                
+                                .ShortTextInput:focus {
+                                    outline: 2px solid #746e58;
+                                }
+                
+                                .ShortTextInput::placeholder {
+                                    font-size: 14px;
+                                    color: #C7C7C7;
+                                }
+                            }
+
+            .UploadBox{
+                display: flex;
+                align-items: center;
+
+                span{
+                    font-size: 14px;
+                    color: #3B3B3B;
+                }
+
+                .attachment_content{
+                    margin-left: 20px;
+                    display: flex;
+                    align-items: center;
+
+                    .primary_button{
+                        margin-right: 10px;
+                      padding: 8px 20px 7px 20px;
+                        border-radius: 5px;
+                        border: 1px solid #746e58;
+                        display: flex;
+                        align-items: center;
+                        color: #746e58;
+                        font-size: 14px;
+                        font-family: var(--font-family-Noto-B);
+cursor: pointer;
+
+                        img{
+                            margin-right: 10px;
+                        }
+                    }
+
+                    .attachmentBox{
+                        display: flex;
+                        width: 152px;
+                        font-size: 14px;
+                    }
+                }
+            }
 
             .flexbox {
                 display: flex;
