@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
+import { Modal, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
 import { Tooltip } from '@chakra-ui/react';
 
 const months = [
@@ -542,7 +542,6 @@ const AttendanceRegist = () => {
         </Tabs>
       </div>
       <Modal isOpen={isOpen} onClose={onClose} size='lg' isCentered={true}>
-        <ModalOverlay />
         <ModalContent height='350px' bg='#fff' borderTopRadius='10px'>
           <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>
             <span>{selectedDateInfo.year}.</span>

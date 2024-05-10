@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import {
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalFooter,
@@ -141,10 +140,9 @@ const TempReportStorage = () => {
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalOverlay />
-        <ModalContent height='250px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
+        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
+          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
+          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
           <ModalBody className="cancle_modal_content">
             삭제하시겠습니까?
           </ModalBody>
