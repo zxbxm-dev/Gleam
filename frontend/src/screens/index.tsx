@@ -4,6 +4,7 @@ export { default as Login } from "./login/Login";
 export { default as FindID } from "./login/FindID";
 export { default as Register } from "./login/Register";
 export { default as ResetPw } from "./login/ResetPw";
+export { default as EditRegis } from "./login/EditRegis";
 
 // 조직문화
 export { default as ActivityManage } from "./orgculture/activitymanage/ActivityManage";

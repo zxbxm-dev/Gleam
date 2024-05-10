@@ -9,6 +9,7 @@ import {
     ModalBody,
 } from '@chakra-ui/react';
 import { FindIDServices } from "../../services/login/RegisterServices";
+import { Link } from "react-router-dom";
 
 const FindID = () => {
     const [selectedOptions, setSelectedOptions] = useState({ spot: '' });
@@ -67,7 +68,9 @@ const FindID = () => {
     return (
         <div className="FindID">
             <div className="LogoBox">
-                <img className="ResLogo" src={Login_Logo} />
+                <Link to="/login">
+                    <img className="ResLogo" src={Login_Logo} />
+                </Link>
                 <span className="ResText">아이디 찾기</span>
             </div>
 
@@ -102,7 +105,6 @@ const FindID = () => {
             </div>
             <div className="FindIDBtn">
                 <button onClick={handleSubmit}>확인</button>
-                <button>취소</button>
             </div>
 
             <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>

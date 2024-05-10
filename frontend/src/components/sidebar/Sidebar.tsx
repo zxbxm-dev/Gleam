@@ -200,13 +200,13 @@ const Sidebar = () => {
                     </ul>
                   )}
                 </li>
-                {userInfo.team === '지원팀' ?
+                {/* {userInfo.team === '지원팀' ? */}
                 <li className={`menu-item ${selectedMenu === 'operating-manage' ? 'active' : ''}`}>
                   <Link to="/operating-manage" className="menu-link" onClick={() => handleMenuClick('operating-manage')}>
                     <span className="menu-link-text">운영비 관리</span>
                   </Link>
                 </li>
-                :<li></li>}
+                {/* :<li></li>} */}
               </ul>
             </div>
           </div>
