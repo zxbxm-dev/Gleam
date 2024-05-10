@@ -1,9 +1,20 @@
+import React, { useState } from 'react';
 import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 
 type Member = [string, number, number, number, string[], string, string];
 
 const AnnualManage = () => {
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedScreen, setSelectedScreen] = useState('R&D');
+
+  const handleScreenChange = () => {
+    setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
+  };
+
+  const handleYearChange = (event: any) => {
+    setSelectedYear(parseInt(event.target.value));
+  };
 
   const members: Member[] = [
     ['권상원', 15, 2, 13.0, ['04.17', '04.18'], '2099-01-01', '2099-01-01'],
@@ -224,84 +235,182 @@ const AnnualManage = () => {
         <div className="main_header">＞</div>
         <Link to={"/annual-manage"} className="sub_header">연차관리</Link>
       </div>
+      <div className='oper_header_right'>
+        <select
+          name="yearSelect"
+          id="yearSelect"
+          className='oper_year_select'
+          value={selectedYear}
+          onChange={handleYearChange}
+        >
+          <option value={2024}>2024</option>
+          <option value={2023}>2023</option>
+        </select>
+        <button className='oper_download_button'>다운로드</button>
+        {selectedScreen === 'R&D' ? (
+          <button className='rnd_company_button' onClick={handleScreenChange}>
+            R&D 센터
+          </button>
+        ) : (
+          <button className='head_company_button' onClick={handleScreenChange}>
+            본사
+          </button>
+        )}
+      </div>
       
       <div className="content_container">
         <div className="container">
           <div className="container_attendance">
-            <div className="Excel_annual">
-              <table className="Explan_annual">
-                <tbody>
-                  <tr>
-                    <td className="TopS_annual">NO.</td>
-                    <td className="TopS_annual" colSpan={2}>부서</td>
-                  </tr>
-                  <tr style={{ fontSize: '14.5px'}}>
-                    <td>1</td>
-                    <td>블록체인 사업부</td>
-                    <td>블록체인 1팀</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td rowSpan={6}>개발부</td>
-                    <td rowSpan={4}>개발 1팀</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td rowSpan={2}>개발 2팀</td>
-                  </tr>
-                  <tr>
-                    <td>7</td>
-                  </tr>
-                  <tr>
-                    <td>8</td>
-                    <td rowSpan={4}>마케팅부</td>
-                    <td rowSpan={2}>디자인팀</td>
-                  </tr>
-                  <tr>
-                    <td>9</td>
-                  </tr>
-                  <tr>
-                    <td>10</td>
-                    <td rowSpan={2}>기획팀</td>
-                  </tr>
-                  <tr>
-                    <td>11</td>
-                  </tr>
-                  <tr>
-                    <td>12</td>
-                    <td rowSpan={5}>관리부</td>
-                    <td rowSpan={3}>관리팀</td>
-                  </tr>
-                  <tr>
-                    <td>13</td>
-                  </tr>
-                  <tr>
-                    <td>14</td>
-                  </tr>
-                  <tr>
-                    <td>15</td>
-                    <td rowSpan={2}>지원팀</td>
-                  </tr>
-                  <tr>
-                    <td>16</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div>
-                {CountDivs()}
-                {generateDivs()}
+            {selectedScreen === '본사' ? (
+              <div className="Excel_annual">
+                <table className="Explan_annual">
+                  <tbody>
+                    <tr>
+                      <td className="TopS_annual">NO.</td>
+                      <td className="TopS_annual" colSpan={2}>부서</td>
+                    </tr>
+                    <tr style={{ fontSize: '14.5px'}}>
+                      <td>1</td>
+                      <td>알고리즘 연구실</td>
+                      <td>블록체인 1팀</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td rowSpan={6}>개발부</td>
+                      <td rowSpan={4}>개발 1팀</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                    </tr>
+                    <tr>
+                      <td>6</td>
+                      <td rowSpan={2}>개발 2팀</td>
+                    </tr>
+                    <tr>
+                      <td>7</td>
+                    </tr>
+                    <tr>
+                      <td>8</td>
+                      <td rowSpan={4}>마케팅부</td>
+                      <td rowSpan={2}>디자인팀</td>
+                    </tr>
+                    <tr>
+                      <td>9</td>
+                    </tr>
+                    <tr>
+                      <td>10</td>
+                      <td rowSpan={2}>기획팀</td>
+                    </tr>
+                    <tr>
+                      <td>11</td>
+                    </tr>
+                    <tr>
+                      <td>12</td>
+                      <td rowSpan={5}>관리부</td>
+                      <td rowSpan={3}>관리팀</td>
+                    </tr>
+                    <tr>
+                      <td>13</td>
+                    </tr>
+                    <tr>
+                      <td>14</td>
+                    </tr>
+                    <tr>
+                      <td>15</td>
+                      <td rowSpan={2}>지원팀</td>
+                    </tr>
+                    <tr>
+                      <td>16</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div>
+                  {CountDivs()}
+                  {generateDivs()}
+                </div>
               </div>
-
-            </div>
+              
+            ) : (
+              <div className="Excel_annual">
+                <table className="Explan_annual">
+                  <tbody>
+                    <tr>
+                      <td className="TopS_annual">NO.</td>
+                      <td className="TopS_annual" colSpan={2}>부서</td>
+                    </tr>
+                    <tr style={{ fontSize: '14.5px'}}>
+                      <td>1</td>
+                      <td>블록체인 사업부</td>
+                      <td>블록체인 1팀</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td rowSpan={6}>개발부</td>
+                      <td rowSpan={4}>개발 1팀</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                    </tr>
+                    <tr>
+                      <td>6</td>
+                      <td rowSpan={2}>개발 2팀</td>
+                    </tr>
+                    <tr>
+                      <td>7</td>
+                    </tr>
+                    <tr>
+                      <td>8</td>
+                      <td rowSpan={4}>마케팅부</td>
+                      <td rowSpan={2}>디자인팀</td>
+                    </tr>
+                    <tr>
+                      <td>9</td>
+                    </tr>
+                    <tr>
+                      <td>10</td>
+                      <td rowSpan={2}>기획팀</td>
+                    </tr>
+                    <tr>
+                      <td>11</td>
+                    </tr>
+                    <tr>
+                      <td>12</td>
+                      <td rowSpan={5}>관리부</td>
+                      <td rowSpan={3}>관리팀</td>
+                    </tr>
+                    <tr>
+                      <td>13</td>
+                    </tr>
+                    <tr>
+                      <td>14</td>
+                    </tr>
+                    <tr>
+                      <td>15</td>
+                      <td rowSpan={2}>지원팀</td>
+                    </tr>
+                    <tr>
+                      <td>16</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div>
+                  {CountDivs()}
+                  {generateDivs()}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>  

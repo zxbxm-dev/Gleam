@@ -36,12 +36,8 @@ import {
   ResetPw
 } from "./screens";
 
-import { useRecoilState } from 'recoil';
-import { userState } from './recoil/atoms';
-
 function App() {
 
-  const [userInfo] = useRecoilState(userState);
   return (
     <>
       <Router>
@@ -87,15 +83,15 @@ function App() {
             {/* 인사평가 */}
             <Route path="/submit-perform" element={<SubmitPerform />} />
             <Route path="/detailSubmit" element={<DetailSubmit />} />
-            <Route path="/manage-perform" element={userInfo.team === '관리팀' ? <ManagePerform /> : <PageNotFound />} />
+            <Route path="/manage-perform" element={<ManagePerform />} />
 
 
             {/* 인사 정보 관리 */}
-            <Route path="/human-resources" element={userInfo.team === '관리팀' ? <HumanResource /> : <PageNotFound />} />
+            <Route path="/human-resources" element={<HumanResource />} />
 
             {/* 근태 관리 */}
-            <Route path="/annual-manage" element={userInfo.team === '관리팀' ? <AnnualManage /> : <PageNotFound />} />
-            <Route path="/attendance-regist" element={userInfo.team === '관리팀' ? <AttendanceRegist /> : <PageNotFound />} />
+            <Route path="/annual-manage" element={<AnnualManage />} />
+            <Route path="/attendance-regist" element={<AttendanceRegist />} />
 
             {/* 운영비 관리 */}
             <Route path="/operating-manage" element={<Operating />} />

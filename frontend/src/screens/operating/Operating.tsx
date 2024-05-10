@@ -322,7 +322,7 @@ const Operating = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (dropdownOpen && !event.target.closest('.dropdown-menu')) {
+      if (dropdownOpen && !event.target.closest('.oper-dropdown-menu')) {
         setDropdownOpen(false);
       }
     };
@@ -802,7 +802,7 @@ const Operating = () => {
         </div>
       </div>  
       {dropdownOpen && dropdownTeam && (
-        <span className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
+        <span className="oper-dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
           <div className="dropdown_title">
             {(() => {
               switch (dropdownTeam) {
