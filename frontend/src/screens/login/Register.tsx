@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import "./Register.scss";
 import { Login_Logo, ArrowDown, ArrowUp } from "../../assets/images/index";
 import { RegisterServices } from "../../services/login/RegisterServices";
+import {
+    Modal,
+    ModalContent,
+    ModalHeader,
+    useDisclosure,
+    ModalBody,
+} from '@chakra-ui/react';
 
 const Register = () => {
     const [selectedOptions, setSelectedOptions] = useState({
@@ -11,7 +18,7 @@ const Register = () => {
         spot: '',
         position: ''
     });
-
+    const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: isAddModalClose } = useDisclosure();
     const [isDepart, setIsDepart] = useState(false);
     const [isTeam, setIsTeam] = useState(false);
     const [isSpot, setIsSpot] = useState(false);
@@ -122,13 +129,13 @@ const Register = () => {
                         <div className="op" onClick={() => handleOptionClick('team', '동형분석 연구팀')}>동형분석 연구팀</div>
                     </>
                 );
-                case '블록체인 연구실':
-                    return (
-                        <>
-                            <div className="op" onClick={() => handleOptionClick('team', '크립토 블록체인 연구팀')}>크립토 블록체인 연구팀</div>
-                            <div className="op" onClick={() => handleOptionClick('team', 'API 개발팀')}>API 개발팀</div>
-                        </>
-                    );
+            case '블록체인 연구실':
+                return (
+                    <>
+                        <div className="op" onClick={() => handleOptionClick('team', '크립토 블록체인 연구팀')}>크립토 블록체인 연구팀</div>
+                        <div className="op" onClick={() => handleOptionClick('team', 'API 개발팀')}>API 개발팀</div>
+                    </>
+                );
             case '개발부':
                 return (
                     <>
@@ -194,24 +201,22 @@ const Register = () => {
         const formData = {
             userID: id,
             password: password,
-       question1:question1,
-       question2:question2,
-       username:name,
-       usermail:mail,
-       company: selectedOptions.company,
-       department: selectedOptions.department,
-       team: selectedOptions.team,
-       spot: selectedOptions.spot,
-       position: selectedOptions.position,
-       phoneNumber:phoneNumber
+            question1: question1,
+            question2: question2,
+            username: name,
+            usermail: mail,
+            company: selectedOptions.company,
+            department: selectedOptions.department,
+            team: selectedOptions.team,
+            spot: selectedOptions.spot,
+            position: selectedOptions.position,
+            phoneNumber: phoneNumber
         };
 
         // API 호출
         RegisterServices(formData)
             .then(response => {
-                // 성공적으로 처리된 경우
-                console.log("회원가입 성공:", response.data);
-                // 추가적인 작업을 수행하거나 사용자를 다른 페이지로 리디렉션할 수 있습니다.
+                onAddModalOpen();
             })
             .catch(error => {
                 // 오류 발생 시
@@ -507,6 +512,15 @@ const Register = () => {
             <div className="ResBtnBox">
                 <button className="ResBtn" onClick={handleSubmit}>회원가입 승인 요청</button>
             </div>
+
+            <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
+                <ModalContent width="400px" height='200px' borderRadius='5px'>
+                    <ModalHeader className='ModalHeader' paddingLeft="15px" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto)' borderTopRadius='5px' fontSize="14px">알림</ModalHeader>
+                    <ModalBody className='ModalBody'>
+                        회원 가입 승인 요청이 완료되었습니다.
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </div>
     )
 }
