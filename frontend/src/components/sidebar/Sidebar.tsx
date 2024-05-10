@@ -6,7 +6,7 @@ import {
 } from "../../assets/images/index";
 import { Link } from "react-router-dom";
 import { useRecoilState } from 'recoil';
-import { isSidebarVisibleState, isHrSidebarVisibleState, isSelectMemberState } from '../../recoil/atoms';
+import { isSidebarVisibleState, isHrSidebarVisibleState, isSelectMemberState, userState} from '../../recoil/atoms';
 
 const Sidebar = () => {
   const [isSelectMember, setIsSelectMember] = useRecoilState(isSelectMemberState);
