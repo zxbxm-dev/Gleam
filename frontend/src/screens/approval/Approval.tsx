@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Approval.scss";
 import { ReactComponent as RightIcon } from "../../assets/images/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../assets/images/LeftIcon.svg";
@@ -12,6 +12,12 @@ const Approval = () => {
   const [page, setPage] = useState<number>(1);
   const [selectedTab, setSelectedTab] = useState<string>("main");
   const postPerPage: number = 10;
+  const [approval, setApproval] = useState<any[]>([]);
+  const [approvalings, setApprovaling] = useState<any[]>([]);
+  const [inProgress, setInProgress] = useState<any[]>([]);
+  const [rejecteds, setRejected] = useState<any[]>([]);
+  const [mydocuments, setMyDocument] = useState<any[]>([]);
+  const [compleDocuments, setCompleDocument] = useState<any[]>([]);
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -20,6 +26,69 @@ const Approval = () => {
   const handleTabClick = (tab: string) => {
     setSelectedTab(tab);
   };
+  useEffect(() => {
+    const initialAnnouncements = [
+      { id: 1, title: "공지사항", date: "2024-05-01", progress: 0, maxprogress: 3, state: "미결재", writer: "서주희", approvalline: ['진유빈','김효은','이정훈']},
+      { id: 2, title: "ㅁㄹㄴㅇ", date: "2024-05-02", progress: 0, maxprogress: 5, state: "미결재", writer: "우현지", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 3, title: "ㅂㅈㄷㄱ", date: "2024-05-03", progress: 0, maxprogress: 3, state: "미결재", writer: "구민석", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 4, title: "ㅌㅊㅋㅍ", date: "2024-05-01", progress: 2, maxprogress: 3, state: "미결재", writer: "김도환", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 5, title: "ㄴㅇㅎㄴ", date: "2024-05-02", progress: 1, maxprogress: 3, state: "미결재", writer: "김태희", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 6, title: "sgdfg", date: "2024-05-03", progress: 3, maxprogress: 3, state: "결재완료", writer: "함다슬", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 7, title: "df", date: "2024-05-01", progress: 3, maxprogress: 3, state: "결재완료", writer: "진유빈", approvalline: ['김효은','이정훈'] },
+      { id: 8, title: "ewretwrwet", date: "2024-05-02", progress: 0, maxprogress: 3, state: "미결재", writer: "서주희", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 9, title: "sdfh", date: "2024-05-01", progress: 3, maxprogress: 3, state: "결재완료", writer: "서주희", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 10, title: "xcvb", date: "2024-05-02", progress: 1, maxprogress: 3, state: "반려", writer: "구민석", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 11, title: "tyoyyty", date: "2024-05-01", progress: 0, maxprogress: 3, state: "미결재", writer: "우현지", approvalline: ['진유빈','김효은','이정훈'] },
+      { id: 12, title: "op", date: "2024-05-02", progress: 0, maxprogress: 3, state: "미결재", writer: "장현지", approvalline: ['진유빈','김효은','이정훈'] },
+      ];
+      setApproval(initialAnnouncements);
+  }, []);
+
+  useEffect(() => { // 결재할문서 필터링
+    const filteredDocuments = approval.filter(doc => doc.approvalline.indexOf('진유빈') === doc.progress && doc.state === '미결재');
+    const initializedDocuments = filteredDocuments.map((doc, index) => ({
+      ...doc,
+      id: filteredDocuments.length - index
+    }));
+    setApprovaling(initializedDocuments);
+  }, [approval]);
+
+  useEffect(() => { // 결재진행중문서 필터링
+    const filteredDocuments = approval.filter(doc => doc.approvalline.includes('진유빈') && doc.state === '미결재');
+    const initializedDocuments = filteredDocuments.map((doc, index) => ({
+      ...doc,
+      id: filteredDocuments.length - index
+    }));
+    setInProgress(initializedDocuments);
+  }, [approval]);
+
+  useEffect(() => { // 반려문서 필터링
+    const filteredDocuments = approval.filter(doc => doc.state === '반려');
+    const initializedDocuments = filteredDocuments.map((doc, index) => ({
+      ...doc,
+      id: filteredDocuments.length - index
+    }));
+    setRejected(initializedDocuments);
+  }, [approval]);
+
+  useEffect(() => { // 결재완료문서 필터링
+    const filteredDocuments = approval.filter(doc => doc.progress === doc.maxprogress);
+    const initializedDocuments = filteredDocuments.map((doc, index) => ({
+      ...doc,
+      id: filteredDocuments.length - index
+    }));
+    setCompleDocument(initializedDocuments);
+  }, [approval]);
+
+  useEffect(() => { // 내문서 필터링
+    const filteredDocuments = approval.filter(doc => doc.writer === "구민석");
+    const initializedDocuments = filteredDocuments.map((doc, index) => ({
+      ...doc,
+      id: filteredDocuments.length - index
+    }));
+    setMyDocument(initializedDocuments);
+  }, [approval]);
+  
 
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -54,110 +123,34 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                <tr className="board_content">
-                  <td>10</td>
-                  <td style={{textAlign: 'center'}}>휴가신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/3</td>
-                  <td>미결재</td>
-                  <td>서주희 / 디자인팀</td>
-                  <td><button className="approval_button" onClick={() => {navigate('/detailApproval')}}>결재하기</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>9</td>
-                  <td style={{textAlign: 'center'}}>주간업무일지</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/5</td>
-                  <td>미결재</td>
-                  <td>우현지 / 관리팀</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>8</td>
-                  <td style={{textAlign: 'center'}}>휴가신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/3</td>
-                  <td>미결재</td>
-                  <td>구민석 / 개발 1팀</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>7</td>
-                  <td style={{textAlign: 'center'}}>워크숍 신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/5</td>
-                  <td>미결재</td>
-                  <td>김도환 / 블록체인 1팀</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>6</td>
-                  <td style={{textAlign: 'center'}}>지출내역서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/3</td>
-                  <td>미결재</td>
-                  <td>김태희 / 지원팀</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>5</td>
-                  <td style={{textAlign: 'center'}}>휴가신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/5</td>
-                  <td>미결재</td>
-                  <td>함다슬 / 기획팀</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>4</td>
-                  <td style={{textAlign: 'center'}}>주간업무일지</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/3</td>
-                  <td>미결재</td>
-                  <td>진유빈 / 개발부</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>3</td>
-                  <td style={{textAlign: 'center'}}>워크숍 신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/5</td>
-                  <td>미결재</td>
-                  <td>서주희 / 디자인팀</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>2</td>
-                  <td style={{textAlign: 'center'}}>기획서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/3</td>
-                  <td>미결재</td>
-                  <td>우현지 / 관리팀</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
-                <tr className="board_content" style={{borderBottom: '2px solid #DCDCDC'}}>
-                  <td>1</td>
-                  <td style={{textAlign: 'center'}}>휴가신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>0/3</td>
-                  <td>미결재</td>
-                  <td>장현지 / 개발 1팀</td>
-                  <td><button className="approval_button">결재하기</button></td>
-                </tr>
+                {approvalings
+                  .slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((approvaling) => (
+                    <tr key={approvaling.id} className="board_content">
+                      <td>{approvaling.id}</td>
+                      <td style={{textAlign: 'center'}}>{approvaling.title}</td>
+                      <td>{approvaling.date}</td>
+                      <td>{approvaling.progress} / {approvaling.maxprogress}</td>
+                      <td>{approvaling.state}</td>
+                      <td>{approvaling.writer}</td>
+                      <td><button className="approval_button" onClick={() => {navigate('/detailApproval')}}>결재하기</button></td>
+                    </tr>
+                  ))
+                }
               </tbody>
               <div className="approval_main_bottom">
-              <Pagination 
-                activePage={page}
-                itemsCountPerPage={postPerPage}
-                totalItemsCount={100}
-                pageRangeDisplayed={5}
-                prevPageText={<LeftIcon />}
-                nextPageText={<RightIcon />}
-                firstPageText={<FirstLeftIcon />}
-                lastPageText={<LastRightIcon />}
-                onChange={handlePageChange}
-              />
-            </div>
+                <Pagination
+                  activePage={page}
+                  itemsCountPerPage={postPerPage}
+                  totalItemsCount={approvalings.length}
+                  pageRangeDisplayed={Math.ceil(approvalings.length / postPerPage)}
+                  prevPageText={<LeftIcon />}
+                  nextPageText={<RightIcon />}
+                  firstPageText={<FirstLeftIcon />}
+                  lastPageText={<LastRightIcon />}
+                  onChange={handlePageChange}
+                />
+              </div>
             </table>
           </>
         );
@@ -188,43 +181,28 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                <tr className="board_content">
-                  <td>3</td>
-                  <td style={{textAlign: 'center'}}>워크숍 신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2/5</td>
-                  <td>미결재</td>
-                  <td>서주희 / 디자인팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>2</td>
-                  <td style={{textAlign: 'center'}}>기획서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>1/3</td>
-                  <td>미결재</td>
-                  <td>우현지 / 관리팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
-                <tr className="board_content" style={{borderBottom: '2px solid #DCDCDC'}}>
-                  <td>1</td>
-                  <td style={{textAlign: 'center'}}>휴가신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2/3</td>
-                  <td>미결재</td>
-                  <td>장현지 / 개발 1팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
+                {inProgress
+                  .slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((inProgres) => (
+                    <tr key={inProgres.id} className="board_content">
+                      <td>{inProgres.id}</td>
+                      <td style={{textAlign: 'center'}}>{inProgres.title}</td>
+                      <td>{inProgres.date}</td>
+                      <td>{inProgres.date}</td>
+                      <td>{inProgres.progress} / {inProgres.maxprogress}</td>
+                      <td>{inProgres.state}</td>
+                      <td>{inProgres.writer}</td>
+                      <td><button className="document_button">문서확인</button></td>
+                    </tr>
+                  ))
+                }
               </tbody>
               <div className="approval_main_bottom">
-                <Pagination 
+                <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={100}
-                  pageRangeDisplayed={5}
+                  totalItemsCount={inProgress.length}
+                  pageRangeDisplayed={Math.ceil(inProgress.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -262,23 +240,28 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                <tr className="board_content">
-                  <td>1</td>
-                  <td style={{textAlign: 'center'}}>워크숍 신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>1/3</td>
-                  <td>반려</td>
-                  <td>서주희 / 디자인팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
+                {rejecteds
+                  .slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((rejected) => (
+                    <tr key={rejected.id} className="board_content">
+                      <td>{rejected.id}</td>
+                      <td style={{textAlign: 'center'}}>{rejected.title}</td>
+                      <td>{rejected.date}</td>
+                      <td>{rejected.date}</td>
+                      <td>{rejected.progress} / {rejected.maxprogress}</td>
+                      <td>{rejected.state}</td>
+                      <td>{rejected.writer}</td>
+                      <td><button className="document_button">문서확인</button></td>
+                    </tr>
+                  ))
+                }
               </tbody>
               <div className="approval_main_bottom">
-                <Pagination 
+                <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={100}
-                  pageRangeDisplayed={5}
+                  totalItemsCount={rejecteds.length}
+                  pageRangeDisplayed={Math.ceil(rejecteds.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -316,33 +299,28 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                <tr className="board_content">
-                  <td>2</td>
-                  <td style={{textAlign: 'center'}}>기획서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>3/3</td>
-                  <td>결재완료</td>
-                  <td>우현지 / 관리팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
-                <tr className="board_content" style={{borderBottom: '2px solid #DCDCDC'}}>
-                  <td>1</td>
-                  <td style={{textAlign: 'center'}}>휴가신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>5/5</td>
-                  <td>결재완료</td>
-                  <td>장현지 / 개발 1팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
+                {compleDocuments
+                  .slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((compledocument) => (
+                    <tr key={compledocument.id} className="board_content">
+                      <td>{compledocument.id}</td>
+                      <td style={{textAlign: 'center'}}>{compledocument.title}</td>
+                      <td>{compledocument.date}</td>
+                      <td>{compledocument.date}</td>
+                      <td>{compledocument.progress} / {compledocument.maxprogress}</td>
+                      <td>{compledocument.state}</td>
+                      <td>{compledocument.writer}</td>
+                      <td><button className="document_button">문서확인</button></td>
+                    </tr>
+                  ))
+                }
               </tbody>
               <div className="approval_main_bottom">
-                <Pagination 
+                <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={100}
-                  pageRangeDisplayed={5}
+                  totalItemsCount={compleDocuments.length}
+                  pageRangeDisplayed={Math.ceil(compleDocuments.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -380,43 +358,28 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                <tr className="board_content">
-                  <td>3</td>
-                  <td style={{textAlign: 'center'}}>프로젝트 기획서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2/3</td>
-                  <td>참조</td>
-                  <td>구민석 / 개발 1팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
-                <tr className="board_content">
-                  <td>2</td>
-                  <td style={{textAlign: 'center'}}>기획서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2/3</td>
-                  <td>미결재</td>
-                  <td>구민석 / 개발 1팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
-                <tr className="board_content" style={{borderBottom: '2px solid #DCDCDC'}}>
-                  <td>1</td>
-                  <td style={{textAlign: 'center'}}>휴가신청서</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>2099-99-99 &nbsp;&nbsp; 22:22</td>
-                  <td>5/5</td>
-                  <td>결재완료</td>
-                  <td>구민석 / 개발 1팀</td>
-                  <td><button className="document_button">문서확인</button></td>
-                </tr>
+                {mydocuments
+                  .slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((mydocument) => (
+                    <tr key={mydocument.id} className="board_content">
+                      <td>{mydocument.id}</td>
+                      <td style={{textAlign: 'center'}}>{mydocument.title}</td>
+                      <td>{mydocument.date}</td>
+                      <td>{mydocument.date}</td>
+                      <td>{mydocument.progress} / {mydocument.maxprogress}</td>
+                      <td>{mydocument.state}</td>
+                      <td>{mydocument.writer}</td>
+                      <td><button className="document_button">문서확인</button></td>
+                    </tr>
+                  ))
+                }
               </tbody>
               <div className="approval_main_bottom">
-                <Pagination 
+                <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={100}
-                  pageRangeDisplayed={5}
+                  totalItemsCount={mydocuments.length}
+                  pageRangeDisplayed={Math.ceil(mydocuments.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -432,6 +395,8 @@ const Approval = () => {
     }
   };
   
+  console.log(mydocuments)
+
   return (
     <div className="content">
       <div className="content_header">
@@ -443,21 +408,21 @@ const Approval = () => {
           <div className="approval_top">
             <div className="approval_top_first">
               <div className={`${selectedTab === "approval" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("approval")}>
-                <span>결재 할 문서</span> <span className="document_count">10</span>
+                <span>결재 할 문서</span> <span className="document_count">{approvalings.length}</span>
               </div>
               <div className={`${selectedTab === "inProgress" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("inProgress")}>
-                <span>결재 진행 중 문서</span> <span className="document_count">3</span>
+                <span>결재 진행 중 문서</span> <span className="document_count">{inProgress.length}</span>
               </div>
               <div className={`${selectedTab === "rejected" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("rejected")}>
-                <span>반려 문서</span> <span className="document_count">1</span>
+                <span>반려 문서</span> <span className="document_count">{rejecteds.length}</span>
               </div>
             </div>
             <div className="approval_top_second">
               <div className={`${selectedTab === "completed" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("completed")}>
-                <span>결재 완료 문서</span> <span className="document_count">2</span>
+                <span>결재 완료 문서</span> <span className="document_count">{compleDocuments.length}</span>
               </div>
               <div className={`${selectedTab === "myDocuments" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("myDocuments")}>
-                <span>내문서</span> <span className="document_count">3</span>
+                <span>내문서</span> <span className="document_count">{mydocuments.length}</span>
               </div>
             </div>
           </div>

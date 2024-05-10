@@ -5,15 +5,20 @@
   display: grid;
   overflow-x: scroll;
   overflow-y: scroll;
+  scrollbar-width: thin;
 }
+
+
 
 .Excel_operating {
   display: flex;
+  flex-direction: column;
+  gap: 20px;
 
   .Explan_operating {
     font-family: var(--font-family-Noto-M);
-    font-size: 12px;
     width: 1700px;
+    font-size: 12px;
     height: 1000px;
     border: 2px solid #858585;
     text-align: center;
@@ -74,7 +79,11 @@
     td select {
       width: 100%;
       height: 100%;
+      cursor: pointer;
       box-sizing: border-box;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
     }
 
     .left-align {
@@ -90,5 +99,150 @@
     .center-align {
       text-align: center;
     }
+  }
+
+  .Excel_total {
+    font-family: var(--font-family-Noto-M);
+    width: 1440px;
+    font-size: 12px;
+    height: 80px;
+    border: 2px solid #858585;
+    text-align: center;
+
+    tr {
+      border-bottom: 1px solid #858585;
+    }
+
+    td {
+      border-right: 1px solid #858585;
+    }
+  }
+}
+
+.oper-dropdown-menu{
+  font-family: var(--font-family-Noto-M);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 120px;
+  height: 90px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: left;
+
+  .dropdown_title {
+    height: 27px;
+    padding: 0px 10px;
+  }
+  
+  .dropdown_border {
+    width: 110px;
+    border-bottom: 1px solid #746E58;
+    margin-bottom: 3px;
+    margin-left: 4px;
+  }
+  .dropdown_add {
+    height: 27px;
+    color: #323232;
+    padding: 0px 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #E9E9E9;
+    }
+  }
+
+  .dropdown_del {
+    height: 27px;
+    color: #D56D6D;
+    padding: 0px 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #E9E9E9;
+    }
+  }
+}
+
+
+.dropdown_select {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.dropdown_input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+
+.oper_header_right {
+  display: flex;
+  flex-direction: row-reverse;
+  position: absolute;
+  top: 20px;
+  right: 18px;
+  gap: 7px;
+
+  .oper_year_select {
+    width: 100px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #DCDCDC;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-M);
+    padding: 5px;
+  }
+
+  .oper_download_button {
+    width: 92px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #746E58;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #746E58;
+  }
+  
+  .oper_edit_button {
+    width: 66px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #746E58;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #746E58;
+  }
+
+  .rnd_company_button {
+    width: 99px;
+    height: 35px;
+    background-color: #746E58;
+    border: 1px solid #746E58;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #fff;
+  }
+
+  .head_company_button {
+    width: 66px;
+    height: 35px;
+    background-color: #746E58;
+    border: 1px solid #746E58;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #fff;
   }
 }

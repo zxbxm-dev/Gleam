@@ -29,7 +29,16 @@ const names = [
 ];
 
 const AttendanceRegist = () => {
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [selectedScreen, setSelectedScreen] = useState('R&D');
 
+  const handleScreenChange = () => {
+    setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
+  };
+
+  const handleYearChange = (event: any) => {
+    setCurrentYear(parseInt(event.target.value));
+  };
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
     name: string | null;
@@ -425,6 +434,18 @@ const AttendanceRegist = () => {
       </div>
 
       <div className="content_container">
+        <div className='attend_header_right'>
+          <button className='attend_download_button'>다운로드</button>
+          {selectedScreen === 'R&D' ? (
+            <button className='rnd_company_button' onClick={handleScreenChange}>
+              R&D 센터
+            </button>
+          ) : (
+            <button className='head_company_button' onClick={handleScreenChange}>
+              본사
+            </button>
+          )}
+        </div>
         <Tabs variant='enclosed'>
           <TabList>
             {yearData.map(monthData => (

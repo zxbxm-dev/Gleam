@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import "./Approval.scss";
 import { Link } from "react-router-dom";
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -70,8 +72,8 @@ const DetailApproval = () => {
                   <Portal>
                     <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
                       <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>의견 작성</PopoverHeader>
-                      <PopoverCloseButton color='white'/>
-                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
+                      <PopoverCloseButton color='white' />
+                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px'>
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center'}}>
                           <div style={{display: 'flex', gap: '10px'}}>
                             <div style={{width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>작성자</div>
@@ -103,14 +105,14 @@ const DetailApproval = () => {
                     <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
                       <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>반려 사유 작성</PopoverHeader>
                       <PopoverCloseButton color='white'/>
-                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
+                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px'>
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center'}}>
                           <div style={{display: 'flex', gap: '10px'}}>
-                            <div style={{width: '6vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려자</div>
+                            <div style={{width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려자</div>
                             <div style={{color: '#323232', fontFamily: 'var(--font-family-Noto-M)'}}>김효은 팀장</div>
                           </div>
                           <div style={{display: 'flex', gap: '10px'}}>
-                            <div style={{width: '6vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려 사유</div>
+                            <div style={{width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려 사유</div>
                             <Textarea placeholder='내용을 입력해주세요.' size='sm' width='17vw' height='15vh' fontFamily='var(--font-family-Noto-R)'/>
                           </div>
                         </div>
@@ -127,7 +129,11 @@ const DetailApproval = () => {
             <div className="write_btm_container">
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                 {renderPages()}
+                <div className='exam_sign1'>
+                  첫번째 서명
+                </div>
               </Document>
+              
             </div>
           </div>
         </div>

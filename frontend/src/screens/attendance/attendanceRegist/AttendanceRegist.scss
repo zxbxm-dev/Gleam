@@ -99,10 +99,6 @@
 
 .conta_three_annual {
   border-bottom: 2px solid #858585;
-
-  &:hover {
-    background-color: #D9D9D9;
-  }
 }
 
 .conta_annual {
@@ -297,6 +293,48 @@
   width: 5%;
 }
 
+.attend_header_right {
+  display: flex;
+  flex-direction: row-reverse;
+  position: absolute;
+  top: 60px;
+  right: 18px;
+  gap: 7px;
+  z-index: 999;
+
+  .attend_download_button {
+    width: 92px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #746E58;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #746E58;
+  }
+
+  .rnd_company_button {
+    width: 99px;
+    height: 35px;
+    background-color: #746E58;
+    border: 1px solid #746E58;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #fff;
+  }
+
+  .head_company_button {
+    width: 66px;
+    height: 35px;
+    background-color: #746E58;
+    border: 1px solid #746E58;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #fff;
+  }
+}
 
 @include laptop {
   .container_attendance{
