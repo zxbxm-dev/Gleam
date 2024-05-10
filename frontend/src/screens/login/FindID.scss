@@ -1,0 +1,388 @@
+@import "../../style/mixin";
+
+.FindID {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #F5F5F5;
+    height: 100vh;
+
+    .LogoBox {
+        position: absolute;
+        top: 80px;
+        text-align: center;
+
+        .ResLogo {
+            width: 302px;
+            height: 30px;
+            margin-bottom: 20px;
+        }
+
+        .ResText {
+            width: 100%;
+            text-align: center;
+            font-size: 32px;
+            color: #323232;
+            font-family: var(--font-family-Noto-M);
+        }
+    }
+
+    .FindBox {
+        margin-top: 100px;
+        width: 560px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 25px;
+
+        .MiniBox {
+            gap: 40px;
+            display: flex;
+            align-items: center;
+
+            span {
+                font-size: 21px;
+                color: #3b3b3b;
+            }
+
+            .TextInput {
+                width: 400px;
+                height: 60px;
+                border: 1px solid #dcdcdc;
+                background-color: #fff;
+                border-radius: 5px;
+                padding-left: 15px;
+                font-size: 22px;
+            }
+
+            .TextInput:focus {
+                outline: 2px solid #746e58;
+            }
+
+            .TextInput::placeholder {
+                font-size: 22px;
+                color: #C7C7C7;
+            }
+        }
+    }
+
+    .FindIDBtn {
+        margin-top: 50px;
+        gap: 14px;
+        display: flex;
+
+        button {
+            width: 90px;
+            height: 50px;
+            border: 1px solid #746e58;
+            color: #746e58;
+            font-size: 20px;
+            font-family: var(--font-family-Noto-B);
+            border-radius: 7px;
+        }
+
+        button:last-child {
+            border: 1px solid #929292;
+            color: #929292;
+        }
+    }
+
+    .RegistorBox {
+        width: 430px;
+        margin-top: 89px;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        align-items: flex-end;
+        flex-direction: column;
+
+        .MiniphoneBox {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: flex-end;
+
+            .ErrorMessageBox {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+
+                .ErrorMessage {
+                    width: 300px;
+                    font-size: 9px;
+                    color: #D56D6D;
+                    margin-top: 2px;
+                }
+            }
+
+            .Phone {
+                display: flex;
+                align-items: center;
+            }
+
+            span {
+                font-size: 14px;
+                color: #3b3b3b;
+            }
+
+            .TextInput {
+                width: 300px;
+                height: 35px;
+                border: 1px solid #dcdcdc;
+                background-color: #fff;
+                border-radius: 5px;
+                padding-left: 15px;
+                font-size: 14px;
+                margin-left: 20px;
+            }
+
+            .TextInput:focus {
+                outline: 2px solid #746e58;
+            }
+
+            .TextInput::placeholder {
+                font-size: 14px;
+                color: #C7C7C7;
+            }
+        }
+
+        .flexbox {
+            display: flex;
+            align-items: center;
+
+            .FlexSpan {
+                margin-right: 20px;
+                font-size: 14px;
+                color: #3b3b3b;
+            }
+
+            .custom-select {
+                .select-header {
+                    width: 300px;
+                    height: 35px;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    border: 1px solid #dcdcdc;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding-left: 10px;
+                    position: relative;
+                    font-size: 14px;
+                    padding-right: 15px;
+                    color: #323232;
+                    cursor: pointer;
+                }
+
+                .options {
+                    position: absolute;
+                    z-index: 99;
+                    border-radius: 5px;
+                    border: 1px solid #dcdcdc;
+
+                    .op {
+                        width: 298px;
+                        height: 30px;
+                        background-color: #fff;
+                        padding-left: 10px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        color: #323232;
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .op:hover {
+                        background-color: #d9d9d9;
+                    }
+
+                    .op:last-child {
+                        border-bottom-left-radius: 5px;
+                        border-bottom-right-radius: 5px;
+                    }
+
+                    .op:first-child {
+                        border-top-left-radius: 5px;
+                        border-top-right-radius: 5px;
+                    }
+                }
+            }
+        }
+
+        .MinisBox {
+            gap: 20px;
+            display: flex;
+            align-items: flex-start;
+
+            span {
+                font-size: 14px;
+                color: #3b3b3b;
+            }
+
+            .TextInput {
+                width: 300px;
+                height: 35px;
+                border: 1px solid #dcdcdc;
+                background-color: #fff;
+                border-radius: 5px;
+                padding-left: 15px;
+                font-size: 14px;
+            }
+
+            .TextInput:focus {
+                outline: 2px solid #746e58;
+            }
+
+            .TextInput::placeholder {
+                font-size: 14px;
+                color: #C7C7C7;
+            }
+
+            .Question {
+                gap: 10px;
+                display: flex;
+                flex-direction: column;
+
+                .Ques {
+                    display: flex;
+                    flex-direction: column;
+
+                    span {
+                        margin-bottom: 5px;
+                    }
+                }
+            }
+        }
+
+        .MiniBox {
+            gap: 20px;
+            display: flex;
+            align-items: center;
+
+            span {
+                font-size: 14px;
+                color: #3b3b3b;
+            }
+
+            .TextInput {
+                width: 300px;
+                height: 35px;
+                border: 1px solid #dcdcdc;
+                background-color: #fff;
+                border-radius: 5px;
+                padding-left: 15px;
+                font-size: 14px;
+            }
+
+            .TextInput:focus {
+                outline: 2px solid #746e58;
+            }
+
+            .TextInput::placeholder {
+                font-size: 14px;
+                color: #C7C7C7;
+            }
+        }
+    }
+
+    .ResBtnBox {
+        margin-top: 27px;
+        gap: 7px;
+        display: flex;
+
+        button {
+            width: 66px;
+            height: 35px;
+            border-radius: 5px;
+            border: 1px solid #746e58;
+            color: #746e58;
+            font-family: var(--font-family-Noto-B);
+            font-size: 14px;
+        }
+
+        button:last-child {
+            border: 1px solid #929292;
+            color: #929292;
+        }
+    }
+
+    .flexbox {
+        display: flex;
+        align-items: center;
+
+        .FlexSpan {
+            margin-right: 40px;
+            font-size: 21px;
+            color: #3B3B3B;
+        }
+
+        .custom-select {
+            .select-header {
+                width: 400px;
+                height: 60px;
+                background-color: #fff;
+                border-radius: 5px;
+                border: 1px solid #dcdcdc;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-left: 10px;
+                position: relative;
+                font-size: 14px;
+                padding-right: 15px;
+                color: #323232;
+                cursor: pointer;
+            }
+
+            .options {
+                position: absolute;
+                z-index: 99;
+                border-radius: 5px;
+                border: 1px solid #dcdcdc;
+
+                .op {
+                    width: 400px;
+                    height: 40px;
+                    background-color: #fff;
+                    padding-left: 10px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #323232;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .op:hover {
+                    background-color: #d9d9d9;
+                }
+
+                .op:last-child {
+                    border-bottom-left-radius: 5px;
+                    border-bottom-right-radius: 5px;
+                }
+
+                .op:first-child {
+                    border-top-left-radius: 5px;
+                    border-top-right-radius: 5px;
+                }
+            }
+        }
+    }
+}
+
+@include laptop {
+    .FindID {
+        overflow-y: scroll;
+
+        .LogoBox {
+            top: 50px;
+        }
+
+        .RegistorBox {
+            margin-top: 150px;
+        }
+    }
+}
