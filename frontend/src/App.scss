@@ -294,11 +294,7 @@ ul {
           height: 16px; // 아이콘의 높이 조정
         }
       }
-      .pagination li:nth-child(3),
-      .pagination li:nth-child(4),
-      .pagination li:nth-child(5),
-      .pagination li:nth-child(6),
-      .pagination li:nth-child(7) {
+      .pagination li {
         &:hover,
         &:active,
         &.active {
@@ -344,7 +340,7 @@ ul {
     }
     .red_button {
       width: 80px;
-      height: 40px;
+      height: 35px;
       background-color: #fff;
       border: 1px solid #D56D6D;
       border-radius: 8px;
@@ -361,6 +357,16 @@ ul {
       font-family: var(--font-family-Noto-B);
       font-size: 14px;
       color: #D56D6D;
+    }
+    .delete_small_button {
+      width: 66px;
+      height: 35px;
+      border: 1px solid #D56D6D;
+      border-radius: 8px;
+      font-family: var(--font-family-Noto-B);
+      font-size: 14px;
+      color: #D56D6D;
+      margin-left: 7px;
     }
     .approval_button {
       width: 92px;
