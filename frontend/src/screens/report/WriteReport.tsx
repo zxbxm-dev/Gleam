@@ -173,7 +173,7 @@ const WriteReport = () => {
             <div className="write_top_container">
               <div className="top_left_content">
                 <div className="sub_title">양식 선택</div>
-                <Select size='md' width='380px' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
+                <Select size='sm' width='380px' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
                   <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>공통보고서</option>
                   <option value=''>&nbsp;&nbsp; 주간업무일지</option>
                   <option value=''>&nbsp;&nbsp; 지출품의서</option>
