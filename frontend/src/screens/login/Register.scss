@@ -1,0 +1,373 @@
+@import "../../style/mixin";
+
+.Register {
+    padding: 80px 288px 124px 288px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #F5F5F5;
+    height: 100vh;
+
+    .ResLogo {
+        width: 302px;
+        height: 30px;
+        margin-bottom: 20px;
+    }
+
+    .ResText {
+        font-size: 32px;
+        color: #323232;
+        margin-bottom: 98px;
+        font-family: var(--font-family-Noto-M);
+    }
+
+    .RegistorBox {
+        width: 100%;
+        display: flex;
+        gap: 36px;
+        justify-content: center;
+        align-items: flex-start;
+
+        .LeftFlex {
+            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+
+            .MinisBox {
+                gap: 20px;
+                display: flex;
+                align-items: flex-start;
+
+                span {
+                    font-size: 14px;
+                    color: #3b3b3b;
+                }
+
+                .TextInput {
+                    width: 300px;
+                    height: 35px;
+                    border: 1px solid #dcdcdc;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    padding-left: 15px;
+                    font-size: 14px;
+                }
+
+                .TextInput:focus {
+                    outline: 2px solid #746e58;
+                }
+
+                .TextInput::placeholder {
+                    font-size: 14px;
+                    color: #C7C7C7;
+                }
+
+                .Question {
+                    gap: 10px;
+                    display: flex;
+                    flex-direction: column;
+
+                    .Ques {
+                        display: flex;
+                        flex-direction: column;
+
+                        span {
+                            margin-bottom: 5px;
+                        }
+                    }
+                }
+            }
+
+            .MinimBox {
+                span {
+                    margin-right: 20px;
+                    font-size: 14px;
+                    color: #3b3b3b;
+                }
+
+                .ShortTextInput {
+                    width: 173px;
+                    height: 35px;
+                    border: 1px solid #dcdcdc;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    padding-left: 15px;
+                    font-size: 14px;
+                }
+
+                .ShortTextInput:focus {
+                    outline: 2px solid #746e58;
+                }
+
+                .ShortTextInput::placeholder {
+                    font-size: 14px;
+                    color: #C7C7C7;
+                }
+            }
+
+            .MiniphoneBox {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                justify-content: flex-end;
+
+                .ErrorMessageBox {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+
+                    .ErrorMessage {
+                        width: 300px;
+                        font-size: 9px;
+                        color: #D56D6D;
+                        margin-top: 2px;
+                    }
+                }
+
+                .Phone {
+                    display: flex;
+                    align-items: center;
+                }
+
+                span {
+                    font-size: 14px;
+                    color: #3b3b3b;
+                }
+
+                .TextInput {
+                    width: 300px;
+                    height: 35px;
+                    border: 1px solid #dcdcdc;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    padding-left: 15px;
+                    font-size: 14px;
+                    margin-left: 20px;
+                }
+
+                .TextInput:focus {
+                    outline: 2px solid #746e58;
+                }
+
+                .TextInput::placeholder {
+                    font-size: 14px;
+                    color: #C7C7C7;
+                }
+            }
+
+            .MiniBox {
+                gap: 20px;
+                display: flex;
+                align-items: center;
+
+                span {
+                    font-size: 14px;
+                    color: #3b3b3b;
+                }
+
+                .TextInput {
+                    width: 300px;
+                    height: 35px;
+                    border: 1px solid #dcdcdc;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    padding-left: 15px;
+                    font-size: 14px;
+                }
+
+                .TextInput:focus {
+                    outline: 2px solid #746e58;
+                }
+
+                .TextInput::placeholder {
+                    font-size: 14px;
+                    color: #C7C7C7;
+                }
+            }
+        }
+
+        .RightFlex {
+            gap: 20px;
+            display: flex;
+            flex-direction: column;
+
+            .flexbox {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+
+                fieldset {
+                    display: flex;
+                    gap: 20px;
+
+                    label {
+                        span {
+                            margin-left: 10px;
+                        }
+                    }
+                }
+
+                .FlexSpan {
+                    margin-right: 20px;
+                    font-size: 14px;
+                    color: #3b3b3b;
+                    text-align: right;
+                }
+            }
+
+            .flexsbox {
+                display: flex;
+
+                .FlexSpan {
+                    margin-right: 20px;
+                    font-size: 14px;
+                    color: #3b3b3b;
+                    text-align: right;
+                }
+
+                .Bo {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+
+                    .First {
+                        width: 300px;
+                        height: 185px;
+                        border-radius: 5px;
+                        overflow-y: scroll;
+                        font-size: 12px;
+                        color: #3b3b3b;
+                        background-color: #fff;
+                        padding: 8px 10px;
+                    }
+
+                    .First::-webkit-scrollbar {
+                        width: 11px;
+                        height: 11px;
+                    }
+
+                    .First::-webkit-scrollbar-thumb {
+                        background-color: #929292;
+                        border-radius: 10px;
+                        background-clip: padding-box;
+                        border: 2px solid transparent;
+                    }
+
+                    .First::-webkit-scrollbar-corner {
+                        background-color: none;
+                    }
+
+                    .First::-webkit-scrollbar-track {
+                        box-shadow: none;
+                        background-color: #fff;
+
+                    }
+
+                    .Radio {
+                        width: 100%;
+                        display: flex;
+                        // align-items: center;
+                        // justify-content: center;
+                        margin-top: 11px;
+                        margin-bottom: 24px;
+
+                        span {
+                            font-size: 14px;
+                            margin-left: 8px;
+                        }
+                    }
+
+
+
+                }
+            }
+
+            .custom-select {
+                .select-header {
+                    width: 300px;
+                    height: 35px;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    border: 1px solid #dcdcdc;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding-left: 10px;
+                    position: relative;
+                    font-size: 14px;
+                    padding-right: 15px;
+                    color: #323232;
+                    cursor: pointer;
+                }
+
+                .options {
+                    position: absolute;
+                    z-index: 99;
+                    border-radius: 5px;
+                    border: 1px solid #dcdcdc;
+
+                    .op {
+                        width: 298px;
+                        height: 30px;
+                        background-color: #fff;
+                        padding-left: 10px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        color: #323232;
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .op:hover {
+                        background-color: #d9d9d9;
+                    }
+
+                    .op:last-child {
+                        border-bottom-left-radius: 5px;
+                        border-bottom-right-radius: 5px;
+                    }
+
+                    .op:first-child {
+                        border-top-left-radius: 5px;
+                        border-top-right-radius: 5px;
+                    }
+                }
+            }
+        }
+    }
+
+    .ResBtnBox {
+        margin-top: 20px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .ResBtn {
+            padding: 8px 20px;
+            background-color: #746e58;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+            font-family: var(--font-family-Noto-B);
+        }
+    }
+}
+
+@include laptop {
+    .Register {
+        padding: 0;
+        overflow-y: scroll;
+
+        .ResText {
+            margin-bottom: 20px;
+        }
+
+        .ResBtnBox {
+            margin-top: 0px;
+        }
+    }
+}
