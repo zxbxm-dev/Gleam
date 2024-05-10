@@ -19,7 +19,6 @@ import {
 } from '@chakra-ui/react';
 import {
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalFooter,
@@ -158,20 +157,20 @@ const Employment = () => {
                                   <button className="dropdown_edit" onClick={handleEdit}>수정하기</button>
                                 </PopoverTrigger>
                                 <Portal>
-                                  <PopoverContent width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                                  <PopoverContent width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
                                     <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 수정하기</PopoverHeader>
                                     <PopoverCloseButton color='white'/>
                                     <PopoverBody display='flex' flexDirection='column' alignItems='center'>
                                       <div style={{width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px'}}>
-                                        <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                        <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                                           <div style={{width: '80px', textAlign: 'right'}}>공고제목</div>
                                           <Input placeholder='ex) 디자인 채용공고' size='sm' />
                                         </div>
-                                        <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                        <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                                           <div style={{width: '80px', textAlign: 'right'}}>링크</div>
                                           <Input placeholder='내용을 입력해주세요.' size='sm' />
                                         </div>
-                                        <div style={{fontSize: '16px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                        <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                                           <div style={{width: '80px', textAlign: 'right'}}>사이트명</div>
                                           <Input placeholder='내용을 입력해주세요.' size='sm' />
                                         </div>
@@ -249,15 +248,14 @@ const Employment = () => {
         </div>
       </div>  
       <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalOverlay />
-        <ModalContent height='250px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
+        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
+          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
+          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
           <ModalBody className="cancle_modal_content">
             삭제하시겠습니까?
           </ModalBody>
 
-          <ModalFooter gap='10px' justifyContent='center'>
+          <ModalFooter gap='7px' justifyContent='center'>
             <button className="del_button" onClick={handleDelete}>삭제</button>
             <button className="cle_button" onClick={onClose}>취소</button>
           </ModalFooter>
