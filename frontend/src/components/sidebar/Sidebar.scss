@@ -25,23 +25,36 @@
     outline-offset: -1px;
   }
 
-  // toggling this class helps to hide/unhide the sidebar
   &.sidebar-show{
     @media(max-width: 768px){
         transform: translateX(0);
     }
   }
 
-  // showing icons only on sidebar
   @media(max-width: 1200px){
-    width: auto;
-    padding: 20px 6px;
-  }
+    position: fixed;
+    left: 0;
+    top: 60px;
+    width: 200px;
+    height: calc(100% - 50px);
+    background-color: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    transition: var(--default-transition);
+    }
 
-  // hiding full on small screen
   @media(max-width: 768px){
-    width: 260px;
-    transform: translateX(-100%);
+    position: fixed;
+    left: 0;
+    top: 60px;
+    width: 180px;
+    height: calc(100% - 50px);
+    background-color: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    transition: var(--default-transition);
   }
 
   .menu-item{
@@ -51,11 +64,7 @@
         margin-bottom: 0;
     }
 
-    @media(max-width: 1200px){
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    
     &.active{
       background-color: #DDDDDD;
       color: #000;
@@ -76,21 +85,29 @@
     font-size: 16px;
 
     @media(max-width: 1200px){
-        padding: 2px;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
+      width: 100%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      column-gap: 11px;
+      color: var(--side-text-color);
+      transition: var(--default-transition);
+      padding-left: 45px;
+      font-size: 14px;
     }
 
     @media(max-width: 768px){
-        padding: 12px;
-        border-bottom: 12px;
-        width: 100%;
-        height: 42px;
-        justify-content: flex-start;
+      width: 100%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      column-gap: 11px;
+      color: var(--side-text-color);
+      transition: var(--default-transition);
+      padding-left: 45px;
+      font-size: 14px;
     }
 
     &:hover{
@@ -117,21 +134,29 @@
     font-size: 16px;
 
     @media(max-width: 1200px){
-        padding: 2px;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
+      width: 100%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      column-gap: 11px;
+      color: var(--side-text-color);
+      transition: var(--default-transition);
+      padding-left: 23px;
+      font-size: 14px;
     }
 
     @media(max-width: 768px){
-        padding: 12px;
-        border-bottom: 12px;
-        width: 100%;
-        height: 42px;
-        justify-content: flex-start;
+      width: 100%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      column-gap: 11px;
+      color: var(--side-text-color);
+      transition: var(--default-transition);
+      padding-left: 23px;
+      font-size: 14px;
     }
 
     &:hover{
@@ -147,10 +172,10 @@
     font-family: var(--font-family-Noto-M);
     
     @media(max-width: 1200px){
-        display: none;
+      display: inline-block
     }
     @media(max-width: 768px){
-        display: inline-block;
+      display: inline-block;
     }
   }
 

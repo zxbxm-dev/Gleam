@@ -1,267 +1,159 @@
 @import "../../../style/mixin";
 
-@include desktop {
-  .regulation_board_list {
-    width: 100%;
-    height: auto;
-    margin-top: 10px;
-  
-    .board_header {
-      font-family: var(--font-family-Noto-M);
-      height: 45px;
-      font-size: 17px;
-      border-top: 2px solid #DCDCDC;
-      background-color: #EEEEEE;
-    }
-  
-    .board_content {
-      font-family: var(--font-family-Noto-R);
-      height: 60px;
-      font-size: 17px;
-      border-top: 1px solid #DCDCDC;
-      border-bottom: 1px solid #DCDCDC;
-      text-align: center;
+.regulation_board_list {
+  width: 100%;
+  height: auto;
+  margin-top: 10px;
 
-      .dropdown{
-        
-        .dropdown-menu {
-          font-family: var(--font-family-Noto-B);
-          font-size: 16px;
-          cursor: pointer;
-          
-          .dropdown_edit {
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100px;
-            height: 40px;
-            color: #746E58;
-            border: 2px solid #746E58;
-            border-radius: 5px;
-            background-color: #ffffff;
-          }
-          .dropdown_del {
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100px;
-            height: 40px;
-            color: #D56D6D;
-            border: 2px solid #D56D6D;
-            border-radius: 5px;
-            background-color: #ffffff;
-          }
-
-        }
-      }
-    }
+  .board_header {
+    font-family: var(--font-family-Noto-M);
+    height: 45px;
+    font-size: 17px;
+    border-top: 2px solid #DCDCDC;
+    background-color: #EEEEEE;
   }
-  
-  .regulation_main_bottom {
+
+  .board_content {
     font-family: var(--font-family-Noto-R);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    justify-content: space-between;
-    margin: 5px 10px;
-  
-    .attachment_content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-    }
-    .attachment_name {
-      color: #9E9E9E;
-    }
-  }
-  
-  .write_container {
-  
-    .write_title {
-      font-size: 32px;
-      color: #000;
-    }
-    .write_title::placeholder {
-      color: #000;
-      font-weight: 500;
-    }
-    .write_title:focus-visible {
-      outline: none!important;
-    }
-  
-    .writor_container {
-      display: flex;
-      gap: 10px;
-      margin: 10px 0;
-  
-      .write_info {
-        color: #9E9E9E
-      }
-      .write_border {
-        border-right: 1px solid black;
-      }
-    }
-  }
-  
-  
-  .detail_container {
-    display: flex;
-    justify-content: space-between;
+    height: 60px;
+    font-size: 17px;
+    border-top: 1px solid #DCDCDC;
     border-bottom: 1px solid #DCDCDC;
-    padding: 0 15px;
-    
-    .info_content{ 
-      display: flex;
-      gap: 10px;
-      margin: 10px 0;
+    text-align: center;
+
+    .dropdown{
+      
+      .dropdown-menu {
+        font-family: var(--font-family-Noto-B);
+        font-size: 16px;
+        cursor: pointer;
+        
+        .dropdown_edit {
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100px;
+          height: 40px;
+          color: #746E58;
+          border: 2px solid #746E58;
+          border-radius: 5px;
+          background-color: #ffffff;
+        }
+        .dropdown_del {
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100px;
+          height: 40px;
+          color: #D56D6D;
+          border: 2px solid #D56D6D;
+          border-radius: 5px;
+          background-color: #ffffff;
+        }
+
+      }
+    }
+  }
+}
+
+.regulation_main_bottom {
+  font-family: var(--font-family-Noto-R);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-between;
+  margin: 5px 10px;
+
+  .attachment_content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+  .attachment_name {
+    color: #9E9E9E;
+  }
+}
+
+.write_container {
+
+  .write_title {
+    font-size: 32px;
+    color: #000;
+  }
+  .write_title::placeholder {
+    color: #000;
+    font-weight: 500;
+  }
+  .write_title:focus-visible {
+    outline: none!important;
+  }
+
+  .writor_container {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+
+    .write_info {
+      color: #9E9E9E
+    }
+    .write_border {
+      border-right: 1px solid black;
+    }
+  }
+}
+
+
+.detail_container {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #DCDCDC;
+  padding: 0 15px;
   
-      .write_info {
-        color: #9E9E9E
-      }
-      .write_border {
-        border-right: 1px solid black;
-      }
+  .info_content{ 
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+
+    .write_info {
+      color: #9E9E9E
     }
-    .btn_content{
-      display: flex;
-      position: relative;
-      top: -10px;
-      gap: 10px;
+    .write_border {
+      border-right: 1px solid black;
     }
-  } 
-};
+  }
+  .btn_content{
+    display: flex;
+    position: relative;
+    top: -10px;
+    gap: 10px;
+  }
+} 
 
 
 @include laptop {
   .regulation_board_list {
-    width: 100%;
-    height: 90%;
-    margin-top: 10px;
-  
-    .board_header {
-      font-family: var(--font-family-Noto-M);
-      height: 40px;
-      font-size: 17px;
-      border-top: 2px solid #DCDCDC;
-      background-color: #EEEEEE;
-    }
   
     .board_content {
-      font-family: var(--font-family-Noto-R);
-      height: 45px;
-      font-size: 17px;
-      border-top: 1px solid #DCDCDC;
-      border-bottom: 1px solid #DCDCDC;
-      text-align: center;
+      height: 50px;
 
       .dropdown{
         
         .dropdown-menu {
-          font-family: var(--font-family-Noto-B);
           font-size: 14px;
-          cursor: pointer;
           
           .dropdown_edit {
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             width: 80px;
             height: 30px;
-            color: #746E58;
-            border: 2px solid #746E58;
-            border-radius: 5px;
-            background-color: #ffffff;
           }
           .dropdown_del {
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             width: 80px;
             height: 30px;
-            color: #D56D6D;
-            border: 2px solid #D56D6D;
-            border-radius: 5px;
-            background-color: #ffffff;
           }
         }
       }
     }
   }
-  
-  .regulation_main_bottom {
-    font-family: var(--font-family-Noto-R);
-    display: flex;
-    justify-content: space-between;
-    margin: 5px 10px;
-  
-    .attachment_content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-    }
-    .attachment_name {
-      color: #9E9E9E;
-    }
-  }
-  
-  .write_container {
-  
-    .write_title {
-      font-size: 32px;
-      color: #000;
-    }
-    .write_title::placeholder {
-      color: #000;
-      font-weight: 500;
-    }
-    .write_title:focus-visible {
-      outline: none!important;
-    }
-  
-    .writor_container {
-      display: flex;
-      gap: 10px;
-      margin: 10px 0;
-  
-      .write_info {
-        color: #9E9E9E
-      }
-      .write_border {
-        border-right: 1px solid black;
-      }
-    }
-  }
-  
-  
-  .detail_container {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #DCDCDC;
-    padding: 0 15px;
-    
-    .info_content{ 
-      display: flex;
-      gap: 10px;
-      margin: 10px 0;
-  
-      .write_info {
-        color: #9E9E9E
-      }
-      .write_border {
-        border-right: 1px solid black;
-      }
-    }
-    .btn_content{
-      display: flex;
-      position: relative;
-      top: -10px;
-      gap: 10px;
-    }
-  } 
 };
