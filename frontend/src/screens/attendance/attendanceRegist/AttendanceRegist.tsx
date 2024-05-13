@@ -29,16 +29,12 @@ const names = [
 ];
 
 const AttendanceRegist = () => {
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [selectedScreen, setSelectedScreen] = useState('R&D');
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
   };
 
-  const handleYearChange = (event: any) => {
-    setCurrentYear(parseInt(event.target.value));
-  };
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
     name: string | null;

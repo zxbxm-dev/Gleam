@@ -28,6 +28,9 @@ import {
 } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
 
+import { WriteEmployment } from "../../services/employment/EmploymentService";
+
+
 const Employment = () => {
   const [page, setPage] = useState<number>(1); 
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -35,8 +38,23 @@ const Employment = () => {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   const { isOpen, onOpen, onClose } = useDisclosure();
-  
   const postPerPage: number = 10;
+
+  const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [site, setSite] = useState("");
+  
+  const handleTitleChange = (event: any) => {
+    setTitle(event.target.value);
+  };
+
+  const handleUrlChange = (event: any) => {
+    setUrl(event.target.value);
+  };
+
+  const handleSiteChange = (event: any) => {
+    setSite(event.target.value);
+  };
 
   useEffect(() => {
     const initialEmployments = [
@@ -75,14 +93,52 @@ const Employment = () => {
   };
 
   const handleEdit = () => {
+    // EditEmployment()
     // 수정하기 기능 추가
   };
 
   const handleDelete = () => {
     // 삭제하기 기능 추가
+    // DeleteEmployment()
     onClose();
     setDropdownOpen(false);
   };
+  
+  const formatDate = (date: any) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
+  };
+  const currentDate = formatDate(new Date());
+  // 채용공고 게시물 작성
+  const handleSubmit = () => {
+    if (title === "") {
+      alert("공고 제목을 입력해 주세요.")
+      return;
+    } else if (url === "") {
+      alert("링크를 입력해 주세요.")
+      return;
+    } else if (site === "") {
+      alert("사이트명을 입력해 주세요.")
+      return;
+    }
+    
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("url", url);
+    formData.append("site", site);
+    formData.append("date", currentDate);
+    
+    WriteEmployment(formData)
+    .then(response => {
+      console.log('게시물 작성 성공')
+    })
+    .catch(error => {
+      console.log('게시물 작성 실패')
+    })
+  };
+
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -157,22 +213,22 @@ const Employment = () => {
                                   <button className="dropdown_edit" onClick={handleEdit}>수정하기</button>
                                 </PopoverTrigger>
                                 <Portal>
-                                  <PopoverContent width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
+                                  <PopoverContent onClick={(e) => e.stopPropagation()} width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
                                     <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 수정하기</PopoverHeader>
                                     <PopoverCloseButton color='white'/>
                                     <PopoverBody display='flex' flexDirection='column' alignItems='center'>
                                       <div style={{width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px'}}>
                                         <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                                           <div style={{width: '80px', textAlign: 'right'}}>공고제목</div>
-                                          <Input placeholder='ex) 디자인 채용공고' size='sm' />
+                                          <Input placeholder='ex) 디자인 채용공고' size='sm' color='#323232'/>
                                         </div>
                                         <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                                           <div style={{width: '80px', textAlign: 'right'}}>링크</div>
-                                          <Input placeholder='내용을 입력해주세요.' size='sm' />
+                                          <Input placeholder='내용을 입력해주세요.' size='sm' color='#323232'/>
                                         </div>
                                         <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                                           <div style={{width: '80px', textAlign: 'right'}}>사이트명</div>
-                                          <Input placeholder='내용을 입력해주세요.' size='sm' />
+                                          <Input placeholder='내용을 입력해주세요.' size='sm' color='#323232'/>
                                         </div>
                                       </div>
                                       <div style={{display: 'flex', gap: '10px'}}>
@@ -183,7 +239,7 @@ const Employment = () => {
                                   </PopoverContent>
                                 </Portal>
                               </Popover>
-                              <div className="dropdown_del" onClick={onOpen}>삭제하기</div>
+                              <div className="dropdown_del" onClick={onOpen} >삭제하기</div>
                             </div>
                           )}
                         </div>
@@ -224,19 +280,19 @@ const Employment = () => {
                       <div style={{width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px'}}>
                         <div style={{color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                           <div style={{width: '80px', textAlign: 'right'}}>공고제목</div>
-                          <Input placeholder='ex) 디자인 채용공고' size='sm' />
+                          <Input placeholder='ex) 디자인 채용공고' size='sm' color='#323232' onChange={handleTitleChange}/>
                         </div>
                         <div style={{color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                           <div style={{width: '80px', textAlign: 'right'}}>링크</div>
-                          <Input placeholder='내용을 입력해주세요.' size='sm' />
+                          <Input placeholder='내용을 입력해주세요.' size='sm' color='#323232' onChange={handleUrlChange}/>
                         </div>
                         <div style={{color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px'}}>
                           <div style={{width: '80px', textAlign: 'right'}}>사이트명</div>
-                          <Input placeholder='내용을 입력해주세요.' size='sm' />
+                          <Input placeholder='내용을 입력해주세요.' size='sm' color='#323232' onChange={handleSiteChange}/>
                         </div>
                       </div>
                       <div style={{display: 'flex', gap: '7px'}}>
-                        <button style={{width: '66px', height: '35px', color: '#fff', backgroundColor: '#746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>등록</button>
+                        <button style={{width: '66px', height: '35px', color: '#fff', backgroundColor: '#746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}} onClick={handleSubmit}>등록</button>
                         <button style={{width: '66px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>취소</button>
                       </div>
                     </PopoverBody>

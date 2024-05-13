@@ -228,7 +228,7 @@ const Register = () => {
     return (
         <div className="Register">
             <Link to="/login">
-            <img className="ResLogo" src={Login_Logo} />
+            <img className="ResLogo" src={Login_Logo} alt="LoginLogo"/>
             </Link>
             <span className="ResText">회원가입</span>
 
@@ -361,7 +361,7 @@ const Register = () => {
                         <div className="custom-select">
                             <div className="select-header" onClick={() => toggleSelect(1)}>
                                 <span>{selectedOptions.department ? selectedOptions.department : '부서를 선택해주세요'}</span>
-                                <img src={isDepart ? ArrowUp : ArrowDown} />
+                                <img src={isDepart ? ArrowUp : ArrowDown} alt="Arrow"/>
                             </div>
                             {isDepart && (
                                 <div className="options">
@@ -389,7 +389,7 @@ const Register = () => {
                         <div className="custom-select">
                             <div className="select-header" onClick={() => toggleSelect(2)}>
                                 <span>{selectedOptions.team ? selectedOptions.team : '팀을 선택해주세요'}</span>
-                                <img src={isTeam ? ArrowUp : ArrowDown} />
+                                <img src={isTeam ? ArrowUp : ArrowDown} alt="Arrow"/>
                             </div>
                             {isTeam && (
                                 <div className="options">
@@ -403,7 +403,7 @@ const Register = () => {
                         <div className="custom-select">
                             <div className="select-header" onClick={() => toggleSelect(3)}>
                                 <span>{selectedOptions.spot ? selectedOptions.spot : '직위를 선택해주세요'}</span>
-                                <img src={isSpot ? ArrowUp : ArrowDown} />
+                                <img src={isSpot ? ArrowUp : ArrowDown} alt="Arrow"/>
                             </div>
                             {isSpot && (
                                 <div className="options">
@@ -422,7 +422,7 @@ const Register = () => {
                         <div className="custom-select">
                             <div className="select-header" onClick={() => toggleSelect(4)}>
                                 <span>{selectedOptions.position ? selectedOptions.position : '직책을 선택해주세요'}</span>
-                                <img src={isPosition ? ArrowUp : ArrowDown} />
+                                <img src={isPosition ? ArrowUp : ArrowDown} alt="Arrow"/>
                             </div>
                             {isPosition && (
                                 <div className="options">
