@@ -5,17 +5,23 @@ import App from './App';
 import { ChakraProvider } from '@chakra-ui/react'
 import { RecoilRoot } from 'recoil';
 import reportWebVitals from './reportWebVitals';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+const queryClient = new QueryClient();
+
 root.render(
   <React.StrictMode>
-    <ChakraProvider>
-      <RecoilRoot>
-        <App />
-      </RecoilRoot>
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider>
+        <RecoilRoot>
+          <App />
+        </RecoilRoot>
+      </ChakraProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
