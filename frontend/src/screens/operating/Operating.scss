@@ -1,3 +1,5 @@
+@import "../../style/mixin";
+
 .container_operating {
   font-family: var(--font-family-Noto-R);
   width: 100%;
@@ -244,5 +246,43 @@
     font-size: 14px;
     font-family: var(--font-family-Noto-B);
     color: #fff;
+  }
+}
+
+
+
+@include laptop {
+  .oper_header_right {
+    top: 10px;
+
+    .oper_year_select {
+      width: 100px;
+      height: 35px;
+      font-size: 14px;
+    }
+  
+    .oper_download_button {
+      width: 92px;
+      height: 35px;
+      font-size: 14px;
+    }
+    
+    .oper_edit_button {
+      width: 66px;
+      height: 35px;
+      font-size: 14px;
+    }
+  
+    .rnd_company_button {
+      width: 99px;
+      height: 35px;
+      font-size: 14px;
+    }
+  
+    .head_company_button {
+      width: 66px;
+      height: 35px;
+      font-size: 14px;
+    }
   }
 }

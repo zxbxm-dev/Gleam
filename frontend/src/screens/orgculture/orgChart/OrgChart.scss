@@ -1,120 +1,115 @@
 @import "../../../style/mixin";
 
-@include desktop {
-  .FC_logo {
-    position: relative;
-    top: -80px;
-    right: -70px;
+.FC_logo {
+  position: relative;
+  top: -80px;
+  right: -70px;
+  width: 135px;
+
+  .MenuName {
+    font-family: var(--font-family-Noto-M);
+    font-size: 26px;
     width: 135px;
-    
-    .Logoimg {
-      width: 135px;
-    }
-
-    .MenuName {
-      font-family: var(--font-family-Noto-M);
-      font-size: 26px;
-      width: 135px;
-      color: #DEDEDE;
-    }
-    .MenuName2 {
-      font-family: var(--font-family-Noto-M);
-      font-size: 21px;
-      color: #DEDEDE;
-    }
+    color: #DEDEDE;
   }
-  
-  .FC_logo2 {
-    position: relative;
-    top: -80px;
-    left: -70px;
-    width: 140px;
-    
-    .Logoimg {
-      width: 140px;
-    }
-
-    .MenuName {
-      font-family: var(--font-family-Noto-M);
-      font-size: 26px;
-      width: 140px;
-      color: #DEDEDE;
-    }
-    .MenuName2 {
-      font-family: var(--font-family-Noto-M);
-      font-size: 21px;
-      width: 140px;
-      color: #DEDEDE;
-    }
-  }
-  
-  .nodeicon {
-    font-family: var(--font-family-Noto-B);
-    height: 150px;
-    width: 140px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #DEDEDE;
-    font-size: 14px;
-    padding: 10px;
-  }
-  
-  .nodeicon2 {
-    font-family: var(--font-family-Noto-B);
-    height: 150px;
-    width: 140px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #DEDEDE;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 10px;
-    margin-top: 20px;
-  }
-  
-  .nodeicon3 {
-    font-family: var(--font-family-Noto-B);
-    height: 50px;
-    width: 200px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #DEDEDE;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 10px;
-  }
-  
-  .nodeicon4 {
-    font-family: var(--font-family-Noto-B);
-    height: 50px;
-    width: 200px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #DEDEDE;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 10px;
-    margin-top: 20px;
-  }
-  
-  .nodeline {
-    position: absolute;
-    width: 71px;
-    height: 20px;
-    border-right: 1px solid #D3D3D3;
-  }
-  
-  .nodeline2 {
-    position: absolute;
-    width: 101px;
-    height: 20px;
-    border-right: 1px solid #D3D3D3;
+  .MenuName2 {
+    font-family: var(--font-family-Noto-M);
+    font-size: 21px;
+    color: #DEDEDE;
   }
 }
+
+.FC_logo2 {
+  position: relative;
+  top: -80px;
+  left: -70px;
+  width: 140px;
+  
+  .Logoimg {
+    width: 140px;
+  }
+
+  .MenuName {
+    font-family: var(--font-family-Noto-M);
+    font-size: 26px;
+    width: 140px;
+    color: #DEDEDE;
+  }
+  .MenuName2 {
+    font-family: var(--font-family-Noto-M);
+    font-size: 21px;
+    width: 140px;
+    color: #DEDEDE;
+  }
+}
+
+.nodeicon {
+  font-family: var(--font-family-Noto-B);
+  height: 150px;
+  width: 140px;
+  padding: 5px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 1px solid #DEDEDE;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.nodeicon2 {
+  font-family: var(--font-family-Noto-B);
+  height: 150px;
+  width: 140px;
+  padding: 5px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 1px solid #DEDEDE;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.nodeicon3 {
+  font-family: var(--font-family-Noto-B);
+  height: 50px;
+  width: 200px;
+  padding: 5px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 1px solid #DEDEDE;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.nodeicon4 {
+  font-family: var(--font-family-Noto-B);
+  height: 50px;
+  width: 200px;
+  padding: 5px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 1px solid #DEDEDE;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.nodeline {
+  position: absolute;
+  width: 71px;
+  height: 20px;
+  border-right: 1px solid #D3D3D3;
+}
+
+.nodeline2 {
+  position: absolute;
+  width: 101px;
+  height: 20px;
+  border-right: 1px solid #D3D3D3;
+}
+
 
 
 @include laptop {
@@ -129,22 +124,16 @@
     }
 
     .MenuName {
-      font-family: var(--font-family-Noto-M);
       width: 80px;
       font-size: 16px;
-      color: #DEDEDE;
     }
     .MenuName2 {
-      font-family: var(--font-family-Noto-M);
       width: 80px;
       font-size: 21px;
-      color: #DEDEDE;
     }
   }
   
   .FC_logo2 {
-    position: relative;
-    top: -80px;
     left: 50px;
     width: 80px;
 
@@ -153,83 +142,27 @@
     }
     
     .MenuName {
-      font-family: var(--font-family-Noto-M);
       font-size: 16px;
       width: 80px;
-      color: #DEDEDE;
     }
     .MenuName2 {
-      font-family: var(--font-family-Noto-M);
       font-size: 13px;
       width: 80px;
-      color: #DEDEDE;
     }
   }
   
   .nodeicon {
-    font-family: var(--font-family-Noto-B);
     height: 100px;
     width: 120px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #DEDEDE;
-    font-size: 14px;
-    padding: 10px;
   }
   
   .nodeicon2 {
-    font-family: var(--font-family-Noto-B);
     height: 100px;
     width: 120px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #DEDEDE;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 10px;
-    margin-top: 20px;
-  }
-  
-  .nodeicon3 {
-    font-family: var(--font-family-Noto-B);
-    height: 50px;
-    width: 200px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #DEDEDE;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 10px;
-  }
-  
-  .nodeicon4 {
-    font-family: var(--font-family-Noto-B);
-    height: 50px;
-    width: 200px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #DEDEDE;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 10px;
-    margin-top: 20px;
   }
   
   .nodeline {
-    position: absolute;
     width: 61px;
-    height: 20px;
-    border-right: 1px solid #D3D3D3;
   }
   
-  .nodeline2 {
-    position: absolute;
-    width: 101px;
-    height: 20px;
-    border-right: 1px solid #D3D3D3;
-  }
 }

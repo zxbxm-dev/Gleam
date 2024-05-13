@@ -116,10 +116,8 @@ const UserManagement = () => {
                   ))}
               </tbody>
             </table>
-
-
             <div className="main_bottom">
-            <Pagination
+              <Pagination
                 activePage={page}
                 itemsCountPerPage={postPerPage}
                 totalItemsCount={usermanages.length}
@@ -130,8 +128,6 @@ const UserManagement = () => {
                 lastPageText={<LastRightIcon />}
                 onChange={handlePageChange}
               />
-
-              
             </div>
           </div>
         </div>
