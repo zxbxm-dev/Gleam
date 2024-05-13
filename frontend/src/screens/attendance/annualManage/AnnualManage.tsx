@@ -28,6 +28,7 @@ const AnnualManage = () => {
     ['서주희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['전아름', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['함다슬', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['전규미', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['김효은', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['우현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
@@ -101,7 +102,7 @@ const AnnualManage = () => {
     
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 16; j++) {
+      for (let j = 0; j < 17; j++) {
 
         rowCells.push(
           <tr
@@ -117,7 +118,7 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 16; j++) {
+      for (let j = 0; j < 17; j++) {
 
         rowCells.push(
           <tr
@@ -133,7 +134,7 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 16; j++) {
+      for (let j = 0; j < 17; j++) {
 
         rowCells.push(
           <tr
@@ -149,7 +150,7 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 16; j++) {
+      for (let j = 0; j < 17; j++) {
 
         rowCells.push(
           <tr
@@ -166,7 +167,7 @@ const AnnualManage = () => {
     for (let i = 0; i < 30; i++) {
       const rowCells = [];
 
-      for (let j = 0; j < 16; j++) {
+      for (let j = 0; j < 17; j++) {
         const eventDates = members[j][4]; // 해당 멤버의 이벤트 날짜 배열
         const eventDate = eventDates && eventDates[i] ? eventDates[i] : '';
         rowCells.push(
@@ -183,7 +184,7 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 16; j++) {
+      for (let j = 0; j < 17; j++) {
 
         rowCells.push(
           <tr
@@ -199,7 +200,7 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 16; j++) {
+      for (let j = 0; j < 17; j++) {
 
         rowCells.push(
           <tr
@@ -297,7 +298,7 @@ const AnnualManage = () => {
                     </tr>
                     <tr>
                       <td>8</td>
-                      <td rowSpan={4}>마케팅부</td>
+                      <td rowSpan={5}>마케팅부</td>
                       <td rowSpan={2}>디자인팀</td>
                     </tr>
                     <tr>
@@ -305,28 +306,31 @@ const AnnualManage = () => {
                     </tr>
                     <tr>
                       <td>10</td>
-                      <td rowSpan={2}>기획팀</td>
+                      <td rowSpan={3}>기획팀</td>
                     </tr>
                     <tr>
                       <td>11</td>
                     </tr>
                     <tr>
                       <td>12</td>
-                      <td rowSpan={5}>관리부</td>
-                      <td rowSpan={3}>관리팀</td>
                     </tr>
                     <tr>
                       <td>13</td>
+                      <td rowSpan={5}>관리부</td>
+                      <td rowSpan={3}>관리팀</td>
                     </tr>
                     <tr>
                       <td>14</td>
                     </tr>
                     <tr>
                       <td>15</td>
-                      <td rowSpan={2}>지원팀</td>
                     </tr>
                     <tr>
                       <td>16</td>
+                      <td rowSpan={2}>지원팀</td>
+                    </tr>
+                    <tr>
+                      <td>17</td>
                     </tr>
                   </tbody>
                 </table>
@@ -372,7 +376,7 @@ const AnnualManage = () => {
                     </tr>
                     <tr>
                       <td>8</td>
-                      <td rowSpan={4}>마케팅부</td>
+                      <td rowSpan={5}>마케팅부</td>
                       <td rowSpan={2}>디자인팀</td>
                     </tr>
                     <tr>
@@ -380,28 +384,31 @@ const AnnualManage = () => {
                     </tr>
                     <tr>
                       <td>10</td>
-                      <td rowSpan={2}>기획팀</td>
+                      <td rowSpan={3}>기획팀</td>
                     </tr>
                     <tr>
                       <td>11</td>
                     </tr>
                     <tr>
                       <td>12</td>
-                      <td rowSpan={5}>관리부</td>
-                      <td rowSpan={3}>관리팀</td>
                     </tr>
                     <tr>
                       <td>13</td>
+                      <td rowSpan={5}>관리부</td>
+                      <td rowSpan={3}>관리팀</td>
                     </tr>
                     <tr>
                       <td>14</td>
                     </tr>
                     <tr>
                       <td>15</td>
-                      <td rowSpan={2}>지원팀</td>
                     </tr>
                     <tr>
                       <td>16</td>
+                      <td rowSpan={2}>지원팀</td>
+                    </tr>
+                    <tr>
+                      <td>17</td>
                     </tr>
                   </tbody>
                 </table>

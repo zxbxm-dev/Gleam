@@ -17,15 +17,20 @@ import {
   Portal,
 } from '@chakra-ui/react'
 import { useRecoilState } from 'recoil';
-import { isSidebarVisibleState, userState } from '../../recoil/atoms';
+import { isSidebarVisibleState, isHrSidebarVisibleState, userState } from '../../recoil/atoms';
 
 const Header = () => {
   let navigate = useNavigate();
   const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
+  const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
+
   const [userInfo] = useRecoilState(userState);
   
   const handleSideMenuClick = () => {
     setIsSidebarVisible(!isSidebarVisible);
+    if (isHrSidebarVisible === true) {
+      setIsHrSidebarVisible(!isHrSidebarVisible)
+    }
   };
 
   return (
