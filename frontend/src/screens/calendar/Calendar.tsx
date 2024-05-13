@@ -138,13 +138,13 @@ const Calendar = () => {
         </div>
       </div>
       <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
-        <ModalContent height='40vh' borderRadius='10px'>
-          <ModalHeader height='6vh' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='10px'>일정 등록하기</ModalHeader>
+        <ModalContent height='300px' width="400px" borderRadius='10px'>
+          <ModalHeader height='50px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize="14px" borderTopRadius='10px'>일정 등록하기</ModalHeader>
           <ModalCloseButton />
-          <ModalBody display='flex' flexDirection='column' gap='15px' fontFamily='var(--font-family-Noto-M)'>
+          <ModalBody padding="0" display='flex' alignItems="center" marginTop="16px" flexDirection='column' gap='7px' fontFamily='var(--font-family-Noto-M)'>
             <div style={{ display: 'flex', gap: '10px' }}>
               <div>
-                <Select size='sm' width='4vw' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
+                <Select size='sm' width='40px' height="28px" borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
                   <option value='반차' style={{ color: '#FFB800' }}>반차</option>
                   <option value='연차' style={{ color: '#0D994D' }}>연차</option>
                   <option value='외근' style={{ color: '#7000C9' }}>외근</option>
@@ -153,14 +153,14 @@ const Calendar = () => {
                 </Select>
               </div>
               <div>
-                <Input size='sm' width='22vw' placeholder='ex) OOO 반차' onChange={handleTitleChange} />
+                <Input size='sm' width='310px' height="28px" placeholder='ex) OOO 반차' onChange={handleTitleChange} />
               </div>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <div style={{ width: '4vw', textAlign: 'right' }}>
+              <div style={{ width: '40px', textAlign: 'right' }}>
                 기간
               </div>
-              <div style={{ display: 'flex', width: '80%' }}>
+              <div style={{ display: 'flex', width: '310px' }}>
                 <DatePicker
                   selected={startDate}
                   onChange={date => setStartDate(date)}
@@ -184,11 +184,11 @@ const Calendar = () => {
               </div>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <div style={{ width: '4vw', textAlign: 'right' }}>
+              <div style={{ width: '40px', textAlign: 'right' }}>
                 메모
               </div>
               <div>
-                <Textarea placeholder='내용을 입력해주세요.' size='sm' width='22vw' height='15vh' fontFamily='var(--font-family-Noto-R)' onChange={handleMemoChange} />
+                <Textarea placeholder='내용을 입력해주세요.' resize="none" size='sm' width='310px' height='100px' fontFamily='var(--font-family-Noto-R)' onChange={handleMemoChange} />
               </div>
             </div>
           </ModalBody>

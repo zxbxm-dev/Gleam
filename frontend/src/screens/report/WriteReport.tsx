@@ -46,7 +46,7 @@ const WriteReport = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedApproval, setSelectedApproval] = useState('');
   // HrSidebar에서 멤버를 클릭할 때 호출되는 함수
-  
+
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
   }
@@ -56,9 +56,9 @@ const WriteReport = () => {
     const pages = [];
     for (let i = 1; i <= numPages; i++) {
       pages.push(
-        <Page 
+        <Page
           key={`page_${i}`}
-          pageNumber={i} 
+          pageNumber={i}
           width={1000}
         />
       );
@@ -81,11 +81,11 @@ const WriteReport = () => {
       setFile(droppedFile);
     }
   };
-  
+
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
-  
+
   const [approvalLines, setApprovalLines] = useState([
     { name: '최종결재', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 1', checked: false, selectedMember: null as Member | null },
@@ -93,49 +93,49 @@ const WriteReport = () => {
     { name: '결재라인 3', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 4', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 5', checked: false, selectedMember: null as Member | null },
-    { name: '참조', checked: false, selectedMember: null as Member | null },
+    { name: '참조', checked: false, selectedMembers: [] as Member[] },
   ]);
-
-  // const [referenceLine, setReferenceLine] = useState([
-  //   { name: '참조', checked: false, selectedMember: null as Member | null },
-  // ]);
 
   const handleCheckboxChange = (index: number) => {
     const updatedApprovalLines = [...approvalLines];
     updatedApprovalLines[index].checked = !updatedApprovalLines[index].checked;
-  
+
     if (!updatedApprovalLines[index].checked) {
       // 체크박스가 해제되면 selectedMember 초기화
       updatedApprovalLines[index].selectedMember = null;
     }
-  
+
     setSelectedApproval(updatedApprovalLines[index].name);
     setApprovalLines(updatedApprovalLines);
   };
-  
+
 
   const handleMemberClick = (name: string, dept: string, team: string, position: string, lineName: string) => {
     // 선택된 멤버 정보를 새로운 Member 배열로 생성
     const newMember: Member = [name, dept, team, position];
-  
+
     // approvalLines 배열을 복사하여 새로운 배열 생성
     const updatedApprovalLines = [...approvalLines];
-  
+
     // lineName에 해당하는 결재 라인의 인덱스 찾기
     const index = updatedApprovalLines.findIndex(line => line.name === lineName);
-  
+
     if (index !== -1) {
-      // 해당 인덱스의 결재 라인의 selectedMember 속성을 새로운 멤버로 업데이트
-      updatedApprovalLines[index].selectedMember = newMember;
-  
+      if (lineName === '참조') {
+        // 참조 라인인 경우, 여러 명을 선택할 수 있도록 배열에 추가
+        (updatedApprovalLines[index] as { name: string; checked: boolean; selectedMembers: Member[] }).selectedMembers.push(newMember);
+      } else {
+        // 그 외의 경우에는 기존 로직과 동일하게 처리
+        updatedApprovalLines[index].selectedMember = newMember;
+      }
+
       // 새로운 배열을 상태로 설정
       setApprovalLines(updatedApprovalLines);
     } else {
       console.error(`결재 라인 "${lineName}"을 찾을 수 없습니다.`);
     }
   };
-  
-  
+
 
   const members: Member[] = [
     ['이정훈', '포체인스 주식회사', '', '대표'],
@@ -167,7 +167,7 @@ const WriteReport = () => {
       <div className="content_header">
         <Link to={"/report"} className="sub_header">보고서</Link>
       </div>
-      
+
       <div className="content_container">
         <div className="container">
           <div className="write_container">
@@ -175,25 +175,25 @@ const WriteReport = () => {
               <div className="top_left_content">
                 <div className="sub_title">양식 선택</div>
                 <Select size='sm' width='380px' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
-                  <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>공통보고서</option>
+                  <option value='' disabled style={{ fontFamily: 'var(--font-family-Noto-B)' }}>공통보고서</option>
                   <option value=''>&nbsp;&nbsp; 주간업무일지</option>
                   <option value=''>&nbsp;&nbsp; 지출품의서</option>
                   <option value=''>&nbsp;&nbsp; 휴가신청서</option>
 
-                  <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>기타</option>
+                  <option value='' disabled style={{ fontFamily: 'var(--font-family-Noto-B)' }}>기타</option>
                   <option value=''>&nbsp;&nbsp; 시말서</option>
                   <option value=''>&nbsp;&nbsp; 사직서</option>
                   <option value=''>&nbsp;&nbsp; 휴직원</option>
                   <option value=''>&nbsp;&nbsp; 복직원</option>
 
-                  <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>워크숍</option>
+                  <option value='' disabled style={{ fontFamily: 'var(--font-family-Noto-B)' }}>워크숍</option>
                   <option value=''>&nbsp;&nbsp; 워크숍 신청서</option>
                   <option value=''>&nbsp;&nbsp; 워크숍 보고서 (프로젝트 회의)</option>
                   <option value=''>&nbsp;&nbsp; 워크숍 보고서 (야유회)</option>
                   <option value=''>&nbsp;&nbsp; 지출내역서</option>
                   <option value=''>&nbsp;&nbsp; 예산신청서 (지원팀)</option>
 
-                  <option value='' disabled style={{fontFamily: 'var(--font-family-Noto-B)'}}>기획서</option>
+                  <option value='' disabled style={{ fontFamily: 'var(--font-family-Noto-B)' }}>기획서</option>
                   <option value=''>&nbsp;&nbsp; 기획서</option>
                   <option value=''>&nbsp;&nbsp; 최종보고서</option>
                   <option value=''>&nbsp;&nbsp; 프로젝트 기획서</option>
@@ -207,14 +207,14 @@ const WriteReport = () => {
                     <button className="approval_button">결재라인 선택</button>
                   </PopoverTrigger>
                   <Portal>
-                    <PopoverContent width='27vw' height='80vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
-                      <PopoverCloseButton color='white'/>
-                      <PopoverBody display='flex' flexDirection='row' padding= '0px'>
-                        <div style={{width: '13vw', height: '75.8vh', overflowY: 'scroll', scrollbarWidth: 'thin'}}>
+                    <PopoverContent width='440px' height='700px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
+                      <PopoverCloseButton color='white' />
+                      <PopoverBody display='flex' flexDirection='row' padding='0px'>
+                        <div style={{ width: '200px', height: '650px', overflowY: 'scroll', scrollbarWidth: 'thin' }}>
                           <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
                         </div>
-                        <div style={{width: '14vw', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0'}}>
+                        <div style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0' }}>
                           {approvalLines.map((line, index) => (
                             <div key={index} className="approval_content">
                               <div className='approval_line'>
@@ -224,31 +224,45 @@ const WriteReport = () => {
                                   onChange={() => handleCheckboxChange(index)}
                                   className='approval_checkbox'
                                   id={`check${index}`}
-                                  style={{cursor: 'pointer'}}
+                                  style={{ cursor: 'pointer' }}
                                 />
-                                <label htmlFor={`check${index}`} style={{cursor: 'pointer'}}>{line.name}</label>
+                                <label htmlFor={`check${index}`} style={{ cursor: 'pointer' }}>{line.name}</label>
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
                                   <div className='approval_name'>
-                                    <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/>
+                                    <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
                                     <div className='name_text'>{line.selectedMember[0]}</div>
                                     <div className='name_border'></div>
                                     <div className='name_text'>{line.selectedMember[3]}</div>
                                   </div>
                                 ) : (
-                                  <div className='approval_checked'>
-                                    <div>&nbsp;</div>
-                                  </div>
+                                  line.name === '참조' && line.selectedMembers ? (
+                                    <div className='approvals_contents'>
+                                      {line.selectedMembers.map((member, index) => (
+                                        <div key={index} className='approval_name'>
+                                          {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
+                                          <div className='name_text'>{member[0]}</div>
+                                          <div className='name_border'></div>
+                                          <div className='name_text'>{member[3]}</div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <div className='approval_checked'>
+                                      <div>&nbsp;</div>
+                                    </div>
+                                  )
                                 )
                               ) : (
                                 <div className='approval_checked'>
-                                  칸 선택후 좌측 리스트에서<br/>
-                                  결제라인을 선택해주세요
+                                  칸 선택 후 좌측 리스트에서<br />
+                                  결재라인을 선택해주세요
                                 </div>
                               )}
                             </div>
-                            ))}
+                          ))}
+
                           <div className='button-wrap'>
                             <button className="second_button">제출</button>
                             <button className="white_button">취소</button>
@@ -260,7 +274,7 @@ const WriteReport = () => {
                 </Popover>
                 <button className="save_button" onClick={onOpen}>임시저장</button>
                 <button className="upload_button">
-                  <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
+                  <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
                     <input
                       id="file-upload"
                       type="file"
@@ -276,7 +290,7 @@ const WriteReport = () => {
             </div>
 
             <div className="write_btm_container2">
-              { file ? (
+              {file ? (
                 <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                   {renderPages()}
                 </Document>
@@ -287,7 +301,7 @@ const WriteReport = () => {
                   onDragOver={handleDragOver}
                 >
                   <div className='upload-text-top'>
-                    <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
+                    <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
                       <input
                         id="file-upload"
                         type="file"
@@ -304,17 +318,17 @@ const WriteReport = () => {
             </div>
           </div>
         </div>
-      </div>  
+      </div>
       <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
         <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
           <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
+          <ModalCloseButton color='#fff' fontSize='12px' top='0' />
           <ModalBody className="cancle_modal_content">
             임시저장이 완료되었습니다.
           </ModalBody>
 
           <ModalFooter justifyContent='center'>
-            <button className="del_button" onClick={() => {navigate('/tempReportStorage')}}>확인</button>
+            <button className="del_button" onClick={() => { navigate('/tempReportStorage') }}>확인</button>
           </ModalFooter>
         </ModalContent>
       </Modal>
