@@ -53,3 +53,6 @@ export { default as AttendanceRegist } from "./attendance/attendanceRegist/Atten
 
 // 운영비 관리
 export { default as Operating } from "./operating/Operating";
+
+// 회원 관리
+export { default as UserManagement } from "./usermanagement/UserManagement";

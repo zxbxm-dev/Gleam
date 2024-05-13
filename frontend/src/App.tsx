@@ -34,7 +34,8 @@ import {
   Register,
   FindID,
   ResetPw,
-  EditRegis
+  EditRegis,
+  UserManagement,
 } from "./screens";
 
 function App() {
@@ -97,6 +98,9 @@ function App() {
 
             {/* 운영비 관리 */}
             <Route path="/operating-manage" element={<Operating />} />
+
+            {/* 회원 관리 */}
+            <Route path="/user-management" element={<UserManagement />} />
 
             <Route path="/404" element={<PageNotFound />} />
           </Route>
