@@ -69,7 +69,7 @@ const FindID = () => {
         <div className="FindID">
             <div className="LogoBox">
                 <Link to="/login">
-                    <img className="ResLogo" src={Login_Logo} />
+                    <img className="ResLogo" src={Login_Logo} alt="LoginLogo"/>
                 </Link>
                 <span className="ResText">아이디 찾기</span>
             </div>
@@ -88,7 +88,7 @@ const FindID = () => {
                     <div className="custom-select">
                         <div className="select-header" onClick={() => toggleSelect()}>
                             <span>{selectedOptions.spot ? selectedOptions.spot : '직위를 선택해주세요'}</span>
-                            <img src={isSpot ? ArrowUp : ArrowDown} />
+                            <img src={isSpot ? ArrowUp : ArrowDown} alt="Arrow"/>
                         </div>
                         {isSpot && (
                             <div className="options">
@@ -111,7 +111,7 @@ const FindID = () => {
                 <ModalContent width="400px" height='200px' borderRadius='5px'>
                     <ModalHeader className='ModalHeader' paddingLeft="15px" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto)' borderTopRadius='5px' fontSize="14px">알림</ModalHeader>
                     <ModalBody className='ModalBody'>
-                        <img src={ModalCheck} />
+                        <img src={ModalCheck} alt="ModalCheck"/>
 
                         아이디 찾기 완료<br />
                         아이디 :

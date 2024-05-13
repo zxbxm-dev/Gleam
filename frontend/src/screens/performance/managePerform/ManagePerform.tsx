@@ -86,10 +86,10 @@ const ManagePerform = () => {
             <div className="approval_btm">
               <table className="approval_board_list">
                 <colgroup>
-                  <col width="6%"/>
-                  <col width="54%"/>
+                  <col width="10%"/>
+                  <col width="45%"/>
                   <col width="20%"/>
-                  <col width="20%"/>
+                  <col width="25%"/>
                 </colgroup>
                 <thead>
                   <tr className="board_header">

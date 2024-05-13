@@ -235,7 +235,7 @@
   .Explan_annual {
     font-family: var(--font-family-Noto-M);
     width: 250px;
-    height: 794px;
+    height: 841px;
     border: 2px solid #858585;
     overflow-x: auto;
 
@@ -347,5 +347,27 @@
     }
   .TabKey {
     width: 7%;
+  }
+
+  .attend_header_right {
+    top: 50px;
+
+    .attend_download_button {
+      width: 92px;
+      height: 35px;
+      font-size: 14px;
+    }
+  
+    .rnd_company_button {
+      width: 99px;
+      height: 35px;
+      font-size: 14px;
+    }
+  
+    .head_company_button {
+      width: 66px;
+      height: 35px;
+      font-size: 14px;
+    }
   }
 }

@@ -24,21 +24,17 @@ const months = [
 
 const names = [
   '권상원', '김도환', '권준우', '진유빈', '장현지', '권채림', '구민석', '변도일',
-  '이로운', '김현지', '서주희', '전아름', '함다슬', '김효은', '우현지', '염승희',
+  '이로운', '김현지', '서주희', '전아름', '함다슬', '전규미', '김효은', '우현지', '염승희',
   '김태희', '이주범'
 ];
 
 const AttendanceRegist = () => {
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [selectedScreen, setSelectedScreen] = useState('R&D');
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
   };
 
-  const handleYearChange = (event: any) => {
-    setCurrentYear(parseInt(event.target.value));
-  };
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
     name: string | null;
@@ -496,7 +492,7 @@ const AttendanceRegist = () => {
                         <td>이로운</td>
                       </tr>
                       <tr>
-                        <td rowSpan={4}>마케팅부</td>
+                        <td rowSpan={5}>마케팅부</td>
                         <td rowSpan={2}>디자인팀</td>
                         <td>김현지</td>
                       </tr>
@@ -504,11 +500,14 @@ const AttendanceRegist = () => {
                         <td>서주희</td>
                       </tr>
                       <tr>
-                        <td rowSpan={2}>기획팀</td>
+                        <td rowSpan={3}>기획팀</td>
                         <td>전아름</td>
                       </tr>
                       <tr>
                         <td>함다슬</td>
+                      </tr>
+                      <tr>
+                        <td>전규미</td>
                       </tr>
                       <tr>
                         <td rowSpan={5}>관리부</td>

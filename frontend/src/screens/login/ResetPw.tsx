@@ -97,7 +97,7 @@ const ResetPw = () => {
         <div className="FindID">
             <div className="LogoBox">
                 <Link to="/login">
-                    <img className="ResLogo" src={Login_Logo} />
+                    <img className="ResLogo" src={Login_Logo} alt="LoginLogo"/>
                 </Link>
                 <span className="ResText">패스워드 재설정</span>
             </div>
@@ -140,7 +140,7 @@ const ResetPw = () => {
                     <div className="custom-select">
                         <div className="select-header" onClick={() => toggleSelect()}>
                             <span>{selectedOptions.spot ? selectedOptions.spot : '직위를 선택해주세요'}</span>
-                            <img src={isSpot ? ArrowUp : ArrowDown} />
+                            <img src={isSpot ? ArrowUp : ArrowDown} alt="Arrow"/>
                         </div>
                         {isSpot && (
                             <div className="options">

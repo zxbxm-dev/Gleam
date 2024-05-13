@@ -64,7 +64,8 @@ const Sidebar = () => {
   };
 
   const handleHrSideClick = () => {
-    setIsHrSidebarVisible(!isHrSidebarVisible);
+    setIsHrSidebarVisible(true);
+    console.log(isHrSidebarVisible)
   };
 
   return (
@@ -207,6 +208,11 @@ const Sidebar = () => {
                   </Link>
                 </li>
                 {/* :<li></li>} */}
+                <li className="member-manage">
+                  <Link to="/user-management" onClick={() => handleMenuClick('user-management')}>
+                    회원 관리
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

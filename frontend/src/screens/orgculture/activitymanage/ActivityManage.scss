@@ -1,253 +1,219 @@
 @import "../../../style/mixin";
 
-@include desktop {
-  .active_container{ 
-    height: 86vh;
-    background-color: white;
+.active_container{ 
+  height: 86vh;
+  background-color: white;
+  border: 1px solid #DEDEDE;
+  border-radius: 10px;
+  padding: 20px;
+
+  .board_container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  .board_content {
+    font-family: var(--font-family-Noto-R);
+    width: 100%;
+    height: 75.5vh;
     border: 1px solid #DEDEDE;
     border-radius: 10px;
-    padding: 20px;
-  
-    .board_container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    .board_content {
-      font-family: var(--font-family-Noto-R);
-      width: 100%;
-      height: 75.5vh;
-      border: 1px solid #DEDEDE;
-      border-radius: 10px;
-      padding: 20px 40px 20px 30px;
-  
-      .board_top {
-        font-family: var(--font-family-Noto-M);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-  
-        .board_name { 
-          font-size: 32px;
-        }
-  
-        .board_add {
-          font-size: 20px;
-          color: #C7C7C7;
-  
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-  
-      .board_btm {
-        display: flex;
-        flex-direction: column;
-        margin: 49px 0;
-        gap: 20px;
-  
-        .board_unit {
-          display: flex;
-          justify-content: space-between;
-  
-          .board_title {
-            font-size: 16px;
-            cursor: pointer;
-            color: #323232;
-          }
-          .board_title:hover{
-            text-decoration: underline;
-          }
-          .board_date {
-            font-size: 16px;
-            color: #C7C7C7
-          }
-        }
-  
-      }
-    }
+    padding: 20px 40px 20px 30px;
 
-    .btn_wrap{
-      display: flex;
-      width: 100%;
-  justify-content: flex-end;
-margin-top: 15px;
-margin-bottom: 15px;
-    }
-  }
-  
-  .activity_main_bottom {
-    font-family: var(--font-family-Noto-R);
-    display: flex;
-    justify-content: space-between;
-    margin: 5px 10px;
-  
-    .attachment_content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-    }
-    .attachment_name {
-      color: #9E9E9E;
-    }
-  }
-
-  .Employee_content {
-    font-family: var(--font-family-Noto-R);
-    width: 100%;
-    height: 55%;
-  
-    .content_top {
-      width: 100%;
-      height: 70%;
-      padding: 1%;
-      border-bottom: 1px solid #DCDCDC;
-    }
-  
-    .content_btm {
-      display: flex;
-      width: 100%;
-      height: 30%;
-      padding: 1%;
-  
-      .btm_title {
-        font-family: var(--font-family-Noto-B);
-        color: #746E58;
-      }
-  
-      .btm_attachment {
-        margin-left: 2%;
-        color: #9E9E9E;
-        
-  
-        .btm_attachment_display {
-          display: flex;
-          margin-bottom: 1%;
-          gap: 8px;
-          
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-    }
-  }
-  
-  .Employee_comment {
-    font-family: var(--font-family-Noto-R);
-    width: 100%;
-    height: 45%;
-  
-    .comment_title {
+    .board_top {
       font-family: var(--font-family-Noto-M);
-      font-size: 26px;
-      padding: 1%;
-    }
-  
-    .comment_container {
       display: flex;
-      width: 100%;
-      height: 18%;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid #DCDCDC;
-      padding: 1.5%;
-  
-      .comment_left{
-        display: flex;
-        width: 70%;
-        
-        .comment_name {
-          width: 8%;
-        }
-        .comment_content{
-          margin-right: 1%;
-        }
+
+      .board_name { 
+        font-size: 32px;
       }
-  
-      .comment_right {
-        display: flex;
+
+      .board_add {
+        font-size: 20px;
         color: #C7C7C7;
-        gap: 15px;
-  
-        .border_right {
-          border-right: 1px solid;
+
+        &:hover {
+          text-decoration: underline;
         }
       }
-  
-      .comment_input_right {
-        position: relative;
-        top: -15px;
-        width: 95%;
-        height: 20%;
-      }
-  
     }
+
+    .board_btm {
+      display: flex;
+      flex-direction: column;
+      margin: 49px 0;
+      gap: 20px;
+
+      .board_unit {
+        display: flex;
+        justify-content: space-between;
+
+        .board_title {
+          font-size: 16px;
+          cursor: pointer;
+          color: #323232;
+        }
+        .board_title:hover{
+          text-decoration: underline;
+        }
+        .board_date {
+          font-size: 16px;
+          color: #C7C7C7
+        }
+      }
+
+    }
+  }
+
+  .btn_wrap{
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+}
+
+.activity_main_bottom {
+  font-family: var(--font-family-Noto-R);
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 10px;
+
+  .attachment_content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+  .attachment_name {
+    color: #9E9E9E;
+  }
+}
+
+.Employee_content {
+  font-family: var(--font-family-Noto-R);
+  width: 100%;
+  height: 55%;
+
+  .content_top {
+    width: 100%;
+    height: 70%;
+    padding: 1%;
+    border-bottom: 1px solid #DCDCDC;
+  }
+
+  .content_btm {
+    display: flex;
+    width: 100%;
+    height: 30%;
+    padding: 1%;
+
+    .btm_title {
+      font-family: var(--font-family-Noto-B);
+      color: #746E58;
+    }
+
+    .btm_attachment {
+      margin-left: 2%;
+      color: #9E9E9E;
+      
+
+      .btm_attachment_display {
+        display: flex;
+        margin-bottom: 1%;
+        gap: 8px;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.Employee_comment {
+  font-family: var(--font-family-Noto-R);
+  width: 100%;
+  height: 45%;
+
+  .comment_title {
+    font-family: var(--font-family-Noto-M);
+    font-size: 26px;
+    padding: 1%;
+  }
+
+  .comment_container {
+    display: flex;
+    width: 100%;
+    height: 18%;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #DCDCDC;
+    padding: 1.5%;
+
+    .comment_left{
+      display: flex;
+      width: 70%;
+      
+      .comment_name {
+        width: 8%;
+      }
+      .comment_content{
+        margin-right: 1%;
+      }
+    }
+
+    .comment_right {
+      display: flex;
+      color: #C7C7C7;
+      gap: 15px;
+
+      .border_right {
+        border-right: 1px solid;
+      }
+    }
+
+    .comment_input_right {
+      position: relative;
+      top: -15px;
+      width: 95%;
+      height: 20%;
+    }
+
   }
 }
 
 
 
 
+
 @include laptop {
   .active_container{ 
-    height: 86vh;
-    background-color: white;
-    border: 1px solid #DEDEDE;
-    border-radius: 10px;
-    padding: 20px;
-  
     .board_container {
-      display: flex;
-      justify-content: center;
       gap: 1%;
     }
     .board_content {
-      font-family: var(--font-family-Noto-R);
       width: 49%;
       height: 75.5vh;
-      border: 1px solid #DEDEDE;
-      border-radius: 10px;
       padding: 30px;
   
       .board_top {
-        font-family: var(--font-family-Noto-M);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-  
         .board_name { 
           font-size: 30px;
-        }
-  
-        .board_add {
-          font-size: 20px;
-          color: #C7C7C7;
-  
-          &:hover {
-            text-decoration: underline;
-          }
         }
       }
   
       .board_btm {
-        display: flex;
-        flex-direction: column;
         margin: 30px 0;
         gap: 15px;
   
         .board_unit {
-          display: flex;
-          justify-content: space-between;
   
           .board_title {
             font-size: 16px;
-          }
-          .board_date {
-            font-size: 16px;
-            color: #C7C7C7
           }
         }
   
@@ -258,116 +224,6 @@ margin-bottom: 15px;
       display: flex;
       flex-direction: row-reverse;
       margin: 5px 10px;
-    }
-  }
-  
-  .Employee_content {
-    font-family: var(--font-family-Noto-R);
-    width: 100%;
-    height: 55%;
-  
-    .content_top {
-      width: 100%;
-      height: 70%;
-      padding: 1%;
-      border-bottom: 1px solid #DCDCDC;
-    }
-  
-    .content_btm {
-      display: flex;
-      width: 100%;
-      height: 30%;
-      padding: 1%;
-  
-      .btm_title {
-        font-family: var(--font-family-Noto-B);
-        color: #746E58;
-      }
-  
-      .btm_attachment {
-        margin-left: 2%;
-        color: #9E9E9E;
-        
-  
-        .btm_attachment_display {
-          display: flex;
-          margin-bottom: 1%;
-          gap: 8px;
-          
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-    }
-  }
-  
-  .activity_main_bottom {
-    font-family: var(--font-family-Noto-R);
-    display: flex;
-    justify-content: space-between;
-    margin: 5px 10px;
-  
-    .attachment_content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-    }
-    .attachment_name {
-      color: #9E9E9E;
-    }
-  }
-
-  .Employee_comment {
-    font-family: var(--font-family-Noto-R);
-    width: 100%;
-    height: 45%;
-  
-    .comment_title {
-      font-family: var(--font-family-Noto-M);
-      font-size: 26px;
-      padding: 1%;
-    }
-  
-    .comment_container {
-      display: flex;
-      width: 100%;
-      height: 18%;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid #DCDCDC;
-      padding: 1.5%;
-  
-      .comment_left{
-        display: flex;
-        width: 70%;
-        
-        .comment_name {
-          width: 8%;
-        }
-        .comment_content{
-          margin-right: 1%;
-        }
-      }
-  
-      .comment_right {
-        display: flex;
-        color: #C7C7C7;
-        gap: 15px;
-  
-        .border_right {
-          border-right: 1px solid;
-        }
-      }
-  
-      .comment_input_right {
-        position: relative;
-        top: -15px;
-        width: 95%;
-        height: 20%;
-      }
-  
     }
   }
 }
