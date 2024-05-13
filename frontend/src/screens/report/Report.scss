@@ -280,6 +280,8 @@
 }
 .button-wrap{
   display: flex;
+  position: absolute;
+  bottom: 15px;
   gap: 7px;
 
   .second_button {
@@ -303,7 +305,24 @@
     color: #746E58;
   }
 }
+.approvals_contents{
+  height: 90px;
+  overflow-y: scroll;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  gap: 5px;
 
+  .approval_name{
+    width: 100%;
+    min-height: 30px;
+
+    .name_text{
+      font-size: 14px;
+    }
+  }
+}
 
 @include laptop {
   .report_container {
@@ -361,5 +380,8 @@
       height: 40px;
       font-size: 12px;
     }
+  }
+  .approvals_contents{
+    height: 140px;
   }
 }
