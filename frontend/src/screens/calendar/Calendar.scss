@@ -118,8 +118,8 @@
 }
 
 .add_button {
-  width: 80px;
-  height: 40px;
+  width: 66px;
+  height: 35px;
   background-color: #746E58;
   border: 1px solid #746E58;
   border-radius: 8px;
@@ -165,5 +165,10 @@
 
   input {
     text-align: center;
+    width: 150px;
   }
+}
+
+.react-datepicker-wrapper{
+  width: 150px;
 }

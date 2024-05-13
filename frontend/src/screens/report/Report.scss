@@ -258,7 +258,7 @@
       justify-content: center;
       align-items: center;
       width: 230px;
-      height: 50px;
+      height: 40px;
       border: 1px solid #ECECEC;
       font-family: var(--font-family-Noto-M);
       color: #000;
@@ -269,7 +269,7 @@
       }
       
       .name_text {
-        font-size: 16px;
+        font-size: 14px;
       }
   
       .name_border {
@@ -289,8 +289,11 @@
       color: #929292;
     }
   }
+
   .button-wrap{
     display: flex;
+    position: absolute;
+    bottom: 10px;
     gap: 7px;
 
     .second_button {
@@ -312,6 +315,19 @@
       font-size: 14px;
       font-family: var(--font-family-Noto-B);
       color: #746E58;
+    }
+  }
+  .approvals_contents{
+    height: 90px;
+    overflow-y: scroll;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .approval_name{
+      width: 80%;
+      min-height: 30px;
     }
   }
 }
@@ -568,9 +584,12 @@
       color: #929292;
     }
   }
+
   .button-wrap{
     display: flex;
     gap: 7px;
+    position: absolute;
+    bottom: 15px;
 
     .second_button {
       width: 66px;
@@ -591,6 +610,20 @@
       font-size: 14px;
       font-family: var(--font-family-Noto-B);
       color: #746E58;
+    }
+  }
+
+  .approvals_contents{
+    height: 140px;
+    overflow-y: scroll;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .approval_name{
+      width: 100%;
+      min-height: 30px;
     }
   }
 }
