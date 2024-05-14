@@ -21,13 +21,13 @@
     border-bottom: 1px solid #DCDCDC;
     text-align: center;
 
-    .dropdown{
-      
+    .dropdown {
+
       .dropdown-menu {
         font-family: var(--font-family-Noto-B);
         font-size: 16px;
         cursor: pointer;
-        
+
         .dropdown_edit {
           z-index: 1;
           display: flex;
@@ -40,6 +40,7 @@
           border-radius: 5px;
           background-color: #ffffff;
         }
+
         .dropdown_del {
           z-index: 1;
           display: flex;
@@ -72,6 +73,7 @@
     align-items: center;
     gap: 15px;
   }
+
   .attachment_name {
     color: #9E9E9E;
   }
@@ -83,12 +85,14 @@
     font-size: 32px;
     color: #000;
   }
+
   .write_title::placeholder {
     color: #000;
     font-weight: 500;
   }
+
   .write_title:focus-visible {
-    outline: none!important;
+    outline: none !important;
   }
 
   .writor_container {
@@ -99,6 +103,7 @@
     .write_info {
       color: #9E9E9E
     }
+
     .write_border {
       border-right: 1px solid black;
     }
@@ -111,8 +116,8 @@
   justify-content: space-between;
   border-bottom: 1px solid #DCDCDC;
   padding: 0 15px;
-  
-  .info_content{ 
+
+  .info_content {
     display: flex;
     gap: 10px;
     margin: 10px 0;
@@ -120,17 +125,19 @@
     .write_info {
       color: #9E9E9E
     }
+
     .write_border {
       border-right: 1px solid black;
     }
   }
-  .btn_content{
+
+  .btn_content {
     display: flex;
     position: relative;
     top: -10px;
     gap: 10px;
   }
-} 
+}
 
 
 @include laptop {
@@ -138,15 +145,16 @@
     .board_content {
       height: 42px;
 
-      .dropdown{
-        
+      .dropdown {
+
         .dropdown-menu {
           font-size: 14px;
-          
+
           .dropdown_edit {
             width: 80px;
             height: 30px;
           }
+
           .dropdown_del {
             width: 80px;
             height: 30px;
@@ -155,4 +163,14 @@
       }
     }
   }
-};
+
+  .DesktopInput {
+    display: none;
+  }
+
+  .LaptopInput {
+    display: block;
+  }
+}
+
+;

@@ -23,7 +23,7 @@ const OrgChart = () => {
           </TabList>
 
           <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="tab_container">
-            <TabPanel display='flex' justifyContent='center' marginTop='150px'>
+            <TabPanel display='flex' marginRight="70px" justifyContent='center' marginTop='80px'>
               <div className="FC_logo">
                 <img src={FourchainsLogo} alt="FourchainsLogo" className="Logoimg"/>
                 <p className="MenuName">인사 조직도</p>
@@ -31,22 +31,36 @@ const OrgChart = () => {
               <Tree lineWidth={'1px'} lineColor={'#D3D3D3'} label={<div className="nodeicon">대표이사</div>}>
                 <TreeNode label={<div className="nodeicon">임원</div>}>
                 </TreeNode>
-                <TreeNode label={<div className="nodeicon">관리부</div>}>
-                  <TreeNode label={<div className="nodeicon">관리팀</div>}/>
-                  <TreeNode label={<div className="nodeicon">지원팀</div>}/>
-                  <TreeNode label={<div className="nodeicon">시설팀</div>}/>
+                <TreeNode
+                label={
+                <div
+                className="nodeicon">
+                  관리부<br/>
+이정열 | 부서장
+                  </div>
+                }>
+                  <TreeNode label={<div className="nodeicon5">관리팀</div>}>
+                    <div className="TeamColumn">
+                  <div className="nodeicon6">김효은 | 팀장</div>
+                  <div className="nodeicon6">우현지 | 사원</div>
+                  <div className="nodeicon6">염승희 | 사원</div>
+                  <div className="nodeicon6">염승희 | 사원</div>
+                  <div className="nodeicon6">염승희 | 사원</div>
+                  </div>
+                  </TreeNode>
+                  <TreeNode label={<div className="nodeicon5">지원팀</div>}/>
+                  <TreeNode label={<div className="nodeicon5">시설팀</div>}/>
                 </TreeNode>
                 <TreeNode label={<div className="nodeicon">개발부</div>}>
-                  <TreeNode label={<div className="nodeicon">개발 1팀</div>}/>
-                  <TreeNode label={<div className="nodeicon">개발 2팀</div>}/>
+                  <TreeNode label={<div className="nodeicon5">개발 1팀</div>}/>
+                  <TreeNode label={<div className="nodeicon5">개발 2팀</div>}/>
                 </TreeNode>
                 <TreeNode label={<div className="nodeicon">블록체인 사업부</div>}>
-                  <div className="nodeline"></div>
-                  <TreeNode label={<div className="nodeicon2">블록체인 1팀</div>}/>
+                  <TreeNode label={<div className="nodeicon5" style={{marginTop:'20px'}}>블록체인 1팀</div>}/>
                 </TreeNode>
                 <TreeNode label={<div className="nodeicon">마케팅부</div>}>
-                  <TreeNode label={<div className="nodeicon">기획팀</div>}/>
-                  <TreeNode label={<div className="nodeicon">디자인팀</div>}/>
+                  <TreeNode label={<div className="nodeicon5">기획팀</div>}/>
+                  <TreeNode label={<div className="nodeicon5">디자인팀</div>}/>
                 </TreeNode>
               </Tree>
             </TabPanel>

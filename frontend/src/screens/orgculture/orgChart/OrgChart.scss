@@ -2,8 +2,8 @@
 
 .FC_logo {
   position: relative;
-  top: -80px;
-  right: -70px;
+  top: -60px;
+  right: -90px;
   width: 135px;
 
   .MenuName {
@@ -95,7 +95,18 @@
   padding: 10px;
   margin-top: 20px;
 }
-
+.nodeicon5{
+  font-family: var(--font-family-Noto-B);
+  height: 45px;
+  width: 160px;
+  padding: 5px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 1px solid #DEDEDE;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px;
+}
 .nodeline {
   position: absolute;
   width: 71px;
@@ -109,14 +120,51 @@
   height: 20px;
   border-right: 1px solid #D3D3D3;
 }
+.TeamColumn{
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 180px;
+  overflow-x: hidden;
 
+  .nodeicon6{
+    font-family: var(--font-family-Noto-B);
+    height: 45px;
+    width: 155px;
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #DEDEDE;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+  }
+}
+.TeamColumn::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
+.TeamColumn::-webkit-scrollbar-thumb {
+  background-color: #A8A8A8;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
 
+.TeamColumn::-webkit-scrollbar-corner {
+  background-color: none;
+}
+
+.TeamColumn::-webkit-scrollbar-track {
+  box-shadow: none;
+  background-color: #fff;
+}
 @include laptop {
   .FC_logo {
     position: relative;
-    top: -80px;
-    left: 50px;
+    top: -60px;
+    left: 80px;
     width: 80px;
     
     .Logoimg {
@@ -164,5 +212,19 @@
   .nodeline {
     width: 61px;
   }
-  
+
+  .nodeicon5{
+    width: 120px;
+  }
+  .TeamColumn{
+    height: 120px;
+
+    .nodeicon6{
+      width: 115px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 }
