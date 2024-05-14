@@ -12,6 +12,7 @@
     width: 135px;
     color: #DEDEDE;
   }
+
   .MenuName2 {
     font-family: var(--font-family-Noto-M);
     font-size: 21px;
@@ -24,7 +25,7 @@
   top: -80px;
   left: -70px;
   width: 140px;
-  
+
   .Logoimg {
     width: 140px;
   }
@@ -35,6 +36,7 @@
     width: 140px;
     color: #DEDEDE;
   }
+
   .MenuName2 {
     font-family: var(--font-family-Noto-M);
     font-size: 21px;
@@ -43,94 +45,40 @@
   }
 }
 
-.nodeicon {
-  font-family: var(--font-family-Noto-B);
-  height: 150px;
-  width: 140px;
-  padding: 5px;
-  border-radius: 8px;
-  display: inline-block;
-  border: 1px solid #DEDEDE;
-  font-size: 14px;
-  padding: 10px;
-}
+.TabPanel {
+  margin-top: 80px;
 
-.nodeicon2 {
-  font-family: var(--font-family-Noto-B);
-  height: 150px;
-  width: 140px;
-  padding: 5px;
-  border-radius: 8px;
-  display: inline-block;
-  border: 1px solid #DEDEDE;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px;
-  margin-top: 20px;
-}
 
-.nodeicon3 {
-  font-family: var(--font-family-Noto-B);
-  height: 50px;
-  width: 200px;
-  padding: 5px;
-  border-radius: 8px;
-  display: inline-block;
-  border: 1px solid #DEDEDE;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px;
-}
-
-.nodeicon4 {
-  font-family: var(--font-family-Noto-B);
-  height: 50px;
-  width: 200px;
-  padding: 5px;
-  border-radius: 8px;
-  display: inline-block;
-  border: 1px solid #DEDEDE;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px;
-  margin-top: 20px;
-}
-.nodeicon5{
-  font-family: var(--font-family-Noto-B);
-  height: 45px;
-  width: 160px;
-  padding: 5px;
-  border-radius: 8px;
-  display: inline-block;
-  border: 1px solid #DEDEDE;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px;
-}
-.nodeline {
-  position: absolute;
-  width: 71px;
-  height: 20px;
-  border-right: 1px solid #D3D3D3;
-}
-
-.nodeline2 {
-  position: absolute;
-  width: 101px;
-  height: 20px;
-  border-right: 1px solid #D3D3D3;
-}
-.TeamColumn{
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  height: 180px;
-  overflow-x: hidden;
-
-  .nodeicon6{
+  .nodeicon {
     font-family: var(--font-family-Noto-B);
-    height: 45px;
-    width: 155px;
+    height: 150px;
+    width: 140px;
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #DEDEDE;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .nodeicon2 {
+    font-family: var(--font-family-Noto-B);
+    height: 150px;
+    width: 140px;
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #DEDEDE;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+    margin-top: 20px;
+  }
+
+  .nodeicon3 {
+    font-family: var(--font-family-Noto-B);
+    height: 50px;
+    width: 200px;
     padding: 5px;
     border-radius: 8px;
     display: inline-block;
@@ -139,34 +87,99 @@
     font-weight: bold;
     padding: 10px;
   }
-}
-.TeamColumn::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+
+  .nodeicon4 {
+    font-family: var(--font-family-Noto-B);
+    height: 50px;
+    width: 200px;
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #DEDEDE;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+    margin-top: 20px;
+  }
+
+  .nodeicon5 {
+    font-family: var(--font-family-Noto-B);
+    height: 45px;
+    width: 160px;
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #DEDEDE;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+  }
+
+  .nodeline {
+    position: absolute;
+    width: 71px;
+    height: 20px;
+    border-right: 1px solid #D3D3D3;
+  }
+
+  .nodeline2 {
+    position: absolute;
+    width: 101px;
+    height: 20px;
+    border-right: 1px solid #D3D3D3;
+  }
+
+  .TeamColumn {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 180px;
+    overflow-x: hidden;
+
+    .nodeicon6 {
+      font-family: var(--font-family-Noto-B);
+      height: 45px;
+      width: 155px;
+      padding: 5px;
+      border-radius: 8px;
+      display: inline-block;
+      border: 1px solid #DEDEDE;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 10px;
+    }
+  }
+
+  .TeamColumn::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .TeamColumn::-webkit-scrollbar-thumb {
+    background-color: #A8A8A8;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+
+  .TeamColumn::-webkit-scrollbar-corner {
+    background-color: none;
+  }
+
+  .TeamColumn::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: #fff;
+  }
+
 }
 
-.TeamColumn::-webkit-scrollbar-thumb {
-  background-color: #A8A8A8;
-  border-radius: 10px;
-  background-clip: padding-box;
-  border: 2px solid transparent;
-}
-
-.TeamColumn::-webkit-scrollbar-corner {
-  background-color: none;
-}
-
-.TeamColumn::-webkit-scrollbar-track {
-  box-shadow: none;
-  background-color: #fff;
-}
 @include laptop {
   .FC_logo {
     position: relative;
-    top: -60px;
+    top: 0px;
     left: 80px;
     width: 80px;
-    
+
     .Logoimg {
       width: 80px;
     }
@@ -175,12 +188,13 @@
       width: 80px;
       font-size: 16px;
     }
+
     .MenuName2 {
       width: 80px;
       font-size: 21px;
     }
   }
-  
+
   .FC_logo2 {
     left: 50px;
     width: 80px;
@@ -188,43 +202,50 @@
     .Logoimg {
       width: 80px;
     }
-    
+
     .MenuName {
       font-size: 16px;
       width: 80px;
     }
+
     .MenuName2 {
       font-size: 13px;
       width: 80px;
     }
   }
-  
-  .nodeicon {
-    height: 100px;
-    width: 120px;
-  }
-  
-  .nodeicon2 {
-    height: 100px;
-    width: 120px;
-  }
-  
-  .nodeline {
-    width: 61px;
-  }
 
-  .nodeicon5{
-    width: 120px;
-  }
-  .TeamColumn{
-    height: 120px;
 
-    .nodeicon6{
-      width: 115px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  .TabPanel {
+    margin-top: 20px;
+
+    .nodeicon {
+      height: 100px;
+      width: 120px;
+    }
+
+    .nodeicon2 {
+      height: 100px;
+      width: 120px;
+    }
+
+    .nodeline {
+      width: 61px;
+    }
+
+    .nodeicon5 {
+      width: 120px;
+    }
+
+    .TeamColumn {
+      height: 120px;
+
+      .nodeicon6 {
+        width: 115px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
   }
 }
