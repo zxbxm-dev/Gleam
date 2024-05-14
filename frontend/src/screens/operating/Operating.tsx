@@ -3,7 +3,7 @@ import "./Operating.scss";
 import { Link } from "react-router-dom";
 import { evaluate } from "mathjs";
 
-type TeamType = "common" | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
+type TeamType = 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
 
 const Operating = () => {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -63,7 +63,13 @@ const Operating = () => {
   }
 
 
-  const [commonTeam, setCommonTeam] = useState<string[][]>([['', '', '', '']]);
+  const [common811Team, setCommon811Team] = useState<string[][]>([['', '', '', '']]);
+  const [common812Team, setCommon812Team] = useState<string[][]>([['', '', '', '']]);
+  const [common813Team, setCommon813Team] = useState<string[][]>([['', '', '', '']]);
+  const [common814Team, setCommon814Team] = useState<string[][]>([['', '', '', '']]);
+  const [common815Team, setCommon815Team] = useState<string[][]>([['', '', '', '']]);
+  const [common818Team, setCommon818Team] = useState<string[][]>([['', '', '', '']]);
+  const [common819Team, setCommon819Team] = useState<string[][]>([['', '', '', '']]);
   const [managementTeam, setManagementTeam] = useState<string[][]>([['', '', '', '']]);
   const [supportTeam, setSupportTeam] = useState<string[][]>([['', '', '', '']]);
   const [devOneTeam, setDevOneTeam] = useState<string[][]>([['', '', '', '']]);
@@ -73,7 +79,13 @@ const Operating = () => {
   const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', '']]);
   
 
-  const [commonCost, setCommonCost] = useState<number>(0);
+  const [common811Cost, setCommon811Cost] = useState<number>(0);
+  const [common812Cost, setCommon812Cost] = useState<number>(0);
+  const [common813Cost, setCommon813Cost] = useState<number>(0);
+  const [common814Cost, setCommon814Cost] = useState<number>(0);
+  const [common815Cost, setCommon815Cost] = useState<number>(0);
+  const [common818Cost, setCommon818Cost] = useState<number>(0);
+  const [common819Cost, setCommon819Cost] = useState<number>(0);
   const [managementCost, setManagementCost] = useState<number>(0);
   const [supportCost, setSupportCost] = useState<number>(0);
   const [devOneCost, setDevOneCost] = useState<number>(0);
@@ -82,12 +94,30 @@ const Operating = () => {
   const [designCost, setDesignCost] = useState<number>(0);
   const [planningCost, setPlanningnCost] = useState<number>(0);
 
-  const addRow = (team: 'common' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
+  const addRow = (team: 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
     let newTeam: string[][];
 
-    if (team === 'common') {
-      newTeam = [...commonTeam, ['', '', '', '']];
-      setCommonTeam(newTeam);
+    if (team === 'common811') {
+      newTeam = [...common811Team, ['', '', '', '']];
+      setCommon811Team(newTeam);
+    } else if (team === 'common812') {
+      newTeam = [...common812Team, ['', '', '', '']];
+      setCommon812Team(newTeam);
+    } else if (team === 'common813') {
+      newTeam = [...common813Team, ['', '', '', '']];
+      setCommon813Team(newTeam);
+    } else if (team === 'common814') {
+      newTeam = [...common814Team, ['', '', '', '']];
+      setCommon814Team(newTeam);
+    } else if (team === 'common815') {
+      newTeam = [...common815Team, ['', '', '', '']];
+      setCommon815Team(newTeam);
+    } else if (team === 'common818') {
+      newTeam = [...common818Team, ['', '', '', '']];
+      setCommon818Team(newTeam);
+    } else if (team === 'common819') {
+      newTeam = [...common819Team, ['', '', '', '']];
+      setCommon819Team(newTeam);
     } else if (team === 'management') {
       newTeam = [...managementTeam, ['', '', '', '']];
       setManagementTeam(newTeam);
@@ -113,10 +143,52 @@ const Operating = () => {
     setDropdownOpen(false);
   };
 
-  const removeRow = (team: 'common' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
+  const removeRow = (team: 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
     switch (team) {
-      case 'common':
-        setCommonTeam(prevTeam => {
+      case 'common811':
+        setCommon811Team(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'common812':
+        setCommon812Team(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'common813':
+        setCommon813Team(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'common814':
+        setCommon814Team(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'common815':
+        setCommon815Team(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'common818':
+        setCommon818Team(prevTeam => {
+          const newTeam = [...prevTeam];
+          newTeam.pop();
+          return newTeam;
+        });
+        break;
+      case 'common819':
+        setCommon819Team(prevTeam => {
           const newTeam = [...prevTeam];
           newTeam.pop();
           return newTeam;
@@ -225,8 +297,26 @@ const Operating = () => {
   
   const handleInputChange = (team: string, index: number, column: number, value: string) => {
     switch (team) {
-      case 'common':
-        setTeamState(setCommonTeam, team, index, column, value);
+      case 'common811':
+        setTeamState(setCommon811Team, team, index, column, value);
+        break;
+      case 'common812':
+        setTeamState(setCommon812Team, team, index, column, value);
+        break;
+      case 'common813':
+        setTeamState(setCommon813Team, team, index, column, value);
+        break;
+      case 'common814':
+        setTeamState(setCommon814Team, team, index, column, value);
+        break;
+      case 'common815':
+        setTeamState(setCommon815Team, team, index, column, value);
+        break;
+      case 'common818':
+        setTeamState(setCommon818Team, team, index, column, value);
+        break;
+      case 'common819':
+        setTeamState(setCommon819Team, team, index, column, value);
         break;
       case 'management':
         setTeamState(setManagementTeam, team, index, column, value);
@@ -267,8 +357,26 @@ const Operating = () => {
       try {
         const calculatedValue = evaluate(inputValue);
         switch (team) {
-          case 'common':
-            setCommonCost(prevCost => prevCost + calculatedValue);
+          case 'common811':
+            setCommon811Cost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'common812':
+            setCommon812Cost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'common813':
+            setCommon813Cost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'common814':
+            setCommon814Cost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'common815':
+            setCommon815Cost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'common818':
+            setCommon818Cost(prevCost => prevCost + calculatedValue);
+            break;
+          case 'common819':
+            setCommon819Cost(prevCost => prevCost + calculatedValue);
             break;
           case 'management':
             setManagementCost(prevCost => prevCost + calculatedValue);
@@ -314,7 +422,7 @@ const Operating = () => {
     }
   };
   
-  const CommonRowSpan = commonTeam.length;
+  const CommonRowSpan = common811Team.length + common812Team.length + common813Team.length + common814Team.length + common815Team.length + common818Team.length + common819Team.length;
   const ManageRowSpan = managementTeam.length + supportTeam.length;
   const DevRowSpan = devOneTeam.length + devTwoTeam.length;
   const BlockChainRowSpan = blockchainTeam.length;
@@ -371,12 +479,12 @@ const Operating = () => {
                     <th className="table_header_totalAccount">부서 합계</th>
                   </tr>
                   
-                  {commonTeam.map((row, index) => (
-                    <tr key={index} className={index === commonTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common')}>
+                  {common811Team.map((row, index) => (
+                    <tr key={index} className={index === common811Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common811')}>
                       {index === 0 ? (
                         <>
                           <th rowSpan={CommonRowSpan} colSpan={2}>공통 <br /> (1000) </th>
-                          <th rowSpan={commonTeam.length}>1000</th>
+                          <th rowSpan={CommonRowSpan}>1000</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
@@ -385,7 +493,7 @@ const Operating = () => {
                             <td>
                               <select
                                 value={item}
-                                onChange={(e) => handleAccountNameChange('common', index, e.target.value)}
+                                onChange={(e) => handleAccountNameChange('common811', index, e.target.value)}
                                 className="left-align"
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
@@ -400,8 +508,8 @@ const Operating = () => {
                               <input
                                 type="text"
                                 value={item}
-                                onChange={(e) => handleInputChange('common', index, i, e.target.value)}
-                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common', index, i, e) : undefined}
+                                onChange={(e) => handleInputChange('common811', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common811', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
                               />
                             </td>
@@ -410,11 +518,215 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {commonCost.toLocaleString()} </th>
-                          <th rowSpan={commonTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {commonCost.toLocaleString()} </th>
+                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
+                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
                         </>
                       ) : null}
                       
+                    </tr>
+                  ))}
+
+                  {common812Team.map((row, index) => (
+                    <tr key={index} className={index === common812Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common812')}>
+                      {row.map((item, i) => (
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('common812', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('common812', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common812', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
+                      ))}                     
+                    </tr>
+                  ))}
+
+                  {common813Team.map((row, index) => (
+                    <tr key={index} className={index === common813Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common813')}>
+                      {row.map((item, i) => (
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('common813', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('common813', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common813', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
+                      ))}                     
+                    </tr>
+                  ))}
+
+                  {common814Team.map((row, index) => (
+                    <tr key={index} className={index === common814Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common814')}>
+                      {row.map((item, i) => (
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('common814', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('common814', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common814', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
+                      ))}                     
+                    </tr>
+                  ))}
+
+                  {common815Team.map((row, index) => (
+                    <tr key={index} className={index === common815Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common815')}>
+                      {row.map((item, i) => (
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('common815', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('common815', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common815', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
+                      ))}                     
+                    </tr>
+                  ))}
+
+                  {common818Team.map((row, index) => (
+                    <tr key={index} className={index === common818Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common818')}>
+                      {row.map((item, i) => (
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('common818', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('common818', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common818', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
+                      ))}                     
+                    </tr>
+                  ))}
+
+                  {common819Team.map((row, index) => (
+                    <tr key={index} className={index === common819Team.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common819')}>
+                      {row.map((item, i) => (
+                        <React.Fragment key={i}>
+                          {i === 1 ? (
+                            <td>
+                              <select
+                                value={item}
+                                onChange={(e) => handleAccountNameChange('common819', index, e.target.value)}
+                                className="left-align"
+                              >
+                                {Object.entries(accountCode).map(([code, department]) => (
+                                  <option key={code} value={department}>
+                                    {department}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ) : (
+                            <td>
+                              <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => handleInputChange('common819', index, i, e.target.value)}
+                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('common819', index, i, e) : undefined}
+                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                              />
+                            </td>
+                          )}
+                        </React.Fragment>
+                      ))}                     
                     </tr>
                   ))}
                   
@@ -750,7 +1062,7 @@ const Operating = () => {
                 <tbody>
                   <tr>
                     <td style={{ width: '588px'}}>부서(팀)별 편성액 합계</td>
-                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>{( commonCost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost).toLocaleString()}</td>
+                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>{( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost).toLocaleString()}</td>
                     <td>  </td>
                   </tr>
                   <tr>
@@ -767,7 +1079,7 @@ const Operating = () => {
                           className='dropdown_select'
                           onChange={(e) => {
                             const ratio = parseFloat(e.target.value) || 0;
-                            const reserveFund = (commonCost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) * ratio / 100;
+                            const reserveFund = (common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) * ratio / 100;
                             setReserveFund(reserveFund);
                           }}
                         >
@@ -792,7 +1104,7 @@ const Operating = () => {
                   </tr>
                   <tr>
                     <td style={{ width: '588px'}}>{selectedYear}년 총 예산</td>
-                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>{(( commonCost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) + reserveFund).toLocaleString()}</td>
+                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>{(( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) + reserveFund).toLocaleString()}</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -806,8 +1118,20 @@ const Operating = () => {
           <div className="dropdown_title">
             {(() => {
               switch (dropdownTeam) {
-                case 'common':
-                  return '공통';
+                case 'common811':
+                  return '공통 - 811';
+                case 'common812':
+                  return '공통 - 812';
+                case 'common813':
+                  return '공통 - 813';
+                case 'common814':
+                  return '공통 - 814';
+                case 'common815':
+                  return '공통 - 815';
+                case 'common818':
+                  return '공통 - 818';
+                case 'common819':
+                  return '공통 - 819';
                 case 'management':
                   return '관리팀';
                 case 'support':
