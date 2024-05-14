@@ -14,6 +14,7 @@ export { default as ArrowDown } from "./ArrowDown.svg";
 export { default as ArrowUp } from "./ArrowUp.svg";
 export { default as ModalCheck } from "./ModalCheck.svg";
 export { default as SettingIcon } from "./SettingIcon.svg";
+export { default as CloseIcon } from "./CloseIcon.svg";
 
 
 
