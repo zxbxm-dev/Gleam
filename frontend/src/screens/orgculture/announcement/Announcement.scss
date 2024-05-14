@@ -55,11 +55,11 @@
   }
 }
 
-.write_container {
+.LaptopInput {
+  display: none;
+}
 
-  .LaptopInput{
-    display: none;
-  }
+.write_container {
   .write_title {
     font-family: var(--font-family-Noto-B);
     font-size: 32px;
@@ -134,16 +134,19 @@
 @include laptop {
   .announce_board_list {
     margin-top: 5px;
-  
+
     .board_container {
       .board_content {
         height: 42px;
       }
     }
   }
+
+  .DesktopInput {
+    display: none;
+  }
+
+  .LaptopInput {
+    display: block;
+  }
 }
-
-
-
-
-
