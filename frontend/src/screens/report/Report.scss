@@ -266,6 +266,35 @@
       border-right: 1px solid black;
     }
   }
+  .approval_small_name {
+    position: relative;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding-left: 9px;
+    width: 105px;
+    height: 40px;
+    border: 1px solid #ECECEC;
+    border-radius: 5px;
+    font-family: var(--font-family-Noto-M);
+    color: #000;
+    gap: 5px;
+
+    .name_text {
+      font-size: 12px;
+    }
+
+    .name_border {
+      height: 14px;
+      border-right: 1px solid black;
+    }
+
+    .close_btn {
+      cursor: pointer;
+      position: absolute;
+      right: 3px;
+    }
+  }
   .approval_checked {
     display: flex;
     justify-content: center;
@@ -306,13 +335,18 @@
   }
 }
 .approvals_contents{
+  width: 230px;
   height: 90px;
-  overflow-y: scroll;
-  align-items: center;
+  border: 1px solid #ECECEC;
+  overflow-y: auto;
+  scrollbar-width: thin;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
   overflow-x: hidden;
   gap: 5px;
+  padding: 1px;
 
   .approval_name{
     width: 100%;
@@ -382,6 +416,32 @@
     }
   }
   .approvals_contents{
-    height: 140px;
+    width: 180px;
+    height: 90px;
+
+    .approval_name{
+      width: 100%;
+      min-height: 30px;
+  
+      .name_text{
+        font-size: 14px;
+      }
+    }
+
+    .approval_small_name {
+      text-align: left;
+      padding-left: 1px;
+      width: 80px;
+      height: 30px;
+      gap: 3px;
+  
+      .name_text {
+        font-size: 10px;
+      }
+  
+      .name_border {
+        height: 10px;
+      }
+    }
   }
 }

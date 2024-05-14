@@ -3,6 +3,7 @@ import "./Report.scss";
 import {
   FileUploadIcon,
   UserIcon_dark,
+  CloseIcon,
 } from "../../assets/images/index";
 import { useNavigate, Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
@@ -122,8 +123,17 @@ const WriteReport = () => {
 
     if (index !== -1) {
       if (lineName === '참조') {
-        // 참조 라인인 경우, 여러 명을 선택할 수 있도록 배열에 추가
-        (updatedApprovalLines[index] as { name: string; checked: boolean; selectedMembers: Member[] }).selectedMembers.push(newMember);
+        // 참조 라인인 경우, 중복 체크 후 중복되지 않은 경우에만 추가
+        const existingMembers = updatedApprovalLines[index].selectedMembers;
+        if (existingMembers) {
+          const isDuplicate = existingMembers.some(member => member[0] === name && member[1] === dept && member[2] === team && member[3] === position);
+          if (!isDuplicate) {
+            (updatedApprovalLines[index] as { name: string; checked: boolean; selectedMembers: Member[] }).selectedMembers.push(newMember);
+          }
+        } else {
+          // selectedMembers가 비어있을 경우, 새로운 배열로 초기화하여 추가
+          updatedApprovalLines[index].selectedMembers = [newMember];
+        }
       } else {
         // 그 외의 경우에는 기존 로직과 동일하게 처리
         updatedApprovalLines[index].selectedMember = newMember;
@@ -135,6 +145,15 @@ const WriteReport = () => {
       console.error(`결재 라인 "${lineName}"을 찾을 수 없습니다.`);
     }
   };
+
+  // 멤버 삭제 함수
+  const handleRemoveMember = (indexToRemove: number) => {
+    const updatedApprovalLines = [...approvalLines];
+    if (updatedApprovalLines[6].selectedMembers !== undefined) {
+      updatedApprovalLines[6].selectedMembers.splice(indexToRemove, 1);
+      setApprovalLines(updatedApprovalLines);
+    }
+};
 
 
   const members: Member[] = [
@@ -161,6 +180,7 @@ const WriteReport = () => {
     ['전규미', '마케팅부', '기획팀', '사원'],
     ['서주희', '마케팅부', '디자인팀', '사원'],
   ];
+
 
   return (
     <div className="content">
@@ -240,11 +260,12 @@ const WriteReport = () => {
                                   line.name === '참조' && line.selectedMembers ? (
                                     <div className='approvals_contents'>
                                       {line.selectedMembers.map((member, index) => (
-                                        <div key={index} className='approval_name'>
+                                        <div key={index} className='approval_small_name'>
                                           {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                           <div className='name_text'>{member[0]}</div>
                                           <div className='name_border'></div>
                                           <div className='name_text'>{member[3]}</div>
+                                          <img src={CloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)}/>
                                         </div>
                                       ))}
                                     </div>
