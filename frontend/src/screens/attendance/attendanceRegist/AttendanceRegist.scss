@@ -135,7 +135,7 @@
 .countTotal_annual {
   font-family: var(--font-family-Noto-M);
   width: 70px;
-  height: 44px;
+  height: 43.5px;
   text-align: center;
   font-size: 16px;
   display: flex;
@@ -154,7 +154,7 @@
 .countName_annual {
   font-family: var(--font-family-Noto-M);
   width: 100px;
-  height: 44px;
+  height: 43.5px;
   text-align: center;
   font-size: 16px;
   display: flex;
@@ -173,7 +173,7 @@
 .countDate_annual {
   font-family: var(--font-family-Noto-M);
   width: 130px;
-  height: 44px;
+  height: 43.5px;
   text-align: center;
   font-size: 16px;
   display: flex;
@@ -235,14 +235,14 @@
   .Explan_annual {
     font-family: var(--font-family-Noto-M);
     width: 250px;
-    height: 841px;
+    height: auto;
     border: 2px solid #858585;
     overflow-x: auto;
 
     tr {
 
       .TopS_annual {
-        height: 22px;
+        height: 23px;
         font-size: 14px;
       }
 
