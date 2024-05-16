@@ -529,11 +529,7 @@ ul {
           height: 16px; // 아이콘의 높이 조정
         }
       }
-      .pagination li:nth-child(3),
-      .pagination li:nth-child(4),
-      .pagination li:nth-child(5),
-      .pagination li:nth-child(6),
-      .pagination li:nth-child(7) {
+      .pagination li{
         &:hover,
         &:active,
         &.active {

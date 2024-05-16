@@ -193,4 +193,23 @@
       }
     }
  }
+
+  .approval_btm {
+
+    .approval_board_list {
+
+      .board_header {
+        height: 40px;
+      }
+      
+      .board_container {
+        width: 100%;
+        height: auto;
+
+        .board_content {
+          height: 40px;
+        }
+      }
+    }
+  }
 }
