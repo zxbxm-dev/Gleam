@@ -80,7 +80,7 @@ const AnnualManage = () => {
         <tr className="countTotal_annual">
           <td className="total_annual">{countTotal[4]}</td>
         </tr>
-        <tr className="countTotal_annual">
+        <tr className="countTotal_annual_last">
           <td className="total_annual">{countTotal[5]}</td>
         </tr>
       </>
@@ -139,7 +139,12 @@ const AnnualManage = () => {
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_annual'> {members[j][1]} </td>
+            <td className='conta_annual'> 
+              <input 
+                type="text"
+                value={members[j][1]}
+              /> 
+            </td>
           </tr>
         );
       }
@@ -168,10 +173,10 @@ const AnnualManage = () => {
 
         rowCells.push(
           <tr
-            className="conta_three_annual"
+            className="conta_three_last_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_annual'> {members[j][3].toFixed(1)} </td>
+            <td className='conta_annual'> {members[j][1].toFixed(1)} </td>
           </tr>
         );
       }
