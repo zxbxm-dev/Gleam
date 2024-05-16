@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { Textarea } from '@chakra-ui/react';
 
-import testPDF from '../../assets/pdf/[서식-A101]주간업무일지.pdf';
+import testPDF from '../../assets/pdf/testtest.pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -151,11 +151,11 @@ const DetailApproval = () => {
                       <div className='Bottom'>&nbsp;</div>
                     </div>
                     <div className='Pay'>
-                      <div className='Top'>팀장</div>
+                      <div className='Top'>부서장</div>
                       <div className='Bottom'>&nbsp;</div>
                     </div>
                     <div className='Pay'>
-                      <div className='Top'>팀장</div>
+                      <div className='Top'>대표</div>
                       <div className='Bottom'>&nbsp;</div>
                     </div>
                   </div>
