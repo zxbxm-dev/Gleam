@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { Textarea } from '@chakra-ui/react';
 
-import testPDF from '../../assets/pdf/[서식-A101]주간업무일지.pdf';
+import testPDF from '../../assets/pdf/testtest.pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -60,9 +60,9 @@ const DetailApproval = () => {
     const pages = [];
     for (let i = 1; i <= numPages; i++) {
       pages.push(
-        <Page 
+        <Page
           key={`page_${i}`}
-          pageNumber={i} 
+          pageNumber={i}
           width={1000}
         />
       );
@@ -75,7 +75,7 @@ const DetailApproval = () => {
       <div className="content_header">
         <Link to={"/report"} className="sub_header">보고서 결재</Link>
       </div>
-      
+
       <div className="content_container">
         <div className="container">
           <div className="write_container">
@@ -87,17 +87,17 @@ const DetailApproval = () => {
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>의견 작성</PopoverHeader>
+                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>의견 작성</PopoverHeader>
                       <PopoverCloseButton color='white' />
                       <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px'>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center'}}>
-                          <div style={{display: 'flex', gap: '10px'}}>
-                            <div style={{width: '2.5vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>작성자</div>
-                            <div style={{color: '#323232', fontFamily: 'var(--font-family-Noto-M)'}}>김효은 팀장</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' }}>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ width: '2.5vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>작성자</div>
+                            <div style={{ color: '#323232', fontFamily: 'var(--font-family-Noto-M)' }}>김효은 팀장</div>
                           </div>
-                          <div style={{display: 'flex', gap: '10px'}}>
-                            <div style={{width: '2.5vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>내용</div>
-                            <Textarea placeholder='내용을 입력해주세요.' size='sm' width='19vw' height='15vh' fontFamily='var(--font-family-Noto-R)'/>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ width: '2.5vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>내용</div>
+                            <Textarea placeholder='내용을 입력해주세요.' size='sm' width='19vw' height='15vh' fontFamily='var(--font-family-Noto-R)' />
                           </div>
                         </div>
                         <div className='button-wrap'>
@@ -119,17 +119,17 @@ const DetailApproval = () => {
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>반려 사유 작성</PopoverHeader>
-                      <PopoverCloseButton color='white'/>
+                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>반려 사유 작성</PopoverHeader>
+                      <PopoverCloseButton color='white' />
                       <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px'>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center'}}>
-                          <div style={{display: 'flex', gap: '10px'}}>
-                            <div style={{width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려자</div>
-                            <div style={{color: '#323232', fontFamily: 'var(--font-family-Noto-M)'}}>김효은 팀장</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' }}>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>반려자</div>
+                            <div style={{ color: '#323232', fontFamily: 'var(--font-family-Noto-M)' }}>김효은 팀장</div>
                           </div>
-                          <div style={{display: 'flex', gap: '10px'}}>
-                            <div style={{width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>반려 사유</div>
-                            <Textarea placeholder='내용을 입력해주세요.' size='sm' width='17vw' height='15vh' fontFamily='var(--font-family-Noto-R)'/>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>반려 사유</div>
+                            <Textarea placeholder='내용을 입력해주세요.' size='sm' width='17vw' height='15vh' fontFamily='var(--font-family-Noto-R)' />
                           </div>
                         </div>
                         <div className='button-wrap'>
@@ -145,14 +145,28 @@ const DetailApproval = () => {
             <div className="write_btm_container">
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                 <div id='report-to-xls'>
+                  <div className='PaymentLine'>
+                    <div className='Pay'>
+                      <div className='Top'>팀장</div>
+                      <div className='Bottom'>&nbsp;</div>
+                    </div>
+                    <div className='Pay'>
+                      <div className='Top'>부서장</div>
+                      <div className='Bottom'>&nbsp;</div>
+                    </div>
+                    <div className='Pay'>
+                      <div className='Top'>대표</div>
+                      <div className='Bottom'>&nbsp;</div>
+                    </div>
+                  </div>
                   {renderPages()}
                 </div>
               </Document>
-              
+
             </div>
           </div>
         </div>
-      </div>  
+      </div>
     </div>
   );
 };

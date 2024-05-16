@@ -23,7 +23,7 @@
         font-size: 18px;
         color: #929292;
       }
-  
+
       .report_name {
         display: flex;
         align-items: center;
@@ -36,12 +36,14 @@
         border-radius: 5px;
         cursor: pointer;
 
-        &:hover, :active {
+        &:hover,
+        :active {
           border: 2px solid #746E58;
         }
       }
     }
   }
+
   .report_btn {
     width: 30%;
     height: 100%;
@@ -61,6 +63,7 @@
     color: #746E58;
   }
 }
+
 .write_container {
   width: 100%;
   height: 100%;
@@ -102,7 +105,7 @@
       flex-direction: row-reverse;
       align-items: center;
       gap: 7px;
-      
+
       .upload_button {
         display: flex;
         justify-content: center;
@@ -116,6 +119,7 @@
         font-size: 14px;
         color: #746E58;
       }
+
       .save_button {
         width: 92px;
         height: 35px;
@@ -125,6 +129,7 @@
         font-size: 14px;
         color: #746E58;
       }
+
       .approval_button {
         width: 121px;
         height: 35px;
@@ -135,6 +140,7 @@
         background-color: #746E58;
         color: #ffffff;
       }
+
       .reject_button {
         width: 92px;
         height: 35px;
@@ -144,6 +150,7 @@
         font-size: 14px;
         color: #D56D6D;
       }
+
       .approve_button {
         width: 92px;
         height: 35px;
@@ -178,6 +185,7 @@
       .upload-text-top {
         font-size: 36px;
       }
+
       .upload-text-btm {
         font-size: 20px;
       }
@@ -188,18 +196,18 @@
     width: 10px;
     height: 10px;
   }
-  
+
   .write_btm_container::-webkit-scrollbar-thumb {
     background-color: #A8A8A8;
     border-radius: 10px;
     background-clip: padding-box;
     border: 2px solid transparent;
   }
-  
+
   .write_btm_container::-webkit-scrollbar-corner {
     background-color: none;
   }
-  
+
   .write_btm_container::-webkit-scrollbar-track {
     box-shadow: none;
     background-color: #fff;
@@ -235,18 +243,18 @@
       width: 10px;
       height: 10px;
     }
-    
+
     .write_btm_container2::-webkit-scrollbar-thumb {
       background-color: #A8A8A8;
       border-radius: 10px;
       background-clip: padding-box;
       border: 2px solid transparent;
     }
-    
+
     .write_btm_container2::-webkit-scrollbar-corner {
       background-color: none;
     }
-    
+
     .write_btm_container2::-webkit-scrollbar-track {
       box-shadow: none;
       background-color: #fff;
@@ -265,12 +273,14 @@
       .upload-text-top {
         font-size: 36px;
       }
+
       .upload-text-btm {
         font-size: 20px;
       }
     }
   }
 }
+
 .approval_content {
   align-items: center;
   font-family: var(--font-family-Noto-M);
@@ -288,11 +298,13 @@
       height: 18px;
       border: 1px solid #D3D3D3;
     }
+
     .approval_checkbox:checked {
       accent-color: #fff;
       border: 1px solid #D3D3D3;
     }
   }
+
   .approval_name {
     display: flex;
     justify-content: center;
@@ -303,11 +315,11 @@
     font-family: var(--font-family-Noto-M);
     color: #000;
     gap: 8px;
-    
+
     .name_img {
       margin-right: 10px;
     }
-    
+
     .name_text {
       font-size: 16px;
     }
@@ -317,6 +329,7 @@
       border-right: 1px solid black;
     }
   }
+
   .approval_small_name {
     position: relative;
     display: flex;
@@ -346,6 +359,7 @@
       right: 3px;
     }
   }
+
   .approval_checked {
     display: flex;
     justify-content: center;
@@ -358,7 +372,8 @@
     color: #929292;
   }
 }
-.button-wrap{
+
+.button-wrap {
   display: flex;
   position: absolute;
   bottom: 15px;
@@ -374,6 +389,7 @@
     font-family: var(--font-family-Noto-B);
     color: #fff;
   }
+
   .white_button {
     width: 66px;
     height: 35px;
@@ -385,7 +401,8 @@
     color: #746E58;
   }
 }
-.approvals_contents{
+
+.approvals_contents {
   width: 230px;
   height: 90px;
   border: 1px solid #ECECEC;
@@ -399,11 +416,11 @@
   gap: 5px;
   padding: 1px;
 
-  .approval_name{
+  .approval_name {
     width: 100%;
     min-height: 30px;
 
-    .name_text{
+    .name_text {
       font-size: 14px;
     }
   }
@@ -413,9 +430,9 @@
   .report_container {
 
     .report_type {
-  
+
       .report_content {
-    
+
         .report_name {
           font-size: 16px;
           width: 80%;
@@ -424,10 +441,12 @@
       }
     }
   }
+
   .write_container {
 
     .write_top_container {
       align-items: center;
+
       .top_left_content {
 
         .save_button {
@@ -446,19 +465,21 @@
       }
     }
   }
+
   .approval_content {
     width: 180px;
     height: 70px;
-  
+
     .approval_name {
       width: 180px;
       height: 35px;
       gap: 8px;
-    
+
       .name_text {
         font-size: 12px;
       }
     }
+
     .approval_checked {
 
       width: 180px;
@@ -466,15 +487,16 @@
       font-size: 12px;
     }
   }
-  .approvals_contents{
+
+  .approvals_contents {
     width: 180px;
     height: 90px;
 
-    .approval_name{
+    .approval_name {
       width: 100%;
       min-height: 30px;
-  
-      .name_text{
+
+      .name_text {
         font-size: 14px;
       }
     }
@@ -485,14 +507,40 @@
       width: 80px;
       height: 30px;
       gap: 3px;
-  
+
       .name_text {
         font-size: 10px;
       }
-  
+
       .name_border {
         height: 10px;
       }
+    }
+  }
+}
+
+.PaymentLine {
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  position: absolute;
+  right: 380px;
+  top: 100px;
+
+  .Pay {
+    width: 100px;
+    height: 50px;
+
+    .Top {
+      border: 1px solid #000;
+      text-align: center;
+    }
+
+    .Bottom {
+      border: 1px solid #000;
+      height: 120px;
     }
   }
 }
