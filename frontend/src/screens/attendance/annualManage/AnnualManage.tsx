@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 type Member = [string, number, number, number, string[], string, string];
 
@@ -14,6 +16,25 @@ const AnnualManage = () => {
 
   const handleYearChange = (event: any) => {
     setSelectedYear(parseInt(event.target.value));
+  };
+
+  const exportToPDF = () => {
+    const element = document.getElementById('table-to-xls');
+    if (element) {
+      element.style.height = element.scrollHeight + 'px';
+      element.style.width = element.scrollWidth + 'px';
+      html2canvas(element).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; // A4 크기에서 이미지 너비
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('연차관리.pdf');
+        window.location.reload();
+      });
+    } else {
+      console.error('Element not found');
+    }
   };
 
   const members: Member[] = [
@@ -247,7 +268,7 @@ const AnnualManage = () => {
           <option value={2024}>2024</option>
           <option value={2023}>2023</option>
         </select>
-        <button className='oper_download_button'>다운로드</button>
+        <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
         {selectedScreen === 'R&D' ? (
           <button className='rnd_company_button' onClick={handleScreenChange}>
             R&D 센터
@@ -261,7 +282,7 @@ const AnnualManage = () => {
       
       <div className="content_container">
         <div className="container">
-          <div className="container_attendance">
+          <div className="container_attendance" id="table-to-xls">
             {selectedScreen === '본사' ? (
               <div className="Excel_annual">
                 <table className="Explan_annual">
