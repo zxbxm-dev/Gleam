@@ -145,6 +145,20 @@ const DetailApproval = () => {
             <div className="write_btm_container">
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                 <div id='report-to-xls'>
+                <div className='PaymentLine'>
+              <div className='Pay'>
+                <div className='Top'>팀장</div>
+                <div className='Bottom'>&nbsp;</div>
+              </div>
+              <div className='Pay'>
+                <div className='Top'>팀장</div>
+                <div className='Bottom'>&nbsp;</div>
+              </div>
+              <div className='Pay'>
+                <div className='Top'>팀장</div>
+                <div className='Bottom'>&nbsp;</div>
+              </div>
+            </div>
                   {renderPages()}
                 </div>
               </Document>
