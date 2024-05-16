@@ -8,10 +8,31 @@
     height: auto;
     max-height: 80vh;
     overflow-y: scroll;
-    scrollbar-width: thin;
     display: flex;
     justify-content: center;
   }
+
+  .pdf-container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .pdf-container::-webkit-scrollbar-thumb {
+    background-color: #A8A8A8;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+  
+  .pdf-container::-webkit-scrollbar-corner {
+    background-color: none;
+  }
+  
+  .pdf-container::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: #fff;
+  }
+
   .pdf-button {
     display: flex;
     align-items: center;

@@ -62,12 +62,17 @@ const AnnualManage = () => {
     const countTotal = ["성명", "입사일", "퇴사일", "사용가능", "사용", "잔여"]
     const totalRows = [];
     const tableRows = [];
-    const DateRows = [];
 
     totalRows.push(
       <>
         <tr className="countName_annual">
           <td className="total_annual">{countTotal[0]}</td>
+        </tr>
+        <tr className="countDate_annual">
+          <td className="total_annual">{countTotal[1]}</td>
+        </tr>
+        <tr className="countDate_annual">
+          <td className="total_annual">{countTotal[2]}</td>
         </tr>
         <tr className="countTotal_annual">
           <td className="total_annual">{countTotal[3]}</td>
@@ -77,17 +82,6 @@ const AnnualManage = () => {
         </tr>
         <tr className="countTotal_annual">
           <td className="total_annual">{countTotal[5]}</td>
-        </tr>
-      </>
-    )
-
-    DateRows.push(
-      <>
-        <tr className="countDate_annual">
-          <td className="total_annual">{countTotal[1]}</td>
-        </tr>
-        <tr className="countDate_annual">
-          <td className="total_annual">{countTotal[2]}</td>
         </tr>
       </>
     )
@@ -105,7 +99,6 @@ const AnnualManage = () => {
         <tbody>
           {totalRows}
           {tableRows}
-          {DateRows}
         </tbody>
       </table>
     );
@@ -239,12 +232,12 @@ const AnnualManage = () => {
       <table className="table">
         <tbody>
           {nameRows}
+          {datefirstRows}
+          {datesecondRows}
           {countfirstRows}
           {countsecondRows}
           {countthirdRows}
           {totalRows}
-          {datefirstRows}
-          {datesecondRows}
         </tbody>
       </table>
     );

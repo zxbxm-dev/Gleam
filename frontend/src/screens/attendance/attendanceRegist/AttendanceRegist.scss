@@ -9,6 +9,26 @@
   overflow-y: scroll;
 }
 
+.container_attendance::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.container_attendance::-webkit-scrollbar-thumb {
+  background-color: #A8A8A8;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+.container_attendance::-webkit-scrollbar-corner {
+  background-color: none;
+}
+
+.container_attendance::-webkit-scrollbar-track {
+  box-shadow: none;
+  background-color: #fff;
+}
 
 .conta_three {
   border-bottom: 2px solid #858585;

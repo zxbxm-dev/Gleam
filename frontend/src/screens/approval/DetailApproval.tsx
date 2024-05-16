@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import "./Approval.scss";
 import { Link } from "react-router-dom";
-// import { jsPDF } from 'jspdf';
-// import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -38,6 +38,23 @@ const DetailApproval = () => {
     setNumPages(numPages);
   }
 
+  const exportToPDF = () => {
+    const element = document.getElementById('report-to-xls');
+    if (element) {
+      element.style.height = element.scrollHeight + 'px';
+      html2canvas(element).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; // A4 크기에서 이미지 너비
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('보고서.pdf');
+      });
+    } else {
+      console.error('Element not found');
+    }
+  };
+
   // 전체 페이지 렌더링 함수
   const renderPages = () => {
     const pages = [];
@@ -52,7 +69,6 @@ const DetailApproval = () => {
     }
     return pages;
   };
-
 
   return (
     <div className="content">
@@ -96,7 +112,7 @@ const DetailApproval = () => {
 
               <div className="top_right_content">
                 <button className="approve_button">결재하기</button>
-                <button className="save_button">인쇄하기</button>
+                <button className="save_button" onClick={exportToPDF}>인쇄하기</button>
                 <Popover placement="right-start">
                   <PopoverTrigger>
                     <button className="reject_button">반려하기</button>
@@ -128,9 +144,8 @@ const DetailApproval = () => {
             </div>
             <div className="write_btm_container">
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                {renderPages()}
-                <div className='exam_sign1'>
-                  첫번째 서명
+                <div id='report-to-xls'>
+                  {renderPages()}
                 </div>
               </Document>
               
