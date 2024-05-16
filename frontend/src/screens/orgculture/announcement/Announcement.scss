@@ -129,6 +129,27 @@
   justify-content: center;
 }
 
+.detail_content::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.detail_content::-webkit-scrollbar-thumb {
+  background-color: #A8A8A8;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+.detail_content::-webkit-scrollbar-corner {
+  background-color: none;
+}
+
+.detail_content::-webkit-scrollbar-track {
+  box-shadow: none;
+  background-color: #fff;
+}
+
 
 
 @include laptop {

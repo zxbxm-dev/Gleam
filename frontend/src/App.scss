@@ -162,479 +162,273 @@ ul {
 }
 
 // 데스크탑 기준 전체 레이아웃
-@include desktop {
-  .content {
+.content {
+  width: 100%;
+  height: 100%;
+  padding: 20px 15px;
+  
+  .not_authorization {
+    font-family: var(--font-family-Noto-R);
+    font-size: 1.5rem;
+  }
+
+  .content_header {
     width: 100%;
-    height: 100%;
-    padding: 20px 15px;
-    
-    .not_authorization {
+    height: 20%;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+    gap: 5px;
+
+    .main_header {
+      color: #8F8F8F;
       font-family: var(--font-family-Noto-R);
-      font-size: 1.5rem;
     }
 
-    .content_header {
-      width: 100%;
-      height: 20%;
+    .sub_header {
+      color: #000000;
+      font-family: var(--font-family-Noto-B);
+    }
+  }
+
+  .content_container {
+    width: 100%;
+    height: 80%;
+    
+    .tab_container {
+      height: 779px;
+    }
+
+    .css-a5mhaz {
+      padding: 0px;
+    }
+    .container {
+      height: 86vh;
+      background-color: white;
+      border: 1px solid #DEDEDE;
+      border-radius: 10px;
+      padding: 39px 40px 30px 40px;
+      overflow: hidden;
+    }
+
+    .main_header {
       display: flex;
       align-items: center;
-      font-size: 14px;
-      margin-bottom: 20px;
-      gap: 5px;
-  
-      .main_header {
-        color: #8F8F8F;
-        font-family: var(--font-family-Noto-R);
-      }
-  
-      .sub_header {
-        color: #000000;
+      justify-content: space-between;
+    
+      .header_name {
         font-family: var(--font-family-Noto-B);
+        font-size: 32px;
+        color: #C7C7C7;
+        margin-top: 15px;
       }
-    }
-  
-    .content_container {
-      width: 100%;
-      height: 80%;
-      
-      .tab_container {
-        height: 779px;
+      .header_name_sm {
+        font-family: var(--font-family-Noto-R);
+        font-size: 16px;
+        color: #C7C7C7;
+        margin-top: 15px;
       }
-
-      .css-a5mhaz {
-        padding: 0px;
+    
+      .input-wrapper {
+        position: relative;
       }
-      .container {
-        height: 86vh;
-        background-color: white;
+    
+      .input_form {
+        width: 350px;
+        height: 40px;
         border: 1px solid #DEDEDE;
         border-radius: 10px;
-        padding: 39px 40px 30px 40px;
-        overflow: hidden;
+        padding: 10px;
+        padding-right: 30px;
       }
+      .input_form:hover {
+        border: 1px solid #DEDEDE;
+      }
+      .input_form:focus-visible {
+        outline: none!important;
+        border: 1px solid #DEDEDE;
+      }
+      .search-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+      }
+    }
+    .main_header2 {
+      
+      .header_name_bg {
+        font-family: var(--font-family-Noto-M);
+        font-size: 32px;
+        color: #000;
+        margin-top: 15px;
+        padding: 0 15px;
+      }
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 15px auto;
+      padding-left: 120px;
   
-      .main_header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      
-        .header_name {
-          font-family: var(--font-family-Noto-B);
-          font-size: 32px;
-          color: #C7C7C7;
-          margin-top: 15px;
-        }
-        .header_name_sm {
-          font-family: var(--font-family-Noto-R);
-          font-size: 16px;
-          color: #C7C7C7;
-          margin-top: 15px;
-        }
-      
-        .input-wrapper {
-          position: relative;
-        }
-      
-        .input_form {
-          width: 350px;
-          height: 40px;
-          border: 1px solid #DEDEDE;
-          border-radius: 10px;
-          padding: 10px;
-          padding-right: 30px;
-        }
-        .input_form:hover {
-          border: 1px solid #DEDEDE;
-        }
-        .input_form:focus-visible {
-          outline: none!important;
-          border: 1px solid #DEDEDE;
-        }
-        .search-icon {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 20px;
-          height: 20px;
-        }
-      }
-      .main_header2 {
-        
-        .header_name_bg {
-          font-family: var(--font-family-Noto-M);
-          font-size: 32px;
-          color: #000;
-          margin-top: 15px;
-          padding: 0 15px;
-        }
-      }
-      .pagination {
-        display: flex;
+      li {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        border-radius: 50%;
+        transform: all 0.3s;
+        font-size: 16px;
+        text-align: center;
+        display: flex; 
         justify-content: center;
         align-items: center;
-        gap: 8px;
-        margin: 15px auto;
-        padding-left: 120px;
-    
-        li {
-          width: 30px;
-          height: 30px;
-          cursor: pointer;
-          border-radius: 50%;
-          transform: all 0.3s;
-          font-size: 16px;
-          text-align: center;
-          display: flex; 
-          justify-content: center;
-          align-items: center;
-        }
-  
-        svg {
-          width: 16px; // 아이콘의 너비 조정
-          height: 16px; // 아이콘의 높이 조정
-        }
       }
-      .pagination li {
-        &:hover,
-        &:active,
-        &.active {
-          background-color: #746E58;
-          color: white;
-        }
-      }
-    }
-    .primary_button {
-      width: 108px;
-      height: 35px;
-      border: 2px solid #746E58;
-      border-radius: 8px;
-      font-family: var(--font-family-Noto-B);
-      font-size: 14px;
-      color: #746E58;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .second_button {
-      width: 80px;
-      height: 40px;
-      background-color: #746E58;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      font-family: var(--font-family-Noto-B);
-      color: #fff;
-    }
-    .white_button {
-      width: 80px;
-      height: 40px;
-      background-color: #fff;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      font-family: var(--font-family-Noto-B);
-      color: #746E58;
-    }
-    .red_button {
-      width: 80px;
-      height: 35px;
-      background-color: #fff;
-      border: 1px solid #D56D6D;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      font-family: var(--font-family-Noto-B);
-      color: #D56D6D;
-    }
-    .delete_button {
-      width: 92px;
-      height: 35px;
-      border: 2px solid #D56D6D;
-      border-radius: 8px;
-      font-family: var(--font-family-Noto-B);
-      font-size: 14px;
-      color: #D56D6D;
-    }
-    .delete_small_button {
-      width: 66px;
-      height: 35px;
-      border: 1px solid #D56D6D;
-      border-radius: 8px;
-      font-family: var(--font-family-Noto-B);
-      font-size: 14px;
-      color: #D56D6D;
-      margin-left: 7px;
-    }
-    .approval_button {
-      width: 92px;
-      height: 35px;
-      background-color: #746E58;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: var(--font-family-Noto-B);
-      color: #fff;
-    }
-    .document_button {
-      width: 92px;
-      height: 35px;
-      background-color: #fff;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: var(--font-family-Noto-B);
-      color: #746E58;
-    }
-    .download_button {
-      width: 100px;
-      height: 40px;
-      background-color: #fff;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      font-family: var(--font-family-Noto-B);
-      color: #746E58;
-    }
 
+      svg {
+        width: 16px; // 아이콘의 너비 조정
+        height: 16px; // 아이콘의 높이 조정
+      }
+    }
+    .pagination li {
+      &:hover,
+      &:active,
+      &.active {
+        background-color: #746E58;
+        color: white;
+      }
+    }
+  }
+  .primary_button {
+    width: 108px;
+    height: 35px;
+    border: 1px solid #746E58;
+    border-radius: 5px;
+    font-family: var(--font-family-Noto-B);
+    font-size: 14px;
+    color: #746E58;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .second_button {
+    width: 66px;
+    height: 35px;
+    background-color: #746E58;
+    border: 1px solid #746E58;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #fff;
+  }
+  .white_button {
+    width: 66px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #746E58;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #746E58;
+  }
+  .red_button {
+    width: 66px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #D56D6D;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #D56D6D;
+  }
+  .delete_button {
+    width: 92px;
+    height: 35px;
+    border: 1px solid #D56D6D;
+    border-radius: 5px;
+    font-family: var(--font-family-Noto-B);
+    font-size: 14px;
+    color: #D56D6D;
+  }
+  .delete_small_button {
+    width: 66px;
+    height: 35px;
+    border: 1px solid #D56D6D;
+    border-radius: 5px;
+    font-family: var(--font-family-Noto-B);
+    font-size: 14px;
+    color: #D56D6D;
+    margin-left: 7px;
+  }
+  .approval_button {
+    width: 92px;
+    height: 35px;
+    background-color: #746E58;
+    border: 1px solid #746E58;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #fff;
+  }
+  .document_button {
+    width: 92px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #746E58;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #746E58;
+  }
+  .download_button {
+    width: 92px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #746E58;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
+    color: #746E58;
   }
 }
 
 // 노트북 기준 전체 레이아웃
 @include laptop {
   .content {
-    width: 100%;
-    height: 100%;
-    padding: 20px 15px;
   
     .content_header {
-      width: 100%;
-      height: 20%;
-      display: flex;
-      align-items: center;
-      font-size: 14px;
       margin-bottom: 10px;
-      gap: 5px;
-  
-      .main_header {
-        color: #8F8F8F;
-        font-family: var(--font-family-Noto-R);
-      }
-  
-      .sub_header {
-        color: #000000;
-        font-family: var(--font-family-Noto-B);
-      }
     }
   
     .content_container {
-      width: 100%;
-      height: 80%;
-      
       .tab_container {
         height: 580px;
       }
 
-      .css-a5mhaz {
-        padding: 0px;
-      }
       .container {
         height: 84.5vh;
-        background-color: white;
-        border: 1px solid #DEDEDE;
-        border-radius: 10px;
         padding: 20px;
       }
   
       .main_header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
       
         .header_name {
-          font-family: var(--font-family-Noto-B);
           font-size: 28px;
-          color: #C7C7C7;
         }
         .header_name_sm {
-          font-family: var(--font-family-Noto-R);
           font-size: 16px;
-          color: #C7C7C7;
           margin-top: 15px;
         }
-      
-        .input-wrapper {
-          position: relative;
-        }
-      
-        .input_form {
-          width: 350px;
-          height: 40px;
-          border: 1px solid #DEDEDE;
-          border-radius: 10px;
-          padding: 10px;
-          padding-right: 30px;
-        }
-        .input_form:hover {
-          border: 1px solid #DEDEDE;
-        }
-        .input_form:focus-visible {
-          outline: none!important;
-          border: 1px solid #DEDEDE;
-        }
-        .search-icon {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 20px;
-          height: 20px;
-        }
       }
-      .main_header2 {
-        
-        .header_name_bg {
-          font-family: var(--font-family-Noto-M);
-          font-size: 32px;
-          color: #000;
-          margin-top: 15px;
-          padding: 0 15px;
-        }
-      }
-      .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        margin: 15px auto;
-        padding-left: 120px;
-    
-        li {
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          transform: all 0.3s;
-          font-size: 16px;
-          text-align: center;
-          display: flex; 
-          justify-content: center;
-          align-items: center;
-        }
-  
-        svg {
-          width: 16px; // 아이콘의 너비 조정
-          height: 16px; // 아이콘의 높이 조정
-        }
-      }
-      .pagination li{
-        &:hover,
-        &:active,
-        &.active {
-          background-color: #746E58;
-          color: white;
-        }
-      }
-    }
-    .primary_button {
-      width: 108px;
-      height: 35px;
-      border: 2px solid #746E58;
-      border-radius: 8px;
-      font-family: var(--font-family-Noto-B);
-      font-size: 14px;
-      color: #746E58;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .second_button {
-      width: 80px;
-      height: 40px;
-      background-color: #746E58;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      font-family: var(--font-family-Noto-B);
-      color: #fff;
-    }
-    .white_button {
-      width: 80px;
-      height: 40px;
-      background-color: #fff;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      font-family: var(--font-family-Noto-B);
-      color: #746E58;
-    }
-    .red_button {
-      width: 80px;
-      height: 40px;
-      background-color: #fff;
-      border: 1px solid #D56D6D;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      font-family: var(--font-family-Noto-B);
-      color: #D56D6D;
-    }
-    .delete_button {
-      width: 110px;
-      height: 40px;
-      border: 2px solid #D56D6D;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-family: var(--font-family-Noto-B);
-      font-size: 16px;
-      color: #D56D6D;
-    }
-    .delete_small_button {
-      width: 66px;
-      height: 35px;
-      border: 1px solid #D56D6D;
-      border-radius: 8px;
-      font-family: var(--font-family-Noto-B);
-      font-size: 14px;
-      color: #D56D6D;
-      margin-left: 7px;
-    }
-    .approval_button {
-      width: 100px;
-      height: 33px;
-      background-color: #746E58;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      font-size: 13px;
-      font-family: var(--font-family-Noto-B);
-      color: #fff;
-    }
-    .document_button {
-      width: 100px;
-      height: 33px;
-      background-color: #fff;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      font-size: 13px;
-      font-family: var(--font-family-Noto-B);
-      color: #746E58;
-    }
-    .download_button {
-      width: 100px;
-      height: 40px;
-      background-color: #fff;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      font-family: var(--font-family-Noto-B);
-      color: #746E58;
     }
   }
 }

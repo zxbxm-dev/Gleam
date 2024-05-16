@@ -232,7 +232,7 @@ const Approval = () => {
                   <th>순번</th>
                   <th>제목</th>
                   <th>결재수신일자</th>
-                  <th>결재발신일자</th>
+                  <th>결재반려일자</th>
                   <th>진행상황</th>
                   <th>처리상황</th>
                   <th>작성자/부서</th>
@@ -291,7 +291,7 @@ const Approval = () => {
                   <th>순번</th>
                   <th>제목</th>
                   <th>결재수신일자</th>
-                  <th>결재발신일자</th>
+                  <th>결재완료일자</th>
                   <th>진행상황</th>
                   <th>처리상황</th>
                   <th>작성자/부서</th>
@@ -350,7 +350,7 @@ const Approval = () => {
                   <th>순번</th>
                   <th>제목</th>
                   <th>결재수신일자</th>
-                  <th>결재발신일자</th>
+                  <th>처리일자</th>
                   <th>진행상황</th>
                   <th>처리상황</th>
                   <th>작성자/부서</th>

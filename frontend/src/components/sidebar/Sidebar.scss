@@ -221,9 +221,8 @@
   display: flex;
   flex-direction: column;
   z-index: 999;
-  overflow-y: scroll;
+  overflow-y: auto;
   transition: var(--default-transition);
-  scrollbar-width: thin;
 
   .department {
     color: #717171;
@@ -278,6 +277,27 @@
   .clicked {
     background-color: #FFF8E0;
   }
+}
+
+.memberSidebar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.memberSidebar::-webkit-scrollbar-thumb {
+  background-color: #A8A8A8;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+.memberSidebar::-webkit-scrollbar-corner {
+  background-color: none;
+}
+
+.memberSidebar::-webkit-scrollbar-track {
+  box-shadow: none;
+  background-color: #fff;
 }
 
 @include desktop {

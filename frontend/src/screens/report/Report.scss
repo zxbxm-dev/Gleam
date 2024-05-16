@@ -51,13 +51,13 @@
 
 
   .temp_button {
-    width: 180px;
-    height: 40px;
-    border: 2px solid #746E58;
-    border-radius: 8px;
+    width: 150px;
+    height: 35px;
+    border: 1px solid #746E58;
+    border-radius: 5px;
     margin-top: 5px;
     font-family: var(--font-family-Noto-B);
-    font-size: 16px;
+    font-size: 14px;
     color: #746E58;
   }
 }
@@ -88,8 +88,8 @@
       .save_button {
         width: 92px;
         height: 35px;
-        border: 2px solid #746E58;
-        border-radius: 8px;
+        border: 1px solid #746E58;
+        border-radius: 5px;
         font-family: var(--font-family-Noto-B);
         font-size: 14px;
         color: #746E58;
@@ -110,8 +110,8 @@
         gap: 5px;
         width: 133px;
         height: 35px;
-        border: 2px solid #746E58;
-        border-radius: 8px;
+        border: 1px solid #746E58;
+        border-radius: 5px;
         font-family: var(--font-family-Noto-B);
         font-size: 14px;
         color: #746E58;
@@ -119,8 +119,8 @@
       .save_button {
         width: 92px;
         height: 35px;
-        border: 2px solid #746E58;
-        border-radius: 8px;
+        border: 1px solid #746E58;
+        border-radius: 5px;
         font-family: var(--font-family-Noto-B);
         font-size: 14px;
         color: #746E58;
@@ -128,8 +128,8 @@
       .approval_button {
         width: 121px;
         height: 35px;
-        border: 2px solid #746E58;
-        border-radius: 8px;
+        border: 1px solid #746E58;
+        border-radius: 5px;
         font-family: var(--font-family-Noto-B);
         font-size: 14px;
         background-color: #746E58;
@@ -138,8 +138,8 @@
       .reject_button {
         width: 92px;
         height: 35px;
-        border: 2px solid #D56D6D;
-        border-radius: 8px;
+        border: 1px solid #D56D6D;
+        border-radius: 5px;
         font-family: var(--font-family-Noto-B);
         font-size: 14px;
         color: #D56D6D;
@@ -147,8 +147,8 @@
       .approve_button {
         width: 92px;
         height: 35px;
-        border: 2px solid #746E58;
-        border-radius: 8px;
+        border: 1px solid #746E58;
+        border-radius: 5px;
         background-color: #746E58;
         font-family: var(--font-family-Noto-B);
         font-size: 14px;
@@ -162,7 +162,6 @@
     width: 100%;
     height: 90%;
     overflow-y: scroll;
-    scrollbar-width: thin;
     display: flex;
     justify-content: center;
 
@@ -183,6 +182,27 @@
         font-size: 20px;
       }
     }
+  }
+
+  .write_btm_container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .write_btm_container::-webkit-scrollbar-thumb {
+    background-color: #A8A8A8;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+  
+  .write_btm_container::-webkit-scrollbar-corner {
+    background-color: none;
+  }
+  
+  .write_btm_container::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: #fff;
   }
 
   .write_btm_container2 {
@@ -209,6 +229,27 @@
         font-size: 14px;
         color: #9E9E9E;
       }
+    }
+
+    .write_btm_container2::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    
+    .write_btm_container2::-webkit-scrollbar-thumb {
+      background-color: #A8A8A8;
+      border-radius: 10px;
+      background-clip: padding-box;
+      border: 2px solid transparent;
+    }
+    
+    .write_btm_container2::-webkit-scrollbar-corner {
+      background-color: none;
+    }
+    
+    .write_btm_container2::-webkit-scrollbar-track {
+      box-shadow: none;
+      background-color: #fff;
     }
 
     .upload-area {
@@ -328,7 +369,7 @@
     height: 35px;
     background-color: #746E58;
     border: 1px solid #746E58;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 14px;
     font-family: var(--font-family-Noto-B);
     color: #fff;
@@ -338,7 +379,7 @@
     height: 35px;
     background-color: #fff;
     border: 1px solid #746E58;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 14px;
     font-family: var(--font-family-Noto-B);
     color: #746E58;
@@ -390,12 +431,12 @@
       .top_left_content {
 
         .save_button {
-          width: 100px;
+          width: 92px;
           height: 35px;
-          border: 2px solid #746E58;
-          border-radius: 8px;
+          border: 1px solid #746E58;
+          border-radius: 5px;
           font-family: var(--font-family-Noto-B);
-          font-size: 16px;
+          font-size: 14px;
           color: #746E58;
         }
       }
