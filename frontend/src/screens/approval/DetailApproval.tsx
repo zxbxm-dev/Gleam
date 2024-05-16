@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { Textarea } from '@chakra-ui/react';
 
-import testPDF from '../../assets/pdf/testtest.pdf';
+import testPDF from '../../assets/pdf/[서식-A104] 휴가신청서_2024.pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
