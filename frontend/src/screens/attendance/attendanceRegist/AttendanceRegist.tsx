@@ -6,6 +6,8 @@ import { Input } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Modal, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
 import { Tooltip } from '@chakra-ui/react';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const months = [
   { name: '1월', key: 'january' },
@@ -33,6 +35,25 @@ const AttendanceRegist = () => {
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
+  };
+
+  const exportToPDF = () => {
+    const element = document.getElementById('table-to-xls');
+    if (element) {
+      element.style.height = element.scrollHeight + 'px';
+      element.style.width = element.scrollWidth + 'px';
+      html2canvas(element).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; // A4 크기에서 이미지 너비
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('출근부.pdf');
+        window.location.reload();
+      });
+    } else {
+      console.error('Element not found');
+    }
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -431,7 +452,7 @@ const AttendanceRegist = () => {
 
       <div className="content_container">
         <div className='attend_header_right'>
-          <button className='attend_download_button'>다운로드</button>
+          <button className='attend_download_button' onClick={exportToPDF}>다운로드</button>
           {selectedScreen === 'R&D' ? (
             <button className='rnd_company_button' onClick={handleScreenChange}>
               R&D 센터
@@ -452,7 +473,7 @@ const AttendanceRegist = () => {
           <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="tab_container">
             {yearData.map(monthData => (
               <TabPanel key={monthData.month} className="container_attendance">
-                <div className="Excel">
+                <div className="Excel" id="table-to-xls">
                   <table className="Explan">
                     <tbody>
                       <tr>
