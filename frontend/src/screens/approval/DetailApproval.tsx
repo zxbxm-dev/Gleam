@@ -15,9 +15,19 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { Textarea } from '@chakra-ui/react';
+import sign from "../../assets/images/sign/구민석_서명.png";
 
-import testPDF from '../../assets/pdf/testtest.pdf';
+import testPDF from '../../assets/pdf/[서식-A102] 지출품의서_2024.pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -27,8 +37,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const DetailApproval = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
+  const [checksignup, setCheckSignUp] = useState<boolean[]>([false, false, false]);
+  const [signupindex, setSignUpIndex] = useState<number>(0);
 
   useEffect(() => {
     setFile(testPDF);
@@ -54,6 +67,24 @@ const DetailApproval = () => {
       console.error('Element not found');
     }
   };
+  const handleSignModal = (index: number) => {
+    onOpen();
+    setSignUpIndex(index);
+  }
+
+  const handleSign = (index: number) => {
+    const newCheckSignUp = [...checksignup];
+    newCheckSignUp[index] = true;
+    setCheckSignUp(newCheckSignUp);
+    onClose();
+  }
+
+  const handleSignDel = (index: number) => {
+    const newCheckSignUp = [...checksignup];
+    newCheckSignUp[index] = false;
+    setCheckSignUp(newCheckSignUp);
+    onClose();
+  }
 
   // 전체 페이지 렌더링 함수
   const renderPages = () => {
@@ -148,15 +179,33 @@ const DetailApproval = () => {
                   <div className='PaymentLine'>
                     <div className='Pay'>
                       <div className='Top'>팀장</div>
-                      <div className='Bottom'>&nbsp;</div>
+                      <div className='Bottom' onClick={() => handleSignModal(0)}>
+                        {checksignup[0] ? 
+                          <img src={sign} alt="sign"/>
+                          :
+                          <></>
+                        }
+                      </div>
                     </div>
                     <div className='Pay'>
                       <div className='Top'>부서장</div>
-                      <div className='Bottom'>&nbsp;</div>
+                      <div className='Bottom' onClick={() => handleSignModal(1)}>
+                        {checksignup[1] ? 
+                          <img src={sign} alt="sign"/>
+                          :
+                          <></>
+                        }
+                      </div>
                     </div>
                     <div className='Pay'>
                       <div className='Top'>대표</div>
-                      <div className='Bottom'>&nbsp;</div>
+                      <div className='Bottom' onClick={() => handleSignModal(2)}>
+                        {checksignup[2] ? 
+                          <img src={sign} alt="sign"/>
+                          :
+                          <></>
+                        }
+                      </div>
                     </div>
                   </div>
                   {renderPages()}
@@ -167,6 +216,20 @@ const DetailApproval = () => {
           </div>
         </div>
       </div>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
+        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
+          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
+          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
+          <ModalBody className="cancle_modal_content">
+            서명하시겠습니까?
+          </ModalBody>
+
+          <ModalFooter gap='7px' justifyContent='center'>
+            <button className="del_button" onClick={() => {handleSign(signupindex)}}>서명</button>
+            <button className="cle_button" onClick={() => {handleSignDel(signupindex)}}>취소</button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

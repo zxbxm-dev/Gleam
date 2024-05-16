@@ -539,6 +539,8 @@
     }
 
     .Bottom {
+      display: flex;
+      align-items: center;
       border: 1px solid #000;
       height: 120px;
     }
