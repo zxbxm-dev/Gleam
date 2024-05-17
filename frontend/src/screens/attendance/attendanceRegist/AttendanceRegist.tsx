@@ -31,7 +31,16 @@ const names = [
 ];
 
 const AttendanceRegist = () => {
+  const [attachment, setAttachment] = useState<File | null>(null);
   const [selectedScreen, setSelectedScreen] = useState('R&D');
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setAttachment(file);
+    }
+    console.log(attachment);
+};
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
@@ -453,6 +462,17 @@ const AttendanceRegist = () => {
       <div className="content_container">
         <div className='attend_header_right'>
           <button className='attend_download_button' onClick={exportToPDF}>다운로드</button>
+          <button className='attend_upload_button'>
+            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+              업로드
+              <input
+                id="fileInput"
+                type="file"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+            </label>
+          </button>
           {selectedScreen === 'R&D' ? (
             <button className='rnd_company_button' onClick={handleScreenChange}>
               R&D 센터

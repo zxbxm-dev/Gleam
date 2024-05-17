@@ -72,7 +72,7 @@ const HumanResource = () => {
                     </>
                   ) : (
                     <>
-                      <button className="edits_button" onClick={handleToggleEdit}>수정</button>
+                      <button className="edits_button" onClick={handleToggleEdit}>업로드</button>
                       <button className="downloads_button">다운로드</button>
                     </>
                   )}
@@ -92,7 +92,7 @@ const HumanResource = () => {
                     </>
                   ) : (
                     <>
-                      <button className="edits_button" onClick={handleToggleEdit}>수정</button>
+                      <button className="edits_button" onClick={handleToggleEdit}>업로드</button>
                       <button className="downloads_button">다운로드</button>
                     </>
                   )}
