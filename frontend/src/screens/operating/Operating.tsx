@@ -8,6 +8,7 @@ import html2canvas from 'html2canvas';
 type TeamType = 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
 
 const Operating = () => {
+  const [editMode, setEditMode] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   const [dropdownTeam, setDropdownTeam] = useState<TeamType>();
@@ -479,7 +480,21 @@ const Operating = () => {
           <option value={2024}>2024</option>
           <option value={2023}>2023</option>
         </select>
-        <button className='oper_edit_button'>수정</button>
+        {editMode ? 
+          <button
+          className='head_company_button'
+          onClick={() => setEditMode(!editMode)}
+          >
+            등록
+          </button>
+          :
+          <button
+          className='oper_edit_button'
+          onClick={() => setEditMode(!editMode)}
+          >
+            수정
+          </button>
+        }
         <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
       </div>
       <div className="content_container">
@@ -515,6 +530,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common811', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -531,6 +547,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('common811', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common811', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -556,6 +573,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common812', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -572,6 +590,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('common812', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common812', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -590,6 +609,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common813', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -606,6 +626,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('common813', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common813', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -624,6 +645,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common814', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -640,6 +662,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('common814', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common814', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -658,6 +681,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common815', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -674,6 +698,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('common815', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common815', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -692,6 +717,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common818', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -708,6 +734,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('common818', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common818', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -726,6 +753,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common819', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -742,6 +770,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('common819', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common819', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -767,6 +796,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('management', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -783,6 +813,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('management', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('management', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -813,6 +844,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('support', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -829,6 +861,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('support', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('support', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -859,6 +892,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('devOne', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -875,6 +909,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('devOne', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('devOne', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -906,6 +941,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('devTwo', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -922,6 +958,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('devTwo', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('devTwo', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -952,6 +989,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('blockchain', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -968,6 +1006,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('blockchain', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('blockchain', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -999,6 +1038,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('design', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -1015,6 +1055,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('design', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('design', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -1046,6 +1087,7 @@ const Operating = () => {
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('planning', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -1062,6 +1104,7 @@ const Operating = () => {
                                 onChange={(e) => handleInputChange('planning', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('planning', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -1102,6 +1145,7 @@ const Operating = () => {
                             const reserveFund = (common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) * ratio / 100;
                             setReserveFund(reserveFund);
                           }}
+                          disabled={!editMode}
                         >
                           <option value=""></option>
                           <option value="5">5%</option>
@@ -1119,6 +1163,7 @@ const Operating = () => {
                         value={customInputValue}
                         onChange={(e) => handleCustomInputChange(e.target.value)}
                         className='dropdown_input'
+                        disabled={!editMode}
                       />
                     </td>
                   </tr>
