@@ -28,6 +28,17 @@ const Calendar = () => {
 
   const events1 = [
     { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    { title: '본사 출장', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
+    { title: '본사 외근', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
+    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    { title: '본사 반차', start: new Date('2024-05-18'), end: new Date('2024-05-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
+    { title: '본사 반차', start: new Date('2024-05-18'), end: new Date('2024-05-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
     // { title: '구민석 반차', start: new Date('2024-5-17'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
     // { title: '구민석 외근', start: new Date('2024-5-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
     // { title: '구민석 워크숍', start: new Date('2024-5-17'), backgroundColor: '#FFD8B5', borderColor: '#FFD8B5', textColor: '#000' },

@@ -2,13 +2,16 @@
   height: 81.7vh;
   background-color: white;
   border: 1px solid #DEDEDE;
-  border-radius: 10px;
   padding: 20px;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 
   .fc .fc-toolbar.fc-header-toolbar {
     flex-direction: row;
-    font-size: 18px;
+    font-size: 16px;
     color: #000;
+    margin-bottom: 10px;
   }
 
   .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk {
@@ -53,8 +56,11 @@
   .fc-theme-standard th {
     font-family: var(--font-family-Noto-M);
     color: #969696;
+    text-align: left;
   }
-
+  .fc-col-header-cell-cushion {
+    margin-left: 5px;
+  }
   .fc .fc-daygrid-day-frame {
 
     &:hover {
@@ -101,10 +107,49 @@
   }
 
   .fc .fc-more-popover .fc-popover-body {
-    min-width: 260px;
+    width: 250px;
+    height: 200px;
+    min-width: 250px;
     min-height: 200px;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: auto;
   }
+
+  .fc .fc-more-popover .fc-popover-body::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .fc .fc-more-popover .fc-popover-body::-webkit-scrollbar-thumb {
+    background-color: #A8A8A8;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+  
+  .fc .fc-more-popover .fc-popover-body::-webkit-scrollbar-corner {
+    background-color: none;
+  }
+  
+  .fc .fc-more-popover .fc-popover-body::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: #fff;
+  }
+
+  // 이벤트
+  .fc .fc-daygrid-body-balanced .fc-daygrid-day-events {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .fc-event .fc-event-main {
+    padding-left: 9px;
+  }
+  
 
 }
 
