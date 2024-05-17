@@ -51,9 +51,11 @@
         justify-content: space-between;
 
         .board_title {
+          display: flex;
           font-size: 16px;
           cursor: pointer;
           color: #323232;
+          gap: 5px;
         }
         .board_title:hover{
           text-decoration: underline;
