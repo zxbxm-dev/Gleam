@@ -1,9 +1,9 @@
 import "./Calendar.scss";
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { useState } from "react";
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
-
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import {
   Modal,
   ModalContent,
@@ -26,8 +26,20 @@ const Calendar = () => {
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("")
 
-  const events = [
-    { title: '구민석 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+  const events1 = [
+    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
+    // { title: '구민석 반차', start: new Date('2024-5-17'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
+    // { title: '구민석 외근', start: new Date('2024-5-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
+    // { title: '구민석 워크숍', start: new Date('2024-5-17'), backgroundColor: '#FFD8B5', borderColor: '#FFD8B5', textColor: '#000' },
+    // { title: '구민석 출장', start: new Date('2024-5-17'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
+    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
+    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
+    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
+    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
+  ]
+
+  const events2 = [
+    { title: 'R&D 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
     // { title: '구민석 반차', start: new Date('2024-5-17'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
     // { title: '구민석 외근', start: new Date('2024-5-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
     // { title: '구민석 워크숍', start: new Date('2024-5-17'), backgroundColor: '#FFD8B5', borderColor: '#FFD8B5', textColor: '#000' },
@@ -80,62 +92,132 @@ const Calendar = () => {
       </div>
 
       <div className="content_container">
-        <div className="calendar_container">
-          <FullCalendar
-            plugins={[dayGridPlugin]}
-            initialView="dayGridMonth"
-            height="100%"
-            customButtons={{
-              Addschedule: {
-                text: '일정 추가　+',
-                click: function () {
-                  onAddModalOpen();
-                },
-              },
-            }}
-            headerToolbar={{
-              start: 'prev title next',
-              center: '',
-              end: 'Addschedule',
-            }} // 달력 상단 헤더
-            dayHeaderFormat={{
-              weekday: 'long'
-            }} // 요일 포맷 변경
-            titleFormat={(date) => {
-              const year = date.date.year;
-              const month = date.date.month + 1;
-              return `${year}년 ${month}월`;
-            }} // 헤더 년월 포맷 변경
-            dayCellContent={(info) => {
-              var number = document.createElement("a");
-              number.classList.add("fc-daygrid-day-number");
-              number.innerHTML = info.dayNumberText.replace("일", "");
-              if (info.view.type === "dayGridMonth") {
-                return {
-                  html: number.outerHTML
-                };
-              }
-              return {
-                domNodes: []
-              };
-            }} // 날짜에 '일' 제거
-            locale='kr' // 한국어
-            fixedWeekCount={false} // 5주 표기
-            events={events}
-            eventContent={(arg) => {
-              return (
-                <>
-                  <div>{arg.event.title.replace('오전 12시 ', '')}</div>
-                </>
+      <Tabs variant='enclosed'>
+        <TabList>
+          <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>본사</Tab>
+          <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>R&D 연구센터</Tab>
+        </TabList>
 
-              );
-            }}
-            dayMaxEventRows={true}
-            eventDisplay="block"
-            eventClick={onViewModalOpen}
-            moreLinkText='개 일정 더보기'
-          />
-        </div>
+        <TabPanels>
+          <TabPanel>
+            <div className="calendar_container">
+              <FullCalendar
+                plugins={[dayGridPlugin]}
+                initialView="dayGridMonth"
+                height="100%"
+                customButtons={{
+                  Addschedule: {
+                    text: '일정 추가　+',
+                    click: function () {
+                      onAddModalOpen();
+                    },
+                  },
+                }}
+                headerToolbar={{
+                  start: 'prev title next',
+                  center: '',
+                  end: 'Addschedule',
+                }} // 달력 상단 헤더
+                dayHeaderFormat={{
+                  weekday: 'long'
+                }} // 요일 포맷 변경
+                titleFormat={(date) => {
+                  const year = date.date.year;
+                  const month = date.date.month + 1;
+                  return `${year}년 ${month}월`;
+                }} // 헤더 년월 포맷 변경
+                dayCellContent={(info) => {
+                  var number = document.createElement("a");
+                  number.classList.add("fc-daygrid-day-number");
+                  number.innerHTML = info.dayNumberText.replace("일", "");
+                  if (info.view.type === "dayGridMonth") {
+                    return {
+                      html: number.outerHTML
+                    };
+                  }
+                  return {
+                    domNodes: []
+                  };
+                }} // 날짜에 '일' 제거
+                locale='kr' // 한국어
+                fixedWeekCount={false} // 5주 표기
+                events={events1}
+                eventContent={(arg) => {
+                  return (
+                    <>
+                      <div>{arg.event.title.replace('오전 12시 ', '')}</div>
+                    </>
+
+                  );
+                }}
+                dayMaxEventRows={true}
+                eventDisplay="block"
+                eventClick={onViewModalOpen}
+                moreLinkText='개 일정 더보기'
+              />
+            </div>
+          </TabPanel>
+
+          <TabPanel>
+            <div className="calendar_container">
+              <FullCalendar
+                plugins={[dayGridPlugin]}
+                initialView="dayGridMonth"
+                height="100%"
+                customButtons={{
+                  Addschedule: {
+                    text: '일정 추가　+',
+                    click: function () {
+                      onAddModalOpen();
+                    },
+                  },
+                }}
+                headerToolbar={{
+                  start: 'prev title next',
+                  center: '',
+                  end: 'Addschedule',
+                }} // 달력 상단 헤더
+                dayHeaderFormat={{
+                  weekday: 'long'
+                }} // 요일 포맷 변경
+                titleFormat={(date) => {
+                  const year = date.date.year;
+                  const month = date.date.month + 1;
+                  return `${year}년 ${month}월`;
+                }} // 헤더 년월 포맷 변경
+                dayCellContent={(info) => {
+                  var number = document.createElement("a");
+                  number.classList.add("fc-daygrid-day-number");
+                  number.innerHTML = info.dayNumberText.replace("일", "");
+                  if (info.view.type === "dayGridMonth") {
+                    return {
+                      html: number.outerHTML
+                    };
+                  }
+                  return {
+                    domNodes: []
+                  };
+                }} // 날짜에 '일' 제거
+                locale='kr' // 한국어
+                fixedWeekCount={false} // 5주 표기
+                events={events2}
+                eventContent={(arg) => {
+                  return (
+                    <>
+                      <div>{arg.event.title.replace('오전 12시 ', '')}</div>
+                    </>
+
+                  );
+                }}
+                dayMaxEventRows={true}
+                eventDisplay="block"
+                eventClick={onViewModalOpen}
+                moreLinkText='개 일정 더보기'
+              />
+            </div>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
       </div>
       <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
         <ModalContent height='300px' width="400px" borderRadius='10px'>
