@@ -139,8 +139,8 @@ const Calendar = () => {
       </div>
       <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
         <ModalContent height='300px' width="400px" borderRadius='10px'>
-          <ModalHeader height='50px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize="14px" borderTopRadius='10px'>일정 등록하기</ModalHeader>
-          <ModalCloseButton />
+          <ModalHeader className="ModalHeader" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize="14px" borderTopRadius='5px'>일정 등록하기</ModalHeader>
+          <ModalCloseButton fontSize='12px' top='0' color='white'/>
           <ModalBody padding="0" display='flex' alignItems="center" marginTop="16px" flexDirection='column' gap='7px' fontFamily='var(--font-family-Noto-M)'>
             <div style={{ display: 'flex', gap: '10px' }}>
               <div>
@@ -192,33 +192,50 @@ const Calendar = () => {
               </div>
             </div>
           </ModalBody>
-          <ModalFooter gap='10px' display='flex' justifyContent='center'>
+          <ModalFooter gap='7px' display='flex' justifyContent='center'>
             <button className="add_button" onClick={handleAddEvent}>등록</button>
-            <button className="cancle_button">취소</button>
+            <button className="cle_button">취소</button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
 
       <Modal isOpen={isViewModalOpen} onClose={onViewModalClose} size='xl' isCentered={true}>
-        <ModalContent height='400px' borderRadius='10px'>
-          <ModalHeader height='55px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='10px'>일정 확인</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <div>
-              제목
+        <ModalContent height='300px' width='350px' borderRadius='5px'>
+          <ModalHeader className="ModalHeader" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>일정 확인</ModalHeader>
+          <ModalCloseButton fontSize='12px' top='0' color='white'/>
+          <ModalBody padding="0" display='flex' alignItems="center" flexDirection='column' gap='7px' fontFamily='var(--font-family-Noto-M)' marginTop='20px'>
+            <div style={{ width: '320px', display: 'flex', gap: '10px'}}>
+              <div style={{ width: '40px', textAlign: 'right', color: '#929292'}}>
+                출장
+              </div>
+              <div style={{ display: 'flex', width: '280px' }}>
+                OOO 출장
+              </div>
             </div>
-            <div>
-              기간
+            <div style={{ width: '320px', display: 'flex', gap: '10px'}}>
+              <div style={{ width: '40px', textAlign: 'right', color: '#929292' }}>
+                기간
+              </div>
+              <div style={{ display: 'flex', width: '280px' }}>
+                2000년 00월 00일
+                <span style={{ margin: '0 5px' }}>-</span>
+                2000년 00월 00일
+              </div>
             </div>
-            <div>
-              메모
+            <div style={{ width: '320px', height: '110px',display: 'flex', gap: '10px'}}>
+              <div style={{ width: '40px', textAlign: 'right', color: '#929292' }}>
+                메모
+              </div>
+              <div style={{ display: 'flex', width: '280px' }}>
+                2일간 해외로 출장 예정입니다.
+              </div>
             </div>
           </ModalBody>
-          <ModalFooter gap='10px' display='flex' justifyContent='center'>
-            <button className="cancle_button">취소</button>
-            <button className="cancle_button">삭제</button>
+          <ModalFooter gap='7px' display='flex' justifyContent='center'>
+            <button className="del_button">삭제</button>
             <button className="cancle_button">수정</button>
+            <button className="cle_button">취소</button>
           </ModalFooter>
         </ModalContent>
       </Modal>
