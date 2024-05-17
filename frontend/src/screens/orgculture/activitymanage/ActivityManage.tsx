@@ -26,7 +26,7 @@ const ActivityManage = () => {
       { id: 1, title: "OOO 직원 경조사 공지 1", writer: "구민석", views: 100, date: "2024-05-17" , attachment: 'jpg' },
       { id: 2, title: "OOO 직원 경조사 공지 2", writer: "구민석", views: 200, date: "2024-05-16" , attachment: 'jpg'},
       { id: 3, title: "OOO 직원 경조사 공지 3", writer: "구민석", views: 300, date: "2024-05-15" , attachment: ''},
-      { id: 4, title: "OOO 직원 경조사 공지 4", writer: "구민석", views: 100, date: "2024-05-14" , attachment: ''},
+      { id: 4, title: "OOO 직원 경조사 공지 4 게시글 제목이 길어지면 축약으로 바꿔줘", writer: "구민석", views: 100, date: "2024-05-14" , attachment: ''},
       { id: 5, title: "OOO 직원 경조사 공지 5", writer: "구민석", views: 200, date: "2024-05-13" , attachment: ''},
       { id: 6, title: "OOO 직원 경조사 공지 6", writer: "구민석", views: 300, date: "2024-05-12" , attachment: ''},
       { id: 7, title: "OOO 직원 경조사 공지 7", writer: "구민석", views: 100, date: "2024-05-11" , attachment: ''},
@@ -42,8 +42,8 @@ const ActivityManage = () => {
 
     const initialfreeboards = [
       { id: 1, title: "자유게시판 1", writer: "구민석", views: 100, date: "2024-05-17" , attachment: '' },
-      { id: 2, title: "자유게시판 2", writer: "구민석", views: 200, date: "2024-05-17" , attachment: ''},
-      { id: 3, title: "자유게시판 3", writer: "구민석", views: 300, date: "2024-05-16" , attachment: ''},
+      { id: 2, title: "자유게시판 2", writer: "구민석", views: 200, date: "2024-05-17" , attachment: 'png'},
+      { id: 3, title: "자유게시판 3 제목이 길어지면 축약으로 바꿔줘", writer: "구민석", views: 300, date: "2024-05-16" , attachment: ''},
       { id: 4, title: "자유게시판 4", writer: "구민석", views: 100, date: "2024-05-16" , attachment: ''},
       { id: 5, title: "자유게시판 5", writer: "구민석", views: 200, date: "2024-05-15" , attachment: ''},
       { id: 6, title: "자유게시판 6", writer: "구민석", views: 300, date: "2024-05-09" , attachment: ''},
@@ -87,7 +87,9 @@ const ActivityManage = () => {
                 .map((employnotice) => (
                   <div className="board_unit">
                     <div className="board_title">
-                      {employnotice.title}
+                      <span style={{marginRight: '5px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '250px'}}>
+                        {employnotice.title}
+                      </span> 
                       {employnotice.attachment ? 
                         <img src={AttachmentIcon} alt="AttachmentIcon" />
                         :
@@ -116,23 +118,25 @@ const ActivityManage = () => {
               <div className="board_btm">
                 {freeboards
                   .slice(0, 10)
-                  .map((employnotice) => (
+                  .map((freeboard) => (
                     <div className="board_unit">
                       <div className="board_title">
-                        {employnotice.title}
-                        {employnotice.attachment ? 
+                        <span style={{marginRight: '5px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '250px'}}>
+                          {freeboard.title}
+                        </span> 
+                        {freeboard.attachment ? 
                           <img src={AttachmentIcon} alt="AttachmentIcon" />
                           :
                           <></>
                         }
-                        {isNewNotice(employnotice.date) ?
+                        {isNewNotice(freeboard.date) ?
                           <img src={NewIcon} alt="NewIcon" />
                           :
                           <></>
                         }
 
                       </div>
-                      <div className="board_date">{employnotice.date}</div>
+                      <div className="board_date">{freeboard.date}</div>
                     </div>  
                   ))}
               </div>
