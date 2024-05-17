@@ -38,8 +38,8 @@ const AnnualManage = () => {
   };
 
   const members: Member[] = [
-    ['권상원', 15, 2, 13.0, ['04.17', '04.18'], '2099-01-01', '2099-01-01'],
-    ['진유빈', 15, 1, 14.0, ['04.20'], '2099-01-01', '2099-01-01'],
+    ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01'],
+    ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01'],
     ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['권채림', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
@@ -189,12 +189,16 @@ const AnnualManage = () => {
       for (let j = 0; j < 17; j++) {
         const eventDates = members[j][4]; // 해당 멤버의 이벤트 날짜 배열
         const eventDate = eventDates && eventDates[i] ? eventDates[i] : '';
+        const eventType = eventDate.slice(-1);
+
+        const color = eventType === 'A' ? '#323232' : eventType === 'H' ? ' #929292' : '';
+
         rowCells.push(
           <tr
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_annual'> {eventDate} </td>
+            <td className='conta_annual' style={{ color }}> {eventDate.slice(0, -1)} </td>
           </tr>
         );
       }
