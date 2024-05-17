@@ -50,22 +50,48 @@ const DetailApproval = () => {
     setNumPages(numPages);
   }
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
     const element = document.getElementById('report-to-xls');
-    if (element) {
-      element.style.height = element.scrollHeight + 'px';
-      html2canvas(element).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgWidth = 210; // A4 크기에서 이미지 너비
-        const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-        pdf.save('보고서.pdf');
-      });
-    } else {
+    if (!element) {
       console.error('Element not found');
+      return;
     }
+  
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    element.style.height = element.scrollHeight + 'px';
+  
+    await html2canvas(element).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      if (numPages > 1) {
+        pdf.addPage();
+      }
+    });
+  
+    for (let i = 2; i <= numPages; i++) {
+      const pageElement = document.querySelector(`[data-page-number="${i}"]`) as HTMLElement;
+      if (pageElement) {
+        await html2canvas(pageElement).then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          const imgWidth = 210;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+          if (i > 2) {
+            pdf.addPage();
+          }
+  
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        });
+      }
+    }
+  
+    pdf.save('보고서.pdf');
   };
+  
+  
   const handleSignModal = (index: number) => {
     onOpen();
     setSignUpIndex(index);
@@ -94,6 +120,7 @@ const DetailApproval = () => {
           key={`page_${i}`}
           pageNumber={i}
           width={1000}
+          data-page-number={i}
         />
       );
     }

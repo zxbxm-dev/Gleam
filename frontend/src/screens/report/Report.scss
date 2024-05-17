@@ -523,22 +523,23 @@
   position: relative;
 
   .PaymentLine {
-    z-index: 999;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 50px;
     position: absolute;
     right: 100px;
     top: 100px;
 
     .Pay {
       width: 100px;
-      height: 50px;
+      height: 155px;
 
       .Top {
         border: 1px solid #000;
+        height: 35px;
         text-align: center;
+        justify-content: center;
       }
 
       .Bottom {
@@ -546,7 +547,7 @@
         align-items: center;
         border: 1px solid #000;
         height: 120px;
+      }
     }
   }
-}
 }

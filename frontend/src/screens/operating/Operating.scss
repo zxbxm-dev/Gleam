@@ -71,10 +71,17 @@
       width: 130px;
       height: 40px;
     }
-
-
-    th {
-      border: 2px solid #858585;
+    
+    .th_right {
+      border-right: 2px solid #858585;
+    }
+    
+    .th_left {
+      border-left: 2px solid #858585;
+    }
+    
+    .th_bottom {
+      border-bottom: 2px solid #858585;
     }
 
     td {
@@ -84,7 +91,7 @@
    
 
     .border_line {
-      border-bottom: 2px solid #858585;
+      border-bottom: 1px solid #858585;
     }
     .border_light_line {
       border-bottom: 1px solid #858585;
@@ -128,7 +135,7 @@
     font-family: var(--font-family-Noto-M);
     width: 1440px;
     font-size: 12px;
-    height: 80px;
+    height: 100px;
     border: 2px solid #858585;
     text-align: center;
 
