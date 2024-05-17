@@ -586,8 +586,8 @@ const AttendanceRegist = () => {
           <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>
             <span>{selectedDateInfo.year}.</span>
             <span>{selectedDateInfo.month}.</span>
-            <span>{selectedDateInfo.date}.</span>
-            <span>{selectedDateInfo.dayOfWeek}</span>
+            <span>{selectedDateInfo.date}</span>
+            <span>&nbsp;</span>
             <span>{selectedDateInfo.name}</span>
           </ModalHeader>
           <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
