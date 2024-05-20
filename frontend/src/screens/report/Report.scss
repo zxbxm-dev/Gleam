@@ -527,23 +527,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 50px;
+    // height: 50px;
     position: absolute;
     right: 100px;
-    top: 100px;
+    top: 120px;
 
     .Pay {
-      width: 100px;
-      height: 50px;
+      width: 80px;
+      // height: 50px;
 
       .Top {
         border: 1px solid #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         text-align: center;
       }
 
       .Bottom {
         border: 1px solid #000;
-        height: 120px;
+        height: 100px;
       }
     }
   }
