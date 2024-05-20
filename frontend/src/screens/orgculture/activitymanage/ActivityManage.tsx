@@ -1,9 +1,68 @@
+import { useState, useEffect } from "react";
 import "./ActivityManage.scss";
+import {
+  NewIcon,
+  AttachmentIcon,
+} from "../../../assets/images/index";
 import { useNavigate, Link } from "react-router-dom";
 
 const ActivityManage = () => {
   let navigate = useNavigate();
+  const [employnotices, setEmployNotice] = useState<any[]>([]);
+  const [freeboards, setFreeBoard] = useState<any[]>([]);
 
+  
+  const isNewNotice = (noticeDate: string) => {
+    const today = new Date();
+    const noticeDateTime = new Date(noticeDate).getTime();
+    const todayTime = today.getTime();
+    const diffTime = todayTime - noticeDateTime;
+    const diffDays = diffTime / (1000 * 3600 * 24);
+    return diffDays <= 7 && diffDays >= 0;
+  };
+
+  useEffect(() => {
+    const initialemploynotices = [
+      { id: 1, title: "OOO 직원 경조사 공지 1", writer: "구민석", views: 100, date: "2024-05-17" , attachment: 'jpg' },
+      { id: 2, title: "OOO 직원 경조사 공지 2", writer: "구민석", views: 200, date: "2024-05-16" , attachment: 'jpg'},
+      { id: 3, title: "OOO 직원 경조사 공지 3", writer: "구민석", views: 300, date: "2024-05-15" , attachment: ''},
+      { id: 4, title: "OOO 직원 경조사 공지 4 게시글 제목이 길어지면 축약으로 바꿔줘", writer: "구민석", views: 100, date: "2024-05-14" , attachment: ''},
+      { id: 5, title: "OOO 직원 경조사 공지 5", writer: "구민석", views: 200, date: "2024-05-13" , attachment: ''},
+      { id: 6, title: "OOO 직원 경조사 공지 6", writer: "구민석", views: 300, date: "2024-05-12" , attachment: ''},
+      { id: 7, title: "OOO 직원 경조사 공지 7", writer: "구민석", views: 100, date: "2024-05-11" , attachment: ''},
+      { id: 8, title: "OOO 직원 경조사 공지 8", writer: "구민석", views: 200, date: "2024-05-10" , attachment: ''},
+      { id: 9, title: "OOO 직원 경조사 공지 9", writer: "구민석", views: 100, date: "2024-05-09" , attachment: ''},
+      { id: 10, title: "OOO 직원 경조사 공지 10", writer: "구민석", views: 200, date: "2024-05-08" , attachment: ''},
+      { id: 11, title: "OOO 직원 경조사 공지 11", writer: "구민석", views: 100, date: "2024-05-07" , attachment: ''},
+      { id: 12, title: "OOO 직원 경조사 공지 12", writer: "구민석", views: 200, date: "2024-05-06" , attachment: ''},
+      { id: 13, title: "OOO 직원 경조사 공지 13", writer: "구민석", views: 200, date: "2024-05-05" , attachment: ''},
+      { id: 14, title: "OOO 직원 경조사 공지 14", writer: "구민석", views: 200, date: "2024-05-04" , attachment: ''},
+      { id: 15, title: "OOO 직원 경조사 공지 15", writer: "구민석", views: 200, date: "2024-05-03" , attachment: ''},
+    ];
+
+    const initialfreeboards = [
+      { id: 1, title: "자유게시판 1", writer: "구민석", views: 100, date: "2024-05-17" , attachment: '' },
+      { id: 2, title: "자유게시판 2", writer: "구민석", views: 200, date: "2024-05-17" , attachment: 'png'},
+      { id: 3, title: "자유게시판 3 제목이 길어지면 축약으로 바꿔줘", writer: "구민석", views: 300, date: "2024-05-16" , attachment: ''},
+      { id: 4, title: "자유게시판 4", writer: "구민석", views: 100, date: "2024-05-16" , attachment: ''},
+      { id: 5, title: "자유게시판 5", writer: "구민석", views: 200, date: "2024-05-15" , attachment: ''},
+      { id: 6, title: "자유게시판 6", writer: "구민석", views: 300, date: "2024-05-09" , attachment: ''},
+      { id: 7, title: "자유게시판 7", writer: "구민석", views: 100, date: "2024-05-09" , attachment: ''},
+      { id: 8, title: "자유게시판 8", writer: "구민석", views: 200, date: "2024-05-09" , attachment: ''},
+      { id: 9, title: "자유게시판 9", writer: "구민석", views: 100, date: "2024-05-09" , attachment: ''},
+      { id: 10, title: "자유게시판 10", writer: "구민석", views: 200, date: "2024-05-08" , attachment: ''},
+      { id: 11, title: "자유게시판 11", writer: "구민석", views: 100, date: "2024-05-07" , attachment: ''},
+      { id: 12, title: "자유게시판 12", writer: "구민석", views: 200, date: "2024-05-06" , attachment: ''},
+      { id: 13, title: "자유게시판 13", writer: "구민석", views: 200, date: "2024-05-05" , attachment: ''},
+      { id: 14, title: "자유게시판 14", writer: "구민석", views: 200, date: "2024-05-04" , attachment: ''},
+      { id: 15, title: "자유게시판 15", writer: "구민석", views: 200, date: "2024-05-03" , attachment: ''},
+    ];
+
+    setEmployNotice(initialemploynotices);
+    setFreeBoard(initialfreeboards);
+  }, []);
+
+  
   return (
     <div className="content">
       <div className="content_header">
@@ -23,26 +82,29 @@ const ActivityManage = () => {
               </div>
 
               <div className="board_btm">
-                <div className="board_unit">
-                  <div className="board_title">OOO직원 경조사 공지</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-                <div className="board_unit">
-                  <div className="board_title">OOO직원 경조사 공지</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-                <div className="board_unit">
-                  <div className="board_title">OOO직원 경조사 공지</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-                <div className="board_unit">
-                  <div className="board_title">OOO직원 경조사 공지</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-                <div className="board_unit">
-                  <div className="board_title">OOO직원 경조사 공지</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
+                {employnotices
+                .slice(0, 10)
+                .map((employnotice) => (
+                  <div className="board_unit">
+                    <div className="board_title">
+                      <span style={{marginRight: '5px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '250px'}}>
+                        {employnotice.title}
+                      </span> 
+                      {employnotice.attachment ? 
+                        <img src={AttachmentIcon} alt="AttachmentIcon" />
+                        :
+                        <></>
+                      }
+                      {isNewNotice(employnotice.date) ?
+                        <img src={NewIcon} alt="NewIcon" />
+                        :
+                        <></>
+                      }
+
+                    </div>
+                    <div className="board_date">{employnotice.date}</div>
+                  </div>  
+                ))}
               </div>
             </div>
 
@@ -54,28 +116,30 @@ const ActivityManage = () => {
               </div>
 
               <div className="board_btm">
-                <div className="board_unit">
-                  <div className="board_title">자유게시판테스트1</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-                <div className="board_unit">
-                  <div className="board_title">자유게시판테스트2</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-                <div className="board_unit">
-                  <div className="board_title">자유게시판테스트3</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-                <div className="board_unit">
-                  <div className="board_title">자유게시판테스트4</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-                <div className="board_unit">
-                  <div className="board_title">자유게시판테스트5</div>
-                  <div className="board_date">2024.02.05</div>
-                </div>
-              </div>
+                {freeboards
+                  .slice(0, 10)
+                  .map((freeboard) => (
+                    <div className="board_unit">
+                      <div className="board_title">
+                        <span style={{marginRight: '5px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '250px'}}>
+                          {freeboard.title}
+                        </span> 
+                        {freeboard.attachment ? 
+                          <img src={AttachmentIcon} alt="AttachmentIcon" />
+                          :
+                          <></>
+                        }
+                        {isNewNotice(freeboard.date) ?
+                          <img src={NewIcon} alt="NewIcon" />
+                          :
+                          <></>
+                        }
 
+                      </div>
+                      <div className="board_date">{freeboard.date}</div>
+                    </div>  
+                  ))}
+              </div>
             </div>
           </div>
 

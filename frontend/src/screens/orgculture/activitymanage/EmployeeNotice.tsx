@@ -21,7 +21,7 @@ const EmployeeNotice = () => {
   useEffect(() => {
     const initialAnnouncements = [
       { id: 1, title: "공지사항", writer: "구민석", views: 100, date: "2024-05-01" },
-      { id: 2, title: "ㅁㄹㄴㅇ", writer: "구민석", views: 200, date: "2024-05-02" },
+      { id: 2, title: "ㅁㄹㄴㅇ1", writer: "구민석", views: 200, date: "2024-05-02" },
       { id: 3, title: "ㅂㅈㄷㄱ", writer: "구민석", views: 300, date: "2024-05-03" },
       { id: 4, title: "ㅌㅊㅋㅍ", writer: "구민석", views: 100, date: "2024-05-01" },
       { id: 5, title: "ㄴㅇㅎㄴ", writer: "구민석", views: 200, date: "2024-05-02" },

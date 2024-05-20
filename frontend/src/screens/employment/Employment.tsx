@@ -60,7 +60,7 @@ const Employment = () => {
     const initialEmployments = [
       { id: 1, title: "[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
       { id: 2, title: "사무직 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
-      { id: 3, title: "보안 개발자 채용공...", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
+      { id: 3, title: "보안 개발자 채용공고입니다 길이서 안보일때는 축ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ", url: "https://www.google.com/search?q=react+%ED%99%94%EB%A9%B4+%ED%81%B4%EB%A6%AD+%EB%A7%89%EA%B8%B0&sca_esv=7eaaf1f71c224ebe&sxsrf=ADLYWIK4VaEnoapwDyNe3QJVvPaKm6ZTng%3A1715912925544&ei=3cBGZr-sIOzr2roP1b65-Ao&udm=&ved=0ahUKEwj_jpHj0ZOGAxXstVYBHVVfDq8Q4dUDCBA&uact=5&oq=react+%ED%99%94%EB%A9%B4+%ED%81%B4%EB%A6%AD+%EB%A7%89%EA%B8%B0&gs_lp=Egxnd3Mtd2l6LXNlcnAiGnJlYWN0IO2ZlOuptCDtgbTrpq0g66eJ6riwMggQABiABBiiBDIIEAAYgAQYogQyCBAAGIAEGKIEMggQABiABBiiBEiZMVAAWPcvcAB4AZABAJgBkwGgAfsMqgEEMC4xM7gBA8gBAPgBAZgCBqACogbCAgUQABiABMICBRAhGKABwgIEECEYFZgDAJIHAzAuNqAHyS8&sclient=gws-wiz-serp#ip=1", site: "잡코리아", date: "2024-05-01"  },
       { id: 4, title: "	R&D 연구센터 채용...", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
       { id: 5, title: "	빅데이터 분석 채용...", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
       { id: 6, title: "	[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
@@ -180,10 +180,10 @@ const Employment = () => {
             <table className="regulation_board_list">
               <colgroup>
                 <col width="6%"/>
-                <col width="24%"/>
-                <col width="50%"/>
-                <col width="10%"/>
-                <col width="10%"/>
+                <col width="29%"/>
+                <col width="35%"/>
+                <col width="15%"/>
+                <col width="15%"/>
               </colgroup>
               <thead>
                 <tr className="board_header">
@@ -200,7 +200,7 @@ const Employment = () => {
                   .map((employment) => (
                     <tr key={employment.id} className="board_content">
                       <td>{employment.id}</td>
-                      <td style={{ textAlign: "left", paddingLeft: "50px" }}>
+                      <td style={{ textAlign: "left", paddingLeft: "100px"}}>
                         <div
                         className="dropdown" // 드롭다운 클래스 추가
                         onContextMenu={handleRightClick} // 우클릭 이벤트 핸들링
@@ -244,7 +244,7 @@ const Employment = () => {
                           )}
                         </div>
                       </td>
-                      <td style={{textDecoration: 'underline'}}>
+                      <td className="text-overflow" style={{ textAlign: "left", paddingLeft: "150px", textDecoration: "underline"}}>
                         <a href={employment.url} target="_blank" rel="noopener noreferrer">{employment.url}</a>
                       </td>
                       <td>{employment.site}</td>

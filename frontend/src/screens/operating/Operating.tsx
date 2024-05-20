@@ -2,16 +2,38 @@ import React, { useState, useEffect } from 'react';
 import "./Operating.scss";
 import { Link } from "react-router-dom";
 import { evaluate } from "mathjs";
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 type TeamType = 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
 
 const Operating = () => {
+  const [editMode, setEditMode] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   const [dropdownTeam, setDropdownTeam] = useState<TeamType>();
   const [reserveFund, setReserveFund] = useState<number>(0);
   const [customInputValue, setCustomInputValue] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  const exportToPDF = () => {
+    const element = document.getElementById('table-to-xls');
+    if (element) {
+      element.style.height = element.scrollHeight + 'px';
+      element.style.width = element.scrollWidth + 'px';
+      html2canvas(element).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; // A4 크기에서 이미지 너비
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('운영비 관리.pdf');
+        window.location.reload();
+      });
+    } else {
+      console.error('Element not found');
+    }
+  };
 
   const handleYearChange = (event: any) => {
     setSelectedYear(parseInt(event.target.value));
@@ -458,43 +480,57 @@ const Operating = () => {
           <option value={2024}>2024</option>
           <option value={2023}>2023</option>
         </select>
-        <button className='oper_edit_button'>수정</button>
-        <button className='oper_download_button'>다운로드</button>
+        {editMode ? 
+          <button
+          className='head_company_button'
+          onClick={() => setEditMode(!editMode)}
+          >
+            등록
+          </button>
+          :
+          <button
+          className='oper_edit_button'
+          onClick={() => setEditMode(!editMode)}
+          >
+            수정
+          </button>
+        }
+        <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
       </div>
       <div className="content_container">
         <div className="container">
           <div className="container_operating">
-            <div className="Excel_operating">
-
+            <div className="Excel_operating" id="table-to-xls"> 
               <table className='Explan_operating'>
                 <tbody>
                   <tr>
-                    <th className="table_header_name" colSpan={2}>부서 / 팀명</th>
-                    <th className="table_header_name_code">부서 코드</th>
-                    <th className="table_header_account_code">계정 코드</th>
-                    <th className="table_header_account">계정명</th>
-                    <th className="table_header_yearAccount">연간편성액(원)</th>
-                    <th className="table_header_note">비고</th>
-                    <th className="table_header_totalAccount">합계</th>
-                    <th className="table_header_totalAccount">부서 합계</th>
+                    <th className="table_header_name th_right th_bottom" colSpan={2}>부서 / 팀명</th>
+                    <th className="table_header_name_code th_right th_bottom">부서 코드</th>
+                    <th className="table_header_account_code th_right th_bottom">계정 코드</th>
+                    <th className="table_header_account th_right th_bottom">계정명</th>
+                    <th className="table_header_yearAccount th_right th_bottom">연간편성액(원)</th>
+                    <th className="table_header_note th_right th_bottom">비고</th>
+                    <th className="table_header_totalAccount th_right th_bottom">합계</th>
+                    <th className="table_header_totalAccount th_bottom">부서 합계</th>
                   </tr>
                   
                   {common811Team.map((row, index) => (
-                    <tr key={index} className={index === common811Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common811')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'common811')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={CommonRowSpan} colSpan={2}>공통 <br /> (1000) </th>
-                          <th rowSpan={CommonRowSpan}>1000</th>
+                          <th rowSpan={CommonRowSpan} colSpan={2} className="th_right th_bottom">공통 <br /> (1000) </th>
+                          <th rowSpan={CommonRowSpan} className="th_right th_bottom">1000</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === common811Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common811', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -504,13 +540,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === common811Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('common811', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common811', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -518,8 +555,8 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
-                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
+                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
+                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_bottom"> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
                         </>
                       ) : null}
                       
@@ -527,15 +564,16 @@ const Operating = () => {
                   ))}
 
                   {common812Team.map((row, index) => (
-                    <tr key={index} className={index === common812Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common812')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'common812')}>
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === common812Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common812', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -545,13 +583,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === common812Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('common812', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common812', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -561,15 +600,16 @@ const Operating = () => {
                   ))}
 
                   {common813Team.map((row, index) => (
-                    <tr key={index} className={index === common813Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common813')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'common813')}>
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === common813Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common813', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -579,13 +619,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === common813Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('common813', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common813', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -595,15 +636,16 @@ const Operating = () => {
                   ))}
 
                   {common814Team.map((row, index) => (
-                    <tr key={index} className={index === common814Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common814')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'common814')}>
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === common814Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common814', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -613,13 +655,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === common814Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('common814', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common814', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -629,15 +672,16 @@ const Operating = () => {
                   ))}
 
                   {common815Team.map((row, index) => (
-                    <tr key={index} className={index === common815Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common815')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'common815')}>
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === common815Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common815', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -647,13 +691,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === common815Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('common815', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common815', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -663,15 +708,16 @@ const Operating = () => {
                   ))}
 
                   {common818Team.map((row, index) => (
-                    <tr key={index} className={index === common818Team.length-1 ? 'border_light_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common818')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'common818')}>
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === common818Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common818', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -681,13 +727,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === common818Team.length-1 ? 'border_light_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('common818', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common818', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -697,15 +744,16 @@ const Operating = () => {
                   ))}
 
                   {common819Team.map((row, index) => (
-                    <tr key={index} className={index === common819Team.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'common819')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'common819')}>
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === common819Team.length-1 ? 'border_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('common819', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -715,13 +763,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === common819Team.length-1 ? 'border_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('common819', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('common819', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -731,22 +780,23 @@ const Operating = () => {
                   ))}
                   
                   {managementTeam.map((row, index) => (
-                    <tr key={index} className={index === managementTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'management')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'management')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={ManageRowSpan}>관리부 <br /> (10) </th>
-                          <th rowSpan={managementTeam.length}>관리팀 <br /> (01) </th>
-                          <th rowSpan={managementTeam.length}>1001</th>
+                          <th rowSpan={ManageRowSpan} className="th_right th_bottom">관리부 <br /> (10) </th>
+                          <th rowSpan={managementTeam.length} className="th_right th_bottom">관리팀 <br /> (01) </th>
+                          <th rowSpan={managementTeam.length} className="th_right th_bottom">1001</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === managementTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('management', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -756,13 +806,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === managementTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('management', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('management', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -770,29 +821,30 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={managementTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {managementCost.toLocaleString()} </th>
-                          <th rowSpan={ManageRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(managementCost + supportCost).toLocaleString()} </th>
+                          <th rowSpan={managementTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {managementCost.toLocaleString()} </th>
+                          <th rowSpan={ManageRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_bottom"> {(managementCost + supportCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
 
                   {supportTeam.map((row, index) => (
-                    <tr key={index} className={index === supportTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'support')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'support')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={supportTeam.length}>지원팀 <br /> (02) </th>
-                          <th rowSpan={supportTeam.length}>1002</th>
+                          <th rowSpan={supportTeam.length} className="th_right th_bottom">지원팀 <br /> (02) </th>
+                          <th rowSpan={supportTeam.length} className="th_right th_bottom">1002</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === supportTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('support', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -802,13 +854,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === supportTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('support', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('support', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -816,29 +869,30 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={supportTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {supportCost.toLocaleString()} </th>
+                          <th rowSpan={supportTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {supportCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
 
                   {devOneTeam.map((row, index) => (
-                    <tr key={index} className={index === devOneTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'devOne')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'devOne')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={DevRowSpan}>개발부 <br /> (20) </th>
-                          <th rowSpan={devOneTeam.length}>개발 1팀 <br /> (01) </th>
-                          <th rowSpan={devOneTeam.length}>2001</th>
+                          <th rowSpan={DevRowSpan} className="th_right th_bottom">개발부 <br /> (20) </th>
+                          <th rowSpan={devOneTeam.length} className="th_right th_bottom">개발 1팀 <br /> (01) </th>
+                          <th rowSpan={devOneTeam.length} className="th_right th_bottom">2001</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === devOneTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('devOne', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -848,13 +902,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === devOneTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('devOne', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('devOne', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -862,8 +917,8 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devOneTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {devOneCost.toLocaleString()} </th>
-                          <th rowSpan={DevRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(devOneCost + devTwoCost).toLocaleString()} </th>
+                          <th rowSpan={devOneTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {devOneCost.toLocaleString()} </th>
+                          <th rowSpan={DevRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_bottom"> {(devOneCost + devTwoCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -871,21 +926,22 @@ const Operating = () => {
 
 
                   {devTwoTeam.map((row, index) => (
-                    <tr key={index} className={index === devTwoTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'devTwo')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'devTwo')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devTwoTeam.length}>개발 2팀 <br /> (02) </th>
-                          <th rowSpan={devTwoTeam.length}>2002</th>
+                          <th rowSpan={devTwoTeam.length} className="th_right th_bottom">개발 2팀 <br /> (02) </th>
+                          <th rowSpan={devTwoTeam.length} className="th_right th_bottom">2002</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === devTwoTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('devTwo', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -895,13 +951,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === devTwoTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('devTwo', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('devTwo', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -909,29 +966,30 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devTwoTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {devTwoCost.toLocaleString()} </th>
+                          <th rowSpan={devTwoTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {devTwoCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
 
                   {blockchainTeam.map((row, index) => (
-                    <tr key={index} className={index === blockchainTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'blockchain')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'blockchain')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={BlockChainRowSpan}>블록체인 <br />사업부 <br /> (30) </th>
-                          <th rowSpan={blockchainTeam.length}>블록체인 <br /> 1팀 <br /> (01) </th>
-                          <th rowSpan={blockchainTeam.length}>3001</th>
+                          <th rowSpan={BlockChainRowSpan} className="th_right th_bottom">블록체인 <br />사업부 <br /> (30) </th>
+                          <th rowSpan={blockchainTeam.length} className="th_right th_bottom">블록체인 <br /> 1팀 <br /> (01) </th>
+                          <th rowSpan={blockchainTeam.length} className="th_right th_bottom">3001</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === blockchainTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('blockchain', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -941,13 +999,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === blockchainTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('blockchain', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('blockchain', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -955,30 +1014,31 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={BlockChainRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {blockchainCost.toLocaleString()} </th>
-                          <th rowSpan={blockchainTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {blockchainCost.toLocaleString()} </th>
+                          <th rowSpan={BlockChainRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {blockchainCost.toLocaleString()} </th>
+                          <th rowSpan={blockchainTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_bottom"> {blockchainCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
                   ))}
                   
                   {designTeam.map((row, index) => (
-                    <tr key={index} className={index === designTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'design')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'design')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={MarketingRowSpan}>마케팅부 <br /> (40) </th>
-                          <th rowSpan={designTeam.length}>디자인팀 <br /> (01) </th>
-                          <th rowSpan={designTeam.length}>4001</th>
+                          <th rowSpan={MarketingRowSpan} className="th_right th_bottom">마케팅부 <br /> (40) </th>
+                          <th rowSpan={designTeam.length} className="th_right th_bottom">디자인팀 <br /> (01) </th>
+                          <th rowSpan={designTeam.length} className="th_right th_bottom">4001</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === designTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('design', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -988,13 +1048,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === designTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('design', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('design', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -1002,7 +1063,7 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={designTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {designCost.toLocaleString()} </th>
+                          <th rowSpan={designTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {designCost.toLocaleString()} </th>
                           <th rowSpan={MarketingRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(designCost + planningCost).toLocaleString()} </th>
                         </>
                       ) : null}
@@ -1011,21 +1072,22 @@ const Operating = () => {
 
                   
                   {planningTeam.map((row, index) => (
-                    <tr key={index} className={index === planningTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'planning')}>
+                    <tr key={index} onContextMenu={(e) => handleRightClick(e, 'planning')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={planningTeam.length}>기획팀 <br /> (02) </th>
-                          <th rowSpan={planningTeam.length}>4002</th>
+                          <th rowSpan={planningTeam.length} className="th_right">기획팀 <br /> (02) </th>
+                          <th rowSpan={planningTeam.length} className="th_right">4002</th >
                         </>
                       ) : null}
                       {row.map((item, i) => (
                         <React.Fragment key={i}>
                           {i === 1 ? (
-                            <td>
+                            <td className={index === planningTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <select
                                 value={item}
                                 onChange={(e) => handleAccountNameChange('planning', index, e.target.value)}
                                 className="left-align"
+                                disabled={!editMode}
                               >
                                 {Object.entries(accountCode).map(([code, department]) => (
                                   <option key={code} value={department}>
@@ -1035,13 +1097,14 @@ const Operating = () => {
                               </select>
                             </td>
                           ) : (
-                            <td>
+                            <td className={index === planningTeam.length-1 ? 'border_line' : 'dashed_line'}>
                               <input
                                 type="text"
                                 value={item}
                                 onChange={(e) => handleInputChange('planning', index, i, e.target.value)}
                                 onKeyDown={i === 2 ? (e) => handleInputKeyDown('planning', index, i, e) : undefined}
                                 className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
+                                disabled={!editMode}
                               />
                             </td>
                           )}
@@ -1049,7 +1112,7 @@ const Operating = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={planningTeam.length} style={{textAlign: 'right', paddingRight: '5px'}}> {planningCost.toLocaleString()} </th>
+                          <th rowSpan={planningTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right"> {planningCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -1082,6 +1145,7 @@ const Operating = () => {
                             const reserveFund = (common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) * ratio / 100;
                             setReserveFund(reserveFund);
                           }}
+                          disabled={!editMode}
                         >
                           <option value=""></option>
                           <option value="5">5%</option>
@@ -1099,6 +1163,7 @@ const Operating = () => {
                         value={customInputValue}
                         onChange={(e) => handleCustomInputChange(e.target.value)}
                         className='dropdown_input'
+                        disabled={!editMode}
                       />
                     </td>
                   </tr>
