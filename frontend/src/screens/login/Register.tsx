@@ -193,8 +193,7 @@ const Register = () => {
     const handleSubmit = () => {
 
         if (!id || !password || !confirmPassword || !question1 || !question2 || !name || !mail || !phoneNumber ||
-            !selectedOptions.company || !selectedOptions.department || !selectedOptions.team ||
-            !selectedOptions.spot || !selectedOptions.position || !Agree) {
+            !selectedOptions.company || !selectedOptions.spot || !selectedOptions.position || !Agree) {
             console.error("필수 항목을 모두 작성해주세요.");
             return;
         }
