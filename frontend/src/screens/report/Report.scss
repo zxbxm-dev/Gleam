@@ -539,8 +539,15 @@
       .Top {
         border: 1px solid #000;
         height: 35px;
+        width: 100px;
         text-align: center;
         justify-content: center;
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+      }
+      .Top::placeholder{
+        color: #000;
       }
 
       .Bottom {

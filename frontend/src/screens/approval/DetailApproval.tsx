@@ -61,11 +61,11 @@ const DetailApproval = () => {
     element.style.height = element.scrollHeight + 'px';
   
     await html2canvas(element).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpg');
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
   
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPG', 0, 0, imgWidth, imgHeight);
       if (numPages > 1) {
         pdf.addPage();
       }
@@ -75,7 +75,7 @@ const DetailApproval = () => {
       const pageElement = document.querySelector(`[data-page-number="${i}"]`) as HTMLElement;
       if (pageElement) {
         await html2canvas(pageElement).then((canvas) => {
-          const imgData = canvas.toDataURL('image/png');
+          const imgData = canvas.toDataURL('image/jpg');
           const imgWidth = 210;
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
   
@@ -83,7 +83,7 @@ const DetailApproval = () => {
             pdf.addPage();
           }
   
-          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+          pdf.addImage(imgData, 'JPG', 0, 0, imgWidth, imgHeight);
         });
       }
     }
@@ -204,7 +204,7 @@ const DetailApproval = () => {
                 <div id='report-to-xls'>
                   <div className='PaymentLine'>
                     <div className='Pay'>
-                      <div className='Top'>팀장</div>
+                      <input className='Top' type="text" placeholder='팀장' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(0)}>
                         {checksignup[0] ? 
                           <img src={sign} alt="sign"/>
@@ -214,7 +214,7 @@ const DetailApproval = () => {
                       </div>
                     </div>
                     <div className='Pay'>
-                      <div className='Top'>부서장</div>
+                    <input className='Top' type="text" placeholder='부서장' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(1)}>
                         {checksignup[1] ? 
                           <img src={sign} alt="sign"/>
@@ -224,7 +224,7 @@ const DetailApproval = () => {
                       </div>
                     </div>
                     <div className='Pay'>
-                      <div className='Top'>대표</div>
+                    <input className='Top' type="text" placeholder='대표' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(2)}>
                         {checksignup[2] ? 
                           <img src={sign} alt="sign"/>
