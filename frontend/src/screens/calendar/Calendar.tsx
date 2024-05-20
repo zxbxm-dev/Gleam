@@ -1,9 +1,9 @@
 import "./Calendar.scss";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import { useState, useEffect, useRef } from "react";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import {
   Modal,
   ModalContent,
@@ -17,6 +17,7 @@ import { Select, Textarea, Input } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { writeCalen } from "../../services/calender/calender";
+import { SelectArrow } from "../../assets/images/index";
 
 const Calendar = () => {
   const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: isAddModalClose } = useDisclosure();
@@ -24,57 +25,52 @@ const Calendar = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [title, setTitle] = useState("");
-  const [memo, setMemo] = useState("")
+  const [memo, setMemo] = useState("");
+  const [activeTab, setActiveTab] = useState(0);
+  const calendarRef1 = useRef<FullCalendar>(null);
+  const calendarRef2 = useRef<FullCalendar>(null);
+  const [key, setKey] = useState(0);
+  const [selectedColor, setSelectedColor] = useState("#ABF0FF");
+  const [selectOpen, setSelectOpen] = useState(false);
 
   const events1 = [
     { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
     { title: '본사 출장', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
     { title: '본사 외근', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
-    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: '본사 반차', start: new Date('2024-05-18'), end: new Date('2024-05-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-    { title: '본사 반차', start: new Date('2024-05-18'), end: new Date('2024-05-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-    // { title: '구민석 반차', start: new Date('2024-5-17'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
-    // { title: '구민석 외근', start: new Date('2024-5-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
-    // { title: '구민석 워크숍', start: new Date('2024-5-17'), backgroundColor: '#FFD8B5', borderColor: '#FFD8B5', textColor: '#000' },
-    // { title: '구민석 출장', start: new Date('2024-5-17'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
-    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-  ]
+  ];
 
   const events2 = [
     { title: 'R&D 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    // { title: '구민석 반차', start: new Date('2024-5-17'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9' , textColor: '#000'},
-    // { title: '구민석 외근', start: new Date('2024-5-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
-    // { title: '구민석 워크숍', start: new Date('2024-5-17'), backgroundColor: '#FFD8B5', borderColor: '#FFD8B5', textColor: '#000' },
-    // { title: '구민석 출장', start: new Date('2024-5-17'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
-    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-    // { title: '구민석 연차', start: new Date('2024-4-18'), backgroundColor: '#7AE1A9', borderColor: '#7AE1A9', textColor: '#000' },
-  ]
+  ];
 
   const handleTitleChange = (event: any) => {
     setTitle(event.target.value);
+    const value = event.target.value.toLowerCase();
+    if (value.includes('반차')) {
+      setSelectedColor('#ABF0FF');
+    } else if (value.includes('연차')) {
+      setSelectedColor('#7AE1A9');
+    } else if (value.includes('외근')) {
+      setSelectedColor('#D6CDC2');
+    } else if (value.includes('워크숍')) {
+      setSelectedColor('#FFD8B5');
+    } else if (value.includes('출장')) {
+      setSelectedColor('#B1C2FF');
+    } else {
+      setSelectedColor('#ABF0FF');
+    }
   };
-
+  
   const handleMemoChange = (event: any) => {
     setMemo(event.target.value);
   };
+
   const handleAddEvent = () => {
     if (!startDate || !endDate) {
       console.error("Start date or end date is null.");
       return;
     }
 
-    // 날짜 부분만 추출
     const isoStartDate = startDate.toISOString().substring(0, 10);
     const isoEndDate = endDate.toISOString().substring(0, 10);
 
@@ -82,7 +78,8 @@ const Calendar = () => {
       title: title,
       startDate: isoStartDate,
       endDate: isoEndDate,
-      memo: memo
+      memo: memo,
+      backgroundColor: selectedColor,
     };
 
     writeCalen(eventData)
@@ -96,6 +93,17 @@ const Calendar = () => {
     isAddModalClose();
   };
 
+  useEffect(() => {
+    setKey(prevKey => prevKey + 1);
+  }, [activeTab]);
+
+  const SelectOptions = (color: string) => {
+    setSelectedColor(color);
+  };
+
+  const SelectOpen = () => {
+    setSelectOpen(!selectOpen)
+  }
   return (
     <div className="content">
       <div className="content_header">
@@ -103,147 +111,139 @@ const Calendar = () => {
       </div>
 
       <div className="content_container">
-      <Tabs variant='enclosed'>
-        <TabList>
-          <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>본사</Tab>
-          <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>R&D 연구센터</Tab>
-        </TabList>
+        <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
+          <TabList>
+            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>본사</Tab>
+            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>R&D 연구센터</Tab>
+          </TabList>
 
-        <TabPanels>
-          <TabPanel>
-            <div className="calendar_container">
-              <FullCalendar
-                plugins={[dayGridPlugin]}
-                initialView="dayGridMonth"
-                height="100%"
-                customButtons={{
-                  Addschedule: {
-                    text: '일정 추가　+',
-                    click: function () {
-                      onAddModalOpen();
+          <TabPanels>
+            <TabPanel>
+              <div className="calendar_container">
+                <FullCalendar
+                  ref={calendarRef1}
+                  plugins={[dayGridPlugin]}
+                  initialView="dayGridMonth"
+                  height="100%"
+                  customButtons={{
+                    Addschedule: {
+                      text: '일정 추가　+',
+                      click: function () {
+                        onAddModalOpen();
+                      },
                     },
-                  },
-                }}
-                headerToolbar={{
-                  start: 'prev title next',
-                  center: '',
-                  end: 'Addschedule',
-                }} // 달력 상단 헤더
-                dayHeaderFormat={{
-                  weekday: 'long'
-                }} // 요일 포맷 변경
-                titleFormat={(date) => {
-                  const year = date.date.year;
-                  const month = date.date.month + 1;
-                  return `${year}년 ${month}월`;
-                }} // 헤더 년월 포맷 변경
-                dayCellContent={(info) => {
-                  var number = document.createElement("a");
-                  number.classList.add("fc-daygrid-day-number");
-                  number.innerHTML = info.dayNumberText.replace("일", "");
-                  if (info.view.type === "dayGridMonth") {
-                    return {
-                      html: number.outerHTML
-                    };
-                  }
-                  return {
-                    domNodes: []
-                  };
-                }} // 날짜에 '일' 제거
-                locale='kr' // 한국어
-                fixedWeekCount={false} // 5주 표기
-                events={events1}
-                eventContent={(arg) => {
-                  return (
-                    <>
-                      <div>{arg.event.title.replace('오전 12시 ', '')}</div>
-                    </>
+                  }}
+                  headerToolbar={{
+                    start: 'prev title next',
+                    center: '',
+                    end: 'Addschedule',
+                  }}
+                  dayHeaderFormat={{ weekday: 'long' }}
+                  titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
+                  dayCellContent={(info) => {
+                    var number = document.createElement("a");
+                    number.classList.add("fc-daygrid-day-number");
+                    number.innerHTML = info.dayNumberText.replace("일", "");
+                    if (info.view.type === "dayGridMonth") {
+                      return { html: number.outerHTML };
+                    }
+                    return { domNodes: [] };
+                  }}
+                  locale='kr'
+                  fixedWeekCount={false}
+                  events={events1}
+                  eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
+                  dayMaxEventRows={true}
+                  eventDisplay="block"
+                  eventClick={onViewModalOpen}
+                  moreLinkText='개 일정 더보기'
+                />
+              </div>
+            </TabPanel>
 
-                  );
-                }}
-                dayMaxEventRows={true}
-                eventDisplay="block"
-                eventClick={onViewModalOpen}
-                moreLinkText='개 일정 더보기'
-              />
-            </div>
-          </TabPanel>
-
-          <TabPanel>
-            <div className="calendar_container">
-              <FullCalendar
-                plugins={[dayGridPlugin]}
-                initialView="dayGridMonth"
-                height="100%"
-                customButtons={{
-                  Addschedule: {
-                    text: '일정 추가　+',
-                    click: function () {
-                      onAddModalOpen();
+            <TabPanel>
+              <div className="calendar_container">
+                <FullCalendar
+                  ref={calendarRef2}
+                  plugins={[dayGridPlugin]}
+                  initialView="dayGridMonth"
+                  height="100%"
+                  customButtons={{
+                    Addschedule: {
+                      text: '일정 추가　+',
+                      click: function () {
+                        onAddModalOpen();
+                      },
                     },
-                  },
-                }}
-                headerToolbar={{
-                  start: 'prev title next',
-                  center: '',
-                  end: 'Addschedule',
-                }} // 달력 상단 헤더
-                dayHeaderFormat={{
-                  weekday: 'long'
-                }} // 요일 포맷 변경
-                titleFormat={(date) => {
-                  const year = date.date.year;
-                  const month = date.date.month + 1;
-                  return `${year}년 ${month}월`;
-                }} // 헤더 년월 포맷 변경
-                dayCellContent={(info) => {
-                  var number = document.createElement("a");
-                  number.classList.add("fc-daygrid-day-number");
-                  number.innerHTML = info.dayNumberText.replace("일", "");
-                  if (info.view.type === "dayGridMonth") {
-                    return {
-                      html: number.outerHTML
-                    };
-                  }
-                  return {
-                    domNodes: []
-                  };
-                }} // 날짜에 '일' 제거
-                locale='kr' // 한국어
-                fixedWeekCount={false} // 5주 표기
-                events={events2}
-                eventContent={(arg) => {
-                  return (
-                    <>
-                      <div>{arg.event.title.replace('오전 12시 ', '')}</div>
-                    </>
-
-                  );
-                }}
-                dayMaxEventRows={true}
-                eventDisplay="block"
-                eventClick={onViewModalOpen}
-                moreLinkText='개 일정 더보기'
-              />
-            </div>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+                  }}
+                  headerToolbar={{
+                    start: 'prev title next',
+                    center: '',
+                    end: 'Addschedule',
+                  }}
+                  dayHeaderFormat={{ weekday: 'long' }}
+                  titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
+                  dayCellContent={(info) => {
+                    var number = document.createElement("a");
+                    number.classList.add("fc-daygrid-day-number");
+                    number.innerHTML = info.dayNumberText.replace("일", "");
+                    if (info.view.type === "dayGridMonth") {
+                      return { html: number.outerHTML };
+                    }
+                    return { domNodes: [] };
+                  }}
+                  locale='kr'
+                  fixedWeekCount={false}
+                  events={events2}
+                  eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
+                  dayMaxEventRows={true}
+                  eventDisplay="block"
+                  eventClick={onViewModalOpen}
+                  moreLinkText='개 일정 더보기'
+                />
+              </div>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </div>
+
       <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
         <ModalContent height='300px' width="400px" borderRadius='10px'>
           <ModalHeader className="ModalHeader" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize="14px" borderTopRadius='5px'>일정 등록하기</ModalHeader>
-          <ModalCloseButton fontSize='12px' top='0' color='white'/>
+          <ModalCloseButton fontSize='12px' top='0' color='white' />
           <ModalBody padding="0" display='flex' alignItems="center" marginTop="16px" flexDirection='column' gap='7px' fontFamily='var(--font-family-Noto-M)'>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <div>
-                <Select size='sm' width='40px' height="28px" borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
-                  <option value='반차' style={{ color: '#FFB800' }}>반차</option>
-                  <option value='연차' style={{ color: '#0D994D' }}>연차</option>
-                  <option value='외근' style={{ color: '#7000C9' }}>외근</option>
-                  <option value='워크숍' style={{ color: '#3DC6C6' }}>워크숍</option>
-                  <option value='출장' style={{ color: '#FF4747' }}>출장</option>
-                </Select>
+              <div className="Select">
+                <div className="SelectHeader" onClick={SelectOpen}>
+                  <img src={SelectArrow} />
+                  <div style={{ backgroundColor: selectedColor }}>&nbsp;</div>
+                </div>
+                {selectOpen?(
+                <div className="SelectContent">
+                  <div className="Option" onClick={() => SelectOptions('#ABF0FF')}>
+                    <span>반차</span>
+                    <div style={{ backgroundColor: '#ABF0FF' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#7AE1A9')}>
+                    <span>연차</span>
+                    <div style={{ backgroundColor: '#7AE1A9' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#D6CDC2')}>
+                    <span>외근</span>
+                    <div style={{ backgroundColor: '#D6CDC2' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#FFD8B5')}>
+                    <span>워크숍</span>
+                    <div style={{ backgroundColor: '#FFD8B5' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#B1C2FF')}>
+                    <span>출장</span>
+                    <div style={{ backgroundColor: '#B1C2FF' }}>&nbsp;</div>
+                  </div>
+                </div>
+                ) : (
+                  <div></div>
+                )}
               </div>
               <div>
                 <Input size='sm' width='310px' height="28px" placeholder='ex) OOO 반차' onChange={handleTitleChange} />
@@ -260,7 +260,7 @@ const Calendar = () => {
                   selectsStart
                   startDate={startDate}
                   endDate={endDate}
-                  placeholderText="Start Date"
+                  placeholderText={new Date().toLocaleDateString('ko-KR')}
                   dateFormat="yyyy-MM-dd"
                 />
                 <span style={{ margin: '0 5px' }}>~</span>
@@ -271,7 +271,7 @@ const Calendar = () => {
                   startDate={startDate}
                   endDate={endDate}
                   minDate={startDate}
-                  placeholderText="End Date"
+                  placeholderText={new Date().toLocaleDateString('ko-KR')}
                   dateFormat="yyyy-MM-dd"
                 />
               </div>
@@ -292,21 +292,20 @@ const Calendar = () => {
         </ModalContent>
       </Modal>
 
-
       <Modal isOpen={isViewModalOpen} onClose={onViewModalClose} size='xl' isCentered={true}>
         <ModalContent height='300px' width='350px' borderRadius='5px'>
           <ModalHeader className="ModalHeader" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>일정 확인</ModalHeader>
-          <ModalCloseButton fontSize='12px' top='0' color='white'/>
+          <ModalCloseButton fontSize='12px' top='0' color='white' />
           <ModalBody padding="0" display='flex' alignItems="center" flexDirection='column' gap='7px' fontFamily='var(--font-family-Noto-M)' marginTop='20px'>
-            <div style={{ width: '320px', display: 'flex', gap: '10px'}}>
-              <div style={{ width: '40px', textAlign: 'right', color: '#929292'}}>
+            <div style={{ width: '320px', display: 'flex', gap: '10px' }}>
+              <div style={{ width: '40px', textAlign: 'right', color: '#929292' }}>
                 출장
               </div>
               <div style={{ display: 'flex', width: '280px' }}>
                 OOO 출장
               </div>
             </div>
-            <div style={{ width: '320px', display: 'flex', gap: '10px'}}>
+            <div style={{ width: '320px', display: 'flex', gap: '10px' }}>
               <div style={{ width: '40px', textAlign: 'right', color: '#929292' }}>
                 기간
               </div>
@@ -316,7 +315,7 @@ const Calendar = () => {
                 2000년 00월 00일
               </div>
             </div>
-            <div style={{ width: '320px', height: '110px',display: 'flex', gap: '10px'}}>
+            <div style={{ width: '320px', height: '110px', display: 'flex', gap: '10px' }}>
               <div style={{ width: '40px', textAlign: 'right', color: '#929292' }}>
                 메모
               </div>
