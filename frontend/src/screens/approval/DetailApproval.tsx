@@ -253,7 +253,6 @@ const DetailApproval = () => {
                   {renderPages()}
                 </div>
               </Document>
-
             </div>
           </div>
         </div>
