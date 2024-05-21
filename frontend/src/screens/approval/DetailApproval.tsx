@@ -58,10 +58,10 @@ const DetailApproval = () => {
       console.error('Element not found');
       return;
     }
-  
+
     const pdf = new jsPDF('p', 'mm', 'a4');
     element.style.height = element.scrollHeight + 'px';
-  
+
     await html2canvas(element).then((canvas) => {
       const imgData = canvas.toDataURL('image/jpg');
       const imgWidth = 210;
@@ -72,7 +72,7 @@ const DetailApproval = () => {
         pdf.addPage();
       }
     });
-  
+
     for (let i = 2; i <= numPages; i++) {
       const pageElement = document.querySelector(`[data-page-number="${i}"]`) as HTMLElement;
       if (pageElement) {
@@ -80,19 +80,19 @@ const DetailApproval = () => {
           const imgData = canvas.toDataURL('image/jpg');
           const imgWidth = 210;
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  
+
           if (i > 2) {
             pdf.addPage();
           }
-  
+
           pdf.addImage(imgData, 'JPG', 0, 0, imgWidth, imgHeight);
         });
       }
     }
-  
+
     pdf.save('보고서.pdf');
   };
-  
+
   const handleSignModal = (index: number) => {
     onOpen();
     setSignUpIndex(index);
@@ -102,26 +102,26 @@ const DetailApproval = () => {
     const newCheckSignUp = [...checksignup];
     newCheckSignUp[index] = true;
     setCheckSignUp(newCheckSignUp);
-    
+
     const newSignDates = [...signDates];
     const currentDate = new Date();
     const formattedDate = `${currentDate.getFullYear().toString().slice(2)}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getDate().toString().padStart(2, '0')}`;
     newSignDates[index] = formattedDate;
     setSignDates(newSignDates);
-    
+
     onClose();
-}
+  }
 
 
   const handleSignDel = (index: number) => {
     const newCheckSignUp = [...checksignup];
     newCheckSignUp[index] = false;
     setCheckSignUp(newCheckSignUp);
-    
+
     const newSignDates = [...signDates];
     newSignDates[index] = '';
     setSignDates(newSignDates);
-    
+
     onClose();
   }
 
@@ -219,8 +219,8 @@ const DetailApproval = () => {
                     <div className='Pay'>
                       <input className='Top' type="text" placeholder='팀장' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(0)}>
-                        {checksignup[0] ? 
-                          <img src={sign} alt="sign" style={{marginTop:'5px'}}/>
+                        {checksignup[0] ?
+                          <img className='SignImg' src={sign} alt="sign" />
                           :
                           <></>
                         }
@@ -230,8 +230,8 @@ const DetailApproval = () => {
                     <div className='Pay'>
                       <input className='Top' type="text" placeholder='부서장' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(1)}>
-                        {checksignup[1] ? 
-                          <img src={sign} alt="sign"/>
+                        {checksignup[1] ?
+                          <img src={sign} alt="sign" />
                           :
                           <></>
                         }
@@ -241,8 +241,8 @@ const DetailApproval = () => {
                     <div className='Pay'>
                       <input className='Top' type="text" placeholder='대표' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(2)}>
-                        {checksignup[2] ? 
-                          <img src={sign} alt="sign"/>
+                        {checksignup[2] ?
+                          <img src={sign} alt="sign" />
                           :
                           <></>
                         }
@@ -261,14 +261,14 @@ const DetailApproval = () => {
       <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
         <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
           <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
+          <ModalCloseButton color='#fff' fontSize='12px' top='0' />
           <ModalBody className="cancle_modal_content">
             서명하시겠습니까?
           </ModalBody>
 
           <ModalFooter gap='7px' justifyContent='center'>
-            <button className="del_button" onClick={() => {handleSign(signupindex)}}>서명</button>
-            <button className="cle_button" onClick={() => {handleSignDel(signupindex)}}>취소</button>
+            <button className="del_button" onClick={() => { handleSign(signupindex) }}>서명</button>
+            <button className="cle_button" onClick={() => { handleSignDel(signupindex) }}>취소</button>
           </ModalFooter>
         </ModalContent>
       </Modal>

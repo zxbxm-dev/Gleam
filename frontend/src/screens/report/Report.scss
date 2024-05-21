@@ -532,6 +532,20 @@
     right: 100px;
     top: 90px;
 
+    .Pay:last-child {
+      .Top {
+        border-right: 1px solid #000;
+      }
+
+      .Bottom {
+        border-right: 1px solid #000;
+      }
+
+      .BtmDate {
+        border-right: 1px solid #000;
+      }
+    }
+
     .Pay {
       width: 90px;
       height: 155px;
@@ -543,24 +557,33 @@
         text-align: center;
         font-size: 17px;
         background-color: #fff;
+        border-right: none;
       }
-      .Top::placeholder{
+
+      .Top::placeholder {
         color: #000;
       }
 
       .Bottom {
         display: flex;
         align-items: center;
-        // border: 1px solid #000;
+        justify-content: center;
         height: 60px;
         border-left: 1px solid #000;
-        border-right: 1px solid #000;
+        cursor: pointer;
+
+        .SignImg {
+          width: 90%;
+          margin-top: 5px;
+        }
       }
 
-      .BtmDate{
-        // border: 1px solid #000;
+      .Bottom:hover {
+        background-color: #eaeaea;
+      }
+
+      .BtmDate {
         border-left: 1px solid #000;
-        border-right: 1px solid #000;
         border-bottom: 1px solid #000;
         height: 35px;
         width: 90px;
