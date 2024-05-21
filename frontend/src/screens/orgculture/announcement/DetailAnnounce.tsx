@@ -5,6 +5,7 @@ import {
   Minus_btn,
 } from "../../../assets/images/index";
 import { useNavigate, Link } from "react-router-dom";
+import CustomModal from "../../../components/modal/CustomModal";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -20,6 +21,9 @@ type PDFFile = string | File | null;
 
 const DetailAnnounce = () => {
   let navigate = useNavigate();
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+
   const [file, setFile] = useState<PDFFile>(testPDF);
   const [numPages, setNumPages] = useState<number>(0);
   const [pageWidth, setPageWidth] = useState<number>(800); // 초기 페이지 너비
@@ -61,6 +65,19 @@ const DetailAnnounce = () => {
     return pages;
   };
 
+  const handleDelete = () => {
+    setDeleteModalOpen(false);
+  }
+
+  const handleEdit = () => {
+    setEditModalOpen(false);
+  }
+
+  const handleCancle = () => {
+    setDeleteModalOpen(false);
+    setEditModalOpen(false);
+  }
+
   return (
     <div className="content">
       <div className="content_header">
@@ -90,9 +107,9 @@ const DetailAnnounce = () => {
               <div className="btn_content">
                 <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn"/></button>
                 <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn"/></button>
-                <button className="red_button">삭제</button>
+                <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
                 <button className="download_button" onClick={downloadPDF}>다운로드</button>
-                <button className="white_button">수정</button>
+                <button className="white_button" onClick={() => setEditModalOpen(true)}>수정</button>
                 <button className="second_button" onClick={() => navigate("/announcement")}>목록</button>
               </div>
             </div>
@@ -105,7 +122,38 @@ const DetailAnnounce = () => {
           </div>
 
         </div>
-      </div>  
+      </div> 
+      <CustomModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)} 
+        header={'알림'}
+        footer1={'삭제'}
+        footer1Class="red-btn"
+        onFooter1Click={handleDelete}
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={handleCancle}
+      >
+        <div>
+          삭제하시겠습니까?
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isEditModalOpen}
+        onClose={() => setEditModalOpen(false)} 
+        header={'알림'}
+        footer1={'수정'}
+        footer1Class="green-btn"
+        onFooter1Click={handleEdit}
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={handleCancle}
+      >
+        <div>
+          수정하시겠습니까?
+        </div>
+      </CustomModal>
     </div>
   );
 };

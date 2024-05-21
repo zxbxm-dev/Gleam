@@ -8,6 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 999;
 
   .modal-content {
     background: #fff;
@@ -19,7 +20,7 @@
 
     .modal-header {
       width: inherit;
-      height: 34px;
+      height: 38px;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       background-color: #746E58;

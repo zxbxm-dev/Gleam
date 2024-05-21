@@ -87,7 +87,7 @@ const FreeBoard = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                <th>순번</th>
+                  <th>순번</th>
                   <th>제목</th>
                   <th>글쓴이</th>
                   <th>조회수</th>
@@ -101,7 +101,7 @@ const FreeBoard = () => {
                     <tr key={announcement.id} className="board_content">
                       <td style={{ color: "#D56D6D" }}>공지</td>
                       <td style={{ textAlign: "left", paddingLeft: "20px" }}>
-                        <Link to={"/detailAnnounce"}>{announcement.title}</Link>
+                        <Link to={"/detailFreeBoard"}>{announcement.title}</Link>
                       </td>
                       <td>{announcement.writer}</td>
                       <td>{announcement.views}</td>
