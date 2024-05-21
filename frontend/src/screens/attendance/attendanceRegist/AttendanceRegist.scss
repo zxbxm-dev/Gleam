@@ -174,7 +174,7 @@
   border-top: 2px solid #858585;
   border-bottom: 2px solid #858585;
   border-right: 1px solid #858585;
-  
+
   .total_annual {
     width: 100%;
     display: flex;
@@ -193,7 +193,7 @@
   border-top: 2px solid #858585;
   border-bottom: 2px solid #858585;
   border-right: 3px solid #858585;
-  
+
   .total_annual {
     width: 100%;
     display: flex;
@@ -212,7 +212,7 @@
   border-top: 2px solid #858585;
   border-bottom: 2px solid #858585;
   border-right: 1px solid #858585;
-  
+
   .total_annual {
     width: 100%;
     display: flex;
@@ -231,7 +231,7 @@
   border-top: 2px solid #858585;
   border-bottom: 2px solid #858585;
   border-right: 1px solid #858585;
-  
+
   .total_annual {
     width: 100%;
     display: flex;
@@ -421,14 +421,15 @@
 }
 
 @include laptop {
-  .container_attendance{
+  .container_attendance {
     font-family: var(--font-family-Noto-R);
     width: 100%;
     height: 100%;
     display: grid;
     overflow-x: scroll;
     overflow-y: scroll;
-    }
+  }
+
   .TabKey {
     width: 7%;
   }
@@ -441,13 +442,13 @@
       height: 35px;
       font-size: 14px;
     }
-  
+
     .rnd_company_button {
       width: 99px;
       height: 35px;
       font-size: 14px;
     }
-  
+
     .head_company_button {
       width: 66px;
       height: 35px;

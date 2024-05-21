@@ -146,7 +146,6 @@ const WriteReport = () => {
     }
 };
 
-
   const members: Member[] = [
     ['이정훈', '포체인스 주식회사', '', '대표'],
     ['안후상', '포체인스 주식회사', '', '이사'],
@@ -171,7 +170,6 @@ const WriteReport = () => {
     ['전규미', '마케팅부', '기획팀', '사원'],
     ['서주희', '마케팅부', '디자인팀', '사원'],
   ];
-
 
   return (
     <div className="content">
