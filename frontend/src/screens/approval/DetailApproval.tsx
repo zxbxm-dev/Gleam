@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import "./Approval.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
@@ -26,7 +26,7 @@ import {
 } from '@chakra-ui/react';
 import { Textarea } from '@chakra-ui/react';
 import sign from "../../assets/images/sign/구민석_서명.png";
-import testPDF from '../../assets/pdf/[서식-A102] 지출품의서_2024.pdf';
+import testPDF from '../../assets/pdf/[서식-A106] 기획서(로고위, 문서번호 조정).pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -41,6 +41,8 @@ const DetailApproval = () => {
   const [numPages, setNumPages] = useState<number>(0);
   const [checksignup, setCheckSignUp] = useState<boolean[]>([false, false, false]);
   const [signupindex, setSignUpIndex] = useState<number>(0);
+  const [signDates, setSignDates] = useState<string[]>(['', '', '']);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setFile(testPDF);
@@ -51,7 +53,7 @@ const DetailApproval = () => {
   }
 
   const exportToPDF = async () => {
-    const element = document.getElementById('report-to-xls');
+    const element = containerRef.current;
     if (!element) {
       console.error('Element not found');
       return;
@@ -64,7 +66,7 @@ const DetailApproval = () => {
       const imgData = canvas.toDataURL('image/jpg');
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  
+
       pdf.addImage(imgData, 'JPG', 0, 0, imgWidth, imgHeight);
       if (numPages > 1) {
         pdf.addPage();
@@ -91,7 +93,6 @@ const DetailApproval = () => {
     pdf.save('보고서.pdf');
   };
   
-  
   const handleSignModal = (index: number) => {
     onOpen();
     setSignUpIndex(index);
@@ -101,17 +102,29 @@ const DetailApproval = () => {
     const newCheckSignUp = [...checksignup];
     newCheckSignUp[index] = true;
     setCheckSignUp(newCheckSignUp);
+    
+    const newSignDates = [...signDates];
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear().toString().slice(2)}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getDate().toString().padStart(2, '0')}`;
+    newSignDates[index] = formattedDate;
+    setSignDates(newSignDates);
+    
     onClose();
-  }
+}
+
 
   const handleSignDel = (index: number) => {
     const newCheckSignUp = [...checksignup];
     newCheckSignUp[index] = false;
     setCheckSignUp(newCheckSignUp);
+    
+    const newSignDates = [...signDates];
+    newSignDates[index] = '';
+    setSignDates(newSignDates);
+    
     onClose();
   }
 
-  // 전체 페이지 렌더링 함수
   const renderPages = () => {
     const pages = [];
     for (let i = 1; i <= numPages; i++) {
@@ -201,20 +214,21 @@ const DetailApproval = () => {
             </div>
             <div className="write_btm_container">
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                <div id='report-to-xls'>
+                <div ref={containerRef} id="report-to-xls">
                   <div className='PaymentLine'>
                     <div className='Pay'>
                       <input className='Top' type="text" placeholder='팀장' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(0)}>
                         {checksignup[0] ? 
-                          <img src={sign} alt="sign"/>
+                          <img src={sign} alt="sign" style={{marginTop:'5px'}}/>
                           :
                           <></>
                         }
                       </div>
+                      <div className='BtmDate'>{signDates[0] || ''}</div>
                     </div>
                     <div className='Pay'>
-                    <input className='Top' type="text" placeholder='부서장' disabled />
+                      <input className='Top' type="text" placeholder='부서장' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(1)}>
                         {checksignup[1] ? 
                           <img src={sign} alt="sign"/>
@@ -222,9 +236,10 @@ const DetailApproval = () => {
                           <></>
                         }
                       </div>
+                      <div className='BtmDate'>{signDates[1] || ''}</div>
                     </div>
                     <div className='Pay'>
-                    <input className='Top' type="text" placeholder='대표' disabled />
+                      <input className='Top' type="text" placeholder='대표' disabled />
                       <div className='Bottom' onClick={() => handleSignModal(2)}>
                         {checksignup[2] ? 
                           <img src={sign} alt="sign"/>
@@ -232,6 +247,7 @@ const DetailApproval = () => {
                           <></>
                         }
                       </div>
+                      <div className='BtmDate'>{signDates[2] || ''}</div>
                     </div>
                   </div>
                   {renderPages()}

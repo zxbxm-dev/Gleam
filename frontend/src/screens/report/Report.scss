@@ -530,20 +530,18 @@
     justify-content: center;
     position: absolute;
     right: 100px;
-    top: 120px;
+    top: 90px;
 
     .Pay {
-      width: 100px;
+      width: 90px;
       height: 155px;
 
       .Top {
         border: 1px solid #000;
         height: 35px;
-        width: 100px;
+        width: 90px;
         text-align: center;
-        justify-content: center;
-        display: flex;
-        align-items: center;
+        font-size: 17px;
         background-color: #fff;
       }
       .Top::placeholder{
@@ -553,8 +551,22 @@
       .Bottom {
         display: flex;
         align-items: center;
-        border: 1px solid #000;
-        height: 100px;
+        // border: 1px solid #000;
+        height: 60px;
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+      }
+
+      .BtmDate{
+        // border: 1px solid #000;
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+        border-bottom: 1px solid #000;
+        height: 35px;
+        width: 90px;
+        text-align: center;
+        font-size: 14px;
+        background-color: #fff;
       }
     }
   }
