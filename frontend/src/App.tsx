@@ -19,7 +19,6 @@ import {
   Calendar,
   Report,
   WriteReport,
-  TempReportStorage,
   Approval,
   DetailApproval,
   Employment,
@@ -74,7 +73,6 @@ function App() {
             {/* 보고서 */}
             <Route path="/report" element={<Report />} />
             <Route path="/writeReport" element={<WriteReport />} />
-            <Route path="/tempReportStorage" element={<TempReportStorage />} />
 
             {/* 보고서 결재 */}
             <Route path="/approval" element={<Approval />} />
