@@ -2,13 +2,7 @@ import React, { useState } from "react";
 import "./Register.scss";
 import { Login_Logo, DeleteIcon, ArrowDown, ArrowUp, FileUploadIcon } from "../../assets/images/index";
 import { RegisterEditServices } from "../../services/login/RegisterServices";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    useDisclosure,
-    ModalBody,
-} from '@chakra-ui/react';
+import CustomModal from "../../components/modal/CustomModal";
 import { Link } from "react-router-dom";
 
 const EditRegis = () => {
@@ -19,7 +13,7 @@ const EditRegis = () => {
         spot: '',
         position: ''
     });
-    const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: isAddModalClose } = useDisclosure();
+    const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [isDepart, setIsDepart] = useState(false);
     const [isTeam, setIsTeam] = useState(false);
     const [isSpot, setIsSpot] = useState(false);
@@ -216,7 +210,7 @@ const EditRegis = () => {
         // API 호출
         RegisterEditServices(formDataToSend)
             .then(response => {
-                onAddModalOpen();
+                setAddModalOpen(true);
             })
             .catch(error => {
                 // 오류 발생 시
@@ -489,14 +483,15 @@ const EditRegis = () => {
                 <button className="ResBtn" onClick={handleSubmit}>회원정보 수정</button>
             </div>
 
-            <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
-                <ModalContent width="400px" height='200px' borderRadius='5px'>
-                    <ModalHeader className='ModalHeader' paddingLeft="15px" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto)' borderTopRadius='5px' fontSize="14px">알림</ModalHeader>
-                    <ModalBody className='ModalBody'>
-                        회원 가입 승인 요청이 완료되었습니다.
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <CustomModal
+                isOpen={isAddModalOpen}
+                onClose={() => setAddModalOpen(false)} 
+                header={'알림'}
+            >
+                <div>
+                    회원 가입 승인 요청이 완료되었습니다.
+                </div>
+            </CustomModal>
         </div>
     )
 }

@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import "./AttendanceRegist.scss";
 import { Link } from "react-router-dom";
-import { Select } from '@chakra-ui/react';
-import { Input } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import { Modal, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
+import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -32,6 +30,7 @@ const names = [
 
 const AttendanceRegist = () => {
   const [attachment, setAttachment] = useState<File | null>(null);
+  const [isAddAttend, setAddAttend] = useState(false);
   const [selectedScreen, setSelectedScreen] = useState('R&D');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +64,6 @@ const AttendanceRegist = () => {
     }
   };
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
     name: string | null;
     year: number | null;
@@ -436,7 +434,7 @@ const AttendanceRegist = () => {
   };
 
   const handleDivClick = (date: number, year: number, month: number, personIndex: number) => {
-    onOpen();
+    setAddAttend(true);
     const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
     const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
     const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
@@ -581,47 +579,44 @@ const AttendanceRegist = () => {
           </TabPanels>
         </Tabs>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose} size='lg' isCentered={true}>
-        <ModalContent height='350px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>
-            <span>{selectedDateInfo.year}.</span>
-            <span>{selectedDateInfo.month}.</span>
-            <span>{selectedDateInfo.date}</span>
-            <span>&nbsp;</span>
-            <span>{selectedDateInfo.name}</span>
-          </ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='14px' marginTop='4px'/>
-          <ModalBody fontSize='30px' className="modal_content">
-            <div className="modal_input">
-              <div className="input_title">출근시간</div>
-              <Input size='md' width='380px' borderRadius='5px' placeholder="00:00"/>
-            </div>
-            <div className="modal_input">
-              <div className="input_title">퇴근시간</div>
-              <Input size='md' width='380px' borderRadius='5px' placeholder="00:00"/>
-            </div>
-            <div className="modal_input">
-              <div className="input_title">기타 값</div>
-              <Select size='md' width='380px' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
-                <option value=''>선택안함(비워두기)</option>
-                <option value='오전반차' style={{ color: '#FFB800' }}>오전반차</option>
-                <option value='오후반차' style={{ color: '#FFB800' }}>오후반차</option>
-                <option value='무급휴가' style={{ color: '#5162FF' }}>무급휴가</option> 
-                <option value='연차' style={{ color: '#0D994D' }}>연차</option>
-                <option value='재택' style={{ color: '#7000C9' }}>재택</option>
-                <option value='서울출근' style={{ color: '#3DC6C6' }}>서울출근</option>
-                <option value='입사' style={{ color: '#FF4747' }}>입사</option>
-                <option value='지문X' style={{ color: '#EF0AD8' }}>지문X</option>
-              </Select>
-            </div>
-          </ModalBody>
+      <CustomModal
+        isOpen={isAddAttend}
+        onClose={() => setAddAttend(false)} 
+        header={`${selectedDateInfo.year}.${selectedDateInfo.month}.${selectedDateInfo.date}  ${selectedDateInfo.name}`}
+        footer1={'등록'}
+        footer1Class="back-green-btn"
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setAddAttend(false)}
+        height="230px"
+      >
+        <div className="modal_container">
+          <div className="modal_input">
+            <div className="input_title">출근시간</div>
+            <input className="input_text" type="text" placeholder="00:00"/>
+          </div>
+          <div className="modal_input">
+            <div className="input_title">퇴근시간</div>
+            <input className="input_text" type="text" placeholder="00:00"/>
+          </div>
+          <div className="modal_input">
+            <div className="input_title">기타 값</div>
+            <select className="input_select">
+              <option value=''>선택안함(비워두기)</option>
+              <option value='오전반차' style={{ color: '#FFB800' }}>오전반차</option>
+              <option value='오후반차' style={{ color: '#FFB800' }}>오후반차</option>
+              <option value='무급휴가' style={{ color: '#5162FF' }}>무급휴가</option> 
+              <option value='연차' style={{ color: '#0D994D' }}>연차</option>
+              <option value='재택' style={{ color: '#7000C9' }}>재택</option>
+              <option value='서울출근' style={{ color: '#3DC6C6' }}>서울출근</option>
+              <option value='입사' style={{ color: '#FF4747' }}>입사</option>
+              <option value='지문X' style={{ color: '#EF0AD8' }}>지문X</option>
+            </select>
+          </div>
+        </div>
+      </CustomModal>
 
-          <ModalFooter gap='10px'>
-            <button className="add_button">등록</button>
-            <button className="cancle_button">취소</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      
     </div>
   );
 };

@@ -17,15 +17,7 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import CustomModal from "../../components/modal/CustomModal";
 import { Input } from '@chakra-ui/react';
 
 import { WriteEmployment } from "../../services/employment/EmploymentService";
@@ -37,7 +29,7 @@ const Employment = () => {
   const [employments, setEmployments] = useState<any[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const postPerPage: number = 10;
 
   const [title, setTitle] = useState("");
@@ -100,7 +92,7 @@ const Employment = () => {
   const handleDelete = () => {
     // 삭제하기 기능 추가
     // DeleteEmployment()
-    onClose();
+    setDeleteModalOpen(false);
     setDropdownOpen(false);
   };
   
@@ -239,7 +231,7 @@ const Employment = () => {
                                   </PopoverContent>
                                 </Portal>
                               </Popover>
-                              <div className="dropdown_del" onClick={onOpen} >삭제하기</div>
+                              <div className="dropdown_del" onClick={() => setDeleteModalOpen(true)} >삭제하기</div>
                             </div>
                           )}
                         </div>
@@ -303,20 +295,21 @@ const Employment = () => {
           </div>
         </div>
       </div>  
-      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
-          <ModalBody className="cancle_modal_content">
-            삭제하시겠습니까?
-          </ModalBody>
-
-          <ModalFooter gap='7px' justifyContent='center'>
-            <button className="del_button" onClick={handleDelete}>삭제</button>
-            <button className="cle_button" onClick={onClose}>취소</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CustomModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)} 
+        header={'알림'}
+        footer1={'삭제'}
+        footer1Class="red-btn"
+        onFooter1Click={handleDelete}
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setDeleteModalOpen(false)}
+      >
+        <div>
+          삭제하시겠습니까?
+        </div>
+      </CustomModal>
     </div>
   );
 };

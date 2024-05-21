@@ -5,7 +5,7 @@ import {
   UserIcon_dark,
   CloseIcon,
 } from "../../assets/images/index";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
 import HrSidebar from "../../components/sidebar/HrSidebar";
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -33,7 +33,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const WriteReport = () => {
-  let navigate = useNavigate();
   const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);

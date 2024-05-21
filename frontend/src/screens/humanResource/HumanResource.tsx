@@ -4,15 +4,6 @@ import { Link } from "react-router-dom";
 import { Input } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
-import {
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -21,20 +12,21 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
+import CustomModal from "../../components/modal/CustomModal";
 import { useRecoilState } from 'recoil';
 import { isSelectMemberState } from '../../recoil/atoms';
 
 const HumanResource = () => {
   const [isSelectMember] = useRecoilState(isSelectMemberState);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleToggleEdit = () => {
     setIsEditing(!isEditing);
   };
 
   const handleHumanInfoDelete = () => {
-    onClose();
+    setDeleteModalOpen(false);
   }
 
 
@@ -202,7 +194,7 @@ const HumanResource = () => {
                               </PopoverContent>
                             </Portal>
                           </Popover>
-                          <button className="dels_button" onClick={onOpen}>삭제</button>
+                          <button className="dels_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
                         </td>
                       </tr>
 
@@ -247,20 +239,21 @@ const HumanResource = () => {
             </TabPanels>
           </Tabs>
       </div>  
-      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='16px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
-          <ModalBody className="cancle_modal_content">
-            삭제하시겠습니까?
-          </ModalBody>
-
-          <ModalFooter gap='10px' justifyContent='center'>
-            <button className="del_button" onClick={handleHumanInfoDelete}>삭제</button>
-            <button className="cle_button" onClick={onClose}>취소</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CustomModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)} 
+        header={'알림'}
+        footer1={'삭제'}
+        footer1Class="red-btn"
+        onFooter1Click={handleHumanInfoDelete}
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setDeleteModalOpen(false)}
+      >
+        <div>
+          삭제하시겠습니까?
+        </div>
+      </CustomModal>
     </div>
   );
 };
