@@ -10,9 +10,11 @@ import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WriteActiv } from "../../../services/announcement/Activity";
+import CustomModal from "../../../components/modal/CustomModal";
 
 const WriteActivityManage = () => {
   let navigate = useNavigate();
+  const [isTypeSelectOpenModal, setTypeSelectOpenModal] = useState(false)
   const editorRef = useRef<any>(null);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [title, setTitle] = useState("");
@@ -42,7 +44,7 @@ const WriteActivityManage = () => {
   const handleSubmit = () => {
 
     if (category === "선택없음") {
-      alert("종류를 선택해 주세요.")
+      setTypeSelectOpenModal(true);
       return;
     } else if (title === "") {
       alert("게시물 제목을 입력해 주세요.")
@@ -72,6 +74,10 @@ const WriteActivityManage = () => {
         console.error("등록에 실패했습니다.");
       });
   };
+
+  const handleTypeSelect = () => {
+    setTypeSelectOpenModal(false);
+  }
 
   const onChange = () => {
     const data = editorRef.current.getInstance().getHTML();
@@ -163,6 +169,18 @@ const WriteActivityManage = () => {
           </div>
         </div>
       </div>
+      <CustomModal
+        isOpen={isTypeSelectOpenModal}
+        onClose={() => setTypeSelectOpenModal(false)} 
+        header={'알림'}
+        footer1={'확인'}
+        footer1Class="green-btn"
+        onFooter1Click={handleTypeSelect}
+      >
+        <div>
+          종류구분을 선택해 주세요.
+        </div>
+      </CustomModal>
     </div>
   );
 };
