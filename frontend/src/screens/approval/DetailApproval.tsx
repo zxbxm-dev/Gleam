@@ -15,15 +15,7 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import CustomModal from '../../components/modal/CustomModal';
 import { Textarea } from '@chakra-ui/react';
 import sign from "../../assets/images/sign/구민석_서명.png";
 import testPDF from '../../assets/pdf/[서식-A106] 기획서(로고위, 문서번호 조정).pdf';
@@ -36,7 +28,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const DetailApproval = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isSignModalOpen, setSignModalOpen] = useState(false);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [checksignup, setCheckSignUp] = useState<boolean[]>([false, false, false]);
@@ -94,7 +86,7 @@ const DetailApproval = () => {
   };
 
   const handleSignModal = (index: number) => {
-    onOpen();
+    setSignModalOpen(true);
     setSignUpIndex(index);
   }
 
@@ -109,7 +101,7 @@ const DetailApproval = () => {
     newSignDates[index] = formattedDate;
     setSignDates(newSignDates);
 
-    onClose();
+    setSignModalOpen(false);
   }
 
 
@@ -122,7 +114,7 @@ const DetailApproval = () => {
     newSignDates[index] = '';
     setSignDates(newSignDates);
 
-    onClose();
+    setSignModalOpen(false);
   }
 
   const renderPages = () => {
@@ -258,20 +250,22 @@ const DetailApproval = () => {
           </div>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0' />
-          <ModalBody className="cancle_modal_content">
-            서명하시겠습니까?
-          </ModalBody>
 
-          <ModalFooter gap='7px' justifyContent='center'>
-            <button className="del_button" onClick={() => { handleSign(signupindex) }}>서명</button>
-            <button className="cle_button" onClick={() => { handleSignDel(signupindex) }}>취소</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CustomModal
+        isOpen={isSignModalOpen}
+        onClose={() => setSignModalOpen(false)} 
+        header={'알림'}
+        footer1={'서명'}
+        footer1Class="green-btn"
+        footer2={'취소'}
+        onFooter1Click={() => handleSign(signupindex)}
+        footer2Class="gray-btn"
+        onFooter2Click={() => handleSignDel(signupindex)}
+      >
+        <div>
+          서명하시겠습니까?
+        </div>
+      </CustomModal>
     </div>
   );
 };
