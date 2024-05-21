@@ -9,6 +9,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
 import HrSidebar from "../../components/sidebar/HrSidebar";
 import { Document, Page, pdfjs } from 'react-pdf';
+import CustomModal from '../../components/modal/CustomModal';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import {
@@ -19,15 +20,6 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
-} from '@chakra-ui/react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
 } from '@chakra-ui/react';
 
 type Member = [string, string, string, string];
@@ -42,9 +34,9 @@ type PDFFile = string | File | null;
 
 const WriteReport = () => {
   let navigate = useNavigate();
+  const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedApproval, setSelectedApproval] = useState('');
   // HrSidebar에서 멤버를 클릭할 때 호출되는 함수
 
@@ -285,7 +277,7 @@ const WriteReport = () => {
                           ))}
 
                           <div className='button-wrap'>
-                            <button className="second_button">제출</button>
+                            <button className="second_button" onClick={() => setSubmitModalOpen(true)}>제출</button>
                             <button className="white_button">취소</button>
                           </div>
                         </div>
@@ -293,7 +285,6 @@ const WriteReport = () => {
                     </PopoverContent>
                   </Portal>
                 </Popover>
-                <button className="save_button" onClick={onOpen}>임시저장</button>
                 <button className="upload_button">
                   <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
                     <input
@@ -340,19 +331,18 @@ const WriteReport = () => {
           </div>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0' />
-          <ModalBody className="cancle_modal_content">
-            임시저장이 완료되었습니다.
-          </ModalBody>
-
-          <ModalFooter justifyContent='center'>
-            <button className="del_button" onClick={() => { navigate('/tempReportStorage') }}>확인</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CustomModal
+        isOpen={isSubmitModalOpen}
+        onClose={() => setSubmitModalOpen(false)} 
+        header={'알림'}
+        footer1={'확인'}
+        footer1Class="green-btn"
+        onFooter1Click={() => setSubmitModalOpen(false)}
+      >
+        <div>
+          제출이 완료되었습니다.
+        </div>
+      </CustomModal>
     </div>
   );
 };

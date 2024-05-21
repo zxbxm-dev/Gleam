@@ -47,9 +47,6 @@ const Report = () => {
                 <div className="report_name">프로젝트 기획서</div>
               </div>
             </div>
-            <div className="report_btn">
-              <button className="temp_button" onClick={() => {navigate("/tempReportStorage")}}>임시저장 파일 보기</button>
-            </div>
           </div>
         </div>
       </div>  
