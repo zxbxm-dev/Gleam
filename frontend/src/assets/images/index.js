@@ -17,6 +17,7 @@ export { default as SettingIcon } from "./SettingIcon.svg";
 export { default as CloseIcon } from "./CloseIcon.svg";
 export { default as NewIcon } from "./NewIcon.svg";
 export { default as SelectArrow } from "./SelectArrow.svg";
+export { default as ModalCloseBtn } from "./ModalCloseBtn.svg";
 
 
 

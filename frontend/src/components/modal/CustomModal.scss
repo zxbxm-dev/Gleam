@@ -1,0 +1,105 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .modal-content {
+    background: #fff;
+    border-radius: 6px;
+    position: relative;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .modal-header {
+      width: inherit;
+      height: 34px;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      background-color: #746E58;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .modal-header-text {
+        position: absolute;
+        top: 7px;
+        left: 15px;
+        font-size: 14px;
+        font-family: var(--font-family-Noto-B);
+        color: #fff;
+      }
+
+      .modal-close-button {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+    }
+
+    .modal-body {
+      width: 100%;
+      overflow-y: auto;
+      font-family: var(--font-family-Noto-B);
+      font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+    }
+
+    .modal-footer {
+      width: 100%;
+      height: auto;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+
+      .modal-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: auto;
+        height: 35px;
+        padding: 8px 20px 8px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-family: var(--font-family-Noto-B);
+
+        &.green-btn {
+          background-color: #fff;
+          border: 1px solid #746E58;
+          color: #746E58;
+        }
+        &.back-green-btn {
+          background-color: #746E58;
+          border: 1px solid #746E58;
+          color: #fff;
+        }
+        &.red-btn {
+          background-color: #fff;
+          border: 1px solid #D56D6D;
+          color: #D56D6D;
+        }
+        &.gray-btn {
+          background-color: #fff;
+          border: 1px solid #929292;
+          color: #929292;
+        }
+      }
+
+    }
+  }
+}

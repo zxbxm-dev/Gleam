@@ -1,17 +1,12 @@
 import React, { useState } from "react";
 import "./Register.scss";
 import { Login_Logo, ArrowDown, ArrowUp } from "../../assets/images/index";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    useDisclosure,
-    ModalBody,
-} from '@chakra-ui/react';
+import CustomModal from '../../components/modal/CustomModal';
 import { ResetPwServices } from "../../services/login/RegisterServices";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const ResetPw = () => {
+    let navigate = useNavigate();
     const [selectedOptions, setSelectedOptions] = useState({
         company: '',
         department: '',
@@ -19,8 +14,8 @@ const ResetPw = () => {
         spot: '',
         position: ''
     });
-    const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: isAddModalClose } = useDisclosure();
-    const { isOpen: isNotModalOpen, onOpen: onNotdModalOpen, onClose: isNotModalClose } = useDisclosure();
+    const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
+    const [isFaliedIdModalOpen, setFaliedModalOpen] = useState(false);
     const [isSpot, setIsSpot] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [resetpassword, setResetPassword] = useState("");
@@ -29,6 +24,15 @@ const ResetPw = () => {
     const [question1, setQuestion1] = useState("");
     const [question2, setQuestion2] = useState("");
     const [name, setName] = useState("");
+
+    const handleFooter1Click = () => {
+        setSuccessModalOpen(false);
+        navigate('/login');
+    };
+
+    const handleFooter2Click = () => {
+        setFaliedModalOpen(false);
+    };
 
     const handleIDChange = (event: any) => {
         setUserID(event.target.value);
@@ -84,12 +88,12 @@ const ResetPw = () => {
         // API 호출
         ResetPwServices(formData)
             .then(response => {
-                onAddModalOpen();
+                setSuccessModalOpen(true);
             })
             .catch(error => {
                 // 오류 발생 시
                 console.error("오류:", error);
-                onNotdModalOpen();
+                setFaliedModalOpen(true);
             });
     };
 
@@ -229,22 +233,31 @@ const ResetPw = () => {
                 <button className="ResBtn" onClick={handleSubmit}>확인</button>
             </div>
 
-            <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
-                <ModalContent width="400px" height='200px' borderRadius='5px'>
-                    <ModalHeader className='ModalHeader' paddingLeft="15px" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto)' borderTopRadius='5px' fontSize="14px">알림</ModalHeader>
-                    <ModalBody className='ModalBody'>
-                        패스워드 재설정이 완료되었습니다.
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
-            <Modal isOpen={isNotModalOpen} onClose={isNotModalClose} size='xl' isCentered={true}>
-                <ModalContent width="400px" height='200px' borderRadius='5px'>
-                    <ModalHeader className='ModalHeader' paddingLeft="15px" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto)' borderTopRadius='5px' fontSize="14px">알림</ModalHeader>
-                    <ModalBody className='ModalBody'>
-                        패스워드 재설정에 실패했습니다.
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <CustomModal
+                isOpen={isSuccessModalOpen}
+                onClose={() => setSuccessModalOpen(false)} 
+                header={'알림'}
+                footer1={'확인'}
+                footer1Class="green-btn"
+                onFooter1Click={handleFooter1Click}
+            >
+                <div>
+                    패스워드 재설정이 완료 되었습니다.
+                </div>
+            </CustomModal>
+
+            <CustomModal
+                isOpen={isFaliedIdModalOpen}
+                onClose={() => setFaliedModalOpen(false)} 
+                header={'알림'}
+                footer1={'확인'}
+                footer1Class="green-btn"
+                onFooter1Click={handleFooter2Click}
+            >
+                <div>
+                    패스워드 재설정에 실패 했습니다.
+                </div>
+            </CustomModal>
         </div>
     )
 }

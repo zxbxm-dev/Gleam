@@ -2,14 +2,8 @@ import React, { useState } from "react";
 import "./Register.scss";
 import { Login_Logo, ArrowDown, ArrowUp } from "../../assets/images/index";
 import { RegisterServices } from "../../services/login/RegisterServices";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    useDisclosure,
-    ModalBody,
-} from '@chakra-ui/react';
 import {Link} from "react-router-dom";
+import CustomModal from '../../components/modal/CustomModal';
 
 const Register = () => {
     const [selectedOptions, setSelectedOptions] = useState({
@@ -19,7 +13,7 @@ const Register = () => {
         spot: '',
         position: ''
     });
-    const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: isAddModalClose } = useDisclosure();
+    const [isRegistModalOpen, setRegistModalOpen] = useState(false);
     const [isDepart, setIsDepart] = useState(false);
     const [isTeam, setIsTeam] = useState(false);
     const [isSpot, setIsSpot] = useState(false);
@@ -36,6 +30,10 @@ const Register = () => {
     const [name, setName] = useState("");
     const [mail, setMail] = useState("");
     const [Agree, setAgree] = useState(false);
+
+    const handleFooter1Click = () => {
+        setRegistModalOpen(false);
+    };
 
     const handleInputChange = (event: any, field: any) => {
         const value = event.target.value;
@@ -216,11 +214,12 @@ const Register = () => {
         // API 호출
         RegisterServices(formData)
             .then(response => {
-                onAddModalOpen();
+                setRegistModalOpen(true);
             })
             .catch(error => {
                 // 오류 발생 시
                 console.error("회원가입 오류:", error);
+                setRegistModalOpen(true);
             });
     };
 
@@ -483,14 +482,18 @@ const Register = () => {
                 <button className="ResBtn" onClick={handleSubmit}>회원가입 승인 요청</button>
             </div>
 
-            <Modal isOpen={isAddModalOpen} onClose={isAddModalClose} size='xl' isCentered={true}>
-                <ModalContent width="400px" height='200px' borderRadius='5px'>
-                    <ModalHeader className='ModalHeader' paddingLeft="15px" height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto)' borderTopRadius='5px' fontSize="14px">알림</ModalHeader>
-                    <ModalBody className='ModalBody'>
-                        회원 가입 승인 요청이 완료되었습니다.
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <CustomModal
+                isOpen={isRegistModalOpen}
+                onClose={() => setRegistModalOpen(false)} 
+                header={'알림'}
+                footer1={'확인'}
+                footer1Class="green-btn"
+                onFooter1Click={handleFooter1Click}
+            >
+                <div>
+                    회원 가입 승인 요청이 완료 되었습니다.
+                </div>
+            </CustomModal>
         </div>
     )
 }
