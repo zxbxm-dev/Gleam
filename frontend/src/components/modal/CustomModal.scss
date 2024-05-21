@@ -20,7 +20,7 @@
 
     .modal-header {
       width: inherit;
-      height: 38px;
+      height: 36px;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       background-color: #746E58;
@@ -57,6 +57,98 @@
       justify-content: center;
       align-items: center;
       flex-grow: 1;
+
+      .body-container {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+
+        .body-content {
+          display: flex;
+          gap: 10px;
+  
+          .content-left {
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            width: 40px;
+            height: 28px;
+            font-size: 14px;
+            color: #929292;
+            font-family: var(--font-family-Noto-M);
+          }
+  
+          .content-center {
+            align-items: center;
+          }
+  
+          .content-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 310px;
+            font-size: 14px;
+
+            .textinput {
+              width: 310px;
+              height: 28px;
+              border: 1px solid #DCDCDC;
+              border-radius: 5px;
+              padding-left: 7px;
+
+            }
+            .textinput:focus {
+              outline: 2px solid #746e58;
+            }
+            .textinput::placeholder {
+              font-size: 12px;
+              color: #C7C7C7;
+            }
+
+            .datepicker {
+              width: 146px;
+              height: 28px;
+              border: 1px solid #DCDCDC;
+              border-radius: 5px;
+            }
+
+            .textareainput {
+              width: 310px;
+              height: 100px;
+              border: 1px solid #DCDCDC;
+              border-radius: 5px;
+              padding: 7px;
+              resize: none;
+            }
+            .textareainput:focus {
+              outline: 2px solid #746e58;
+            }
+            .textareainput::placeholder {
+              font-size: 12px;
+              color: #C7C7C7;
+            }
+
+            .content-type {
+              display: flex;
+              align-items: center;
+              width: 280px;
+              height: 28px;
+            }
+            .content-date {
+              display: flex;
+              align-items: center;
+              gap: 7px;
+              width: 300px;
+              height: 28px;
+            }
+            .content-memo {
+              width: 300px;
+              height: 100px;
+              padding-top: 4px;
+            }
+          }
+        }
+      }
     }
 
     .modal-footer {
