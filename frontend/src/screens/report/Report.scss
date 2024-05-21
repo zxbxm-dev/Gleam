@@ -530,31 +530,66 @@
     justify-content: center;
     position: absolute;
     right: 100px;
-    top: 120px;
+    top: 90px;
+
+    .Pay:last-child {
+      .Top {
+        border-right: 1px solid #000;
+      }
+
+      .Bottom {
+        border-right: 1px solid #000;
+      }
+
+      .BtmDate {
+        border-right: 1px solid #000;
+      }
+    }
 
     .Pay {
-      width: 100px;
+      width: 90px;
       height: 155px;
 
       .Top {
         border: 1px solid #000;
         height: 35px;
-        width: 100px;
+        width: 90px;
         text-align: center;
-        justify-content: center;
-        display: flex;
-        align-items: center;
+        font-size: 17px;
         background-color: #fff;
+        border-right: none;
       }
-      .Top::placeholder{
+
+      .Top::placeholder {
         color: #000;
       }
 
       .Bottom {
         display: flex;
         align-items: center;
-        border: 1px solid #000;
-        height: 100px;
+        justify-content: center;
+        height: 60px;
+        border-left: 1px solid #000;
+        cursor: pointer;
+
+        .SignImg {
+          width: 90%;
+          margin-top: 5px;
+        }
+      }
+
+      .Bottom:hover {
+        background-color: #eaeaea;
+      }
+
+      .BtmDate {
+        border-left: 1px solid #000;
+        border-bottom: 1px solid #000;
+        height: 35px;
+        width: 90px;
+        text-align: center;
+        font-size: 14px;
+        background-color: #fff;
       }
     }
   }
