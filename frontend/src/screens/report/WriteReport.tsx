@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./Report.scss";
 import {
   FileUploadIcon,
   UserIcon_dark,
   CloseIcon,
+  SelectArrow,
+  Approval_Plus,
 } from "../../assets/images/index";
-import { Link } from "react-router-dom";
-import { Select } from '@chakra-ui/react';
+import { useLocation, Link } from "react-router-dom";
 import HrSidebar from "../../components/sidebar/HrSidebar";
 import { Document, Page, pdfjs } from 'react-pdf';
 import CustomModal from '../../components/modal/CustomModal';
@@ -33,10 +34,66 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const WriteReport = () => {
+  const location = useLocation();
+  const { state } = location;
+  const reportName = state?.reportName || '';
+
   const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [selectedApproval, setSelectedApproval] = useState('');
+  const [selectedReport, setSelectedReport] = useState("");
+  const [selectOpen, setSelectOpen] = useState(false);
+
+  useEffect(() => {
+    if (reportName) {
+      setSelectedReport(reportName);
+      updateApprovalLines(reportName);
+    }
+  }, [reportName]);
+
+  const SelectOptions = (report: string) => {
+    setSelectedReport(report);
+    setSelectOpen(false);
+    updateApprovalLines(report);
+  };
+
+  const updateApprovalLines = (report: string) => {
+    let newApprovalLines;
+    switch (report) {
+      case '주간업무일지':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '주간업무일지1', checked: false, selectedMember: null },
+          { name: '주간업무일지2', checked: false, selectedMember: null },
+          { name: '주간업무일지3', checked: false, selectedMember: null },
+        ];
+        break;
+      case '지출품의서':
+        newApprovalLines = [
+          { name: '지출품의서1', checked: false, selectedMember: null },
+          { name: '지출품의서2', checked: false, selectedMember: null },
+          { name: '지출품의서3', checked: false, selectedMember: null },
+          { name: '지출품의서4', checked: false, selectedMember: null },
+        ];
+        break;
+      default:
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: false, selectedMember: null },
+          { name: '결재라인 1', checked: false, selectedMember: null },
+          { name: '결재라인 2', checked: false, selectedMember: null },
+          { name: '결재라인 3', checked: false, selectedMember: null },
+          { name: '결재라인 4', checked: false, selectedMember: null },
+          { name: '결재라인 5', checked: false, selectedMember: null },
+        ];
+    }
+    setApprovalLines(newApprovalLines);
+  };
+
+  const SelectOpen = () => {
+    setSelectOpen(!selectOpen);
+  }
   // HrSidebar에서 멤버를 클릭할 때 호출되는 함수
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
@@ -79,13 +136,13 @@ const WriteReport = () => {
   };
 
   const [approvalLines, setApprovalLines] = useState([
+    { name: '참조', checked: false, selectedMembers: [] as Member[] },
     { name: '최종결재', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 1', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 2', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 3', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 4', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 5', checked: false, selectedMember: null as Member | null },
-    { name: '참조', checked: false, selectedMembers: [] as Member[] },
   ]);
 
   const handleCheckboxChange = (index: number) => {
@@ -140,11 +197,26 @@ const WriteReport = () => {
   // 멤버 삭제 함수
   const handleRemoveMember = (indexToRemove: number) => {
     const updatedApprovalLines = [...approvalLines];
-    if (updatedApprovalLines[6].selectedMembers !== undefined) {
-      updatedApprovalLines[6].selectedMembers.splice(indexToRemove, 1);
+    if (updatedApprovalLines[0].selectedMembers !== undefined) {
+      updatedApprovalLines[0].selectedMembers.splice(indexToRemove, 1);
       setApprovalLines(updatedApprovalLines);
     }
-};
+  };
+  
+  // 결재라인 추가 함수
+  const addApprovalLine = () => {
+    if (approvalLines.length <= 6) {
+      const newLine = { name: `결재라인`, checked: false, selectedMember: null as Member | null };
+      setApprovalLines([...approvalLines, newLine]);
+    }
+  };
+
+  const handleNameChange = (index: number, newName: string) => {
+    const updatedApprovalLines = [...approvalLines];
+    updatedApprovalLines[index].name = newName;
+    setApprovalLines(updatedApprovalLines);
+  };
+
 
   const members: Member[] = [
     ['이정훈', '포체인스 주식회사', '', '대표'],
@@ -183,31 +255,70 @@ const WriteReport = () => {
             <div className="write_top_container">
               <div className="top_left_content">
                 <div className="sub_title">양식 선택</div>
-                <Select size='sm' width='380px' borderRadius='5px' fontFamily='var(--font-family-Noto-M)'>
-                  <option value='' disabled style={{ fontFamily: 'var(--font-family-Noto-B)' }}>공통보고서</option>
-                  <option value=''>&nbsp;&nbsp; 주간업무일지</option>
-                  <option value=''>&nbsp;&nbsp; 지출품의서</option>
-                  <option value=''>&nbsp;&nbsp; 휴가신청서</option>
+                <div className="Select_report">
+                  <div className="Select_report_Header" onClick={SelectOpen}>
+                    <img src={SelectArrow} alt="SelectArrow" className="SelectArrow" />
+                    <span>{selectedReport}</span>
+                  </div>
+                  {selectOpen?(
+                    <div className="Select_report_Content">
+                      <div>공통 보고서</div>
+                      <div className="Option" onClick={() => SelectOptions('주간업무일지')}>
+                        <span>주간업무일지</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('지출품의서')}>
+                        <span>지출품의서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('휴가신청서')}>
+                        <span>휴가신청서</span>
+                      </div>
 
-                  <option value='' disabled style={{ fontFamily: 'var(--font-family-Noto-B)' }}>기타</option>
-                  <option value=''>&nbsp;&nbsp; 시말서</option>
-                  <option value=''>&nbsp;&nbsp; 사직서</option>
-                  <option value=''>&nbsp;&nbsp; 휴직원</option>
-                  <option value=''>&nbsp;&nbsp; 복직원</option>
+                      <div>기타</div>
+                      <div className="Option" onClick={() => SelectOptions('시말서')}>
+                        <span>시말서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('사직서')}>
+                        <span>사직서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('휴직원')}>
+                        <span>휴직원</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('복직원')}>
+                        <span>복직원</span>
+                      </div>
 
-                  <option value='' disabled style={{ fontFamily: 'var(--font-family-Noto-B)' }}>워크숍</option>
-                  <option value=''>&nbsp;&nbsp; 워크숍 신청서</option>
-                  <option value=''>&nbsp;&nbsp; 워크숍 보고서 (프로젝트 회의)</option>
-                  <option value=''>&nbsp;&nbsp; 워크숍 보고서 (야유회)</option>
-                  <option value=''>&nbsp;&nbsp; 지출내역서</option>
-                  <option value=''>&nbsp;&nbsp; 예산신청서 (지원팀)</option>
+                      <div>워크숍</div>
+                      <div className="Option" onClick={() => SelectOptions('워크숍 신청서')}>
+                        <span>워크숍 신청서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('워크숍 보고서 (프로젝트 회의)')}>
+                        <span>워크숍 보고서 (프로젝트 회의)</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('워크숍 보고서 (야유회)')}>
+                        <span>워크숍 보고서 (야유회)</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('지출내역서')}>
+                        <span>지출내역서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('예산신청서 (지원팀)')}>
+                        <span>예산신청서 (지원팀)</span>
+                      </div>
 
-                  <option value='' disabled style={{ fontFamily: 'var(--font-family-Noto-B)' }}>기획서</option>
-                  <option value=''>&nbsp;&nbsp; 기획서</option>
-                  <option value=''>&nbsp;&nbsp; 최종보고서</option>
-                  <option value=''>&nbsp;&nbsp; 프로젝트 기획서</option>
-
-                </Select>
+                      <div>기획서</div>
+                      <div className="Option" onClick={() => SelectOptions('기획서')}>
+                        <span>기획서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('최종보고서')}>
+                        <span>최종보고서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('프로젝트 기획서')}>
+                        <span>프로젝트 기획서</span>
+                      </div>
+                    </div>
+                    ) : (
+                      <div></div>
+                    )}
+                </div>
               </div>
 
               <div className="top_right_content">
@@ -223,19 +334,11 @@ const WriteReport = () => {
                         <div style={{ width: '200px', height: '650px', overflowY: 'scroll', scrollbarWidth: 'thin' }}>
                           <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
                         </div>
-                        <div style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0' }}>
+                        <div style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative'}}>
                           {approvalLines.map((line, index) => (
-                            <div key={index} className="approval_content">
+                            <div key={index} className={line.name === '참조' ? "last_approval_content" : "approval_content"}>
                               <div className='approval_line'>
-                                <input
-                                  type="checkbox"
-                                  checked={line.checked}
-                                  onChange={() => handleCheckboxChange(index)}
-                                  className='approval_checkbox'
-                                  id={`check${index}`}
-                                  style={{ cursor: 'pointer' }}
-                                />
-                                <label htmlFor={`check${index}`} style={{ cursor: 'pointer' }}>{line.name}</label>
+                                <input type="text" value={line.name} onChange={(e) => handleNameChange(index, e.target.value)}/>
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
@@ -265,13 +368,19 @@ const WriteReport = () => {
                                   )
                                 )
                               ) : (
-                                <div className='approval_checked'>
+                                <div className='approval_checked' onClick={() => handleCheckboxChange(index)}>
                                   칸 선택 후 좌측 리스트에서<br />
                                   결재라인을 선택해주세요
                                 </div>
                               )}
                             </div>
                           ))}
+
+                          {approvalLines.length <= 6 ? 
+                            <img src={Approval_Plus} alt="Approval_Plus" onClick={addApprovalLine}/>
+                            :
+                            <></>
+                          }
 
                           <div className='button-wrap'>
                             <button className="second_button" onClick={() => setSubmitModalOpen(true)}>제출</button>

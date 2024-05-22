@@ -81,6 +81,74 @@
         font-family: var(--font-family-Noto-M);
       }
 
+      .Select_report{
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        flex-direction: column;
+        position: relative;
+
+        .Select_report_Header{
+          width: 350px;
+          height: 35px;
+          border-radius: 5px;
+          border: 1px solid #DCDCDC;
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          cursor: pointer;
+          
+          span{
+            font-size: 14px;
+            color: #323232;
+            font-family: var(--font-family-Noto-M);
+            padding-left: 30px;
+          }
+
+          .SelectArrow {
+            position: absolute;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+          }
+        }
+      
+        .Select_report_Content{
+          width: 350px;
+          height: 600px;
+          border-radius: 5px;
+          border: 1px solid #DCDCDC;
+          position: absolute;
+          top: 35px;
+          background-color: #fff;
+          z-index: 10;
+          
+          div {
+            font-size: 14px;
+            color: #929292;
+            font-family: var(--font-family-Noto-B);
+            padding: 10px 20px;
+          }
+          
+          .Option{
+            display: flex;
+            padding: 4px 40px;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            
+            span{
+              font-size: 14px;
+              color: #323232;
+              font-family: var(--font-family-Noto-M);
+            }
+          }
+          .Option:hover{
+            background-color: rgba(0,0,0,0.10);
+          }
+        }
+      }
+
       .save_button {
         width: 92px;
         height: 35px;
@@ -299,6 +367,102 @@
     }
   }
 
+
+  .approval_name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 230px;
+    height: 50px;
+    border: 1px solid #ECECEC;
+    font-family: var(--font-family-Noto-M);
+    color: #000;
+    gap: 8px;
+
+    .name_img {
+      margin-right: 10px;
+    }
+
+    .name_text {
+      font-size: 16px;
+    }
+
+    .name_border {
+      height: 20px;
+      border-right: 1px solid black;
+    }
+  }
+
+  .approval_small_name {
+    position: relative;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding-left: 9px;
+    width: 105px;
+    height: 40px;
+    border: 1px solid #ECECEC;
+    border-radius: 5px;
+    font-family: var(--font-family-Noto-M);
+    color: #000;
+    gap: 5px;
+
+    .name_text {
+      font-size: 12px;
+    }
+
+    .name_border {
+      height: 14px;
+      border-right: 1px solid black;
+    }
+
+    .close_btn {
+      cursor: pointer;
+      position: absolute;
+      right: 3px;
+    }
+  }
+
+  .approval_checked {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 230px;
+    height: 50px;
+    border: 1px solid #ECECEC;
+    font-family: var(--font-family-Noto-R);
+    font-size: 14px;
+    color: #929292;
+  }
+}
+
+.last_approval_content {
+  position: absolute;
+  bottom: 80px;
+  align-items: center;
+  font-family: var(--font-family-Noto-M);
+  color: #929292;
+  width: 230px;
+  height: 80px;
+
+  .approval_line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .approval_checkbox {
+      width: 18px;
+      height: 18px;
+      border: 1px solid #D3D3D3;
+    }
+
+    .approval_checkbox:checked {
+      accent-color: #fff;
+      border: 1px solid #D3D3D3;
+    }
+  }
+
+
   .approval_name {
     display: flex;
     justify-content: center;
@@ -370,7 +534,7 @@
 .button-wrap {
   display: flex;
   position: absolute;
-  bottom: 15px;
+  bottom: 5px;
   gap: 7px;
 
   .second_button {
@@ -475,7 +639,31 @@
     }
 
     .approval_checked {
+      cursor: pointer;
+      width: 180px;
+      height: 40px;
+      font-size: 12px;
+    }
+  }
 
+  .last_approval_content {
+    width: 180px;
+    height: 70px;
+    bottom: 100px;
+    left: 35px;
+
+    .approval_name {
+      width: 180px;
+      height: 35px;
+      gap: 8px;
+
+      .name_text {
+        font-size: 12px;
+      }
+    }
+
+    .approval_checked {
+      cursor: pointer;
       width: 180px;
       height: 40px;
       font-size: 12px;
@@ -511,6 +699,8 @@
       }
     }
   }
+
+  
 }
 
 #report-to-xls {
