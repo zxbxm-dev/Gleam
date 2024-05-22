@@ -478,6 +478,28 @@
   }
 }
 }
+
+.ContentBox::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.ContentBox::-webkit-scrollbar-thumb {
+  background-color: #929292;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+.ContentBox::-webkit-scrollbar-corner {
+  background-color: none;
+}
+
+.ContentBox::-webkit-scrollbar-track {
+  box-shadow: none;
+  background-color: #fff;
+
+}
 }
 .last_approval_content {
 margin-bottom: 35px;
