@@ -9,6 +9,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { writeCalen } from "../../services/calender/calender";
 import { SelectArrow } from "../../assets/images/index";
+import { useRecoilState } from 'recoil';
+import { isSidebarVisibleState } from '../../recoil/atoms';
 
 const Calendar = () => {
   const [isAddeventModalOpen, setAddEventModalOPen] = useState(false);
@@ -25,6 +27,11 @@ const Calendar = () => {
   const [key, setKey] = useState(0);
   const [selectedColor, setSelectedColor] = useState("#ABF0FF");
   const [selectOpen, setSelectOpen] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
+
+  useEffect(() => {
+    setKey(prevKey => prevKey + 1);
+  }, [activeTab, isSidebarVisible]);
 
   const events1 = [
     { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
@@ -53,7 +60,7 @@ const Calendar = () => {
       setSelectedColor('#ABF0FF');
     }
   };
-  
+
   const handleMemoChange = (event: any) => {
     setMemo(event.target.value);
   };
@@ -128,6 +135,7 @@ const Calendar = () => {
             <TabPanel>
               <div className="calendar_container">
                 <FullCalendar
+                  key={key}
                   ref={calendarRef1}
                   plugins={[dayGridPlugin]}
                   initialView="dayGridMonth"
@@ -171,6 +179,7 @@ const Calendar = () => {
             <TabPanel>
               <div className="calendar_container">
                 <FullCalendar
+                  key={key}
                   ref={calendarRef2}
                   plugins={[dayGridPlugin]}
                   initialView="dayGridMonth"
@@ -213,10 +222,10 @@ const Calendar = () => {
           </TabPanels>
         </Tabs>
       </div>
-      
+
       <CustomModal
         isOpen={isAddeventModalOpen}
-        onClose={() => setAddEventModalOPen(false)} 
+        onClose={() => setAddEventModalOPen(false)}
         header={'일정 등록하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
@@ -230,32 +239,32 @@ const Calendar = () => {
           <div className="body-content">
             <div className="Select">
               <div className="SelectHeader" onClick={SelectOpen}>
-                <img src={SelectArrow} alt="SelectArrow"/>
+                <img src={SelectArrow} alt="SelectArrow" />
                 <div style={{ backgroundColor: selectedColor }}>&nbsp;</div>
               </div>
-              {selectOpen?(
-              <div className="SelectContent">
-                <div className="Option" onClick={() => SelectOptions('#ABF0FF')}>
-                  <span>반차</span>
-                  <div style={{ backgroundColor: '#ABF0FF' }}>&nbsp;</div>
+              {selectOpen ? (
+                <div className="SelectContent">
+                  <div className="Option" onClick={() => SelectOptions('#ABF0FF')}>
+                    <span>반차</span>
+                    <div style={{ backgroundColor: '#ABF0FF' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#7AE1A9')}>
+                    <span>연차</span>
+                    <div style={{ backgroundColor: '#7AE1A9' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#D6CDC2')}>
+                    <span>외근</span>
+                    <div style={{ backgroundColor: '#D6CDC2' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#FFD8B5')}>
+                    <span>워크숍</span>
+                    <div style={{ backgroundColor: '#FFD8B5' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#B1C2FF')}>
+                    <span>출장</span>
+                    <div style={{ backgroundColor: '#B1C2FF' }}>&nbsp;</div>
+                  </div>
                 </div>
-                <div className="Option" onClick={() => SelectOptions('#7AE1A9')}>
-                  <span>연차</span>
-                  <div style={{ backgroundColor: '#7AE1A9' }}>&nbsp;</div>
-                </div>
-                <div className="Option" onClick={() => SelectOptions('#D6CDC2')}>
-                  <span>외근</span>
-                  <div style={{ backgroundColor: '#D6CDC2' }}>&nbsp;</div>
-                </div>
-                <div className="Option" onClick={() => SelectOptions('#FFD8B5')}>
-                  <span>워크숍</span>
-                  <div style={{ backgroundColor: '#FFD8B5' }}>&nbsp;</div>
-                </div>
-                <div className="Option" onClick={() => SelectOptions('#B1C2FF')}>
-                  <span>출장</span>
-                  <div style={{ backgroundColor: '#B1C2FF' }}>&nbsp;</div>
-                </div>
-              </div>
               ) : (
                 <div></div>
               )}
@@ -298,15 +307,15 @@ const Calendar = () => {
               메모
             </div>
             <div className="content-right">
-              <textarea className="textareainput" placeholder='내용을 입력해주세요.' onChange={handleMemoChange}/>
+              <textarea className="textareainput" placeholder='내용을 입력해주세요.' onChange={handleMemoChange} />
             </div>
           </div>
         </div>
-      </CustomModal>  
+      </CustomModal>
 
       <CustomModal
         isOpen={iseventModalOpen}
-        onClose={() => setEventModalOPen(false)} 
+        onClose={() => setEventModalOPen(false)}
         header={'일정 확인'}
         footer1={'삭제'}
         footer1Class="red-btn"
@@ -354,11 +363,11 @@ const Calendar = () => {
             </div>
           </div>
         </div>
-      </CustomModal>  
-      
+      </CustomModal>
+
       <CustomModal
         isOpen={isEditeventModalOpen}
-        onClose={() => setEditEventModalOPen(false)} 
+        onClose={() => setEditEventModalOPen(false)}
         header={'일정 수정하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
@@ -372,32 +381,32 @@ const Calendar = () => {
           <div className="body-content">
             <div className="Select">
               <div className="SelectHeader" onClick={SelectOpen}>
-                <img src={SelectArrow} alt="SelectArrow"/>
+                <img src={SelectArrow} alt="SelectArrow" />
                 <div style={{ backgroundColor: selectedColor }}>&nbsp;</div>
               </div>
-              {selectOpen?(
-              <div className="SelectContent">
-                <div className="Option" onClick={() => SelectOptions('#ABF0FF')}>
-                  <span>반차</span>
-                  <div style={{ backgroundColor: '#ABF0FF' }}>&nbsp;</div>
+              {selectOpen ? (
+                <div className="SelectContent">
+                  <div className="Option" onClick={() => SelectOptions('#ABF0FF')}>
+                    <span>반차</span>
+                    <div style={{ backgroundColor: '#ABF0FF' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#7AE1A9')}>
+                    <span>연차</span>
+                    <div style={{ backgroundColor: '#7AE1A9' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#D6CDC2')}>
+                    <span>외근</span>
+                    <div style={{ backgroundColor: '#D6CDC2' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#FFD8B5')}>
+                    <span>워크숍</span>
+                    <div style={{ backgroundColor: '#FFD8B5' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#B1C2FF')}>
+                    <span>출장</span>
+                    <div style={{ backgroundColor: '#B1C2FF' }}>&nbsp;</div>
+                  </div>
                 </div>
-                <div className="Option" onClick={() => SelectOptions('#7AE1A9')}>
-                  <span>연차</span>
-                  <div style={{ backgroundColor: '#7AE1A9' }}>&nbsp;</div>
-                </div>
-                <div className="Option" onClick={() => SelectOptions('#D6CDC2')}>
-                  <span>외근</span>
-                  <div style={{ backgroundColor: '#D6CDC2' }}>&nbsp;</div>
-                </div>
-                <div className="Option" onClick={() => SelectOptions('#FFD8B5')}>
-                  <span>워크숍</span>
-                  <div style={{ backgroundColor: '#FFD8B5' }}>&nbsp;</div>
-                </div>
-                <div className="Option" onClick={() => SelectOptions('#B1C2FF')}>
-                  <span>출장</span>
-                  <div style={{ backgroundColor: '#B1C2FF' }}>&nbsp;</div>
-                </div>
-              </div>
               ) : (
                 <div></div>
               )}
@@ -440,7 +449,7 @@ const Calendar = () => {
               메모
             </div>
             <div className="content-right">
-              <textarea className="textareainput" placeholder='내용을 입력해주세요.' onChange={handleMemoChange}/>
+              <textarea className="textareainput" placeholder='내용을 입력해주세요.' onChange={handleMemoChange} />
             </div>
           </div>
         </div>
@@ -448,7 +457,7 @@ const Calendar = () => {
 
       <CustomModal
         isOpen={isDeleteeventModalOpen}
-        onClose={() => setDeleteEventModalOPen(false)} 
+        onClose={() => setDeleteEventModalOPen(false)}
         header={'알림'}
         footer1={'삭제'}
         footer1Class="red-btn"
