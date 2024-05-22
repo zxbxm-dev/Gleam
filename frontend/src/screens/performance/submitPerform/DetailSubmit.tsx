@@ -7,6 +7,7 @@ import {
   DeleteIcon,
 } from "../../../assets/images/index";
 import CustomModal from '../../../components/modal/CustomModal';
+import {FileSubmit} from "../../../services/Evaluation/SubmitServices";
 
 type PDFFile = string | File | null;
 
@@ -40,10 +41,30 @@ const SubmitPerform = () => {
     setFiles(updatedFiles);
   };
 
-  const handleSumbitFile = () => {
-    setSubmitModalOpen(true);
-  }
 
+  //추후 username 추가해주세요
+  const handleSumbitFile = () => {
+    const validFiles = files.filter(file => file !== null);
+  
+    if (validFiles.length === 0) {
+      console.error('No files to submit');
+      return;
+    }
+  
+    const formData = new FormData();
+    validFiles.forEach((file, index) => {
+      formData.append(`file${index}`, file!);
+    });
+
+    FileSubmit(formData)
+      .then(response => {
+        console.log("Files submitted successfully:", response);
+        setSubmitModalOpen(true);
+      })
+      .catch(error => {
+        console.error('Error submitting files:', error);
+      });
+  };
   return (
     <div className="content">
       <div className="content_header" style={{ justifyContent: 'space-between' }}>
