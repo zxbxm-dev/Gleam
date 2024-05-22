@@ -19,6 +19,8 @@ export { default as NewIcon } from "./NewIcon.svg";
 export { default as SelectArrow } from "./SelectArrow.svg";
 export { default as ModalCloseBtn } from "./ModalCloseBtn.svg";
 export { default as Approval_Plus } from "./Approval_Plus.svg";
+export { default as Approval_Plus_green } from "./Approval_Plus_green.svg";
+export { default as Approval_Minus } from "./Approval_Minus.svg";
 
 
 
