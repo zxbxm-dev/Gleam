@@ -18,12 +18,11 @@ const Approval = () => {
   const [rejecteds, setRejected] = useState<any[]>([]);
   const [mydocuments, setMyDocument] = useState<any[]>([]);
   const [compleDocuments, setCompleDocument] = useState<any[]>([]);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [idSortOrder, setIdSortOrder] = useState<"asc" | "desc">("asc");
   const [titleSortOrder, setTitleSortOrder] = useState<"asc" | "desc">("asc");
   const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");
   const [stateSortOrder, setStateSortOrder] = useState<"asc" | "desc">("asc");
   const [writerSortOrder, setWriterSortOrder] = useState<"asc" | "desc">("asc");
-
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -95,68 +94,30 @@ const Approval = () => {
     setMyDocument(initializedDocuments);
   }, [approval]);
 
-  const handleSort = () => {
-    const sortedDocuments = [...approvalings].sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.id - b.id;
+  const handleSort = (sortKey: string, targetState: any[], setTargetState: React.Dispatch<React.SetStateAction<any[]>>) => {
+    // 정렬 상태 변수를 저장하는 Map
+    const sortOrders: Map<string, ["asc" | "desc", React.Dispatch<React.SetStateAction<"asc" | "desc">>]> = new Map([
+      ["id", [idSortOrder, setIdSortOrder]],
+      ["title", [titleSortOrder, setTitleSortOrder]],
+      ["date", [dateSortOrder, setDateSortOrder]],
+      ["sadate", [dateSortOrder, setDateSortOrder]],
+      ["state", [stateSortOrder, setStateSortOrder]],
+      ["writer", [writerSortOrder, setWriterSortOrder]],
+    ]);
+
+    const [currentSortOrder, setCurrentSortOrder] = sortOrders.get(sortKey) || ["asc", setIdSortOrder];
+
+    const sortedDocuments = [...targetState].sort((a, b) => {
+      if (currentSortOrder === "asc") {
+        return a[sortKey] > b[sortKey] ? 1 : -1;
       } else {
-        return b.id - a.id;
+        return a[sortKey] < b[sortKey] ? 1 : -1;
       }
     });
-    setApprovaling(sortedDocuments);
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-  };
 
-  const handleTitleSort = () => {
-    const sortedDocuments = [...approvalings].sort((a, b) => {
-      if (titleSortOrder === "asc") {
-        return a.title.localeCompare(b.title);
-      } else {
-        return b.title.localeCompare(a.title);
-      }
-    });
-    setApprovaling(sortedDocuments);
-    setTitleSortOrder(titleSortOrder === "asc" ? "desc" : "asc");
+    setCurrentSortOrder(currentSortOrder === "asc" ? "desc" : "asc");
+    setTargetState(sortedDocuments);
   };
-
-  const handleDateSort = () => {
-    const sortedDocuments = [...approvalings].sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      if (dateSortOrder === "asc") {
-        return dateA.getTime() - dateB.getTime();
-      } else {
-        return dateB.getTime() - dateA.getTime();
-      }
-    });
-    setApprovaling(sortedDocuments);
-    setDateSortOrder(dateSortOrder === "asc" ? "desc" : "asc");
-  };
-
-  const handleStateSort = () => {
-    const sortedDocuments = [...approvalings].sort((a, b) => {
-      if (stateSortOrder === "asc") {
-        return a.state.localeCompare(b.state);
-      } else {
-        return b.state.localeCompare(a.state);
-      }
-    });
-    setApprovaling(sortedDocuments);
-    setStateSortOrder(stateSortOrder === "asc" ? "desc" : "asc");
-  };
-
-  const handleWriterSort = () => {
-    const sortedDocuments = [...approvalings].sort((a, b) => {
-      if (writerSortOrder === "asc") {
-        return a.writer.localeCompare(b.writer);
-      } else {
-        return b.writer.localeCompare(a.writer);
-      }
-    });
-    setApprovaling(sortedDocuments);
-    setWriterSortOrder(writerSortOrder === "asc" ? "desc" : "asc");
-  };
-
 
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -181,12 +142,12 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th onClick={handleSort} style={{ cursor: "pointer" }}>순번</th>
-                  <th onClick={handleTitleSort} style={{ cursor: "pointer" }}>제목</th>
-                  <th onClick={handleDateSort} style={{ cursor: "pointer" }}>결재수신일자</th>
+                  <th onClick={() => handleSort("id", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>순번</th>
+                  <th onClick={() => handleSort("title", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>제목</th>
+                  <th onClick={() => handleSort("date", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>결재수신일자</th>
                   <th>진행상황</th>
-                  <th onClick={handleStateSort} style={{ cursor: "pointer" }}>처리상황</th>
-                  <th onClick={handleWriterSort} style={{ cursor: "pointer" }}>작성자/부서</th>
+                  <th onClick={() => handleSort("state", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>처리상황</th>
+                  <th onClick={() => handleSort("writer", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -238,13 +199,13 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th>순번</th>
-                  <th>제목</th>
-                  <th>결재수신일자</th>
-                  <th>결재발신일자</th>
+                  <th onClick={() => handleSort("id", inProgress, setInProgress)} style={{ cursor: "pointer" }}>순번</th>
+                  <th onClick={() => handleSort("title", inProgress, setInProgress)} style={{ cursor: "pointer" }}>제목</th>
+                  <th onClick={() => handleSort("date", inProgress, setInProgress)} style={{ cursor: "pointer" }}>결재수신일자</th>
+                  <th onClick={() => handleSort("sadate", inProgress, setInProgress)} style={{ cursor: "pointer" }}>결재발신일자</th>
                   <th>진행상황</th>
-                  <th>처리상황</th>
-                  <th>작성자/부서</th>
+                  <th onClick={() => handleSort("state", inProgress, setInProgress)}>처리상황</th>
+                  <th onClick={() => handleSort("writer", inProgress, setInProgress)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -297,13 +258,13 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th>순번</th>
-                  <th>제목</th>
-                  <th>결재수신일자</th>
-                  <th>결재반려일자</th>
+                  <th onClick={() => handleSort("id", rejecteds, setRejected)} style={{ cursor: "pointer" }}>순번</th>
+                  <th onClick={() => handleSort("title", rejecteds, setRejected)} style={{ cursor: "pointer" }}>제목</th>
+                  <th onClick={() => handleSort("date", rejecteds, setRejected)} style={{ cursor: "pointer" }}>결재수신일자</th>
+                  <th onClick={() => handleSort("sadate", rejecteds, setRejected)} style={{ cursor: "pointer" }}>결재반려일자</th>
                   <th>진행상황</th>
-                  <th>처리상황</th>
-                  <th>작성자/부서</th>
+                  <th onClick={() => handleSort("state", rejecteds, setRejected)}>처리상황</th>
+                  <th onClick={() => handleSort("writer", rejecteds, setRejected)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -356,13 +317,13 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th>순번</th>
-                  <th>제목</th>
-                  <th>결재수신일자</th>
-                  <th>결재완료일자</th>
+                  <th onClick={() => handleSort("id", compleDocuments, setCompleDocument)} style={{ cursor: "pointer" }}>순번</th>
+                  <th onClick={() => handleSort("title", compleDocuments, setCompleDocument)} style={{ cursor: "pointer" }}>제목</th>
+                  <th onClick={() => handleSort("date", compleDocuments, setCompleDocument)} style={{ cursor: "pointer" }}>결재수신일자</th>
+                  <th onClick={() => handleSort("sadate", compleDocuments, setCompleDocument)} style={{ cursor: "pointer" }}>결재완료일자</th>
                   <th>진행상황</th>
-                  <th>처리상황</th>
-                  <th>작성자/부서</th>
+                  <th onClick={() => handleSort("state", compleDocuments, setCompleDocument)}>처리상황</th>
+                  <th onClick={() => handleSort("writer", compleDocuments, setCompleDocument)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -415,13 +376,13 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th>순번</th>
-                  <th>제목</th>
-                  <th>결재수신일자</th>
-                  <th>처리일자</th>
+                  <th onClick={() => handleSort("id", mydocuments, setMyDocument)} style={{ cursor: "pointer" }}>순번</th>
+                  <th onClick={() => handleSort("title", mydocuments, setMyDocument)} style={{ cursor: "pointer" }}>제목</th>
+                  <th onClick={() => handleSort("date", mydocuments, setMyDocument)} style={{ cursor: "pointer" }}>결재수신일자</th>
+                  <th onClick={() => handleSort("sadate", mydocuments, setMyDocument)} style={{ cursor: "pointer" }}>처리일자</th>
                   <th>진행상황</th>
-                  <th>처리상황</th>
-                  <th>작성자/부서</th>
+                  <th onClick={() => handleSort("state", mydocuments, setMyDocument)}>처리상황</th>
+                  <th onClick={() => handleSort("writer", mydocuments, setMyDocument)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
