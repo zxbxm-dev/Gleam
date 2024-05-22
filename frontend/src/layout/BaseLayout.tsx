@@ -11,10 +11,10 @@ const BaseLayout = () => {
 
   let marginLeft = 0;
   if (isSidebarVisible) {
-    marginLeft += 250;
+    marginLeft += 200;
   }
   if (isHrSidebarVisible) {
-    marginLeft += 250;
+    marginLeft += 200;
   }
   
   const handleMemberClick = (name: string, dept: string, team: string, position: string) => {

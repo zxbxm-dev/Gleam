@@ -356,10 +356,6 @@
     align-items: center;
     gap: 10px;
 
-    input {
-      width: 175px;
-    }
-
     .approval_checkbox {
       width: 18px;
       height: 18px;
@@ -475,11 +471,8 @@
   .approval_line {
     display: flex;
     align-items: center;
+    width: 100%;
     gap: 10px;
-
-    input {
-      width: 175px;
-    }
 
     .approval_checkbox {
       width: 18px;
@@ -676,18 +669,23 @@
   }
 
   .approval_content {
-    width: 180px;
+    width: 200px;
     height: 70px;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
 
     .approval_line {
+      width: 100%;
       input {
         width: 155px;
       }
     }
 
     .approval_name {
-      width: 180px;
-      height: 35px;
+      width: 200px;
+      height: 50px;
       gap: 8px;
 
       .name_text {
@@ -697,17 +695,16 @@
 
     .approval_checked {
       cursor: pointer;
-      width: 180px;
+      width: 200px;
       height: 40px;
       font-size: 12px;
     }
   }
 
   .last_approval_content {
-    width: 180px;
+    width: 200px;
     height: 70px;
     bottom: 100px;
-    left: 35px;
 
     .approval_line {
       input {
@@ -716,7 +713,7 @@
     }
 
     .approval_name {
-      width: 180px;
+      width: 200px;
       height: 35px;
       gap: 8px;
 
@@ -727,14 +724,14 @@
 
     .approval_checked {
       cursor: pointer;
-      width: 180px;
+      width: 200px;
       height: 40px;
       font-size: 12px;
     }
   }
 
   .approvals_contents {
-    width: 180px;
+    width: 200px;
     height: 90px;
 
     .approval_name {
