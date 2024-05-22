@@ -39,13 +39,17 @@ const DetailApproval = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
-  const [checksignup, setCheckSignUp] = useState<boolean[]>([false, false, false]);
+  const [checksignup, setCheckSignUp] = useState<boolean[]>([]);
   const [signupindex, setSignUpIndex] = useState<number>(0);
-  const [signDates, setSignDates] = useState<string[]>(['', '', '']);
+  const [signDates, setSignDates] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const signatories = ['작성자','팀장', '부서장', '지원팀장', '대표'];
 
   useEffect(() => {
     setFile(testPDF);
+    setCheckSignUp(new Array(signatories.length).fill(false));
+    setSignDates(new Array(signatories.length).fill(''));
   }, []);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
@@ -111,7 +115,6 @@ const DetailApproval = () => {
 
     onClose();
   }
-
 
   const handleSignDel = (index: number) => {
     const newCheckSignUp = [...checksignup];
@@ -192,7 +195,7 @@ const DetailApproval = () => {
                       <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>반려 사유 작성</PopoverHeader>
                       <PopoverCloseButton color='white' />
                       <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px'>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent:'center' }}>
                           <div style={{ display: 'flex', gap: '10px' }}>
                             <div style={{ width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>반려자</div>
                             <div style={{ color: '#323232', fontFamily: 'var(--font-family-Noto-M)' }}>김효은 팀장</div>
@@ -216,39 +219,19 @@ const DetailApproval = () => {
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                 <div ref={containerRef} id="report-to-xls">
                   <div className='PaymentLine'>
-                    <div className='Pay'>
-                      <input className='Top' type="text" placeholder='팀장' disabled />
-                      <div className='Bottom' onClick={() => handleSignModal(0)}>
-                        {checksignup[0] ?
-                          <img className='SignImg' src={sign} alt="sign" />
-                          :
-                          <></>
-                        }
+                    {signatories.map((signatory, index) => (
+                      <div className='Pay' key={index}>
+                        <input className='Top' type="text" placeholder={signatory} disabled />
+                        <div className='Bottom' onClick={() => handleSignModal(index)}>
+                          {checksignup[index] ?
+                            <img className='SignImg' src={sign} alt="sign" />
+                            :
+                            <></>
+                          }
+                        </div>
+                        <div className='BtmDate'>{signDates[index] || ''}</div>
                       </div>
-                      <div className='BtmDate'>{signDates[0] || ''}</div>
-                    </div>
-                    <div className='Pay'>
-                      <input className='Top' type="text" placeholder='부서장' disabled />
-                      <div className='Bottom' onClick={() => handleSignModal(1)}>
-                        {checksignup[1] ?
-                          <img src={sign} alt="sign" />
-                          :
-                          <></>
-                        }
-                      </div>
-                      <div className='BtmDate'>{signDates[1] || ''}</div>
-                    </div>
-                    <div className='Pay'>
-                      <input className='Top' type="text" placeholder='대표' disabled />
-                      <div className='Bottom' onClick={() => handleSignModal(2)}>
-                        {checksignup[2] ?
-                          <img src={sign} alt="sign" />
-                          :
-                          <></>
-                        }
-                      </div>
-                      <div className='BtmDate'>{signDates[2] || ''}</div>
-                    </div>
+                    ))}
                   </div>
                   {renderPages()}
                 </div>
