@@ -89,7 +89,7 @@ const WriteReport = () => {
     setSelectOpen(false);
     updateApprovalLines(report);
   };
-  
+
   const approvalFixed = members.find(member => member[0] === '이정훈') || null;
 
   const updateApprovalLines = (report: string) => {
@@ -98,7 +98,7 @@ const WriteReport = () => {
       case '주간업무일지':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
         ];
@@ -368,7 +368,7 @@ const WriteReport = () => {
       setApprovalLines(updatedApprovalLines);
     }
   };
-  
+
   // 결재라인 추가 함수
   const addApprovalLine = () => {
     if (approvalLines.length <= 6) {
@@ -377,7 +377,7 @@ const WriteReport = () => {
     }
   };
 
-   // 결재라인 삭제 함수
+  // 결재라인 삭제 함수
   const removeApprovalLine = (index: number) => {
     if (approvalLines.length > 1) { // 최소 1개 이상의 결재라인이 있어야 삭제할 수 있음
       const updatedLines = approvalLines.filter((line, i) => i !== index);
@@ -408,7 +408,7 @@ const WriteReport = () => {
                     <img src={SelectArrow} alt="SelectArrow" className="SelectArrow" />
                     <span>{selectedReport}</span>
                   </div>
-                  {selectOpen?(
+                  {selectOpen ? (
                     <div className="Select_report_Content">
                       <div>공통 보고서</div>
                       <div className="Option" onClick={() => SelectOptions('주간업무일지')}>
@@ -463,9 +463,9 @@ const WriteReport = () => {
                         <span>프로젝트 기획서</span>
                       </div>
                     </div>
-                    ) : (
-                      <div></div>
-                    )}
+                  ) : (
+                    <div></div>
+                  )}
                 </div>
               </div>
 
@@ -482,14 +482,59 @@ const WriteReport = () => {
                         <div style={{ width: '200px', height: '650px', overflowY: 'scroll', scrollbarWidth: 'thin' }}>
                           <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
                         </div>
-                        <div style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative'}}>
-                          {approvalLines.map((line, index) => (
-                            <div key={index} className={line.name === '참조' ? "last_approval_content" : "approval_content"} onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
+                        <div className='FlexContentBox'>
+                          <div className='ContentBox' style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative' }}>
+                            {approvalLines.filter(line => line.name !== '참조').map((line, index) => (
+                              <div key={index} className="approval_content" onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
+                                <div className='approval_line'>
+                                  <input type="text" value={line.name} onChange={(e) => handleNameChange(index, e.target.value)} />
+                                  {hoveredIndex === index ?
+                                    <img src={Approval_Minus} alt="Approval_Minus" onClick={() => { removeApprovalLine(index) }} style={{ cursor: 'pointer' }} />
+                                    :
+                                    <></>
+                                  }
+                                </div>
+                                {line.checked ? (
+                                  line.selectedMember ? (
+                                    <div className='approval_name'>
+                                      <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                      <div className='name_text'>{line.selectedMember[0]}</div>
+                                      <div className='name_border'></div>
+                                      <div className='name_text'>{line.selectedMember[3]}</div>
+                                    </div>
+                                  ) : (
+                                    <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index)}>
+                                      <div>&nbsp;</div>
+                                    </div>
+                                  )
+                                ) : (
+                                  <div className="approval_unchecked" onClick={() => handleCheckboxChange(index)}>
+                                    칸 선택 후 좌측 리스트에서<br />
+                                    결재라인을 선택해주세요
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                            {approvalLines.length <= 6 ? (
+                              <img src={isHovered ? Approval_Plus_green : Approval_Plus}
+                                alt="Approval_Plus"
+                                onClick={addApprovalLine}
+                                style={{ cursor: 'pointer' }}
+                                onMouseEnter={() => setIsHovered(true)}
+                                onMouseLeave={() => setIsHovered(false)}
+                              />
+                            ) : (
+                              <></>
+
+                            )}
+                          </div>
+                          {approvalLines.filter(line => line.name === '참조').map((line, index) => (
+                            <div key={index} className="last_approval_content" onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
                               <div className='approval_line'>
-                                <input type="text" value={line.name} onChange={(e) => handleNameChange(index, e.target.value)}/>
-                                {hoveredIndex === index ? 
-                                  <img src={Approval_Minus} alt="Approval_Minus" onClick={() => {removeApprovalLine(index)}} style={{cursor: 'pointer'}}/>
-                                  : 
+                                <input type="text" value={line.name} onChange={(e) => handleNameChange(index, e.target.value)} />
+                                {hoveredIndex === index ?
+                                  <img src={Approval_Minus} alt="Approval_Minus" onClick={() => { removeApprovalLine(index) }} style={{ cursor: 'pointer' }} />
+                                  :
                                   <></>
                                 }
                               </div>
@@ -506,11 +551,10 @@ const WriteReport = () => {
                                     <div className='approvals_contents'>
                                       {line.selectedMembers.map((member, index) => (
                                         <div key={index} className='approval_small_name'>
-                                          {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                           <div className='name_text'>{member[0]}</div>
                                           <div className='name_border'></div>
                                           <div className='name_text'>{member[3]}</div>
-                                          <img src={CloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)}/>
+                                          <img src={CloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
                                         </div>
                                       ))}
                                     </div>
@@ -528,19 +572,6 @@ const WriteReport = () => {
                               )}
                             </div>
                           ))}
-
-                          {approvalLines.length <= 6 ? (
-                            <img src={isHovered ? Approval_Plus_green : Approval_Plus} 
-                            alt="Approval_Plus" 
-                            onClick={addApprovalLine} 
-                            style={{cursor: 'pointer'}}
-                            onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={() => setIsHovered(false)}
-                            />
-                          ) : (
-                            <></>
-
-                          )}
 
                           <div className='button-wrap'>
                             <button className="second_button" onClick={() => setSubmitModalOpen(true)}>제출</button>
@@ -599,7 +630,7 @@ const WriteReport = () => {
       </div>
       <CustomModal
         isOpen={isSubmitModalOpen}
-        onClose={() => setSubmitModalOpen(false)} 
+        onClose={() => setSubmitModalOpen(false)}
         header={'알림'}
         footer1={'확인'}
         footer1Class="green-btn"

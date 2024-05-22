@@ -343,18 +343,36 @@
   }
 }
 
+.FlexContentBox{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+.ContentBox{
+  overflow-y: scroll;
+  height: 450px;
 .approval_content {
   align-items: center;
   font-family: var(--font-family-Noto-M);
   color: #929292;
   width: 200px;
   height: 80px;
+  gap: 5px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+
 
   .approval_line {
+    width: 100%;
     font-size: 14px;
     display: flex;
     align-items: center;
     gap: 10px;
+
+    input{
+      width: 170px;
+    }
 
     .approval_checkbox {
       width: 18px;
@@ -371,7 +389,8 @@
   .approval_name {
     display: flex;
     align-items: center;
-    padding-left: 20px;
+    // justify-content: center;
+    padding-left: 25px;
     width: 200px;
     height: 50px;
     border: 1px solid #ECECEC;
@@ -458,10 +477,10 @@
       }
   }
 }
-
+}
+}
 .last_approval_content {
-  position: absolute;
-  bottom: 80px;
+margin-bottom: 35px;
   align-items: center;
   font-family: var(--font-family-Noto-M);
   color: #929292;
@@ -473,6 +492,10 @@
     align-items: center;
     width: 100%;
     gap: 10px;
+
+    input{
+      width: 170px;
+    }
 
     .approval_checkbox {
       width: 18px;
@@ -574,7 +597,7 @@
 
 .button-wrap {
   display: flex;
-  position: absolute;
+  // position: absolute;
   bottom: 5px;
   gap: 7px;
 
