@@ -6,6 +6,7 @@ import {
   CloseIcon,
   SelectArrow,
   Approval_Plus,
+  Approval_Plus_green,
   Approval_Minus,
 } from "../../assets/images/index";
 import { useLocation, Link } from "react-router-dom";
@@ -47,6 +48,9 @@ const WriteReport = () => {
   const [selectedApproval, setSelectedApproval] = useState('');
   const [selectedReport, setSelectedReport] = useState("");
   const [selectOpen, setSelectOpen] = useState(false);
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (reportName) {
@@ -95,22 +99,154 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '주간업무일지1', checked: false, selectedMember: null },
-          { name: '주간업무일지2', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
         ];
         break;
       case '지출품의서':
         newApprovalLines = [
-          { name: '지출품의서1', checked: false, selectedMember: null },
-          { name: '지출품의서2', checked: false, selectedMember: null },
-          { name: '지출품의서3', checked: false, selectedMember: null },
-          { name: '지출품의서4', checked: false, selectedMember: null },
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '휴가신청서':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '시말서':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '사직서':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '휴직원':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '복직원':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '워크숍 신청서':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '워크숍 보고서 (프로젝트 회의)':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '워크숍 보고서 (야유회)':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '지출내역서':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '예산신청서 (지원팀)':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '기획서':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '최종보고서':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
+        ];
+        break;
+      case '프로젝트 기획서':
+        newApprovalLines = [
+          { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: false, selectedMember: null },
+          { name: '팀장', checked: false, selectedMember: null },
+          { name: '작성자', checked: false, selectedMember: null },
         ];
         break;
       default:
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: false, selectedMember: null },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
           { name: '결재라인 1', checked: false, selectedMember: null },
           { name: '결재라인 2', checked: false, selectedMember: null },
           { name: '결재라인 3', checked: false, selectedMember: null },
@@ -348,10 +484,14 @@ const WriteReport = () => {
                         </div>
                         <div style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative'}}>
                           {approvalLines.map((line, index) => (
-                            <div key={index} className={line.name === '참조' ? "last_approval_content" : "approval_content"}>
+                            <div key={index} className={line.name === '참조' ? "last_approval_content" : "approval_content"} onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
                               <div className='approval_line'>
                                 <input type="text" value={line.name} onChange={(e) => handleNameChange(index, e.target.value)}/>
-                                <img src={Approval_Minus} alt="Approval_Minus" onClick={() => {removeApprovalLine(index)}} style={{cursor: 'pointer'}}/>
+                                {hoveredIndex === index ? 
+                                  <img src={Approval_Minus} alt="Approval_Minus" onClick={() => {removeApprovalLine(index)}} style={{cursor: 'pointer'}}/>
+                                  : 
+                                  <></>
+                                }
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
@@ -375,13 +515,13 @@ const WriteReport = () => {
                                       ))}
                                     </div>
                                   ) : (
-                                    <div className='approval_checked' onClick={() => handleCheckboxChange(index)}>
+                                    <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index)}>
                                       <div>&nbsp;</div>
                                     </div>
                                   )
                                 )
                               ) : (
-                                <div className='approval_checked' onClick={() => handleCheckboxChange(index)}>
+                                <div className="approval_unchecked" onClick={() => handleCheckboxChange(index)}>
                                   칸 선택 후 좌측 리스트에서<br />
                                   결재라인을 선택해주세요
                                 </div>
@@ -389,11 +529,18 @@ const WriteReport = () => {
                             </div>
                           ))}
 
-                          {approvalLines.length <= 6 ? 
-                            <img src={Approval_Plus} alt="Approval_Plus" onClick={addApprovalLine} style={{cursor: 'pointer'}}/>
-                            :
+                          {approvalLines.length <= 6 ? (
+                            <img src={isHovered ? Approval_Plus_green : Approval_Plus} 
+                            alt="Approval_Plus" 
+                            onClick={addApprovalLine} 
+                            style={{cursor: 'pointer'}}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
+                            />
+                          ) : (
                             <></>
-                          }
+
+                          )}
 
                           <div className='button-wrap'>
                             <button className="second_button" onClick={() => setSubmitModalOpen(true)}>제출</button>
