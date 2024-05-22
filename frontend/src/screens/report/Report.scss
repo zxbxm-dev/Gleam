@@ -355,6 +355,10 @@
     align-items: center;
     gap: 10px;
 
+    input{
+      width: 150px;
+    }
+
     .approval_checkbox {
       width: 18px;
       height: 18px;
@@ -449,6 +453,10 @@
     display: flex;
     align-items: center;
     gap: 10px;
+
+    input{
+      width: 150px;
+    }
 
     .approval_checkbox {
       width: 18px;

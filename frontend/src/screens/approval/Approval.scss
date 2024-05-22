@@ -108,6 +108,11 @@
       font-size: 17px;
       border-top: 2px solid #DCDCDC;
       background-color: #EEEEEE;
+
+      .HoverTab:hover{
+        background-color: rgba(0,0,0,0.10);
+        cursor: pointer;
+      }
     }
     
     .board_container {

@@ -142,12 +142,12 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th onClick={() => handleSort("id", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>순번</th>
-                  <th onClick={() => handleSort("title", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>제목</th>
-                  <th onClick={() => handleSort("date", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>결재수신일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", approvalings, setApprovaling)}>순번</th>
+                  <th className="HoverTab" onClick={() => handleSort("title", approvalings, setApprovaling)}>제목</th>
+                  <th className="HoverTab" onClick={() => handleSort("date", approvalings, setApprovaling)}>결재수신일자</th>
                   <th>진행상황</th>
-                  <th onClick={() => handleSort("state", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>처리상황</th>
-                  <th onClick={() => handleSort("writer", approvalings, setApprovaling)} style={{ cursor: "pointer" }}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", approvalings, setApprovaling)}>처리상황</th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", approvalings, setApprovaling)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -199,13 +199,13 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th onClick={() => handleSort("id", inProgress, setInProgress)} style={{ cursor: "pointer" }}>순번</th>
-                  <th onClick={() => handleSort("title", inProgress, setInProgress)} style={{ cursor: "pointer" }}>제목</th>
-                  <th onClick={() => handleSort("date", inProgress, setInProgress)} style={{ cursor: "pointer" }}>결재수신일자</th>
-                  <th onClick={() => handleSort("sadate", inProgress, setInProgress)} style={{ cursor: "pointer" }}>결재발신일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", inProgress, setInProgress)}>순번</th>
+                  <th className="HoverTab" onClick={() => handleSort("title", inProgress, setInProgress)}>제목</th>
+                  <th className="HoverTab" onClick={() => handleSort("date", inProgress, setInProgress)}>결재수신일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("sadate", inProgress, setInProgress)}>결재발신일자</th>
                   <th>진행상황</th>
-                  <th onClick={() => handleSort("state", inProgress, setInProgress)}>처리상황</th>
-                  <th onClick={() => handleSort("writer", inProgress, setInProgress)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", inProgress, setInProgress)}>처리상황</th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", inProgress, setInProgress)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -258,13 +258,13 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th onClick={() => handleSort("id", rejecteds, setRejected)} style={{ cursor: "pointer" }}>순번</th>
-                  <th onClick={() => handleSort("title", rejecteds, setRejected)} style={{ cursor: "pointer" }}>제목</th>
-                  <th onClick={() => handleSort("date", rejecteds, setRejected)} style={{ cursor: "pointer" }}>결재수신일자</th>
-                  <th onClick={() => handleSort("sadate", rejecteds, setRejected)} style={{ cursor: "pointer" }}>결재반려일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", rejecteds, setRejected)}>순번</th>
+                  <th className="HoverTab" onClick={() => handleSort("title", rejecteds, setRejected)}>제목</th>
+                  <th className="HoverTab" onClick={() => handleSort("date", rejecteds, setRejected)}>결재수신일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("sadate", rejecteds, setRejected)}>결재반려일자</th>
                   <th>진행상황</th>
-                  <th onClick={() => handleSort("state", rejecteds, setRejected)}>처리상황</th>
-                  <th onClick={() => handleSort("writer", rejecteds, setRejected)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", rejecteds, setRejected)}>처리상황</th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", rejecteds, setRejected)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -317,13 +317,13 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th onClick={() => handleSort("id", compleDocuments, setCompleDocument)} style={{ cursor: "pointer" }}>순번</th>
-                  <th onClick={() => handleSort("title", compleDocuments, setCompleDocument)} style={{ cursor: "pointer" }}>제목</th>
-                  <th onClick={() => handleSort("date", compleDocuments, setCompleDocument)} style={{ cursor: "pointer" }}>결재수신일자</th>
-                  <th onClick={() => handleSort("sadate", compleDocuments, setCompleDocument)} style={{ cursor: "pointer" }}>결재완료일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", compleDocuments, setCompleDocument)}>순번</th>
+                  <th className="HoverTab" onClick={() => handleSort("title", compleDocuments, setCompleDocument)}>제목</th>
+                  <th className="HoverTab" onClick={() => handleSort("date", compleDocuments, setCompleDocument)}>결재수신일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("sadate", compleDocuments, setCompleDocument)}>결재완료일자</th>
                   <th>진행상황</th>
-                  <th onClick={() => handleSort("state", compleDocuments, setCompleDocument)}>처리상황</th>
-                  <th onClick={() => handleSort("writer", compleDocuments, setCompleDocument)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", compleDocuments, setCompleDocument)}>처리상황</th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", compleDocuments, setCompleDocument)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -376,13 +376,13 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th onClick={() => handleSort("id", mydocuments, setMyDocument)} style={{ cursor: "pointer" }}>순번</th>
-                  <th onClick={() => handleSort("title", mydocuments, setMyDocument)} style={{ cursor: "pointer" }}>제목</th>
-                  <th onClick={() => handleSort("date", mydocuments, setMyDocument)} style={{ cursor: "pointer" }}>결재수신일자</th>
-                  <th onClick={() => handleSort("sadate", mydocuments, setMyDocument)} style={{ cursor: "pointer" }}>처리일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", mydocuments, setMyDocument)}>순번</th>
+                  <th className="HoverTab" onClick={() => handleSort("title", mydocuments, setMyDocument)}>제목</th>
+                  <th className="HoverTab" onClick={() => handleSort("date", mydocuments, setMyDocument)}>결재수신일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("sadate", mydocuments, setMyDocument)}>처리일자</th>
                   <th>진행상황</th>
-                  <th onClick={() => handleSort("state", mydocuments, setMyDocument)}>처리상황</th>
-                  <th onClick={() => handleSort("writer", mydocuments, setMyDocument)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", mydocuments, setMyDocument)}>처리상황</th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", mydocuments, setMyDocument)}>작성자/부서</th>
                   <th>결재</th>
                 </tr>
               </thead>
