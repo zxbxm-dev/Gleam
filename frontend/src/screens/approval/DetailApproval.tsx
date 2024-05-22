@@ -26,7 +26,7 @@ import {
 } from '@chakra-ui/react';
 import { Textarea } from '@chakra-ui/react';
 import sign from "../../assets/images/sign/구민석_서명.png";
-import testPDF from '../../assets/pdf/[서식-A106] 기획서(로고위, 문서번호 조정).pdf';
+import testPDF from '../../assets/pdf/[서식-A106] 기획서.pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
