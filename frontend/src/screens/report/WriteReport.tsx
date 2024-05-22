@@ -6,6 +6,7 @@ import {
   CloseIcon,
   SelectArrow,
   Approval_Plus,
+  Approval_Minus,
 } from "../../assets/images/index";
 import { useLocation, Link } from "react-router-dom";
 import HrSidebar from "../../components/sidebar/HrSidebar";
@@ -33,6 +34,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 type PDFFile = string | File | null;
 
+
+
 const WriteReport = () => {
   const location = useLocation();
   const { state } = location;
@@ -52,11 +55,38 @@ const WriteReport = () => {
     }
   }, [reportName]);
 
+  const members: Member[] = [
+    ['이정훈', '포체인스 주식회사', '', '대표'],
+    ['안후상', '포체인스 주식회사', '', '이사'],
+    ['이정열', '관리부', '', '부서장'],
+    ['김효은', '관리부', '관리팀', '팀장'],
+    ['우현지', '관리부', '관리팀', '사원'],
+    ['염승희', '관리부', '관리팀', '사원'],
+    ['김태희', '관리부', '지원팀', '팀장'],
+    ['이주범', '관리부', '지원팀', '사원'],
+    ['진유빈', '개발부', '', '부서장'],
+    ['장현지', '개발부', '개발 1팀', '사원'],
+    ['권채림', '개발부', '개발 1팀', '사원'],
+    ['구민석', '개발부', '개발 1팀', '사원'],
+    ['변도일', '개발부', '개발 2팀', '팀장'],
+    ['이로운', '개발부', '개발 2팀', '사원'],
+    ['권상원', '블록체인 사업부', '', '부서장'],
+    ['권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
+    ['김도환', '블록체인 사업부', '블록체인 1팀', '사원'],
+    ['김현지', '마케팅부', '', '부서장'],
+    ['전아름', '마케팅부', '기획팀', '팀장'],
+    ['함다슬', '마케팅부', '기획팀', '사원'],
+    ['전규미', '마케팅부', '기획팀', '사원'],
+    ['서주희', '마케팅부', '디자인팀', '사원'],
+  ];
+
   const SelectOptions = (report: string) => {
     setSelectedReport(report);
     setSelectOpen(false);
     updateApprovalLines(report);
   };
+  
+  const approvalFixed = members.find(member => member[0] === '이정훈') || null;
 
   const updateApprovalLines = (report: string) => {
     let newApprovalLines;
@@ -64,9 +94,9 @@ const WriteReport = () => {
       case '주간업무일지':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
+          { name: '최종결재', checked: true, selectedMember: approvalFixed },
           { name: '주간업무일지1', checked: false, selectedMember: null },
           { name: '주간업무일지2', checked: false, selectedMember: null },
-          { name: '주간업무일지3', checked: false, selectedMember: null },
         ];
         break;
       case '지출품의서':
@@ -211,37 +241,19 @@ const WriteReport = () => {
     }
   };
 
+   // 결재라인 삭제 함수
+  const removeApprovalLine = (index: number) => {
+    if (approvalLines.length > 1) { // 최소 1개 이상의 결재라인이 있어야 삭제할 수 있음
+      const updatedLines = approvalLines.filter((line, i) => i !== index);
+      setApprovalLines(updatedLines);
+    }
+  };
+
   const handleNameChange = (index: number, newName: string) => {
     const updatedApprovalLines = [...approvalLines];
     updatedApprovalLines[index].name = newName;
     setApprovalLines(updatedApprovalLines);
   };
-
-
-  const members: Member[] = [
-    ['이정훈', '포체인스 주식회사', '', '대표'],
-    ['안후상', '포체인스 주식회사', '', '이사'],
-    ['이정열', '관리부', '', '부서장'],
-    ['김효은', '관리부', '관리팀', '팀장'],
-    ['우현지', '관리부', '관리팀', '사원'],
-    ['염승희', '관리부', '관리팀', '사원'],
-    ['김태희', '관리부', '지원팀', '팀장'],
-    ['이주범', '관리부', '지원팀', '사원'],
-    ['진유빈', '개발부', '', '부서장'],
-    ['장현지', '개발부', '개발 1팀', '사원'],
-    ['권채림', '개발부', '개발 1팀', '사원'],
-    ['구민석', '개발부', '개발 1팀', '사원'],
-    ['변도일', '개발부', '개발 2팀', '팀장'],
-    ['이로운', '개발부', '개발 2팀', '사원'],
-    ['권상원', '블록체인 사업부', '', '부서장'],
-    ['권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
-    ['김도환', '블록체인 사업부', '블록체인 1팀', '사원'],
-    ['김현지', '마케팅부', '', '부서장'],
-    ['전아름', '마케팅부', '기획팀', '팀장'],
-    ['함다슬', '마케팅부', '기획팀', '사원'],
-    ['전규미', '마케팅부', '기획팀', '사원'],
-    ['서주희', '마케팅부', '디자인팀', '사원'],
-  ];
 
   return (
     <div className="content">
@@ -339,6 +351,7 @@ const WriteReport = () => {
                             <div key={index} className={line.name === '참조' ? "last_approval_content" : "approval_content"}>
                               <div className='approval_line'>
                                 <input type="text" value={line.name} onChange={(e) => handleNameChange(index, e.target.value)}/>
+                                <img src={Approval_Minus} alt="Approval_Minus" onClick={() => {removeApprovalLine(index)}} style={{cursor: 'pointer'}}/>
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
@@ -362,7 +375,7 @@ const WriteReport = () => {
                                       ))}
                                     </div>
                                   ) : (
-                                    <div className='approval_checked'>
+                                    <div className='approval_checked' onClick={() => handleCheckboxChange(index)}>
                                       <div>&nbsp;</div>
                                     </div>
                                   )
@@ -377,7 +390,7 @@ const WriteReport = () => {
                           ))}
 
                           {approvalLines.length <= 6 ? 
-                            <img src={Approval_Plus} alt="Approval_Plus" onClick={addApprovalLine}/>
+                            <img src={Approval_Plus} alt="Approval_Plus" onClick={addApprovalLine} style={{cursor: 'pointer'}}/>
                             :
                             <></>
                           }

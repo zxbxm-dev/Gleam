@@ -347,13 +347,17 @@
   align-items: center;
   font-family: var(--font-family-Noto-M);
   color: #929292;
-  width: 230px;
+  width: 200px;
   height: 80px;
 
   .approval_line {
     display: flex;
     align-items: center;
     gap: 10px;
+
+    input {
+      width: 175px;
+    }
 
     .approval_checkbox {
       width: 18px;
@@ -367,12 +371,11 @@
     }
   }
 
-
   .approval_name {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 230px;
+    width: 200px;
     height: 50px;
     border: 1px solid #ECECEC;
     font-family: var(--font-family-Noto-M);
@@ -427,7 +430,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 230px;
+    width: 200px;
     height: 50px;
     border: 1px solid #ECECEC;
     font-family: var(--font-family-Noto-R);
@@ -442,13 +445,17 @@
   align-items: center;
   font-family: var(--font-family-Noto-M);
   color: #929292;
-  width: 230px;
+  width: 200px;
   height: 80px;
 
   .approval_line {
     display: flex;
     align-items: center;
     gap: 10px;
+
+    input {
+      width: 175px;
+    }
 
     .approval_checkbox {
       width: 18px;
@@ -467,7 +474,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 230px;
+    width: 200px;
     height: 50px;
     border: 1px solid #ECECEC;
     font-family: var(--font-family-Noto-M);
@@ -561,7 +568,7 @@
 }
 
 .approvals_contents {
-  width: 230px;
+  width: 200px;
   height: 90px;
   border: 1px solid #ECECEC;
   overflow-y: auto;
@@ -628,6 +635,12 @@
     width: 180px;
     height: 70px;
 
+    .approval_line {
+      input {
+        width: 155px;
+      }
+    }
+
     .approval_name {
       width: 180px;
       height: 35px;
@@ -651,6 +664,12 @@
     height: 70px;
     bottom: 100px;
     left: 35px;
+
+    .approval_line {
+      input {
+        width: 155px;
+      }
+    }
 
     .approval_name {
       width: 180px;
