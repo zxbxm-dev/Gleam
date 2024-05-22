@@ -5,23 +5,14 @@ import { ReactComponent as LastRightIcon } from "../../assets/images/LastRightIc
 import { ReactComponent as FirstLeftIcon } from "../../assets/images/FirstLeftIcon.svg";
 import { Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import CustomModal from "../../components/modal/CustomModal";
 
 
 const UserManagement = () => {
   const [page, setPage] = useState<number>(1); 
   const [usermanages, setUserManages] = useState<any[]>([]);
-  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-  const { isOpen: isSignModalOpen, onOpen: onSignModalOpen, onClose: isSignModalClose } = useDisclosure();
-  const { isOpen: isDelModalOpen, onOpen: onDelModalOpen, onClose: onDelModalClose } = useDisclosure();
+  const [isSignModalOpen, setSignModalOpen] = useState(false);
+  const [isDelModalOpen, setDelModalOpen] = useState(false);
   const postPerPage: number = 10;
 
   useEffect(() => {
@@ -46,28 +37,15 @@ const UserManagement = () => {
     setPage(page);
   }
 
-
+  const handleSign = () => {
+    setSignModalOpen(false);
+  }
 
   const handleDelete = () => {
     // 삭제하기 기능 추가
     // DeleteEmployment()
-    setDropdownOpen(false);
+    setDelModalOpen(false);
   };
-
-
-  useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (dropdownOpen && !event.target.closest('.dropdown-menu')) {
-        setDropdownOpen(false);
-      }
-    };
-  
-    document.addEventListener('click', handleClickOutside);
-  
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [dropdownOpen]);
 
   return (
     <div className="content">
@@ -109,8 +87,8 @@ const UserManagement = () => {
                       <td>{usermanage.spot}</td>
                       <td>{usermanage.date}</td>
                       <td>
-                        <button className="edits_button" onClick={onSignModalOpen}>승인</button>
-                        <button className="dels_button" onClick={onDelModalOpen}>삭제</button>
+                        <button className="edits_button" onClick={() => setSignModalOpen(true)}>승인</button>
+                        <button className="dels_button" onClick={() => setDelModalOpen(true)}>삭제</button>
                       </td>
                     </tr>
                   ))}
@@ -132,35 +110,38 @@ const UserManagement = () => {
           </div>
         </div>
       </div>  
-      <Modal isOpen={isSignModalOpen} onClose={isSignModalClose} isCentered={true}>
-        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
-          <ModalBody className="cancle_modal_content">
-            승인하시겠습니까?
-          </ModalBody>
 
-          <ModalFooter gap='7px' justifyContent='center'>
-            <button className="del_button" onClick={handleDelete}>승인</button>
-            <button className="cle_button" onClick={isSignModalClose}>취소</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CustomModal
+        isOpen={isSignModalOpen}
+        onClose={() => setSignModalOpen(false)} 
+        header={'알림'}
+        footer1={'승인'}
+        footer1Class="green-btn"
+        onFooter1Click={handleSign}
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setSignModalOpen(false)}
+      >
+        <div>
+          승인하시겠습니까?
+        </div>
+      </CustomModal>
 
-      <Modal isOpen={isDelModalOpen} onClose={onDelModalClose} isCentered={true}>
-        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
-          <ModalBody className="cancle_modal_content">
-            삭제하시겠습니까?
-          </ModalBody>
-
-          <ModalFooter gap='7px' justifyContent='center'>
-            <button className="del_button" onClick={handleDelete}>삭제</button>
-            <button className="cle_button" onClick={onDelModalClose}>취소</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CustomModal
+        isOpen={isDelModalOpen}
+        onClose={() => setDelModalOpen(false)} 
+        header={'알림'}
+        footer1={'삭제'}
+        footer1Class="red-btn"
+        footer2={'취소'}
+        onFooter1Click={handleDelete}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setDelModalOpen(false)}
+      >
+        <div>
+          삭제하시겠습니까?
+        </div>
+      </CustomModal>
     </div>
   );
 };

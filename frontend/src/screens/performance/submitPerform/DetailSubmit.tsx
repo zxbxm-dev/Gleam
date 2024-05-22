@@ -1,26 +1,18 @@
 import React, { useState } from 'react';
 import "../Performance.scss";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FileUploadIcon,
   AttachmentIcon,
   DeleteIcon,
 } from "../../../assets/images/index";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import CustomModal from '../../../components/modal/CustomModal';
 
 type PDFFile = string | File | null;
 
 const SubmitPerform = () => {
-  let navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
+
   const [files, setFiles] = useState<PDFFile[]>([]);
 
   // 파일 선택 핸들러
@@ -49,7 +41,7 @@ const SubmitPerform = () => {
   };
 
   const handleSumbitFile = () => {
-    onOpen();
+    setSubmitModalOpen(true);
   }
 
   return (
@@ -125,19 +117,18 @@ const SubmitPerform = () => {
           </div>
         </div>
       </div>  
-      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalContent height='200px' bg='#fff' borderTopRadius='10px'>
-          <ModalHeader className='ModalHeader' height='34px' bg='#746E58' fontSize='14px' color='#fff' borderTopRadius='10px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0'/>
-          <ModalBody className="cancle_modal_content">
-            제출이 완료되었습니다.
-          </ModalBody>
-
-          <ModalFooter gap='10px' justifyContent='center'>
-            <button className="cancle_button" onClick={() => {navigate("/submit-perform")}}>확인</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CustomModal
+        isOpen={isSubmitModalOpen}
+        onClose={() => setSubmitModalOpen(false)} 
+        header={'알림'}
+        footer1={'확인'}
+        footer1Class="green-btn"
+        onFooter1Click={() => setSubmitModalOpen(false)}
+      >
+        <div>
+          제출이 완료되었습니다.
+        </div>
+      </CustomModal>
     </div>
   );
 };

@@ -7,20 +7,12 @@ import { ReactComponent as LeftIcon } from "../../../assets/images/LeftIcon.svg"
 import { ReactComponent as LastRightIcon } from "../../../assets/images/LastRightIcon.svg";
 import { ReactComponent as FirstLeftIcon } from "../../../assets/images/FirstLeftIcon.svg";
 import Pagination from "react-js-pagination";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import CustomModal from "../../../components/modal/CustomModal";
 
 
 const ManagePerform = () => {
   const [isSelectMember] = useRecoilState(isSelectMemberState);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
   const postPerPage: number = 10;
   const [managePerform, setManagePerform] = useState<any[]>([]);
@@ -31,7 +23,7 @@ const ManagePerform = () => {
   };
 
   const handleDeleteDocument = () => {
-    onClose();
+    setDeleteModalOpen(false);
   };
 
   useEffect(() => {
@@ -109,7 +101,7 @@ const ManagePerform = () => {
                         <td>{userPerform.date}</td>
                         <td>
                           <button className="document_button">문서확인</button>
-                          <button className="delete_small_button" onClick={onOpen}>삭제</button>
+                          <button className="delete_small_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
                         </td>
                       </tr>
                     ))
@@ -134,20 +126,21 @@ const ManagePerform = () => {
           
         </div>
       </div>  
-      <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-        <ModalContent height='200px' bg='#fff' borderTopRadius='5px'>
-          <ModalHeader className='ModalHeader' bg='#746E58' fontSize='14px' height='34px' color='#fff' borderTopRadius='5px' fontFamily='var(--font-family-Noto-B)'>알림</ModalHeader>
-          <ModalCloseButton color='#fff' fontSize='12px' top='0' />
-          <ModalBody className="cancle_modal_content">
-            삭제하시겠습니까?
-          </ModalBody>
-
-          <ModalFooter gap='10px' justifyContent='center'>
-            <button className="del_button" onClick={handleDeleteDocument}>삭제</button>
-            <button className="cle_button" onClick={onClose}>취소</button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CustomModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)} 
+        header={'알림'}
+        footer1={'삭제'}
+        footer1Class="red-btn"
+        onFooter1Click={handleDeleteDocument}
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setDeleteModalOpen(false)}
+      >
+        <div>
+          삭제하시겠습니까?
+        </div>
+      </CustomModal>
     </div>
   );
 };
