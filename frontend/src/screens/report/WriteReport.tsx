@@ -51,7 +51,7 @@ const WriteReport = () => {
 
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+  
   useEffect(() => {
     if (reportName) {
       setSelectedReport(reportName);
@@ -108,7 +108,7 @@ const WriteReport = () => {
       case '지출품의서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -118,7 +118,7 @@ const WriteReport = () => {
       case '휴가신청서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -128,7 +128,7 @@ const WriteReport = () => {
       case '시말서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -138,7 +138,7 @@ const WriteReport = () => {
       case '사직서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -148,7 +148,7 @@ const WriteReport = () => {
       case '휴직원':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -158,7 +158,7 @@ const WriteReport = () => {
       case '복직원':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -168,7 +168,7 @@ const WriteReport = () => {
       case '워크숍 신청서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -178,7 +178,7 @@ const WriteReport = () => {
       case '워크숍 보고서 (프로젝트 회의)':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -188,7 +188,7 @@ const WriteReport = () => {
       case '워크숍 보고서 (야유회)':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -198,7 +198,7 @@ const WriteReport = () => {
       case '지출내역서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -208,17 +208,14 @@ const WriteReport = () => {
       case '예산신청서 (지원팀)':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
+          { name: '지원팀장', checked: false, selectedMember: null },
         ];
         break;
       case '기획서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -228,7 +225,7 @@ const WriteReport = () => {
       case '최종보고서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -238,7 +235,7 @@ const WriteReport = () => {
       case '프로젝트 기획서':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
@@ -248,7 +245,7 @@ const WriteReport = () => {
       default:
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '결재라인 1', checked: false, selectedMember: null },
           { name: '결재라인 2', checked: false, selectedMember: null },
           { name: '결재라인 3', checked: false, selectedMember: null },
@@ -305,7 +302,7 @@ const WriteReport = () => {
 
   const [approvalLines, setApprovalLines] = useState([
     { name: '참조', checked: false, selectedMembers: [] as Member[] },
-    { name: '최종결재', checked: false, selectedMember: null as Member | null },
+    { name: '대표', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 1', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 2', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 3', checked: false, selectedMember: null as Member | null },
@@ -315,13 +312,16 @@ const WriteReport = () => {
 
   const handleCheckboxChange = (index: number) => {
     const updatedApprovalLines = [...approvalLines];
-    updatedApprovalLines[index].checked = !updatedApprovalLines[index].checked;
-
-    if (!updatedApprovalLines[index].checked) {
-      // 체크박스가 해제되면 selectedMember 초기화
-      updatedApprovalLines[index].selectedMember = null;
-    }
-
+    updatedApprovalLines.forEach((line, idx) => {
+      if (idx === index) {
+        line.checked = !line.checked;
+        line.selectedMember = null;
+      } else {
+        if (!line.selectedMember) {
+          line.checked = false;
+        }
+      }
+    });
     setSelectedApproval(updatedApprovalLines[index].name);
     setApprovalLines(updatedApprovalLines);
   };
@@ -374,14 +374,15 @@ const WriteReport = () => {
   // 결재라인 추가 함수
   const addApprovalLine = () => {
     if (approvalLines.length <= 6) {
-      const newLine = { name: `결재라인`, checked: false, selectedMember: null as Member | null };
+      const newLineNumber = approvalLines.filter(line => line.name.startsWith("결재라인")).length + 1;
+      const newLine = { name: `결재라인 ${newLineNumber}`, checked: false, selectedMember: null as Member | null };
       setApprovalLines([...approvalLines, newLine]);
     }
   };
 
   // 결재라인 삭제 함수
   const removeApprovalLine = (index: number) => {
-    if (approvalLines.length > 1) { // 최소 1개 이상의 결재라인이 있어야 삭제할 수 있음
+    if (approvalLines.length > 1) {
       const updatedLines = approvalLines.filter((line, i) => i !== index);
       setApprovalLines(updatedLines);
     }
@@ -542,7 +543,7 @@ const WriteReport = () => {
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
-                                  <div className='approval_name'>
+                                  <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
                                     <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
                                     <div className='name_text'>{line.selectedMember[0]}</div>
                                     <div className='name_border'></div>
