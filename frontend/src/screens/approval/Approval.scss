@@ -109,9 +109,19 @@
       border-top: 2px solid #DCDCDC;
       background-color: #EEEEEE;
 
+      .HoverTab {
+        position: relative;
+      }
+
       .HoverTab:hover{
         background-color: rgba(0,0,0,0.10);
         cursor: pointer;
+      }
+
+      .sort_icon {
+        position: absolute;
+        top: 45%;
+        right: 10px;
       }
     }
     

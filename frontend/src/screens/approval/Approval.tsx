@@ -4,6 +4,10 @@ import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIco
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
 import { ReactComponent as FirstLeftIcon } from "../../assets/images/Common/FirstLeftIcon.svg";
+import {
+  Asc_Icon,
+  Desc_Icon,
+} from "../../assets/images/index";
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
@@ -142,12 +146,47 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", approvalings, setApprovaling)}>순번</th>
-                  <th className="HoverTab" onClick={() => handleSort("title", approvalings, setApprovaling)}>제목</th>
-                  <th className="HoverTab" onClick={() => handleSort("date", approvalings, setApprovaling)}>결재수신일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", approvalings, setApprovaling)}>
+                    순번 
+                    {idSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("title", approvalings, setApprovaling)}>
+                    제목
+                    {titleSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("date", approvalings, setApprovaling)}>
+                    결재수신일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", approvalings, setApprovaling)}>처리상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("writer", approvalings, setApprovaling)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", approvalings, setApprovaling)}>
+                    처리상황
+                    {stateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", approvalings, setApprovaling)}>
+                    작성자/부서
+                    {writerSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -199,13 +238,55 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", inProgress, setInProgress)}>순번</th>
-                  <th className="HoverTab" onClick={() => handleSort("title", inProgress, setInProgress)}>제목</th>
-                  <th className="HoverTab" onClick={() => handleSort("date", inProgress, setInProgress)}>결재수신일자</th>
-                  <th className="HoverTab" onClick={() => handleSort("sadate", inProgress, setInProgress)}>결재발신일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", inProgress, setInProgress)}>
+                    순번
+                    {idSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("title", inProgress, setInProgress)}>
+                    제목
+                    {titleSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("date", inProgress, setInProgress)}>
+                    결재수신일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("sadate", inProgress, setInProgress)}>
+                    결재발신일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", inProgress, setInProgress)}>처리상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("writer", inProgress, setInProgress)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", inProgress, setInProgress)}>
+                    처리상황
+                    {stateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", inProgress, setInProgress)}>
+                    작성자/부서
+                    {writerSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -258,13 +339,55 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", rejecteds, setRejected)}>순번</th>
-                  <th className="HoverTab" onClick={() => handleSort("title", rejecteds, setRejected)}>제목</th>
-                  <th className="HoverTab" onClick={() => handleSort("date", rejecteds, setRejected)}>결재수신일자</th>
-                  <th className="HoverTab" onClick={() => handleSort("sadate", rejecteds, setRejected)}>결재반려일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", rejecteds, setRejected)}>
+                    순번
+                    {idSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("title", rejecteds, setRejected)}>
+                    제목
+                    {titleSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("date", rejecteds, setRejected)}>
+                    결재수신일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("sadate", rejecteds, setRejected)}>
+                    결재반려일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", rejecteds, setRejected)}>처리상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("writer", rejecteds, setRejected)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", rejecteds, setRejected)}>
+                    처리상황
+                    {stateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", rejecteds, setRejected)}>
+                    작성자/부서
+                    {writerSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -317,13 +440,55 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", compleDocuments, setCompleDocument)}>순번</th>
-                  <th className="HoverTab" onClick={() => handleSort("title", compleDocuments, setCompleDocument)}>제목</th>
-                  <th className="HoverTab" onClick={() => handleSort("date", compleDocuments, setCompleDocument)}>결재수신일자</th>
-                  <th className="HoverTab" onClick={() => handleSort("sadate", compleDocuments, setCompleDocument)}>결재완료일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", compleDocuments, setCompleDocument)}>
+                    순번
+                    {idSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("title", compleDocuments, setCompleDocument)}>
+                    제목
+                    {titleSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("date", compleDocuments, setCompleDocument)}>
+                    결재수신일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("sadate", compleDocuments, setCompleDocument)}>
+                    결재완료일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", compleDocuments, setCompleDocument)}>처리상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("writer", compleDocuments, setCompleDocument)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", compleDocuments, setCompleDocument)}>
+                    처리상황
+                    {stateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", compleDocuments, setCompleDocument)}>
+                    작성자/부서
+                    {writerSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>결재</th>
                 </tr>
               </thead>
@@ -376,13 +541,55 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", mydocuments, setMyDocument)}>순번</th>
-                  <th className="HoverTab" onClick={() => handleSort("title", mydocuments, setMyDocument)}>제목</th>
-                  <th className="HoverTab" onClick={() => handleSort("date", mydocuments, setMyDocument)}>결재수신일자</th>
-                  <th className="HoverTab" onClick={() => handleSort("sadate", mydocuments, setMyDocument)}>처리일자</th>
+                  <th className="HoverTab" onClick={() => handleSort("id", mydocuments, setMyDocument)}>
+                    순번
+                    {idSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("title", mydocuments, setMyDocument)}>
+                    제목
+                    {titleSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("date", mydocuments, setMyDocument)}>
+                    결재수신일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("sadate", mydocuments, setMyDocument)}>
+                    처리일자
+                    {dateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", mydocuments, setMyDocument)}>처리상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("writer", mydocuments, setMyDocument)}>작성자/부서</th>
+                  <th className="HoverTab" onClick={() => handleSort("state", mydocuments, setMyDocument)}>
+                    처리상황
+                    {stateSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
+                  <th className="HoverTab" onClick={() => handleSort("writer", mydocuments, setMyDocument)}>
+                    작성자/부서
+                    {writerSortOrder === 'asc' ? 
+                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon"/>
+                      :
+                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon"/>
+                    }
+                  </th>
                   <th>결재</th>
                 </tr>
               </thead>

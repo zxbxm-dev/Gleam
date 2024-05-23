@@ -22,6 +22,8 @@ export { default as SelectArrow } from "./Common/SelectArrow.svg";
 export { default as Approval_Plus } from "./Approval/Approval_Plus.svg";
 export { default as Approval_Plus_green } from "./Approval/Approval_Plus_green.svg";
 export { default as Approval_Minus } from "./Approval/Approval_Minus.svg";
+export { default as Asc_Icon } from "./Approval/Asc_Icon.svg";
+export { default as Desc_Icon } from "./Approval/Desc_Icon.svg";
 
 // Modal
 export { default as ModalCheck } from "./Modal/ModalCheck.svg";
