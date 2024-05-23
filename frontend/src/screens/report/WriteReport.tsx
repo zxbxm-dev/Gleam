@@ -247,9 +247,14 @@ const WriteReport = () => {
     updatedApprovalLines.forEach((line, idx) => {
       if (idx === index) {
         line.checked = !line.checked;
-        line.selectedMember = null;
+        if(line.selectedMember) {
+          line.selectedMember = null;
+        } else if(line.selectedMembers) {
+          line.selectedMembers = [];
+        }
+        
       } else {
-        if (!line.selectedMember) {
+        if (!line.selectedMember && (!line.selectedMembers || line.selectedMembers.length === 0)) {
           line.checked = false;
         }
       }
