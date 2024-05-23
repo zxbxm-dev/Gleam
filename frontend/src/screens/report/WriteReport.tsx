@@ -51,7 +51,7 @@ const WriteReport = () => {
 
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+  
   useEffect(() => {
     if (reportName) {
       setSelectedReport(reportName);
@@ -208,9 +208,6 @@ const WriteReport = () => {
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
           { name: '지원팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
         ];
         break;
       case '기획서':
@@ -313,13 +310,16 @@ const WriteReport = () => {
 
   const handleCheckboxChange = (index: number) => {
     const updatedApprovalLines = [...approvalLines];
-    updatedApprovalLines[index].checked = !updatedApprovalLines[index].checked;
-
-    if (!updatedApprovalLines[index].checked) {
-      // 체크박스가 해제되면 selectedMember 초기화
-      updatedApprovalLines[index].selectedMember = null;
-    }
-
+    updatedApprovalLines.forEach((line, idx) => {
+      if (idx === index) {
+        line.checked = !line.checked;
+        line.selectedMember = null;
+      } else {
+        if (!line.selectedMember) {
+          line.checked = false;
+        }
+      }
+    });
     setSelectedApproval(updatedApprovalLines[index].name);
     setApprovalLines(updatedApprovalLines);
   };
@@ -372,14 +372,15 @@ const WriteReport = () => {
   // 결재라인 추가 함수
   const addApprovalLine = () => {
     if (approvalLines.length <= 6) {
-      const newLine = { name: `결재라인`, checked: false, selectedMember: null as Member | null };
+      const newLineNumber = approvalLines.filter(line => line.name.startsWith("결재라인")).length + 1;
+      const newLine = { name: `결재라인 ${newLineNumber}`, checked: false, selectedMember: null as Member | null };
       setApprovalLines([...approvalLines, newLine]);
     }
   };
 
    // 결재라인 삭제 함수
   const removeApprovalLine = (index: number) => {
-    if (approvalLines.length > 1) { // 최소 1개 이상의 결재라인이 있어야 삭제할 수 있음
+    if (approvalLines.length > 1) {
       const updatedLines = approvalLines.filter((line, i) => i !== index);
       setApprovalLines(updatedLines);
     }
@@ -495,7 +496,7 @@ const WriteReport = () => {
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
-                                  <div className='approval_name'>
+                                  <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
                                     <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
                                     <div className='name_text'>{line.selectedMember[0]}</div>
                                     <div className='name_border'></div>
