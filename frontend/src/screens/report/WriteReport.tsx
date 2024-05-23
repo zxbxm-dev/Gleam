@@ -91,6 +91,8 @@ const WriteReport = () => {
   };
 
   const approvalFixed = members.find(member => member[0] === '이정훈') || null;
+  const ManagementFixed = members.find(member => member[0] === '김효은') || null;
+  const SupportFixed = members.find(member => member[0] === '김태희') || null;
 
   const updateApprovalLines = (report: string) => {
     let newApprovalLines;
@@ -107,7 +109,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -117,7 +119,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -127,7 +129,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -137,7 +139,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -147,7 +149,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -157,7 +159,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -167,7 +169,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -177,7 +179,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -187,7 +189,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -197,7 +199,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -207,7 +209,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -217,7 +219,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -227,7 +229,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
+          { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
@@ -237,7 +239,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
           { name: '부서장', checked: false, selectedMember: null },
           { name: '팀장', checked: false, selectedMember: null },
           { name: '작성자', checked: false, selectedMember: null },
