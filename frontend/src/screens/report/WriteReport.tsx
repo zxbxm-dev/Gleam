@@ -464,14 +464,17 @@ const WriteReport = () => {
                             )}
                           </div>
                           {approvalLines.filter(line => line.name === '참조').map((line, index) => (
-                            <div key={index} className="last_approval_content" onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
+                            <div key={index} className="last_approval_content">
                               <div className='approval_line'>
-                                <input type="text" value={line.name} onChange={(e) => handleNameChange(index, e.target.value)} />
-                                {hoveredIndex === index ?
-                                  <img src={Approval_Minus} alt="Approval_Minus" onClick={() => { removeApprovalLine(index) }} style={{ cursor: 'pointer' }} />
-                                  :
-                                  <></>
-                                }
+                                <input
+                                  type="checkbox"
+                                  checked={line.checked}
+                                  onChange={() => handleCheckboxChange(index)}
+                                  className='approval_checkbox'
+                                  id="chk"
+                                  style={{ cursor: 'pointer' }}
+                                />
+                                <label htmlFor="chk" style={{ cursor: 'pointer' }}>{line.name}</label>
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
