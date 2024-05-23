@@ -488,28 +488,28 @@ const WriteReport = () => {
                             {approvalLines.filter(line => line.name !== '참조').map((line, index) => (
                               <div key={index} className="approval_content" onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
                                 <div className='approval_line'>
-                                  <input type="text" value={line.name} onChange={(e) => handleNameChange(index, e.target.value)} />
+                                  <input type="text" value={line.name} onChange={(e) => handleNameChange(index+1, e.target.value)} />
                                   {hoveredIndex === index ?
-                                    <img src={Approval_Minus} alt="Approval_Minus" onClick={() => { removeApprovalLine(index) }} style={{ cursor: 'pointer' }} />
+                                    <img src={Approval_Minus} alt="Approval_Minus" onClick={() => { removeApprovalLine(index+1) }} style={{ cursor: 'pointer' }} />
                                     :
                                     <></>
                                   }
                                 </div>
                                 {line.checked ? (
                                   line.selectedMember ? (
-                                    <div className='approval_name'>
+                                    <div className='approval_name' onClick={() => handleCheckboxChange(index+1)}>
                                       <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
                                       <div className='name_text'>{line.selectedMember[0]}</div>
                                       <div className='name_border'></div>
                                       <div className='name_text'>{line.selectedMember[3]}</div>
                                     </div>
                                   ) : (
-                                    <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index)}>
+                                    <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index+1)}>
                                       <div>&nbsp;</div>
                                     </div>
                                   )
                                 ) : (
-                                  <div className="approval_unchecked" onClick={() => handleCheckboxChange(index)}>
+                                  <div className="approval_unchecked" onClick={() => handleCheckboxChange(index+1)}>
                                     칸 선택 후 좌측 리스트에서<br />
                                     결재라인을 선택해주세요
                                   </div>
