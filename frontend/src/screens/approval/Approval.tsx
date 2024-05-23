@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import "./Approval.scss";
-import { ReactComponent as RightIcon } from "../../assets/images/RightIcon.svg";
-import { ReactComponent as LeftIcon } from "../../assets/images/LeftIcon.svg";
-import { ReactComponent as LastRightIcon } from "../../assets/images/LastRightIcon.svg";
-import { ReactComponent as FirstLeftIcon } from "../../assets/images/FirstLeftIcon.svg";
+import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
+import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
+import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
+import { ReactComponent as FirstLeftIcon } from "../../assets/images/Common/FirstLeftIcon.svg";
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 

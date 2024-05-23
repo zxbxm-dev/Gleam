@@ -1,29 +1,31 @@
-export { default as FourchainsLogo } from "./FourchainsLogo.svg";
-export { default as SearchIcon } from "./SearchIcon.svg";
-export { default as AttachmentIcon } from "./AttachmentIcon.svg";
-export { default as RightIcon } from "./RightIcon.svg";
-export { default as LeftIcon } from "./LeftIcon.svg";
-export { default as LastRightIcon } from "./LastRightIcon.svg";
-export { default as FirstLeftIcon } from "./FirstLeftIcon.svg";
-export { default as DeleteIcon } from "./DeleteIcon.svg";
-export { default as FileUploadIcon } from "./FileUploadIcon.svg";
-export { default as Plus_btn } from "./Plus_btn.svg";
-export { default as Minus_btn } from "./Minus_btn.svg";
-export { default as Login_Logo } from "./Login_Logo.svg";
-export { default as ArrowDown } from "./ArrowDown.svg";
-export { default as ArrowUp } from "./ArrowUp.svg";
-export { default as ModalCheck } from "./ModalCheck.svg";
-export { default as SettingIcon } from "./SettingIcon.svg";
-export { default as CloseIcon } from "./CloseIcon.svg";
-export { default as NewIcon } from "./NewIcon.svg";
-export { default as SelectArrow } from "./SelectArrow.svg";
-export { default as ModalCloseBtn } from "./ModalCloseBtn.svg";
-export { default as Approval_Plus } from "./Approval_Plus.svg";
-export { default as Approval_Plus_green } from "./Approval_Plus_green.svg";
-export { default as Approval_Minus } from "./Approval_Minus.svg";
+// Common
+export { default as FourchainsLogo } from "./Common/FourchainsLogo.svg";
+export { default as SearchIcon } from "./Common/SearchIcon.svg";
+export { default as AttachmentIcon } from "./Common/AttachmentIcon.svg";
+export { default as RightIcon } from "./Common/RightIcon.svg";
+export { default as LeftIcon } from "./Common/LeftIcon.svg";
+export { default as LastRightIcon } from "./Common/LastRightIcon.svg";
+export { default as FirstLeftIcon } from "./Common/FirstLeftIcon.svg";
+export { default as DeleteIcon } from "./Common/DeleteIcon.svg";
+export { default as FileUploadIcon } from "./Common/FileUploadIcon.svg";
+export { default as Plus_btn } from "./Common/Plus_btn.svg";
+export { default as Minus_btn } from "./Common/Minus_btn.svg";
+export { default as Login_Logo } from "./Common/Login_Logo.svg";
+export { default as ArrowDown } from "./Common/ArrowDown.svg";
+export { default as ArrowUp } from "./Common/ArrowUp.svg";
+export { default as SettingIcon } from "./Common/SettingIcon.svg";
+export { default as CloseIcon } from "./Common/CloseIcon.svg";
+export { default as NewIcon } from "./Common/NewIcon.svg";
+export { default as SelectArrow } from "./Common/SelectArrow.svg";
 
+// Approval
+export { default as Approval_Plus } from "./Approval/Approval_Plus.svg";
+export { default as Approval_Plus_green } from "./Approval/Approval_Plus_green.svg";
+export { default as Approval_Minus } from "./Approval/Approval_Minus.svg";
 
-
+// Modal
+export { default as ModalCheck } from "./Modal/ModalCheck.svg";
+export { default as ModalCloseBtn } from "./Modal/ModalCloseBtn.svg";
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";
