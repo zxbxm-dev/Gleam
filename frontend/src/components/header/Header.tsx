@@ -15,7 +15,7 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 import { isSidebarVisibleState, isHrSidebarVisibleState, userState } from '../../recoil/atoms';
 

@@ -15,11 +15,72 @@ import {
 import CustomModal from "../../components/modal/CustomModal";
 import { useRecoilState } from 'recoil';
 import { isSelectMemberState } from '../../recoil/atoms';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+import testPDF_구민석 from '../../assets/pdf/[서식-P502] 인사기록카드_구민석.pdf';
+import test2PDF_구민석 from '../../assets/pdf/[서식-P501] 근로자명부_구민석.pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.js',
+  import.meta.url,
+).toString();
+
+type PDFFile = string | File | null;
 
 const HumanResource = () => {
+  const [numPages, setNumPages] = useState<number>(0);
+  const [file, setFile] = useState<PDFFile>(testPDF_구민석);
+  const [files, setFiles] = useState<PDFFile[]>([]);
   const [isSelectMember] = useRecoilState(isSelectMemberState);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
+  const downloadPDF = () => {
+    const link = document.createElement('a');
+    setFile(testPDF_구민석)
+    link.href = testPDF_구민석;
+    link.download = '인사기록카드_구민석.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
+
+  const renderPages = () => {
+    const pages = [];
+    for (let i = 1; i <= numPages; i++) {
+      pages.push(
+        <Page 
+          key={`page_${i}`}
+          pageNumber={i} 
+          width={1200}
+        />
+      );
+    }
+    return pages;
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFiles = Array.from(event.target.files);
+      setFiles([...files, ...selectedFiles]);
+      console.log(files)
+    }
+  };
+
+  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const droppedFiles = Array.from(event.dataTransfer.files);
+    setFiles([...files, ...droppedFiles]);
+  };
+  
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
 
   const handleToggleEdit = () => {
     setIsEditing(!isEditing);
@@ -47,197 +108,256 @@ const HumanResource = () => {
       </div>
       
       <div className="content_container">
-          <Tabs variant='enclosed'>
-            <TabList>
-              <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>인사기록카드</Tab>
-              <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>근로자명부</Tab>
-              <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>인사이동</Tab>
-            </TabList>
+        <Tabs variant='enclosed'>
+          <TabList>
+            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>인사기록카드</Tab>
+            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>근로자명부</Tab>
+            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>인사이동</Tab>
+          </TabList>
 
-            <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="tab_container">
-              <TabPanel display='flex' flexDirection='column'>
-                <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
-                  {isEditing ? (
-                    <>
-                      <button className="adds_button" onClick={handleToggleEdit}>등록</button>
-                      <button className="edits_button">취소</button>
-                    </>
-                  ) : (
-                    <>
-                      <button className="edits_button" onClick={handleToggleEdit}>업로드</button>
-                      <button className="downloads_button">다운로드</button>
-                    </>
-                  )}
-                </div>
-                <div>
-                  인사기록카드
-                </div>
-                
-              </TabPanel>
+          <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="tab_container">
+            <TabPanel display='flex' flexDirection='column'>
+              {isSelectMember[0] === '' ? (
+                <></>
+              ) : (
+                <>
+                  <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
+                    {isEditing ? (
+                      <>
+                        <button className="adds_button" onClick={handleToggleEdit}>등록</button>
+                        <button className="edits_button" onClick={handleToggleEdit}>취소</button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="edits_button" onClick={handleToggleEdit}>업로드</button>
+                        <button className="downloads_button" onClick={downloadPDF}>다운로드</button>
+                      </>
+                    )}
+                  </div>
+                  <div className="pdf-container">
+                    {isEditing ? (
+                      <div
+                        className="upload-area"
+                        onDrop={handleFileDrop}
+                        onDragOver={handleDragOver}
+                      >
+                        <div className='upload-text-top'>
+                          <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
+                            <input
+                              id="file-upload"
+                              type="file"
+                              accept=".pdf"
+                              onChange={handleFileChange}
+                              style={{ display: 'none' }}
+                            />
+                            파일 첨부하기 +
+                          </label>
+                        </div>
+                        <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
+                      </div>
+                    ) : (
+                      <Document file={testPDF_구민석} onLoadSuccess={onDocumentLoadSuccess}>
+                        {renderPages()}
+                      </Document>
+                    )}
+                  </div>
+                </>
+              )}
 
-              <TabPanel display='flex' flexDirection='column'>
-                <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
-                  {isEditing ? (
-                    <>
-                      <button className="adds_button" onClick={handleToggleEdit}>등록</button>
-                      <button className="edits_button">취소</button>
-                    </>
-                  ) : (
-                    <>
-                      <button className="edits_button" onClick={handleToggleEdit}>업로드</button>
-                      <button className="downloads_button">다운로드</button>
-                    </>
-                  )}
-                </div>
-                <div>
-                  근로자명부
-                </div>
-                
-              </TabPanel>
+            </TabPanel>
 
-              <TabPanel display='flex' flexDirection='column'>
-                <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh'}}>
-                  <Popover placement="left-start">
-                    <PopoverTrigger>
-                      <button className="adds_button">등록</button>
-                    </PopoverTrigger>
-                    <Portal>
-                      <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                        <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 등록하기</PopoverHeader>
-                        <PopoverCloseButton color='white'/>
-                        <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
-                          <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
-                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                              <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
-                              <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' />
-                            </div>
-                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                              <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
-                              <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
-                            </div>
-                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                              <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
-                              <Input placeholder='small size' size='sm' width='20vw'/>
-                            </div>
-                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                              <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>구분</div>
-                              <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw'/>
-                            </div>
+            <TabPanel display='flex' flexDirection='column'>
+            {isSelectMember[0] === '' ? (
+                <></>
+              ) : (
+                <>
+                  <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
+                    {isEditing ? (
+                      <>
+                        <button className="adds_button" onClick={handleToggleEdit}>등록</button>
+                        <button className="edits_button" onClick={handleToggleEdit}>취소</button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="edits_button" onClick={handleToggleEdit}>업로드</button>
+                        <button className="downloads_button">다운로드</button>
+                      </>
+                    )}
+                  </div>
+                  <div className="pdf-container">
+                    {isEditing ? (
+                      <div
+                        className="upload-area"
+                        onDrop={handleFileDrop}
+                        onDragOver={handleDragOver}
+                      >
+                        <div className='upload-text-top'>
+                          <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
+                            <input
+                              id="file-upload"
+                              type="file"
+                              accept=".pdf"
+                              onChange={handleFileChange}
+                              style={{ display: 'none' }}
+                            />
+                            파일 첨부하기 +
+                          </label>
+                        </div>
+                        <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
+                      </div>
+                    ) : (
+                      <Document file={test2PDF_구민석} onLoadSuccess={onDocumentLoadSuccess}>
+                        {renderPages()}
+                      </Document>
+                    )}
+                  </div>
+                </>
+              )}
+              
+            </TabPanel>
+
+            <TabPanel display='flex' flexDirection='column'>
+              <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh'}}>
+                <Popover placement="left-start">
+                  <PopoverTrigger>
+                    <button className="adds_button">등록</button>
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 등록하기</PopoverHeader>
+                      <PopoverCloseButton color='white'/>
+                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
+                          <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                            <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
+                            <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' />
                           </div>
-                          <div className='button-wrap'>
-                            <button className="adds_button">등록</button>
-                            <button className="edits_button">취소</button>
+                          <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                            <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
+                            <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
                           </div>
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Portal>
-                  </Popover>
-                </div>
-                
-                <div>
-                  <table className="announce_board_list">
-                    <colgroup>
-                      <col width="20%"/>
-                      <col width="20%"/>
-                      <col width="20%"/>
-                      <col width="20%"/>
-                      <col width="20%"/>
-                    </colgroup>
-                    <thead>
-                      <tr className="board_header">
-                        <th>부서</th>
-                        <th>직위</th>
-                        <th>날짜</th>
-                        <th>구분</th>
-                        <th>수정/삭제</th>
-                      </tr>
-                    </thead>
-                    <tbody className="board_container">
-                      <tr className="board_content">
-                        <td>마케팅부 디자인팀</td>
-                        <td>팀장</td>
-                        <td>2024-05-04</td>
-                        <td>승진</td>
-                        <td>
-                          <Popover placement="left-start">
-                            <PopoverTrigger>
-                              <button className="edits_button">수정</button>
-                            </PopoverTrigger>
-                            <Portal>
-                              <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                                <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
-                                <PopoverCloseButton color='white'/>
-                                <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
-                                  <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
-                                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                                      <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
-                                      <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' />
-                                    </div>
-                                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                                      <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
-                                      <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
-                                    </div>
-                                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                                      <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
-                                      <Input placeholder='small size' size='sm' width='20vw'/>
-                                    </div>
-                                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                                      <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>구분</div>
-                                      <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw'/>
-                                    </div>
+                          <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                            <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
+                            <Input placeholder='small size' size='sm' width='20vw'/>
+                          </div>
+                          <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                            <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>구분</div>
+                            <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw'/>
+                          </div>
+                        </div>
+                        <div className='button-wrap'>
+                          <button className="adds_button">등록</button>
+                          <button className="edits_button">취소</button>
+                        </div>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Portal>
+                </Popover>
+              </div>
+              
+              <div>
+                <table className="announce_board_list">
+                  <colgroup>
+                    <col width="20%"/>
+                    <col width="20%"/>
+                    <col width="20%"/>
+                    <col width="20%"/>
+                    <col width="20%"/>
+                  </colgroup>
+                  <thead>
+                    <tr className="board_header">
+                      <th>부서</th>
+                      <th>직위</th>
+                      <th>날짜</th>
+                      <th>구분</th>
+                      <th>수정/삭제</th>
+                    </tr>
+                  </thead>
+                  <tbody className="board_container">
+                    <tr className="board_content">
+                      <td>마케팅부 디자인팀</td>
+                      <td>팀장</td>
+                      <td>2024-05-04</td>
+                      <td>승진</td>
+                      <td>
+                        <Popover placement="left-start">
+                          <PopoverTrigger>
+                            <button className="edits_button">수정</button>
+                          </PopoverTrigger>
+                          <Portal>
+                            <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                              <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
+                              <PopoverCloseButton color='white'/>
+                              <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
+                                <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
+                                  <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                    <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
+                                    <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' />
                                   </div>
-                                  <div className='button-wrap'>
-                                    <button className="edits_button">수정</button>
-                                    <button className="edits_button">취소</button>
+                                  <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                    <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
+                                    <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
                                   </div>
-                                </PopoverBody>
-                              </PopoverContent>
-                            </Portal>
-                          </Popover>
-                          <button className="dels_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
-                        </td>
-                      </tr>
+                                  <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                    <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
+                                    <Input placeholder='small size' size='sm' width='20vw'/>
+                                  </div>
+                                  <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                    <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>구분</div>
+                                    <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw'/>
+                                  </div>
+                                </div>
+                                <div className='button-wrap'>
+                                  <button className="edits_button">수정</button>
+                                  <button className="edits_button">취소</button>
+                                </div>
+                              </PopoverBody>
+                            </PopoverContent>
+                          </Portal>
+                        </Popover>
+                        <button className="dels_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
+                      </td>
+                    </tr>
 
-                      <tr className="board_content">
-                        <td>관리부 지원팀</td>
-                        <td>사원</td>
-                        <td>2024-05-04</td>
-                        <td>부서이동</td>
-                        <td>
-                          <button className="edits_button">수정</button>
-                          <button className="dels_button">삭제</button>
-                        </td>
-                      </tr>
+                    <tr className="board_content">
+                      <td>관리부 지원팀</td>
+                      <td>사원</td>
+                      <td>2024-05-04</td>
+                      <td>부서이동</td>
+                      <td>
+                        <button className="edits_button">수정</button>
+                        <button className="dels_button">삭제</button>
+                      </td>
+                    </tr>
 
-                      <tr className="board_content">
-                        <td>개발부 개발 1팀</td>
-                        <td>사원</td>
-                        <td>2024-05-04</td>
-                        <td>강등</td>
-                        <td>
-                          <button className="edits_button">수정</button>
-                          <button className="dels_button">삭제</button>
-                        </td>
-                      </tr>
+                    <tr className="board_content">
+                      <td>개발부 개발 1팀</td>
+                      <td>사원</td>
+                      <td>2024-05-04</td>
+                      <td>강등</td>
+                      <td>
+                        <button className="edits_button">수정</button>
+                        <button className="dels_button">삭제</button>
+                      </td>
+                    </tr>
 
-                      <tr className="board_content">
-                        <td>개발부 개발 1팀</td>
-                        <td>팀장</td>
-                        <td>2024-05-04</td>
-                        <td>부서이동</td>
-                        <td>
-                          <button className="edits_button">수정</button>
-                          <button className="dels_button">삭제</button>
-                        </td>
-                      </tr>
-                     
-                    </tbody>
-                  </table>
-                </div>
-                
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
+                    <tr className="board_content">
+                      <td>개발부 개발 1팀</td>
+                      <td>팀장</td>
+                      <td>2024-05-04</td>
+                      <td>부서이동</td>
+                      <td>
+                        <button className="edits_button">수정</button>
+                        <button className="dels_button">삭제</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </div>  
       <CustomModal
         isOpen={isDeleteModalOpen}
