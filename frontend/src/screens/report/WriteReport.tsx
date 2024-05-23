@@ -51,7 +51,7 @@ const WriteReport = () => {
 
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  
+
   useEffect(() => {
     if (reportName) {
       setSelectedReport(reportName);
@@ -91,9 +91,34 @@ const WriteReport = () => {
   };
 
   const approvalFixed = members.find(member => member[0] === '이정훈') || null;
+  const ManagementFixed = members.find(member => member[0] === '김효은') || null;
+  const SupportFixed = members.find(member => member[0] === '김태희') || null;
 
   const updateApprovalLines = (report: string) => {
     let newApprovalLines;
+
+    function SupportLines() {
+      return [
+        { name: '참조', checked: false, selectedMembers: [] as Member[] },
+        { name: '대표', checked: true, selectedMember: approvalFixed },
+        { name: '지원팀장', checked: true, selectedMember: SupportFixed },
+        { name: '부서장', checked: false, selectedMember: null },
+        { name: '팀장', checked: false, selectedMember: null },
+        { name: '작성자', checked: false, selectedMember: null },
+      ];
+    }
+
+    function ManagementLines() {
+      return [
+        { name: '참조', checked: false, selectedMembers: [] as Member[] },
+        { name: '대표', checked: true, selectedMember: approvalFixed },
+        { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
+        { name: '부서장', checked: false, selectedMember: null },
+        { name: '팀장', checked: false, selectedMember: null },
+        { name: '작성자', checked: false, selectedMember: null },
+      ];
+    }
+
     switch (report) {
       case '주간업무일지':
         newApprovalLines = [
@@ -104,146 +129,55 @@ const WriteReport = () => {
         ];
         break;
       case '지출품의서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = SupportLines();
         break;
       case '휴가신청서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = ManagementLines();
         break;
       case '시말서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = ManagementLines();
         break;
       case '사직서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = ManagementLines();
         break;
       case '휴직원':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = ManagementLines();
         break;
       case '복직원':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = ManagementLines();
         break;
       case '워크숍 신청서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = SupportLines();
         break;
       case '워크숍 보고서 (프로젝트 회의)':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = SupportLines();
         break;
       case '워크숍 보고서 (야유회)':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = SupportLines();
         break;
       case '지출내역서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = SupportLines();
         break;
       case '예산신청서 (지원팀)':
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '지원팀장', checked: false, selectedMember: null },
         ];
         break;
       case '기획서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = ManagementLines();
         break;
       case '최종보고서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '관리팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = ManagementLines();
         break;
       case '프로젝트 기획서':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
-          { name: '작성자', checked: false, selectedMember: null },
-        ];
+        newApprovalLines = SupportLines();
         break;
       default:
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '최종결재', checked: true, selectedMember: approvalFixed },
+          { name: '대표', checked: true, selectedMember: approvalFixed },
           { name: '결재라인 1', checked: false, selectedMember: null },
           { name: '결재라인 2', checked: false, selectedMember: null },
           { name: '결재라인 3', checked: false, selectedMember: null },
@@ -300,7 +234,7 @@ const WriteReport = () => {
 
   const [approvalLines, setApprovalLines] = useState([
     { name: '참조', checked: false, selectedMembers: [] as Member[] },
-    { name: '최종결재', checked: false, selectedMember: null as Member | null },
+    { name: '대표', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 1', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 2', checked: false, selectedMember: null as Member | null },
     { name: '결재라인 3', checked: false, selectedMember: null as Member | null },
