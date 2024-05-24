@@ -52,7 +52,7 @@ const ManagePerform = () => {
     }));
     setUserManagePerform(initializedPerform);
   }, [isSelectMember, managePerform]);
-
+  
   return (
     <div className="content">
       <div className="content_header">

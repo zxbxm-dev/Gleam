@@ -28,7 +28,7 @@ const Report = () => {
               <div className="report_content">
                 <div className="report_title">기타</div>
                 <div className="report_name" onClick={() => handleReportClick("시말서")}>시말서</div>
-                <div className="report_name" onClick={() => handleReportClick("사직서")}>사직서</div>
+                {/* <div className="report_name" onClick={() => handleReportClick("사직서")}>사직서</div> */}
                 <div className="report_name" onClick={() => handleReportClick("휴직원")}>휴직원</div>
                 <div className="report_name" onClick={() => handleReportClick("복직원")}>복직원</div>
               </div>
@@ -48,7 +48,7 @@ const Report = () => {
                 <div className="report_title">기획서</div>
                 <div className="report_name" onClick={() => handleReportClick("기획서")}>기획서</div>
                 <div className="report_name" onClick={() => handleReportClick("최종보고서")}>최종보고서</div>
-                <div className="report_name" onClick={() => handleReportClick("프로젝트 기획서")}>프로젝트 기획서</div>
+                <div className="report_name" onClick={() => handleReportClick("프로젝트 계획서")}>프로젝트 계획서</div>
               </div>
             </div>
           </div>

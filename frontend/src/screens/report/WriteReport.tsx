@@ -137,9 +137,9 @@ const WriteReport = () => {
       case '시말서':
         newApprovalLines = ManagementLines();
         break;
-      case '사직서':
-        newApprovalLines = ManagementLines();
-        break;
+      // case '사직서':
+      //   newApprovalLines = ManagementLines();
+      //   break;
       case '휴직원':
         newApprovalLines = ManagementLines();
         break;
@@ -171,7 +171,7 @@ const WriteReport = () => {
       case '최종보고서':
         newApprovalLines = ManagementLines();
         break;
-      case '프로젝트 기획서':
+      case '프로젝트 계획서':
         newApprovalLines = SupportLines();
         break;
       default:
@@ -365,9 +365,9 @@ const WriteReport = () => {
                       <div className="Option" onClick={() => SelectOptions('시말서')}>
                         <span>시말서</span>
                       </div>
-                      <div className="Option" onClick={() => SelectOptions('사직서')}>
+                      {/* <div className="Option" onClick={() => SelectOptions('사직서')}>
                         <span>사직서</span>
-                      </div>
+                      </div> */}
                       <div className="Option" onClick={() => SelectOptions('휴직원')}>
                         <span>휴직원</span>
                       </div>
@@ -399,8 +399,8 @@ const WriteReport = () => {
                       <div className="Option" onClick={() => SelectOptions('최종보고서')}>
                         <span>최종보고서</span>
                       </div>
-                      <div className="Option" onClick={() => SelectOptions('프로젝트 기획서')}>
-                        <span>프로젝트 기획서</span>
+                      <div className="Option" onClick={() => SelectOptions('프로젝트 계획서')}>
+                        <span>프로젝트 계획서</span>
                       </div>
                     </div>
                   ) : (

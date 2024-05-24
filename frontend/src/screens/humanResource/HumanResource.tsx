@@ -100,7 +100,7 @@ const HumanResource = () => {
           </>
         ) : (
           <>
-            <Link to={"/human-resources"} className="sub_header">인사 정보 관리</Link>
+            <Link to={"/human-resources"} className="main_header">인사 정보 관리</Link>
             <div className="main_header">＞</div>
             <div className="sub_header">{isSelectMember[0]}</div>
           </>

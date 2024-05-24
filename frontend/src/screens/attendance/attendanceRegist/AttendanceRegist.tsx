@@ -28,6 +28,10 @@ const names = [
   '김태희', '이주범'
 ];
 
+const namesRD = [
+  '공석', '심민지', '임지현', '김희진', '윤민지', '이채영', '공석', '박소연', '김경현'
+]
+
 const AttendanceRegist = () => {
   const [attachment, setAttachment] = useState<File | null>(null);
   const [isAddAttend, setAddAttend] = useState(false);
@@ -433,6 +437,256 @@ const AttendanceRegist = () => {
     );
   };
 
+  const generateDivsRD = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
+    const tableRows = [];
+    const totalRows = [];
+
+    const countWorkingDay = new Array(names.length).fill(0); // 근무일수 집계
+    const countDayoff = new Array(names.length).fill(0); // 연차 집계
+    const countHalfDayOff = new Array(names.length).fill(0); // 반차 집계
+    const countRemoteWork = new Array(names.length).fill(0); // 재택 집계
+    const countLateWork = new Array(names.length).fill(0); // 지각 집계
+    const TotalLateWork = new Array(names.length).fill(0); // 지각총분 집계
+
+    for (let i = 0; i < numberOfDaysInMonth; i++) {
+      const rowCells = [];
+      const date = i + 1;
+      for (let j = 0; j < namesRD.length; j++) {
+        const personIndex = j;
+        const dayOfWeekIndex = new Date(year, month - 1, date).getDay();
+        const backgroundColor = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? '#E9E9E9' : 'inherit';
+        const pointerEvents = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? 'none' : 'auto';
+
+        let personData = ['', '', ['', '', '']];
+
+        for (const data of attendanceData) {
+          if (data[1] === `${year}-${month}-${date}` && data[0] === namesRD[personIndex]) {
+            personData = data;
+            break;
+          }
+        }
+        
+
+        if (personData[2][0]) {
+          countWorkingDay[j]++;
+        }
+
+        let itemBackgroundColor = '#000000';
+
+        switch (personData[2][2]) {
+          case '오전반차':
+            countHalfDayOff[j]++;
+            if (personData[2][0] > '14:00') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T14:00`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 14) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
+            itemBackgroundColor = '#FFB800';
+            break;
+          case '오후반차':
+            countHalfDayOff[j]++;
+            if (personData[2][0] > '10:00') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T10:00`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
+            itemBackgroundColor = '#FFB800';
+            break;
+          case '당일반차':
+            countHalfDayOff[j]++;
+            itemBackgroundColor = '#5162FF';
+            break;
+          case '연차':
+            countDayoff[j]++;
+            itemBackgroundColor = '#0D994D';
+            break;
+          case '재택':
+            countRemoteWork[j]++;
+            if (personData[2][0] > '10:00') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T10:00`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
+            itemBackgroundColor = '#7000C9';
+            break;
+          case '서울출근':
+            itemBackgroundColor = '#3DC6C6';
+            break;
+          case '입사':
+            itemBackgroundColor = '#FF4747';
+            break;
+          case '지문X':
+            itemBackgroundColor = '#EF0AD8';
+            break;
+          default:
+            if (personData[2][0] > '10:00') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T10:00`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
+            itemBackgroundColor = '#000000';
+            break;
+        }
+
+        // 토요일 또는 일요일이 아닌 경우
+        if (dayOfWeekIndex !== 0 && dayOfWeekIndex !== 6) {
+          rowCells.push(
+            <Tooltip label={`${month}월 ${date}일`}>
+              <tr
+                className="conta_three"
+                onClick={() => handleDivClickRD(date, year, month, personIndex)}
+                key={`${i}-${j}`}
+              >
+                <td className='conta'>{personData[2][0]} </td>
+                <td className='conta_border'>{personData[2][1]} </td>
+                <td className='conta' style={{ color: itemBackgroundColor }}>{personData[2][2]} </td>
+              </tr>
+            </Tooltip>
+          );
+        } else {
+          // 토요일과 일요일에는 빈 셀
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor, pointerEvents: pointerEvents }}
+            >
+              <td className='conta'> &nbsp; </td>
+              <td className='conta_border'> &nbsp; </td>
+              <td className='conta'> &nbsp; </td>
+            </tr>
+          );
+        }
+      }
+      tableRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
+    for (let i = 0; i < 6; i++) {
+      const rowCells = [];
+
+      let backgroundColor = 'inherit'; // 기본 배경색은 inherit로 설정
+
+      // k 값에 따라 배경색을 다르게 설정
+      switch (i) {
+        case 4:
+          backgroundColor = '#D1E4FF';
+          break;
+        case 5:
+          backgroundColor = '#FFD3D3';
+          break;
+        default:
+          backgroundColor = '#ffffff'; // 기본 배경색은 #E9E9E9로 설정
+          break;
+      }
+
+      for (let j = 0; j < namesRD.length; j++) {
+        if (i === 0) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countWorkingDay[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 1) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countDayoff[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 2) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countHalfDayOff[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 3) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countRemoteWork[j]}
+              </td>
+            </tr>
+          );
+        } else if (i === 4) {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {countLateWork[j]}
+              </td>
+            </tr>
+          );
+        } else {
+          rowCells.push(
+            <tr
+              className="conta_three"
+              key={`${i}-${j}`}
+              style={{ backgroundColor: backgroundColor }}
+            >
+              <td className='conta_merge'>
+                {TotalLateWork[j]}
+              </td>
+            </tr>
+          );
+        }
+      }
+      totalRows.push(<td className="sconta" key={i}>{rowCells}</td>);
+    }
+
+    return (
+      <table className="table">
+        <tbody>
+          {tableRows}
+          {totalRows}
+        </tbody>
+      </table>
+    );
+  };
+
   const handleDivClick = (date: number, year: number, month: number, personIndex: number) => {
     setAddAttend(true);
     const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
@@ -448,7 +702,22 @@ const AttendanceRegist = () => {
     });
   };
 
+  const handleDivClickRD = (date: number, year: number, month: number, personIndex: number) => {
+    setAddAttend(true);
+    const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
+    const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
+    const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
+    const name = namesRD[personIndex];
+    setSelectedDateInfo({
+      name: name,
+      year: year,
+      month: month,
+      date: date,
+      dayOfWeek: dayOfWeek
+    });
+  };
 
+  
   return (
     <div className="content">
       <div className="content_header">
@@ -481,103 +750,171 @@ const AttendanceRegist = () => {
             </button>
           )}
         </div>
-        <Tabs variant='enclosed'>
-          <TabList>
-            {yearData.map(monthData => (
-              <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' >{months[monthData.month - 1].name}</Tab>
-            ))}
-          </TabList>
 
-          <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="tab_container">
-            {yearData.map(monthData => (
-              <TabPanel key={monthData.month} className="container_attendance">
-                <div className="Excel" id="table-to-xls">
-                  <table className="Explan">
-                    <tbody>
-                      <tr>
-                        <td className="TopS" colSpan={2}>부서</td>
-                        <td className="TopS">성명</td>
-                      </tr>
-                      <tr>
-                        <td rowSpan={3}>블록체인<br />사업부</td>
-                        <td rowSpan={3}>블록체인<br />1팀</td>
-                        <td>권상원</td>
-                      </tr>
-                      <tr>
-                        <td>김도환</td>
-                      </tr>
-                      <tr>
-                        <td>권준우</td>
-                      </tr>
-                      <tr>
-                        <td rowSpan={6}>개발부</td>
-                        <td rowSpan={4}>개발 1팀</td>
-                        <td>진유빈</td>
-                      </tr>
-                      <tr>
-                        <td>장현지</td>
-                      </tr>
-                      <tr>
-                        <td>권채림</td>
-                      </tr>
-                      <tr>
-                        <td>구민석</td>
-                      </tr>
-                      <tr>
-                        <td rowSpan={2}>개발 2팀</td>
-                        <td>변도일</td>
-                      </tr>
-                      <tr>
-                        <td>이로운</td>
-                      </tr>
-                      <tr>
-                        <td rowSpan={5}>마케팅부</td>
-                        <td rowSpan={2}>디자인팀</td>
-                        <td>김현지</td>
-                      </tr>
-                      <tr>
-                        <td>서주희</td>
-                      </tr>
-                      <tr>
-                        <td rowSpan={3}>기획팀</td>
-                        <td>전아름</td>
-                      </tr>
-                      <tr>
-                        <td>함다슬</td>
-                      </tr>
-                      <tr>
-                        <td>전규미</td>
-                      </tr>
-                      <tr>
-                        <td rowSpan={5}>관리부</td>
-                        <td rowSpan={3}>관리팀</td>
-                        <td>김효은</td>
-                      </tr>
-                      <tr>
-                        <td>우현지</td>
-                      </tr>
-                      <tr>
-                        <td>염승희</td>
-                      </tr>
-                      <tr>
-                        <td rowSpan={2}>지원팀</td>
-                        <td>김태희</td>
-                      </tr>
-                      <tr>
-                        <td>이주범</td>
-                      </tr>
+        {selectedScreen === 'R&D' ? (
+          <Tabs variant='enclosed'>
+            <TabList>
+              {yearData.map(monthData => (
+                <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' >{months[monthData.month - 1].name}</Tab>
+              ))}
+            </TabList>
 
-                    </tbody>
-                  </table>
-                  <div>
-                    {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
-                    {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month, virtualData)}
+            <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="tab_container">
+              {yearData.map(monthData => (
+                <TabPanel key={monthData.month} className="container_attendance">
+                  <div className="Excel" id="table-to-xls">
+                    <table className="Explan">
+                      <tbody>
+                        <tr>
+                          <td className="TopS" colSpan={2}>부서</td>
+                          <td className="TopS">성명</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={3}>블록체인<br />사업부</td>
+                          <td rowSpan={3}>블록체인<br />1팀</td>
+                          <td>권상원</td>
+                        </tr>
+                        <tr>
+                          <td>김도환</td>
+                        </tr>
+                        <tr>
+                          <td>권준우</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={6}>개발부</td>
+                          <td rowSpan={4}>개발 1팀</td>
+                          <td>진유빈</td>
+                        </tr>
+                        <tr>
+                          <td>장현지</td>
+                        </tr>
+                        <tr>
+                          <td>권채림</td>
+                        </tr>
+                        <tr>
+                          <td>구민석</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={2}>개발 2팀</td>
+                          <td>변도일</td>
+                        </tr>
+                        <tr>
+                          <td>이로운</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={5}>마케팅부</td>
+                          <td rowSpan={2}>디자인팀</td>
+                          <td>김현지</td>
+                        </tr>
+                        <tr>
+                          <td>서주희</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={3}>기획팀</td>
+                          <td>전아름</td>
+                        </tr>
+                        <tr>
+                          <td>함다슬</td>
+                        </tr>
+                        <tr>
+                          <td>전규미</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={5}>관리부</td>
+                          <td rowSpan={3}>관리팀</td>
+                          <td>김효은</td>
+                        </tr>
+                        <tr>
+                          <td>우현지</td>
+                        </tr>
+                        <tr>
+                          <td>염승희</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={2}>지원팀</td>
+                          <td>김태희</td>
+                        </tr>
+                        <tr>
+                          <td>이주범</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                    <div>
+                      {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
+                      {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month, virtualData)}
+                    </div>
                   </div>
-                </div>
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
+                </TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
+        ) : (
+          <Tabs variant='enclosed'>
+            <TabList>
+              {yearData.map(monthData => (
+                <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' >{months[monthData.month - 1].name}</Tab>
+              ))}
+            </TabList>
+
+            <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="tab_container">
+              {yearData.map(monthData => (
+                <TabPanel key={monthData.month} className="container_attendance">
+                  <div className="Excel_RD" id="table-to-xls">
+                    <table className="Explan_RD">
+                      <tbody>
+                        <tr>
+                          <td className="TopS" colSpan={2}>부서</td>
+                          <td className="TopS">성명</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={4}>알고리즘<br />연구실</td>
+                          <td rowSpan={1}>암호<br />연구팀</td>
+                          <td>공석</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={3}>AI<br />연구팀</td>
+                          <td>심민지</td>
+                        </tr>
+                        <tr>
+                          <td>임지현</td>
+                        </tr>
+                        <tr>
+                          <td>김희진</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={2}>동현분석<br />연구실</td>
+                          <td rowSpan={2}>동현분석<br />연구팀</td>
+                          <td>윤민지</td>
+                        </tr>
+                        <tr>
+                          <td>이채영</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={3}>블록체인<br />연구실</td>
+                          <td rowSpan={1}>크립토<br />블록체인<br />연구팀</td>
+                          <td>공석</td>
+                        </tr>
+                        <tr>
+                          <td rowSpan={2}>AI<br />개발팀</td>
+                          <td>박소연</td>
+                        </tr>
+                        <tr>
+                          <td>김경현</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div>
+                      {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
+                      {generateDivsRD(monthData.numberOfDaysInMonth, selectedYear, monthData.month, virtualData)}
+                    </div>
+                  </div>
+                </TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
+        )}
+        
       </div>
       <CustomModal
         isOpen={isAddAttend}

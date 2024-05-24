@@ -280,6 +280,36 @@
   }
 }
 
+.Excel_RD {
+  display: flex;
+
+  .Explan_RD {
+    font-family: var(--font-family-Noto-M);
+    width: 250px;
+    border: 2px solid #858585;
+    overflow-x: auto;
+    position: sticky;
+    left: 0;
+    background-color: #fff;
+    z-index: 999;
+
+    tr {
+
+      .TopS {
+        height: 39px;
+      }
+
+      td {
+        border-right: 2px solid #858585;
+        border-bottom: 2px solid #858585;
+
+        text-align: center;
+        height: 90px;
+      }
+    }
+  }
+}
+
 .Excel_annual {
   display: flex;
 
@@ -428,6 +458,16 @@
     display: grid;
     overflow-x: scroll;
     overflow-y: scroll;
+  }
+
+  .Excel_RD {
+    .Explan_RD {
+      tr {
+        .TopS {
+          height: 39px;
+        }
+      }
+    }
   }
 
   .TabKey {
