@@ -286,6 +286,7 @@
   .Explan_RD {
     font-family: var(--font-family-Noto-M);
     width: 250px;
+    height: 686px;
     border: 2px solid #858585;
     overflow-x: auto;
     position: sticky;
@@ -296,7 +297,7 @@
     tr {
 
       .TopS {
-        height: 39px;
+        height: 35px;
       }
 
       td {
@@ -304,7 +305,7 @@
         border-bottom: 2px solid #858585;
 
         text-align: center;
-        height: 90px;
+        height: 80px;
       }
     }
   }
@@ -339,7 +340,7 @@
 
 .Excel_annual_RD {
   display: flex;
-  height: 465px;
+  height: 371px;
 
   .Explan_annual_RD {
     font-family: var(--font-family-Noto-M);
@@ -350,7 +351,7 @@
     tr {
 
       .TopS_annual {
-        height: 40px;
+        height: 38px;
         font-size: 14px;
       }
 
@@ -358,7 +359,7 @@
         border-right: 2px solid #858585;
         border-bottom: 2px solid #858585;
         text-align: center;
-        height: 45px;
+        height: 42.5px;
       }
     }
   }
@@ -489,7 +490,7 @@
     .Explan_RD {
       tr {
         .TopS {
-          height: 39px;
+          height: 35px;
         }
       }
     }
@@ -501,11 +502,11 @@
       tr {
   
         .TopS_annual {
-          height: 20px;
+          height: 26.5px;
         }
   
         td {
-          height: 33.5px;
+          height: 29.5px;
         }
       }
     }
