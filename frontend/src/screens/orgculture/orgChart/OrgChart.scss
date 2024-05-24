@@ -22,8 +22,6 @@
 
 .FC_logo2 {
   position: relative;
-  top: -80px;
-  left: -70px;
   width: 140px;
 
   .Logoimg {
@@ -92,27 +90,27 @@
   .nodeicon3 {
     font-family: var(--font-family-Noto-B);
     height: 50px;
-    width: 200px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
+    width: 180px;
+    border-radius: 5px;
     border: 1px solid #DEDEDE;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
-    padding: 10px;
   }
 
   .nodeicon4 {
     font-family: var(--font-family-Noto-B);
     height: 50px;
-    width: 200px;
-    padding: 5px;
-    border-radius: 8px;
-    display: inline-block;
+    width: 180px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid #DEDEDE;
     font-size: 14px;
     font-weight: bold;
-    padding: 10px;
     margin-top: 20px;
   }
 
@@ -167,14 +165,13 @@
     .nodeicon7 {
       font-family: var(--font-family-Noto-B);
       height: 50px;
-      width: 200px;
-      padding: 5px;
-      border-radius: 8px;
-      display: inline-block;
+      width: 180px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border: 1px solid #DEDEDE;
-      font-size: 14px;
-      font-weight: bold;
-      padding: 10px;
+      font-size: 16px;
     }
   }
 
@@ -247,7 +244,7 @@
     margin-top: 20px;
 
     .nodeicon {
-      height: 100px;
+      height: 120px;
       width: 130px;
 
       .nodeicon_content {
@@ -258,8 +255,10 @@
         gap: 5px;
   
         .UserIcon {
-          width: 30px;
-          height: 30px;
+          width: 35px;
+          height: 35px;
+          margin-top: 5px;
+          margin-bottom: 5px;
         }
       }
     }
@@ -278,7 +277,7 @@
     }
 
     .TeamColumn {
-      height: 120px;
+      height: 130px;
 
       .nodeicon6 {
         width: 125px;
