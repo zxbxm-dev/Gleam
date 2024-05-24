@@ -176,7 +176,7 @@ const OrgChart = () => {
               </Tree>
             </TabPanel>
 
-            <TabPanel display='flex' justifyContent='center' marginTop='100px' className="TabPanel">
+            <TabPanel display='flex' justifyContent='center' className="TabPanel">
               <div className="FC_logo2">
                 <img src={FourchainsLogo} alt="FourchainsLogo" width='130px' />
                 <p className="MenuName2">R&D 연구센터</p>
@@ -216,7 +216,6 @@ const OrgChart = () => {
                       <div>윤민지 | 연구실장</div>
                     </div>
                   </div>}>
-                  <div className="nodeline2"></div>
                   <TreeNode label={<div className="nodeicon4">동형분석 연구팀</div>} >
                     <div className="TeamColumn">
                       <div className="nodeicon7">이채영 | 연구원</div>
