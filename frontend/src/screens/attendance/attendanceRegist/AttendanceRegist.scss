@@ -330,13 +330,38 @@
       td {
         border-right: 2px solid #858585;
         border-bottom: 2px solid #858585;
-
         text-align: center;
         height: 25px;
       }
     }
   }
+}
 
+.Excel_annual_RD {
+  display: flex;
+  height: 465px;
+
+  .Explan_annual_RD {
+    font-family: var(--font-family-Noto-M);
+    width: 320px;
+    border: 2px solid #858585;
+    overflow-x: auto;
+
+    tr {
+
+      .TopS_annual {
+        height: 40px;
+        font-size: 14px;
+      }
+
+      td {
+        border-right: 2px solid #858585;
+        border-bottom: 2px solid #858585;
+        text-align: center;
+        height: 45px;
+      }
+    }
+  }
 }
 
 .modal_container {
@@ -465,6 +490,22 @@
       tr {
         .TopS {
           height: 39px;
+        }
+      }
+    }
+  }
+
+  .Excel_annual_RD {
+  
+    .Explan_annual_RD {
+      tr {
+  
+        .TopS_annual {
+          height: 20px;
+        }
+  
+        td {
+          height: 33.5px;
         }
       }
     }

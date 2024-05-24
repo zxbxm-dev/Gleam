@@ -57,6 +57,18 @@ const AnnualManage = () => {
     ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
   ]
 
+  const membersRD: Member[] = [
+    ['공석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['심민지', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01'],
+    ['임지현', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01'],
+    ['김희진', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['윤민지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['이채영', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['공석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['박소연', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['김경현', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+  ]
+
 
   const CountDivs = () => {
     const countTotal = ["성명", "입사일", "퇴사일", "사용가능", "사용", "잔여"]
@@ -104,7 +116,7 @@ const AnnualManage = () => {
     );
   }
 
-  const generateDivs = () => {
+  const generateDivs = (member: any) => {
     const nameRows = [];
     const countfirstRows = [];
     const countsecondRows = [];
@@ -116,14 +128,14 @@ const AnnualManage = () => {
     
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 17; j++) {
+      for (let j = 0; j < member.length; j++) {
 
         rowCells.push(
           <tr
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_name_annual'> {members[j][0]} </td>
+            <td className='conta_name_annual'> {member[j][0]} </td>
           </tr>
         );
       }
@@ -132,7 +144,7 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 17; j++) {
+      for (let j = 0; j < member.length; j++) {
 
         rowCells.push(
           <tr
@@ -142,7 +154,7 @@ const AnnualManage = () => {
             <td className='conta_annual'> 
               <input 
                 type="text"
-                value={members[j][1]}
+                value={member[j][1]}
               /> 
             </td>
           </tr>
@@ -153,14 +165,14 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 17; j++) {
+      for (let j = 0; j < member.length; j++) {
 
         rowCells.push(
           <tr
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_annual'> {members[j][2]} </td>
+            <td className='conta_annual'> {member[j][2]} </td>
           </tr>
         );
       }
@@ -169,14 +181,14 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 17; j++) {
+      for (let j = 0; j < member.length; j++) {
 
         rowCells.push(
           <tr
             className="conta_three_last_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_annual'> {members[j][1].toFixed(1)} </td>
+            <td className='conta_annual'> {member[j][1].toFixed(1)} </td>
           </tr>
         );
       }
@@ -186,8 +198,8 @@ const AnnualManage = () => {
     for (let i = 0; i < 30; i++) {
       const rowCells = [];
 
-      for (let j = 0; j < 17; j++) {
-        const eventDates = members[j][4]; // 해당 멤버의 이벤트 날짜 배열
+      for (let j = 0; j < member.length; j++) {
+        const eventDates = member[j][4]; // 해당 멤버의 이벤트 날짜 배열
         const eventDate = eventDates && eventDates[i] ? eventDates[i] : '';
         const eventType = eventDate.slice(-1);
 
@@ -207,14 +219,14 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 17; j++) {
+      for (let j = 0; j < member.length; j++) {
 
         rowCells.push(
           <tr
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_date_annual'> {members[j][5]} </td>
+            <td className='conta_date_annual'> {member[j][5]} </td>
           </tr>
         );
       }
@@ -223,14 +235,14 @@ const AnnualManage = () => {
 
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
-      for (let j = 0; j < 17; j++) {
+      for (let j = 0; j < member.length; j++) {
 
         rowCells.push(
           <tr
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_date_annual'> {members[j][6]} </td>
+            <td className='conta_date_annual'> {member[j][6]} </td>
           </tr>
         );
       }
@@ -286,22 +298,21 @@ const AnnualManage = () => {
         <div className="container">
           <div className="container_attendance" id="table-to-xls">
             {selectedScreen === '본사' ? (
-              <div className="Excel_annual">
-                <table className="Explan_annual">
+              <div className="Excel_annual_RD">
+                <table className="Explan_annual_RD">
                   <tbody>
                     <tr>
                       <td className="TopS_annual">NO.</td>
                       <td className="TopS_annual" colSpan={2}>부서</td>
                     </tr>
-                    <tr style={{ fontSize: '14.5px'}}>
+                    <tr>
                       <td>1</td>
-                      <td>알고리즘 연구실</td>
-                      <td>블록체인 1팀</td>
+                      <td rowSpan={4}>알고리즘 연구실</td>
+                      <td rowSpan={1}>암호 연구팀</td>
                     </tr>
                     <tr>
                       <td>2</td>
-                      <td rowSpan={6}>개발부</td>
-                      <td rowSpan={4}>개발 1팀</td>
+                      <td rowSpan={3}>AI 연구팀</td>
                     </tr>
                     <tr>
                       <td>3</td>
@@ -311,55 +322,30 @@ const AnnualManage = () => {
                     </tr>
                     <tr>
                       <td>5</td>
+                      <td rowSpan={2}>동형분석 연구실</td>
+                      <td rowSpan={2}>동형분석 연구팀</td>
                     </tr>
                     <tr>
                       <td>6</td>
-                      <td rowSpan={2}>개발 2팀</td>
                     </tr>
                     <tr>
                       <td>7</td>
+                      <td rowSpan={3}>블록체인 연구실</td>
+                      <td rowSpan={1}>크립토 블록체인 연구팀</td>
                     </tr>
                     <tr>
                       <td>8</td>
-                      <td rowSpan={5}>마케팅부</td>
-                      <td rowSpan={2}>디자인팀</td>
+                      <td rowSpan={2}>AI 개발팀</td>
                     </tr>
                     <tr>
                       <td>9</td>
                     </tr>
-                    <tr>
-                      <td>10</td>
-                      <td rowSpan={3}>기획팀</td>
-                    </tr>
-                    <tr>
-                      <td>11</td>
-                    </tr>
-                    <tr>
-                      <td>12</td>
-                    </tr>
-                    <tr>
-                      <td>13</td>
-                      <td rowSpan={5}>관리부</td>
-                      <td rowSpan={3}>관리팀</td>
-                    </tr>
-                    <tr>
-                      <td>14</td>
-                    </tr>
-                    <tr>
-                      <td>15</td>
-                    </tr>
-                    <tr>
-                      <td>16</td>
-                      <td rowSpan={2}>지원팀</td>
-                    </tr>
-                    <tr>
-                      <td>17</td>
-                    </tr>
+
                   </tbody>
                 </table>
                 <div>
                   {CountDivs()}
-                  {generateDivs()}
+                  {generateDivs(membersRD)}
                 </div>
               </div>
               
@@ -437,7 +423,7 @@ const AnnualManage = () => {
                 </table>
                 <div>
                   {CountDivs()}
-                  {generateDivs()}
+                  {generateDivs(members)}
                 </div>
               </div>
             )}
