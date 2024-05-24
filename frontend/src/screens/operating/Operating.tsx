@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { evaluate } from "mathjs";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { OperatingServices } from '../../services/operating/OperatingServices';
 
 type TeamType = 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
 
@@ -464,6 +465,39 @@ const Operating = () => {
     };
   }, [dropdownOpen]);
 
+  const handleSubmit = () => {
+    setEditMode(!editMode);
+    
+    const formData = {
+      common811: common811Team,
+      common812: common812Team,
+      common813: common813Team,
+      common814: common814Team,
+      common815: common814Team,
+      common818: common814Team,
+      common819: common814Team,
+      management: managementTeam,
+      support: supportTeam,
+      devone: devOneTeam,
+      devtwo: devTwoTeam,
+      blockchain: blockchainTeam,
+      design: designTeam,
+      planning: planningTeam,
+    }
+
+    console.log('전송된 데이터', formData);
+
+    // API 호출
+    OperatingServices(formData)
+      .then(response => {
+        console.log("운영비 데이터 전송 성공")
+      })
+      .catch(error => {
+        console.log("운영비 데이터 전송 오류", error);
+      })
+  }
+
+
   return (
     <div className="content">
       <div className="content_header">
@@ -483,7 +517,7 @@ const Operating = () => {
         {editMode ? 
           <button
           className='head_company_button'
-          onClick={() => setEditMode(!editMode)}
+          onClick={handleSubmit}
           >
             등록
           </button>
