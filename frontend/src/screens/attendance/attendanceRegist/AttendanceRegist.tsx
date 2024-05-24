@@ -6,6 +6,7 @@ import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { AttendRegist } from "../../../services/attendance/AttendanceServices";
 
 const months = [
   { name: '1월', key: 'january' },
@@ -29,13 +30,32 @@ const names = [
 ];
 
 const namesRD = [
-  '공석', '심민지', '임지현', '김희진', '윤민지', '이채영', '공석', '박소연', '김경현'
+  '심민지', '임지현', '김희진', '윤민지', '이채영', '박소연', '김경현'
 ]
 
 const AttendanceRegist = () => {
   const [attachment, setAttachment] = useState<File | null>(null);
   const [isAddAttend, setAddAttend] = useState(false);
   const [selectedScreen, setSelectedScreen] = useState('R&D');
+
+  // 모달 창 입력값
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [otherValue, setOtherValue] = useState('');
+
+  const handleStartTimeChange = (e: any) => {
+    setStartTime(e.target.value);
+  };
+
+  const handleEndTimeChange = (e: any) => {
+    setEndTime(e.target.value);
+  };
+
+  const handleOtherValueChange = (e: any) => {
+    setOtherValue(e.target.value);
+  };
+
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -717,7 +737,31 @@ const AttendanceRegist = () => {
     });
   };
 
-  
+
+  // 출근부 데이터 전송 - 모달
+  const handleSubmit = () => {
+    setAddAttend(false);
+
+    const formData = {
+      name: selectedDateInfo.name,
+      date: `${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`,
+      data: [startTime, endTime, otherValue],
+    }
+
+    console.log(formData)
+    AttendRegist(formData)
+      .then(response => {
+        console.log('출근부 데이터 전송 성공')
+      })
+      .catch(error => {
+        console.log('출근부 데이터 전송 실패')
+      })
+    
+    setStartTime('');
+    setEndTime('');
+    setOtherValue('');
+  }
+
   return (
     <div className="content">
       <div className="content_header">
@@ -868,11 +912,7 @@ const AttendanceRegist = () => {
                           <td className="TopS">성명</td>
                         </tr>
                         <tr>
-                          <td rowSpan={4}>알고리즘<br />연구실</td>
-                          <td rowSpan={1}>암호<br />연구팀</td>
-                          <td>공석</td>
-                        </tr>
-                        <tr>
+                          <td rowSpan={3}>알고리즘<br />연구실</td>
                           <td rowSpan={3}>AI<br />연구팀</td>
                           <td>심민지</td>
                         </tr>
@@ -891,11 +931,7 @@ const AttendanceRegist = () => {
                           <td>이채영</td>
                         </tr>
                         <tr>
-                          <td rowSpan={3}>블록체인<br />연구실</td>
-                          <td rowSpan={1}>크립토<br />블록체인<br />연구팀</td>
-                          <td>공석</td>
-                        </tr>
-                        <tr>
+                          <td rowSpan={2}>블록체인<br />연구실</td>
                           <td rowSpan={2}>AI<br />개발팀</td>
                           <td>박소연</td>
                         </tr>
@@ -922,23 +958,24 @@ const AttendanceRegist = () => {
         header={`${selectedDateInfo.year}.${selectedDateInfo.month}.${selectedDateInfo.date}  ${selectedDateInfo.name}`}
         footer1={'등록'}
         footer1Class="back-green-btn"
+        onFooter1Click={handleSubmit}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => setAddAttend(false)}
+        onFooter2Click={() => {setAddAttend(false); setStartTime(''); setEndTime(''); setOtherValue('');}}
         height="230px"
       >
         <div className="modal_container">
           <div className="modal_input">
             <div className="input_title">출근시간</div>
-            <input className="input_text" type="text" placeholder="00:00"/>
+            <input className="input_text" type="text" placeholder="00:00" value={startTime} onChange={handleStartTimeChange}/>
           </div>
           <div className="modal_input">
             <div className="input_title">퇴근시간</div>
-            <input className="input_text" type="text" placeholder="00:00"/>
+            <input className="input_text" type="text" placeholder="00:00" value={endTime} onChange={handleEndTimeChange}/>
           </div>
           <div className="modal_input">
             <div className="input_title">기타 값</div>
-            <select className="input_select">
+            <select className="input_select" value={otherValue} onChange={handleOtherValueChange}>
               <option value=''>선택안함(비워두기)</option>
               <option value='오전반차' style={{ color: '#FFB800' }}>오전반차</option>
               <option value='오후반차' style={{ color: '#FFB800' }}>오후반차</option>
