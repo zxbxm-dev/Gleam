@@ -883,8 +883,8 @@ const AttendanceRegist = () => {
                           <td>김희진</td>
                         </tr>
                         <tr>
-                          <td rowSpan={2}>동현분석<br />연구실</td>
-                          <td rowSpan={2}>동현분석<br />연구팀</td>
+                          <td rowSpan={2}>동형분석<br />연구실</td>
+                          <td rowSpan={2}>동형분석<br />연구팀</td>
                           <td>윤민지</td>
                         </tr>
                         <tr>
