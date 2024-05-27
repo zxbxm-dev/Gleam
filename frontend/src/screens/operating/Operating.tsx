@@ -1158,13 +1158,13 @@ const Operating = () => {
               <table className='Excel_total'>
                 <tbody>
                   <tr>
-                    <td style={{ width: '588px'}}>부서(팀)별 편성액 합계</td>
-                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>{( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost).toLocaleString()}</td>
+                    <td className="total_title">부서(팀)별 편성액 합계</td>
+                    <td className="total_cost">{( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost).toLocaleString()}</td>
                     <td>  </td>
                   </tr>
                   <tr>
-                    <td style={{ width: '588px'}}>예비비</td>
-                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>
+                    <td className="total_title">예비비</td>
+                    <td className="total_cost">
                       {reserveFund ? (
                         <div onClick={() => setReserveFund(0)}>
                           {reserveFund.toLocaleString()}
@@ -1202,8 +1202,8 @@ const Operating = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ width: '588px'}}>{selectedYear}년 총 예산</td>
-                    <td style={{ width: '150px' ,textAlign: 'right', paddingRight: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>{(( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) + reserveFund).toLocaleString()}</td>
+                    <td className="total_title">{selectedYear}년 총 예산</td>
+                    <td className="total_cost">{(( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) + reserveFund).toLocaleString()}</td>
                     <td></td>
                   </tr>
                 </tbody>

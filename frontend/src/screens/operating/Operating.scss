@@ -37,9 +37,8 @@
 
   .Explan_operating {
     font-family: var(--font-family-Noto-M);
-    width: 1700px;
-    font-size: 12px;
     height: 1000px;
+    font-size: 12px;
     border: 2px solid #858585;
     text-align: center;
 
@@ -64,7 +63,7 @@
       height: 40px;
     }
     .table_header_note {
-      width: 700px;
+      width: 650px;
       height: 40px;
     }
     .table_header_totalAccount {
@@ -133,11 +132,22 @@
 
   .Excel_total {
     font-family: var(--font-family-Noto-M);
-    width: 1440px;
+    width: 1340px;
     font-size: 12px;
     height: 100px;
     border: 2px solid #858585;
     text-align: center;
+
+    .total_title {
+      width: 537px;
+    }
+
+    .total_cost {
+      width: 150px;
+      text-align: right;
+      padding-right: 5px;
+      font-family: var(--font-family-Noto-B);
+    }
 
     tr {
       border-bottom: 1px solid #858585;
@@ -311,6 +321,58 @@
       width: 66px;
       height: 35px;
       font-size: 14px;
+    }
+  }
+
+  .Excel_operating {
+    overflow-x: hidden;
+      
+    .Explan_operating {
+      width: 1040px;
+
+      .table_header_name {
+        width: 50px;
+        height: 30px;
+      }
+      .table_header_name_code {
+        width: 50px;
+        height: 30px;
+      }
+      .table_header_account {
+        width: 100px;
+        height: 30px;
+      }
+      .table_header_account_code {
+        width: 80px;
+        height: 30px;
+      }
+      .table_header_yearAccount {
+        width: 100px;
+        height: 30px;
+      }
+      .table_header_note {
+        width: 400px;
+        height: 30px;
+      }
+      .table_header_totalAccount {
+        width: 100px;
+        height: 30px;
+      }
+    }
+  
+    .Excel_total {
+      width: 840px;
+      
+      .total_title {
+        width: 339px;
+      }
+
+      .total_cost {
+        width: 100px;
+        text-align: right;
+        padding-right: 5px;
+        font-family: var(--font-family-Noto-B);
+      }
     }
   }
 }
