@@ -88,7 +88,7 @@ const ActivityManage = () => {
                   <div className="board_unit">
                     <div className="board_title">
                       <span style={{marginRight: '5px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '250px'}}>
-                        {employnotice.title}
+                        <Link to={"/detailEmployeeNotice"}>{employnotice.title}</Link>
                       </span> 
                       {employnotice.attachment ? 
                         <img src={AttachmentIcon} alt="AttachmentIcon" />
@@ -122,7 +122,7 @@ const ActivityManage = () => {
                     <div className="board_unit">
                       <div className="board_title">
                         <span style={{marginRight: '5px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '250px'}}>
-                          {freeboard.title}
+                          <Link to={"/detailFreeBoard"}>{freeboard.title}</Link>
                         </span> 
                         {freeboard.attachment ? 
                           <img src={AttachmentIcon} alt="AttachmentIcon" />
