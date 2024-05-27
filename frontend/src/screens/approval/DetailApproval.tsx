@@ -36,7 +36,7 @@ const DetailApproval = () => {
   const [signDates, setSignDates] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const signatories = ['작성자','팀장', '부서장', '지원팀장', '대표'];
+  const signatories = ['작성자', '팀장', '부서장', '지원팀장', '대표'];
 
   useEffect(() => {
     setFile(testPDF);
@@ -151,18 +151,18 @@ const DetailApproval = () => {
                     <button className="save_button">의견 작성</button>
                   </PopoverTrigger>
                   <Portal>
-                    <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                    <PopoverContent width='400px' height='274px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
                       <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>의견 작성</PopoverHeader>
                       <PopoverCloseButton color='white' />
-                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px'>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' }}>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <div style={{ width: '2.5vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>작성자</div>
-                            <div style={{ color: '#323232', fontFamily: 'var(--font-family-Noto-M)' }}>김효은 팀장</div>
+                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px' paddingRight="15px">
+                        <div className='opinionBox'>
+                          <div className='WriterBox'>
+                            <div className='Write'>작성자</div>
+                            <div className='Writer'>김효은 팀장</div>
                           </div>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <div style={{ width: '2.5vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>내용</div>
-                            <Textarea placeholder='내용을 입력해주세요.' size='sm' width='19vw' height='15vh' fontFamily='var(--font-family-Noto-R)' />
+                          <div className='TextAreaBox'>
+                            <div className='Title'>내용</div>
+                            <textarea className='TextAreaStyle' placeholder='내용을 입력해주세요.' />
                           </div>
                         </div>
                         <div className='button-wrap'>
@@ -176,25 +176,25 @@ const DetailApproval = () => {
               </div>
 
               <div className="top_right_content">
-                <button className="approve_button">결재하기</button>
-                <button className="save_button" onClick={exportToPDF}>인쇄하기</button>
+                <button className="approve_button">결재</button>
+                <button className="save_button" onClick={exportToPDF}>다운로드</button>
                 <Popover placement="right-start">
                   <PopoverTrigger>
                     <button className="reject_button">반려하기</button>
                   </PopoverTrigger>
                   <Portal>
-                    <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                    <PopoverContent width='410px' height='274px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
                       <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>반려 사유 작성</PopoverHeader>
                       <PopoverCloseButton color='white' />
-                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px'>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent:'center' }}>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <div style={{ width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>반려자</div>
-                            <div style={{ color: '#323232', fontFamily: 'var(--font-family-Noto-M)' }}>김효은 팀장</div>
+                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px' paddingRight="15px">
+                        <div className='opinionBox'>
+                          <div className='WriterBox'>
+                            <div className='CompanionWrite'>반려자</div>
+                            <div className='Writer'>김효은 팀장</div>
                           </div>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <div style={{ width: '3vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>반려 사유</div>
-                            <Textarea placeholder='내용을 입력해주세요.' size='sm' width='17vw' height='15vh' fontFamily='var(--font-family-Noto-R)' />
+                          <div className='TextAreaBox'>
+                            <div className='CompanionTitle'>반려 사유</div>
+                            <textarea className='TextAreaCompanion' placeholder='내용을 입력해주세요.' />
                           </div>
                         </div>
                         <div className='button-wrap'>
@@ -235,7 +235,7 @@ const DetailApproval = () => {
 
       <CustomModal
         isOpen={isSignModalOpen}
-        onClose={() => setSignModalOpen(false)} 
+        onClose={() => setSignModalOpen(false)}
         header={'알림'}
         footer1={'서명'}
         footer1Class="green-btn"

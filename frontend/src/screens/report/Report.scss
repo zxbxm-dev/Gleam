@@ -214,8 +214,7 @@
       }
 
       .approve_button {
-        width: 92px;
-        height: 35px;
+      padding: 8px 20px 7px 20px;
         border: 1px solid #746E58;
         border-radius: 5px;
         background-color: #746E58;
@@ -888,6 +887,92 @@
         font-size: 14px;
         background-color: #fff;
       }
+    }
+  }
+}
+
+.opinionBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 11px;
+  height: 182px;
+  width: 100%;
+  padding-left: 15px;
+
+  .WriterBox {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+
+    .Write {
+      width: 39px;
+      text-align: right;
+      color: #929292;
+      font-family: var(--font-family-Noto-M);
+    }
+
+    .CompanionWrite {
+      width: 55px;
+      text-align: right;
+      color: #929292;
+      font-family: var(--font-family-Noto-M);
+    }
+
+    .Writer {
+      color: #323232;
+      font-family: var(--font-family-Noto-M);
+    }
+  }
+
+  .TextAreaBox {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+
+    .Title {
+      width: 39px;
+      text-align: right;
+      color: #929292;
+      font-family: var(--font-family-Noto-M);
+    }
+
+    .CompanionTitle {
+      width: 55px;
+      text-align: right;
+      color: #929292;
+      font-family: var(--font-family-Noto-M);
+    }
+
+    .TextAreaStyle {
+      width: 321px;
+      height: 124px;
+      border: 1px solid #DCDCDC;
+      resize: none;
+      padding: 6px 7px;
+      font-size: 12px;
+      color: #323232;
+      border-radius: 5px;
+    }
+
+    .TextAreaStyle:focus {
+      outline: none;
+    }
+
+    .TextAreaCompanion {
+      width: 305px;
+      height: 124px;
+      border: 1px solid #DCDCDC;
+      resize: none;
+      padding: 6px 7px;
+      font-size: 12px;
+      color: #323232;
+      border-radius: 5px;
+    }
+
+    .TextAreaCompanion:focus {
+      outline: none;
     }
   }
 }
