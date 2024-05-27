@@ -37,36 +37,19 @@
 
   .Explan_operating {
     font-family: var(--font-family-Noto-M);
-    // width: 1700px;
+    width: 1700px;
     font-size: 12px;
     height: 1000px;
-    // border: 2px solid #858585;
+    border: 2px solid #858585;
     text-align: center;
-    border-collapse: separate;
-    border-spacing: 0;
-    table-layout:fixed;
-    width: 100%;
 
     .table_header_name {
-      width: 200px;
-      height: 40px;
-      position: sticky;
-      left: 0;
-      background-color: #fff;
-      border-left: 1px solid #000;
-      z-index: 999;
-      border-top: 1px solid #000;
-    }
-    .table_header_name_code {
       width: 100px;
       height: 40px;
-      position: sticky;
-      left: 200px;
-      background-color: #fff;
-      border-left: 1px solid #000;
-      z-index: 999;
-      border-top: 1px solid #000;
-      border-right: 1px solid #000;
+    }
+    .table_header_name_code {
+      width: 80px;
+      height: 40px;
     }
     .table_header_account {
       width: 250px;
@@ -104,7 +87,6 @@
     td {
       border-right: 1px solid #858585;
       padding: 0;
-      height: 40px;
     }
    
 
