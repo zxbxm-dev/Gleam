@@ -535,11 +535,11 @@ const Operating = () => {
         <div className="container">
           <div className="container_operating">
             <div className="Excel_operating" id="table-to-xls"> 
-              <table className='Explan_operating'>
-                <tbody>
+              <table className='Explan_operating' >
+                <tbody className='TBody'>
                   <tr>        
-                    <th className="table_header_name th_right th_bottom" colSpan={2}>부서 / 팀명</th>
-                    <th className="table_header_name_code th_right th_bottom">부서 코드</th>
+                    <th className="table_header_name" colSpan={2}>부서 / 팀명</th>
+                    <th className="table_header_name_code">부서 코드</th>
                     <th className="table_header_account_code th_right th_bottom">계정 코드</th>
                     <th className="table_header_account th_right th_bottom">계정명</th>
                     <th className="table_header_yearAccount th_right th_bottom">연간편성액(원)</th>
@@ -552,8 +552,8 @@ const Operating = () => {
                     <tr key={index} onContextMenu={(e) => handleRightClick(e, 'common811')}>
                       {index === 0 ? (
                         <>
-                          <th rowSpan={CommonRowSpan} colSpan={2} className="th_right th_bottom">공통 <br /> (1000) </th>
-                          <th rowSpan={CommonRowSpan} className="th_right th_bottom">1000</th>
+                          <th rowSpan={CommonRowSpan} colSpan={2} className="table_header_name">공통 <br /> (1000) </th>
+                          <th rowSpan={CommonRowSpan} className="table_header_name_code">1000</th>
                         </>
                       ) : null}
                       {row.map((item, i) => (
