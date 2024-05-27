@@ -537,7 +537,7 @@ const Operating = () => {
             <div className="Excel_operating" id="table-to-xls"> 
               <table className='Explan_operating'>
                 <tbody>
-                  <tr>
+                  <tr>        
                     <th className="table_header_name th_right th_bottom" colSpan={2}>부서 / 팀명</th>
                     <th className="table_header_name_code th_right th_bottom">부서 코드</th>
                     <th className="table_header_account_code th_right th_bottom">계정 코드</th>
