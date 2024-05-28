@@ -643,6 +643,9 @@ const Approval = () => {
         <div className="container">
           <div className="approval_top">
             <div className="approval_top_first">
+            <div className={`${selectedTab === "myDocuments" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("myDocuments")}>
+                <span>내문서</span> <span className="document_count">{mydocuments.length}</span>
+              </div>
               <div className={`${selectedTab === "approval" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("approval")}>
                 <span>결재 할 문서</span> <span className="document_count">{approvalings.length}</span>
               </div>
@@ -652,13 +655,11 @@ const Approval = () => {
               <div className={`${selectedTab === "rejected" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("rejected")}>
                 <span>반려 문서</span> <span className="document_count">{rejecteds.length}</span>
               </div>
-            </div>
-            <div className="approval_top_second">
               <div className={`${selectedTab === "completed" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("completed")}>
                 <span>결재 완료 문서</span> <span className="document_count">{compleDocuments.length}</span>
               </div>
-              <div className={`${selectedTab === "myDocuments" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("myDocuments")}>
-                <span>내문서</span> <span className="document_count">{mydocuments.length}</span>
+              <div className={`${selectedTab === "00" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("00")}>
+                <span>휴가문서관리</span> <span className="document_count">{mydocuments.length}</span>
               </div>
             </div>
           </div>

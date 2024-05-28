@@ -3,7 +3,7 @@
 
 .approval_top {
   width: 100%;
-  height: 20%;
+  height: 80px;
 
   .approval_top_first {
     display: flex;
@@ -15,13 +15,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 32%;
-      height: 80%;
+      width: 20%;
+      height: 50px;
       border: 1px solid #C7C7C7;
       border-radius: 8px;
       color: #929292;
       font-family: var(--font-family-Noto-R);
-      font-size: 20px;
+      font-size: 16px;
       padding: 20px;
       cursor: pointer;
 
@@ -33,13 +33,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 32%;
-      height: 80%;
+      width: 20%;
+      height: 50px;
       box-shadow: 0 0 0 2px #746E58 inset;
       border-radius: 8px;
       color: #323232;
       font-family: var(--font-family-Noto-M);
-      font-size: 20px;
+      font-size: 16px;
       padding: 20px;
       cursor: pointer;
     }
@@ -48,46 +48,7 @@
       color: #D56D6D;
     }
   }
-  
-  .approval_top_second {
-    display: flex;
-    width: 100%;
-    height: 50%;
-    gap: 1%;
 
-    .approval_tab {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 32%;
-      height: 80%;
-      border: 1px solid #C7C7C7;
-      border-radius: 8px;
-      color: #929292;
-      font-family: var(--font-family-Noto-R);
-      font-size: 20px;
-      padding: 20px;
-      cursor: pointer;
-
-      &:hover {
-        box-shadow: 0 0 0 2px #746E58 inset;
-      }
-    }
-    .approval_tab_clicked {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 32%;
-      height: 80%;
-      box-shadow: 0 0 0 2px #746E58 inset;
-      border-radius: 8px;
-      color: #323232;
-      font-family: var(--font-family-Noto-M);
-      font-size: 20px;
-      padding: 20px;
-      cursor: pointer;
-    }
-  }
   .document_count {
     color: #D56D6D;
     font-size: 20px;
@@ -162,26 +123,6 @@
 
 
 @include laptop {
-  .approval_top {
-    .approval_top_first {
-      .approval_tab {
-        font-size: 18px;
-      }
-      .approval_tab_clicked {
-        font-size: 18px;
-      }
-    }
-    
-    .approval_top_second {
-      .approval_tab {
-        font-size: 18px;
-      }
-      .approval_tab_clicked {
-        font-size: 18px;
-      }
-    }
- }
-
   .approval_btm {
 
     .approval_board_list {
