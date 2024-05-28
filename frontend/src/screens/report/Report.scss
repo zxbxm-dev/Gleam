@@ -7,7 +7,7 @@
   gap: 30px;
 
   .report_type {
-    width: 350px;
+    width: 20%;
     height: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -17,7 +17,7 @@
     .report_content {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 5px;
 
       .report_title {
         font-family: var(--font-family-Noto-B);
@@ -29,9 +29,9 @@
         display: flex;
         align-items: center;
         font-family: var(--font-family-Noto-M);
-        font-size: 18px;
-        width: 350px;
-        height: 50px;
+        font-size: 14px;
+        width: 100%;
+        height: 40px;
         padding-left: 20px;
         border: 2px solid #DCDCDC;
         border-radius: 5px;
@@ -215,7 +215,7 @@
       }
 
       .approve_button {
-      padding: 8px 20px 7px 20px;
+        padding: 8px 20px 7px 20px;
         border: 1px solid #746E58;
         border-radius: 5px;
         background-color: #746E58;
@@ -682,27 +682,40 @@
 
 
 @include laptop {
-  .report_container {
-
-    .report_type {
-
-      .report_content {
-
-        .report_name {
-          font-size: 16px;
-          // width: 80%;
-          // height: 38px;
-        }
-      }
-    }
-  }
-
   .write_container {
 
     .write_top_container {
       align-items: center;
 
       .top_left_content {
+
+        .Select_report {
+          .Select_report_Content {
+            height: 400px;
+            overflow-y: scroll;
+          }
+
+          .Select_report_Content::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+          }
+
+          .Select_report_Content::-webkit-scrollbar-thumb {
+            background-color: #A8A8A8;
+            border-radius: 10px;
+            background-clip: padding-box;
+            border: 2px solid transparent;
+          }
+
+          .Select_report_Content::-webkit-scrollbar-corner {
+            background-color: none;
+          }
+
+          .Select_report_Content::-webkit-scrollbar-track {
+            box-shadow: none;
+            background-color: #fff;
+          }
+        }
 
         .save_button {
           width: 92px;

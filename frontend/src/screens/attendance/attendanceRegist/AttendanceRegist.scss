@@ -378,13 +378,14 @@
     justify-content: center;
     gap: 10px;
     font-size: 14px;
-  
+
     .input_title {
       width: 60px;
       color: #929292;
       display: flex;
       flex-direction: row-reverse;
     }
+
     .input_text {
       width: 300px;
       height: 28px;
@@ -392,9 +393,11 @@
       border-radius: 5px;
       padding: 7px;
     }
+
     .input_text:focus {
       outline: 2px solid #746e58;
     }
+
     .input_text::placeholder {
       font-size: 14px;
       color: #C7C7C7;
@@ -497,14 +500,14 @@
   }
 
   .Excel_annual_RD {
-  
+
     .Explan_annual_RD {
       tr {
-  
+
         .TopS_annual {
           height: 26.5px;
         }
-  
+
         td {
           height: 29.5px;
         }
