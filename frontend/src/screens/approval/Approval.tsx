@@ -14,7 +14,7 @@ import Pagination from "react-js-pagination";
 const Approval = () => {
   let navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
-  const [selectedTab, setSelectedTab] = useState<string>("main");
+  const [selectedTab, setSelectedTab] = useState<string>("myDocuments");
   const postPerPage: number = 10;
   const [approval, setApproval] = useState<any[]>([]);
   const [approvalings, setApprovaling] = useState<any[]>([]);
