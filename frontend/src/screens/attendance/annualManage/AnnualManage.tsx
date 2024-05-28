@@ -41,7 +41,6 @@ const AnnualManage = () => {
     ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01'],
     ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01'],
     ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['권채림', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['변도일', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
     ['이로운', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
@@ -353,8 +352,8 @@ const AnnualManage = () => {
                     </tr>
                     <tr>
                       <td>2</td>
-                      <td rowSpan={6}>개발부</td>
-                      <td rowSpan={4}>개발 1팀</td>
+                      <td rowSpan={5}>개발부</td>
+                      <td rowSpan={3}>개발 1팀</td>
                     </tr>
                     <tr>
                       <td>3</td>
@@ -364,49 +363,46 @@ const AnnualManage = () => {
                     </tr>
                     <tr>
                       <td>5</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
                       <td rowSpan={2}>개발 2팀</td>
                     </tr>
                     <tr>
-                      <td>7</td>
+                      <td>6</td>
                     </tr>
                     <tr>
-                      <td>8</td>
+                      <td>7</td>
                       <td rowSpan={5}>마케팅부</td>
                       <td rowSpan={2}>디자인팀</td>
                     </tr>
                     <tr>
+                      <td>8</td>
+                    </tr>
+                    <tr>
                       <td>9</td>
+                      <td rowSpan={3}>기획팀</td>
                     </tr>
                     <tr>
                       <td>10</td>
-                      <td rowSpan={3}>기획팀</td>
                     </tr>
                     <tr>
                       <td>11</td>
                     </tr>
                     <tr>
                       <td>12</td>
+                      <td rowSpan={5}>관리부</td>
+                      <td rowSpan={3}>관리팀</td>
                     </tr>
                     <tr>
                       <td>13</td>
-                      <td rowSpan={5}>관리부</td>
-                      <td rowSpan={3}>관리팀</td>
                     </tr>
                     <tr>
                       <td>14</td>
                     </tr>
                     <tr>
                       <td>15</td>
-                    </tr>
-                    <tr>
-                      <td>16</td>
                       <td rowSpan={2}>지원팀</td>
                     </tr>
                     <tr>
-                      <td>17</td>
+                      <td>16</td>
                     </tr>
                   </tbody>
                 </table>
