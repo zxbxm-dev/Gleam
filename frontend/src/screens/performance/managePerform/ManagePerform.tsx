@@ -9,6 +9,9 @@ import { ReactComponent as FirstLeftIcon } from "../../../assets/images/Common/F
 import Pagination from "react-js-pagination";
 import CustomModal from "../../../components/modal/CustomModal";
 
+import { useQuery } from "react-query";
+import { CheckPerform, DeletePerform } from "../../../services/performance/PerformanceServices";
+
 
 const ManagePerform = () => {
   const [isSelectMember] = useRecoilState(isSelectMemberState);
@@ -17,13 +20,22 @@ const ManagePerform = () => {
   const postPerPage: number = 10;
   const [managePerform, setManagePerform] = useState<any[]>([]);
   const [userManagePerform, setUserManagePerform] = useState<any[]>([]);
+  const [clickIdx, setClickIdx] = useState<number>(0);
 
   const handlePageChange = (page: number) => {
     setPage(page);
   };
 
-  const handleDeleteDocument = () => {
+  const handleDeleteDocument = (index: number) => {
     setDeleteModalOpen(false);
+    console.log('클릭된 게시글 인덱스',index)
+    DeletePerform(index)
+    .then((response) => {
+      console.log("인사평가 문서가 삭제되었습니다.", response);
+    })
+    .catch((error) => {
+      console.error("인사평가 문서 삭제에 실패했습니다.", error);
+    });
   };
 
   useEffect(() => {
@@ -52,6 +64,25 @@ const ManagePerform = () => {
     }));
     setUserManagePerform(initializedPerform);
   }, [isSelectMember, managePerform]);
+  
+  // 인사평가 목록 불러오기 (전체)
+  const fetchmanagePerform = async () => {
+    try {
+      const response = await CheckPerform();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  }
+
+  useQuery("managePerform", fetchmanagePerform, {
+    onSuccess: (data) => setManagePerform(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
+
   
   return (
     <div className="content">
@@ -101,7 +132,7 @@ const ManagePerform = () => {
                         <td>{userPerform.date}</td>
                         <td>
                           <button className="document_button">문서확인</button>
-                          <button className="delete_small_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
+                          <button className="delete_small_button" onClick={() => {setDeleteModalOpen(true); setClickIdx(Number(userPerform.id));}}>삭제</button>
                         </td>
                       </tr>
                     ))
@@ -132,7 +163,7 @@ const ManagePerform = () => {
         header={'알림'}
         footer1={'삭제'}
         footer1Class="red-btn"
-        onFooter1Click={handleDeleteDocument}
+        onFooter1Click={() => handleDeleteDocument(clickIdx)}
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setDeleteModalOpen(false)}
