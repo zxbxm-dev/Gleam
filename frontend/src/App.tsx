@@ -54,9 +54,9 @@ function App() {
             <Route path="/activitymanage" element={<ActivityManage />} />
             <Route path="/writeActivityManage" element={<WriteActivityManage />} />
             <Route path="/employeeNotice" element={<EmployeeNotice />} />
-            <Route path="/detailEmployeeNotice" element={<DetailEmployeeNotice />} />
+            <Route path="/detailEmployeeNotice/:id" element={<DetailEmployeeNotice />} />
             <Route path="/freeBoard" element={<FreeBoard />} />
-            <Route path="/detailFreeBoard" element={<DetailFreeBoard />} />
+            <Route path="/detailFreeBoard/:id" element={<DetailFreeBoard />} />
 
             <Route path="/" element={<Announcement />} />
             <Route path="/writeAnnounce" element={<WriteAnnounce />} />
@@ -66,7 +66,7 @@ function App() {
 
             <Route path="/regulations" element={<Regulations />} />
             <Route path="/writeRegulation" element={<WriteRegulation />} />
-            <Route path="/detailRegulation" element={<DetailRegulation />} />
+            <Route path="/detailRegulation/:id" element={<DetailRegulation />} />
 
             {/* 휴가 관리 */}
             <Route path="/calendar" element={<Calendar />} />

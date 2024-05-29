@@ -1,25 +1,51 @@
 import "./Regulations.scss";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import CustomModal from "../../../components/modal/CustomModal";
+import { DetailTableRegul, DeleteRegul } from "../../../services/announcement/Regulation";
+import { useLocation } from 'react-router-dom';
+
+
+interface Announcement {
+  name: string;
+  date: string;
+}
 
 
 const DetailRegulation = () => {
   let navigate = useNavigate();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [detailRegul, setDetailRegul] = useState<Announcement | null>(null);
+  const location = useLocation();
+  const pathnameParts = location.pathname.split('/');
+  const Regul_id = pathnameParts[pathnameParts.length - 1];
 
-  const handleDelete = () => {
+  const fetchDetailRegul = async (Regul_id: string) => {
+    try {
+      const response = await DetailTableRegul(Regul_id);
+      setDetailRegul(response.data);
+    } catch (error) {
+      console.error("fetching detailanno : ", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchDetailRegul(Regul_id);
+  }, [Regul_id]);
+
+
+  const handleDelete = async () => {
     setDeleteModalOpen(false);
-  }
-
-  const handleEdit = () => {
-    setEditModalOpen(false);
-  }
+    try {
+      await DeleteRegul(Regul_id);
+      navigate("/regulations");
+    } catch (error) {
+      console.error("Error deleting announcement: ", error);
+    }
+  };
 
   const handleCancle = () => {
     setDeleteModalOpen(false);
-    setEditModalOpen(false);
   }
 
   return (
@@ -29,7 +55,7 @@ const DetailRegulation = () => {
         <div className="main_header">＞</div>
         <Link to={"/regulations"} className="sub_header">사내규정</Link>
       </div>
-      
+
       <div className="content_container">
         <div className="container">
           <div className="main_header2">
@@ -47,22 +73,19 @@ const DetailRegulation = () => {
 
               <div className="btn_content">
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
-                <button className="white_button" onClick={() => setEditModalOpen(true)}>수정</button>
+                <Link to="/writeAnnounce" state={detailRegul} ><button className="white_button">수정</button></Link>
                 <button className="second_button" onClick={() => navigate("/regulations")}>목록</button>
               </div>
             </div>
           </div>
-
           <div className="content_container">
-            
-          </div>
-        
 
+          </div>
         </div>
-      </div>  
+      </div>
       <CustomModal
         isOpen={isDeleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)} 
+        onClose={() => setDeleteModalOpen(false)}
         header={'알림'}
         footer1={'삭제'}
         footer1Class="red-btn"
@@ -73,22 +96,6 @@ const DetailRegulation = () => {
       >
         <div>
           삭제하시겠습니까?
-        </div>
-      </CustomModal>
-
-      <CustomModal
-        isOpen={isEditModalOpen}
-        onClose={() => setEditModalOpen(false)} 
-        header={'알림'}
-        footer1={'수정'}
-        footer1Class="green-btn"
-        onFooter1Click={handleEdit}
-        footer2={'취소'}
-        footer2Class="gray-btn"
-        onFooter2Click={handleCancle}
-      >
-        <div>
-          수정하시겠습니까?
         </div>
       </CustomModal>
     </div>

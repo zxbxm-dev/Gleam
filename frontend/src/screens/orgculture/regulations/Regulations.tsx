@@ -9,6 +9,7 @@ import { ReactComponent as LastRightIcon } from "../../../assets/images/Common/L
 import { ReactComponent as FirstLeftIcon } from "../../../assets/images/Common/FirstLeftIcon.svg";
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
+import { CheckRegul } from "../../../services/announcement/Regulation";
 
 const Regulations = () => {
   let navigate = useNavigate();
@@ -18,22 +19,35 @@ const Regulations = () => {
 
   const postPerPage: number = 10;
 
+  // useEffect(() => {
+  //   const initialAnnouncements = [
+  //     { id: 1, title: "공지사항", views: 100, date: "2024-05-01" },
+  //     { id: 2, title: "ㅁㄹㄴㅇ", views: 200, date: "2024-05-02" },
+  //     { id: 3, title: "ㅂㅈㄷㄱ", views: 300, date: "2024-05-03" },
+  //     { id: 4, title: "ㅌㅊㅋㅍ", views: 100, date: "2024-05-01" },
+  //     { id: 5, title: "ㄴㅇㅎㄴ", views: 200, date: "2024-05-02" },
+  //     { id: 6, title: "sgdfg", views: 300, date: "2024-05-03" },
+  //     { id: 7, title: "df", views: 100, date: "2024-05-01" },
+  //     { id: 8, title: "ewretwrwet", views: 200, date: "2024-05-02" },
+  //     { id: 9, title: "sdfh", views: 100, date: "2024-05-01" },
+  //     { id: 10, title: "xcvb", views: 200, date: "2024-05-02" },
+  //     { id: 11, title: "tyoyyty", views: 100, date: "2024-05-01" },
+  //     { id: 12, title: "op", views: 200, date: "2024-05-02" },
+  //   ];
+  //   setAnnouncements(initialAnnouncements);
+  // }, []);
+
   useEffect(() => {
-    const initialAnnouncements = [
-      { id: 1, title: "공지사항", views: 100, date: "2024-05-01" },
-      { id: 2, title: "ㅁㄹㄴㅇ", views: 200, date: "2024-05-02" },
-      { id: 3, title: "ㅂㅈㄷㄱ", views: 300, date: "2024-05-03" },
-      { id: 4, title: "ㅌㅊㅋㅍ", views: 100, date: "2024-05-01" },
-      { id: 5, title: "ㄴㅇㅎㄴ", views: 200, date: "2024-05-02" },
-      { id: 6, title: "sgdfg", views: 300, date: "2024-05-03" },
-      { id: 7, title: "df", views: 100, date: "2024-05-01" },
-      { id: 8, title: "ewretwrwet", views: 200, date: "2024-05-02" },
-      { id: 9, title: "sdfh", views: 100, date: "2024-05-01" },
-      { id: 10, title: "xcvb", views: 200, date: "2024-05-02" },
-      { id: 11, title: "tyoyyty", views: 100, date: "2024-05-01" },
-      { id: 12, title: "op", views: 200, date: "2024-05-02" },
-    ];
-    setAnnouncements(initialAnnouncements);
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await CheckRegul();
+        setAnnouncements(response.data);
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+      }
+    };
+
+    fetchAnnouncements();
   }, []);
 
   const handlePageChange = (page: number) => {
@@ -93,7 +107,7 @@ const Regulations = () => {
                     <tr key={announcement.id} className="board_content">
                       <td style={{ color: "#D56D6D" }}>공지</td>
                       <td style={{ textAlign: "left", paddingLeft: "20px" }}>
-                        <Link to={"/detailRegulation"}>{announcement.title}</Link>
+                        <Link to={`/detailRegulation/${announcement.id}`}>{announcement.title}</Link>
                       </td>
                       <td>{announcement.date}</td>
                     </tr>

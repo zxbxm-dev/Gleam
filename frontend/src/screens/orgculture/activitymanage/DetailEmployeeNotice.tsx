@@ -1,5 +1,5 @@
 import "./ActivityManage.scss";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   AttachmentIcon,
   DeleteIcon,
@@ -7,24 +7,48 @@ import {
 import { Input } from '@chakra-ui/react'
 import { useNavigate, Link } from "react-router-dom";
 import CustomModal from "../../../components/modal/CustomModal";
+import { DetailTableActivity, DeleteActivity } from "../../../services/announcement/Activity";
+import { useLocation } from 'react-router-dom';
 
+interface Announcement {
+  name: string;
+  date: string;
+}
 
 const DetailEmployeeNotice = () => {
   let navigate = useNavigate();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [detailActivity, setDetailActivity] = useState<Announcement | null>(null);
 
-  const handleDelete = () => {
+  const location = useLocation();
+  const pathnameParts = location.pathname.split('/');
+  const Regul_id = pathnameParts[pathnameParts.length - 1];
+
+  const fetchDetailRegul = async (Regul_id: string) => {
+    try {
+      const response = await DetailTableActivity(Regul_id);
+      setDetailActivity(response.data);
+    } catch (error) {
+      console.error("fetching detailanno : ", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchDetailRegul(Regul_id);
+  }, [Regul_id]);
+
+  const handleDelete = async () => {
     setDeleteModalOpen(false);
-  }
-
-  const handleEdit = () => {
-    setEditModalOpen(false);
-  }
+    try {
+      await DeleteActivity(Regul_id);
+      navigate("/employeeNotice");
+    } catch (error) {
+      console.error("Error deleting announcement: ", error);
+    }
+  };
 
   const handleCancle = () => {
     setDeleteModalOpen(false);
-    setEditModalOpen(false);
   }
 
   return (
@@ -36,7 +60,7 @@ const DetailEmployeeNotice = () => {
         <div className="main_header">＞</div>
         <Link to={"/employeeNotice"} className="sub_header">직원공지</Link>
       </div>
-      
+
       <div className="content_container">
         <div className="container">
           <div className="main_header2">
@@ -53,7 +77,7 @@ const DetailEmployeeNotice = () => {
               </div>
               <div className="btn_content">
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
-                <button className="white_button" onClick={() => setEditModalOpen(true)}>수정</button>
+                <Link to="/writeActivityManage" state={detailActivity} ><button className="white_button">수정</button></Link>
                 <button className="second_button" onClick={() => navigate("/employeeNotice")}>목록</button>
               </div>
             </div>
@@ -113,19 +137,19 @@ const DetailEmployeeNotice = () => {
                   <div className="comment_name">서주희</div>
                 </div>
                 <div className="comment_input_right">
-                  <Input placeholder='댓글을 입력해 주세요.' height='100px'/>
+                  <Input placeholder='댓글을 입력해 주세요.' height='100px' />
                   <button className="second_button">등록</button>
                 </div>
               </div>
 
             </div>
           </div>
-        
+
         </div>
       </div>
       <CustomModal
         isOpen={isDeleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)} 
+        onClose={() => setDeleteModalOpen(false)}
         header={'알림'}
         footer1={'삭제'}
         footer1Class="red-btn"
@@ -138,22 +162,6 @@ const DetailEmployeeNotice = () => {
           삭제하시겠습니까?
         </div>
       </CustomModal>
-
-      <CustomModal
-        isOpen={isEditModalOpen}
-        onClose={() => setEditModalOpen(false)} 
-        header={'알림'}
-        footer1={'수정'}
-        footer1Class="green-btn"
-        onFooter1Click={handleEdit}
-        footer2={'취소'}
-        footer2Class="gray-btn"
-        onFooter2Click={handleCancle}
-      >
-        <div>
-          수정하시겠습니까?
-        </div>
-      </CustomModal>  
     </div>
   );
 };

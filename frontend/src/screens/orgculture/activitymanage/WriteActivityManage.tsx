@@ -3,23 +3,41 @@ import "./ActivityManage.scss";
 import {
   DeleteIcon,
 } from "../../../assets/images/index";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Select } from '@chakra-ui/react';
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { WriteActiv } from "../../../services/announcement/Activity";
+import { WriteActiv, EditActivity } from "../../../services/announcement/Activity";
 import CustomModal from "../../../components/modal/CustomModal";
+
+interface Attachment {
+  file: File;
+  fileName: string;
+}
 
 const WriteActivityManage = () => {
   let navigate = useNavigate();
+  const { state: editData } = useLocation();
   const [isTypeSelectOpenModal, setTypeSelectOpenModal] = useState(false)
   const editorRef = useRef<any>(null);
   const [attachment, setAttachment] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState("선택없음");
+  const [value, setValue] = useState("");
+  const [isfileUpload, setIsFileUpload] = useState(false);
+
+  const [form, setForm] = useState<{
+    content: string;
+    title: string;
+    attachment: Attachment | null;
+    category: string;
+  }>({
+    content: "",
+    title: "",
+    attachment: null,
+    category: ""
+  });
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -29,7 +47,11 @@ const WriteActivityManage = () => {
   };
 
   const handleTitleChange = (event: any) => {
-    setTitle(event.target.value);
+    setForm({ ...form, title: event.target.value });
+  };
+
+  const handleCategoryChange = (event: any) => {
+    setForm({ ...form, category: event.target.value });
   };
 
   const formatDate = (date: any) => {
@@ -41,8 +63,8 @@ const WriteActivityManage = () => {
 
   const currentDate = formatDate(new Date());
 
-  const handleSubmit = () => {
-
+  const handleSubmit = async (data: any) => {
+    const { title, content, category } = form;
     if (category === "선택없음") {
       setTypeSelectOpenModal(true);
       return;
@@ -73,6 +95,10 @@ const WriteActivityManage = () => {
         // 실패 시 처리
         console.error("등록에 실패했습니다.");
       });
+    if (editData) {
+      data = { ...data, id: editData.id };
+      await EditActivity(data, formData);
+    }
   };
 
   const handleTypeSelect = () => {
@@ -81,7 +107,11 @@ const WriteActivityManage = () => {
 
   const onChange = () => {
     const data = editorRef.current.getInstance().getHTML();
-    setContent(data);
+    setForm({ ...form, content: data })
+
+    if (editData && editData?.fileUrl) {
+      setIsFileUpload(true);
+    } else setIsFileUpload(false);
   };
 
   return (
@@ -113,8 +143,8 @@ const WriteActivityManage = () => {
                   placeholder='선택없음'
                   width='100px'
                   size='xs'
-                  value={category}
-                  onChange={(event) => setCategory(event.target.value)}
+                  value={form.category}
+                  onChange={handleCategoryChange}
                 >
                   <option value='직원공지'>직원공지</option>
                   <option value='자유게시판'>자유게시판</option>
@@ -171,7 +201,7 @@ const WriteActivityManage = () => {
       </div>
       <CustomModal
         isOpen={isTypeSelectOpenModal}
-        onClose={() => setTypeSelectOpenModal(false)} 
+        onClose={() => setTypeSelectOpenModal(false)}
         header={'알림'}
         footer1={'확인'}
         footer1Class="green-btn"
