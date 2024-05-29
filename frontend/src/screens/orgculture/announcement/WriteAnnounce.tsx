@@ -1,28 +1,62 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Announcement.scss";
 import {
   DeleteIcon,
 } from "../../../assets/images/index";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { WriteAnnounce } from "../../../services/announcement/Announce";
+import { WriteAnnounce, EditAnno } from "../../../services/announcement/Announce";
+
+interface Attachment {
+  file: File;
+  fileName: string;
+}
 
 const WriteAnnouncement = () => {
+  const { state: editData } = useLocation();
   let navigate = useNavigate();
   const editorRef = useRef<any>(null);
-  const [attachment, setAttachment] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [form, setForm] = useState<{
+    content: string;
+    title: string;
+    attachment: Attachment | null;
+  }>({
+    content: "",
+    title: "",
+    attachment: null,
+  });
+  const [value, setValue] = useState("");
+  const [isfileUpload, setIsFileUpload] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setAttachment(file);
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const fileData = { file: file, fileName: file.name };
+      setForm({ ...form, attachment: fileData as any });
     }
   };
+
+  console.log(editData);
+
+  useEffect(() => {
+    if (editData) {
+      const { content, title, attachment } = editData;
+      setForm({
+        content: content || "",
+        title: title || "",
+        attachment: attachment || null,
+      });
+      setValue(content || "");
+      if (attachment && attachment.fileUrl) {
+        setIsFileUpload(true);
+      }
+    }
+  }, [editData]);
+  
 
   const formatDate = (date: any) => {
     const year = date.getFullYear();
@@ -32,30 +66,31 @@ const WriteAnnouncement = () => {
   };
 
   const handleTitleChange = (event: any) => {
-    setTitle(event.target.value);
+    setForm({ ...form, title: event.target.value });
   };
 
   const currentDate = formatDate(new Date());
 
-  const handleSubmit = () => {
-    
+  const handleSubmit = async (data: any) => {
+    const { title, content } = form;
+
     if (title === "") {
-      alert("게시물 제목을 입력해 주세요.")
+      alert("게시물 제목을 입력해 주세요.");
       return;
     } else if (content === "") {
-      alert("내용을 입력해 주세요.")
+      alert("내용을 입력해 주세요.");
       return;
     }
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    if (attachment) {
-      formData.append("attachment", attachment);
-      formData.append("attachmentName", attachment.name);
+    if (form.attachment) {
+      formData.append("attachment", (form.attachment as any).file);
+      formData.append("attachmentName", (form.attachment as any).fileName);
     }
     formData.append("date", currentDate);
-  
+
     WriteAnnounce(formData)
       .then(response => {
         // 성공적으로 등록되었을 때 처리
@@ -65,11 +100,20 @@ const WriteAnnouncement = () => {
         // 실패 시 처리
         console.error("등록에 실패했습니다.");
       });
+
+      if (editData) {
+        data = { ...data, id: editData.id };
+        await EditAnno(data, formData);
+      }
   };
 
   const onChange = () => {
     const data = editorRef.current.getInstance().getHTML();
-    setContent(data);
+    setForm({ ...form, content: data })
+    
+    if (editData && editData?.fileUrl) {
+      setIsFileUpload(true);
+    } else setIsFileUpload(false);
   };
 
   return (
@@ -135,8 +179,8 @@ const WriteAnnouncement = () => {
                       onChange={handleFileChange}
                     />
                   </label>
-                  {attachment && <div className="attachment_name">{attachment.name}</div>}
-                  {attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setAttachment(null)} />}
+                  {form.attachment && <div className="attachment_name">{form.attachment.fileName}</div>}
+                  {form.attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setForm({ ...form, attachment: null })} />}
                 </div>
                 <div>
                   <button className="second_button" onClick={handleSubmit}>등록</button>

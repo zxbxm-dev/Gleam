@@ -59,7 +59,7 @@ function App() {
 
             <Route path="/" element={<Announcement />} />
             <Route path="/writeAnnounce" element={<WriteAnnounce />} />
-            <Route path="/detailAnnounce" element={<DetailAnnounce />} />
+            <Route path="/detailAnnounce/:id" element={<DetailAnnounce />} />
 
             <Route path="/orgchart" element={<OrgChart />} />
 
