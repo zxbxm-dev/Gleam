@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import CustomModal from "../../components/modal/CustomModal";
 
+import { useQuery } from "react-query";
+import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement } from "../../services/usermanagement/UserManagementServices";
+
 
 const UserManagement = () => {
   const [page, setPage] = useState<number>(1); 
@@ -14,6 +17,7 @@ const UserManagement = () => {
   const [isSignModalOpen, setSignModalOpen] = useState(false);
   const [isDelModalOpen, setDelModalOpen] = useState(false);
   const postPerPage: number = 10;
+  const [clickIdx, setClickIdx] = useState<number>(0);
 
   useEffect(() => {
     const initialUserManage = [
@@ -33,17 +37,49 @@ const UserManagement = () => {
     setUserManages(initialUserManage);
   }, []);
 
+  // 회원관리 조회
+  const fetchUserManage = async () => {
+    try {
+      const response = await CheckUserManagement();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  }
+
+  useQuery("usermanagement", fetchUserManage, {
+    onSuccess: (data) => setUserManages(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
+
   const handlePageChange = (page: number) => {
     setPage(page);
   }
 
-  const handleSign = () => {
+  const handleSign = (index: number) => {
+    ApproveUserManagement(index)
+    .then((response) => {
+      console.log("회원관리 승인이 완료되었습니다.", response);
+    })
+    .catch((error) => {
+      console.error("회원관리 승인에 실패했습니다.", error);
+    });
+
     setSignModalOpen(false);
   }
 
-  const handleDelete = () => {
-    // 삭제하기 기능 추가
-    // DeleteEmployment()
+  const handleDelete = (index: number) => {
+    DeleteUserManagement(index)
+    .then((response) => {
+      console.log("회원관리 삭제가 완료되었습니다.", response);
+    })
+    .catch((error) => {
+      console.error("회원관리 삭제에 실패했습니다.", error);
+    });
+
     setDelModalOpen(false);
   };
 
@@ -87,8 +123,8 @@ const UserManagement = () => {
                       <td>{usermanage.spot}</td>
                       <td>{usermanage.date}</td>
                       <td>
-                        <button className="edits_button" onClick={() => setSignModalOpen(true)}>승인</button>
-                        <button className="dels_button" onClick={() => setDelModalOpen(true)}>삭제</button>
+                        <button className="edits_button" onClick={() => {setSignModalOpen(true); setClickIdx(Number(usermanage.id))}}>승인</button>
+                        <button className="dels_button" onClick={() => {setDelModalOpen(true); setClickIdx(Number(usermanage.id))}}>삭제</button>
                       </td>
                     </tr>
                   ))}
@@ -117,7 +153,7 @@ const UserManagement = () => {
         header={'알림'}
         footer1={'승인'}
         footer1Class="green-btn"
-        onFooter1Click={handleSign}
+        onFooter1Click={() => handleSign(clickIdx)}
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setSignModalOpen(false)}
@@ -134,7 +170,7 @@ const UserManagement = () => {
         footer1={'삭제'}
         footer1Class="red-btn"
         footer2={'취소'}
-        onFooter1Click={handleDelete}
+        onFooter1Click={() => handleDelete(clickIdx)}
         footer2Class="gray-btn"
         onFooter2Click={() => setDelModalOpen(false)}
       >

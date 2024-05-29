@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import { evaluate } from "mathjs";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { OperatingServices } from '../../services/operating/OperatingServices';
+
+import { useQuery } from 'react-query';
+import { CheckOperating, WriteOperating } from '../../services/operating/OperatingServices';
 
 type TeamType = 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
 
@@ -16,6 +18,27 @@ const Operating = () => {
   const [reserveFund, setReserveFund] = useState<number>(0);
   const [customInputValue, setCustomInputValue] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+
+  // 운영비 관리 조회
+  const fetchOperating = async () => {
+    try {
+      const response = await CheckOperating();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  }
+
+  useQuery("operating", fetchOperating, {
+    onSuccess: (data) => console.log(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
+
+
 
   const exportToPDF = () => {
     const element = document.getElementById('table-to-xls');
@@ -465,6 +488,7 @@ const Operating = () => {
     };
   }, [dropdownOpen]);
 
+  // 운영비 관리 작성
   const handleSubmit = () => {
     setEditMode(!editMode);
     
@@ -488,7 +512,7 @@ const Operating = () => {
     console.log('전송된 데이터', formData);
 
     // API 호출
-    OperatingServices(formData)
+    WriteOperating(formData)
       .then(response => {
         console.log("운영비 데이터 전송 성공")
       })
