@@ -34,6 +34,7 @@ export { default as WriteReport } from "./report/WriteReport";
 // 보고서 결재
 export { default as Approval } from "./approval/Approval";
 export { default as DetailApproval } from "./approval/DetailApproval";
+export { default as DetailDocument } from "./approval/DetailDocument";
 
 // 채용 공고
 export { default as Employment } from "./employment/Employment";
