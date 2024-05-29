@@ -1,5 +1,5 @@
 import "./Announcement.scss";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Plus_btn,
   Minus_btn,
@@ -9,9 +9,9 @@ import CustomModal from "../../../components/modal/CustomModal";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-
+import { DetailTableAnnounce } from "../../../services/announcement/Announce";
 import testPDF from '../../../assets/pdf/취업규칙_포체인스_001.pdf';
-
+import { useLocation } from 'react-router-dom';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
@@ -19,14 +19,25 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 type PDFFile = string | File | null;
 
+interface Announcement {
+  name: string;
+  date: string;
+  view: number;
+}
+
 const DetailAnnounce = () => {
   let navigate = useNavigate();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
-
+  const [detailAnno, setDetailAnno] = useState<Announcement | null>(null);
   const [file, setFile] = useState<PDFFile>(testPDF);
   const [numPages, setNumPages] = useState<number>(0);
   const [pageWidth, setPageWidth] = useState<number>(800); // 초기 페이지 너비
+
+  const location = useLocation();
+  const pathnameParts = location.pathname.split('/');
+  const Anno_id = pathnameParts[pathnameParts.length - 1];
+
+  console.log(Anno_id);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
@@ -55,9 +66,9 @@ const DetailAnnounce = () => {
     const pages = [];
     for (let i = 1; i <= numPages; i++) {
       pages.push(
-        <Page 
+        <Page
           key={`page_${i}`}
-          pageNumber={i} 
+          pageNumber={i}
           width={pageWidth}
         />
       );
@@ -69,14 +80,22 @@ const DetailAnnounce = () => {
     setDeleteModalOpen(false);
   }
 
-  const handleEdit = () => {
-    setEditModalOpen(false);
-  }
-
   const handleCancle = () => {
     setDeleteModalOpen(false);
-    setEditModalOpen(false);
   }
+
+  const fetchDetailAnno = async (Anno_id: string) => {
+    try {
+      const response = await DetailTableAnnounce(Anno_id);
+      setDetailAnno(response.data);
+    } catch (error) {
+      console.error("fetching detailanno : ", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchDetailAnno(Anno_id);
+  }, [Anno_id]);
 
   return (
     <div className="content">
@@ -85,7 +104,7 @@ const DetailAnnounce = () => {
         <div className="main_header">＞</div>
         <Link to={"/announcement"} className="sub_header">공지사항</Link>
       </div>
-      
+
       <div className="content_container">
         <div className="container">
           <div className="main_header2">
@@ -93,23 +112,25 @@ const DetailAnnounce = () => {
               2025년 인사평가 공지
             </div>
             <div className="detail_container">
-              <div className="info_content">
-                <div className="write_info">작성자</div>
-                <div className="write_info">구민석</div>
-                <div className="write_border" />
-                <div className="write_info">작성일</div>
-                <div className="write_info">2024/04/09</div>
-                <div className="write_border" />
-                <div className="write_info">조회수</div>
-                <div className="write_info">14562</div>
-              </div>
+              {detailAnno && (
+                <div className="info_content">
+                  <div className="write_info">작성자</div>
+                  <div className="write_info">{detailAnno.name}</div>
+                  <div className="write_border" />
+                  <div className="write_info">작성일</div>
+                  <div className="write_info">{detailAnno.date}</div>
+                  <div className="write_border" />
+                  <div className="write_info">조회수</div>
+                  <div className="write_info">{detailAnno.view}</div>
+                </div>
+              )}
 
               <div className="btn_content">
-                <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn"/></button>
-                <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn"/></button>
+                <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn" /></button>
+                <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn" /></button>
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
                 <button className="download_button" onClick={downloadPDF}>다운로드</button>
-                <button className="white_button" onClick={() => setEditModalOpen(true)}>수정</button>
+                <Link to="/writeAnnounce" state={detailAnno} ><button className="white_button">수정</button></Link>
                 <button className="second_button" onClick={() => navigate("/announcement")}>목록</button>
               </div>
             </div>
@@ -122,10 +143,10 @@ const DetailAnnounce = () => {
           </div>
 
         </div>
-      </div> 
+      </div>
       <CustomModal
         isOpen={isDeleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)} 
+        onClose={() => setDeleteModalOpen(false)}
         header={'알림'}
         footer1={'삭제'}
         footer1Class="red-btn"
@@ -136,22 +157,6 @@ const DetailAnnounce = () => {
       >
         <div>
           삭제하시겠습니까?
-        </div>
-      </CustomModal>
-
-      <CustomModal
-        isOpen={isEditModalOpen}
-        onClose={() => setEditModalOpen(false)} 
-        header={'알림'}
-        footer1={'수정'}
-        footer1Class="green-btn"
-        onFooter1Click={handleEdit}
-        footer2={'취소'}
-        footer2Class="gray-btn"
-        onFooter2Click={handleCancle}
-      >
-        <div>
-          수정하시겠습니까?
         </div>
       </CustomModal>
     </div>

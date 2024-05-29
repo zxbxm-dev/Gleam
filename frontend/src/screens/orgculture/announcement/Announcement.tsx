@@ -7,12 +7,14 @@ import { ReactComponent as LastRightIcon } from "../../../assets/images/Common/L
 import { ReactComponent as FirstLeftIcon } from "../../../assets/images/Common/FirstLeftIcon.svg";
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
+import { CheckAnnounce } from "../../../services/announcement/Announce";
 
 const Announcement = () => {
   let navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  // const [detailAnno, setDetailAnno] = useState<any[]>([]);
 
   const postPerPage: number = 10;
 
@@ -32,6 +34,19 @@ const Announcement = () => {
       { id: 12, title: "op", views: 200, date: "2024-05-02" },
     ];
     setAnnouncements(initialAnnouncements);
+  }, []);
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await CheckAnnounce();
+        setAnnouncements(response.data);
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+      }
+    };
+
+    fetchAnnouncements();
   }, []);
 
   const handlePageChange = (page: number) => {
@@ -95,7 +110,7 @@ const Announcement = () => {
                     <tr key={announcement.id} className="board_content">
                       <td style={{ color: "#D56D6D" }}>공지</td>
                       <td style={{ textAlign: "left", paddingLeft: "20px" }}>
-                        <Link to={"/detailAnnounce"}>{announcement.title}</Link>
+                      <Link to={`/detailAnnounce/${announcement.id}`}>{announcement.title}</Link>
                       </td>
                       <td>{announcement.views}</td>
                       <td>{announcement.date}</td>
