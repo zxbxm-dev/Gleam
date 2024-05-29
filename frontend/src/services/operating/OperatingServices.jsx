@@ -1,8 +1,13 @@
 import api from "../../api/auth";
 
-// 운영비 관리 데이터 전송
-const OperatingServices = (formData) => {
-  return api.post("/postOperData", formData);
+// 운영비 관리 조회
+const CheckOperating = () => {
+  return api.get("/checkOperating");
 }
 
-export { OperatingServices };
+// 운영비 관리 작성
+const WriteOperating = (formData) => {
+  return api.post("/writeOperating", formData);
+}
+
+export { CheckOperating, WriteOperating };
