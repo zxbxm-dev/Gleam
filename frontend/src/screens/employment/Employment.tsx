@@ -90,7 +90,7 @@ const Employment = () => {
     onError: (error) => {
       console.log(error)
     }
-  })
+  });
 
 
 
@@ -148,7 +148,7 @@ const Employment = () => {
       console.log("채용공고가 성공적으로 삭제되었습니다.", response);
     })
     .catch((error) => {
-      console.error("채용공고 식제에 실패했습니다.", error);
+      console.error("채용공고 삭제에 실패했습니다.", error);
     });
 
     setDeleteModalOpen(false);

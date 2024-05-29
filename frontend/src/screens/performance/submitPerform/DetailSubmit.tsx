@@ -7,7 +7,7 @@ import {
   DeleteIcon,
 } from "../../../assets/images/index";
 import CustomModal from '../../../components/modal/CustomModal';
-import {FileSubmit} from "../../../services/Evaluation/SubmitServices";
+import { DeletePerform } from '../../../services/performance/PerformanceServices';
 
 type PDFFile = string | File | null;
 
@@ -42,7 +42,7 @@ const SubmitPerform = () => {
   };
 
 
-  //추후 username 추가해주세요
+  //인사평가 제출
   const handleSumbitFile = () => {
     const validFiles = files.filter(file => file !== null);
   
@@ -56,7 +56,7 @@ const SubmitPerform = () => {
       formData.append(`file${index}`, file!);
     });
 
-    FileSubmit(formData)
+    DeletePerform(formData)
       .then(response => {
         console.log("Files submitted successfully:", response);
         setSubmitModalOpen(true);
