@@ -6,7 +6,9 @@ import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { AttendRegist } from "../../../services/attendance/AttendanceServices";
+
+import { useQuery } from "react-query";
+import { CheckAttendance, WriteAttendance } from "../../../services/attendance/AttendanceServices";
 
 const months = [
   { name: '1월', key: 'january' },
@@ -185,6 +187,24 @@ const AttendanceRegist = () => {
       </table>
     );
   };
+
+  // 출근부 데이터 조회
+  const fetchAttentRegist = async () => {
+    try {
+      const response = await CheckAttendance();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("attendregist", fetchAttentRegist, {
+    onSuccess: (data) => console.log(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
 
   const virtualData = [
     ['권상원', '2024-4-1', ['14:00', '17:00', '오전반차']],
@@ -738,7 +758,7 @@ const AttendanceRegist = () => {
   };
 
 
-  // 출근부 데이터 전송 - 모달
+  // 출근부 데이터 작성
   const handleSubmit = () => {
     setAddAttend(false);
 
@@ -749,7 +769,7 @@ const AttendanceRegist = () => {
     }
 
     console.log(formData)
-    AttendRegist(formData)
+    WriteAttendance(formData)
       .then(response => {
         console.log('출근부 데이터 전송 성공')
       })

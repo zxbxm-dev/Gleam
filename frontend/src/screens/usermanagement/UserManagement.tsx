@@ -45,7 +45,7 @@ const UserManagement = () => {
     } catch (error) {
       throw new Error("Failed to fetch data");
     }
-  }
+  };
 
   useQuery("usermanagement", fetchUserManage, {
     onSuccess: (data) => setUserManages(data),

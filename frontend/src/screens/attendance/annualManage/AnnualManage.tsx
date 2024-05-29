@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
+import { useQuery } from 'react-query';
+import { CheckAnnual } from '../../../services/attendance/AttendanceServices';
+
 type Member = [string, number, number, number, string[], string, string];
 
 const AnnualManage = () => {
@@ -36,6 +39,23 @@ const AnnualManage = () => {
       console.error('Element not found');
     }
   };
+
+  // 연차관리 데이터 조회
+  const fetchAnnual = async () => {
+    try {
+      const response = await CheckAnnual();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("annual", fetchAnnual, {
+    onSuccess: (data) => console.log(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
 
   const members: Member[] = [
     ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01'],
