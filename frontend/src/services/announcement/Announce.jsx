@@ -17,7 +17,12 @@ const DetailTableAnnounce = (Anno_id) => {
 
 //공지사항 수정
 const EditAnno = (data, formData) => {
-    return api.post("/editAnno", formData);
+    return api.put("/editAnno", formData);
 };
 
-export { WriteAnnounce, CheckAnnounce, DetailTableAnnounce, EditAnno };
+//공지사항 삭제
+const DeleteAnno = (Anno_id) => {
+    return api.delete(`/deleteAnno/${Anno_id}`, Anno_id);
+};
+
+export { WriteAnnounce, CheckAnnounce, DetailTableAnnounce, EditAnno, DeleteAnno };
