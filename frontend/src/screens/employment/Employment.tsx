@@ -16,36 +16,45 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
+  useDisclosure,
 } from '@chakra-ui/react';
 import CustomModal from "../../components/modal/CustomModal";
 import { Input } from '@chakra-ui/react';
 
-import { WriteEmployment } from "../../services/employment/EmploymentService";
+import { useQuery } from "react-query";
+import { CheckEmploy, WriteEmploy, EditEmploy, DeleteEmploy } from "../../services/employment/EmploymentService";
 
 
 const Employment = () => {
+  const { isOpen: isAdd, onOpen: AddOpen, onClose: AddClose } = useDisclosure();
   const [page, setPage] = useState<number>(1); 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [employments, setEmployments] = useState<any[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [clickIdx, setClickIdx] = useState<number | null>(null);
   const postPerPage: number = 10;
+  const [form, setForm] = useState<{
+    title: string;
+    url: string;
+    site: string;
+  }>({
+    title: '',
+    url: '',
+    site: '',
+  })
 
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const [site, setSite] = useState("");
-  
   const handleTitleChange = (event: any) => {
-    setTitle(event.target.value);
+    setForm({...form, title: event.target.value})
   };
 
   const handleUrlChange = (event: any) => {
-    setUrl(event.target.value);
+    setForm({...form, url: event.target.value})
   };
 
   const handleSiteChange = (event: any) => {
-    setSite(event.target.value);
+    setForm({...form, site: event.target.value})
   };
 
   useEffect(() => {
@@ -66,6 +75,25 @@ const Employment = () => {
     setEmployments(initialEmployments);
   }, []);
 
+  // 채용공고 목록 불러오기
+  const fetchEmployments = async () => {
+    try {
+      const response = await CheckEmploy();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("employments", fetchEmployments, {
+    onSuccess: (data) => setEmployments(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  })
+
+
+
   const handlePageChange = (page: number) => {
     setPage(page);
   }
@@ -78,24 +106,13 @@ const Employment = () => {
     employment.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleRightClick = (event: React.MouseEvent<HTMLTableCellElement>) => {
+  const handleRightClick = (index: number, event: React.MouseEvent<HTMLTableCellElement>) => {
     event.preventDefault();
     setDropdownOpen(true);
     setDropdownPosition({ x: event.pageX, y: event.pageY });
+    setClickIdx(index);
   };
 
-  const handleEdit = () => {
-    // EditEmployment()
-    // 수정하기 기능 추가
-  };
-
-  const handleDelete = () => {
-    // 삭제하기 기능 추가
-    // DeleteEmployment()
-    setDeleteModalOpen(false);
-    setDropdownOpen(false);
-  };
-  
   const formatDate = (date: any) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -103,8 +120,47 @@ const Employment = () => {
     return `${year}/${month}/${day}`;
   };
   const currentDate = formatDate(new Date());
+
+  // 채용공고 수정하기
+  const handleEdit = () => {
+    const { title, url, site } = form;
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("url", url);
+    formData.append("site", site);
+    formData.append("date", currentDate);
+
+    EditEmploy(clickIdx, formData)
+    .then((response) => {
+      console.log("채용공고가 성공적으로 수정되었습니다.", response);
+      setDropdownOpen(false);
+    })
+    .catch((error) => {
+      console.error("채용공고 수정에 실패했습니다.", error);
+    });
+  };
+
+  // 채용공고 삭제하기
+  const handleDelete = () => {
+    DeleteEmploy(clickIdx)
+    .then((response) => {
+      console.log("채용공고가 성공적으로 삭제되었습니다.", response);
+    })
+    .catch((error) => {
+      console.error("채용공고 식제에 실패했습니다.", error);
+    });
+
+    setDeleteModalOpen(false);
+    setDropdownOpen(false);
+  };
+  
+
   // 채용공고 게시물 작성
   const handleSubmit = () => {
+
+    const { title, url, site } = form;
+
     if (title === "") {
       alert("공고 제목을 입력해 주세요.")
       return;
@@ -115,22 +171,22 @@ const Employment = () => {
       alert("사이트명을 입력해 주세요.")
       return;
     }
-    
     const formData = new FormData();
     formData.append("title", title);
     formData.append("url", url);
     formData.append("site", site);
     formData.append("date", currentDate);
     
-    WriteEmployment(formData)
+    WriteEmploy(formData)
     .then(response => {
       console.log('게시물 작성 성공')
+      AddClose();
     })
     .catch(error => {
       console.log('게시물 작성 실패')
+      AddClose();
     })
   };
-
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -146,6 +202,7 @@ const Employment = () => {
     };
   }, [dropdownOpen]);
 
+  
   return (
     <div className="content">
       <div className="content_header">
@@ -192,17 +249,16 @@ const Employment = () => {
                   .map((employment) => (
                     <tr key={employment.id} className="board_content">
                       <td>{employment.id}</td>
-                      <td style={{ textAlign: "left", paddingLeft: "100px"}}>
+                      <td style={{ textAlign: "left", paddingLeft: "100px"}} onContextMenu={(e) => handleRightClick(employment.id, e)}>
                         <div
                         className="dropdown" // 드롭다운 클래스 추가
-                        onContextMenu={handleRightClick} // 우클릭 이벤트 핸들링
                         >
                           {employment.title}
                           {dropdownOpen && ( // 드롭다운 메뉴 열림 여부에 따라 메뉴 표시
                             <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
                               <Popover placement="right-start">
                                 <PopoverTrigger>
-                                  <button className="dropdown_edit" onClick={handleEdit}>수정하기</button>
+                                  <button className="dropdown_edit">수정하기</button>
                                 </PopoverTrigger>
                                 <Portal>
                                   <PopoverContent onClick={(e) => e.stopPropagation()} width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
@@ -224,7 +280,7 @@ const Employment = () => {
                                         </div>
                                       </div>
                                       <div style={{display: 'flex', gap: '10px'}}>
-                                        <button style={{width: '70px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>수정</button>
+                                        <button style={{width: '70px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}} onClick={handleEdit}>수정</button>
                                         <button style={{width: '70px', height: '35px', color: '#929292', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>취소</button>
                                       </div>
                                     </PopoverBody>
@@ -260,9 +316,9 @@ const Employment = () => {
                 onChange={handlePageChange}
               />
 
-              <Popover placement="left-start">
+              <Popover placement="left-start" isOpen={isAdd} onClose={AddClose}>
                 <PopoverTrigger>
-                  <button className="primary_button">게시물 작성</button>
+                  <button className="primary_button" onClick={AddOpen}>게시물 작성</button>
                 </PopoverTrigger>
                 <Portal>
                   <PopoverContent width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
@@ -285,7 +341,7 @@ const Employment = () => {
                       </div>
                       <div style={{display: 'flex', gap: '7px'}}>
                         <button style={{width: '66px', height: '35px', color: '#fff', backgroundColor: '#746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}} onClick={handleSubmit}>등록</button>
-                        <button style={{width: '66px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}}>취소</button>
+                        <button style={{width: '66px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)'}} onClick={AddClose}>취소</button>
                       </div>
                     </PopoverBody>
                   </PopoverContent>
