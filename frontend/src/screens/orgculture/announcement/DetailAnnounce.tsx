@@ -9,7 +9,7 @@ import CustomModal from "../../../components/modal/CustomModal";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { DetailTableAnnounce } from "../../../services/announcement/Announce";
+import { DetailTableAnnounce, DeleteAnno } from "../../../services/announcement/Announce";
 import testPDF from '../../../assets/pdf/취업규칙_포체인스_001.pdf';
 import { useLocation } from 'react-router-dom';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -76,10 +76,6 @@ const DetailAnnounce = () => {
     return pages;
   };
 
-  const handleDelete = () => {
-    setDeleteModalOpen(false);
-  }
-
   const handleCancle = () => {
     setDeleteModalOpen(false);
   }
@@ -96,6 +92,17 @@ const DetailAnnounce = () => {
   useEffect(() => {
     fetchDetailAnno(Anno_id);
   }, [Anno_id]);
+
+  const handleDelete = async () => {
+    setDeleteModalOpen(false);
+    try {
+      await DeleteAnno(Anno_id);
+      navigate("/announcement");
+    } catch (error) {
+      console.error("Error deleting announcement: ", error);
+    }
+  };
+
 
   return (
     <div className="content">
