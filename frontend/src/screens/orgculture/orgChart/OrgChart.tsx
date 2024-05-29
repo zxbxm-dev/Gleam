@@ -1,4 +1,5 @@
 import "./OrgChart.scss";
+import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import {
   FourchainsLogo,
@@ -7,8 +8,23 @@ import {
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Tree, TreeNode } from 'react-organizational-chart';
 import CustomPopover from "../../../components/popover/CustomPopover";
+import { PersonData } from "../../../services/person/PersonServices";
 
 const OrgChart = () => {
+  const [personData, setPersonData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await PersonData();
+        setPersonData(response.data);
+      } catch (err) {
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="content">
       <div className="content_header">

@@ -9,6 +9,7 @@ import { ReactComponent as LastRightIcon } from "../../../assets/images/Common/L
 import { ReactComponent as FirstLeftIcon } from "../../../assets/images/Common/FirstLeftIcon.svg";
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
+import {CheckActivity} from "../../../services/announcement/Activity";
 
 const EmployeeNotice = () => {
   let navigate = useNavigate();
@@ -34,6 +35,19 @@ const EmployeeNotice = () => {
       { id: 12, title: "op", writer: "구민석", views: 200, date: "2024-05-02" },
     ];
     setAnnouncements(initialAnnouncements);
+  }, []);
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await CheckActivity();
+        setAnnouncements(response.data);
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+      }
+    };
+
+    fetchAnnouncements();
   }, []);
 
   const handlePageChange = (page: number) => {
@@ -99,7 +113,7 @@ const EmployeeNotice = () => {
                     <tr key={announcement.id} className="board_content">
                       <td style={{ color: "#D56D6D" }}>공지</td>
                       <td style={{ textAlign: "left", paddingLeft: "20px" }}>
-                        <Link to={"/detailEmployeeNotice"}>{announcement.title}</Link>
+                        <Link to={`/detailEmployeeNotice/${announcement.id}`}>{announcement.title}</Link>
                       </td>
                       <td>{announcement.writer}</td>
                       <td>{announcement.views}</td>
