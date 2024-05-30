@@ -21,10 +21,14 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import testPDF_구민석 from '../../assets/pdf/[서식-P502] 인사기록카드_구민석.pdf';
 import test2PDF_구민석 from '../../assets/pdf/[서식-P501] 근로자명부_구민석.pdf';
 
+import { useQuery } from "react-query";
+import { CheckHrInfo, WriteHrInfo, CheckAppointment, writeAppointment, EditAppointment, DeleteAppointment } from "../../services/humanresource/HumanResourceServices";
+
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
 ).toString();
+
 
 type PDFFile = string | File | null;
 
@@ -35,6 +39,120 @@ const HumanResource = () => {
   const [isSelectMember] = useRecoilState(isSelectMemberState);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [form, setForm] = useState<{
+    dept: string;
+    position: string;
+    date: string;
+    classify: string;
+  }>({
+    dept: '',
+    position: '',
+    date: '',
+    classify: '',
+  })
+
+  const handleDeptChange = (event: any) => {
+    setForm({...form, dept: event.target.value})
+  }
+
+  const handlePositionChange = (event: any) => {
+    setForm({...form, position: event.target.value})
+  }
+
+  const handleDateChange = (event: any) => {
+    setForm({...form, date: event.target.value})
+  }
+
+  const handleClassifyChange = (event: any) => {
+    setForm({...form, classify: event.target.value})
+  }
+
+
+  // 인사정보관리 목록 조회
+  const fetchHrInfo = async () => {
+    try {
+      const response = await CheckHrInfo();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  }
+
+  useQuery("HrInfo", fetchHrInfo, {
+    onSuccess: (data) => console.log(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
+  
+  // 인사이동 목록 조회
+  const fetchAppointment = async () => {
+    try {
+      const response = await CheckAppointment();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  }
+
+  useQuery("Appointment", fetchAppointment, {
+    onSuccess: (data) => console.log(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
+  // 인사이동 등록
+  const handleAppointSubmit = () => {
+    const {dept, position, date, classify} = form;
+
+    const formData = new FormData();
+    formData.append('dept', dept);
+    formData.append('position', position);
+    formData.append('date', date);
+    formData.append('classify', classify);
+
+    writeAppointment(formData)
+    .then(response => {
+      console.log("인사이동 등록 성공")
+    })
+    .catch(error => {
+      console.log("인사이동 등록 실패")
+    })
+  };
+
+
+  // 인사이동 수정
+  const handleAppointmentEdit = () => {
+    const {dept, position, date, classify} = form;
+
+    const formData = new FormData();
+    formData.append('dept', dept);
+    formData.append('position', position);
+    formData.append('date', date);
+    formData.append('classify', classify);
+
+    EditAppointment(formData)
+    .then(response => {
+      console.log("인사이동 등록 성공")
+    })
+    .catch(error => {
+      console.log("인사이동 등록 실패")
+    })
+  }
+
+  // 인사이동 삭제
+  const handleAppointmentDelete = () => {
+    DeleteAppointment()
+    .then((response) => {
+      console.log("인사이동이 성공적으로 삭제되었습니다.", response);
+    })
+    .catch((error) => {
+      console.error("인사이동 삭제에 실패했습니다.", error);
+    });
+  }
+
 
   const downloadPDF = () => {
     const link = document.createElement('a');
@@ -76,6 +194,8 @@ const HumanResource = () => {
     event.preventDefault();
     const droppedFiles = Array.from(event.dataTransfer.files);
     setFiles([...files, ...droppedFiles]);
+    // 인사정보관리 제출
+    WriteHrInfo()
   };
   
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -230,23 +350,23 @@ const HumanResource = () => {
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
-                            <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' />
+                            <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' onChange={handleDeptChange}/>
                           </div>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
-                            <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
+                            <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw' onChange={handlePositionChange}/>
                           </div>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
-                            <Input placeholder='small size' size='sm' width='20vw'/>
+                            <Input placeholder='small size' size='sm' width='20vw' onChange={handleDateChange}/>
                           </div>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>구분</div>
-                            <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw'/>
+                            <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw' onChange={handleClassifyChange}/>
                           </div>
                         </div>
                         <div className='button-wrap'>
-                          <button className="adds_button">등록</button>
+                          <button className="adds_button" onClick={handleAppointSubmit}>등록</button>
                           <button className="edits_button">취소</button>
                         </div>
                       </PopoverBody>
@@ -308,14 +428,14 @@ const HumanResource = () => {
                                   </div>
                                 </div>
                                 <div className='button-wrap'>
-                                  <button className="edits_button">수정</button>
+                                  <button className="edits_button" onClick={handleAppointmentEdit}>수정</button>
                                   <button className="edits_button">취소</button>
                                 </div>
                               </PopoverBody>
                             </PopoverContent>
                           </Portal>
                         </Popover>
-                        <button className="dels_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
+                        <button className="dels_button" onClick={() => {setDeleteModalOpen(true); handleAppointmentDelete()}}>삭제</button>
                       </td>
                     </tr>
 
