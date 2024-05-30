@@ -5,14 +5,17 @@
   font-family: 'Noto sans KR-light';
   src: url('./assets/fonts/NotoSansKR-Light.ttf');
 }
+
 @font-face {
   font-family: 'Noto sans KR-Regular';
   src: url('./assets/fonts/NotoSansKR-Regular.ttf');
 }
+
 @font-face {
   font-family: 'Noto sans KR-Medium';
   src: url('./assets/fonts/NotoSansKR-Medium.ttf');
 }
+
 @font-face {
   font-family: 'Noto sans KR-Bold';
   src: url('./assets/fonts/NotoSansKR-Bold.ttf');
@@ -101,7 +104,7 @@ body {
   font-family: var(--font-family-Noto-R);
   font-size: var(--font-size);
   font-weight: var(--font-weight);
-  
+
   scrollbar-color: #929292;
 
   // by default light mode is on
@@ -166,7 +169,7 @@ ul {
   width: 100%;
   height: 100%;
   padding: 20px 15px;
-  
+
   .not_authorization {
     font-family: var(--font-family-Noto-R);
     font-size: 1.5rem;
@@ -195,7 +198,7 @@ ul {
   .content_container {
     width: 100%;
     height: 80%;
-    
+
     .tab_container {
       height: 779px;
     }
@@ -203,6 +206,7 @@ ul {
     .css-a5mhaz {
       padding: 0px;
     }
+
     .container {
       height: 86vh;
       background-color: white;
@@ -229,60 +233,61 @@ ul {
         align-items: center;
         color: #C7C7C7;
         font-family: var(--font-family-Noto-M);
-  
+
         .upload-text-top {
           font-size: 36px;
         }
-  
+
         .upload-text-btm {
           font-size: 20px;
         }
       }
     }
-  
+
     .pdf-container::-webkit-scrollbar {
       width: 10px;
       height: 10px;
     }
-    
+
     .pdf-container::-webkit-scrollbar-thumb {
       background-color: #A8A8A8;
       border-radius: 10px;
       background-clip: padding-box;
       border: 2px solid transparent;
     }
-    
+
     .pdf-container::-webkit-scrollbar-corner {
       background-color: none;
     }
-    
+
     .pdf-container::-webkit-scrollbar-track {
       box-shadow: none;
       background-color: #fff;
     }
-    
+
     .main_header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-    
+
       .header_name {
         font-family: var(--font-family-Noto-B);
         font-size: 32px;
         color: #C7C7C7;
         margin-top: 15px;
       }
+
       .header_name_sm {
         font-family: var(--font-family-Noto-R);
         font-size: 16px;
         color: #C7C7C7;
         margin-top: 15px;
       }
-    
+
       .input-wrapper {
         position: relative;
       }
-    
+
       .input_form {
         width: 350px;
         height: 40px;
@@ -291,13 +296,16 @@ ul {
         padding: 10px;
         padding-right: 30px;
       }
+
       .input_form:hover {
         border: 1px solid #DEDEDE;
       }
+
       .input_form:focus-visible {
-        outline: none!important;
+        outline: none !important;
         border: 1px solid #DEDEDE;
       }
+
       .search-icon {
         position: absolute;
         right: 10px;
@@ -307,8 +315,9 @@ ul {
         height: 20px;
       }
     }
+
     .main_header2 {
-      
+
       .header_name_bg {
         font-family: var(--font-family-Noto-M);
         font-size: 32px;
@@ -317,6 +326,7 @@ ul {
         padding: 0 15px;
       }
     }
+
     .pagination {
       display: flex;
       justify-content: center;
@@ -324,7 +334,7 @@ ul {
       gap: 8px;
       margin: 15px auto;
       padding-left: 120px;
-  
+
       li {
         width: 30px;
         height: 30px;
@@ -333,7 +343,7 @@ ul {
         transform: all 0.3s;
         font-size: 16px;
         text-align: center;
-        display: flex; 
+        display: flex;
         justify-content: center;
         align-items: center;
       }
@@ -343,7 +353,9 @@ ul {
         height: 16px; // 아이콘의 높이 조정
       }
     }
+
     .pagination li {
+
       &:hover,
       &:active,
       &.active {
@@ -352,52 +364,28 @@ ul {
       }
     }
   }
+
   .primary_button {
-    width: 108px;
-    height: 35px;
-    border: 1px solid #746E58;
-    border-radius: 5px;
-    font-family: var(--font-family-Noto-B);
-    font-size: 14px;
-    color: #746E58;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    @include report-button;
   }
+
   .second_button {
-    width: 66px;
-    height: 35px;
+    @include report-button;
     background-color: #746E58;
     border: 1px solid #746E58;
-    border-radius: 5px;
-    margin-top: 5px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
     color: #fff;
   }
+
   .white_button {
-    width: 66px;
-    height: 35px;
-    background-color: #fff;
-    border: 1px solid #746E58;
-    border-radius: 5px;
-    margin-top: 5px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #746E58;
+    @include report-button;
   }
+
   .red_button {
-    width: 66px;
-    height: 35px;
-    background-color: #fff;
+    @include report-button;
     border: 1px solid #D56D6D;
-    border-radius: 5px;
-    margin-top: 5px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
     color: #D56D6D;
   }
+
   .delete_button {
     width: 92px;
     height: 35px;
@@ -407,6 +395,7 @@ ul {
     font-size: 14px;
     color: #D56D6D;
   }
+
   .delete_small_button {
     width: 66px;
     height: 35px;
@@ -417,6 +406,7 @@ ul {
     color: #D56D6D;
     margin-left: 7px;
   }
+
   .approval_button {
     width: 92px;
     height: 35px;
@@ -427,6 +417,7 @@ ul {
     font-family: var(--font-family-Noto-B);
     color: #fff;
   }
+
   .document_button {
     width: 92px;
     height: 35px;
@@ -437,6 +428,7 @@ ul {
     font-family: var(--font-family-Noto-B);
     color: #746E58;
   }
+
   .download_button {
     width: 92px;
     height: 35px;
@@ -453,11 +445,11 @@ ul {
 // 노트북 기준 전체 레이아웃
 @include laptop {
   .content {
-  
+
     .content_header {
       margin-bottom: 10px;
     }
-  
+
     .content_container {
       .tab_container {
         height: 580px;
@@ -467,12 +459,13 @@ ul {
         height: 84.5vh;
         padding: 20px;
       }
-  
+
       .main_header {
-      
+
         .header_name {
           font-size: 28px;
         }
+
         .header_name_sm {
           font-size: 16px;
           margin-top: 15px;

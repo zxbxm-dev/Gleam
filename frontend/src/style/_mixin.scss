@@ -11,3 +11,17 @@
         @content;
     }
 }
+
+@mixin report-button {
+    padding: 8px 20px;
+    border: 1px solid #746E58;
+    border-radius: 5px;
+    font-family: var(--font-family-Noto-B);
+    font-size: 14px;
+    color: #746E58;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 100%;
+}
