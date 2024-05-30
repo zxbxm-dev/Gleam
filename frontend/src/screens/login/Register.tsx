@@ -29,7 +29,7 @@ const Register = () => {
     const [question2, setQuestion2] = useState("");
     const [name, setName] = useState("");
     const [mail, setMail] = useState("");
-    const [Agree, setAgree] = useState(false);
+    const [Agree, setAgree] = useState(true);
 
     const handleFooter1Click = () => {
         setRegistModalOpen(false);
@@ -208,7 +208,9 @@ const Register = () => {
             team: selectedOptions.team,
             spot: selectedOptions.spot,
             position: selectedOptions.position,
-            phoneNumber: phoneNumber
+            phoneNumber: phoneNumber,
+            attachment: null,
+            Sign: null
         };
 
         // API 호출

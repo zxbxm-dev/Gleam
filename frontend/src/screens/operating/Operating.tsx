@@ -37,9 +37,6 @@ const Operating = () => {
     }
   });
 
-
-
-
   const exportToPDF = () => {
     const element = document.getElementById('table-to-xls');
     if (element) {
@@ -124,7 +121,6 @@ const Operating = () => {
   const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', '']]);
   const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', '']]);
   
-
   const [common811Cost, setCommon811Cost] = useState<number>(0);
   const [common812Cost, setCommon812Cost] = useState<number>(0);
   const [common813Cost, setCommon813Cost] = useState<number>(0);
@@ -294,8 +290,6 @@ const Operating = () => {
     }
     setDropdownOpen(false);
   };
-  
-
   
   const setTeamState = <T extends string[][]>(
     teamStateSetter: React.Dispatch<React.SetStateAction<T>>,
@@ -561,7 +555,7 @@ const Operating = () => {
             <div className="Excel_operating" id="table-to-xls"> 
               <table className='Explan_operating'>
                 <tbody>
-                  <tr>        
+                  <tr>
                     <th className="table_header_name th_right th_bottom" colSpan={2}>부서 / 팀명</th>
                     <th className="table_header_name_code th_right th_bottom">부서 코드</th>
                     <th className="table_header_account_code th_right th_bottom">계정 코드</th>
