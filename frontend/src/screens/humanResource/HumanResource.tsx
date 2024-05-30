@@ -11,6 +11,7 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
+  useDisclosure,
 } from '@chakra-ui/react';
 import CustomModal from "../../components/modal/CustomModal";
 import { useRecoilState } from 'recoil';
@@ -33,6 +34,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const HumanResource = () => {
+  const { isOpen: isAdd, onOpen: AddOpen, onClose: AddClose } = useDisclosure();
+  const { isOpen: isEdit, onOpen: EditOpen, onClose: EditClose } = useDisclosure();
   const [numPages, setNumPages] = useState<number>(0);
   const [file, setFile] = useState<PDFFile>(testPDF_구민석);
   const [files, setFiles] = useState<PDFFile[]>([]);
@@ -338,9 +341,9 @@ const HumanResource = () => {
 
             <TabPanel display='flex' flexDirection='column'>
               <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh'}}>
-                <Popover placement="left-start">
+                <Popover placement="left-start" isOpen={isAdd} onClose={AddClose}>
                   <PopoverTrigger>
-                    <button className="adds_button">등록</button>
+                    <button className="adds_button" onClick={AddOpen}>등록</button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
@@ -367,7 +370,7 @@ const HumanResource = () => {
                         </div>
                         <div className='button-wrap'>
                           <button className="adds_button" onClick={handleAppointSubmit}>등록</button>
-                          <button className="edits_button">취소</button>
+                          <button className="edits_button" onClick={AddClose}>취소</button>
                         </div>
                       </PopoverBody>
                     </PopoverContent>
@@ -400,9 +403,9 @@ const HumanResource = () => {
                       <td>2024-05-04</td>
                       <td>승진</td>
                       <td>
-                        <Popover placement="left-start">
+                        <Popover placement="left-start" isOpen={isEdit} onClose={EditClose}>
                           <PopoverTrigger>
-                            <button className="edits_button">수정</button>
+                            <button className="edits_button" onClick={EditOpen}>수정</button>
                           </PopoverTrigger>
                           <Portal>
                             <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
@@ -429,7 +432,7 @@ const HumanResource = () => {
                                 </div>
                                 <div className='button-wrap'>
                                   <button className="edits_button" onClick={handleAppointmentEdit}>수정</button>
-                                  <button className="edits_button">취소</button>
+                                  <button className="edits_button" onClick={EditClose}>취소</button>
                                 </div>
                               </PopoverBody>
                             </PopoverContent>
