@@ -24,6 +24,7 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
+import { submitReport } from '../../services/report/ReportServices';
 
 type Member = [string, string, string, string];
 
@@ -58,6 +59,48 @@ const WriteReport = () => {
       updateApprovalLines(reportName);
     }
   }, [reportName]);
+
+  const sendDate = new Date();
+  const approvalValue = 0;
+
+  const createFormData = (selectedReport:string, approvalLines:any, file:any, sendDate:any, approvalValue:any) => {
+    const formData = new FormData();
+      // formData.append('username', username);
+    // formData.append('dept', dept);
+    formData.append('selectForm', selectedReport);
+    formData.append('Payment', JSON.stringify(approvalLines));
+    if (file) {
+        formData.append('attachment', file);
+        formData.append('pdffile', file.name);
+    }
+      // formData.append('receiptDate', receiptDate.toISOString());
+    formData.append('sendDate', sendDate.toISOString());
+    formData.append('opinionName', "");
+    formData.append('opinionContent', "");
+    formData.append('rejectName', "");
+    formData.append('rejectContent', "");
+    formData.append('approval', approvalValue.toString()); 
+    return formData;
+};
+
+const handleSubmit = () => {
+    const formData = createFormData(selectedReport, approvalLines, file, sendDate, approvalValue);
+    fetch('/submitReport', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (response.ok) {
+            setSubmitModalOpen(true);
+        } else {
+            // Handle error
+        }
+    })
+    .catch(error => {
+        // Handle error
+    });
+};
+
 
   const members: Member[] = [
     ['이정훈', '포체인스 주식회사', '', '대표'],
@@ -516,7 +559,7 @@ const WriteReport = () => {
                           ))}
 
                           <div className='button-wrap'>
-                            <button className="second_button" onClick={() => setSubmitModalOpen(true)}>제출</button>
+                            <button className="second_button" onClick={() => handleSubmit()}>제출</button>
                             <button className="white_button">취소</button>
                           </div>
                         </div>
