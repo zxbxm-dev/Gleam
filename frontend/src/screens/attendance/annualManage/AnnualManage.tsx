@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
@@ -7,11 +7,14 @@ import html2canvas from 'html2canvas';
 import { useQuery } from 'react-query';
 import { CheckAnnual } from '../../../services/attendance/AttendanceServices';
 
-type Member = [string, number, number, number, string[], string, string];
+type Member = [string, number, number, number, string[], string, string, string, string];
+type MemberRD = [string, number, number, number, string[], string, string, string, string];
 
 const AnnualManage = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedScreen, setSelectedScreen] = useState('R&D');
+  const [rowsData, setRowsData] = useState<any[]>([]);
+  const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
@@ -58,33 +61,101 @@ const AnnualManage = () => {
   });
 
   const members: Member[] = [
-    ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01'],
-    ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01'],
-    ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['변도일', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['이로운', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['김현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['서주희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['전아름', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['함다슬', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['전규미', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['김효은', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['우현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['김태희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+    ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '블록체인 사업부', '블록체인 1팀'],
+    ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
+    ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
+    ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
+    ['변도일', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 2팀'],
+    ['이로운', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 2팀'],
+    ['김현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '디자인팀'],
+    ['서주희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '디자인팀'],
+    ['전아름', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
+    ['함다슬', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
+    ['전규미', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
+    ['김효은', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
+    ['우현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
+    ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
+    ['김태희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
+    ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
   ]
 
-  const membersRD: Member[] = [
-    ['심민지', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01'],
-    ['임지현', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01'],
-    ['김희진', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['윤민지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['이채영', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['박소연', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['김경현', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
+  const membersRD: MemberRD[] = [
+    ['심민지', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
+    ['임지현', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
+    ['김희진', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
+    ['윤민지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
+    ['이채영', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
+    ['박소연', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
+    ['김경현', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
   ]
+
+  useEffect(() => {
+    const groupedData = membersRD.reduce((acc, member) => {
+      const key = `${member[7]}-${member[8]}`; // dept-team을 키로 사용
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(member);
+      return acc;
+    }, {} as Record<string, MemberRD[]>);
+
+    const newRowsData = [];
+    let no = 1;
+
+    for (const key in groupedData) {
+      const members = groupedData[key];
+      newRowsData.push({
+        no: no++,
+        dept: members[0][7],
+        team: members[0][8],
+        rowSpan: members.length,
+      });
+      for (let i = 1; i < members.length; i++) {
+        newRowsData.push({
+          no: no++,
+          dept: "",
+          team: "",
+          rowSpan: 0,
+        });
+      }
+    }
+
+    setRowsDataRD(newRowsData);
+  }, [membersRD]);
+
+  useEffect(() => {
+    const groupedData = members.reduce((acc, member) => {
+      const key = `${member[7]}-${member[8]}`; // dept-team을 키로 사용
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(member);
+      return acc;
+    }, {} as Record<string, MemberRD[]>);
+
+    const newRowsData = [];
+    let no = 1;
+
+    for (const key in groupedData) {
+      const members = groupedData[key];
+      newRowsData.push({
+        no: no++,
+        dept: members[0][7],
+        team: members[0][8],
+        rowSpan: members.length,
+      });
+      for (let i = 1; i < members.length; i++) {
+        newRowsData.push({
+          no: no++,
+          dept: "",
+          team: "",
+          rowSpan: 0,
+        });
+      }
+    }
+
+    setRowsData(newRowsData);
+  }, [members]);
 
 
   const CountDivs = () => {
@@ -132,6 +203,49 @@ const AnnualManage = () => {
       </table>
     );
   }
+
+  const TableHeader = () => (
+    <tr>
+      <td className="TopS_no">NO.</td>
+      <td className="TopS_annual" colSpan={2}>부서</td>
+    </tr>
+  );
+
+  const TableRows = () => (
+    <>
+      {rowsData.map((row, index) => (
+        <React.Fragment key={index}>
+          <tr>
+            <td>{row.no}</td>
+            {row.rowSpan > 0 && (
+              <>
+                <td rowSpan={row.rowSpan}>{row.dept}</td>
+                <td rowSpan={row.rowSpan}>{row.team}</td>
+              </>
+            )}
+          </tr>
+        </React.Fragment>
+      ))}
+    </>
+  );
+
+  const TableRowsRD = () => (
+    <>
+      {rowsDataRD.map((row, index) => (
+        <React.Fragment key={index}>
+          <tr>
+            <td>{row.no}</td>
+            {row.rowSpan > 0 && (
+              <>
+                <td rowSpan={row.rowSpan}>{row.dept}</td>
+                <td rowSpan={row.rowSpan}>{row.team}</td>
+              </>
+            )}
+          </tr>
+        </React.Fragment>
+      ))}
+    </>
+  );
 
   const generateDivs = (member: any) => {
     const nameRows = [];
@@ -317,39 +431,14 @@ const AnnualManage = () => {
             {selectedScreen === '본사' ? (
               <div className="Excel_annual_RD">
                 <table className="Explan_annual_RD">
-                  <tbody>
-                    <tr>
-                      <td className="TopS_annual">NO.</td>
-                      <td className="TopS_annual" colSpan={2}>부서</td>
-                    </tr>
-                    <tr>
-                      <td>1</td>
-                      <td rowSpan={3}>알고리즘 연구실</td>
-                      <td rowSpan={3}>AI 연구팀</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                    </tr>
-                    <tr>
-                      <td>5</td>
-                      <td rowSpan={2}>동형분석 연구실</td>
-                      <td rowSpan={2}>동형분석 연구팀</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                      <td rowSpan={2}>블록체인 연구실</td>
-                      <td rowSpan={2}>AI 개발팀</td>
-                    </tr>
-                    <tr>
-                      <td>8</td>
-                    </tr>
-                  </tbody>
+                  <div>
+                    <thead>
+                      <TableHeader />  
+                    </thead> 
+                    <tbody>
+                      <TableRowsRD />
+                    </tbody>
+                  </div>
                 </table>
                 <div>
                   {CountDivs()}
@@ -361,69 +450,14 @@ const AnnualManage = () => {
               <div className="Excel_annual">
                 <table className="Explan_annual">
                   <tbody>
-                    <tr>
-                      <td className="TopS_annual">NO.</td>
-                      <td className="TopS_annual" colSpan={2}>부서</td>
-                    </tr>
-                    <tr style={{ fontSize: '14.5px'}}>
-                      <td>1</td>
-                      <td>블록체인 사업부</td>
-                      <td>블록체인 1팀</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td rowSpan={5}>개발부</td>
-                      <td rowSpan={3}>개발 1팀</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                    </tr>
-                    <tr>
-                      <td>4</td>
-                    </tr>
-                    <tr>
-                      <td>5</td>
-                      <td rowSpan={2}>개발 2팀</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                      <td rowSpan={5}>마케팅부</td>
-                      <td rowSpan={2}>디자인팀</td>
-                    </tr>
-                    <tr>
-                      <td>8</td>
-                    </tr>
-                    <tr>
-                      <td>9</td>
-                      <td rowSpan={3}>기획팀</td>
-                    </tr>
-                    <tr>
-                      <td>10</td>
-                    </tr>
-                    <tr>
-                      <td>11</td>
-                    </tr>
-                    <tr>
-                      <td>12</td>
-                      <td rowSpan={5}>관리부</td>
-                      <td rowSpan={3}>관리팀</td>
-                    </tr>
-                    <tr>
-                      <td>13</td>
-                    </tr>
-                    <tr>
-                      <td>14</td>
-                    </tr>
-                    <tr>
-                      <td>15</td>
-                      <td rowSpan={2}>지원팀</td>
-                    </tr>
-                    <tr>
-                      <td>16</td>
-                    </tr>
+                    <div>
+                      <thead>
+                        <TableHeader />  
+                      </thead> 
+                      <tbody>
+                        <TableRows />
+                      </tbody>
+                    </div>
                   </tbody>
                 </table>
                 <div>

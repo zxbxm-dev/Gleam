@@ -11,6 +11,9 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
+import { useQuery } from "react-query";
+import { CheckApproval } from "../../services/approval/ApprovalServices";
+
 const Approval = () => {
   let navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
@@ -36,6 +39,26 @@ const Approval = () => {
   const handleTabClick = (tab: string) => {
     setSelectedTab(tab);
   };
+
+  // 보고서 결재 목록 불러오기
+  const fetchApproval = async () => {
+    try {
+      const response = await CheckApproval();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("approval", fetchApproval, {
+    onSuccess: (data) => setApproval(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
+
+  
   useEffect(() => {
     const initialAnnouncements = [
       { id: 1, title: "공지사항", date: "2024-05-01", progress: 0, maxprogress: 3, state: "미결재", writer: "서주희", approvalline: ['진유빈', '김효은', '이정훈'] },

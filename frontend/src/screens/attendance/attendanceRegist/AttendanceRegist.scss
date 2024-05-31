@@ -119,21 +119,22 @@
 
 .conta_three_annual {
   border-bottom: 2px solid #858585;
+  border-right: 2px solid #858585;
 }
 
 .conta_three_last_annual {
-  border-bottom: 2px solid #858585;
   border-right: 2px solid #858585;
+  border-bottom: 2px solid #858585;
 }
 
 .conta_annual {
   font-family: var(--font-family-Noto-M);
   width: 70px;
-  height: 45px;
+  height: 40px;
   display: grid;
   justify-content: center;
   align-items: center;
-  border-right: 1px solid #858585;
+
 
   input {
     width: 100%;
@@ -146,37 +147,37 @@
 .conta_name_annual {
   font-family: var(--font-family-Noto-M);
   width: 100px;
-  height: 45px;
+  height: 40px;
   display: grid;
   justify-content: center;
   align-items: center;
-  border-right: 1px solid #858585;
+
 }
 
 .conta_date_annual {
   font-family: var(--font-family-Noto-M);
   width: 130px;
-  height: 45px;
+  height: 40px;
   display: grid;
   justify-content: center;
   align-items: center;
-  border-right: 1px solid #858585;
 }
 
 
 .countTotal_annual {
   font-family: var(--font-family-Noto-M);
-  width: 70px;
-  height: 43.5px;
+  width: 72px;
+  height: 43px;
   text-align: center;
   font-size: 16px;
   display: flex;
   border-top: 2px solid #858585;
   border-bottom: 2px solid #858585;
-  border-right: 1px solid #858585;
+  border-right: 2px solid #858585;
 
   .total_annual {
     width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -186,16 +187,17 @@
 .countTotal_annual_last {
   font-family: var(--font-family-Noto-M);
   width: 71.5px;
-  height: 43.5px;
+  height: 43px;
   text-align: center;
   font-size: 16px;
   display: flex;
   border-top: 2px solid #858585;
   border-bottom: 2px solid #858585;
-  border-right: 3px solid #858585;
+  border-right: 2px solid #858585;
 
   .total_annual {
     width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -204,17 +206,18 @@
 
 .countName_annual {
   font-family: var(--font-family-Noto-M);
-  width: 100px;
-  height: 43.5px;
+  width: 102px;
+  height: 43px;
   text-align: center;
   font-size: 16px;
   display: flex;
   border-top: 2px solid #858585;
   border-bottom: 2px solid #858585;
-  border-right: 1px solid #858585;
+  border-right: 2px solid #858585;
 
   .total_annual {
     width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -223,14 +226,14 @@
 
 .countDate_annual {
   font-family: var(--font-family-Noto-M);
-  width: 130px;
-  height: 43.5px;
+  width: 132px;
+  height: 43px;
   text-align: center;
   font-size: 16px;
   display: flex;
   border-top: 2px solid #858585;
   border-bottom: 2px solid #858585;
-  border-right: 1px solid #858585;
+  border-right: 2px solid #858585;
 
   .total_annual {
     width: 100%;
@@ -316,23 +319,28 @@
 
   .Explan_annual {
     font-family: var(--font-family-Noto-M);
-    width: 250px;
-    height: auto;
-    border: 2px solid #858585;
+    width: 280px;
     overflow-x: auto;
 
-    tr {
+    div {
+      border-top: 2px solid #858585;
+      border-left: 2px solid #858585;
 
-      .TopS_annual {
-        height: 23px;
-        font-size: 14px;
-      }
-
-      td {
-        border-right: 2px solid #858585;
-        border-bottom: 2px solid #858585;
-        text-align: center;
-        height: 25px;
+      tr {
+        .TopS_no {
+          width: 50px;
+          height: 39.5px;
+        }
+        .TopS_annual {
+          width: 230px;
+          height: 39.5px;
+        }
+        td {
+          border-right: 2px solid #858585;
+          border-bottom: 2px solid #858585;;
+          text-align: center;
+          height: 41.98px;
+        }
       }
     }
   }
@@ -340,26 +348,31 @@
 
 .Excel_annual_RD {
   display: flex;
-  height: 371px;
 
   .Explan_annual_RD {
     font-family: var(--font-family-Noto-M);
-    width: 320px;
-    border: 2px solid #858585;
+    width: 280px;
     overflow-x: auto;
 
-    tr {
+    div {
+      border-top: 2px solid #858585;
+      border-left: 2px solid #858585;
 
-      .TopS_annual {
-        height: 38px;
-        font-size: 14px;
-      }
-
-      td {
-        border-right: 2px solid #858585;
-        border-bottom: 2px solid #858585;
-        text-align: center;
-        height: 42.5px;
+      tr {
+        .TopS_no {
+          width: 50px;
+          height: 40px;
+        }
+        .TopS_annual {
+          width: 230px;
+          height: 40px;
+        }
+        td {
+          border-right: 2px solid #858585;
+          border-bottom: 2px solid #858585;;
+          text-align: center;
+          height: 41.8px;
+        }
       }
     }
   }
