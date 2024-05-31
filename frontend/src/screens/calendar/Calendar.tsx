@@ -11,6 +11,13 @@ import { writeCalen } from "../../services/calender/calender";
 import { SelectArrow } from "../../assets/images/index";
 import { useRecoilState } from 'recoil';
 import { isSidebarVisibleState } from '../../recoil/atoms';
+import { CheckCalen, DeleteCalen } from "../../services/calender/calender";
+
+interface Event {
+  title: string;
+  startDate: string;
+  endDate: string;
+}
 
 const Calendar = () => {
   const [isAddeventModalOpen, setAddEventModalOPen] = useState(false);
@@ -28,10 +35,25 @@ const Calendar = () => {
   const [selectedColor, setSelectedColor] = useState("#ABF0FF");
   const [selectOpen, setSelectOpen] = useState(false);
   const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
+  const [calender, setCalender] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     setKey(prevKey => prevKey + 1);
   }, [activeTab, isSidebarVisible]);
+
+  useEffect(() => {
+    const fetchCalender = async () => {
+      try {
+        const response = await CheckCalen();
+        setCalender(response.data);
+      } catch (error) {
+        console.error("Error fetching calender:", error);
+      }
+    };
+
+    fetchCalender();
+  }, []);
 
   const events1 = [
     { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
@@ -93,10 +115,32 @@ const Calendar = () => {
     setAddEventModalOPen(false);
   };
 
+  const handleEventClick = (info:any) => {
+    setSelectedEvent({
+      title: info.event.title,
+      startDate: info.event.start.toISOString().substring(0, 10),
+      endDate: info.event.end ? info.event.end.toISOString().substring(0, 10) : info.event.start.toISOString().substring(0, 10),
+    });
+    setEventModalOPen(true);
+  };
+
   const handleDeleteEvent = () => {
+    if (!selectedEvent) {
+      console.error("No event selected for deletion.");
+      return;
+    }
+    DeleteCalen(selectedEvent)
+      .then(response => {
+        console.log("Event deleted successfully:", response);
+      })
+      .catch(error => {
+        console.error("Error deleting event:", error);
+      });
+  
     setDeleteEventModalOPen(false);
     setEventModalOPen(false);
-  }
+  };
+  
 
   const handleEditEvent = () => {
     setEventModalOPen(false);
@@ -170,7 +214,7 @@ const Calendar = () => {
                   eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
                   dayMaxEventRows={true}
                   eventDisplay="block"
-                  eventClick={() => setEventModalOPen(true)}
+                  eventClick={handleEventClick}
                   moreLinkText='개 일정 더보기'
                 />
               </div>
@@ -214,7 +258,7 @@ const Calendar = () => {
                   eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
                   dayMaxEventRows={true}
                   eventDisplay="block"
-                  eventClick={() => setEventModalOPen(true)}
+                  eventClick={handleEventClick}
                   moreLinkText='개 일정 더보기'
                 />
               </div>
@@ -456,20 +500,21 @@ const Calendar = () => {
       </CustomModal>
 
       <CustomModal
-        isOpen={isDeleteeventModalOpen}
-        onClose={() => setDeleteEventModalOPen(false)}
-        header={'알림'}
-        footer1={'삭제'}
-        footer1Class="red-btn"
-        onFooter1Click={handleDeleteEvent}
-        footer2={'취소'}
-        footer2Class="gray-btn"
-        onFooter2Click={() => setDeleteEventModalOPen(false)}
-      >
-        <div>
-          삭제하시겠습니까?
-        </div>
-      </CustomModal>
+  isOpen={isDeleteeventModalOpen}
+  onClose={() => setDeleteEventModalOPen(false)}
+  header={'알림'}
+  footer1={'삭제'}
+  footer1Class="red-btn"
+  onFooter1Click={handleDeleteEvent}
+  footer2={'취소'}
+  footer2Class="gray-btn"
+  onFooter2Click={() => setDeleteEventModalOPen(false)}
+>
+  <div>
+    삭제하시겠습니까?
+  </div>
+</CustomModal>
+
     </div>
   );
 };

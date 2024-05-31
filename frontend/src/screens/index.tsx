@@ -7,13 +7,6 @@ export { default as ResetPw } from "./login/ResetPw";
 export { default as EditRegis } from "./login/EditRegis";
 
 // 조직문화
-export { default as ActivityManage } from "./orgculture/activitymanage/ActivityManage";
-export { default as WriteActivityManage } from "./orgculture/activitymanage/WriteActivityManage";
-export { default as EmployeeNotice } from "./orgculture/activitymanage/EmployeeNotice";
-export { default as DetailEmployeeNotice } from "./orgculture/activitymanage/DetailEmployeeNotice";
-export { default as FreeBoard } from "./orgculture/activitymanage/FreeBoard";
-export { default as DetailFreeBoard } from "./orgculture/activitymanage/DetailFreeBoard";
-
 export { default as Announcement } from "./orgculture/announcement/Announcement";
 export { default as WriteAnnounce } from "./orgculture/announcement/WriteAnnounce";
 export { default as DetailAnnounce } from "./orgculture/announcement/DetailAnnounce";

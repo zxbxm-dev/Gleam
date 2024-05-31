@@ -10,8 +10,6 @@ const RegisterEditServices = (formData) => {
     return api.post("/postResEditData", formData);
 };
 
-
-
 //아이디 찾기 데이터 전송
 const FindIDServices = (formData) => {
     return api.post("/postFindID", formData);
