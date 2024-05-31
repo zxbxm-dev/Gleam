@@ -1,41 +1,53 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const secure = require('express-force-https');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const app = express();
+// 리다이렉트 라이브러리
+app.use(secure);
 
-var app = express();
+//sequlize 동기화
+const { sequelize } = require('./lib/models');
 
-// view engine setup
+sequelize.sync({ force: true })
+    .then(() => {
+        console.log("데이터 베이스 연결 성공")
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+
+// 옵션 설정
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
+// 클라이언트 연결
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
+// 404에러 핸들러
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// 오류 처리
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+  
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // 에러페이지 랜딩
   res.status(err.status || 500);
   res.render('error');
 });
+
+// 라우터 불러오기
+const indexRouter = require('./lib/router');
+app.use('/', indexRouter);
 
 module.exports = app;
