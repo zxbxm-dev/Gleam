@@ -3,14 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BaseLayout from "./layout/BaseLayout";
 import {
   Login,
-  ActivityManage,
-  WriteActivityManage,
   Announcement,
   WriteAnnounce,
-  EmployeeNotice,
-  DetailEmployeeNotice,
-  FreeBoard,
-  DetailFreeBoard,
   DetailAnnounce,
   OrgChart,
   Regulations,
@@ -50,13 +44,6 @@ function App() {
           <Route path="/resetpw" element={<ResetPw />} />
           <Route path="/editres" element={<EditRegis />} />
           <Route element={<BaseLayout />}>
-            {/* 활동관리 */}
-            <Route path="/activitymanage" element={<ActivityManage />} />
-            <Route path="/writeActivityManage" element={<WriteActivityManage />} />
-            <Route path="/employeeNotice" element={<EmployeeNotice />} />
-            <Route path="/detailEmployeeNotice/:id" element={<DetailEmployeeNotice />} />
-            <Route path="/freeBoard" element={<FreeBoard />} />
-            <Route path="/detailFreeBoard/:id" element={<DetailFreeBoard />} />
 
             <Route path="/" element={<Announcement />} />
             <Route path="/writeAnnounce" element={<WriteAnnounce />} />

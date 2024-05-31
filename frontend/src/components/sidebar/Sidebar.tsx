@@ -104,14 +104,6 @@ const Sidebar = () => {
                           }}
                         >사내 규정</Link>
                       </li>
-                      <li className={`sub-menu menu-item ${selectedMenu === 'activitymanage' ? 'active' : ''}`}>
-                        <Link to="/activitymanage" className='menu-link'
-                          onClick={() => {
-                            handleMenuClick('activitymanage');
-                            setActiveTab("");
-                          }}
-                        >활동 관리</Link>
-                      </li>
                       <li className={`sub-menu menu-item ${selectedMenu === 'orgchart' ? 'active' : ''}`}>
                         <Link to="/orgchart" className='menu-link'
                           onClick={() => {
