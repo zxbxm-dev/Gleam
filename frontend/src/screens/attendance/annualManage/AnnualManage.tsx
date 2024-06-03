@@ -41,6 +41,7 @@ const AnnualManage = () => {
   const handleRetirementChange = (member: any, index: any, event: any) => {
     const newMembers = [...member];
     newMembers[index][6] = event.target.value;
+    
     if (selectedScreen === 'R&D') {
       setMembers(newMembers)
     } else {
@@ -313,6 +314,7 @@ const AnnualManage = () => {
                 type="text"
                 value={member[j][1]}
                 onChange={(event) => handleAvailableChange(member, j, event)}
+                disabled={!editMode}
               /> 
             </td>
           </tr>
@@ -405,6 +407,7 @@ const AnnualManage = () => {
                 type="text"
                 value={member[j][6]}
                 onChange={(event) => handleRetirementChange(member, j, event)}
+                disabled={!editMode}
               /> 
             </td>
           </tr>
