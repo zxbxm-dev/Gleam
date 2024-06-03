@@ -31,8 +31,8 @@ const AnnualManage = () => {
       element.style.width = element.scrollWidth + 'px';
       html2canvas(element).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgWidth = 210; // A4 크기에서 이미지 너비
+        const pdf = new jsPDF('l', 'mm', 'a4');
+        const imgWidth = 297; // A4 크기에서 이미지 너비
         const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
         pdf.save('연차관리.pdf');
