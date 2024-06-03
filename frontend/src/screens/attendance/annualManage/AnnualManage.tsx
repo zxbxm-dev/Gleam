@@ -38,6 +38,13 @@ const AnnualManage = () => {
     }
   };
 
+  const isRetiredBeforeToday = (retirementDate: any) => {
+    const formattedRetirementDate = retirementDate.replace(/-/g, '');
+    const formattedToday = today.replace(/-/g, '');
+  
+    return formattedRetirementDate !== '' && formattedRetirementDate < formattedToday;
+  };
+
   const handleRetirementChange = (member: any, index: any, event: any) => {
     const newMembers = [...member];
     newMembers[index][6] = event.target.value;
@@ -286,14 +293,14 @@ const AnnualManage = () => {
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
       for (let j = 0; j < member.length; j++) {
-        const isRetiredToday = members[j][6] === today;
+        const isRetired = isRetiredBeforeToday(members[j][6]);
 
         rowCells.push(
           <tr
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_name_annual' style={{ textDecoration: isRetiredToday ? 'line-through' : 'none' }}> {member[j][0]} </td>
+            <td className='conta_name_annual' style={{ textDecoration: isRetired ? 'line-through' : 'none' }}> {member[j][0]} </td>
           </tr>
         );
       }
