@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
@@ -60,7 +60,7 @@ const AnnualManage = () => {
     }
   });
 
-  const members: Member[] = [
+  const members: Member[] = useMemo(() => [
     ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '블록체인 사업부', '블록체인 1팀'],
     ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
     ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
@@ -77,9 +77,9 @@ const AnnualManage = () => {
     ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
     ['김태희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
     ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
-  ]
+  ], []);
 
-  const membersRD: MemberRD[] = [
+  const membersRD: MemberRD[] = useMemo(() => [
     ['심민지', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
     ['임지현', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
     ['김희진', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
@@ -87,75 +87,74 @@ const AnnualManage = () => {
     ['이채영', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
     ['박소연', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
     ['김경현', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
-  ]
-
-  useEffect(() => {
-    const groupedData = membersRD.reduce((acc, member) => {
-      const key = `${member[7]}-${member[8]}`; // dept-team을 키로 사용
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(member);
-      return acc;
-    }, {} as Record<string, MemberRD[]>);
-
-    const newRowsData = [];
-    let no = 1;
-
-    for (const key in groupedData) {
-      const members = groupedData[key];
-      newRowsData.push({
-        no: no++,
-        dept: members[0][7],
-        team: members[0][8],
-        rowSpan: members.length,
-      });
-      for (let i = 1; i < members.length; i++) {
-        newRowsData.push({
-          no: no++,
-          dept: "",
-          team: "",
-          rowSpan: 0,
-        });
-      }
-    }
-
-    setRowsDataRD(newRowsData);
-  }, [membersRD]);
+  ], []);
 
   useEffect(() => {
     const groupedData = members.reduce((acc, member) => {
-      const key = `${member[7]}-${member[8]}`; // dept-team을 키로 사용
-      if (!acc[key]) {
-        acc[key] = [];
+      const dept = member[7];
+      const team = member[8];
+      if (!acc[dept]) {
+        acc[dept] = { rowSpan: 0, teams: {} };
       }
-      acc[key].push(member);
+      acc[dept].rowSpan += 1;
+      if (!acc[dept].teams[team]) {
+        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+      }
+      acc[dept].teams[team].rowSpan += 1;
+      acc[dept].teams[team].members.push(member);
       return acc;
-    }, {} as Record<string, MemberRD[]>);
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
 
-    const newRowsData = [];
-    let no = 1;
-
-    for (const key in groupedData) {
-      const members = groupedData[key];
-      newRowsData.push({
-        no: no++,
-        dept: members[0][7],
-        team: members[0][8],
-        rowSpan: members.length,
-      });
-      for (let i = 1; i < members.length; i++) {
-        newRowsData.push({
-          no: no++,
-          dept: "",
-          team: "",
-          rowSpan: 0,
+    const rows: any[] = [];
+    Object.keys(groupedData).forEach(dept => {
+      const deptData = groupedData[dept];
+      Object.keys(deptData.teams).forEach((team, teamIndex) => {
+        const teamData = deptData.teams[team];
+        teamData.members.forEach((member, memberIndex) => {
+          rows.push({
+            member,
+            deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
+            teamRowSpan: memberIndex === 0 ? teamData.rowSpan : 0
+          });
         });
-      }
-    }
-
-    setRowsData(newRowsData);
+      });
+    });
+    setRowsData(rows);
   }, [members]);
+
+  useEffect(() => {
+    const groupedData = membersRD.reduce((acc, member) => {
+      const dept = member[7];
+      const team = member[8];
+      if (!acc[dept]) {
+        acc[dept] = { rowSpan: 0, teams: {} };
+      }
+      acc[dept].rowSpan += 1;
+      if (!acc[dept].teams[team]) {
+        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+      }
+      acc[dept].teams[team].rowSpan += 1;
+      acc[dept].teams[team].members.push(member);
+      return acc;
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
+
+    const rows: any[] = [];
+    Object.keys(groupedData).forEach(dept => {
+      const deptData = groupedData[dept];
+      Object.keys(deptData.teams).forEach((team, teamIndex) => {
+        const teamData = deptData.teams[team];
+        teamData.members.forEach((member, memberIndex) => {
+          rows.push({
+            member,
+            deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
+            teamRowSpan: memberIndex === 0 ? teamData.rowSpan : 0
+          });
+        });
+      });
+    });
+    setRowsDataRD(rows);
+  }, [membersRD]);
+  
 
 
   const CountDivs = () => {
@@ -211,41 +210,6 @@ const AnnualManage = () => {
     </tr>
   );
 
-  const TableRows = () => (
-    <>
-      {rowsData.map((row, index) => (
-        <React.Fragment key={index}>
-          <tr>
-            <td>{row.no}</td>
-            {row.rowSpan > 0 && (
-              <>
-                <td rowSpan={row.rowSpan}>{row.dept}</td>
-                <td rowSpan={row.rowSpan}>{row.team}</td>
-              </>
-            )}
-          </tr>
-        </React.Fragment>
-      ))}
-    </>
-  );
-
-  const TableRowsRD = () => (
-    <>
-      {rowsDataRD.map((row, index) => (
-        <React.Fragment key={index}>
-          <tr>
-            <td>{row.no}</td>
-            {row.rowSpan > 0 && (
-              <>
-                <td rowSpan={row.rowSpan}>{row.dept}</td>
-                <td rowSpan={row.rowSpan}>{row.team}</td>
-              </>
-            )}
-          </tr>
-        </React.Fragment>
-      ))}
-    </>
-  );
 
   const generateDivs = (member: any) => {
     const nameRows = [];
@@ -395,6 +359,7 @@ const AnnualManage = () => {
     );
   };
 
+  console.log(rowsData)
   return (
     <div className="content">
       <div className="content_header">
@@ -436,7 +401,12 @@ const AnnualManage = () => {
                       <TableHeader />  
                     </thead> 
                     <tbody>
-                      <TableRowsRD />
+                      {rowsDataRD.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index+1}</td>
+                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[7]}</td>}
+                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[8]}</td>}
+                          </tr>))}
                     </tbody>
                   </div>
                 </table>
@@ -455,7 +425,12 @@ const AnnualManage = () => {
                         <TableHeader />  
                       </thead> 
                       <tbody>
-                        <TableRows />
+                        {rowsData.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index+1}</td>
+                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[7]}</td>}
+                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[8]}</td>}
+                          </tr>))}
                       </tbody>
                     </div>
                   </tbody>
