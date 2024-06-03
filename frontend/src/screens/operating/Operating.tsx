@@ -125,11 +125,11 @@ const Operating = () => {
   }
 
 
-  const [common811Team, setCommon811Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common812Team, setCommon812Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common813Team, setCommon813Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [common811Team, setCommon811Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [common812Team, setCommon812Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [common813Team, setCommon813Team] = useState<string[][]>([['', '', '', ''],['', '', '', '']]);
   const [common814Team, setCommon814Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common815Team, setCommon815Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [common815Team, setCommon815Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   const [common818Team, setCommon818Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   const [common819Team, setCommon819Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   const [managementTeam, setManagementTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
