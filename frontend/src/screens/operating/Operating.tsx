@@ -132,13 +132,13 @@ const Operating = () => {
   const [common815Team, setCommon815Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   const [common818Team, setCommon818Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   const [common819Team, setCommon819Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [managementTeam, setManagementTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [supportTeam, setSupportTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [devOneTeam, setDevOneTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [devTwoTeam, setDevTwoTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [blockchainTeam, setBlockChainTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [managementTeam, setManagementTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [supportTeam, setSupportTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [devOneTeam, setDevOneTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [devTwoTeam, setDevTwoTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [blockchainTeam, setBlockChainTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   
   const [common811Cost, setCommon811Cost] = useState<number>(0);
   const [common812Cost, setCommon812Cost] = useState<number>(0);
