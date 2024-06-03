@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
@@ -7,11 +7,14 @@ import html2canvas from 'html2canvas';
 import { useQuery } from 'react-query';
 import { CheckAnnual } from '../../../services/attendance/AttendanceServices';
 
-type Member = [string, number, number, number, string[], string, string];
+type Member = [string, number, number, number, string[], string, string, string, string];
+type MemberRD = [string, number, number, number, string[], string, string, string, string];
 
 const AnnualManage = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedScreen, setSelectedScreen] = useState('R&D');
+  const [rowsData, setRowsData] = useState<any[]>([]);
+  const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
@@ -57,34 +60,102 @@ const AnnualManage = () => {
     }
   });
 
-  const members: Member[] = [
-    ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01'],
-    ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01'],
-    ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['변도일', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['이로운', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['김현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['서주희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['전아름', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['함다슬', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['전규미', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['김효은', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['우현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['김태희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-  ]
+  const members: Member[] = useMemo(() => [
+    ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '블록체인 사업부', '블록체인 1팀'],
+    ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
+    ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
+    ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
+    ['박세준', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
+    ['변도일', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 2팀'],
+    ['이로운', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 2팀'],
+    ['김현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '디자인팀'],
+    ['서주희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '디자인팀'],
+    ['전아름', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
+    ['함다슬', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
+    ['전규미', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
+    ['김효은', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
+    ['우현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
+    ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
+    ['김태희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
+    ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
+  ], []);
 
-  const membersRD: Member[] = [
-    ['심민지', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01'],
-    ['임지현', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01'],
-    ['김희진', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['윤민지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['이채영', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['박소연', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-    ['김경현', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01'],
-  ]
+  const membersRD: MemberRD[] = useMemo(() => [
+    ['심민지', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
+    ['임지현', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
+    ['김희진', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
+    ['윤민지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
+    ['이채영', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
+    ['박소연', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
+    ['김경현', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
+  ], []);
+
+  useEffect(() => {
+    const groupedData = members.reduce((acc, member) => {
+      const dept = member[7];
+      const team = member[8];
+      if (!acc[dept]) {
+        acc[dept] = { rowSpan: 0, teams: {} };
+      }
+      acc[dept].rowSpan += 1;
+      if (!acc[dept].teams[team]) {
+        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+      }
+      acc[dept].teams[team].rowSpan += 1;
+      acc[dept].teams[team].members.push(member);
+      return acc;
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
+
+    const rows: any[] = [];
+    Object.keys(groupedData).forEach(dept => {
+      const deptData = groupedData[dept];
+      Object.keys(deptData.teams).forEach((team, teamIndex) => {
+        const teamData = deptData.teams[team];
+        teamData.members.forEach((member, memberIndex) => {
+          rows.push({
+            member,
+            deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
+            teamRowSpan: memberIndex === 0 ? teamData.rowSpan : 0
+          });
+        });
+      });
+    });
+    setRowsData(rows);
+  }, [members]);
+
+  useEffect(() => {
+    const groupedData = membersRD.reduce((acc, member) => {
+      const dept = member[7];
+      const team = member[8];
+      if (!acc[dept]) {
+        acc[dept] = { rowSpan: 0, teams: {} };
+      }
+      acc[dept].rowSpan += 1;
+      if (!acc[dept].teams[team]) {
+        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+      }
+      acc[dept].teams[team].rowSpan += 1;
+      acc[dept].teams[team].members.push(member);
+      return acc;
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
+
+    const rows: any[] = [];
+    Object.keys(groupedData).forEach(dept => {
+      const deptData = groupedData[dept];
+      Object.keys(deptData.teams).forEach((team, teamIndex) => {
+        const teamData = deptData.teams[team];
+        teamData.members.forEach((member, memberIndex) => {
+          rows.push({
+            member,
+            deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
+            teamRowSpan: memberIndex === 0 ? teamData.rowSpan : 0
+          });
+        });
+      });
+    });
+    setRowsDataRD(rows);
+  }, [membersRD]);
+  
 
 
   const CountDivs = () => {
@@ -132,6 +203,14 @@ const AnnualManage = () => {
       </table>
     );
   }
+
+  const TableHeader = () => (
+    <tr>
+      <td className="TopS_no">NO.</td>
+      <td className="TopS_annual" colSpan={2}>부서</td>
+    </tr>
+  );
+
 
   const generateDivs = (member: any) => {
     const nameRows = [];
@@ -281,6 +360,7 @@ const AnnualManage = () => {
     );
   };
 
+  console.log(rowsData)
   return (
     <div className="content">
       <div className="content_header">
@@ -317,39 +397,19 @@ const AnnualManage = () => {
             {selectedScreen === '본사' ? (
               <div className="Excel_annual_RD">
                 <table className="Explan_annual_RD">
-                  <tbody>
-                    <tr>
-                      <td className="TopS_annual">NO.</td>
-                      <td className="TopS_annual" colSpan={2}>부서</td>
-                    </tr>
-                    <tr>
-                      <td>1</td>
-                      <td rowSpan={3}>알고리즘 연구실</td>
-                      <td rowSpan={3}>AI 연구팀</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                    </tr>
-                    <tr>
-                      <td>5</td>
-                      <td rowSpan={2}>동형분석 연구실</td>
-                      <td rowSpan={2}>동형분석 연구팀</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                      <td rowSpan={2}>블록체인 연구실</td>
-                      <td rowSpan={2}>AI 개발팀</td>
-                    </tr>
-                    <tr>
-                      <td>8</td>
-                    </tr>
-                  </tbody>
+                  <div>
+                    <thead>
+                      <TableHeader />  
+                    </thead> 
+                    <tbody>
+                      {rowsDataRD.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index+1}</td>
+                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[7]}</td>}
+                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[8]}</td>}
+                          </tr>))}
+                    </tbody>
+                  </div>
                 </table>
                 <div>
                   {CountDivs()}
@@ -361,69 +421,19 @@ const AnnualManage = () => {
               <div className="Excel_annual">
                 <table className="Explan_annual">
                   <tbody>
-                    <tr>
-                      <td className="TopS_annual">NO.</td>
-                      <td className="TopS_annual" colSpan={2}>부서</td>
-                    </tr>
-                    <tr style={{ fontSize: '14.5px'}}>
-                      <td>1</td>
-                      <td>블록체인 사업부</td>
-                      <td>블록체인 1팀</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td rowSpan={5}>개발부</td>
-                      <td rowSpan={3}>개발 1팀</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                    </tr>
-                    <tr>
-                      <td>4</td>
-                    </tr>
-                    <tr>
-                      <td>5</td>
-                      <td rowSpan={2}>개발 2팀</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                      <td rowSpan={5}>마케팅부</td>
-                      <td rowSpan={2}>디자인팀</td>
-                    </tr>
-                    <tr>
-                      <td>8</td>
-                    </tr>
-                    <tr>
-                      <td>9</td>
-                      <td rowSpan={3}>기획팀</td>
-                    </tr>
-                    <tr>
-                      <td>10</td>
-                    </tr>
-                    <tr>
-                      <td>11</td>
-                    </tr>
-                    <tr>
-                      <td>12</td>
-                      <td rowSpan={5}>관리부</td>
-                      <td rowSpan={3}>관리팀</td>
-                    </tr>
-                    <tr>
-                      <td>13</td>
-                    </tr>
-                    <tr>
-                      <td>14</td>
-                    </tr>
-                    <tr>
-                      <td>15</td>
-                      <td rowSpan={2}>지원팀</td>
-                    </tr>
-                    <tr>
-                      <td>16</td>
-                    </tr>
+                    <div>
+                      <thead>
+                        <TableHeader />  
+                      </thead> 
+                      <tbody>
+                        {rowsData.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index+1}</td>
+                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[7]}</td>}
+                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[8]}</td>}
+                          </tr>))}
+                      </tbody>
+                    </div>
                   </tbody>
                 </table>
                 <div>

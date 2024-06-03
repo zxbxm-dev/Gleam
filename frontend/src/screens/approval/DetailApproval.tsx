@@ -16,7 +16,6 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import CustomModal from '../../components/modal/CustomModal';
-import { Textarea } from '@chakra-ui/react';
 import sign from "../../assets/images/sign/구민석_서명.png";
 import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 
