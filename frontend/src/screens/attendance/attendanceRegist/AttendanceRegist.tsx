@@ -26,7 +26,7 @@ const months = [
 ];
 
 const names = [
-  '권상원', '김도환', '권준우', '진유빈', '장현지', '구민석', '변도일',
+  '권상원', '김도환', '권준우', '진유빈', '장현지', '구민석', '박세준', '변도일',
   '이로운', '김현지', '서주희', '전아름', '함다슬', '전규미', '김효은', '우현지', '염승희',
   '김태희', '이주범'
 ];
@@ -845,8 +845,8 @@ const AttendanceRegist = () => {
                           <td>권준우</td>
                         </tr>
                         <tr>
-                          <td rowSpan={5}>개발부</td>
-                          <td rowSpan={3}>개발 1팀</td>
+                          <td rowSpan={6}>개발부</td>
+                          <td rowSpan={4}>개발 1팀</td>
                           <td>진유빈</td>
                         </tr>
                         <tr>
@@ -854,6 +854,9 @@ const AttendanceRegist = () => {
                         </tr>
                         <tr>
                           <td>구민석</td>
+                        </tr>
+                        <tr>
+                          <td>박세준</td>
                         </tr>
                         <tr>
                           <td rowSpan={2}>개발 2팀</td>
