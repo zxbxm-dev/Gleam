@@ -152,7 +152,7 @@ const DetailDocument = () => {
                       <div className='document_content'>반려 내용</div>
                     </div>
                   </>
-                :
+                  :
                   <>
                     <div className='document_container'>
                       <div className='document_title'>작성자</div>
@@ -164,8 +164,8 @@ const DetailDocument = () => {
                     </div>
                   </>
               ) : (
-               <>
-               </>
+                <>
+                </>
               )}
             </div>
             <div className="write_btm_container">

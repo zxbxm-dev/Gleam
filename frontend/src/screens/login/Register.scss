@@ -19,7 +19,7 @@
     .ResText {
         font-size: 32px;
         color: #323232;
-        margin-bottom: 98px;
+        margin-bottom: 50px;
     }
 
     .RegistorBox {
@@ -91,6 +91,9 @@
             .MinimBox {
                 display: flex;
                 align-items: center;
+                font-size: 14px;
+                color: #3b3b3b;
+
                 .localinput{
                     width: 300px;
                     height: 35px;
@@ -338,7 +341,7 @@ cursor: pointer;
 
                     .First {
                         width: 300px;
-                        height: 185px;
+                        height: 215px;
                         border-radius: 5px;
                         overflow-y: scroll;
                         font-size: 12px;
