@@ -102,9 +102,9 @@ const DetailDocument = () => {
         <Link to={"/report"} className="sub_header">보고서 결재</Link>
       </div>
       <div className='oper_header_right'>
-        <button className='oper_edit_button' onClick={() => navigate("/approval")}>확인</button>
+        <button className='oper_edit_button'>확인</button>
         <button className='oper_download_button' onClick={exportToPDF}>인쇄하기</button>
-        <button className='oper_delete_button' onClick={() => setDeleteEventModalOPen(true)}>삭제</button>
+        <button className='oper_delete_button'>삭제</button>
       </div>
 
       <div className="content_container">
@@ -123,7 +123,7 @@ const DetailDocument = () => {
                       <div className='document_content'>반려 내용</div>
                     </div>
                   </>
-                :
+                  :
                   <>
                     <div className='document_container'>
                       <div className='document_title'>작성자</div>
@@ -135,8 +135,8 @@ const DetailDocument = () => {
                     </div>
                   </>
               ) : (
-               <>
-               </>
+                <>
+                </>
               )}
             </div>
             <div className="write_btm_container">
