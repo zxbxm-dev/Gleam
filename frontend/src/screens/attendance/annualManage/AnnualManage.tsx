@@ -11,8 +11,12 @@ type Member = [string, number, number, number, string[], string, string, string,
 type MemberRD = [string, number, number, number, string[], string, string, string, string];
 
 const AnnualManage = () => {
+  const [editMode, setEditMode] = useState(false);
+  const today = new Date().toISOString().split('T')[0];
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedScreen, setSelectedScreen] = useState('R&D');
+  const [members, setMembers] = useState<Member[]>([]);
+  const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
 
@@ -22,6 +26,26 @@ const AnnualManage = () => {
 
   const handleYearChange = (event: any) => {
     setSelectedYear(parseInt(event.target.value));
+  };
+
+  const handleAvailableChange = (member: any, index: any, event: any) => {
+    const newMembers = [...member];
+    newMembers[index][1] = event.target.value;
+    if (selectedScreen === 'R&D') {
+      setMembers(newMembers)
+    } else {
+      setMembersRD(newMembers)
+    }
+  };
+
+  const handleRetirementChange = (member: any, index: any, event: any) => {
+    const newMembers = [...member];
+    newMembers[index][6] = event.target.value;
+    if (selectedScreen === 'R&D') {
+      setMembers(newMembers)
+    } else {
+      setMembersRD(newMembers)
+    }
   };
 
   const exportToPDF = () => {
@@ -60,35 +84,53 @@ const AnnualManage = () => {
     }
   });
 
-  const members: Member[] = useMemo(() => [
-    ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '블록체인 사업부', '블록체인 1팀'],
-    ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
-    ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
-    ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
-    ['박세준', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
-    ['변도일', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 2팀'],
-    ['이로운', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 2팀'],
-    ['김현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '디자인팀'],
-    ['서주희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '디자인팀'],
-    ['전아름', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
-    ['함다슬', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
-    ['전규미', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
-    ['김효은', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
-    ['우현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
-    ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
-    ['김태희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
-    ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
+  const initialMembers: Member[] = useMemo(() => [
+    ['권상원', 0, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '', '블록체인 사업부', '블록체인 1팀'],
+    ['진유빈', 0, 1, 14.0, ['04.20A'], '2099-01-01', '', '개발부', '개발 1팀'],
+    ['장현지', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
+    ['구민석', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
+    ['박세준', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
+    ['변도일', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 2팀'],
+    ['이로운', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 2팀'],
+    ['김현지', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '디자인팀'],
+    ['서주희', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '디자인팀'],
+    ['전아름', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
+    ['함다슬', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
+    ['전규미', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
+    ['김효은', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
+    ['우현지', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
+    ['염승희', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
+    ['김태희', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '지원팀'],
+    ['이주범', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '지원팀'],
   ], []);
 
-  const membersRD: MemberRD[] = useMemo(() => [
-    ['심민지', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
-    ['임지현', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
-    ['김희진', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
-    ['윤민지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
-    ['이채영', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
-    ['박소연', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
-    ['김경현', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
+  const initialMembersRD: MemberRD[] = useMemo(() => [
+    ['심민지', 0, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
+    ['임지현', 0, 1, 14.0, ['04.20A'], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
+    ['김희진', 0, 0, 15.0, [''], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
+    ['윤민지', 0, 0, 15.0, [''], '2099-01-01', '', '동형분석 연구실', '동형분석 연구팀'],
+    ['이채영', 0, 0, 15.0, [''], '2099-01-01', '', '동형분석 연구실', '동형분석 연구팀'],
+    ['박소연', 0, 0, 15.0, [''], '2099-01-01', '', '블록체인 연구실', 'AI 개발팀'],
+    ['김경현', 0, 0, 15.0, [''], '2099-01-01', '', '블록체인 연구실', 'AI 개발팀'],
   ], []);
+
+  useEffect(() => {
+    const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
+
+    const sortedMembers = [...initialMembers].sort((a, b) => {
+      const deptAIndex = departmentOrder.indexOf(a[7]);
+      const deptBIndex = departmentOrder.indexOf(b[7]);
+
+      if (deptAIndex < deptBIndex) return -1;
+      if (deptAIndex > deptBIndex) return 1;
+
+      const nameA = a[8];
+      const nameB = b[8];
+      return nameA.localeCompare(nameB);
+    });
+
+    setMembers(sortedMembers);
+  }, [initialMembers]);
 
   useEffect(() => {
     const groupedData = members.reduce((acc, member) => {
@@ -122,6 +164,24 @@ const AnnualManage = () => {
     });
     setRowsData(rows);
   }, [members]);
+
+  useEffect(() => {
+    const departmentOrder = ['알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
+
+    const sortedMembers = [...initialMembersRD].sort((a, b) => {
+      const deptAIndex = departmentOrder.indexOf(a[7]);
+      const deptBIndex = departmentOrder.indexOf(b[7]);
+
+      if (deptAIndex < deptBIndex) return -1;
+      if (deptAIndex > deptBIndex) return 1;
+
+      const nameA = a[8];
+      const nameB = b[8];
+      return nameA.localeCompare(nameB);
+    });
+
+    setMembersRD(sortedMembers);
+  }, [initialMembers]);
 
   useEffect(() => {
     const groupedData = membersRD.reduce((acc, member) => {
@@ -225,13 +285,14 @@ const AnnualManage = () => {
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
       for (let j = 0; j < member.length; j++) {
+        const isRetiredToday = members[j][6] === today;
 
         rowCells.push(
           <tr
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_name_annual'> {member[j][0]} </td>
+            <td className='conta_name_annual' style={{ textDecoration: isRetiredToday ? 'line-through' : 'none' }}> {member[j][0]} </td>
           </tr>
         );
       }
@@ -251,6 +312,7 @@ const AnnualManage = () => {
               <input 
                 type="text"
                 value={member[j][1]}
+                onChange={(event) => handleAvailableChange(member, j, event)}
               /> 
             </td>
           </tr>
@@ -284,7 +346,7 @@ const AnnualManage = () => {
             className="conta_three_last_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_annual'> {member[j][1].toFixed(1)} </td>
+            <td className='conta_annual'> {member[j][3]} </td>
           </tr>
         );
       }
@@ -338,7 +400,13 @@ const AnnualManage = () => {
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_date_annual'> {member[j][6]} </td>
+            <td className='conta_date_annual'> 
+              <input 
+                type="text"
+                value={member[j][6]}
+                onChange={(event) => handleRetirementChange(member, j, event)}
+              /> 
+            </td>
           </tr>
         );
       }
@@ -379,6 +447,21 @@ const AnnualManage = () => {
           <option value={2024}>2024</option>
           <option value={2023}>2023</option>
         </select>
+        {editMode ? 
+          <button
+          className='head_company_button'
+          onClick={() => setEditMode(!editMode)}
+          >
+            등록
+          </button>
+          :
+          <button
+          className='oper_edit_button'
+          onClick={() => setEditMode(!editMode)}
+          >
+            수정
+          </button>
+        }
         <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
         {selectedScreen === 'R&D' ? (
           <button className='rnd_company_button' onClick={handleScreenChange}>
