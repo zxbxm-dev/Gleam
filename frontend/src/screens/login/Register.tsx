@@ -6,6 +6,15 @@ import {Link} from "react-router-dom";
 import CustomModal from '../../components/modal/CustomModal';
 
 const Register = () => {
+
+    const getCurrentDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0');
+        return `${year}${month}${day}`;
+    };
+
     const [selectedOptions, setSelectedOptions] = useState({
         company: '',
         department: '',
@@ -30,7 +39,7 @@ const Register = () => {
     const [name, setName] = useState("");
     const [mail, setMail] = useState("");
     const [Agree, setAgree] = useState(true);
-    const [enterDate, setEnterDate] = useState("");
+ const [enterDate, setEnterDate] = useState(getCurrentDate());
     const [enterDateError, setEnterDateError] = useState("");
 
     const handleFooter1Click = () => {
