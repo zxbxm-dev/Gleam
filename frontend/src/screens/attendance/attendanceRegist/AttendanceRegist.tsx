@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
@@ -25,20 +25,150 @@ const months = [
   { name: '12월', key: 'december' },
 ];
 
-const names = [
-  '권상원', '김도환', '권준우', '진유빈', '장현지', '구민석', '박세준', '변도일',
-  '이로운', '김현지', '서주희', '전아름', '함다슬', '전규미', '김효은', '우현지', '염승희',
-  '김태희', '이주범'
-];
-
-const namesRD = [
-  '심민지', '임지현', '김희진', '윤민지', '이채영', '박소연', '김경현'
-]
+type Member = [string, string, string];
 
 const AttendanceRegist = () => {
   const [attachment, setAttachment] = useState<File | null>(null);
   const [isAddAttend, setAddAttend] = useState(false);
   const [selectedScreen, setSelectedScreen] = useState('R&D');
+  const [members, setMembers] = useState<Member[]>([]);
+  const [membersRD, setMembersRD] = useState<Member[]>([]);
+  const [rowsData, setRowsData] = useState<any[]>([]);
+  const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
+
+  const initialMembers: Member[] = useMemo(() => [
+    ['권상원', '블록체인 사업부', '블록체인 1팀'],
+    ['김도환', '블록체인 사업부', '블록체인 1팀'],
+    ['권준우', '블록체인 사업부', '블록체인 1팀'],
+    ['진유빈', '개발부', '개발 1팀'],
+    ['장현지', '개발부', '개발 1팀'],
+    ['구민석', '개발부', '개발 1팀'],
+    ['박세준', '개발부', '개발 1팀'],
+    ['변도일', '개발부', '개발 2팀'],
+    ['이로운', '개발부', '개발 2팀'],
+    ['김현지', '마케팅부', '디자인팀'],
+    ['서주희', '마케팅부', '디자인팀'],
+    ['전아름', '마케팅부', '기획팀'],
+    ['함다슬', '마케팅부', '기획팀'],
+    ['전규미', '마케팅부', '기획팀'],
+    ['김효은', '관리부', '관리팀'],
+    ['우현지', '관리부', '관리팀'],
+    ['염승희', '관리부', '관리팀'],
+    ['김태희', '관리부', '지원팀'],
+    ['이주범', '관리부', '지원팀'],
+  ], []);
+
+  const initialMembersRD: Member[] = useMemo(() => [
+    ['심민지', '알고리즘 연구실', 'AI 연구팀'],
+    ['임지현', '알고리즘 연구실', 'AI 연구팀'],
+    ['김희진', '알고리즘 연구실', 'AI 연구팀'],
+    ['윤민지', '동형분석 연구실', '동형분석 연구팀'],
+    ['이채영', '동형분석 연구실', '동형분석 연구팀'],
+    ['박소연', '블록체인 연구실', 'AI 개발팀'],
+    ['김경현', '블록체인 연구실', 'AI 개발팀'],
+  ], []);
+
+  useEffect(() => {
+    const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
+
+    const sortedMembers = [...initialMembers].sort((a, b) => {
+      const deptAIndex = departmentOrder.indexOf(a[1]);
+      const deptBIndex = departmentOrder.indexOf(b[1]);
+
+      if (deptAIndex < deptBIndex) return -1;
+      if (deptAIndex > deptBIndex) return 1;
+
+      const nameA = a[2];
+      const nameB = b[2];
+      return nameA.localeCompare(nameB);
+    });
+
+    setMembers(sortedMembers);
+  }, [initialMembers]);
+
+  useEffect(() => {
+    const groupedData = members.reduce((acc, member) => {
+      const dept = member[1];
+      const team = member[2];
+      if (!acc[dept]) {
+        acc[dept] = { rowSpan: 0, teams: {} };
+      }
+      acc[dept].rowSpan += 1;
+      if (!acc[dept].teams[team]) {
+        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+      }
+      acc[dept].teams[team].rowSpan += 1;
+      acc[dept].teams[team].members.push(member);
+      return acc;
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
+
+    const rows: any[] = [];
+    Object.keys(groupedData).forEach(dept => {
+      const deptData = groupedData[dept];
+      Object.keys(deptData.teams).forEach((team, teamIndex) => {
+        const teamData = deptData.teams[team];
+        teamData.members.forEach((member, memberIndex) => {
+          rows.push({
+            member,
+            deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
+            teamRowSpan: memberIndex === 0 ? teamData.rowSpan : 0
+          });
+        });
+      });
+    });
+    setRowsData(rows);
+  }, [members]);
+
+  useEffect(() => {
+    const departmentOrder = ['알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
+
+    const sortedMembers = [...initialMembersRD].sort((a, b) => {
+      const deptAIndex = departmentOrder.indexOf(a[1]);
+      const deptBIndex = departmentOrder.indexOf(b[1]);
+
+      if (deptAIndex < deptBIndex) return -1;
+      if (deptAIndex > deptBIndex) return 1;
+
+      const nameA = a[2];
+      const nameB = b[2];
+      return nameA.localeCompare(nameB);
+    });
+
+    setMembersRD(sortedMembers);
+  }, [initialMembers]);
+
+  useEffect(() => {
+    const groupedData = membersRD.reduce((acc, member) => {
+      const dept = member[1];
+      const team = member[2];
+      if (!acc[dept]) {
+        acc[dept] = { rowSpan: 0, teams: {} };
+      }
+      acc[dept].rowSpan += 1;
+      if (!acc[dept].teams[team]) {
+        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+      }
+      acc[dept].teams[team].rowSpan += 1;
+      acc[dept].teams[team].members.push(member);
+      return acc;
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
+
+    const rows: any[] = [];
+    Object.keys(groupedData).forEach(dept => {
+      const deptData = groupedData[dept];
+      Object.keys(deptData.teams).forEach((team, teamIndex) => {
+        const teamData = deptData.teams[team];
+        teamData.members.forEach((member, memberIndex) => {
+          rows.push({
+            member,
+            deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
+            teamRowSpan: memberIndex === 0 ? teamData.rowSpan : 0
+          });
+        });
+      });
+    });
+    setRowsDataRD(rows);
+  }, [membersRD]);
 
   // 모달 창 입력값
   const [startTime, setStartTime] = useState('');
@@ -231,17 +361,17 @@ const AttendanceRegist = () => {
     const tableRows = [];
     const totalRows = [];
 
-    const countWorkingDay = new Array(names.length).fill(0); // 근무일수 집계
-    const countDayoff = new Array(names.length).fill(0); // 연차 집계
-    const countHalfDayOff = new Array(names.length).fill(0); // 반차 집계
-    const countRemoteWork = new Array(names.length).fill(0); // 재택 집계
-    const countLateWork = new Array(names.length).fill(0); // 지각 집계
-    const TotalLateWork = new Array(names.length).fill(0); // 지각총분 집계
+    const countWorkingDay = new Array(members.length).fill(0); // 근무일수 집계
+    const countDayoff = new Array(members.length).fill(0); // 연차 집계
+    const countHalfDayOff = new Array(members.length).fill(0); // 반차 집계
+    const countRemoteWork = new Array(members.length).fill(0); // 재택 집계
+    const countLateWork = new Array(members.length).fill(0); // 지각 집계
+    const TotalLateWork = new Array(members.length).fill(0); // 지각총분 집계
 
     for (let i = 0; i < numberOfDaysInMonth; i++) {
       const rowCells = [];
       const date = i + 1;
-      for (let j = 0; j < names.length; j++) {
+      for (let j = 0; j < members.length; j++) {
         const personIndex = j;
         const dayOfWeekIndex = new Date(year, month - 1, date).getDay();
         const backgroundColor = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? '#E9E9E9' : 'inherit';
@@ -250,7 +380,7 @@ const AttendanceRegist = () => {
         let personData = ['', '', ['', '', '']];
 
         for (const data of attendanceData) {
-          if (data[1] === `${year}-${month}-${date}` && data[0] === names[personIndex]) {
+          if (data[1] === `${year}-${month}-${date}` && data[0] === members[personIndex][0]) {
             personData = data;
             break;
           }
@@ -389,7 +519,7 @@ const AttendanceRegist = () => {
           break;
       }
 
-      for (let j = 0; j < names.length; j++) {
+      for (let j = 0; j < members.length; j++) {
         if (i === 0) {
           rowCells.push(
             <tr
@@ -481,17 +611,17 @@ const AttendanceRegist = () => {
     const tableRows = [];
     const totalRows = [];
 
-    const countWorkingDay = new Array(names.length).fill(0); // 근무일수 집계
-    const countDayoff = new Array(names.length).fill(0); // 연차 집계
-    const countHalfDayOff = new Array(names.length).fill(0); // 반차 집계
-    const countRemoteWork = new Array(names.length).fill(0); // 재택 집계
-    const countLateWork = new Array(names.length).fill(0); // 지각 집계
-    const TotalLateWork = new Array(names.length).fill(0); // 지각총분 집계
+    const countWorkingDay = new Array(membersRD.length).fill(0); // 근무일수 집계
+    const countDayoff = new Array(membersRD.length).fill(0); // 연차 집계
+    const countHalfDayOff = new Array(membersRD.length).fill(0); // 반차 집계
+    const countRemoteWork = new Array(membersRD.length).fill(0); // 재택 집계
+    const countLateWork = new Array(membersRD.length).fill(0); // 지각 집계
+    const TotalLateWork = new Array(membersRD.length).fill(0); // 지각총분 집계
 
     for (let i = 0; i < numberOfDaysInMonth; i++) {
       const rowCells = [];
       const date = i + 1;
-      for (let j = 0; j < namesRD.length; j++) {
+      for (let j = 0; j < membersRD.length; j++) {
         const personIndex = j;
         const dayOfWeekIndex = new Date(year, month - 1, date).getDay();
         const backgroundColor = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? '#E9E9E9' : 'inherit';
@@ -500,7 +630,7 @@ const AttendanceRegist = () => {
         let personData = ['', '', ['', '', '']];
 
         for (const data of attendanceData) {
-          if (data[1] === `${year}-${month}-${date}` && data[0] === namesRD[personIndex]) {
+          if (data[1] === `${year}-${month}-${date}` && data[0] === membersRD[personIndex][0]) {
             personData = data;
             break;
           }
@@ -639,7 +769,7 @@ const AttendanceRegist = () => {
           break;
       }
 
-      for (let j = 0; j < namesRD.length; j++) {
+      for (let j = 0; j < membersRD.length; j++) {
         if (i === 0) {
           rowCells.push(
             <tr
@@ -732,7 +862,7 @@ const AttendanceRegist = () => {
     const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
     const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
     const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
-    const name = names[personIndex];
+    const name = members[personIndex][0];
     setSelectedDateInfo({
       name: name,
       year: year,
@@ -747,7 +877,7 @@ const AttendanceRegist = () => {
     const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
     const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
     const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
-    const name = namesRD[personIndex];
+    const name = membersRD[personIndex][0];
     setSelectedDateInfo({
       name: name,
       year: year,
@@ -781,6 +911,7 @@ const AttendanceRegist = () => {
     setEndTime('');
     setOtherValue('');
   }
+  console.log(rowsData)
 
   return (
     <div className="content">
@@ -828,80 +959,22 @@ const AttendanceRegist = () => {
                 <TabPanel key={monthData.month} className="container_attendance">
                   <div className="Excel" id="table-to-xls">
                     <table className="Explan">
-                      <tbody>
+                      <thead>
                         <tr>
                           <td className="TopS" colSpan={2}>부서</td>
                           <td className="TopS">성명</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={3}>블록체인<br />사업부</td>
-                          <td rowSpan={3}>블록체인<br />1팀</td>
-                          <td>권상원</td>
-                        </tr>
-                        <tr>
-                          <td>김도환</td>
-                        </tr>
-                        <tr>
-                          <td>권준우</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={6}>개발부</td>
-                          <td rowSpan={4}>개발 1팀</td>
-                          <td>진유빈</td>
-                        </tr>
-                        <tr>
-                          <td>장현지</td>
-                        </tr>
-                        <tr>
-                          <td>구민석</td>
-                        </tr>
-                        <tr>
-                          <td>박세준</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={2}>개발 2팀</td>
-                          <td>변도일</td>
-                        </tr>
-                        <tr>
-                          <td>이로운</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={5}>마케팅부</td>
-                          <td rowSpan={2}>디자인팀</td>
-                          <td>김현지</td>
-                        </tr>
-                        <tr>
-                          <td>서주희</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={3}>기획팀</td>
-                          <td>전아름</td>
-                        </tr>
-                        <tr>
-                          <td>함다슬</td>
-                        </tr>
-                        <tr>
-                          <td>전규미</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={5}>관리부</td>
-                          <td rowSpan={3}>관리팀</td>
-                          <td>김효은</td>
-                        </tr>
-                        <tr>
-                          <td>우현지</td>
-                        </tr>
-                        <tr>
-                          <td>염승희</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={2}>지원팀</td>
-                          <td>김태희</td>
-                        </tr>
-                        <tr>
-                          <td>이주범</td>
-                        </tr>
-
+                        </tr> 
+                      </thead> 
+                      <tbody>
+                        {rowsData.map((row, index) => (
+                          <tr key={index}>
+                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[1]}</td>}
+                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[2]}</td>}
+                            {row.deptRowSpan > 0 && row.teamRowSpan > 0 ? 
+                              <td>{row.member[0]}</td> 
+                              : 
+                              <td>{row.member[0]}</td>}
+                          </tr>))}
                       </tbody>
                     </table>
                     <div>
@@ -926,38 +999,22 @@ const AttendanceRegist = () => {
                 <TabPanel key={monthData.month} className="container_attendance">
                   <div className="Excel_RD" id="table-to-xls">
                     <table className="Explan_RD">
-                      <tbody>
+                      <thead>
                         <tr>
                           <td className="TopS" colSpan={2}>부서</td>
                           <td className="TopS">성명</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={3}>알고리즘<br />연구실</td>
-                          <td rowSpan={3}>AI<br />연구팀</td>
-                          <td>심민지</td>
-                        </tr>
-                        <tr>
-                          <td>임지현</td>
-                        </tr>
-                        <tr>
-                          <td>김희진</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={2}>동형분석<br />연구실</td>
-                          <td rowSpan={2}>동형분석<br />연구팀</td>
-                          <td>윤민지</td>
-                        </tr>
-                        <tr>
-                          <td>이채영</td>
-                        </tr>
-                        <tr>
-                          <td rowSpan={2}>블록체인<br />연구실</td>
-                          <td rowSpan={2}>AI<br />개발팀</td>
-                          <td>박소연</td>
-                        </tr>
-                        <tr>
-                          <td>김경현</td>
-                        </tr>
+                        </tr> 
+                      </thead> 
+                      <tbody>
+                        {rowsDataRD.map((row, index) => (
+                          <tr key={index}>
+                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[1]}</td>}
+                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[2]}</td>}
+                            {row.deptRowSpan > 0 && row.teamRowSpan > 0 ? 
+                              <td>{row.member[0]}</td> 
+                              : 
+                              <td>{row.member[0]}</td>}
+                          </tr>))}
                       </tbody>
                     </table>
                     <div>
