@@ -1,0 +1,18 @@
+.UserManage_container {
+  height: 81.7vh;
+  background-color: white;
+  border: 1px solid #DEDEDE;
+  padding: 0 20px;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.UserManage_bottom {
+  position: absolute;
+  bottom: 1%;
+  width: 94%;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-family-Noto-R);
+}

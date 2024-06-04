@@ -15,5 +15,15 @@ const DeleteUserManagement = (user_id) => {
   return api.delete(`/deleteUserManagement/${user_id}`);
 }
 
+//회원 탈퇴 요청
+const EditChainLinker = () => {
+  return api.post(`/editchainlinker`);
+}
 
-export { CheckUserManagement, ApproveUserManagement, DeleteUserManagement };
+
+export {
+  CheckUserManagement,
+  ApproveUserManagement,
+  DeleteUserManagement,
+  EditChainLinker,
+};
