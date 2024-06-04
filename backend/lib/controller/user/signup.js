@@ -1,11 +1,13 @@
-const Models = require("../../models");
-const signupUser = Models.user;
+const Sequelize = require('sequelize'); // 이 부분 추가
 
+const Models = require("../../models");
+const signupUser = Models.userData;
+const bcrypt = require("bcrypt");
 // 회원가입
 const createUser = async (req, res) => {
   try {
     const {
-      userId,
+      userID,
       password,
       username,
       usermail,
@@ -19,27 +21,26 @@ const createUser = async (req, res) => {
       spot,
       attachment,
       Sign,
+      entering,
+      leavedate,
     } = req.body;
 
-    // 사용자가 이미 존재하는경우 확인
     const existingUser = await signupUser.findOne({
       where: {
-        [Sequelize.Op.or]: [{ userId }, { usermail }, { phoneNumber }],
+        [Sequelize.Op.or]: [{ userId: userID }, { usermail }, { phoneNumber }],
       },
     });
 
     if (existingUser) {
       return res
         .status(400)
-        .json({ message: "아이디,이메일,전화번호가 이미 존재 합니다." });
+        .json({ message: "아이디, 이메일, 전화번호가 이미 존재합니다." });
     }
 
-    // 패스워드 암호화
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 새로운 회원 데이터 저장
     const newUser = await signupUser.create({
-      userId,
+      userId: userID,
       password: hashedPassword,
       username,
       usermail,
@@ -53,15 +54,15 @@ const createUser = async (req, res) => {
       spot,
       attachment,
       Sign,
-      status: "pending", // 새로 가입한 사용자의 기본 상태는 '대기'
+      entering,
+      leavedate,
+      status: "pending",
     });
 
-    res
-      .status(201)
-      .json({
-        message: "회원가입이 완료되었으며, 관리자의 승인을 기다리고 있습니다.",
-        user: newUser,
-      });
+    res.status(201).json({
+      message: "회원가입이 완료되었으며, 관리자의 승인을 기다리고 있습니다.",
+      user: newUser,
+    });
   } catch (error) {
     console.error("회원가입 오류:", error);
     res.status(500).json({ message: "회원 가입 서버 오류" });
@@ -87,15 +88,15 @@ const getAllUsers = async (req, res) => {
 // 회원 승인
 const approveUser = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const user = await signupUser.findOne({ where: { userId } });
+    const { userID } = req.params;
+    const user = await signupUser.findOne({ where: { userID } });
 
     if (!user) {
       return res.status(404).json({ message: "회원 정보가 없습니다." });
     }
 
-    user.status = "approved";
-    await user.save();
+    signupUser.status = "approved";
+    await signupUser.save();
 
     res.status(200).json({ message: "승인 처리가 완료되었습니다.", user });
   } catch (error) {
@@ -107,14 +108,14 @@ const approveUser = async (req, res) => {
 // 회원 삭제
 const deleteUser = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const user = await signupUser.findOne({ where: { userId } });
+    const { userID } = req.params;
+    const user = await signupUser.findOne({ where: { userID } });
 
     if (!user) {
       return res.status(404).json({ message: "회원 정보가 없습니다." });
     }
 
-    await user.destroy();
+    await signupUser.destroy();
 
     res.status(200).json({ message: "회원 삭제가 완료되었습니다." });
   } catch (error) {
