@@ -66,5 +66,6 @@
   },
   "devDependencies": {
     "@types/react-datepicker": "^6.2.0"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }
