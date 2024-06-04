@@ -17,7 +17,7 @@ const DeleteUserManagement = (user_id) => {
 
 //회원 탈퇴 요청
 const EditChainLinker = () => {
-  return api.delete(`/editchainlinker`);
+  return api.post(`/editchainlinker`);
 }
 
 
