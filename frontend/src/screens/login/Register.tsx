@@ -217,7 +217,7 @@ const Register = () => {
     }, []);
 
     const handleSubmit = () => {
-        if (!id || !password || !confirmPassword || !question1 || !question2 || !name || !mail || !phoneNumber || !Agree) {
+        if (!id || !password || !confirmPassword || !question1 || !question2 || !name || !mail || !phoneNumber || Agree) {
             console.error("필수 항목을 모두 작성해주세요.");
             return;
         }
