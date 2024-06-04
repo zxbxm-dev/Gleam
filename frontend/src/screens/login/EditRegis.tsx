@@ -328,12 +328,15 @@ const EditRegis = () => {
                             {phoneNumberError && <div className="ErrorMessage">{phoneNumberError}</div>}
                         </div>
                     </div>
-
-                </div>
-                <div className="RightFlex">
                     <div className="MinimBox">
                         <span>메일 입력</span>
                         <div className="localinput">로컬메일</div>
+                    </div>
+                </div>
+                <div className="RightFlex">
+                <div className="MinimBox">
+                        <span>입사일자</span>
+                        <div className="localinput">입사일자</div>
                     </div>
                     <div className="UploadBox">
                         <span>증명사진 업로드</span>

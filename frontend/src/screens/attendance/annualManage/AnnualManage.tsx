@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
@@ -11,8 +11,12 @@ type Member = [string, number, number, number, string[], string, string, string,
 type MemberRD = [string, number, number, number, string[], string, string, string, string];
 
 const AnnualManage = () => {
+  const [editMode, setEditMode] = useState(false);
+  const today = new Date().toISOString().split('T')[0];
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedScreen, setSelectedScreen] = useState('R&D');
+  const [members, setMembers] = useState<Member[]>([]);
+  const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
 
@@ -24,6 +28,34 @@ const AnnualManage = () => {
     setSelectedYear(parseInt(event.target.value));
   };
 
+  const handleAvailableChange = (member: any, index: any, event: any) => {
+    const newMembers = [...member];
+    newMembers[index][1] = event.target.value;
+    if (selectedScreen === 'R&D') {
+      setMembers(newMembers)
+    } else {
+      setMembersRD(newMembers)
+    }
+  };
+
+  const isRetiredBeforeToday = (retirementDate: any) => {
+    const formattedRetirementDate = retirementDate.replace(/-/g, '');
+    const formattedToday = today.replace(/-/g, '');
+  
+    return formattedRetirementDate !== '' && formattedRetirementDate < formattedToday;
+  };
+
+  const handleRetirementChange = (member: any, index: any, event: any) => {
+    const newMembers = [...member];
+    newMembers[index][6] = event.target.value;
+    
+    if (selectedScreen === 'R&D') {
+      setMembers(newMembers)
+    } else {
+      setMembersRD(newMembers)
+    }
+  };
+
   const exportToPDF = () => {
     const element = document.getElementById('table-to-xls');
     if (element) {
@@ -31,8 +63,8 @@ const AnnualManage = () => {
       element.style.width = element.scrollWidth + 'px';
       html2canvas(element).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgWidth = 210; // A4 크기에서 이미지 너비
+        const pdf = new jsPDF('l', 'mm', 'a4');
+        const imgWidth = 297; // A4 크기에서 이미지 너비
         const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
         pdf.save('연차관리.pdf');
@@ -60,102 +92,138 @@ const AnnualManage = () => {
     }
   });
 
-  const members: Member[] = [
-    ['권상원', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '블록체인 사업부', '블록체인 1팀'],
-    ['진유빈', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
-    ['장현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
-    ['구민석', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 1팀'],
-    ['변도일', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 2팀'],
-    ['이로운', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '개발부', '개발 2팀'],
-    ['김현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '디자인팀'],
-    ['서주희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '디자인팀'],
-    ['전아름', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
-    ['함다슬', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
-    ['전규미', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '마케팅부', '기획팀'],
-    ['김효은', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
-    ['우현지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
-    ['염승희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '관리팀'],
-    ['김태희', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
-    ['이주범', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '관리부', '지원팀'],
-  ]
+  const initialMembers: Member[] = useMemo(() => [
+    ['권상원', 0, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '', '블록체인 사업부', '블록체인 1팀'],
+    ['진유빈', 0, 1, 14.0, ['04.20A'], '2099-01-01', '', '개발부', '개발 1팀'],
+    ['장현지', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
+    ['구민석', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
+    ['박세준', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
+    ['변도일', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 2팀'],
+    ['이로운', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 2팀'],
+    ['김현지', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '디자인팀'],
+    ['서주희', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '디자인팀'],
+    ['전아름', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
+    ['함다슬', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
+    ['전규미', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
+    ['김효은', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
+    ['우현지', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
+    ['염승희', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
+    ['김태희', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '지원팀'],
+    ['이주범', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '지원팀'],
+  ], []);
 
-  const membersRD: MemberRD[] = [
-    ['심민지', 15, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
-    ['임지현', 15, 1, 14.0, ['04.20A'], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
-    ['김희진', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '알고리즘 연구실', 'AI 연구팀'],
-    ['윤민지', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
-    ['이채영', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '동형분석 연구실', '동형분석 연구팀'],
-    ['박소연', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
-    ['김경현', 15, 0, 15.0, [''], '2099-01-01', '2099-01-01', '블록체인 연구실', 'AI 개발팀'],
-  ]
+  const initialMembersRD: MemberRD[] = useMemo(() => [
+    ['심민지', 0, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
+    ['임지현', 0, 1, 14.0, ['04.20A'], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
+    ['김희진', 0, 0, 15.0, [''], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
+    ['윤민지', 0, 0, 15.0, [''], '2099-01-01', '', '동형분석 연구실', '동형분석 연구팀'],
+    ['이채영', 0, 0, 15.0, [''], '2099-01-01', '', '동형분석 연구실', '동형분석 연구팀'],
+    ['박소연', 0, 0, 15.0, [''], '2099-01-01', '', '블록체인 연구실', 'AI 개발팀'],
+    ['김경현', 0, 0, 15.0, [''], '2099-01-01', '', '블록체인 연구실', 'AI 개발팀'],
+  ], []);
 
   useEffect(() => {
-    const groupedData = membersRD.reduce((acc, member) => {
-      const key = `${member[7]}-${member[8]}`; // dept-team을 키로 사용
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(member);
-      return acc;
-    }, {} as Record<string, MemberRD[]>);
+    const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
 
-    const newRowsData = [];
-    let no = 1;
+    const sortedMembers = [...initialMembers].sort((a, b) => {
+      const deptAIndex = departmentOrder.indexOf(a[7]);
+      const deptBIndex = departmentOrder.indexOf(b[7]);
 
-    for (const key in groupedData) {
-      const members = groupedData[key];
-      newRowsData.push({
-        no: no++,
-        dept: members[0][7],
-        team: members[0][8],
-        rowSpan: members.length,
-      });
-      for (let i = 1; i < members.length; i++) {
-        newRowsData.push({
-          no: no++,
-          dept: "",
-          team: "",
-          rowSpan: 0,
-        });
-      }
-    }
+      if (deptAIndex < deptBIndex) return -1;
+      if (deptAIndex > deptBIndex) return 1;
 
-    setRowsDataRD(newRowsData);
-  }, [membersRD]);
+      const nameA = a[8];
+      const nameB = b[8];
+      return nameA.localeCompare(nameB);
+    });
+
+    setMembers(sortedMembers);
+  }, [initialMembers]);
 
   useEffect(() => {
     const groupedData = members.reduce((acc, member) => {
-      const key = `${member[7]}-${member[8]}`; // dept-team을 키로 사용
-      if (!acc[key]) {
-        acc[key] = [];
+      const dept = member[7];
+      const team = member[8];
+      if (!acc[dept]) {
+        acc[dept] = { rowSpan: 0, teams: {} };
       }
-      acc[key].push(member);
+      acc[dept].rowSpan += 1;
+      if (!acc[dept].teams[team]) {
+        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+      }
+      acc[dept].teams[team].rowSpan += 1;
+      acc[dept].teams[team].members.push(member);
       return acc;
-    }, {} as Record<string, MemberRD[]>);
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
 
-    const newRowsData = [];
-    let no = 1;
-
-    for (const key in groupedData) {
-      const members = groupedData[key];
-      newRowsData.push({
-        no: no++,
-        dept: members[0][7],
-        team: members[0][8],
-        rowSpan: members.length,
-      });
-      for (let i = 1; i < members.length; i++) {
-        newRowsData.push({
-          no: no++,
-          dept: "",
-          team: "",
-          rowSpan: 0,
+    const rows: any[] = [];
+    Object.keys(groupedData).forEach(dept => {
+      const deptData = groupedData[dept];
+      Object.keys(deptData.teams).forEach((team, teamIndex) => {
+        const teamData = deptData.teams[team];
+        teamData.members.forEach((member, memberIndex) => {
+          rows.push({
+            member,
+            deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
+            teamRowSpan: memberIndex === 0 ? teamData.rowSpan : 0
+          });
         });
-      }
-    }
-
-    setRowsData(newRowsData);
+      });
+    });
+    setRowsData(rows);
   }, [members]);
+
+  useEffect(() => {
+    const departmentOrder = ['알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
+
+    const sortedMembers = [...initialMembersRD].sort((a, b) => {
+      const deptAIndex = departmentOrder.indexOf(a[7]);
+      const deptBIndex = departmentOrder.indexOf(b[7]);
+
+      if (deptAIndex < deptBIndex) return -1;
+      if (deptAIndex > deptBIndex) return 1;
+
+      const nameA = a[8];
+      const nameB = b[8];
+      return nameA.localeCompare(nameB);
+    });
+
+    setMembersRD(sortedMembers);
+  }, [initialMembers]);
+
+  useEffect(() => {
+    const groupedData = membersRD.reduce((acc, member) => {
+      const dept = member[7];
+      const team = member[8];
+      if (!acc[dept]) {
+        acc[dept] = { rowSpan: 0, teams: {} };
+      }
+      acc[dept].rowSpan += 1;
+      if (!acc[dept].teams[team]) {
+        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+      }
+      acc[dept].teams[team].rowSpan += 1;
+      acc[dept].teams[team].members.push(member);
+      return acc;
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
+
+    const rows: any[] = [];
+    Object.keys(groupedData).forEach(dept => {
+      const deptData = groupedData[dept];
+      Object.keys(deptData.teams).forEach((team, teamIndex) => {
+        const teamData = deptData.teams[team];
+        teamData.members.forEach((member, memberIndex) => {
+          rows.push({
+            member,
+            deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
+            teamRowSpan: memberIndex === 0 ? teamData.rowSpan : 0
+          });
+        });
+      });
+    });
+    setRowsDataRD(rows);
+  }, [membersRD]);
+  
 
 
   const CountDivs = () => {
@@ -211,41 +279,6 @@ const AnnualManage = () => {
     </tr>
   );
 
-  const TableRows = () => (
-    <>
-      {rowsData.map((row, index) => (
-        <React.Fragment key={index}>
-          <tr>
-            <td>{row.no}</td>
-            {row.rowSpan > 0 && (
-              <>
-                <td rowSpan={row.rowSpan}>{row.dept}</td>
-                <td rowSpan={row.rowSpan}>{row.team}</td>
-              </>
-            )}
-          </tr>
-        </React.Fragment>
-      ))}
-    </>
-  );
-
-  const TableRowsRD = () => (
-    <>
-      {rowsDataRD.map((row, index) => (
-        <React.Fragment key={index}>
-          <tr>
-            <td>{row.no}</td>
-            {row.rowSpan > 0 && (
-              <>
-                <td rowSpan={row.rowSpan}>{row.dept}</td>
-                <td rowSpan={row.rowSpan}>{row.team}</td>
-              </>
-            )}
-          </tr>
-        </React.Fragment>
-      ))}
-    </>
-  );
 
   const generateDivs = (member: any) => {
     const nameRows = [];
@@ -260,13 +293,14 @@ const AnnualManage = () => {
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
       for (let j = 0; j < member.length; j++) {
+        const isRetired = isRetiredBeforeToday(members[j][6]);
 
         rowCells.push(
           <tr
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_name_annual'> {member[j][0]} </td>
+            <td className='conta_name_annual' style={{ textDecoration: isRetired ? 'line-through' : 'none' }}> {member[j][0]} </td>
           </tr>
         );
       }
@@ -286,6 +320,8 @@ const AnnualManage = () => {
               <input 
                 type="text"
                 value={member[j][1]}
+                onChange={(event) => handleAvailableChange(member, j, event)}
+                disabled={!editMode}
               /> 
             </td>
           </tr>
@@ -319,7 +355,7 @@ const AnnualManage = () => {
             className="conta_three_last_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_annual'> {member[j][1].toFixed(1)} </td>
+            <td className='conta_annual'> {member[j][3]} </td>
           </tr>
         );
       }
@@ -373,7 +409,14 @@ const AnnualManage = () => {
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_date_annual'> {member[j][6]} </td>
+            <td className='conta_date_annual'> 
+              <input 
+                type="text"
+                value={member[j][6]}
+                onChange={(event) => handleRetirementChange(member, j, event)}
+                disabled={!editMode}
+              /> 
+            </td>
           </tr>
         );
       }
@@ -395,6 +438,7 @@ const AnnualManage = () => {
     );
   };
 
+  console.log(rowsData)
   return (
     <div className="content">
       <div className="content_header">
@@ -413,6 +457,21 @@ const AnnualManage = () => {
           <option value={2024}>2024</option>
           <option value={2023}>2023</option>
         </select>
+        {editMode ? 
+          <button
+          className='head_company_button'
+          onClick={() => setEditMode(!editMode)}
+          >
+            등록
+          </button>
+          :
+          <button
+          className='oper_edit_button'
+          onClick={() => setEditMode(!editMode)}
+          >
+            수정
+          </button>
+        }
         <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
         {selectedScreen === 'R&D' ? (
           <button className='rnd_company_button' onClick={handleScreenChange}>
@@ -436,7 +495,12 @@ const AnnualManage = () => {
                       <TableHeader />  
                     </thead> 
                     <tbody>
-                      <TableRowsRD />
+                      {rowsDataRD.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index+1}</td>
+                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[7]}</td>}
+                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[8]}</td>}
+                          </tr>))}
                     </tbody>
                   </div>
                 </table>
@@ -455,7 +519,12 @@ const AnnualManage = () => {
                         <TableHeader />  
                       </thead> 
                       <tbody>
-                        <TableRows />
+                        {rowsData.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index+1}</td>
+                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[7]}</td>}
+                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[8]}</td>}
+                          </tr>))}
                       </tbody>
                     </div>
                   </tbody>

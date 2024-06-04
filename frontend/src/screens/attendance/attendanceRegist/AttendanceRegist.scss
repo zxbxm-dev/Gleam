@@ -141,6 +141,10 @@
     height: 90%;
     box-sizing: border-box;
     text-align: center;
+
+    &:focus {
+      outline: none;
+    }
   }
 }
 
@@ -161,6 +165,17 @@
   display: grid;
   justify-content: center;
   align-items: center;
+
+  input {
+    width: 100%;
+    height: 90%;
+    box-sizing: border-box;
+    text-align: center;
+
+    &:focus {
+      outline: none;
+    }
+  }
 }
 
 
@@ -258,7 +273,7 @@
 
   .Explan {
     font-family: var(--font-family-Noto-M);
-    width: 250px;
+    width: 300px;
     border: 2px solid #858585;
     overflow-x: auto;
     position: sticky;
@@ -288,7 +303,7 @@
 
   .Explan_RD {
     font-family: var(--font-family-Noto-M);
-    width: 250px;
+    width: 300px;
     height: 686px;
     border: 2px solid #858585;
     overflow-x: auto;
@@ -300,7 +315,7 @@
     tr {
 
       .TopS {
-        height: 35px;
+        height: 40px;
       }
 
       td {
@@ -445,7 +460,7 @@
   top: 60px;
   right: 18px;
   gap: 7px;
-  z-index: 999;
+  z-index: 9;
 
   .attend_download_button {
     width: 92px;

@@ -6,6 +6,15 @@ import {Link} from "react-router-dom";
 import CustomModal from '../../components/modal/CustomModal';
 
 const Register = () => {
+
+    const getCurrentDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0');
+        return `${year}${month}${day}`;
+    };
+
     const [selectedOptions, setSelectedOptions] = useState({
         company: '',
         department: '',
@@ -30,6 +39,8 @@ const Register = () => {
     const [name, setName] = useState("");
     const [mail, setMail] = useState("");
     const [Agree, setAgree] = useState(true);
+ const [enterDate, setEnterDate] = useState(getCurrentDate());
+    const [enterDateError, setEnterDateError] = useState("");
 
     const handleFooter1Click = () => {
         setRegistModalOpen(false);
@@ -50,6 +61,10 @@ const Register = () => {
                 setPhoneNumber(value);
                 setPhoneNumberError(!validatePhoneNumber(value) ? "유효한 휴대폰 번호를 입력하세요." : "");
                 break;
+                case 'enterDate':
+                    setEnterDate(value);
+                    setEnterDateError(!validateEnterDate(value) ? "유효한 날짜 형식(예: 20990101)이어야 합니다." : "");
+                    break;
             default:
                 break;
         }
@@ -58,6 +73,11 @@ const Register = () => {
     const validatePhoneNumber = (phone: any) => {
         const phoneRegex = /^010\d{8}$/;
         return phoneRegex.test(phone);
+    };
+
+    const validateEnterDate = (date:any) => {
+        const dateRegex = /^20\d{6}$/;
+        return dateRegex.test(date);
     };
 
     const handleOptionClick = (optionName: any, optionValue: any) => {
@@ -180,6 +200,11 @@ const Register = () => {
     const handleNameChange = (event: any) => {
         setName(event.target.value);
     };
+
+    const handleEnterChange = (event: any) => {
+        setEnterDate(event.target.value);
+    };
+
     const handleMailChange = (event: any) => {
         setMail(event.target.value + "@four-chains.com");
     };
@@ -210,7 +235,9 @@ const Register = () => {
             position: selectedOptions.position,
             phoneNumber: phoneNumber,
             attachment: null,
-            Sign: null
+            Sign: null,
+            leavedate: null,
+            entering : enterDate
         };
 
         // API 호출
@@ -338,7 +365,33 @@ const Register = () => {
                     </div>
                     <div className="MinimBox">
                         <span>메일 입력</span>
-                        <input type="text" className="ShortTextInput" onChange={handleMailChange} placeholder="두레이 메일주소 입력" /> @four-chains.com
+                        <input type="text" className="ShortTextInput" onChange={handleMailChange} placeholder="두레이 메일주소 입력" />&nbsp;@&nbsp;four-chains.com
+                    </div>
+                <div className="MiniphoneBox">
+                        <div className="Phone">
+                            <span>입사일자</span>
+                            {enterDateError ?
+                                <input
+                                    type="text"
+                                    className={`TextInput ${enterDateError && "Error"}`}
+                                    placeholder="ex) 20990101"
+                                    value={enterDate}
+                                    onChange={(e) => handleInputChange(e, 'enterDate')}
+                                    style={{ border: "1px solid #D56D6D" }}
+                                />
+                                :
+                                <input
+                                    type="text"
+                                    className={`TextInput ${enterDateError && "Error"}`}
+                                    placeholder="ex) 20990101"
+                                    value={enterDate}
+                                    onChange={(e) => handleInputChange(e, 'enterDate')}
+                                />
+                            }
+                        </div>
+                        <div className="ErrorMessageBox">
+                        {enterDateError && <div className="ErrorMessage">{enterDateError}</div>}
+                        </div>
                     </div>
                 </div>
                 <div className="RightFlex">

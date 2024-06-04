@@ -122,7 +122,7 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                         <div className="nodeicon6">장현지 | 사원</div>
                         <div className="nodeicon6">구민석 | 사원</div>
-                        <div className="nodeicon6">OOO | 사원</div>
+                        <div className="nodeicon6">박세준 | 사원</div>
                         <div className="nodeicon6">OOO | 사원</div>
                       </div>
                     </TreeNode>
