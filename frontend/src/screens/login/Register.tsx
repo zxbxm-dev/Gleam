@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Register.scss";
 import { Login_Logo, ArrowDown, ArrowUp } from "../../assets/images/index";
 import { RegisterServices } from "../../services/login/RegisterServices";
@@ -6,15 +6,6 @@ import {Link} from "react-router-dom";
 import CustomModal from '../../components/modal/CustomModal';
 
 const Register = () => {
-
-    const getCurrentDate = () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = (today.getMonth() + 1).toString().padStart(2, '0');
-        const day = today.getDate().toString().padStart(2, '0');
-        return `${year}${month}${day}`;
-    };
-
     const [selectedOptions, setSelectedOptions] = useState({
         company: '',
         department: '',
@@ -39,9 +30,9 @@ const Register = () => {
     const [name, setName] = useState("");
     const [mail, setMail] = useState("");
     const [Agree, setAgree] = useState(true);
- const [enterDate, setEnterDate] = useState(getCurrentDate());
+    const [enterDate, setEnterDate] = useState("");
     const [enterDateError, setEnterDateError] = useState("");
-
+    
     const handleFooter1Click = () => {
         setRegistModalOpen(false);
     };
@@ -201,9 +192,9 @@ const Register = () => {
         setName(event.target.value);
     };
 
-    const handleEnterChange = (event: any) => {
-        setEnterDate(event.target.value);
-    };
+    // const handleEnterChange = (event: any) => {
+    //     setEnterDate(event.target.value);
+    // };
 
     const handleMailChange = (event: any) => {
         setMail(event.target.value + "@four-chains.com");
@@ -212,15 +203,25 @@ const Register = () => {
     const handleAgree = (event: any) => {
         setAgree(!Agree);
     };
+    
+    useEffect(() => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        const todayString = `${year}${month}${day}`;
+        setEnterDate(todayString);
+    }, []);
 
     const handleSubmit = () => {
-
         if (!id || !password || !confirmPassword || !question1 || !question2 || !name || !mail || !phoneNumber ||
             !selectedOptions.company || !selectedOptions.spot || !selectedOptions.position || !Agree) {
             console.error("필수 항목을 모두 작성해주세요.");
             return;
         }
-
+    
+        const formattedEnterDate = `${enterDate.substring(0, 4)}-${enterDate.substring(4, 6)}-${enterDate.substring(6, 8)}`;
+    
         const formData = {
             userID: id,
             password: password,
@@ -237,9 +238,9 @@ const Register = () => {
             attachment: null,
             Sign: null,
             leavedate: null,
-            entering : enterDate
+            entering : formattedEnterDate
         };
-
+    
         // API 호출
         RegisterServices(formData)
             .then(response => {
@@ -251,6 +252,7 @@ const Register = () => {
                 setRegistModalOpen(true);
             });
     };
+    
 
     return (
         <div className="Register">
