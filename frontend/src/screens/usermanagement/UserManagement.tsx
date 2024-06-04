@@ -10,7 +10,7 @@ import CustomModal from "../../components/modal/CustomModal";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 
 import { useQuery } from "react-query";
-import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement } from "../../services/usermanagement/UserManagementServices";
+import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement, EditChainLinker } from "../../services/usermanagement/UserManagementServices";
 
 
 const UserManagement = () => {
@@ -85,6 +85,20 @@ const UserManagement = () => {
 
     setDelModalOpen(false);
   };
+
+  const handleEdit = () => {
+    // EditChainLinker(username)
+    EditChainLinker()
+      .then((response) => {
+        console.log("회원 탈퇴 완료", response);
+      })
+      .catch((error) => {
+        console.error("회원 탈퇴 실패", error);
+      });
+  
+    setDelModalOpen(false);
+  };
+  
 
   return (
     <div className="content">
@@ -191,7 +205,13 @@ const UserManagement = () => {
                             <td>{usermanage.spot}</td>
                             <td>{usermanage.date}</td>
                             <td>
-                              <button className="dels_button" onClick={() => {setDelModalOpen(true); setClickIdx(Number(usermanage.id))}}>탈퇴</button>
+                            <button className="dels_button"
+                            onClick={() =>
+                            {setDelModalOpen(true);
+                            setClickIdx(Number(usermanage.id));
+                            handleEdit();
+                            }}>
+                              탈퇴</button>
                             </td>
                           </tr>
                         ))}
