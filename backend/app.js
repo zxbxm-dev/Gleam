@@ -6,6 +6,7 @@ const logger = require("morgan");
 const secure = require("express-force-https");
 
 const app = express();
+
 // 리다이렉트 라이브러리
 app.use(secure);
 
@@ -13,7 +14,7 @@ app.use(secure);
 const { sequelize } = require("./lib/models");
 
 sequelize
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => {
     console.log("데이터 베이스 연결 성공");
   })

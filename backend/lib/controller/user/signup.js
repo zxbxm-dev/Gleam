@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize'); // 이 부분 추가
+const Sequelize = require('sequelize');
 
 const Models = require("../../models");
 const signupUser = Models.userData;
