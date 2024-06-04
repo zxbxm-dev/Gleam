@@ -15,12 +15,12 @@ const Login = () => {
   let navigate = useNavigate();
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
 
-  const [username, setUsername] = useState('');
+  const [userID, setuserID] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await LoginServices(username, password);
+      const response = await LoginServices(userID, password);
 
       navigate('/announcement');
     } catch (error) {
@@ -41,8 +41,8 @@ const Login = () => {
       <Input
         placeholder='아이디를 입력해 주세요. '
         size='lg'
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        value={userID}
+        onChange={(e) => setuserID(e.target.value)}
         onKeyPress={handleKeyPress}
         className='InputClass'
         focusBorderColor='#746E58.400'
