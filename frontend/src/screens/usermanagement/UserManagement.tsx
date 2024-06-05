@@ -77,10 +77,9 @@ const UserManagement = () => {
     setDelModalOpen(false);
   };
 
-
-  const handleEdit = (username: string) => {
-    console.log("탈퇴 사용자:", username);
-    EditChainLinker(username)
+  const handleEdit = (userID: string) => {
+    console.log("탈퇴 사용자:", userID);
+    EditChainLinker(userID)
       .then((response) => {
         console.log("회원 탈퇴 완료", response);
       })
@@ -181,7 +180,7 @@ const UserManagement = () => {
                         <th>회사구분</th>
                         <th>부서</th>
                         <th>직위/직책</th>
-                        <th>가입날짜</th>
+                        <th>입사일</th>
                         <th>탈퇴</th>
                       </tr>
                     </thead>
@@ -194,14 +193,14 @@ const UserManagement = () => {
                             <td>{usermanage.company}</td>
                             <td>{usermanage.department}</td>
                             <td>{usermanage.position}</td>
-                            <td>{usermanage.createdAt}</td>
+                            <td>{usermanage.entering}</td>
                             <td>
                               <button
                                 className="dels_button"
                                 onClick={() => {
                                   setDelModalOpen(true);
                                   setClickIdx(usermanage.userId);
-                                  handleEdit(usermanage.username);
+                                  handleEdit(usermanage.userId);
                                 }}
                               >
                                 탈퇴
