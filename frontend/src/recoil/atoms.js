@@ -11,10 +11,28 @@ export const isHrSidebarVisibleState = atom({
   default: false, // 기본값: HR사이드바가 안 보이는 상태
 });
 
+const getUserStateFromLocalStorage = () => {
+  const userStateString = localStorage.getItem('userState');
+  return userStateString ? JSON.parse(userStateString) : {
+    id: '',
+    username: '',
+    userId: '',
+    usermail: '',
+    phoneNumber: '',
+    company: '',
+    department: '',
+    team: '',
+    position: '',
+    spot: '',
+    entering: ''
+  };
+};
+
 export const userState = atom({
   key: 'userState',
-  default: {id: '', pw: '', name: '', department: '', team: '', position: '', company: ''},
+  default: getUserStateFromLocalStorage(),
 });
+
 
 export const isSelectMemberState = atom({
   key: 'isSelectMember',

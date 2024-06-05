@@ -135,7 +135,7 @@ const AttendanceRegist = () => {
     });
 
     setMembersRD(sortedMembers);
-  }, [initialMembers]);
+  }, [initialMembersRD]);
 
   useEffect(() => {
     const groupedData = membersRD.reduce((acc, member) => {
@@ -235,13 +235,12 @@ const AttendanceRegist = () => {
   });
 
   const currentMonthIndex = new Date().getMonth(); // 현재 월 인덱스
-  
   // 시작 월과 끝 월 계산
   const endMonthIndex = Math.min(currentMonthIndex + 1, 11); // 현재 월에서 1개월 후
-  
+  const startMonthIndex = Math.max(currentMonthIndex - 1, 1);
   // 시작 월부터 끝 월 정보
   const selectedMonths = [];
-  for (let monthIndex = currentMonthIndex; monthIndex <= endMonthIndex; monthIndex++) {
+  for (let monthIndex = startMonthIndex; monthIndex <= endMonthIndex; monthIndex++) {
     selectedMonths.push(months[monthIndex]);
   }
   
@@ -250,7 +249,7 @@ const AttendanceRegist = () => {
   const yearData = selectedMonths.map(month => {
     const currentYear = selectedYear;
     const monthIndex = months.findIndex(item => item === month);
-    
+  
   // 월별 날짜 계산
   const firstDayOfMonth = new Date(currentYear, monthIndex, 1);
   const lastDayOfMonth = new Date(currentYear, monthIndex + 1, 0);

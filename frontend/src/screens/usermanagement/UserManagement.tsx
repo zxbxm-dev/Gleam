@@ -1,5 +1,5 @@
 import "./UserManagement.scss";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
@@ -9,36 +9,19 @@ import Pagination from "react-js-pagination";
 import CustomModal from "../../components/modal/CustomModal";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 
-import { useQuery } from "react-query";
+import { useQueryClient, useQuery } from "react-query";
 import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement, EditChainLinker } from "../../services/usermanagement/UserManagementServices";
-
 
 const UserManagement = () => {
   const [page, setPage] = useState<number>(1); 
-  const [usermanages, setUserManages] = useState<any[]>([]);
+  const queryClient = useQueryClient();
+  const [pendingusermanages, setPendingUserManages] = useState<any[]>([]);
+  const [approvedusermanages, setApprovedUserManages] = useState<any[]>([]);
   const [isSignModalOpen, setSignModalOpen] = useState(false);
   const [isDelModalOpen, setDelModalOpen] = useState(false);
   const postPerPage: number = 10;
   const [activeTab, setActiveTab] = useState(0);
-  const [clickIdx, setClickIdx] = useState<number>(0);
-
-  useEffect(() => {
-    const initialUserManage = [
-      { name: '서주희', company: "본사", dept: "마케팅부 디자인팀", spot: "사원/사원", date: "2024-05-01" },
-      { name: '함다슬', company: "본사", dept: "마케팅부 기획팀", spot: "사원/사원", date: "2024-05-01"  },
-      { name: '우현지', company: "본사", dept: "관리부 관리팀", spot: "사원/사원", date: "2024-05-01"  },
-      { name: '장현지', company: "본사", dept: "개발부 개발1팀", spot: "사원/사원", date: "2024-05-01"  },
-      { name: '전아름', company: "본사", dept: "마케팅부 기획팀", spot: "책임/팀장", date: "2024-05-01"  },
-      { name: '구민석', company: "본사", dept: "개발부 개발1팀", spot: "사원/사원", date: "2024-05-01"  },
-      { name: '김도환', company: "본사", dept: "블록체인 사업부 블록체인 1팀", spot: "사원/사원", date: "2024-05-01"  },
-      { name: '임지현', company: "R&D 센터", dept: "알고리즘 연구실 AI 연구팀", spot: "사원/연구원", date: "2024-05-01"  },
-      { name: '박소연', company: "R&D 센터", dept: "블록체인 연구실 AI 개발팀", spot: "사원/연구원", date: "2024-05-01"  },
-      { name: '김희진', company: "R&D 센터", dept: "알고리즘 연구실 AI 연구팀", spot: "사원/연구원", date: "2024-05-01"  },
-      { name: '진유빈', company: "본사", dept: "개발부 개발1팀", spot: "사원/부서장", date: "2024-05-01"  },
-      { name: '김태희', company: "본사", dept: "관리부 지원팀", spot: "사원/팀장", date: "2024-05-01"  },
-    ];
-    setUserManages(initialUserManage);
-  }, []);
+  const [clickIdx, setClickIdx] = useState<string>('');
 
   // 회원관리 조회
   const fetchUserManage = async () => {
@@ -51,7 +34,12 @@ const UserManagement = () => {
   };
 
   useQuery("usermanagement", fetchUserManage, {
-    onSuccess: (data) => setUserManages(data),
+    onSuccess: (data) => {
+      const pendingUsers = data.users.filter((user: any) => user.status === "pending");
+      const ApprovedUsers = data.users.filter((user: any) => user.status === "approved");
+      setPendingUserManages(pendingUsers);
+      setApprovedUserManages(ApprovedUsers);
+    },
     onError: (error) => {
       console.log(error)
     }
@@ -62,9 +50,11 @@ const UserManagement = () => {
     setPage(page);
   }
 
-  const handleSign = (index: number) => {
-    ApproveUserManagement(index)
+  const handleSign = (userId: string) => {
+    console.log(userId)
+    ApproveUserManagement(userId)
     .then((response) => {
+      queryClient.invalidateQueries("usermanagement");
       console.log("회원관리 승인이 완료되었습니다.", response);
     })
     .catch((error) => {
@@ -74,9 +64,10 @@ const UserManagement = () => {
     setSignModalOpen(false);
   }
 
-  const handleDelete = (index: number) => {
-    DeleteUserManagement(index)
+  const handleDelete = (userId: string) => {
+    DeleteUserManagement(userId)
     .then((response) => {
+      queryClient.invalidateQueries("usermanagement");
       console.log("회원관리 삭제가 완료되었습니다.", response);
     })
     .catch((error) => {
@@ -98,7 +89,6 @@ const UserManagement = () => {
   
     setDelModalOpen(false);
   };
-  
 
   return (
     <div className="content">
@@ -138,18 +128,18 @@ const UserManagement = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {usermanages
+                      {pendingusermanages
                         .slice((page - 1) * postPerPage, page * postPerPage)
                         .map((usermanage) => (
-                          <tr key={usermanage.id} className="board_content">
-                            <td>{usermanage.name}</td>
+                          <tr key={usermanage.userId} className="board_content">
+                            <td>{usermanage.username}</td>
                             <td>{usermanage.company}</td>
-                            <td>{usermanage.dept}</td>
-                            <td>{usermanage.spot}</td>
-                            <td>{usermanage.date}</td>
+                            <td>{usermanage.department}</td>
+                            <td>{usermanage.position}</td>
+                            <td>{usermanage.createdAt}</td>
                             <td>
-                              <button className="edits_button" onClick={() => {setSignModalOpen(true); setClickIdx(Number(usermanage.id))}}>승인</button>
-                              <button className="dels_button" onClick={() => {setDelModalOpen(true); setClickIdx(Number(usermanage.id))}}>삭제</button>
+                              <button className="edits_button" onClick={() => {setSignModalOpen(true); setClickIdx(usermanage.userId)}}>승인</button>
+                              <button className="dels_button" onClick={() => {setDelModalOpen(true); setClickIdx(usermanage.userId)}}>삭제</button>
                             </td>
                           </tr>
                         ))}
@@ -159,8 +149,8 @@ const UserManagement = () => {
                     <Pagination
                       activePage={page}
                       itemsCountPerPage={postPerPage}
-                      totalItemsCount={usermanages.length}
-                      pageRangeDisplayed={Math.ceil(usermanages.length / postPerPage)}
+                      totalItemsCount={pendingusermanages.length}
+                      pageRangeDisplayed={Math.ceil(pendingusermanages.length / postPerPage)}
                       prevPageText={<LeftIcon />}
                       nextPageText={<RightIcon />}
                       firstPageText={<FirstLeftIcon />}
@@ -195,20 +185,20 @@ const UserManagement = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {usermanages
+                      {approvedusermanages
                         .slice((page - 1) * postPerPage, page * postPerPage)
                         .map((usermanage) => (
-                          <tr key={usermanage.id} className="board_content">
-                            <td>{usermanage.name}</td>
+                          <tr key={usermanage.userId} className="board_content">
+                            <td>{usermanage.username}</td>
                             <td>{usermanage.company}</td>
-                            <td>{usermanage.dept}</td>
-                            <td>{usermanage.spot}</td>
-                            <td>{usermanage.date}</td>
+                            <td>{usermanage.department}</td>
+                            <td>{usermanage.position}</td>
+                            <td>{usermanage.createdAt}</td>
                             <td>
                             <button className="dels_button"
                             onClick={() =>
                             {setDelModalOpen(true);
-                            setClickIdx(Number(usermanage.id));
+                            setClickIdx(usermanage.userId);
                             handleEdit();
                             }}>
                               탈퇴</button>
@@ -221,8 +211,8 @@ const UserManagement = () => {
                     <Pagination
                       activePage={page}
                       itemsCountPerPage={postPerPage}
-                      totalItemsCount={usermanages.length}
-                      pageRangeDisplayed={Math.ceil(usermanages.length / postPerPage)}
+                      totalItemsCount={approvedusermanages.length}
+                      pageRangeDisplayed={Math.ceil(approvedusermanages.length / postPerPage)}
                       prevPageText={<LeftIcon />}
                       nextPageText={<RightIcon />}
                       firstPageText={<FirstLeftIcon />}
