@@ -40,7 +40,8 @@ const handleLogin = async () => {
     };
 
     setUserState(userStateData);
-    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('usertoken', response.data.token);
+    localStorage.setItem('isLoggedIn', response.data.loggedIn);
     localStorage.setItem('userState', JSON.stringify(userStateData));
 
     navigate('/');

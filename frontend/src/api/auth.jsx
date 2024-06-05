@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const userToken = localStorage.getItem('user');
+const userToken = localStorage.getItem('usertoken');
 
 const api = axios.create({
     baseURL: '/api', // 백엔드 기본 url
