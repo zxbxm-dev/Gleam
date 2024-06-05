@@ -77,6 +77,7 @@ const UserManagement = () => {
     setDelModalOpen(false);
   };
 
+
   const handleEdit = (username: string) => {
     console.log("탈퇴 사용자:", username);
     EditChainLinker(username)
@@ -124,7 +125,7 @@ const UserManagement = () => {
                         <th>부서</th>
                         <th>직위/직책</th>
                         <th>가입날짜</th>
-                        <th>승인/삭제</th>
+                        <th>승인/거부</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -235,7 +236,7 @@ const UserManagement = () => {
         isOpen={isSignModalOpen}
         onClose={() => setSignModalOpen(false)}
         header={'알림'}
-        footer1={'승인'}
+        footer1={'확인'}
         footer1Class="green-btn"
         onFooter1Click={() => handleSign(clickIdx)}
         footer2={'취소'}
@@ -251,7 +252,7 @@ const UserManagement = () => {
         isOpen={isDelModalOpen}
         onClose={() => setDelModalOpen(false)}
         header={'알림'}
-        footer1={'삭제'}
+        footer1={'확인'}
         footer1Class="red-btn"
         footer2={'취소'}
         onFooter1Click={() => handleDelete(clickIdx)}
@@ -259,7 +260,7 @@ const UserManagement = () => {
         onFooter2Click={() => setDelModalOpen(false)}
       >
         <div>
-          삭제하시겠습니까?
+          거부하시겠습니까?
         </div>
       </CustomModal>
     </div>
