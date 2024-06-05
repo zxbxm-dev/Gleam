@@ -1,8 +1,9 @@
 const { DataTypes } = require("sequelize");
 
+//퇴사자 데이터베이스
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define(
-    "User",
+  const quitter = sequelize.define(
+    "quitter",
     {
       //PK
       userId: {
@@ -90,9 +91,13 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: "user",
+      tableName: "quitter",
     }
   );
 
-  return User;
+  // // 다른 테이블과의 관계 설정
+  // Quitter.hasMany(OtherModel, { foreignKey: 'userId', as: 'User' });
+  // // OtherModel.belongsTo(Quitter, { foreignKey: 'userId' }); // OtherModel이 퇴사자를 참조할 경우
+
+  return quitter;
 };

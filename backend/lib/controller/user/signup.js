@@ -1,8 +1,9 @@
-const Sequelize = require('sequelize');
-
+const Sequelize = require("sequelize");
+const bcrypt = require("bcrypt");
 const Models = require("../../models");
 const signupUser = Models.userData;
-const bcrypt = require("bcrypt");
+const quitter = Models.quitterUser;
+
 // 회원가입
 const createUser = async (req, res) => {
   try {
@@ -73,12 +74,15 @@ const createUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await signupUser.findAll();
-    
+
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "회원이 없습니다." });
     }
+    console.log(users);
 
-    res.status(200).json({ success: "회원 목록 조회가 완료되었습니다.",users });
+    res
+      .status(200)
+      .json({ success: "회원 목록 조회가 완료되었습니다.", users });
   } catch (error) {
     console.error("회원 목록 조회 오류:", error);
     res.status(500).json({ error: "회원 목록 조회에 실패하였습니다." });
@@ -105,7 +109,7 @@ const approveUser = async (req, res) => {
   }
 };
 
-// 회원 삭제
+// 회원 승인 거절
 const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -117,27 +121,47 @@ const deleteUser = async (req, res) => {
 
     await user.destroy();
 
-    res.status(200).json({ success: "회원 삭제가 완료되었습니다." });
+    res.status(200).json({ success: "회원 승인 거절이 완료되었습니다." });
   } catch (error) {
     console.error("회원 삭제 오류:", error);
-    res.status(500).json({ error: "회원 삭제가 실패하였습니다." });
+    res.status(500).json({ error: "회원 승인 거절이 실패하였습니다." });
   }
 };
 
-// 회원 탈퇴 요청
-const requestDeleteUser = async (req, res) => {
+// 회원 탈퇴 (퇴사자 유저)
+const userleaves = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userID  } = req.body;
 
-    const user = await signupUser.findOne({ where: { userId } });
+    const user = await signupUser.findOne({ where: { userID  } });
 
     if (!user) {
       return res.status(404).json({ message: "회원 정보가 없습니다." });
     }
 
-    // 회원 상태를 '탈퇴 요청 중'으로 변경
-    user.status = 'requested_leave';
-    await user.save();
+    // 탈퇴한 회원을 다른 DB에 추가
+    await quitter.create({
+      userId: user.userId,
+      password: user.password,
+      username: user.username,
+      usermail: user.usermail,
+      phoneNumber: user.phoneNumber,
+      company: user.company,
+      department: user.department,
+      team: user.team,
+      position: user.position,
+      spot: user.spot,
+      question1: user.question1,
+      question2: user.question2,
+      attachment: user.attachment,
+      Sign: user.Sign,
+      status: "quitter", // 탈퇴 상태로 설정
+      entering: user.entering,
+      leavedate: new Date(), // 현재 날짜로 퇴사일 설정
+    });
+
+    // 회원 데이터베이스에서 삭제
+    await signupUser.destroy({ where: { userID } });
 
     return res.status(200).json({ success: "회원 탈퇴 요청이 완료되었습니다." });
   } catch (error) {
@@ -151,5 +175,5 @@ module.exports = {
   getAllUsers,
   approveUser,
   deleteUser,
-  requestDeleteUser
+  userleaves,
 };

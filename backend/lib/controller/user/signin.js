@@ -17,12 +17,12 @@ const login = async (req, res) => {
       const match = await bcrypt.compare(password, user.password);
       if (match) {
         // JWT 토큰 생성 (1시간)
-        const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: "1h" });
+        const token = jwt.sign({ userId: user.id }, secretKey, {
+          expiresIn: "1h",
+        });
 
-        // 사용자 정보 응답에 포함
-        res.status(200).json({ 
-          success: "로그인 성공",
-          loggedIn: true,
+        // 사용자 승인 상태에 따른 응답 처리
+        let responseData = {
           token,
           user: {
             username: user.username,
@@ -36,23 +36,46 @@ const login = async (req, res) => {
             spot: user.spot,
             attachment: user.attachment,
             Sign: user.Sign,
-            ques1:user.question1,
-            ques2 :user.question2,
-            entering:user.entering,
-            leaving:user.leavedate,
-          }
-        });
+            ques1: user.question1,
+            ques2: user.question2,
+            entering: user.entering,
+            leaving: user.leavedate,
+            status:user.status
+          },
+        };
+
+        console.log(user)
+
+        // 사용자가 미승인 상태인 경우
+        if (user.status === "pending") {
+          responseData = {
+            ...responseData,
+            pendingApproval: true,
+            message: "승인 대기 중입니다. 승인 완료 후 로그인하세요.",
+          };
+        }
+
+        // 로그인 성공 응답
+        res.status(200).json(responseData);
       } else {
-        res.status(401).json({ loggedIn: false, error: "비밀번호가 일치하지 않습니다." });
+        res
+          .status(401)
+          .json({ error: "비밀번호가 일치하지 않습니다." });
       }
     } else {
-      res.status(404).json({ loggedIn: false, error: "사용자를 찾을 수 없습니다." });
+      res
+        .status(404)
+        .json({ error: "사용자를 찾을 수 없습니다." });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ loggedIn: false, message: "로그인 서버 오류", error});
+    res
+      .status(500)
+      .json({ message: "로그인 서버 오류", error });
   }
 };
+
+    
 
 // 아이디 찾기
 const findUsername = async (req, res) => {
