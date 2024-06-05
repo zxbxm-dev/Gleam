@@ -124,7 +124,7 @@ const UserManagement = () => {
                         <th>부서</th>
                         <th>직위/직책</th>
                         <th>가입날짜</th>
-                        <th>승인/거부</th>
+                        <th>승인/삭제</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -259,7 +259,7 @@ const UserManagement = () => {
         onFooter2Click={() => setDelModalOpen(false)}
       >
         <div>
-          거부하시겠습니까?
+          삭제하시겠습니까?
         </div>
       </CustomModal>
     </div>
