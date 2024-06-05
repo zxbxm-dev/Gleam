@@ -23,7 +23,8 @@ const getUserStateFromLocalStorage = () => {
     department: '',
     team: '',
     position: '',
-    spot: ''
+    spot: '',
+    entering: ''
   };
 };
 
