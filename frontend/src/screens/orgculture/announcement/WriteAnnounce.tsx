@@ -88,11 +88,12 @@ const WriteAnnouncement = () => {
 
     const formData = new FormData();
     formData.append("userID", user.id);
+    formData.append("username", user.username);
     formData.append("date", currentDate);
     formData.append("title", title);
     formData.append("content", content);
     formData.append("views", views.toString());
-    
+
     if (form.attachment) {
       formData.append("attachment", (form.attachment as any).file);
       formData.append("attachmentName", (form.attachment as any).fileName);
