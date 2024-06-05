@@ -8,6 +8,8 @@ import { ReactComponent as FirstLeftIcon } from "../../../assets/images/Common/F
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import { CheckAnnounce } from "../../../services/announcement/Announce";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/atoms';
 
 const Announcement = () => {
   let navigate = useNavigate();
@@ -15,9 +17,10 @@ const Announcement = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [announcements, setAnnouncements] = useState<any[]>([]);
   // const [detailAnno, setDetailAnno] = useState<any[]>([]);
-
+  const userName = useRecoilValue(userState).name;
   const postPerPage: number = 10;
-
+ console.log(userName);
+ 
   // useEffect(() => {
   //   const initialAnnouncements = [
   //     { id: 1, title: "공지사항", views: 100, date: "2024-05-01" },
@@ -67,10 +70,9 @@ const Announcement = () => {
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
         <Link to={"/announcement"} className="sub_header">
-          공지사항
+          공지사항{userName}
         </Link>
       </div>
-
       <div className="content_container">
         <div className="container">
           <div className="main_header">

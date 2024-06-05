@@ -16,14 +16,14 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { isSidebarVisibleState, isHrSidebarVisibleState, userState } from '../../recoil/atoms';
 
 const Header = () => {
   let navigate = useNavigate();
   const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
-
+  const user = useRecoilValue(userState);
   const [userInfo] = useRecoilState(userState);
   
   const handleSideMenuClick = () => {
@@ -53,7 +53,7 @@ const Header = () => {
             <PopoverTrigger>
               <div className="UserInfo">
                 <img src={UserIcon} alt="UserIcon" />
-                <div className="UserName">{userInfo.name}</div>
+                <div className="UserName">{user.username}</div>
                 <div className="ArrowIcon">
                   <img src={MenuArrow_down} alt="MenuArrow" />
                 </div>
@@ -66,7 +66,7 @@ const Header = () => {
                 <PopoverBody display='flex' flexDirection='row' alignItems='center'>
                   <div style={{width: '140px', height: '150px', display: 'flex', flexDirection: 'column', alignItems: 'center' ,justifyContent: 'center'}}>
                     <img src={UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px' }}/>
-                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>{userInfo.name}</div>
+                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>{user.username}</div>
                     <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>{userInfo.position}</div>
                   </div>
                   <div style={{width: '300px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>

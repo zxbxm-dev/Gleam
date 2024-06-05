@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import {
   Login_Logo,
 } from "../../assets/images/index";
-// import { userState } from '../../recoil/atoms';
 import { Input } from '@chakra-ui/react';
-// import { useRecoilState } from 'recoil';
 import { LoginServices } from "../../services/login/LoginService";
 import CustomModal from '../../components/modal/CustomModal';
 import { Link } from "react-router-dom";
+import { useSetRecoilState } from 'recoil';
+import { userState } from '../../recoil/atoms';
+
 
 const Login = () => {
   let navigate = useNavigate();
@@ -18,16 +19,36 @@ const Login = () => {
   const [userID, setuserID] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
-    try {
-      const response = await LoginServices(userID, password);
+  const setUserState = useSetRecoilState(userState);
 
-      navigate('/announcement');
-    } catch (error) {
-      console.error('Login failed:', error);
-      setLoginModalOpen(true);
-    }
-  };
+const handleLogin = async () => {
+  try {
+    const response = await LoginServices(userID, password);
+    const userData = response.data.user;
+    const userStateData = {
+      id: userID,
+      username: userData.username,
+      userId: userData.userId,
+      usermail: userData.usermail,
+      phoneNumber: userData.phoneNumber,
+      company: userData.company,
+      department: userData.department,
+      team: userData.team,
+      position: userData.position,
+      spot: userData.spot
+    };
+
+    setUserState(userStateData);
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userState', JSON.stringify(userStateData));
+
+    navigate('/');
+  } catch (error) {
+    console.error('Login failed:', error);
+    setLoginModalOpen(true);
+  }
+};
+
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -38,6 +59,7 @@ const Login = () => {
   return (
     <div className="login_container">
       <img className='Linker' src={Login_Logo} alt="Login_Logo" />
+    
       <Input
         placeholder='아이디를 입력해 주세요. '
         size='lg'
