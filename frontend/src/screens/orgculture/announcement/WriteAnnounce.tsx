@@ -9,6 +9,8 @@ import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WriteAnnounce, EditAnno } from "../../../services/announcement/Announce";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/atoms';
 
 interface Attachment {
   file: File;
@@ -30,6 +32,8 @@ const WriteAnnouncement = () => {
   });
   const [value, setValue] = useState("");
   const [isfileUpload, setIsFileUpload] = useState(false);
+  const [views, setView] = useState(0);
+  const user = useRecoilValue(userState);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -83,13 +87,16 @@ const WriteAnnouncement = () => {
     }
 
     const formData = new FormData();
+    formData.append("userID", user.id);
+    formData.append("date", currentDate);
     formData.append("title", title);
     formData.append("content", content);
+    formData.append("views", views.toString());
+    
     if (form.attachment) {
       formData.append("attachment", (form.attachment as any).file);
       formData.append("attachmentName", (form.attachment as any).fileName);
     }
-    formData.append("date", currentDate);
 
     WriteAnnounce(formData)
       .then(response => {
@@ -135,7 +142,7 @@ const WriteAnnouncement = () => {
               <input type="text" className="write_title" placeholder="제목을 입력해 주세요." onChange={handleTitleChange} />
               <div className="writor_container">
                 <div className="write_info">작성자</div>
-                <div className="write_info">구민석</div>
+                <div className="write_info">{user.username}</div>
                 <div className="write_border" />
                 <div className="write_info">작성일</div>
                 <div className="write_info">{currentDate}</div>
