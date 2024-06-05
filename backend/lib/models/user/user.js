@@ -72,9 +72,9 @@ module.exports = (sequelize, Sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      // 사용자 상태 (대기, 승인, 퇴사)
+      // 사용자 상태 (대기, 승인, 퇴사, 회원탈퇴 요청)
       status: {
-        type: DataTypes.ENUM("pending", "approved", "left"),
+        type: DataTypes.ENUM("pending", "approved", "left", "requested_leave"),
         allowNull: false,
         defaultValue: "pending",
       },

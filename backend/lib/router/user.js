@@ -9,8 +9,10 @@ module.exports = app => {
     router.get('/checkUserManagement', userController.getAllUsers);
     router.post('/approveUserManagement/:userId', userController.approveUser);
     router.delete('/deleteUserManagement/:userId', userController.deleteUser);
+    router.post('/editchainlinker', userController.requestDeleteUser);
 
     router.post('/login', signinController.login);
+    router.post('/postFindID', signinController.findUsername);
 
     app.use('/api', router);
 };
