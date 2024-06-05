@@ -97,7 +97,7 @@ const DetailAnnounce = () => {
     setDeleteModalOpen(false);
     try {
       await DeleteAnno(Anno_id);
-      navigate("/announcement");
+      navigate("/");
     } catch (error) {
       console.error("Error deleting announcement: ", error);
     }
@@ -109,7 +109,7 @@ const DetailAnnounce = () => {
       <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
-        <Link to={"/announcement"} className="sub_header">공지사항</Link>
+        <Link to={"/"} className="sub_header">공지사항</Link>
       </div>
 
       <div className="content_container">
@@ -138,7 +138,7 @@ const DetailAnnounce = () => {
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
                 <button className="download_button" onClick={downloadPDF}>다운로드</button>
                 <Link to="/writeAnnounce" state={detailAnno} ><button className="white_button">수정</button></Link>
-                <button className="second_button" onClick={() => navigate("/announcement")}>목록</button>
+                <button className="second_button" onClick={() => navigate("/")}>목록</button>
               </div>
             </div>
           </div>
