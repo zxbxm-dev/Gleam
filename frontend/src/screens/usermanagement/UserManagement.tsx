@@ -13,7 +13,7 @@ import { useQueryClient, useQuery } from "react-query";
 import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement, EditChainLinker } from "../../services/usermanagement/UserManagementServices";
 
 const UserManagement = () => {
-  const [page, setPage] = useState<number>(1); 
+  const [page, setPage] = useState<number>(1);
   const queryClient = useQueryClient();
   const [pendingusermanages, setPendingUserManages] = useState<any[]>([]);
   const [approvedusermanages, setApprovedUserManages] = useState<any[]>([]);
@@ -53,41 +53,41 @@ const UserManagement = () => {
   const handleSign = (userId: string) => {
     console.log(userId)
     ApproveUserManagement(userId)
-    .then((response) => {
-      queryClient.invalidateQueries("usermanagement");
-      console.log("회원관리 승인이 완료되었습니다.", response);
-    })
-    .catch((error) => {
-      console.error("회원관리 승인에 실패했습니다.", error);
-    });
+      .then((response) => {
+        queryClient.invalidateQueries("usermanagement");
+        console.log("회원관리 승인이 완료되었습니다.", response);
+      })
+      .catch((error) => {
+        console.error("회원관리 승인에 실패했습니다.", error);
+      });
 
     setSignModalOpen(false);
   }
 
   const handleDelete = (userId: string) => {
     DeleteUserManagement(userId)
-    .then((response) => {
-      queryClient.invalidateQueries("usermanagement");
-      console.log("회원관리 삭제가 완료되었습니다.", response);
-    })
-    .catch((error) => {
-      console.error("회원관리 삭제에 실패했습니다.", error);
-    });
+      .then((response) => {
+        queryClient.invalidateQueries("usermanagement");
+        console.log("회원관리 삭제가 완료되었습니다.", response);
+      })
+      .catch((error) => {
+        console.error("회원관리 삭제에 실패했습니다.", error);
+      });
 
     setDelModalOpen(false);
   };
 
-  const handleEdit = () => {
-    // EditChainLinker(username)
-    EditChainLinker()
-    
+
+  const handleEdit = (username: string) => {
+    console.log("탈퇴 사용자:", username);
+    EditChainLinker(username)
       .then((response) => {
         console.log("회원 탈퇴 완료", response);
       })
       .catch((error) => {
         console.error("회원 탈퇴 실패", error);
       });
-  
+
     setDelModalOpen(false);
   };
 
@@ -96,10 +96,10 @@ const UserManagement = () => {
       <div className="content_header">
         <Link to={"/employment"} className="sub_header">회원관리</Link>
       </div>
-      
+
       <div className="content_container">
 
-      <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
+        <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>가입승인</Tab>
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>회원관리</Tab>
@@ -108,15 +108,15 @@ const UserManagement = () => {
           <TabPanels>
             <TabPanel>
               <div className="UserManage_container">
-                <div style={{marginTop: '50px'}}>
+                <div style={{ marginTop: '50px' }}>
                   <table className="regulation_board_list">
                     <colgroup>
-                      <col width="10%"/>
-                      <col width="10%"/>
-                      <col width="35%"/>
-                      <col width="10%"/>
-                      <col width="10%"/>
-                      <col width="15%"/>
+                      <col width="10%" />
+                      <col width="10%" />
+                      <col width="35%" />
+                      <col width="10%" />
+                      <col width="10%" />
+                      <col width="15%" />
                     </colgroup>
                     <thead>
                       <tr className="board_header">
@@ -139,8 +139,8 @@ const UserManagement = () => {
                             <td>{usermanage.position}</td>
                             <td>{usermanage.createdAt}</td>
                             <td>
-                              <button className="edits_button" onClick={() => {setSignModalOpen(true); setClickIdx(usermanage.userId)}}>승인</button>
-                              <button className="dels_button" onClick={() => {setDelModalOpen(true); setClickIdx(usermanage.userId)}}>거부</button>
+                              <button className="edits_button" onClick={() => { setSignModalOpen(true); setClickIdx(usermanage.userId) }}>승인</button>
+                              <button className="dels_button" onClick={() => { setDelModalOpen(true); setClickIdx(usermanage.userId) }}>삭제</button>
                             </td>
                           </tr>
                         ))}
@@ -165,15 +165,15 @@ const UserManagement = () => {
 
             <TabPanel>
               <div className="UserManage_container">
-                <div style={{marginTop: '50px'}}>
+                <div style={{ marginTop: '50px' }}>
                   <table className="regulation_board_list">
                     <colgroup>
-                      <col width="10%"/>
-                      <col width="10%"/>
-                      <col width="35%"/>
-                      <col width="10%"/>
-                      <col width="10%"/>
-                      <col width="15%"/>
+                      <col width="10%" />
+                      <col width="10%" />
+                      <col width="35%" />
+                      <col width="10%" />
+                      <col width="10%" />
+                      <col width="15%" />
                     </colgroup>
                     <thead>
                       <tr className="board_header">
@@ -196,17 +196,21 @@ const UserManagement = () => {
                             <td>{usermanage.position}</td>
                             <td>{usermanage.createdAt}</td>
                             <td>
-                            <button className="dels_button"
-                            onClick={() =>
-                            {setDelModalOpen(true);
-                            setClickIdx(usermanage.userId);
-                            handleEdit();
-                            }}>
-                              탈퇴</button>
+                              <button
+                                className="dels_button"
+                                onClick={() => {
+                                  setDelModalOpen(true);
+                                  setClickIdx(usermanage.userId);
+                                  handleEdit(usermanage.username);
+                                }}
+                              >
+                                탈퇴
+                              </button>
                             </td>
                           </tr>
                         ))}
                     </tbody>
+
                   </table>
                   <div className="UserManage_bottom">
                     <Pagination
@@ -226,11 +230,11 @@ const UserManagement = () => {
             </TabPanel>
           </TabPanels>
         </Tabs>
-      </div>  
+      </div>
 
       <CustomModal
         isOpen={isSignModalOpen}
-        onClose={() => setSignModalOpen(false)} 
+        onClose={() => setSignModalOpen(false)}
         header={'알림'}
         footer1={'확인'}
         footer1Class="green-btn"
@@ -246,7 +250,7 @@ const UserManagement = () => {
 
       <CustomModal
         isOpen={isDelModalOpen}
-        onClose={() => setDelModalOpen(false)} 
+        onClose={() => setDelModalOpen(false)}
         header={'알림'}
         footer1={'확인'}
         footer1Class="red-btn"
