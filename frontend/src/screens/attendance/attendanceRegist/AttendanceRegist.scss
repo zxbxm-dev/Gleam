@@ -155,7 +155,6 @@
   display: grid;
   justify-content: center;
   align-items: center;
-
 }
 
 .conta_date_annual {
@@ -517,31 +516,136 @@
     overflow-y: scroll;
   }
 
-  .Excel_RD {
-    .Explan_RD {
+  .conta_name_annual {
+    width: 99.5px;
+    height: 40px;
+  }
+  
+  .conta_date_annual {
+    width: 120px;
+    height: 40px;
+  }
+  
+  
+  .countTotal_annual {
+    width: 70px;
+    height: 40px;
+  
+    .total_annual {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .countTotal_annual_last {
+    width: 70px;
+    height: 40px;
+  
+    .total_annual {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .countName_annual {
+    width: 101px;
+    height: 40px;
+  
+    .total_annual {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .countDate_annual {
+    width: 121.5px;
+    height: 40px;
+
+    .total_annual {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .CountTable {
+    height: 40px;
+    tbody {
+      height: 40px;
+    }
+  }
+  .conta_name_annual {
+    height: 40px;
+  }
+
+  .conta_annual {
+    width: 68.4px;
+    height: 40px;
+  }
+  .Excel {
+    .Explan {
       tr {
         .TopS {
-          height: 35px;
+          height: 40.5px;
+        }
+      }
+    }
+  }
+
+  .Excel_RD {
+    .Explan_RD {
+      height: 683px;
+      tr {
+        .TopS {
+          height: 40.5px;
+        }
+      }
+    }
+  }
+
+  .Excel_annual {
+    .Explan_annual {
+      div {
+        tr {
+          .TopS_no {
+            height: 37.5px;
+            font-size: 14px;
+          }
+          .TopS_annual {
+            height: 37.5px;
+            font-size: 14px;
+          }
+          td {  
+            height: 41.6px;
+            font-size: 14px;
+          }
         }
       }
     }
   }
 
   .Excel_annual_RD {
-
     .Explan_annual_RD {
-      tr {
-
-        .TopS_annual {
-          height: 26.5px;
-        }
-
-        td {
-          height: 29.5px;
+      width: 280px;
+  
+      div {
+        tr {
+          .TopS_no {
+            height: 37.5px;
+            font-size: 14px;
+          }
+          .TopS_annual {
+            height: 37.5px;
+            font-size: 14px;
+          }
+          td {  
+            height: 41.6px;
+            font-size: 14px;
+          }
         }
       }
     }
   }
+
 
   .TabKey {
     width: 7%;
