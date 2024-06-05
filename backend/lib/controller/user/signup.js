@@ -88,15 +88,15 @@ const getAllUsers = async (req, res) => {
 // 회원 승인
 const approveUser = async (req, res) => {
   try {
-    const { userID } = req.params;
-    const user = await signupUser.findOne({ where: { userID } });
+    const { userId } = req.params;
+    const user = await signupUser.findOne({ where: { userId } });
 
     if (!user) {
       return res.status(404).json({ message: "회원 정보가 없습니다." });
     }
 
-    signupUser.status = "approved";
-    await signupUser.save();
+    user.status = "approved";
+    await user.save();
 
     res.status(200).json({ message: "승인 처리가 완료되었습니다.", user });
   } catch (error) {
@@ -108,14 +108,14 @@ const approveUser = async (req, res) => {
 // 회원 삭제
 const deleteUser = async (req, res) => {
   try {
-    const { userID } = req.params;
-    const user = await signupUser.findOne({ where: { userID } });
+    const { userId } = req.params;
+    const user = await signupUser.findOne({ where: { userId } });
 
     if (!user) {
       return res.status(404).json({ message: "회원 정보가 없습니다." });
     }
 
-    await signupUser.destroy();
+    await user.destroy();
 
     res.status(200).json({ message: "회원 삭제가 완료되었습니다." });
   } catch (error) {
