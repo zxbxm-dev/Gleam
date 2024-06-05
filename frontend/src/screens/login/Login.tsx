@@ -35,7 +35,8 @@ const handleLogin = async () => {
       department: userData.department,
       team: userData.team,
       position: userData.position,
-      spot: userData.spot
+      spot: userData.spot,
+      entering:userData.entering
     };
 
     setUserState(userStateData);

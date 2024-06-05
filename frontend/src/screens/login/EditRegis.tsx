@@ -4,6 +4,8 @@ import { Login_Logo, DeleteIcon, ArrowDown, ArrowUp, FileUploadIcon } from "../.
 import { RegisterEditServices } from "../../services/login/RegisterServices";
 import CustomModal from "../../components/modal/CustomModal";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 
 const EditRegis = () => {
     const [selectedOptions, setSelectedOptions] = useState({
@@ -35,6 +37,7 @@ const EditRegis = () => {
         position: '',
         phoneNumber: '',
     });
+    const user = useRecoilValue(userState);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -191,9 +194,12 @@ const EditRegis = () => {
 
     const handleSubmit = () => {
         const filteredData = Object.fromEntries(
-            Object.entries(formData).filter(([_, value]) => value !== '')
+            Object.entries({
+                ...formData,
+                userID: user.id
+            }).filter(([_, value]) => value !== '')
         );
-
+    
         // FormData 생성
         const formDataToSend = new FormData();
         for (const key in filteredData) {
@@ -206,7 +212,7 @@ const EditRegis = () => {
         if (Sign) {
             formDataToSend.append('sign', Sign);
         }
-
+    
         // API 호출
         RegisterEditServices(formDataToSend)
             .then(response => {
@@ -217,11 +223,12 @@ const EditRegis = () => {
                 console.error("오류:", error);
             });
     };
+    
 
     return (
         <div className="Register">
             <Link to="/">
-                <img className="ResLogo" src={Login_Logo} alt="LoginLogo"/>
+                <img className="ResLogo" src={Login_Logo} alt="LoginLogo" />
             </Link>
             <span className="ResText">회원정보 수정</span>
 
@@ -229,7 +236,7 @@ const EditRegis = () => {
                 <div className="LeftFlex">
                     <div className="MiniBox">
                         <span>아이디 입력</span>
-                        <span className="localinput">로컬 아이디</span>
+                        <span className="localinput">{user.id}</span>
                     </div>
                     <div className="MiniphoneBox">
                         <div className="Phone">
@@ -291,16 +298,17 @@ const EditRegis = () => {
                         <div className="Question">
                             <div className="Ques">
                                 <span>어머니의 성은 무엇입니까?</span>
-                                <span className="localinput">로컬질문1</span>
+                                <span className="localinput">{user.id}</span>
                             </div>
                             <div className="Ques">
                                 <span>졸업한 초등학교는 어디입니까?</span>
-                                <span className="localinput">로컬질문2</span>                            </div>
+                                <span className="localinput">{user.id}</span>
+                            </div>
                         </div>
                     </div>
                     <div className="MiniBox">
                         <span>성명 입력</span>
-                        <span className="localinput">로컬성명</span>
+                        <span className="localinput">{user.username}</span>
                     </div>
                     <div className="MiniphoneBox">
                         <div className="Phone">
@@ -330,13 +338,13 @@ const EditRegis = () => {
                     </div>
                     <div className="MinimBox">
                         <span>메일 입력</span>
-                        <div className="localinput">로컬메일</div>
+                        <div className="localinput">{user.usermail}</div>
                     </div>
                 </div>
                 <div className="RightFlex">
-                <div className="MinimBox">
+                    <div className="MinimBox">
                         <span>입사일자</span>
-                        <div className="localinput">입사일자</div>
+                        <div className="localinput">{user.entering}</div>
                     </div>
                     <div className="UploadBox">
                         <span>증명사진 업로드</span>
@@ -395,7 +403,7 @@ const EditRegis = () => {
                         <div className="custom-select">
                             <div className="select-header" onClick={() => toggleSelect(1)}>
                                 <span>{selectedOptions.department ? selectedOptions.department : '부서를 선택해주세요'}</span>
-                                <img src={isDepart ? ArrowUp : ArrowDown} alt="Arrow"/>
+                                <img src={isDepart ? ArrowUp : ArrowDown} alt="Arrow" />
                             </div>
                             {isDepart && (
                                 <div className="options">
@@ -423,7 +431,7 @@ const EditRegis = () => {
                         <div className="custom-select">
                             <div className="select-header" onClick={() => toggleSelect(2)}>
                                 <span>{selectedOptions.team ? selectedOptions.team : '팀을 선택해주세요'}</span>
-                                <img src={isTeam ? ArrowUp : ArrowDown} alt="Arrow"/>
+                                <img src={isTeam ? ArrowUp : ArrowDown} alt="Arrow" />
                             </div>
                             {isTeam && (
                                 <div className="options">
@@ -437,7 +445,7 @@ const EditRegis = () => {
                         <div className="custom-select">
                             <div className="select-header" onClick={() => toggleSelect(3)}>
                                 <span>{selectedOptions.spot ? selectedOptions.spot : '직위를 선택해주세요'}</span>
-                                <img src={isSpot ? ArrowUp : ArrowDown} alt="Arrow"/>
+                                <img src={isSpot ? ArrowUp : ArrowDown} alt="Arrow" />
                             </div>
                             {isSpot && (
                                 <div className="options">
@@ -456,7 +464,7 @@ const EditRegis = () => {
                         <div className="custom-select">
                             <div className="select-header" onClick={() => toggleSelect(4)}>
                                 <span>{selectedOptions.position ? selectedOptions.position : '직책을 선택해주세요'}</span>
-                                <img src={isPosition ? ArrowUp : ArrowDown} alt="Arrow"/>
+                                <img src={isPosition ? ArrowUp : ArrowDown} alt="Arrow" />
                             </div>
                             {isPosition && (
                                 <div className="options">
@@ -488,7 +496,7 @@ const EditRegis = () => {
 
             <CustomModal
                 isOpen={isAddModalOpen}
-                onClose={() => setAddModalOpen(false)} 
+                onClose={() => setAddModalOpen(false)}
                 header={'알림'}
             >
                 <div>
