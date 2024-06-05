@@ -22,6 +22,7 @@ const login = async (req, res) => {
         // 사용자 정보 응답에 포함
         res.status(200).json({ 
           success: "로그인 성공",
+          loggedIn: true,
           token,
           user: {
             username: user.username,
@@ -34,18 +35,22 @@ const login = async (req, res) => {
             position: user.position,
             spot: user.spot,
             attachment: user.attachment,
-            Sign: user.Sign
+            Sign: user.Sign,
+            ques1:user.question1,
+            ques2 :user.question2,
+            entering:user.entering,
+            leaving:user.leavedate,
           }
         });
       } else {
-        res.status(401).json({ error: "비밀번호가 일치하지 않습니다." });
+        res.status(401).json({ loggedIn: false, error: "비밀번호가 일치하지 않습니다." });
       }
     } else {
-      res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
+      res.status(404).json({ loggedIn: false, error: "사용자를 찾을 수 없습니다." });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "로그인 서버 오류", error});
+    res.status(500).json({ loggedIn: false, message: "로그인 서버 오류", error});
   }
 };
 
