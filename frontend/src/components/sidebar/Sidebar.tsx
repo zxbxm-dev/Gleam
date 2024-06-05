@@ -1,72 +1,146 @@
 import { useState } from "react";
 import "./Sidebar.scss";
-import {
-  MenuArrow_down,
-  MenuArrow_right
-} from "../../assets/images/index";
+import { MenuArrow_down, MenuArrow_right } from "../../assets/images/index";
 import { Link } from "react-router-dom";
-import { useRecoilState } from 'recoil';
-import { isSidebarVisibleState, isHrSidebarVisibleState, isSelectMemberState, userState} from '../../recoil/atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { isSidebarVisibleState, isHrSidebarVisibleState, isSelectMemberState, userState } from '../../recoil/atoms';
+
+interface SubMenu {
+  menu: string;
+  label: string;
+  link: string;
+}
+
+interface MenuItem {
+  menu: string;
+  label: string;
+  link?: string;
+  menuType?: boolean;
+  toggleMenuType?: string;
+  subMenu?: SubMenu[];
+  requiresHrSideClick?: boolean;
+}
 
 const Sidebar = () => {
   const [isSelectMember, setIsSelectMember] = useRecoilState(isSelectMemberState);
   const [isSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
-  const [userInfo] = useRecoilState(userState);
   const [isOrgCultureMenuOpen, setIsOrgCultureMenuOpen] = useState(false);
   const [isPerformanceMenuOpen, setIsPerformanceMenuOpen] = useState(false);
   const [isAttendanceMenuOpen, setIsAttendanceMenuOpen] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState(null);
-  const [activeTab, setActiveTab] = useState("");
+  const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("");
+  const user = useRecoilValue(userState);
 
-  const handleMenuClick = (menu: any) => {
+  const handleMenuClick = (menu: string) => {
     setSelectedMenu(menu);
 
-    if (menu !== 'orgculture' &&
-      menu !== 'announcement' &&
-      menu !== 'regulations' &&
-      menu !== 'activitymanage') {
-      menu !== 'orgchart' &&
-        setIsOrgCultureMenuOpen(false);
+    if (menu === 'orgculture') {
+      setIsOrgCultureMenuOpen(!isOrgCultureMenuOpen);
     }
-    if (menu !== 'performance' &&
-      menu !== 'submit-perform' &&
-      menu !== 'manage-perform' 
-    ) {
-      setIsPerformanceMenuOpen(false);
-      setIsSelectMember(['', '', '', ''])
-      console.log(isSelectMember)
-    }
-    if (menu !== 'attendance' &&
-      menu !== 'annual-manage' &&
-      menu !== 'attendance-regist'
-    ) {
-      setIsAttendanceMenuOpen(false);
+
+    if (menu !== 'performance') {
+      setIsSelectMember(['', '', '', '']);
     }
 
     setIsHrSidebarVisible(false);
   };
 
-  const toggleOrgCultureMenu = () => {
-    setIsOrgCultureMenuOpen(!isOrgCultureMenuOpen);
-    setIsPerformanceMenuOpen(false);
-    setIsAttendanceMenuOpen(false);
-  };
-  const togglePerformanceMenu = () => {
-    setIsPerformanceMenuOpen(!isPerformanceMenuOpen);
-    setIsOrgCultureMenuOpen(false);
-    setIsAttendanceMenuOpen(false);
-  };
-  const toggleAttendanceMenu = () => {
-    setIsAttendanceMenuOpen(!isAttendanceMenuOpen);
-    setIsOrgCultureMenuOpen(false);
-    setIsPerformanceMenuOpen(false);
+
+  const toggleMenu = (menuType: string) => {
+    setIsOrgCultureMenuOpen(menuType === 'orgCulture' && !isOrgCultureMenuOpen);
+    setIsPerformanceMenuOpen(menuType === 'performance' && !isPerformanceMenuOpen);
+    setIsAttendanceMenuOpen(menuType === 'attendance' && !isAttendanceMenuOpen);
   };
 
   const handleHrSideClick = () => {
     setIsHrSidebarVisible(true);
-    console.log(isHrSidebarVisible)
+    console.log(isHrSidebarVisible);
   };
+
+  const renderSubMenu = (menuType: boolean | undefined, menuItems: SubMenu[] | undefined) => (
+    menuType && menuItems && (
+      <ul className="menu-list">
+        {menuItems.map(({ menu, label, link }) => (
+          <li key={menu} className={`sub-menu menu-item ${selectedMenu === menu || activeTab === menu ? 'active' : ''}`}>
+            <Link to={link} className='menu-link' onClick={() => {
+              handleMenuClick(menu);
+              if (menu === 'manage-perform') {
+                handleHrSideClick();
+              }
+            }}>{label}</Link>
+          </li>
+        ))}
+      </ul>
+    )
+  );
+
+  const menuList: MenuItem[] = [
+    {
+      menu: 'orgculture',
+      label: '조직문화',
+      menuType: isOrgCultureMenuOpen,
+      toggleMenuType: 'orgCulture',
+      subMenu: [
+        { menu: 'announcement', label: '공지사항', link: '/' },
+        { menu: 'regulations', label: '사내 규정', link: '/regulations' },
+        { menu: 'orgchart', label: '인사 조직도', link: '/orgchart' },
+      ]
+    },
+    {
+      menu: 'calendar',
+      label: '휴가 관리',
+      link: '/calendar',
+    },
+    {
+      menu: 'report',
+      label: '보고서',
+      link: '/report',
+    },
+    {
+      menu: 'approval',
+      label: '보고서 결재',
+      link: '/approval',
+    },
+    {
+      menu: 'employment',
+      label: '채용공고',
+      link: '/employment',
+    },
+    {
+      menu: 'performance',
+      label: '인사평가',
+      menuType: isPerformanceMenuOpen,
+      toggleMenuType: 'performance',
+      subMenu: [
+        { menu: 'submit-perform', label: '인사평가 제출', link: '/submit-perform' },
+        (user.username === '김효은' || user.username === '이정훈' || user.username === '이유정') && { menu: 'manage-perform', label: '인사평가 관리', link: '/manage-perform' }
+      ].filter(Boolean) as SubMenu[]
+    },
+    (user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정') && {
+      menu: 'human-resources',
+      label: '인사 정보 관리',
+      link: '/human-resources',
+      requiresHrSideClick: true,
+    },
+    (user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정' || user.spot === '연구실장') && {
+      menu: 'attendance',
+      label: '근태 관리',
+      menuType: isAttendanceMenuOpen,
+      toggleMenuType: 'attendance',
+      subMenu: [
+        { menu: 'annual-manage', label: '연차 관리', link: '/annual-manage' },
+        { menu: 'attendance-regist', label: '출근부', link: '/attendance-regist' },
+      ]
+    },
+    (user.team === '지원팀' || user.username === '이정훈') && {
+      menu: 'operating-manage',
+      label: '운영비 관리',
+      link: '/operating-manage',
+    }
+  ].filter(Boolean) as MenuItem[];
+
+  const isAuthorized = user.team === '관리팀' || user.username === '이정훈';
 
   return (
     <>
@@ -75,136 +149,39 @@ const Sidebar = () => {
           <div className="sidebar-body">
             <div className="sidebar-menu">
               <ul className="menu-list">
-                <li className='menu-item'>
-                  <Link to="/" className={`menu-link2 ${isOrgCultureMenuOpen ? 'active' : ''}`}
-                    onClick={() => {
-                        toggleOrgCultureMenu();
-                        handleMenuClick('orgculture');
-                        setActiveTab('FirstActiveTab');
-                      ;
-                    }}
-                  >
-                    {isOrgCultureMenuOpen ? (
-                      <img src={MenuArrow_right} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
+                {menuList.map(({ menu, label, link, menuType, toggleMenuType, subMenu, requiresHrSideClick }) => (
+                  <li key={menu} className={`menu-item ${selectedMenu === menu ? 'active' : ''}`}>
+                    {link ? (
+                      <Link to={link} className="menu-link" onClick={() => {
+                        handleMenuClick(menu);
+                        if (requiresHrSideClick) handleHrSideClick();
+                      }}>
+                        <span className="menu-link-text">{label}</span>
+                      </Link>
                     ) : (
-                      <img src={MenuArrow_down} alt="MenuArrow" />
-                    )}
-                    <span className="menu-link-text">조직문화</span>
-                  </Link>
-                  {isOrgCultureMenuOpen && (
-                    <ul className="menu-list">
-                      <li className={`sub-menu menu-item ${selectedMenu === 'announcement' || activeTab === "FirstActiveTab" ? 'active' : ''}`}>
-                        <Link to="/" className='menu-link' onClick={() => handleMenuClick('announcement')}>공지사항</Link>
-                      </li>
-                      <li className={`sub-menu menu-item ${selectedMenu === 'regulations' ? 'active' : ''}`}>
-                        <Link to="/regulations" className='menu-link'
+                      <>
+                        <Link to="#" className={`menu-link2 ${menuType ? 'active' : ''}`}
                           onClick={() => {
-                            handleMenuClick('regulations');
-                            setActiveTab("");
+                            toggleMenu(toggleMenuType || '');
+                            handleMenuClick(menu);
+                            setActiveTab(menu);
                           }}
-                        >사내 규정</Link>
-                      </li>
-                      <li className={`sub-menu menu-item ${selectedMenu === 'orgchart' ? 'active' : ''}`}>
-                        <Link to="/orgchart" className='menu-link'
-                          onClick={() => {
-                            handleMenuClick('orgchart');
-                            setActiveTab("");
-                          }}
-                        >인사 조직도</Link>
-                      </li>
-                    </ul>
-                  )}
-                </li>
-                <li className={`menu-item ${selectedMenu === 'calendar' ? 'active' : ''}`}>
-                  <Link to="/calendar" className="menu-link" onClick={() => handleMenuClick('calendar')}>
-                    <span className="menu-link-text">휴가 관리</span>
-                  </Link>
-                </li>
-                <li className={`menu-item ${selectedMenu === 'report' ? 'active' : ''}`}>
-                  <Link to="/report" className="menu-link" onClick={() => handleMenuClick('report')}>
-                    <span className="menu-link-text">보고서</span>
-                  </Link>
-                </li>
-                <li className={`menu-item ${selectedMenu === 'approval' ? 'active' : ''}`}>
-                  <Link to="/approval" className="menu-link" onClick={() => handleMenuClick('approval')}>
-                    <span className="menu-link-text">보고서 결재</span>
-                  </Link>
-                </li>
-                <li className={`menu-item ${selectedMenu === 'employment' ? 'active' : ''}`}>
-                  <Link to="/employment" className="menu-link" onClick={() => handleMenuClick('employment')}>
-                    <span className="menu-link-text">채용공고</span>
-                  </Link>
-                </li>
-                <li className="menu-item">
-                  <Link to="/submit-perform" className="menu-link2"
-                    onClick={() => {
-                      togglePerformanceMenu(); handleMenuClick('performance'); setActiveTab('SecActiveTab');
-                    }}
-                  >
-                    {isPerformanceMenuOpen ? (
-                      <img src={MenuArrow_right} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
-                    ) : (
-                      <img src={MenuArrow_down} alt="MenuArrow" />
+                        >
+                          <img src={menuType ? MenuArrow_right : MenuArrow_down} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
+                          <span className="menu-link-text">{label}</span>
+                        </Link>
+                        {renderSubMenu(menuType, subMenu)}
+                      </>
                     )}
-                    <span className="menu-link-text">인사평가</span>
-                  </Link>
-                  {isPerformanceMenuOpen && (
-                    <ul className="menu-list">
-                      <li className={`sub-menu menu-item ${selectedMenu === 'submit-perform' || activeTab === "SecActiveTab" ? 'active' : ''}`}>
-                        <Link to="/submit-perform" className='menu-link' onClick={() => handleMenuClick('submit-perform')}>인사평가 제출</Link>
-                      </li>
-                      <li className={`sub-menu menu-item ${selectedMenu === 'manage-perform' ? 'active' : ''}`}>
-                        <Link to="/manage-perform" className='menu-link' onClick={() => { handleMenuClick('manage-perform'); setActiveTab(""); handleHrSideClick(); }}>인사평가 관리</Link>
-                      </li>
-                    </ul>
-                  )}
-                </li>
-                <li className={`menu-item ${selectedMenu === 'human-resources' ? 'active' : ''}`}>
-                  <Link to="/human-resources" className="menu-link" onClick={() => { handleMenuClick('human-resources'); handleHrSideClick();}}>
-                    <span className="menu-link-text">인사 정보 관리</span>
-                  </Link>
-                </li>
-                <li className="menu-item">
-                  <Link to="/annual-manage" className="menu-link2"
-                    onClick={() => {
-                      toggleAttendanceMenu(); handleMenuClick('attendance'); setActiveTab('ThirdActiveTab');
-                    }}
-                  >
-                    {isAttendanceMenuOpen ? (
-                      <img src={MenuArrow_right} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
-                    ) : (
-                      <img src={MenuArrow_down} alt="MenuArrow" />
-                    )}
-                    <span className="menu-link-text">근태 관리</span>
-                  </Link>
-                  {isAttendanceMenuOpen && (
-                    <ul className="menu-list">
-                      <li className={`sub-menu menu-item ${selectedMenu === 'annual-manage' || activeTab === "ThirdActiveTab" ? 'active' : ''}`}>
-                        <Link to="/annual-manage" className='menu-link' onClick={() => handleMenuClick('annual-manage')}>연차 관리</Link>
-                      </li>
-                      <li className={`sub-menu menu-item ${selectedMenu === 'attendance-regist' ? 'active' : ''}`}>
-                        <Link to="/attendance-regist" className='menu-link'
-                          onClick={() => {
-                            handleMenuClick('attendance-regist');
-                            setActiveTab('');
-                          }}
-                        >출근부</Link>
-                      </li>
-                    </ul>
-                  )}
-                </li>
-                {/* {userInfo.team === '지원팀' ? */}
-                <li className={`menu-item ${selectedMenu === 'operating-manage' ? 'active' : ''}`}>
-                  <Link to="/operating-manage" className="menu-link" onClick={() => handleMenuClick('operating-manage')}>
-                    <span className="menu-link-text">운영비 관리</span>
-                  </Link>
-                </li>
-                {/* :<li></li>} */}
-                <li className="member-manage">
-                  <Link to="/user-management" onClick={() => handleMenuClick('user-management')}>
-                    회원 관리
-                  </Link>
-                </li>
+                  </li>
+                ))}
+                {isAuthorized && (
+                  <li className="member-manage">
+                    <Link to="/user-management" onClick={() => handleMenuClick('user-management')}>
+                      회원 관리
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
           </div>

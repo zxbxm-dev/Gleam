@@ -24,7 +24,6 @@ const Header = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
   const user = useRecoilValue(userState);
-  const [userInfo] = useRecoilState(userState);
   
   const handleSideMenuClick = () => {
     setIsSidebarVisible(!isSidebarVisible);
@@ -61,19 +60,19 @@ const Header = () => {
             </PopoverTrigger>
             <Portal>
               <PopoverContent width='400px' height='200px' border='0' borderRadius='1px' marginTop='10px' marginRight='10px'>
-                <PopoverHeader height='34px' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' fontSize='14px'>{userInfo.department}</PopoverHeader>
+                <PopoverHeader height='34px' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' fontSize='14px'>{user.department}</PopoverHeader>
                 <PopoverCloseButton color='white' />
                 <PopoverBody display='flex' flexDirection='row' alignItems='center'>
                   <div style={{width: '140px', height: '150px', display: 'flex', flexDirection: 'column', alignItems: 'center' ,justifyContent: 'center'}}>
                     <img src={UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px' }}/>
                     <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>{user.username}</div>
-                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>{userInfo.position}</div>
+                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>{user.position}</div>
                   </div>
                   <div style={{width: '300px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                     <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)'}}>연락처</div>
-                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>010-0000-0000</div>
+                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>{user.phoneNumber}</div>
                     <div style={{fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', marginTop: '20px'}}>메일주소</div>
-                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>OOOO123456@four-chains.com</div>
+                    <div style={{fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)'}}>{user.usermail}</div>
                   </div>
                   <div style={{position: 'absolute', top: '50px', right: '20px', cursor: 'pointer'}} onClick={() => navigate('/editres')}>
                     <img src={SettingIcon} alt="SettingIcon"/>
