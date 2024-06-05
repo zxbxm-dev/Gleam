@@ -13,6 +13,7 @@ const FindID = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [isNotUserModalOpen, setNotUserModalOpen] = useState(false);
     const [isFindIdModalOpen, setFindIdModalOpen] = useState(false);
+    const [findID, setFindID] = useState("");
 
     const handleFooter1Click = () => {
         setFindIdModalOpen(false);
@@ -60,6 +61,7 @@ const FindID = () => {
         // API 호출
         FindIDServices(formData)
             .then(response => {
+                setFindID(response.data.userId);
                 setFindIdModalOpen(true);
             })
             .catch(error => {
@@ -127,7 +129,7 @@ const FindID = () => {
                 <img src={ModalCheck} alt="ModalCheck" className="FindID-img"/>
 
                 아이디 찾기 완료<br />
-                아이디 :
+                아이디 : {findID}
             </CustomModal>
 
             <CustomModal
