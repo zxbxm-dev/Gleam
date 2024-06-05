@@ -28,7 +28,7 @@ const handleLogin = async () => {
     const userStateData = {
       id: userID,
       username: userData.username,
-      userId: userData.userId,
+      userID: userData.userId,
       usermail: userData.usermail,
       phoneNumber: userData.phoneNumber,
       company: userData.company,
