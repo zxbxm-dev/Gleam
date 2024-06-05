@@ -102,7 +102,7 @@ const WriteAnnouncement = () => {
     WriteAnnounce(formData)
       .then(response => {
         // 성공적으로 등록되었을 때 처리
-        navigate("/announcement");
+        navigate("/");
       })
       .catch(error => {
         // 실패 시 처리
@@ -129,7 +129,7 @@ const WriteAnnouncement = () => {
       <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
-        <Link to={"/announcement"} className="sub_header">공지사항</Link>
+        <Link to={"/"} className="sub_header">공지사항</Link>
       </div>
 
       <div className="content_container">
