@@ -60,12 +60,12 @@ const createUser = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "회원가입이 완료되었으며, 관리자의 승인을 기다리고 있습니다.",
+      success: "회원가입이 완료되었으며, 관리자의 승인을 기다리고 있습니다.",
       user: newUser,
     });
   } catch (error) {
     console.error("회원가입 오류:", error);
-    res.status(500).json({ message: "회원 가입 서버 오류" });
+    res.status(500).json({ error: "회원 가입 서버 오류" });
   }
 };
 
@@ -78,10 +78,10 @@ const getAllUsers = async (req, res) => {
       return res.status(404).json({ message: "회원이 없습니다." });
     }
 
-    res.status(200).json({ users });
+    res.status(200).json({ success: "회원 목록 조회가 완료되었습니다.",users });
   } catch (error) {
     console.error("회원 목록 조회 오류:", error);
-    res.status(500).json({ message: "회원 목록 조회에 실패하였습니다." });
+    res.status(500).json({ error: "회원 목록 조회에 실패하였습니다." });
   }
 };
 
@@ -98,10 +98,10 @@ const approveUser = async (req, res) => {
     user.status = "approved";
     await user.save();
 
-    res.status(200).json({ message: "승인 처리가 완료되었습니다.", user });
+    res.status(200).json({ success: "승인 처리가 완료되었습니다.", user });
   } catch (error) {
     console.error("회원 승인 오류:", error);
-    res.status(500).json({ message: "승인 처리가 실패하였습니다." });
+    res.status(500).json({ error: "승인 처리가 실패하였습니다." });
   }
 };
 
@@ -117,17 +117,39 @@ const deleteUser = async (req, res) => {
 
     await user.destroy();
 
-    res.status(200).json({ message: "회원 삭제가 완료되었습니다." });
+    res.status(200).json({ success: "회원 삭제가 완료되었습니다." });
   } catch (error) {
     console.error("회원 삭제 오류:", error);
-    res.status(500).json({ message: "회원 삭제가 실패하였습니다." });
+    res.status(500).json({ error: "회원 삭제가 실패하였습니다." });
   }
 };
 
+// 회원 탈퇴 요청
+const requestDeleteUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await signupUser.findOne({ where: { userId } });
+
+    if (!user) {
+      return res.status(404).json({ message: "회원 정보가 없습니다." });
+    }
+
+    // 회원 상태를 '탈퇴 요청 중'으로 변경
+    user.status = 'requested_leave';
+    await user.save();
+
+    return res.status(200).json({ success: "회원 탈퇴 요청이 완료되었습니다." });
+  } catch (error) {
+    console.error("회원 탈퇴 요청 오류:", error);
+    return res.status(500).json({ error: "회원 탈퇴 요청이 실패하였습니다." });
+  }
+};
 
 module.exports = {
   createUser,
   getAllUsers,
   approveUser,
-  deleteUser
+  deleteUser,
+  requestDeleteUser
 };
