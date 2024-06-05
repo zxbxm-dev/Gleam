@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from './recoil/atoms';
 import PrivateRoute from "./layout/PrivateRoute";
 import ProtectedRoute from "./layout/ProtectedRoute";
+import PublicRoute from "./layout/PublicRoute";
 import {
   Login,
   Announcement,
@@ -50,11 +51,14 @@ function App() {
       <Router>
         <Routes>
           <Route path="/*" element={<PageNotFound />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/findId" element={<FindID />} />
-          <Route path="/resetpw" element={<ResetPw />} />
-          <Route path="/editres" element={<EditRegis />} />
+          
+          <Route element={<PublicRoute isAllowed={isLogin} redirectPath="/" />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/findId" element={<FindID />} />
+            <Route path="/resetpw" element={<ResetPw />} />
+            <Route path="/editres" element={<EditRegis />} />
+          </Route>
 
           <Route element={<PrivateRoute isAllowed={isLogin} />}>
             <Route element={<BaseLayout />}>
