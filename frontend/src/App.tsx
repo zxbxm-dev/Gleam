@@ -41,15 +41,15 @@ function App() {
   const isLogin = localStorage.getItem('isLoggedIn') === 'true';
   const isPerformance = user.username === '김효은' || user.username === '이정훈' || user.username === '이유정'; // 인사평가제출
   const isHumanResources = user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정'; // 인사정보관리
-  const isAttendance = user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정' || user.spot === '연구실장';
-  const isOperating = user.team === '지원팀' || user.username === '이정훈';
-  const isAuthorized = user.team === '관리팀' || user.username === '이정훈';
+  const isAttendance = user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정' || user.spot === '연구실장'; // 근태관리
+  const isOperating = user.team === '지원팀' || user.username === '이정훈'; // 운영비관리
+  const isAuthorized = user.team === '관리팀' || user.username === '이정훈'; // 회원관리
 
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/404" element={<PageNotFound />} />
+          <Route path="/*" element={<PageNotFound />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/findId" element={<FindID />} />
