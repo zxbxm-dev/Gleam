@@ -81,6 +81,7 @@ const UserManagement = () => {
     console.log("탈퇴 사용자:", userID);
     EditChainLinker(userID)
       .then((response) => {
+        queryClient.invalidateQueries("usermanagement");
         console.log("회원 탈퇴 완료", response);
       })
       .catch((error) => {

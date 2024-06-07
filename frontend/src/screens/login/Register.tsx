@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./Register.scss";
 import { Login_Logo, ArrowDown, ArrowUp } from "../../assets/images/index";
 import { RegisterServices } from "../../services/login/RegisterServices";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomModal from '../../components/modal/CustomModal';
 
 const Register = () => {
+	let navigate = useNavigate();
 	const [selectedOptions, setSelectedOptions] = useState({
 		company: '',
 		department: '',
@@ -35,6 +36,7 @@ const Register = () => {
 
 	const handleFooter1Click = () => {
 		setRegistModalOpen(false);
+		navigate('/login');
 	};
 
 

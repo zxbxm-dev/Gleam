@@ -25,7 +25,6 @@ const Login = () => {
 const handleLogin = async () => {
   try {
     const response = await LoginServices(userID, password);
-    console.log(response)
     if (response.data.pendingApproval) {
       setModalContent(response.data.message);
       setLoginModalOpen(true);
