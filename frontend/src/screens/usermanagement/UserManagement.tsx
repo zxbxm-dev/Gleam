@@ -1,5 +1,5 @@
 import "./UserManagement.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
@@ -19,7 +19,7 @@ const UserManagement = () => {
   const [approvedusermanages, setApprovedUserManages] = useState<any[]>([]);
   const [isSignModalOpen, setSignModalOpen] = useState(false);
   const [isDelModalOpen, setDelModalOpen] = useState(false);
-  const postPerPage: number = 10;
+  const [postPerPage, setPostPerPage] = useState<number>(10);
   const [activeTab, setActiveTab] = useState(0);
   const [clickIdx, setClickIdx] = useState<string>('');
 
@@ -45,6 +45,24 @@ const UserManagement = () => {
     }
   });
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setPostPerPage(10); // Desktop
+      } else if (window.innerWidth >= 992) {
+        setPostPerPage(8); // Laptop
+      } else {
+        setPostPerPage(8);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handlePageChange = (page: number) => {
     setPage(page);
