@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "./Approval.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -17,7 +17,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const DetailDocument = () => {
-  let navigate = useNavigate();
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [memoState, setMemoState] = useState<string>('');
