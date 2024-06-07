@@ -89,7 +89,7 @@ const handleLogin = async () => {
         size='lg'
         value={userID}
         onChange={(e) => setuserID(e.target.value)}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyPress}
         className='InputClass'
         focusBorderColor='#746E58.400'
       />
