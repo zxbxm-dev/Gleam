@@ -1,5 +1,5 @@
 import "./UserManagement.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
@@ -19,7 +19,7 @@ const UserManagement = () => {
   const [approvedusermanages, setApprovedUserManages] = useState<any[]>([]);
   const [isSignModalOpen, setSignModalOpen] = useState(false);
   const [isDelModalOpen, setDelModalOpen] = useState(false);
-  const postPerPage: number = 10;
+  const [postPerPage, setPostPerPage] = useState<number>(10);
   const [activeTab, setActiveTab] = useState(0);
   const [clickIdx, setClickIdx] = useState<string>('');
 
@@ -45,6 +45,24 @@ const UserManagement = () => {
     }
   });
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setPostPerPage(10); // Desktop
+      } else if (window.innerWidth >= 992) {
+        setPostPerPage(8); // Laptop
+      } else {
+        setPostPerPage(8);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -137,7 +155,7 @@ const UserManagement = () => {
                             <td>{usermanage.company}</td>
                             <td>{usermanage.department}</td>
                             <td>{usermanage.position}</td>
-                            <td>{usermanage.createdAt}</td>
+                            <td>{new Date(usermanage.createdAt).toISOString().substring(0, 10)}</td>
                             <td>
                               <button className="edits_button" onClick={() => { setSignModalOpen(true); setClickIdx(usermanage.userId) }}>승인</button>
                               <button className="dels_button" onClick={() => { setDelModalOpen(true); setClickIdx(usermanage.userId) }}>삭제</button>
@@ -194,7 +212,7 @@ const UserManagement = () => {
                             <td>{usermanage.company}</td>
                             <td>{usermanage.department}</td>
                             <td>{usermanage.position}</td>
-                            <td>{usermanage.entering}</td>
+                            <td>{new Date(usermanage.entering).toISOString().substring(0, 10)}</td>
                             <td>
                               <button
                                 className="dels_button"

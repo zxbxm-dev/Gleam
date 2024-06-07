@@ -27,6 +27,8 @@ const handleLogin = async () => {
     const response = await LoginServices(userID, password);
     
     const userData = response.data.user;
+    const enteringDateString = new Date(userData.entering).toISOString().substring(0, 10);
+
     const userStateData = {
       id: userID,
       username: userData.username,
@@ -38,7 +40,7 @@ const handleLogin = async () => {
       team: userData.team,
       position: userData.position,
       spot: userData.spot,
-      entering:userData.entering
+      entering: enteringDateString
     };
 
     setUserState(userStateData);
