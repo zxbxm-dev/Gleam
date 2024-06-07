@@ -51,15 +51,14 @@ function App() {
       <Router>
         <Routes>
           <Route path="/*" element={<PageNotFound />} />
-          
+
           <Route element={<PublicRoute isAllowed={isLogin} redirectPath="/" />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/findId" element={<FindID />} />
             <Route path="/resetpw" element={<ResetPw />} />
-            <Route path="/editres" element={<EditRegis />} />
           </Route>
-
+          <Route path="/editres" element={<EditRegis />} />
           <Route element={<PrivateRoute isAllowed={isLogin} />}>
             <Route element={<BaseLayout />}>
               <Route path="/" element={<Announcement />} />
@@ -77,7 +76,7 @@ function App() {
 
               {/* 보고서 */}
               <Route path="/report" element={<Report />} />
-              <Route path="/writeReport" element={<WriteReport />} /> 
+              <Route path="/writeReport" element={<WriteReport />} />
 
               {/* 보고서 결재 */}
               <Route path="/approval" element={<Approval />} />
@@ -105,12 +104,12 @@ function App() {
                 <Route path="/human-resources" element={<HumanResource />} />
               </Route>
 
-              <Route element={<ProtectedRoute isAllowed={isOperating} redirectPath="/" />}>  
+              <Route element={<ProtectedRoute isAllowed={isOperating} redirectPath="/" />}>
                 {/* 운영비 관리 */}
                 <Route path="/operating-manage" element={<Operating />} />
               </Route>
 
-              <Route element={<ProtectedRoute isAllowed={isAuthorized} redirectPath="/" />}>  
+              <Route element={<ProtectedRoute isAllowed={isAuthorized} redirectPath="/" />}>
                 {/* 회원 관리 */}
                 <Route path="/user-management" element={<UserManagement />} />
               </Route>
