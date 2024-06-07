@@ -137,7 +137,7 @@ const UserManagement = () => {
                             <td>{usermanage.company}</td>
                             <td>{usermanage.department}</td>
                             <td>{usermanage.position}</td>
-                            <td>{usermanage.createdAt}</td>
+                            <td>{new Date(usermanage.createdAt).toISOString().substring(0, 10)}</td>
                             <td>
                               <button className="edits_button" onClick={() => { setSignModalOpen(true); setClickIdx(usermanage.userId) }}>승인</button>
                               <button className="dels_button" onClick={() => { setDelModalOpen(true); setClickIdx(usermanage.userId) }}>삭제</button>
@@ -194,7 +194,7 @@ const UserManagement = () => {
                             <td>{usermanage.company}</td>
                             <td>{usermanage.department}</td>
                             <td>{usermanage.position}</td>
-                            <td>{usermanage.entering}</td>
+                            <td>{new Date(usermanage.entering).toISOString().substring(0, 10)}</td>
                             <td>
                               <button
                                 className="dels_button"
