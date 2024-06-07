@@ -93,7 +93,7 @@ const findUsername = async (req, res) => {
 
 // 비밀번호 재설정
 const resetPassword = async (req, res) => {
-  const { userID, username, phoneNumber, spot, question1, question2, newPassword } = req.body;
+  const { userID, username, phoneNumber, spot, question1, question2, resetpassword } = req.body;
 
   try {
     const condition = {
@@ -111,7 +111,7 @@ const resetPassword = async (req, res) => {
 
     if (user) {
       // 새로운 비밀번호 해시 생성
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const hashedPassword = await bcrypt.hash(resetpassword, 10);
 
       // 사용자의 비밀번호 업데이트
       await User.update({ password: hashedPassword }, { where: condition });

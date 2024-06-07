@@ -62,7 +62,7 @@ const handleLogin = async () => {
           setModalContent('사용자를 찾을 수 없습니다.');
           break;
         case 500:
-          setModalContent('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+          setModalContent('서버 오류가 발생했습니다. 개발팀에 문의해 주세요.');
           break;
         default:
           setModalContent('로그인에 실패했습니다.');
