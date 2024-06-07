@@ -1,7 +1,7 @@
 import api from "../../api/auth";
 
-const LoginServices = (userID, password) => {
-    return api.post("/login", { userID, password });
+const LoginServices = (username, password) => {
+    return api.post("/login", { username, password });
 };
 
 const LogoutServices = (userID) => {
