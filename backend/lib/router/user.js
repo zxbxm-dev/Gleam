@@ -13,6 +13,8 @@ module.exports = app => {
 
     router.post('/login', signinController.login);
     router.post('/postFindID', signinController.findUsername);
+    router.post('/postresetpw', signinController.resetPassword);
+
 
     app.use('/api', router);
 };
