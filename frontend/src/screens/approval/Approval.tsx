@@ -10,12 +10,15 @@ import {
 } from "../../assets/images/index";
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 
 import { useQuery } from "react-query";
 import { CheckApproval } from "../../services/approval/ApprovalServices";
 
 const Approval = () => {
   let navigate = useNavigate();
+  const user = useRecoilValue(userState);
   const [page, setPage] = useState<number>(1);
   const [selectedTab, setSelectedTab] = useState<string>("myDocuments");
   const postPerPage: number = 10;
@@ -794,9 +797,14 @@ const Approval = () => {
               <div className={`${selectedTab === "completed" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("completed")}>
                 <span>결재 완료 문서</span> <span className="document_count">{compleDocuments.length}</span>
               </div>
-              <div className={`${selectedTab === "vacation" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("vacation")}>
-                <span>휴가문서관리</span> <span className="document_count">{vacations.length}</span>
-              </div>
+              {user.username === '우현지' ? (
+                <div className={`${selectedTab === "vacation" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("vacation")}>
+                  <span>휴가문서관리</span> <span className="document_count">{vacations.length}</span>
+                </div>
+              )
+              :
+                <></>
+              }
             </div>
           </div>
 

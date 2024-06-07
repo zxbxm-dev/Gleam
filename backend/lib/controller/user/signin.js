@@ -94,15 +94,7 @@ const findUsername = async (req, res) => {
 
 // 비밀번호 재설정
 const resetPassword = async (req, res) => {
-  const {
-    userID,
-    username,
-    phoneNumber,
-    spot,
-    question1,
-    question2,
-    resetpassword,
-  } = req.body;
+  const { userID, username, phoneNumber, spot, question1, question2, resetpassword } = req.body;
 
   try {
     const condition = {

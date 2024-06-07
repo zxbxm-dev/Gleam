@@ -34,7 +34,7 @@ const Employment = () => {
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [clickIdx, setClickIdx] = useState<number | null>(null);
-  const postPerPage: number = 10;
+  const [postPerPage, setPostPerPage] = useState<number>(10);
   const [form, setForm] = useState<{
     title: string;
     url: string;
@@ -44,6 +44,25 @@ const Employment = () => {
     url: '',
     site: '',
   })
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setPostPerPage(10); // Desktop
+      } else if (window.innerWidth >= 992) {
+        setPostPerPage(8); // Laptop
+      } else {
+        setPostPerPage(8);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleTitleChange = (event: any) => {
     setForm({...form, title: event.target.value})

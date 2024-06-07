@@ -6,13 +6,13 @@ const CheckUserManagement = () => {
 }
 
 // 회원가입 승인 요청 승인
-const ApproveUserManagement = (user_id) => {
-  return api.post(`/approveUserManagement/${user_id}`);
+const ApproveUserManagement = (userID) => {
+  return api.post(`/approveUserManagement/${userID}`);
 }
 
 // 회원가입 승인 요청 거부
-const DeleteUserManagement = (user_id) => {
-  return api.delete(`/deleteUserManagement/${user_id}`);
+const DeleteUserManagement = (userID) => {
+  return api.delete(`/deleteUserManagement/${userID}`);
 }
 
 //회원 탈퇴 요청
