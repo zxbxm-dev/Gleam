@@ -15,6 +15,9 @@ module.exports = app => {
     router.post('/postFindID', signinController.findUsername);
     router.post('/postresetpw', signinController.resetPassword);
 
+    const upload = signinController.upload;
+    router.post('/postResEditData', upload.fields([{ name: 'attachment' }, { name: 'sign' }]), signinController.modifyMemberInfo);
+
 
     app.use('/api', router);
 };

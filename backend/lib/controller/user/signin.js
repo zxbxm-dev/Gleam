@@ -1,7 +1,11 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 const Models = require("../../models");
 const User = Models.userData;
-const bcrypt = require("bcrypt");
+
 require("dotenv").config();
 
 const secretKey = process.env.DB_DATABASE;
@@ -94,7 +98,15 @@ const findUsername = async (req, res) => {
 
 // 비밀번호 재설정
 const resetPassword = async (req, res) => {
-  const { userID, username, phoneNumber, spot, question1, question2, resetpassword } = req.body;
+  const {
+    userID,
+    username,
+    phoneNumber,
+    spot,
+    question1,
+    question2,
+    resetpassword,
+  } = req.body;
 
   try {
     const condition = {
@@ -133,21 +145,44 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// 회원정보 수정
+// multer 설정 (이미지 파일 업로드)
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = '../../img';
+    // 경로에 디렉토리가 없는 경우 생성
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+const upload = multer({ storage: storage });
+
 const modifyMemberInfo = async (req, res) => {
   const {
-    userId,
+    userID,
     phoneNumber,
     password,
     company,
     department,
     team,
     spot,
-    attachment,
-    Sign,
   } = req.body;
 
   try {
+    // 이미지 파일 업로드 처리
+    let attachmentPath = null;
+    let signPath = null;
+    if (req.file) {
+      attachmentPath = req.file.path;
+    }
+    if (req.file2) {
+      signPath = req.file2.path;
+    }
+
     // 회원 정보 업데이트
     const updatedUser = await User.update(
       {
@@ -157,10 +192,10 @@ const modifyMemberInfo = async (req, res) => {
         department: department,
         team: team,
         spot: spot,
-        attachment: attachment,
-        Sign: Sign,
+        attachment: attachmentPath,
+        Sign: signPath,
       },
-      { where: { userId: userId } }
+      { where: { userId: userID } }
     );
 
     if (updatedUser) {
@@ -180,5 +215,6 @@ module.exports = {
   login,
   findUsername,
   resetPassword,
-  modifyMemberInfo,
+  modifyMemberInfo, 
+  upload
 };
