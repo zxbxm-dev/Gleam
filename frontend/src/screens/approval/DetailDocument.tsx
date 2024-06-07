@@ -103,7 +103,7 @@ const DetailDocument = () => {
       </div>
       <div className='oper_header_right'>
         <button className='oper_edit_button'>확인</button>
-        <button className='oper_download_button' onClick={exportToPDF}>인쇄하기</button>
+        <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
         <button className='oper_delete_button'>삭제</button>
       </div>
 
