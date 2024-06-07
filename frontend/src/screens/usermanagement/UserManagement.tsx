@@ -50,9 +50,9 @@ const UserManagement = () => {
     setPage(page);
   }
 
-  const handleSign = (userId: string) => {
-    console.log(userId)
-    ApproveUserManagement(userId)
+  const handleSign = (userID: string) => {
+    console.log(userID)
+    ApproveUserManagement(userID)
       .then((response) => {
         queryClient.invalidateQueries("usermanagement");
         console.log("회원관리 승인이 완료되었습니다.", response);
@@ -64,8 +64,8 @@ const UserManagement = () => {
     setSignModalOpen(false);
   }
 
-  const handleDelete = (userId: string) => {
-    DeleteUserManagement(userId)
+  const handleDelete = (userID: string) => {
+    DeleteUserManagement(userID)
       .then((response) => {
         queryClient.invalidateQueries("usermanagement");
         console.log("회원관리 삭제가 완료되었습니다.", response);
@@ -132,7 +132,7 @@ const UserManagement = () => {
                       {pendingusermanages
                         .slice((page - 1) * postPerPage, page * postPerPage)
                         .map((usermanage) => (
-                          <tr key={usermanage.userId} className="board_content">
+                          <tr key={usermanage.userID} className="board_content">
                             <td>{usermanage.username}</td>
                             <td>{usermanage.company}</td>
                             <td>{usermanage.department}</td>
@@ -189,7 +189,7 @@ const UserManagement = () => {
                       {approvedusermanages
                         .slice((page - 1) * postPerPage, page * postPerPage)
                         .map((usermanage) => (
-                          <tr key={usermanage.userId} className="board_content">
+                          <tr key={usermanage.userID} className="board_content">
                             <td>{usermanage.username}</td>
                             <td>{usermanage.company}</td>
                             <td>{usermanage.department}</td>
