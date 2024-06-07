@@ -58,8 +58,9 @@ function App() {
             <Route path="/findId" element={<FindID />} />
             <Route path="/resetpw" element={<ResetPw />} />
           </Route>
-          <Route path="/editres" element={<EditRegis />} />
+
           <Route element={<PrivateRoute isAllowed={isLogin} />}>
+            <Route path="/editres" element={<EditRegis />} />
             <Route element={<BaseLayout />}>
               <Route path="/" element={<Announcement />} />
               <Route path="/writeAnnounce" element={<WriteAnnounce />} />
