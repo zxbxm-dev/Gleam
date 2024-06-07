@@ -47,7 +47,7 @@ const Employment = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1300) {
+      if (window.innerWidth >= 1600) {
         setPostPerPage(10); // Desktop
       } else if (window.innerWidth >= 992) {
         setPostPerPage(8); // Laptop
