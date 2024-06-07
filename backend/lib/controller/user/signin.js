@@ -8,10 +8,10 @@ const secretKey = process.env.DB_DATABASE;
 
 //로그인
 const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { userID, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { userId: username } });
+    const user = await User.findOne({ where: { userId: userID } });
 
     if (user) {
       const match = await bcrypt.compare(password, user.password);
@@ -19,7 +19,7 @@ const login = async (req, res) => {
         // 사용자가 미승인 상태인 경우
         if (user.status === "pending") {
           return res.status(401).json({
-            error: "승인 대기 중입니다. 승인 완료 후 로그인하세요."
+            error: "승인 대기 중입니다. 승인 완료 후 로그인하세요.",
           });
         }
 
@@ -94,7 +94,15 @@ const findUsername = async (req, res) => {
 
 // 비밀번호 재설정
 const resetPassword = async (req, res) => {
-  const { userID, username, phoneNumber, spot, question1, question2, reestpassword } = req.body;
+  const {
+    userID,
+    username,
+    phoneNumber,
+    spot,
+    question1,
+    question2,
+    resetpassword,
+  } = req.body;
 
   try {
     const condition = {
@@ -103,37 +111,82 @@ const resetPassword = async (req, res) => {
       phoneNumber: phoneNumber,
       spot: spot,
       question1: question1,
-      question2: question2
+      question2: question2,
     };
 
-    console.log('비밀번호설정 :'+condition);
+    console.log("비밀번호설정 :" + condition);
 
     const user = await User.findOne({ where: condition });
 
     if (user) {
       // 새로운 비밀번호 해시 생성
-      const hashedPassword = await bcrypt.hash(reestpassword, 10);
+      const hashedPassword = await bcrypt.hash(resetpassword, 10);
 
       // 사용자의 비밀번호 업데이트
       await User.update({ password: hashedPassword }, { where: condition });
 
-      return res.status(200).json({ success: "비밀번호가 성공적으로 재설정되었습니다." });
+      return res
+        .status(200)
+        .json({ success: "비밀번호가 성공적으로 재설정되었습니다." });
     } else {
-      return res.status(404).json({ error: "입력된 정보로 사용자를 찾을 수 없습니다." });
+      return res
+        .status(404)
+        .json({ error: "입력된 정보로 사용자를 찾을 수 없습니다." });
     }
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "비밀번호 재설정 서버 오류", error });
+    return res
+      .status(500)
+      .json({ message: "비밀번호 재설정 서버 오류", error });
   }
 };
 
-//회원정보 수정
-const test = async(res,req) => {
-  const {password, } = req.body
-}
+// 회원정보 수정
+const modifyMemberInfo = async (req, res) => {
+  const {
+    userId,
+    phoneNumber,
+    password,
+    company,
+    department,
+    team,
+    spot,
+    attachment,
+    Sign,
+  } = req.body;
+
+  try {
+    // 회원 정보 업데이트
+    const updatedUser = await User.update(
+      {
+        password: password,
+        phoneNumber: phoneNumber,
+        company: company,
+        department: department,
+        team: team,
+        spot: spot,
+        attachment: attachment,
+        Sign: Sign,
+      },
+      { where: { userId: userId } }
+    );
+
+    if (updatedUser) {
+      return res
+        .status(200)
+        .json({ success: "회원정보가 성공적으로 수정되었습니다." });
+    } else {
+      return res.status(404).json({ error: "회원을 찾을 수 없습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "회원정보 수정 서버 오류", error });
+  }
+};
 
 module.exports = {
   login,
   findUsername,
   resetPassword,
+  modifyMemberInfo,
 };
