@@ -50,7 +50,7 @@ const CustomPopover: React.FC<CustomPopoverProps> = ({
         </div>
       </PopoverTrigger>
       <Portal>
-        <PopoverContent width='400px' height='200px' border='0' borderRadius='1px' marginTop='10px' marginRight='10px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
+        <PopoverContent width='400px' height='200px' border='0' borderRadius='1px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
           <PopoverHeader height='34px' color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' fontSize='14px' borderTopRightRadius='5px' borderTopLeftRadius='5px'>{dept} - {team}</PopoverHeader>
           <PopoverCloseButton color='white' />
           <PopoverBody display='flex' flexDirection='row' alignItems='center' borderBottomLeftRadius='5px' borderBottomRightRadius='5px'>
