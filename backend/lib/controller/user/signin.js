@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const secretKey = process.env.DB_DATABASE;
 
+//로그인
 const login = async (req, res) => {
   const { username, password } = req.body;
 
@@ -93,7 +94,7 @@ const findUsername = async (req, res) => {
 
 // 비밀번호 재설정
 const resetPassword = async (req, res) => {
-  const { userID, username, phoneNumber, spot, question1, question2, newPassword } = req.body;
+  const { userID, username, phoneNumber, spot, question1, question2, reestpassword } = req.body;
 
   try {
     const condition = {
@@ -105,13 +106,13 @@ const resetPassword = async (req, res) => {
       question2: question2
     };
 
-    console.log('비밀번호설정 :'+condition)
+    console.log('비밀번호설정 :'+condition);
 
     const user = await User.findOne({ where: condition });
 
     if (user) {
       // 새로운 비밀번호 해시 생성
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const hashedPassword = await bcrypt.hash(reestpassword, 10);
 
       // 사용자의 비밀번호 업데이트
       await User.update({ password: hashedPassword }, { where: condition });
@@ -126,8 +127,13 @@ const resetPassword = async (req, res) => {
   }
 };
 
+//회원정보 수정
+const test = async(res,req) => {
+  const {password, } = req.body
+}
+
 module.exports = {
   login,
   findUsername,
-  resetPassword
+  resetPassword,
 };
