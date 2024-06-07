@@ -25,11 +25,7 @@ const Login = () => {
 const handleLogin = async () => {
   try {
     const response = await LoginServices(userID, password);
-    if (response.data.pendingApproval) {
-      setModalContent(response.data.message);
-      setLoginModalOpen(true);
-      return;
-    }
+    
     const userData = response.data.user;
     const userStateData = {
       id: userID,
@@ -57,6 +53,9 @@ const handleLogin = async () => {
       switch (status) {
         case 401:
           setModalContent('비밀번호가 일치하지 않습니다.');
+          break;
+        case 403:
+          setModalContent('승인 대기 중입니다. 승인 완료 후 로그인하세요.');
           break;
         case 404:
           setModalContent('사용자를 찾을 수 없습니다.');
