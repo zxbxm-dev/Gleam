@@ -25,6 +25,12 @@ const Login = () => {
 const handleLogin = async () => {
   try {
     const response = await LoginServices(userID, password);
+    console.log(response)
+    if (response.data.pendingApproval) {
+      setModalContent(response.data.message);
+      setLoginModalOpen(true);
+      return;
+    }
     const userData = response.data.user;
     const userStateData = {
       id: userID,
@@ -42,7 +48,7 @@ const handleLogin = async () => {
 
     setUserState(userStateData);
     localStorage.setItem('usertoken', response.data.token);
-    localStorage.setItem('isLoggedIn', response.data.loggedIn);
+    localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('userState', JSON.stringify(userStateData));
 
     navigate('/');
