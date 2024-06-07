@@ -3,6 +3,8 @@ import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/atoms';
 
 import { useQuery } from 'react-query';
 import { CheckAnnual } from '../../../services/attendance/AttendanceServices';
@@ -11,6 +13,7 @@ type Member = [string, number, number, number, string[], string, string, string,
 type MemberRD = [string, number, number, number, string[], string, string, string, string];
 
 const AnnualManage = () => {
+  const user = useRecoilValue(userState);
   const [editMode, setEditMode] = useState(false);
   const today = new Date().toISOString().split('T')[0];
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -473,15 +476,17 @@ const AnnualManage = () => {
           </button>
         }
         <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
-        {selectedScreen === 'R&D' ? (
-          <button className='rnd_company_button' onClick={handleScreenChange}>
-            R&D 센터
-          </button>
-        ) : (
-          <button className='head_company_button' onClick={handleScreenChange}>
-            본사
-          </button>
-        )}
+        {user.username === '이정훈' ? (
+          selectedScreen === 'R&D' ? (
+            <button className='rnd_company_button' onClick={handleScreenChange}>
+              R&D 센터
+            </button>
+          ) : (
+            <button className='head_company_button' onClick={handleScreenChange}>
+              본사
+            </button>
+          )
+        ) : null}
       </div>
       
       <div className="content_container">

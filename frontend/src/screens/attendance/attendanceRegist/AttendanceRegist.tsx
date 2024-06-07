@@ -6,6 +6,8 @@ import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/atoms';
 
 import { useQuery } from "react-query";
 import { CheckAttendance, WriteAttendance } from "../../../services/attendance/AttendanceServices";
@@ -28,6 +30,7 @@ const months = [
 type Member = [string, string, string];
 
 const AttendanceRegist = () => {
+  const user = useRecoilValue(userState);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [isAddAttend, setAddAttend] = useState(false);
   const [selectedScreen, setSelectedScreen] = useState('R&D');
@@ -934,15 +937,17 @@ const AttendanceRegist = () => {
               />
             </label>
           </button>
-          {selectedScreen === 'R&D' ? (
-            <button className='rnd_company_button' onClick={handleScreenChange}>
-              R&D 센터
-            </button>
-          ) : (
-            <button className='head_company_button' onClick={handleScreenChange}>
-              본사
-            </button>
-          )}
+          {user.username === '이정훈' ? (
+            selectedScreen === 'R&D' ? (
+              <button className='rnd_company_button' onClick={handleScreenChange}>
+                R&D 센터
+              </button>
+            ) : (
+              <button className='head_company_button' onClick={handleScreenChange}>
+                본사
+              </button>
+            )
+          ) : null}
         </div>
 
         {selectedScreen === 'R&D' ? (
