@@ -38,11 +38,21 @@ const Sidebar = () => {
     if (menu === 'orgculture') {
       setIsOrgCultureMenuOpen(!isOrgCultureMenuOpen);
     }
-
+    
     if (menu !== 'performance') {
       setIsSelectMember(['', '', '', '']);
-    }
+      }
 
+    if (menu !== 'orgculture' && menu !== 'announcement' && menu !== 'regulations' && menu !== 'orgchart') {
+      setIsOrgCultureMenuOpen(false);
+    }
+    if (menu !== 'performance' && menu !== 'submit-perform' && menu !== 'manage-perform') {
+      setIsPerformanceMenuOpen(false);
+    }
+    if (menu !== 'attendance' && menu !== 'annual-manage' && menu !== 'attendance-regist') {
+      setIsAttendanceMenuOpen(false);
+    }
+    
     setIsHrSidebarVisible(false);
   };
 

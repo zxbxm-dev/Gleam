@@ -125,20 +125,20 @@ const Operating = () => {
   }
 
 
-  const [common811Team, setCommon811Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common812Team, setCommon812Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [common811Team, setCommon811Team] = useState<string[][]>([['81101', '비품-사무용가구', '3,000', ''],['', '', '', ''],['', '', '', '']]);
+  const [common812Team, setCommon812Team] = useState<string[][]>([['81102', '비품-업무용비품', '6,000', ''],['', '', '', ''],['', '', '', '']]);
   const [common813Team, setCommon813Team] = useState<string[][]>([['', '', '', ''],['', '', '', '']]);
   const [common814Team, setCommon814Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   const [common815Team, setCommon815Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   const [common818Team, setCommon818Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   const [common819Team, setCommon819Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [managementTeam, setManagementTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [supportTeam, setSupportTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [devOneTeam, setDevOneTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [devTwoTeam, setDevTwoTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [blockchainTeam, setBlockChainTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [managementTeam, setManagementTeam] = useState<string[][]>([['81101', '비품-사무용가구', '1,000', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [supportTeam, setSupportTeam] = useState<string[][]>([['81101', '비품-사무용가구', '2,000', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [devOneTeam, setDevOneTeam] = useState<string[][]>([['81101', '비품-사무용가구', '3,000', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [devTwoTeam, setDevTwoTeam] = useState<string[][]>([['81101', '비품-사무용가구', '4,000', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [blockchainTeam, setBlockChainTeam] = useState<string[][]>([['81101', '비품-사무용가구', '5,000', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [designTeam, setDesignTeam] = useState<string[][]>([['81101', '비품-사무용가구', '6,000', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [planningTeam, setPlanningTeam] = useState<string[][]>([['81101', '비품-사무용가구', '7,000', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
   
   const [common811Cost, setCommon811Cost] = useState<number>(0);
   const [common812Cost, setCommon812Cost] = useState<number>(0);
@@ -154,6 +154,30 @@ const Operating = () => {
   const [blockchainCost, setBlockChainCost] = useState<number>(0);
   const [designCost, setDesignCost] = useState<number>(0);
   const [planningCost, setPlanningnCost] = useState<number>(0);
+
+  const calculateCost = (teamData: string[][]) => {
+    return teamData.reduce((acc: number, item: string[]) => {
+      const cost = parseInt(item[2].replace(/,/g, '')) || 0;
+      return acc + cost;
+    }, 0);
+  };
+
+  useEffect(() => {
+    setCommon811Cost(calculateCost(common811Team));
+    setCommon812Cost(calculateCost(common812Team));
+    setCommon813Cost(calculateCost(common813Team));
+    setCommon814Cost(calculateCost(common814Team));
+    setCommon815Cost(calculateCost(common815Team));
+    setCommon818Cost(calculateCost(common818Team));
+    setCommon819Cost(calculateCost(common819Team));
+    setManagementCost(calculateCost(managementTeam));
+    setSupportCost(calculateCost(supportTeam));
+    setDevOneCost(calculateCost(devOneTeam));
+    setDevTwoCost(calculateCost(devTwoTeam));
+    setBlockChainCost(calculateCost(blockchainTeam));
+    setDesignCost(calculateCost(designTeam));
+    setPlanningnCost(calculateCost(planningTeam));
+  }, [common811Team, common812Team, common813Team, common814Team, common815Team, common818Team, common819Team, managementTeam, supportTeam, devOneTeam, devTwoTeam, blockchainTeam, designTeam, planningTeam]);
 
   const addRow = (team: 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
     let newTeam: string[][];
