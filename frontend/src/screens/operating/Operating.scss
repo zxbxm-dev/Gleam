@@ -118,6 +118,11 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 1px #746E58 inset;
+      }
     }
 
     .left-align {
@@ -212,19 +217,29 @@
 
 
 .dropdown_select {
-  width: 100%;
+  width: 102.5%;
   height: 100%;
   cursor: pointer;
   box-sizing: border-box;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px #746E58 inset;
+  }
 }
 
 .dropdown_input {
   width: 100%;
   height: 100%;
   text-align: center;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px #746E58 inset;
+  }
 }
 
 
