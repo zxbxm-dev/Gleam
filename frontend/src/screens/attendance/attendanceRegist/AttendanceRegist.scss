@@ -506,6 +506,14 @@
   }
 }
 
+.attend-skeleton {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
 @include laptop {
   .container_attendance {
     font-family: var(--font-family-Noto-R);
