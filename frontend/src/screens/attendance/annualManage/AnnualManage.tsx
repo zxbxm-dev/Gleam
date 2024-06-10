@@ -11,6 +11,9 @@ import { CheckAnnual } from '../../../services/attendance/AttendanceServices';
 
 type Member = [string, number, number, number, string[], string, string, string, string];
 type MemberRD = [string, number, number, number, string[], string, string, string, string];
+type TeamOrderType = {
+  [key: string]: string[];
+};
 
 const AnnualManage = () => {
   const user = useRecoilValue(userState);
@@ -127,6 +130,12 @@ const AnnualManage = () => {
 
   useEffect(() => {
     const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
+    const teamOrder: TeamOrderType = {
+      '블록체인 사업부': ['블록체인 1팀'],
+      '개발부': ['개발 1팀', '개발 2팀'],
+      '마케팅부': ['디자인팀', '기획팀'],
+      '관리부': ['관리팀', '지원팀'],
+    };
 
     const sortedMembers = [...initialMembers].sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[7]);
@@ -135,8 +144,14 @@ const AnnualManage = () => {
       if (deptAIndex < deptBIndex) return -1;
       if (deptAIndex > deptBIndex) return 1;
 
-      const nameA = a[8];
-      const nameB = b[8];
+      const teamAIndex = teamOrder[a[7]].indexOf(a[8]);
+      const teamBIndex = teamOrder[b[7]].indexOf(b[8]);
+
+      if (teamAIndex < teamBIndex) return -1;
+      if (teamAIndex > teamBIndex) return 1;
+
+      const nameA = a[0];
+      const nameB = b[0];
       return nameA.localeCompare(nameB);
     });
 
