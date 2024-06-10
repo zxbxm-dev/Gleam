@@ -6,6 +6,9 @@ import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import AttendSkeleton from "./AttendSkeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
+import { useForm } from 'react-hook-form';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
 
@@ -31,6 +34,7 @@ type Member = [string, string, string];
 
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
+  const [isLoading, setIsLoading] = useState(true);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [isAddAttend, setAddAttend] = useState(false);
   const [selectedScreen, setSelectedScreen] = useState('R&D');
@@ -38,18 +42,20 @@ const AttendanceRegist = () => {
   const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
+  // 모달 창 입력값
+  const { register, handleSubmit, reset } = useForm();
 
   const initialMembers: Member[] = useMemo(() => [
-    ['권상원', '블록체인 사업부', '블록체인 1팀'],
+    ['권상원', '블록체인 사업부', ''],
     ['김도환', '블록체인 사업부', '블록체인 1팀'],
     ['권준우', '블록체인 사업부', '블록체인 1팀'],
-    ['진유빈', '개발부', '개발 1팀'],
+    ['진유빈', '개발부', ''],
     ['장현지', '개발부', '개발 1팀'],
     ['구민석', '개발부', '개발 1팀'],
     ['박세준', '개발부', '개발 1팀'],
     ['변도일', '개발부', '개발 2팀'],
     ['이로운', '개발부', '개발 2팀'],
-    ['김현지', '마케팅부', '디자인팀'],
+    ['김현지', '마케팅부', ''],
     ['서주희', '마케팅부', '디자인팀'],
     ['전아름', '마케팅부', '기획팀'],
     ['함다슬', '마케팅부', '기획팀'],
@@ -70,7 +76,7 @@ const AttendanceRegist = () => {
     ['박소연', '블록체인 연구실', 'AI 개발팀'],
     ['김경현', '블록체인 연구실', 'AI 개발팀'],
   ], []);
-
+  
   useEffect(() => {
     const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
 
@@ -172,26 +178,7 @@ const AttendanceRegist = () => {
     });
     setRowsDataRD(rows);
   }, [membersRD]);
-
-  // 모달 창 입력값
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [otherValue, setOtherValue] = useState('');
-
-  const handleStartTimeChange = (e: any) => {
-    setStartTime(e.target.value);
-  };
-
-  const handleEndTimeChange = (e: any) => {
-    setEndTime(e.target.value);
-  };
-
-  const handleOtherValueChange = (e: any) => {
-    setOtherValue(e.target.value);
-  };
-
-
-
+ 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -891,13 +878,13 @@ const AttendanceRegist = () => {
 
 
   // 출근부 데이터 작성
-  const handleSubmit = () => {
+  const onSubmit = (data: any) => {
     setAddAttend(false);
 
     const formData = {
       name: selectedDateInfo.name,
       date: `${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`,
-      data: [startTime, endTime, otherValue],
+      data: [data.startTime, data.endTime, data.otherValue],
     }
 
     console.log(formData)
@@ -909,11 +896,17 @@ const AttendanceRegist = () => {
         console.log('출근부 데이터 전송 실패')
       })
     
-    setStartTime('');
-    setEndTime('');
-    setOtherValue('');
+    reset();
   }
   console.log(rowsData)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 10);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="content">
@@ -962,29 +955,37 @@ const AttendanceRegist = () => {
               {yearData.map(monthData => (
                 <TabPanel key={monthData.month} className="container_attendance">
                   <div className="Excel" id="table-to-xls">
-                    <table className="Explan">
-                      <thead>
-                        <tr>
-                          <td className="TopS" colSpan={2}>부서</td>
-                          <td className="TopS">성명</td>
-                        </tr> 
-                      </thead> 
-                      <tbody>
-                        {rowsData.map((row, index) => (
-                          <tr key={index}>
-                            {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[1]}</td>}
-                            {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[2]}</td>}
-                            {row.deptRowSpan > 0 && row.teamRowSpan > 0 ? 
-                              <td>{row.member[0]}</td> 
-                              : 
-                              <td>{row.member[0]}</td>}
-                          </tr>))}
-                      </tbody>
-                    </table>
-                    <div>
-                      {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
-                      {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month, virtualData)}
-                    </div>
+                    {isLoading ? (
+                      <>
+                        <AttendSkeleton />
+                    </>
+                    ) : (
+                      <>
+                        <table className="Explan">
+                          <thead>
+                            <tr>
+                              <td className="TopS" colSpan={2}>부서</td>
+                              <td className="TopS">성명</td>
+                            </tr> 
+                          </thead> 
+                          <tbody>
+                            {rowsData.map((row, index) => (
+                              <tr key={index}>
+                                {row.deptRowSpan > 0 && <td rowSpan={row.deptRowSpan}>{row.member[1]}</td>}
+                                {row.teamRowSpan > 0 && <td rowSpan={row.teamRowSpan}>{row.member[2]}</td>}
+                                {row.deptRowSpan > 0 && row.teamRowSpan > 0 ? 
+                                  <td>{row.member[0]}</td> 
+                                  : 
+                                  <td>{row.member[0]}</td>}
+                              </tr>))}
+                          </tbody>
+                        </table>
+                        <div>
+                          {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
+                          {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month, virtualData)}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </TabPanel>
               ))}
@@ -1031,32 +1032,31 @@ const AttendanceRegist = () => {
             </TabPanels>
           </Tabs>
         )}
-        
       </div>
       <CustomModal
         isOpen={isAddAttend}
-        onClose={() => setAddAttend(false)} 
+        onClose={() => {setAddAttend(false); reset();}} 
         header={`${selectedDateInfo.year}.${selectedDateInfo.month}.${selectedDateInfo.date}  ${selectedDateInfo.name}`}
         footer1={'등록'}
         footer1Class="back-green-btn"
-        onFooter1Click={handleSubmit}
+        onFooter1Click={handleSubmit(onSubmit)}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => {setAddAttend(false); setStartTime(''); setEndTime(''); setOtherValue('');}}
+        onFooter2Click={() => {setAddAttend(false); reset();}}
         height="230px"
       >
         <div className="modal_container">
           <div className="modal_input">
             <div className="input_title">출근시간</div>
-            <input className="input_text" type="text" placeholder="00:00" value={startTime} onChange={handleStartTimeChange}/>
+            <input className="input_text" type="text" placeholder="00:00" {...register('startTime')}/>
           </div>
           <div className="modal_input">
             <div className="input_title">퇴근시간</div>
-            <input className="input_text" type="text" placeholder="00:00" value={endTime} onChange={handleEndTimeChange}/>
+            <input className="input_text" type="text" placeholder="00:00" {...register('endTime')}/>
           </div>
           <div className="modal_input">
             <div className="input_title">기타 값</div>
-            <select className="input_select" value={otherValue} onChange={handleOtherValueChange}>
+            <select className="input_select" {...register('otherValue')}>
               <option value=''>선택안함(비워두기)</option>
               <option value='오전반차' style={{ color: '#FFB800' }}>오전반차</option>
               <option value='오후반차' style={{ color: '#FFB800' }}>오후반차</option>
@@ -1070,8 +1070,6 @@ const AttendanceRegist = () => {
           </div>
         </div>
       </CustomModal>
-
-      
     </div>
   );
 };

@@ -17,8 +17,8 @@ const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
   const user = useRecoilState(userState);
   const [clickedMember, setClickedMember] = useState<Member | null>(null); // 클릭된 멤버 상태 추가
   const members: Member[] = [
-    ['id1', 'pw1', '이정훈', '포체인스 주식회사', '', '대표', ['본사', 'R&D']],
-    ['id2', 'pw2', '안후상', '포체인스 주식회사', '', '이사', ['본사', 'R&D']],
+    ['id1', 'pw1', '이정훈', '포체인스 주식회사', '', '대표', ['']],
+    ['id2', 'pw2', '안후상', '포체인스 주식회사', '', '이사', ['']],
     ['id3', 'pw3', '이정열', '관리부', '', '부서장', ['본사']],
     ['id4', 'pw4', '김효은', '관리부', '관리팀', '팀장', ['본사']],
     ['id5', 'pw5', '우현지', '관리부', '관리팀', '사원', ['본사']],
