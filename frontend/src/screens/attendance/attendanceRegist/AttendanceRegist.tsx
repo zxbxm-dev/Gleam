@@ -31,6 +31,9 @@ const months = [
 ];
 
 type Member = [string, string, string];
+type TeamOrderType = {
+  [key: string]: string[];
+};
 
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
@@ -79,6 +82,12 @@ const AttendanceRegist = () => {
   
   useEffect(() => {
     const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
+    const teamOrder: TeamOrderType = {
+      '블록체인 사업부': ['블록체인 1팀'],
+      '개발부': ['개발 1팀', '개발 2팀'],
+      '마케팅부': ['디자인팀', '기획팀'],
+      '관리부': ['관리팀', '지원팀'],
+    };
 
     const sortedMembers = [...initialMembers].sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[1]);
@@ -87,8 +96,14 @@ const AttendanceRegist = () => {
       if (deptAIndex < deptBIndex) return -1;
       if (deptAIndex > deptBIndex) return 1;
 
-      const nameA = a[2];
-      const nameB = b[2];
+      const teamAIndex = teamOrder[a[1]].indexOf(a[2]);
+      const teamBIndex = teamOrder[b[1]].indexOf(b[2]);
+
+      if (teamAIndex < teamBIndex) return -1;
+      if (teamAIndex > teamBIndex) return 1;
+
+      const nameA = a[0];
+      const nameB = b[0];
       return nameA.localeCompare(nameB);
     });
 
