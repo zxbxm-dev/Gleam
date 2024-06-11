@@ -21,7 +21,7 @@ const Approval = () => {
   const user = useRecoilValue(userState);
   const [page, setPage] = useState<number>(1);
   const [selectedTab, setSelectedTab] = useState<string>("myDocuments");
-  const postPerPage: number = 10;
+  const [postPerPage, setPostPerPage] = useState<number>(10);
   const [approval, setApproval] = useState<any[]>([]);
   const [approvalings, setApprovaling] = useState<any[]>([]);
   const [inProgress, setInProgress] = useState<any[]>([]);
@@ -35,6 +35,25 @@ const Approval = () => {
   const [stateSortOrder, setStateSortOrder] = useState<"asc" | "desc">("asc");
   const [writerSortOrder, setWriterSortOrder] = useState<"asc" | "desc">("asc");
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setPostPerPage(10); // Desktop
+      } else if (window.innerWidth >= 992) {
+        setPostPerPage(8); // Laptop
+      } else {
+        setPostPerPage(8);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
   const handlePageChange = (page: number) => {
     setPage(page);
   }

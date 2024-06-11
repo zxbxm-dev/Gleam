@@ -16,9 +16,27 @@ const Regulations = () => {
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [postPerPage, setPostPerPage] = useState<number>(10);
 
-  const postPerPage: number = 10;
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setPostPerPage(10); // Desktop
+      } else if (window.innerWidth >= 992) {
+        setPostPerPage(8); // Laptop
+      } else {
+        setPostPerPage(8);
+      }
+    };
 
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
   // useEffect(() => {
   //   const initialAnnouncements = [
   //     { id: 1, title: "공지사항", views: 100, date: "2024-05-01" },
