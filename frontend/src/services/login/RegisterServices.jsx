@@ -5,9 +5,13 @@ const RegisterServices = (formData) => {
     return api.post("/postResData", formData);
 };
 
-//회원가입 수정 데이터 전송
+////회원가입 수정 데이터 전송
 const RegisterEditServices = (formData) => {
-    return api.post("/postResEditData", formData);
+    return api.post("/postResEditData", formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
 
 //아이디 찾기 데이터 전송

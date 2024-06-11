@@ -1,33 +1,33 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const fs = require('fs');
 const Models = require("../../models");
 const User = Models.userData;
-const bcrypt = require("bcrypt");
+
 require("dotenv").config();
 
 const secretKey = process.env.DB_DATABASE;
 
+//로그인
 const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { userID, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { userId: username } });
+    const user = await User.findOne({ where: { userId: userID } });
 
     if (user) {
       const match = await bcrypt.compare(password, user.password);
       if (match) {
-        // 사용자가 미승인 상태인 경우
         if (user.status === "pending") {
           return res.status(401).json({
-            error: "승인 대기 중입니다. 승인 완료 후 로그인하세요."
+            error: "승인 대기 중입니다. 승인 완료 후 로그인하세요.",
           });
         }
 
-        // JWT 토큰 생성 (1시간)
         const token = jwt.sign({ userId: user.id }, secretKey, {
           expiresIn: "1h",
         });
 
-        // 로그인 성공 응답
         return res.status(200).json({
           token,
           user: {
@@ -75,14 +75,12 @@ const findUsername = async (req, res) => {
     });
 
     if (user) {
-      // 사용자를 찾은 경우
       res.status(200).json({
         success: "사용자를 찾았습니다.",
         username: user.username,
         userId: user.userId,
       });
     } else {
-      // 사용자를 찾지 못한 경우
       res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
     }
   } catch (error) {
@@ -93,7 +91,15 @@ const findUsername = async (req, res) => {
 
 // 비밀번호 재설정
 const resetPassword = async (req, res) => {
-  const { userID, username, phoneNumber, spot, question1, question2, resetpassword } = req.body;
+  const {
+    userID,
+    username,
+    phoneNumber,
+    spot,
+    question1,
+    question2,
+    resetpassword,
+  } = req.body;
 
   try {
     const condition = {
@@ -102,18 +108,16 @@ const resetPassword = async (req, res) => {
       phoneNumber: phoneNumber,
       spot: spot,
       question1: question1,
-      question2: question2
+      question2: question2,
     };
 
-    console.log('비밀번호설정 :'+condition)
+    console.log("비밀번호설정 :" + condition);
 
     const user = await User.findOne({ where: condition });
 
     if (user) {
-      // 새로운 비밀번호 해시 생성
       const hashedPassword = await bcrypt.hash(resetpassword, 10);
 
-      // 사용자의 비밀번호 업데이트
       await User.update({ password: hashedPassword }, { where: condition });
 
       return res.status(200).json({ success: "비밀번호가 성공적으로 재설정되었습니다." });
@@ -126,8 +130,66 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// 이미지 파일 업로드 및 회원 정보 수정을 위한 함수
+const uploadDirectory = './uploads';
+
+//uploads 파일 없을시 생성
+if (!fs.existsSync(uploadDirectory)) {
+  fs.mkdirSync(uploadDirectory);
+}
+
+const editRegistration = async (req, res) => {
+  try {
+    const formData = req.body;
+    const attachmentFile = req.files && req.files['attachment'] ? req.files['attachment'][0] : null;
+    const signFile = req.files && req.files['sign'] ? req.files['sign'][0] : null;
+
+    const { password, phoneNumber, company, department, team, spot, position, userID } = formData;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const updateData = {
+      password: hashedPassword,
+      phoneNumber: phoneNumber,
+      company: company,
+      department: department,
+      team: team,
+      spot: spot,
+      position: position,
+    };
+
+    if (attachmentFile) {
+      updateData.attachment = attachmentFile.originalname;
+    }
+
+    if (signFile) {
+      updateData.sign = signFile.originalname;
+    }
+
+    const [updatedRows] = await User.update(updateData, {
+      where: {
+        userId: userID 
+      }
+    });
+
+    if (updatedRows === 0) {
+      return res.status(404).send('회원 정보를 찾을 수 없습니다.');
+    }
+
+    const updatedUser = await User.findOne({ where: { userId: userID } });
+
+    console.log('업데이트된 사용자 정보:', updatedUser);
+
+    res.send('회원 정보가 성공적으로 수정되었습니다.');
+  } catch (error) {
+    console.error('회원 정보 수정 오류:', error);
+    res.status(500).send('회원 정보 수정 중 오류가 발생했습니다.');
+  }
+};
+
 module.exports = {
   login,
   findUsername,
-  resetPassword
+  resetPassword,
+  editRegistration
 };

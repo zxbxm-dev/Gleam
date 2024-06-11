@@ -131,9 +131,9 @@ const deleteUser = async (req, res) => {
 // 회원 탈퇴 (퇴사자 유저)
 const userleaves = async (req, res) => {
   try {
-    const { userID  } = req.body;
+    const { userID } = req.body;
 
-    const user = await signupUser.findOne({ where: { userID  } });
+    const user = await signupUser.findOne({ where: { userID } });
 
     if (!user) {
       return res.status(404).json({ message: "회원 정보가 없습니다." });
@@ -163,7 +163,9 @@ const userleaves = async (req, res) => {
     // 회원 데이터베이스에서 삭제
     await signupUser.destroy({ where: { userID } });
 
-    return res.status(200).json({ success: "회원 탈퇴 요청이 완료되었습니다." });
+    return res
+      .status(200)
+      .json({ success: "회원 탈퇴 요청이 완료되었습니다." });
   } catch (error) {
     console.error("회원 탈퇴 요청 오류:", error);
     return res.status(500).json({ error: "회원 탈퇴 요청이 실패하였습니다." });

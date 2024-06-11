@@ -1,20 +1,24 @@
-module.exports = app => {
-    const userController = require('../controller/user/signup')
-    const signinController = require("../controller/user/signin")
-    
-    const express = require('express');
-    const router = express.Router();
+module.exports = (app) => {
+  const userController = require("../controller/user/signup");
+  const signinController = require("../controller/user/signin");
 
-    router.post('/postResData', userController.createUser);
-    router.get('/checkUserManagement', userController.getAllUsers);
-    router.post('/approveUserManagement/:userId', userController.approveUser);
-    router.delete('/deleteUserManagement/:userId', userController.deleteUser);
-    router.post('/editchainlinker', userController.userleaves);
+  const express = require("express");
+  const router = express.Router();
 
-    router.post('/login', signinController.login);
-    router.post('/postFindID', signinController.findUsername);
-    router.post('/postresetpw', signinController.resetPassword);
+  router.post("/postResData", userController.createUser);
+  router.get("/checkUserManagement", userController.getAllUsers);
+  router.post("/approveUserManagement/:userId", userController.approveUser);
+  router.delete("/deleteUserManagement/:userId", userController.deleteUser);
+  router.post("/editchainlinker", userController.userleaves);
 
+  router.post("/login", signinController.login);
+  router.post("/postFindID", signinController.findUsername);
+  router.post("/postresetpw", signinController.resetPassword);
+  // 이미지 파일 업로드 및 회원 정보 수정을 위한 라우터
+  const upload = require('../controller/user/multerMiddleware');
 
-    app.use('/api', router);
+  // POST /register/edit 요청을 처리할 라우터 설정
+  router.post('/postResEditData', upload.fields([{ name: 'attachment' }, { name: 'sign' }]), signinController.editRegistration);
+
+  app.use("/api", router);
 };
