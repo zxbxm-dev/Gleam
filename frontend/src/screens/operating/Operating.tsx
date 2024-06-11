@@ -155,6 +155,30 @@ const Operating = () => {
   const [designCost, setDesignCost] = useState<number>(0);
   const [planningCost, setPlanningnCost] = useState<number>(0);
 
+  const calculateCost = (teamData: string[][]) => {
+    return teamData.reduce((acc: number, item: string[]) => {
+      const cost = parseInt(item[2].replace(/,/g, '')) || 0;
+      return acc + cost;
+    }, 0);
+  };
+
+  useEffect(() => {
+    setCommon811Cost(calculateCost(common811Team));
+    setCommon812Cost(calculateCost(common812Team));
+    setCommon813Cost(calculateCost(common813Team));
+    setCommon814Cost(calculateCost(common814Team));
+    setCommon815Cost(calculateCost(common815Team));
+    setCommon818Cost(calculateCost(common818Team));
+    setCommon819Cost(calculateCost(common819Team));
+    setManagementCost(calculateCost(managementTeam));
+    setSupportCost(calculateCost(supportTeam));
+    setDevOneCost(calculateCost(devOneTeam));
+    setDevTwoCost(calculateCost(devTwoTeam));
+    setBlockChainCost(calculateCost(blockchainTeam));
+    setDesignCost(calculateCost(designTeam));
+    setPlanningnCost(calculateCost(planningTeam));
+  }, [common811Team, common812Team, common813Team, common814Team, common815Team, common818Team, common819Team, managementTeam, supportTeam, devOneTeam, devTwoTeam, blockchainTeam, designTeam, planningTeam]);
+
   const addRow = (team: 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
     let newTeam: string[][];
 
