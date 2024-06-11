@@ -18,12 +18,31 @@ const Announcement = () => {
   const [announcements, setAnnouncements] = useState<any[]>([]);
   // const [detailAnno, setDetailAnno] = useState<any[]>([]);
   const userName = useRecoilValue(userState).name;
-  const postPerPage: number = 10;
+  const [postPerPage, setPostPerPage] = useState<number>(10);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   const [clickIdx, setClickIdx] = useState<number | null>(null);
   console.log(userName);
- 
+  
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setPostPerPage(10); // Desktop
+      } else if (window.innerWidth >= 992) {
+        setPostPerPage(8); // Laptop
+      } else {
+        setPostPerPage(8);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     const initialAnnouncements = [
       { id: 1, title: "공지사항", views: 100, date: "2024-05-01", isPinned: false },
