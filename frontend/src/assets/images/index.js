@@ -17,6 +17,7 @@ export { default as SettingIcon } from "./Common/SettingIcon.svg";
 export { default as CloseIcon } from "./Common/CloseIcon.svg";
 export { default as NewIcon } from "./Common/NewIcon.svg";
 export { default as SelectArrow } from "./Common/SelectArrow.svg";
+export { default as PageNotIcon } from "./Common/PageNotIcon.svg";
 
 // Approval
 export { default as Approval_Plus } from "./Approval/Approval_Plus.svg";
