@@ -69,21 +69,20 @@ const Sidebar = () => {
   };
 
   const renderSubMenu = (menuType: boolean | undefined, menuItems: SubMenu[] | undefined) => (
-    menuType && menuItems && (
-      <ul className="menu-list">
-        {menuItems.map(({ menu, label, link }) => (
-          <li key={menu} className={`sub-menu menu-item ${selectedMenu === menu || activeTab === menu ? 'active' : ''}`}>
-            <Link to={link} className='menu-link' onClick={() => {
-              handleMenuClick(menu);
-              if (menu === 'manage-perform') {
-                handleHrSideClick();
-              }
-            }}>{label}</Link>
-          </li>
-        ))}
-      </ul>
-    )
+    <ul className={`menu-list sub-menu ${menuType ? 'open' : ''}`}>
+      {menuItems?.map(({ menu, label, link }) => (
+        <li key={menu} className={`sub-menu-item ${selectedMenu === menu || activeTab === menu ? 'active' : ''}`}>
+          <Link to={link} className='menu-link' onClick={() => {
+            handleMenuClick(menu);
+            if (menu === 'manage-perform') {
+              handleHrSideClick();
+            }
+          }}>{label}</Link>
+        </li>
+      ))}
+    </ul>
   );
+  
 
   const menuList: MenuItem[] = [
     {
