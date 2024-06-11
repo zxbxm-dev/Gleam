@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
       userId: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: true, //고유값
         primaryKey: true,
       },
       password: {
@@ -22,12 +22,10 @@ module.exports = (sequelize, Sequelize) => {
       usermail: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
       },
       phoneNumber: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
       },
       //null값 허용
       company: {

@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const multer = require('multer');
 const fs = require('fs');
-const path = require('path');
 const Models = require("../../models");
 const User = Models.userData;
 
@@ -20,19 +18,16 @@ const login = async (req, res) => {
     if (user) {
       const match = await bcrypt.compare(password, user.password);
       if (match) {
-        // 사용자가 미승인 상태인 경우
         if (user.status === "pending") {
           return res.status(401).json({
             error: "승인 대기 중입니다. 승인 완료 후 로그인하세요.",
           });
         }
 
-        // JWT 토큰 생성 (1시간)
         const token = jwt.sign({ userId: user.id }, secretKey, {
           expiresIn: "1h",
         });
 
-        // 로그인 성공 응답
         return res.status(200).json({
           token,
           user: {
@@ -80,14 +75,12 @@ const findUsername = async (req, res) => {
     });
 
     if (user) {
-      // 사용자를 찾은 경우
       res.status(200).json({
         success: "사용자를 찾았습니다.",
         username: user.username,
         userId: user.userId,
       });
     } else {
-      // 사용자를 찾지 못한 경우
       res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
     }
   } catch (error) {
@@ -123,91 +116,74 @@ const resetPassword = async (req, res) => {
     const user = await User.findOne({ where: condition });
 
     if (user) {
-      // 새로운 비밀번호 해시 생성
       const hashedPassword = await bcrypt.hash(resetpassword, 10);
 
-      // 사용자의 비밀번호 업데이트
       await User.update({ password: hashedPassword }, { where: condition });
 
-      return res
-        .status(200)
-        .json({ success: "비밀번호가 성공적으로 재설정되었습니다." });
+      return res.status(200).json({ success: "비밀번호가 성공적으로 재설정되었습니다." });
     } else {
-      return res
-        .status(404)
-        .json({ error: "입력된 정보로 사용자를 찾을 수 없습니다." });
+      return res.status(404).json({ error: "입력된 정보로 사용자를 찾을 수 없습니다." });
     }
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ message: "비밀번호 재설정 서버 오류", error });
+    return res.status(500).json({ message: "비밀번호 재설정 서버 오류", error });
   }
 };
 
-// multer 설정 (이미지 파일 업로드)
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = '../../img';
-    // 경로에 디렉토리가 없는 경우 생성
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  }
-});
-const upload = multer({ storage: storage });
+// 이미지 파일 업로드 및 회원 정보 수정을 위한 함수
+const uploadDirectory = './uploads';
 
-const modifyMemberInfo = async (req, res) => {
-  const {
-    userID,
-    phoneNumber,
-    password,
-    company,
-    department,
-    team,
-    spot,
-  } = req.body;
+//uploads 파일 없을시 생성
+if (!fs.existsSync(uploadDirectory)) {
+  fs.mkdirSync(uploadDirectory);
+}
 
+const editRegistration = async (req, res) => {
   try {
-    // 이미지 파일 업로드 처리
-    let attachmentPath = null;
-    let signPath = null;
-    if (req.file) {
-      attachmentPath = req.file.path;
-    }
-    if (req.file2) {
-      signPath = req.file2.path;
+    const formData = req.body;
+    const attachmentFile = req.files && req.files['attachment'] ? req.files['attachment'][0] : null;
+    const signFile = req.files && req.files['sign'] ? req.files['sign'][0] : null;
+
+    const { password, phoneNumber, company, department, team, spot, position, userID } = formData;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const updateData = {
+      password: hashedPassword,
+      phoneNumber: phoneNumber,
+      company: company,
+      department: department,
+      team: team,
+      spot: spot,
+      position: position,
+    };
+
+    if (attachmentFile) {
+      updateData.attachment = attachmentFile.originalname;
     }
 
-    // 회원 정보 업데이트
-    const updatedUser = await User.update(
-      {
-        password: password,
-        phoneNumber: phoneNumber,
-        company: company,
-        department: department,
-        team: team,
-        spot: spot,
-        attachment: attachmentPath,
-        Sign: signPath,
-      },
-      { where: { userId: userID } }
-    );
-
-    if (updatedUser) {
-      return res
-        .status(200)
-        .json({ success: "회원정보가 성공적으로 수정되었습니다." });
-    } else {
-      return res.status(404).json({ error: "회원을 찾을 수 없습니다." });
+    if (signFile) {
+      updateData.sign = signFile.originalname;
     }
+
+    const [updatedRows] = await User.update(updateData, {
+      where: {
+        userId: userID 
+      }
+    });
+
+    if (updatedRows === 0) {
+      return res.status(404).send('회원 정보를 찾을 수 없습니다.');
+    }
+
+    const updatedUser = await User.findOne({ where: { userId: userID } });
+
+    console.log('업데이트된 사용자 정보:', updatedUser);
+
+    res.send('회원 정보가 성공적으로 수정되었습니다.');
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "회원정보 수정 서버 오류", error });
+    console.error('회원 정보 수정 오류:', error);
+    res.status(500).send('회원 정보 수정 중 오류가 발생했습니다.');
   }
 };
 
@@ -215,6 +191,5 @@ module.exports = {
   login,
   findUsername,
   resetPassword,
-  modifyMemberInfo, 
-  upload
+  editRegistration
 };
