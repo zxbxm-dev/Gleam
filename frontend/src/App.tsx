@@ -40,11 +40,11 @@ import {
 function App() {
   const user = useRecoilValue(userState);
   const isLogin = localStorage.getItem('isLoggedIn') === 'true';
-  const isPerformance = user.username === '김효은' || user.username === '이정훈' || user.username === '이유정'; // 인사평가제출
-  const isHumanResources = user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정'; // 인사정보관리
-  const isAttendance = user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정' || user.spot === '연구실장'; // 근태관리
-  const isOperating = user.team === '지원팀' || user.username === '이정훈'; // 운영비관리
-  const isAuthorized = user.team === '관리팀' || user.username === '이정훈'; // 회원관리
+  const isPerformance = (user.team === '관리팀'&& user.position === '팀장') || user.position === '대표이사' || user.position === '센터장'; // 인사평가제출
+  const isHumanResources = user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장'; // 인사정보관리
+  const isAttendance = user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장' || user.position === '연구실장'; // 근태관리
+  const isOperating = user.team === '지원팀' || user.position === '대표이사'; // 운영비관리
+  const isAuthorized = user.team === '관리팀' || user.position === '대표이사'; // 회원관리
 
   return (
     <>
