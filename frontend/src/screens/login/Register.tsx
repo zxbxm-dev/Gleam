@@ -33,6 +33,7 @@ const Register = () => {
 	const [Agree, setAgree] = useState(true);
 	const [enterDate, setEnterDate] = useState("");
 	const [enterDateError, setEnterDateError] = useState("");
+	const [checkID, setIsCheckID] = useState(false);
 
 	const handleFooter1Click = () => {
 		setRegistModalOpen(false);
@@ -254,6 +255,11 @@ const Register = () => {
 			return;
 		}
 
+		if (!checkID) {
+			alert("중복확인을 진행해 주세요.")
+			return;
+		}
+
 		const formattedEnterDate = `${enterDate.substring(0, 4)}-${enterDate.substring(4, 6)}-${enterDate.substring(6, 8)}`;
 
 		const formData = {
@@ -291,12 +297,12 @@ const Register = () => {
 		const UserID = id;
 		CheckID(UserID)
 			.then(response => {
+				setIsCheckID(true);
 			})
 			.catch(error => {
 				console.error("중복확인 오류:", error);
 			})
 	};
-
 
 	return (
 		<div className="Register">
