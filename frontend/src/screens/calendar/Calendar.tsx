@@ -500,21 +500,20 @@ const Calendar = () => {
       </CustomModal>
 
       <CustomModal
-  isOpen={isDeleteeventModalOpen}
-  onClose={() => setDeleteEventModalOPen(false)}
-  header={'알림'}
-  footer1={'삭제'}
-  footer1Class="red-btn"
-  onFooter1Click={handleDeleteEvent}
-  footer2={'취소'}
-  footer2Class="gray-btn"
-  onFooter2Click={() => setDeleteEventModalOPen(false)}
->
-  <div>
-    삭제하시겠습니까?
-  </div>
-</CustomModal>
-
+        isOpen={isDeleteeventModalOpen}
+        onClose={() => setDeleteEventModalOPen(false)}
+        header={'알림'}
+        footer1={'삭제'}
+        footer1Class="red-btn"
+        onFooter1Click={handleDeleteEvent}
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setDeleteEventModalOPen(false)}
+      >
+        <div>
+          삭제하시겠습니까?
+        </div>
+      </CustomModal>
     </div>
   );
 };
