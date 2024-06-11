@@ -4,8 +4,8 @@ const LoginServices = (userID, password) => {
     return api.post("/login", { userID, password });
 };
 
-const LogoutServices = (userID) => {
-    return api.post("/logout", { userID });
+const LogoutServices = () => {
+    return api.post("/logout");
 };
 
 export { LoginServices,LogoutServices };

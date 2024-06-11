@@ -7,14 +7,26 @@ import { Link } from "react-router-dom";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 
+interface SelectedOptions {
+    company: string;
+    department: string;
+    team: string;
+    spot: string;
+    position: string;
+    phoneNumber: string;
+    password: string;
+}
 const EditRegis = () => {
-    const [selectedOptions, setSelectedOptions] = useState({
+    const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({
         company: '',
         department: '',
         team: '',
         spot: '',
-        position: ''
+        position: '',
+        phoneNumber: '',
+        password: ''
     });
+
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [isDepart, setIsDepart] = useState(false);
     const [isTeam, setIsTeam] = useState(false);
@@ -28,14 +40,14 @@ const EditRegis = () => {
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
     const [attachment, setAttachment] = useState<File | null>(null);
     const [Sign, setSign] = useState<File | null>(null);
-    const [formData, setFormData] = useState({
-        password: '',
+    const [formData, setFormData] = useState<SelectedOptions>({
         company: '',
         department: '',
         team: '',
         spot: '',
         position: '',
         phoneNumber: '',
+        password: ''
     });
     const user = useRecoilValue(userState);
 
@@ -55,20 +67,27 @@ const EditRegis = () => {
 
     const handleInputChange = (event: any, field: any) => {
         const value = event.target.value;
+        const restrictedCharsRegex = /[{}[\]()]/
 
-        setFormData(prevData => ({
-            ...prevData,
+        // 입력값이 제한된 문자를 포함하는지 확인
+        if (restrictedCharsRegex.test(value)) {
+            // 제한된 문자를 포함하고 있으면 처리하지 않음
+            return;
+        }
+
+        setSelectedOptions(prevOptions => ({
+            ...prevOptions,
             [field]: value
         }));
 
         switch (field) {
             case 'password':
                 setPassword(value);
-                setPasswordError(value.length < 8 ? "비밀번호는 최소 8자 이상이어야 합니다." : "");
+                setPasswordError(!validatePassword(value) ? "비밀번호는 영어, 숫자, 특수문자를 포함한 8자리 이상이여야 합니다." : "");
                 break;
             case 'confirmPassword':
                 setConfirmPassword(value);
-                setConfirmPasswordError(value !== password ? "비밀번호가 일치하지 않습니다." : "");
+                setConfirmPasswordError(value !== selectedOptions.password ? "비밀번호가 일치하지 않습니다." : "");
                 break;
             case 'phoneNumber':
                 setPhoneNumber(value);
@@ -80,8 +99,13 @@ const EditRegis = () => {
     };
 
     const validatePhoneNumber = (phone: any) => {
-        const phoneRegex = /^010\d{8}$/;
+        const phoneRegex = /^(010|031)\d{6,8}$/;
         return phoneRegex.test(phone);
+    };
+
+    const validatePassword = (password: any) => {
+        const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return PasswordRegex.test(password);
     };
 
     const handleOptionClick = (optionName: any, optionValue: any) => {
@@ -191,19 +215,23 @@ const EditRegis = () => {
                 return null;
         }
     };
-
     const handleSubmit = () => {
-        const filteredData = Object.fromEntries(
-            Object.entries({
-                ...formData,
-                userID: user.id
-            }).filter(([_, value]) => value !== '')
-        );
-    
+        const modifiedData: { [key: string]: string } = {};
+
+        for (const key in formData) {
+            if (formData.hasOwnProperty(key) && formData[key as keyof SelectedOptions] !== selectedOptions[key as keyof SelectedOptions]) {
+                modifiedData[key as keyof SelectedOptions] = selectedOptions[key as keyof SelectedOptions];
+            }
+        }
+
+        modifiedData.userID = user.id;
+
         // FormData 생성
         const formDataToSend = new FormData();
-        for (const key in filteredData) {
-            formDataToSend.append(key, filteredData[key]);
+        for (const key in modifiedData) {
+            if (modifiedData.hasOwnProperty(key)) {
+                formDataToSend.append(key, modifiedData[key]);
+            }
         }
         // 이미지 파일 추가
         if (attachment) {
@@ -212,7 +240,7 @@ const EditRegis = () => {
         if (Sign) {
             formDataToSend.append('sign', Sign);
         }
-    
+
         // API 호출
         RegisterEditServices(formDataToSend)
             .then(response => {
@@ -223,7 +251,7 @@ const EditRegis = () => {
                 console.error("오류:", error);
             });
     };
-    
+
 
     return (
         <div className="Register">
