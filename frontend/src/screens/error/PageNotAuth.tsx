@@ -25,7 +25,7 @@ const PageNotAuth = () => {
           </div>
           <div className="content_box_btn">
             <button className="main_button" onClick={() => navigate('/')}>메인으로</button>
-            <button className="back_button" onClick={() => navigate('/')}>돌아가기</button>
+            <button className="back_button" onClick={() => navigate(-3)}>돌아가기</button>
           </div>
         </div>
       </div>
