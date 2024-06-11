@@ -124,16 +124,16 @@ const Sidebar = () => {
       toggleMenuType: 'performance',
       subMenu: [
         { menu: 'submit-perform', label: '인사평가 제출', link: '/submit-perform' },
-        (user.username === '김효은' || user.username === '이정훈' || user.username === '이유정') && { menu: 'manage-perform', label: '인사평가 관리', link: '/manage-perform' }
+        ((user.team === '관리팀' && user.position === '팀장') || user.position === '대표이사' || user.position === '센터장') && { menu: 'manage-perform', label: '인사평가 관리', link: '/manage-perform' }
       ].filter(Boolean) as SubMenu[]
     },
-    (user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정') && {
+    (user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장') && {
       menu: 'human-resources',
       label: '인사 정보 관리',
       link: '/human-resources',
       requiresHrSideClick: true,
     },
-    (user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정' || user.spot === '연구실장') && {
+    (user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장' || user.spot === '연구실장') && {
       menu: 'attendance',
       label: '근태 관리',
       menuType: isAttendanceMenuOpen,
@@ -143,14 +143,14 @@ const Sidebar = () => {
         { menu: 'attendance-regist', label: '출근부', link: '/attendance-regist' },
       ]
     },
-    (user.team === '지원팀' || user.username === '이정훈') && {
+    (user.team === '지원팀' || user.position === '대표이사') && {
       menu: 'operating-manage',
       label: '운영비 관리',
       link: '/operating-manage',
     }
   ].filter(Boolean) as MenuItem[];
 
-  const isAuthorized = user.team === '관리팀' || user.username === '이정훈';
+  const isAuthorized = user.team === '관리팀' || user.position === '대표이사';
 
   return (
     <>
