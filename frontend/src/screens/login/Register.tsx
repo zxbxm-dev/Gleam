@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Register.scss";
 import { Login_Logo, ArrowDown, ArrowUp } from "../../assets/images/index";
-import { RegisterServices } from "../../services/login/RegisterServices";
+import { RegisterServices, CheckID } from "../../services/login/RegisterServices";
 import { Link, useNavigate } from "react-router-dom";
 import CustomModal from '../../components/modal/CustomModal';
 
@@ -42,10 +42,33 @@ const Register = () => {
 
 	const handleInputChange = (event: any, field: any) => {
 		const value = event.target.value;
+		const restrictedCharsRegex = /[{}[\]()]/;
+		const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+		const numericRegex = /^[0-9]+$/;
+
+		// 입력값이 제한된 문자를 포함하는지 확인
+		if (restrictedCharsRegex.test(value)) {
+			// 제한된 문자를 포함하고 있으면 처리하지 않음
+			return;
+		}
+
+		if (field === 'Mail' && !alphanumericRegex.test(value)) {
+			// 영어와 숫자만 포함하지 않으면 처리하지 않음
+			return;
+		}
+
+		if ((field === 'enterDate' || field === 'phoneNumber') && !numericRegex.test(value)) {
+			// 영어와 숫자만 포함하지 않으면 처리하지 않음
+			return;
+		}
+
 		switch (field) {
+			case 'userID':
+				setUserID(value);
+				break;
 			case 'password':
 				setPassword(value);
-				setPasswordError(value.length < 8 ? "비밀번호는 최소 8자 이상이어야 합니다." : "");
+				setPasswordError(!validatePassword(value) ? "비밀번호는 영어, 숫자, 특수문자를 포함한 8자리 이상이여야 합니다." : "");
 				break;
 			case 'confirmPassword':
 				setConfirmPassword(value);
@@ -59,14 +82,32 @@ const Register = () => {
 				setEnterDate(value);
 				setEnterDateError(!validateEnterDate(value) ? "유효한 날짜 형식(예: 20990101)이어야 합니다." : "");
 				break;
+			case 'ques1':
+				setQuestion1(value);
+				break;
+			case 'ques2':
+				setQuestion2(value);
+				break;
+			case 'name':
+				setName(value);
+				break;
+			case 'Mail':
+				setMail(value);
+				break;
+
 			default:
 				break;
 		}
 	};
 
 	const validatePhoneNumber = (phone: any) => {
-		const phoneRegex = /^010\d{8}$/;
+		const phoneRegex = /^\d{8,12}$/;
 		return phoneRegex.test(phone);
+	};
+
+	const validatePassword = (password: any) => {
+		const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+		return PasswordRegex.test(password);
 	};
 
 	const validateEnterDate = (date: any) => {
@@ -182,24 +223,6 @@ const Register = () => {
 		}
 	};
 
-	const handleIDChange = (event: any) => {
-		setUserID(event.target.value);
-	};
-	const handleques1Change = (event: any) => {
-		setQuestion1(event.target.value);
-	};
-	const handleques2Change = (event: any) => {
-		setQuestion2(event.target.value);
-	};
-	const handleNameChange = (event: any) => {
-		setName(event.target.value);
-	};
-
-	const handleMailChange = (event: any) => {
-		setMail(event.target.value + "@four-chains.com");
-	};
-
-
 	const handleAgree = () => {
 		setAgree(true);
 	};
@@ -239,7 +262,7 @@ const Register = () => {
 			question1: question1,
 			question2: question2,
 			username: name,
-			usermail: mail,
+			usermail: mail + '@four-chains.com',
 			company: selectedOptions.company,
 			department: selectedOptions.department,
 			team: selectedOptions.team,
@@ -264,6 +287,16 @@ const Register = () => {
 			});
 	};
 
+	const handleCheckID = () => {
+		const UserID = id;
+		CheckID(UserID)
+			.then(response => {
+			})
+			.catch(error => {
+				console.error("중복확인 오류:", error);
+			})
+	};
+
 
 	return (
 		<div className="Register">
@@ -274,9 +307,10 @@ const Register = () => {
 
 			<div className="RegistorBox">
 				<div className="LeftFlex">
-					<div className="MiniBox">
+					<div className="MinimBox">
 						<span>아이디 입력</span>
-						<input type="text" className="TextInput" placeholder="아이디를 입력해 주세요." onChange={handleIDChange} />
+						<input type="text" className="ShortTextInput" value={id} placeholder="아이디를 입력해 주세요." onChange={(event) => handleInputChange(event, 'userID')} />
+						<button className="CheckID" onClick={handleCheckID}>중복 확인</button>
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
@@ -338,17 +372,35 @@ const Register = () => {
 						<div className="Question">
 							<div className="Ques">
 								<span>어머니의 성은 무엇입니까?</span>
-								<input type="text" className="TextInput" placeholder="답을 입력해 주세요." onChange={handleques1Change} />
+								<input
+									type="text"
+									className="TextInput"
+									value={question1}
+									placeholder="답을 입력해 주세요."
+									onChange={(event) => handleInputChange(event, 'ques1')}
+								/>
 							</div>
 							<div className="Ques">
 								<span>졸업한 초등학교는 어디입니까?</span>
-								<input type="text" className="TextInput" placeholder="답을 입력해 주세요." onChange={handleques2Change} />
+								<input
+									type="text"
+									className="TextInput"
+									value={question2}
+									placeholder="답을 입력해 주세요."
+									onChange={(event) => handleInputChange(event, 'ques2')}
+								/>
 							</div>
 						</div>
 					</div>
 					<div className="MiniBox">
 						<span>성명 입력</span>
-						<input type="text" className="TextInput" placeholder="성명을 입력해 주세요." onChange={handleNameChange} />
+						<input
+							type="text"
+							value={name}
+							className="TextInput"
+							placeholder="성명을 입력해 주세요."
+							onChange={(event) => handleInputChange(event, 'name')}
+						/>
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
@@ -378,7 +430,14 @@ const Register = () => {
 					</div>
 					<div className="MinimBox">
 						<span>메일 입력</span>
-						<input type="text" className="ShortTextInput" onChange={handleMailChange} placeholder="두레이 메일주소 입력" />&nbsp;@&nbsp;four-chains.com
+						<input
+							type="text"
+							value={mail}
+							className="ShortTextInput"
+							onChange={(event) => handleInputChange(event, 'Mail')}
+							placeholder="두레이 메일주소 입력"
+						/>
+						&nbsp;@&nbsp;four-chains.com
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">

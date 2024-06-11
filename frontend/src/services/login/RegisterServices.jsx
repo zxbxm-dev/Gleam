@@ -5,7 +5,14 @@ const RegisterServices = (formData) => {
     return api.post("/postResData", formData);
 };
 
-////회원가입 수정 데이터 전송
+//중복확인 데이터 전송
+const CheckID = (UserID) => {
+    return api.post('/RescheckID', {
+        userID: UserID
+    });
+}
+
+//회원가입 수정 데이터 전송
 const RegisterEditServices = (formData) => {
     return api.post("/postResEditData", formData, {
         headers: {
@@ -24,4 +31,4 @@ const ResetPwServices = (formData) => {
     return api.post("/postresetpw", formData);
 };
 
-export { RegisterServices,RegisterEditServices, FindIDServices, ResetPwServices };
+export { RegisterServices,RegisterEditServices, FindIDServices, ResetPwServices, CheckID };

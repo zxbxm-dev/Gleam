@@ -43,9 +43,10 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await LogoutServices(user.userID);
+      await LogoutServices();
       localStorage.setItem('userState', '');
       localStorage.setItem('isLoggedIn', 'false');
+      localStorage.setItem('usertoken', '');
       resetUserState();
       navigate('/login');
     } catch (error) {
