@@ -7,6 +7,8 @@ import PrivateRoute from "./layout/PrivateRoute";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import PublicRoute from "./layout/PublicRoute";
 import {
+  PageNotFound,
+  PageNotAuth,
   Login,
   Announcement,
   WriteAnnounce,
@@ -29,7 +31,6 @@ import {
   AnnualManage,
   AttendanceRegist,
   Operating,
-  PageNotFound,
   Register,
   FindID,
   ResetPw,
@@ -40,17 +41,18 @@ import {
 function App() {
   const user = useRecoilValue(userState);
   const isLogin = localStorage.getItem('isLoggedIn') === 'true';
-  const isPerformance = user.username === '김효은' || user.username === '이정훈' || user.username === '이유정'; // 인사평가제출
-  const isHumanResources = user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정'; // 인사정보관리
-  const isAttendance = user.team === '관리팀' || user.username === '이정훈' || user.username === '이유정' || user.spot === '연구실장'; // 근태관리
-  const isOperating = user.team === '지원팀' || user.username === '이정훈'; // 운영비관리
-  const isAuthorized = user.team === '관리팀' || user.username === '이정훈'; // 회원관리
+  const isPerformance = (user.team === '관리팀'&& user.position === '팀장') || user.position === '대표이사' || user.position === '센터장'; // 인사평가제출
+  const isHumanResources = user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장'; // 인사정보관리
+  const isAttendance = user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장' || user.position === '연구실장'; // 근태관리
+  const isOperating = user.team === '지원팀' || user.position === '대표이사'; // 운영비관리
+  const isAuthorized = user.team === '관리팀' || user.position === '대표이사'; // 회원관리
 
   return (
     <>
       <Router>
         <Routes>
           <Route path="/*" element={<PageNotFound />} />
+          <Route path="/notAuth" element={<PageNotAuth />} />
 
           <Route element={<PublicRoute isAllowed={isLogin} redirectPath="/" />}>
             <Route path="/login" element={<Login />} />
@@ -90,27 +92,27 @@ function App() {
               {/* 인사평가 */}
               <Route path="/submit-perform" element={<SubmitPerform />} />
               <Route path="/detailSubmit" element={<DetailSubmit />} />
-              <Route element={<ProtectedRoute isAllowed={isPerformance} redirectPath="/" />}>
+              <Route element={<ProtectedRoute isAllowed={isPerformance} redirectPath="/notAuth" />}>
                 <Route path="/manage-perform" element={<ManagePerform />} />
               </Route>
 
-              <Route element={<ProtectedRoute isAllowed={isAttendance} redirectPath="/" />}>
+              <Route element={<ProtectedRoute isAllowed={isAttendance} redirectPath="/notAuth" />}>
                 {/* 근태 관리 */}
                 <Route path="/annual-manage" element={<AnnualManage />} />
                 <Route path="/attendance-regist" element={<AttendanceRegist />} />
               </Route>
 
-              <Route element={<ProtectedRoute isAllowed={isHumanResources} redirectPath="/" />}>
+              <Route element={<ProtectedRoute isAllowed={isHumanResources} redirectPath="/notAuth" />}>
                 {/* 인사 정보 관리 */}
                 <Route path="/human-resources" element={<HumanResource />} />
               </Route>
 
-              <Route element={<ProtectedRoute isAllowed={isOperating} redirectPath="/" />}>
+              <Route element={<ProtectedRoute isAllowed={isOperating} redirectPath="/notAuth" />}>
                 {/* 운영비 관리 */}
                 <Route path="/operating-manage" element={<Operating />} />
               </Route>
 
-              <Route element={<ProtectedRoute isAllowed={isAuthorized} redirectPath="/" />}>
+              <Route element={<ProtectedRoute isAllowed={isAuthorized} redirectPath="/notAuth" />}>
                 {/* 회원 관리 */}
                 <Route path="/user-management" element={<UserManagement />} />
               </Route>

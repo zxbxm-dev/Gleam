@@ -181,6 +181,13 @@
 
   .sub-menu {
     background-color: #EEEEEE;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.5s ease;
+  }
+  
+  .sub-menu.open {
+    max-height: 500px;
   }
   .sub-menu-item.active {
     background-color: #EEEEEE;

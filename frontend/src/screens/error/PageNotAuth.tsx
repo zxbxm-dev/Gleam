@@ -4,7 +4,7 @@ import {
 } from "../../assets/images/index";
 import { useNavigate } from "react-router-dom";
 
-const PageNotFound = () => {
+const PageNotAuth = () => {
   let navigate = useNavigate();
 
   return (
@@ -17,7 +17,7 @@ const PageNotFound = () => {
         </div>
         <div className="content_box_btm">
           <div className="content_box_text">
-            존재하지 않는 페이지입니다. <br/>
+            접근권한이 없습니다. <br/>
             개발팀에 문의해 주세요.
           </div>
           <div className="content_box_manage">
@@ -33,4 +33,4 @@ const PageNotFound = () => {
   )
 }
 
-export default PageNotFound;
+export default PageNotAuth;

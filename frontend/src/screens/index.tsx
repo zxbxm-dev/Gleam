@@ -1,4 +1,5 @@
 export { default as PageNotFound } from "./error/PageNotFound";
+export { default as PageNotAuth } from "./error/PageNotAuth";
 
 export { default as Login } from "./login/Login";
 export { default as FindID } from "./login/FindID";
