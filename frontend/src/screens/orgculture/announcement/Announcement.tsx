@@ -201,15 +201,13 @@ const Announcement = () => {
                 {filteredAnnouncements
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((announcement) => (
-                    <tr key={announcement.id} className="board_content">
+                    <tr key={announcement.id} className={`board_content ${announcement.isPinned ? "pinned" : ""}`}>
                       <td style={{ color: "#D56D6D" }}>공지</td>
                       <td style={{ textAlign: "left", paddingLeft: "20px" }} onContextMenu={(e) => handleRightClick(announcement.id, e)}>
                         <Link to={`/detailAnnounce/${announcement.id}`} style={{ display: 'flex', gap: '10px', alignItems: 'center'}}>
                           {announcement.isPinned ? (
-                            <img src={PinnedIcon} alt="PinnedIcon" className="pinned_icon"/>
-                          ) : (
-                            <></>
-                          )}
+                            <img src={PinnedIcon} alt="PinnedIcon" className="pinned_icon" />
+                          ) : null}
                           <div className="dropdown">
                             {announcement.title}
                             {dropdownOpen && clickIdx === announcement.id && (
