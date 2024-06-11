@@ -26,6 +26,38 @@
       border-top: 1px solid #DCDCDC;
       border-bottom: 1px solid #DCDCDC;
       text-align: center;
+
+      .pinned_icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .dropdown {
+        z-index: 999;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 300px;
+  
+        .dropdown-menu {
+          font-family: var(--font-family-Noto-B);
+          font-size: 16px;
+          cursor: pointer;
+  
+          .dropdown_pin {
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 92px;
+            height: 35px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #ffffff;
+          }
+        }
+      }
     }
   }
 }

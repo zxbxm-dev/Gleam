@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Announcement.scss";
-import { SearchIcon } from "../../../assets/images/index";
+import { SearchIcon, PinnedIcon } from "../../../assets/images/index";
 import { ReactComponent as RightIcon } from "../../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../../assets/images/Common/LastRightIcon.svg";
@@ -19,25 +19,28 @@ const Announcement = () => {
   // const [detailAnno, setDetailAnno] = useState<any[]>([]);
   const userName = useRecoilValue(userState).name;
   const postPerPage: number = 10;
- console.log(userName);
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
+  const [clickIdx, setClickIdx] = useState<number | null>(null);
+  console.log(userName);
  
-  // useEffect(() => {
-  //   const initialAnnouncements = [
-  //     { id: 1, title: "공지사항", views: 100, date: "2024-05-01" },
-  //     { id: 2, title: "ㅁㄹㄴㅇ", views: 200, date: "2024-05-02" },
-  //     { id: 3, title: "ㅂㅈㄷㄱ", views: 300, date: "2024-05-03" },
-  //     { id: 4, title: "ㅌㅊㅋㅍ", views: 100, date: "2024-05-01" },
-  //     { id: 5, title: "ㄴㅇㅎㄴ", views: 200, date: "2024-05-02" },
-  //     { id: 6, title: "sgdfg", views: 300, date: "2024-05-03" },
-  //     { id: 7, title: "df", views: 100, date: "2024-05-01" },
-  //     { id: 8, title: "ewretwrwet", views: 200, date: "2024-05-02" },
-  //     { id: 9, title: "sdfh", views: 100, date: "2024-05-01" },
-  //     { id: 10, title: "xcvb", views: 200, date: "2024-05-02" },
-  //     { id: 11, title: "tyoyyty", views: 100, date: "2024-05-01" },
-  //     { id: 12, title: "op", views: 200, date: "2024-05-02" },
-  //   ];
-  //   setAnnouncements(initialAnnouncements);
-  // }, []);
+  useEffect(() => {
+    const initialAnnouncements = [
+      { id: 1, title: "공지사항", views: 100, date: "2024-05-01", isPinned: false },
+      { id: 2, title: "ㅁㄹㄴㅇ", views: 200, date: "2024-05-02", isPinned: false },
+      { id: 3, title: "ㅂㅈㄷㄱ", views: 300, date: "2024-05-03", isPinned: false },
+      { id: 4, title: "ㅌㅊㅋㅍ", views: 100, date: "2024-05-01", isPinned: false },
+      { id: 5, title: "ㄴㅇㅎㄴ", views: 200, date: "2024-05-02", isPinned: false },
+      { id: 6, title: "sgdfg", views: 300, date: "2024-05-03", isPinned: false },
+      { id: 7, title: "df", views: 100, date: "2024-05-01", isPinned: false },
+      { id: 8, title: "ewretwrwet", views: 200, date: "2024-05-02", isPinned: false },
+      { id: 9, title: "sdfh", views: 100, date: "2024-05-01", isPinned: false },
+      { id: 10, title: "xcvb", views: 200, date: "2024-05-02", isPinned: false },
+      { id: 11, title: "tyoyyty", views: 100, date: "2024-05-01", isPinned: false },
+      { id: 12, title: "op", views: 200, date: "2024-05-02", isPinned: false },
+    ];
+    setAnnouncements(initialAnnouncements);
+  }, []);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -60,9 +63,79 @@ const Announcement = () => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredAnnouncements = announcements.filter((announcement) =>
+  const handleRightClick = (index: number, event: React.MouseEvent<HTMLTableCellElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDropdownOpen(true);
+    setDropdownPosition({ x: event.pageX, y: event.pageY });
+    console.log('선택된 게시글 idx', clickIdx)
+    setClickIdx(index);
+  };
+
+  const handlePinClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const pinnedAnnouncements = announcements.filter(announcement => announcement.isPinned);
+
+    if (pinnedAnnouncements.length >= 5) {
+      const oldestPinnedAnnouncement = pinnedAnnouncements.reduce((oldest, current) =>
+        new Date(oldest.pinnedAt) < new Date(current.pinnedAt) ? oldest : current
+      );
+
+      setAnnouncements(prevState =>
+        prevState.map(announcement =>
+          announcement.id === oldestPinnedAnnouncement.id
+            ? { ...announcement, isPinned: false, pinnedAt: null }
+            : announcement.id === clickIdx
+            ? { ...announcement, isPinned: true, pinnedAt: new Date().toISOString() }
+            : announcement
+        )
+      );
+    } else {
+      setAnnouncements(prevState =>
+        prevState.map(announcement =>
+          announcement.id === clickIdx
+            ? { ...announcement, isPinned: !announcement.isPinned, pinnedAt: !announcement.isPinned ? new Date().toISOString() : null }
+            : announcement
+        )
+      );
+    }
+
+    setDropdownOpen(false);
+  };
+
+  const sortedAnnouncements = [...announcements].sort((a, b) => {
+    if (a.isPinned && b.isPinned) {
+      return new Date(b.pinnedAt).getTime() - new Date(a.pinnedAt).getTime();
+    } else if (a.isPinned) {
+      return -1;
+    } else if (b.isPinned) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  const filteredAnnouncements = sortedAnnouncements.filter((announcement) =>
     announcement.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (dropdownOpen && !event.target.closest('.dropdown-menu')) {
+        setDropdownOpen(false);
+      }
+    };
+  
+    document.addEventListener('click', handleClickOutside);
+  
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
+  console.log(announcements)
 
   return (
     <div className="content">
@@ -111,8 +184,24 @@ const Announcement = () => {
                   .map((announcement) => (
                     <tr key={announcement.id} className="board_content">
                       <td style={{ color: "#D56D6D" }}>공지</td>
-                      <td style={{ textAlign: "left", paddingLeft: "20px" }}>
-                      <Link to={`/detailAnnounce/${announcement.id}`}>{announcement.title}</Link>
+                      <td style={{ textAlign: "left", paddingLeft: "20px" }} onContextMenu={(e) => handleRightClick(announcement.id, e)}>
+                        <Link to={`/detailAnnounce/${announcement.id}`} style={{ display: 'flex', gap: '10px', alignItems: 'center'}}>
+                          {announcement.isPinned ? (
+                            <img src={PinnedIcon} alt="PinnedIcon" className="pinned_icon"/>
+                          ) : (
+                            <></>
+                          )}
+                          <div className="dropdown">
+                            {announcement.title}
+                            {dropdownOpen && clickIdx === announcement.id && (
+                              <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
+                                <button className="dropdown_pin" onClick={handlePinClick}>
+                                  {announcement.isPinned ? "고정 해제" : "고정"}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </Link>
                       </td>
                       <td>{announcement.views}</td>
                       <td>{announcement.date}</td>

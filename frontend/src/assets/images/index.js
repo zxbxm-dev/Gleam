@@ -18,6 +18,7 @@ export { default as CloseIcon } from "./Common/CloseIcon.svg";
 export { default as NewIcon } from "./Common/NewIcon.svg";
 export { default as SelectArrow } from "./Common/SelectArrow.svg";
 export { default as PageNotIcon } from "./Common/PageNotIcon.svg";
+export { default as PinnedIcon } from "./Common/PinnedIcon.svg";
 
 // Approval
 export { default as Approval_Plus } from "./Approval/Approval_Plus.svg";
