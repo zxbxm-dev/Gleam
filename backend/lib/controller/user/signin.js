@@ -61,6 +61,18 @@ const login = async (req, res) => {
   }
 };
 
+// 로그아웃
+const logout = (req, res) => {
+  try {
+    // 클라이언트에게 로그아웃 완료 메시지 응답
+    res.status(200).json({ success: "로그아웃 되었습니다." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "로그아웃 서버 오류", error });
+  }
+};
+
+
 // 아이디 찾기
 const findUsername = async (req, res) => {
   const { username, spot, phoneNumber } = req.body;
@@ -189,6 +201,7 @@ const editRegistration = async (req, res) => {
 
 module.exports = {
   login,
+  logout,
   findUsername,
   resetPassword,
   editRegistration

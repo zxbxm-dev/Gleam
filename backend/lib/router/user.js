@@ -12,12 +12,13 @@ module.exports = (app) => {
   router.post("/editchainlinker", userController.userleaves);
 
   router.post("/login", signinController.login);
+  router.post("/logout", signinController.logout);
   router.post("/postFindID", signinController.findUsername);
   router.post("/postresetpw", signinController.resetPassword);
   // 이미지 파일 업로드 및 회원 정보 수정을 위한 라우터
   const upload = require('../controller/user/multerMiddleware');
 
-  // POST /register/edit 요청을 처리할 라우터 설정
+  // POST 요청을 처리할 라우터 설정
   router.post('/postResEditData', upload.fields([{ name: 'attachment' }, { name: 'sign' }]), signinController.editRegistration);
 
   app.use("/api", router);

@@ -8,7 +8,8 @@ module.exports = (sequelize, Sequelize) => {
       userId: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true, //고유값
+        //고유값
+        unique: true,
         primaryKey: true,
       },
       password: {
