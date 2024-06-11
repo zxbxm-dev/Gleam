@@ -86,7 +86,7 @@ const Announcement = () => {
     event.preventDefault();
     event.stopPropagation();
     setDropdownOpen(true);
-    setDropdownPosition({ x: event.pageX, y: event.pageY });
+    setDropdownPosition({ x: event.pageX+50, y: event.pageY });
     console.log('선택된 게시글 idx', clickIdx)
     setClickIdx(index);
   };
