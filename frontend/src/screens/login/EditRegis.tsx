@@ -98,10 +98,10 @@ const EditRegis = () => {
         }
     };
 
-    const validatePhoneNumber = (phone: any) => {
-        const phoneRegex = /^(010|031)\d{6,8}$/;
-        return phoneRegex.test(phone);
-    };
+	const validatePhoneNumber = (phone: any) => {
+		const phoneRegex = /^\d{8,12}$/;
+		return phoneRegex.test(phone);
+	};
 
     const validatePassword = (password: any) => {
         const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
