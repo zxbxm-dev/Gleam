@@ -101,6 +101,11 @@ const Sidebar = () => {
       label: '휴가 관리',
       link: '/calendar',
     },
+    // {
+    //   menu: 'meetingroom',
+    //   label: '회의실 관리',
+    //   link: '/meetingroom',
+    // },
     {
       menu: 'report',
       label: '보고서',
