@@ -36,6 +36,7 @@ import {
   ResetPw,
   EditRegis,
   UserManagement,
+  MeetingRoom
 } from "./screens";
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
               <Route path="/detailAnnounce/:id" element={<DetailAnnounce />} />
 
               <Route path="/orgchart" element={<OrgChart />} />
+              <Route path="/meetingroom" element={<MeetingRoom />} />
 
               <Route path="/regulations" element={<Regulations />} />
               <Route path="/writeRegulation" element={<WriteRegulation />} />

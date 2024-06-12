@@ -63,13 +63,131 @@
         flex-direction: column;
         gap: 7px;
 
+        .TextInputCon{
+text-align: center;
+height: 33px;
+border: 1px solid #DCDCDC;
+border-radius: 5px;
+font-size: 14px;
+        }
+        .TextInputCon::placeholder{
+          font-size: 14px;
+          font-weight: 400;
+          color: #d9d9d9;
+        }
+        .TextInputCon:focus{
+          outline: none;
+        }
+        .AddPeoples{
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+
+          .span{
+            font-size: 14px;
+            color: #929292;
+            font-weight: 300;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 10px;
+          }
+
+          .MeetingRoom{
+            display: flex;
+            width: 80%;
+            gap: 10px;
+            justify-content: center;
+
+            .SelectRoom{
+              font-size: 14px;
+            }
+            .SelectRoom:focus{
+              outline: none;
+            }
+
+            .Field{
+              gap: 10px;
+              display: flex;
+
+              label{
+                display: flex;
+                span{
+                  font-size: 14px;
+                  margin-left: 5px;
+                }
+              }
+            }
+          }
+        }
+
+        .AddPeople{
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          .span{
+            font-size: 14px;
+            color: #929292;
+            font-weight: 300;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 10px;
+          }
+
+          .AddInputCon{
+            text-align: center;
+            height: 33px;
+            border-bottom: 1px solid #DCDCDC;
+            font-size: 14px;
+            width: 300px;
+          }
+          .AddInputCon::placeholder{
+            font-size: 14px;
+            font-weight: 400;
+            color: #d9d9d9;
+          }
+          .AddInputCon:focus{
+            outline: none;
+          }
+
+          .timespan{
+            margin-left: 10px;
+            margin-right: 10px;
+          }
+          .Date{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .datepicker{
+              font-size: 14px;
+              font-family: var(--font-family-Noto-M);
+              width: 80px;
+              height: 27px;
+            }
+            .datepicker:focus{
+              outline: none;
+            }
+            .react-datepicker-wrapper{
+              width: 80px;
+            }
+  
+            .timeoption{
+              font-size: 14px;
+              font-family: var(--font-family-Noto-M);
+              position: relative;
+margin-left: 5px;
+cursor: pointer;
+            }
+          }
+        }
+
         .body-content {
           display: flex;
           gap: 10px;
   
           .content-left {
+            padding-left: 8px;
             display: flex;
-            justify-content: end;
             align-items: center;
             width: 40px;
             height: 28px;
@@ -86,7 +204,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            width: 310px;
+            width: 100%;
             font-size: 14px;
 
             .textinput {
@@ -131,8 +249,10 @@
             .content-type {
               display: flex;
               align-items: center;
-              width: 280px;
-              height: 28px;
+              width: 100%;
+              justify-content: center;
+              margin-bottom: 20px;
+              font-size: 18px;
             }
             .content-date {
               display: flex;
@@ -143,7 +263,6 @@
             }
             .content-memo {
               width: 300px;
-              height: 100px;
               padding-top: 4px;
             }
           }
@@ -195,4 +314,44 @@
 
     }
   }
+}
+.options{
+  position: absolute;
+  height: 150px;
+  overflow-y: scroll;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+}
+
+.options::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.options::-webkit-scrollbar-thumb {
+  background-color: #A8A8A8;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+.options::-webkit-scrollbar-corner {
+  background-color: none;
+}
+
+.options::-webkit-scrollbar-track {
+  box-shadow: none;
+  background-color: #fff;
+}
+
+.optionselect{
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.optionselect:hover{
+background-color: #d9d9d9;
+font-size: 14px;
+cursor: pointer;
+
 }
