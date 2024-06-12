@@ -3,15 +3,12 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { Tabs, TabPanels,TabPanel } from '@chakra-ui/react';
 import CustomModal from "../../components/modal/CustomModal";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { writeCalen } from "../../services/calender/calender";
-import { SelectArrow } from "../../assets/images/index";
 import { useRecoilState } from 'recoil';
 import { isSidebarVisibleState } from '../../recoil/atoms';
-import { CheckCalen, DeleteCalen } from "../../services/calender/calender";
 
 interface Event {
     title: string;
@@ -32,12 +29,8 @@ const MeetingRoom = () => {
     const [memo, setMemo] = useState("");
     const [activeTab, setActiveTab] = useState(0);
     const calendarRef1 = useRef<FullCalendar>(null);
-    const calendarRef2 = useRef<FullCalendar>(null);
     const [key, setKey] = useState(0);
-    const [selectedColor, setSelectedColor] = useState("#ABF0FF");
-    const [selectOpen, setSelectOpen] = useState(false);
     const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
-    const [calender, setCalender] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [location, setLocation] = useState(""); // 선택된 장소 상태
     const [company, setCompany] = useState(""); // 선택된 회사 상태
@@ -80,18 +73,6 @@ const MeetingRoom = () => {
         setKey(prevKey => prevKey + 1);
     }, [activeTab, isSidebarVisible]);
 
-    useEffect(() => {
-        const fetchCalender = async () => {
-            try {
-                const response = await CheckCalen();
-                setCalender(response.data);
-            } catch (error) {
-                console.error("Error fetching calender:", error);
-            }
-        };
-
-        fetchCalender();
-    }, []);
 
     const events1 = [
         { title: '개발1팀 회의', start: new Date('2024-06-12'), end: new Date('2024-06-12'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
@@ -99,54 +80,8 @@ const MeetingRoom = () => {
         { title: '본사 외근', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
     ];
 
-    // const handleTitleChange = (event: any) => {
-    //     setTitle(event.target.value);
-    //     const value = event.target.value.toLowerCase();
-    //     if (value.includes('반차')) {
-    //         setSelectedColor('#ABF0FF');
-    //     } else if (value.includes('연차')) {
-    //         setSelectedColor('#7AE1A9');
-    //     } else if (value.includes('외근')) {
-    //         setSelectedColor('#D6CDC2');
-    //     } else if (value.includes('워크숍')) {
-    //         setSelectedColor('#FFD8B5');
-    //     } else if (value.includes('출장')) {
-    //         setSelectedColor('#B1C2FF');
-    //     } else {
-    //         setSelectedColor('#ABF0FF');
-    //     }
-    // };
-
     const handleMemoChange = (event: any) => {
         setMemo(event.target.value);
-    };
-
-    const handleAddEvent = () => {
-        if (!startDate || !endDate) {
-            console.error("Start date or end date is null.");
-            return;
-        }
-
-        const isoStartDate = startDate.toISOString().substring(0, 10);
-        const isoEndDate = endDate.toISOString().substring(0, 10);
-
-        const eventData = {
-            title: title,
-            startDate: isoStartDate,
-            endDate: isoEndDate,
-            memo: memo,
-            backgroundColor: selectedColor,
-        };
-
-        writeCalen(eventData)
-            .then(response => {
-                console.log("Event added successfully:", response);
-            })
-            .catch(error => {
-                console.error('Error adding event:', error);
-            });
-
-        setAddEventModalOPen(false);
     };
 
     const handleEventClick = (info: any) => {
@@ -157,24 +92,6 @@ const MeetingRoom = () => {
         });
         setEventModalOPen(true);
     };
-
-    const handleDeleteEvent = () => {
-        if (!selectedEvent) {
-            console.error("No event selected for deletion.");
-            return;
-        }
-        DeleteCalen(selectedEvent)
-            .then(response => {
-                console.log("Event deleted successfully:", response);
-            })
-            .catch(error => {
-                console.error("Error deleting event:", error);
-            });
-
-        setDeleteEventModalOPen(false);
-        setEventModalOPen(false);
-    };
-
 
     const handleEditEvent = () => {
         setEventModalOPen(false);
@@ -189,13 +106,7 @@ const MeetingRoom = () => {
         setKey(prevKey => prevKey + 1);
     }, [activeTab]);
 
-    const SelectOptions = (color: string) => {
-        setSelectedColor(color);
-    };
 
-    const SelectOpen = () => {
-        setSelectOpen(!selectOpen)
-    }
     return (
         <div className="content">
             <div className="content_header">
@@ -258,7 +169,7 @@ const MeetingRoom = () => {
                 header={'회의실 예약하기'}
                 footer1={'등록'}
                 footer1Class="back-green-btn"
-                onFooter1Click={handleAddEvent}
+                // onFooter1Click={handleAddEvent}
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setAddEventModalOPen(false)}
@@ -433,7 +344,7 @@ const MeetingRoom = () => {
                 header={'일정 수정하기'}
                 footer1={'등록'}
                 footer1Class="back-green-btn"
-                onFooter1Click={handleAddEvent}
+                // onFooter1Click={handleAddEvent}
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setEditEventModalOPen(false)}
@@ -559,7 +470,6 @@ const MeetingRoom = () => {
                 header={'알림'}
                 footer1={'삭제'}
                 footer1Class="red-btn"
-                onFooter1Click={handleDeleteEvent}
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setDeleteEventModalOPen(false)}
