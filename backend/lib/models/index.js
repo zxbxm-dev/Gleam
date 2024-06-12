@@ -5,6 +5,8 @@ const config = require('../config/config')[env];
 const userData = require("./user/user");
 const quitterUser = require("./user/quitter");
 
+const expenses = require("./expense/costOperation");
+
 const db = {};
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
@@ -13,5 +15,7 @@ db.sequelize = sequelize;
 
 db.userData = userData(sequelize, Sequelize);
 db.quitterUser = quitterUser(sequelize, Sequelize);
+
+db.expenses = expenses(sequelize, Sequelize);
 
 module.exports = db;

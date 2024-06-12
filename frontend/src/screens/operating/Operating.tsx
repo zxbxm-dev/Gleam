@@ -525,38 +525,39 @@ const Operating = () => {
     };
   }, [dropdownOpen]);
 
-  // 운영비 관리 작성
-  const handleSubmit = () => {
-    setEditMode(!editMode);
-    
-    const formData = {
-      common811: common811Team,
-      common812: common812Team,
-      common813: common813Team,
-      common814: common814Team,
-      common815: common814Team,
-      common818: common814Team,
-      common819: common814Team,
-      management: managementTeam,
-      support: supportTeam,
-      devone: devOneTeam,
-      devtwo: devTwoTeam,
-      blockchain: blockchainTeam,
-      design: designTeam,
-      planning: planningTeam,
-    }
-
-    console.log('전송된 데이터', formData);
-
-    // API 호출
-    WriteOperating(formData)
-      .then(response => {
-        console.log("운영비 데이터 전송 성공")
-      })
-      .catch(error => {
-        console.log("운영비 데이터 전송 오류", error);
-      })
+// 운영비 관리 작성
+const handleSubmit = () => {
+  setEditMode(!editMode);
+  
+  const formData = {
+    common811: common811Team,
+    common812: common812Team,
+    common813: common813Team,
+    common814: common814Team,
+    common815: common815Team,
+    common818: common818Team,
+    common819: common819Team,
+    management: managementTeam,
+    support: supportTeam,
+    devOne: devOneTeam,
+    devTwo: devTwoTeam,
+    blockchain: blockchainTeam,
+    design: designTeam,
+    planning: planningTeam,
   }
+  
+
+  console.log('전송된 데이터', formData);
+
+  // API 호출
+  WriteOperating(formData)
+    .then(response => {
+      console.log("운영비 데이터 전송 성공")
+    })
+    .catch(error => {
+      console.log("운영비 데이터 전송 오류", error);
+    })
+}
 
 
   return (
