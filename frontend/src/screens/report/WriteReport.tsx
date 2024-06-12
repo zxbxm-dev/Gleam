@@ -393,57 +393,89 @@ const handleSubmit = () => {
                   </div>
                   {selectOpen ? (
                     <div className="Select_report_Content">
-                      <div>공통 보고서</div>
+                      <div>공동</div>
                       <div className="Option" onClick={() => SelectOptions('주간업무일지')}>
                         <span>주간업무일지</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('지출품의서')}>
-                        <span>지출품의서</span>
                       </div>
                       <div className="Option" onClick={() => SelectOptions('휴가신청서')}>
                         <span>휴가신청서</span>
                       </div>
-
-                      <div>기타</div>
-                      <div className="Option" onClick={() => SelectOptions('시말서')}>
-                        <span>시말서</span>
+                      <div className="Option" onClick={() => SelectOptions('지출품의서')}>
+                        <span>지출품의서</span>
                       </div>
-                      {/* <div className="Option" onClick={() => SelectOptions('사직서')}>
-                        <span>사직서</span>
-                      </div> */}
+
+                      <div>프로젝트</div>
+                      <div className="Option" onClick={() => SelectOptions('기획서')}>
+                        <span>기획서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('중간보고서')}>
+                        <span>중간보고서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('최종보고서')}>
+                        <span>최종보고서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('TF팀 기획서')}>
+                        <span>TF팀 기획서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 계획서')}>
+                        <span>TF팀 프로젝트 계획서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('TF팀 중간보고서')}>
+                        <span>TF팀 중간보고서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 결과 보고서')}>
+                        <span>TF팀 프로젝트 결과 보고서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('박람회 보고서')}>
+                        <span>박람회 보고서</span>
+                      </div>
+
+                      <div>인사</div>
                       <div className="Option" onClick={() => SelectOptions('휴직원')}>
                         <span>휴직원</span>
                       </div>
                       <div className="Option" onClick={() => SelectOptions('복직원')}>
                         <span>복직원</span>
                       </div>
+                      <div className="Option" onClick={() => SelectOptions('시말서')}>
+                        <span>시말서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('진급추천서')}>
+                        <span>진급추천서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('퇴직금 중간정산 신청서')}>
+                        <span>퇴직금 중간정산 신청서</span>
+                      </div>
 
-                      <div>워크숍</div>
-                      <div className="Option" onClick={() => SelectOptions('워크숍 신청서')}>
-                        <span>워크숍 신청서</span>
+                      <div>총무</div>
+                      <div className="Option" onClick={() => SelectOptions('출장 신청서')}>
+                        <span>출장 신청서</span>
                       </div>
-                      <div className="Option" onClick={() => SelectOptions('워크숍 보고서 (프로젝트 회의)')}>
-                        <span>워크숍 보고서 (프로젝트 회의)</span>
+                      <div className="Option" onClick={() => SelectOptions('출장 보고서')}>
+                        <span>출장 보고서</span>
                       </div>
-                      <div className="Option" onClick={() => SelectOptions('워크숍 보고서 (야유회)')}>
-                        <span>워크숍 보고서 (야유회)</span>
+                      <div className="Option" onClick={() => SelectOptions('자기개발비 신청서')}>
+                        <span>자기개발비 신청서</span>
+                      </div>
+                      <div className="Option" onClick={() => SelectOptions('법인카드 신청서')}>
+                        <span>법인카드 신청서</span>
                       </div>
                       <div className="Option" onClick={() => SelectOptions('지출내역서')}>
                         <span>지출내역서</span>
                       </div>
-                      <div className="Option" onClick={() => SelectOptions('예산신청서 (지원팀)')}>
-                        <span>예산신청서 (지원팀)</span>
+                      <div className="Option" onClick={() => SelectOptions('예산신청서')}>
+                        <span>예산신청서</span>
                       </div>
 
-                      <div>기획서</div>
-                      <div className="Option" onClick={() => SelectOptions('기획서')}>
-                        <span>기획서</span>
+                      <div>기타</div>
+                      <div className="Option" onClick={() => SelectOptions('워크숍 신청서')}>
+                        <span>워크숍 신청서</span>
                       </div>
-                      <div className="Option" onClick={() => SelectOptions('최종보고서')}>
-                        <span>최종보고서</span>
+                      <div className="Option" onClick={() => SelectOptions('야유회 보고서')}>
+                        <span>야유회 보고서</span>
                       </div>
-                      <div className="Option" onClick={() => SelectOptions('프로젝트 계획서')}>
-                        <span>프로젝트 계획서</span>
+                      <div className="Option" onClick={() => SelectOptions('프로젝트 회의 보고서')}>
+                        <span>프로젝트 회의 보고서</span>
                       </div>
                     </div>
                   ) : (
