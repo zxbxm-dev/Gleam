@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const fs = require('fs');
+const fs = require("fs");
+const path = require("path");
 const Models = require("../../models");
 const User = Models.userData;
 
@@ -72,7 +73,6 @@ const logout = (req, res) => {
   }
 };
 
-
 // 아이디 찾기
 const findUsername = async (req, res) => {
   const { username, spot, phoneNumber } = req.body;
@@ -132,18 +132,24 @@ const resetPassword = async (req, res) => {
 
       await User.update({ password: hashedPassword }, { where: condition });
 
-      return res.status(200).json({ success: "비밀번호가 성공적으로 재설정되었습니다." });
+      return res
+        .status(200)
+        .json({ success: "비밀번호가 성공적으로 재설정되었습니다." });
     } else {
-      return res.status(404).json({ error: "입력된 정보로 사용자를 찾을 수 없습니다." });
+      return res
+        .status(404)
+        .json({ error: "입력된 정보로 사용자를 찾을 수 없습니다." });
     }
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "비밀번호 재설정 서버 오류", error });
+    return res
+      .status(500)
+      .json({ message: "비밀번호 재설정 서버 오류", error });
   }
 };
 
 // 이미지 파일 업로드 및 회원 정보 수정을 위한 함수
-const uploadDirectory = './uploads';
+const uploadDirectory = "./uploads";
 
 //uploads 파일 없을시 생성
 if (!fs.existsSync(uploadDirectory)) {
@@ -153,10 +159,22 @@ if (!fs.existsSync(uploadDirectory)) {
 const editRegistration = async (req, res) => {
   try {
     const formData = req.body;
-    const attachmentFile = req.files && req.files['attachment'] ? req.files['attachment'][0] : null;
-    const signFile = req.files && req.files['sign'] ? req.files['sign'][0] : null;
+    const attachmentFile =
+      req.files && req.files["attachment"] ? req.files["attachment"][0] : null;
+    const signFile =
+      req.files && req.files["sign"] ? req.files["sign"][0] : null;
 
-    const { password, phoneNumber, company, department, team, spot, position, userID } = formData;
+    // 사용자 정보와 함께 파일 이름을 데이터베이스에 저장
+    const {
+      password,
+      phoneNumber,
+      company,
+      department,
+      team,
+      spot,
+      position,
+      userID,
+    } = formData;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -168,34 +186,28 @@ const editRegistration = async (req, res) => {
       team: team,
       spot: spot,
       position: position,
+      attachment: attachmentFile ? attachmentFile.originalname : null,
+      Sign: signFile ? signFile.originalname : null,
     };
-
-    if (attachmentFile) {
-      updateData.attachment = attachmentFile.originalname;
-    }
-
-    if (signFile) {
-      updateData.sign = signFile.originalname;
-    }
 
     const [updatedRows] = await User.update(updateData, {
       where: {
-        userId: userID 
-      }
+        userId: userID,
+      },
     });
 
     if (updatedRows === 0) {
-      return res.status(404).send('회원 정보를 찾을 수 없습니다.');
+      return res.status(404).send("회원 정보를 찾을 수 없습니다.");
     }
 
     const updatedUser = await User.findOne({ where: { userId: userID } });
 
-    console.log('업데이트된 사용자 정보:', updatedUser);
+    console.log("업데이트된 사용자 정보:", updatedUser);
 
-    res.send('회원 정보가 성공적으로 수정되었습니다.');
+    res.send("회원 정보가 성공적으로 수정되었습니다.");
   } catch (error) {
-    console.error('회원 정보 수정 오류:', error);
-    res.status(500).send('회원 정보 수정 중 오류가 발생했습니다.');
+    console.error("회원 정보 수정 오류:", error);
+    res.status(500).send("회원 정보 수정 중 오류가 발생했습니다.");
   }
 };
 
@@ -204,5 +216,5 @@ module.exports = {
   logout,
   findUsername,
   resetPassword,
-  editRegistration
+  editRegistration,
 };
