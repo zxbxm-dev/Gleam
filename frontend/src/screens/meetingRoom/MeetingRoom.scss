@@ -1,0 +1,265 @@
+.meetingroom_container {
+  height: 85vh;
+  background-color: #FBFBFB;
+  padding: 0 20px;
+
+  .fc {
+    .fc-toolbar.fc-header-toolbar {
+      flex-direction: row;
+      font-size: 16px;
+      color: #000;
+      margin-bottom: 10px;
+
+      .fc-toolbar-chunk {
+        display: flex;
+        font-family: var(--font-family-Noto-M);
+      }
+    }
+
+    .fc-button-primary {
+      background-color: #FBFBFB;
+      color: #969696;
+      border: none;
+  
+      &:active,
+      &:focus,
+      &.active {
+        background-color: #FBFBFB;
+        color: #969696;
+        border: none;
+      }
+    }
+
+    .fc-daygrid-day-frame {
+      background-color: #fff;
+
+      &:hover {
+        box-shadow: 0 0 0 3px #45C552 inset;
+      }
+    }
+
+    .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+      min-height: 6em;
+      font-family: var(--font-family-Noto-R);
+    }
+
+    .fc-daygrid-day-top {
+      flex-direction: row;
+      font-family: var(--font-family-Noto-M);
+      color: #969696;
+    }
+
+    .fc-popover {
+      font-family: var(--font-family-Noto-R);
+      border-radius: 10px;
+      height: 250px;
+    }
+
+    .fc-popover-header {
+      font-family: var(--font-family-Noto-B);
+      font-size: 14px;
+      background-color: #746E58;
+      color: #fff;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      padding: 8px;
+    }
+
+    .fc-more-popover {
+      .fc-popover-body {
+        width: 250px;
+        height: 200px;
+        min-width: 250px;
+        min-height: 200px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        overflow-y: auto;
+      }
+      .fc-popover-body::-webkit-scrollbar-corner {
+        background-color: none;
+      }
+      .fc-popover-body::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      .fc-popover-body::-webkit-scrollbar-thumb {
+        background-color: #A8A8A8;
+        border-radius: 10px;
+        background-clip: padding-box;
+        border: 2px solid transparent;
+      }
+      .fc-popover-body::-webkit-scrollbar-track {
+        box-shadow: none;
+        background-color: #fff;
+      }
+    }
+    
+    .fc-daygrid-body-balanced .fc-daygrid-day-events {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+  }
+
+  // 버튼 테두리 제거
+  .fc-button {
+    box-shadow: none !important;
+  }
+
+  // custom button
+  .fc-Addschedule-button {
+    width: 107px;
+    height: 35px;
+    background-color: #45C552 !important;
+    border: 1px solid #45C552;
+    border-radius: 5px;
+    font-family: var(--font-family-Noto-B);
+    font-size: 14px;
+    color: #fff !important;
+
+  }
+
+  // 요일 헤더
+  .fc-theme-standard th {
+    font-family: var(--font-family-Noto-M);
+    background-color: #fff;
+    color: #969696;
+    height: 40px;
+    text-align: left;
+  }
+  .fc-col-header-cell-cushion {
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+
+  .fc-event {
+    font-family: var(--font-family-Noto-R);
+    cursor: pointer;
+
+    .fc-event-main {
+      padding-left: 9px;
+    }
+  }  
+
+}
+.Select{
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-direction: column;
+  position: relative;
+  .SelectHeader{
+    width: 40px;
+    height: 28px;
+    border-radius: 3px;
+    border: 1px solid #DCDCDC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    cursor: pointer;
+
+    div{
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  .SelectContent{
+    width: 60px;
+    height: 107px;
+    border-radius: 3px;
+    border: 1px solid #DCDCDC;
+    position: absolute;
+    top:27px;
+    background-color: #fff;
+    
+    .Option{
+      display: flex;
+      padding: 3px 8px;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+
+      div{
+        width: 10px;
+        height: 10px;
+      }
+
+      span{
+        font-size: 10px;
+        color: #929292;
+      }
+    }
+    .Option:hover{
+      background-color: rgba(0,0,0,0.10);
+    }
+  }
+}
+/* 일요일 날짜: 빨간색 */
+.fc-day-sun a {
+  color: #D56D6D;
+}
+
+/* 토요일 날짜: 파란색 */
+.fc-day-sat a {
+  color: #969696;
+}
+
+.add_button {
+  width: 66px;
+  height: 35px;
+  background-color: #746E58;
+  border: 1px solid #746E58;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: var(--font-family-Noto-B);
+  color: #fff;
+}
+
+.cancle_button {
+  width: 66px;
+  height: 35px;
+  background-color: #fff;
+  border: 1px solid #746E58;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-family-Noto-B);
+  color: #746E58;
+}
+
+.del_button {
+  width: 66px;
+  height: 35px;
+  background-color: #fff;
+  border: 1px solid #D56D6D;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-family-Noto-B);
+  color: #D56D6D;
+}
+
+.cle_button {
+  width: 66px;
+  height: 35px;
+  background-color: #fff;
+  border: 1px solid #929292;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-family-Noto-B);
+  color: #929292;
+}
+
+.react-datepicker__input-container {
+
+  input {
+    text-align: center;
+    width: 150px;
+  }
+}
+
+.react-datepicker-wrapper{
+  width: 150px;
+}
