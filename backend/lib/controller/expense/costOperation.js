@@ -11,7 +11,7 @@ const writeOperating = async (req, res) => {
       common813,
       common814,
       common815,
-      common818, //816 어디갔음??
+      common818,
       common819,
       management, //관리팀
       support, //지원팀

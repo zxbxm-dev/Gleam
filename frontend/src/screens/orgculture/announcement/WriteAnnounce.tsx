@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Announcement.scss";
-import {
-  DeleteIcon,
-} from "../../../assets/images/index";
+import { DeleteIcon } from "../../../assets/images/index";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
@@ -40,11 +38,9 @@ const WriteAnnouncement = () => {
     if (files && files.length > 0) {
       const file = files[0];
       const fileData = { file: file, fileName: file.name };
-      setForm({ ...form, attachment: fileData as any });
+      setForm({ ...form, attachment: fileData });
     }
   };
-
-  console.log(editData);
 
   useEffect(() => {
     if (editData) {
@@ -60,7 +56,6 @@ const WriteAnnouncement = () => {
       }
     }
   }, [editData]);
-  
 
   const formatDate = (date: any) => {
     const year = date.getFullYear();
@@ -69,13 +64,13 @@ const WriteAnnouncement = () => {
     return `${year}/${month}/${day}`;
   };
 
-  const handleTitleChange = (event: any) => {
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, title: event.target.value });
   };
 
   const currentDate = formatDate(new Date());
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async () => {
     const { title, content } = form;
 
     if (title === "") {
@@ -95,33 +90,40 @@ const WriteAnnouncement = () => {
     formData.append("views", views.toString());
 
     if (form.attachment) {
-      formData.append("attachment", (form.attachment as any).file);
-      formData.append("attachmentName", (form.attachment as any).fileName);
+      formData.append("attachment", form.attachment.file);
+      formData.append("attachmentName", form.attachment.fileName);
     }
 
-    WriteAnnounce(formData)
-      .then(response => {
-        // 성공적으로 등록되었을 때 처리
-        navigate("/");
-      })
-      .catch(error => {
-        // 실패 시 처리
-        console.error("등록에 실패했습니다.");
-      });
+    try {
+      const response = await WriteAnnounce(formData);
+      console.log("공지사항 등록 성공:", response.data);
+      navigate("/");
+    } catch (error) {
+      console.error("공지사항 등록 실패:", error);
+      alert("공지사항 등록 중 오류가 발생했습니다.");
+    }
 
-      if (editData) {
-        data = { ...data, id: editData.id };
+    if (editData) {
+      const data = { ...editData, id: editData.id };
+      try {
         await EditAnno(data, formData);
+        console.log("공지사항 수정 성공");
+        navigate("/");
+      } catch (error) {
+        console.error("공지사항 수정 실패:", error);
+        alert("공지사항 수정 중 오류가 발생했습니다.");
       }
+    }
   };
 
   const onChange = () => {
     const data = editorRef.current.getInstance().getHTML();
-    setForm({ ...form, content: data })
-    
-    if (editData && editData?.fileUrl) {
+    setForm({ ...form, content: data });
+    if (editData && editData.fileUrl) {
       setIsFileUpload(true);
-    } else setIsFileUpload(false);
+    } else {
+      setIsFileUpload(false);
+    }
   };
 
   return (
@@ -140,7 +142,7 @@ const WriteAnnouncement = () => {
 
           <div className="content_container">
             <div className="write_container">
-              <input type="text" className="write_title" placeholder="제목을 입력해 주세요." onChange={handleTitleChange} />
+              <input type="text" className="write_title" placeholder="제목을 입력해 주세요." value={form.title} onChange={handleTitleChange} />
               <div className="writor_container">
                 <div className="write_info">작성자</div>
                 <div className="write_info">{user.username}</div>

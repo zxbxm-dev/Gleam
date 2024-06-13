@@ -6,6 +6,7 @@ module.exports = (app) => {
   const router = express.Router();
 
   router.post("/postResData", userController.createUser);
+  router.post("/RescheckID", userController.checkDuplicate);
   router.get("/checkUserManagement", userController.getAllUsers);
   router.post("/approveUserManagement/:userId", userController.approveUser);
   router.delete("/deleteUserManagement/:userId", userController.deleteUser);

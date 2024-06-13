@@ -2,7 +2,11 @@ import api from "../../api/auth";
 
 // 공지사항 작성
 const WriteAnnounce = (formData) => {
-    return api.post("/writeAnno", formData);
+    return api.post("/writeAnno", formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
 
 // 공지사항 전체 목록 조회

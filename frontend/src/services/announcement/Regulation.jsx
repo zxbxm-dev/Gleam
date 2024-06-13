@@ -2,7 +2,11 @@ import api from "../../api/auth";
 
 //사내규정 작성
 const WriteRegul = (formData) => {
-    return api.post("/writeRegul", formData);
+    return api.post("/writeRegul", formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
 
 // 사내규정 전체 목록 조회
