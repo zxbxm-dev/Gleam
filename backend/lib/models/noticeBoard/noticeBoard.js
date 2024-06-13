@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
       boardType: {
         type: DataTypes.STRING,
         allowNull: false,
-        // 게시판을 유형에 따라 분류 (공지사상/사내규정)
+        // 게시판을 유형에 따라 분류 (공지사항/사내규정)
         validate: {
           isIn: [["Anno", "Regul"]],
         },

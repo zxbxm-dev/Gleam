@@ -2,6 +2,18 @@ const fs = require("fs-extra");
 const models = require("../../models");
 const Notice = models.noticeBoard;
 
+// ID 재정렬 함수
+const reorderIds = async () => {
+  const notices = await Notice.findAll({
+    order: [["id", "ASC"]],
+  });
+
+  for (let i = 0; i < notices.length; i++) {
+    notices[i].id = i + 1;
+    await notices[i].save();
+  }
+};
+
 // 공지사항 작성
 const writeAnnouncement = async (req, res) => {
   try {
@@ -81,6 +93,40 @@ const editAnnouncement = async (req, res) => {
   } catch (error) {
     console.error("공지사항 수정 에러:", error);
     res.status(500).json({ error: "공지사항 수정 중 오류가 발생했습니다." });
+  }
+};
+
+// 공지사항 삭제
+const deleteAnnouncement = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 데이터베이스에서 해당 공지사항 찾기
+    const notice = await Notice.findByPk(id);
+
+    if (!notice) {
+      return res
+        .status(404)
+        .json({ error: "해당 공지사항을 찾을 수 없습니다." });
+    }
+
+    // 첨부파일 삭제
+    if (notice.attachment && notice.attachment.fileUrl) {
+      await fs.unlink(notice.attachment.fileUrl);
+    }
+
+    // 데이터베이스에서 해당 공지사항 삭제
+    await Notice.destroy({
+      where: { id: id },
+    });
+
+    // ID 재정렬
+    await reorderIds();
+
+    res.status(200).json({ message: "공지사항 삭제 완료" });
+  } catch (error) {
+    console.error("공지사항 삭제 에러:", error);
+    res.status(500).json({ error: "공지사항 삭제 중 오류가 발생했습니다." });
   }
 };
 
@@ -167,9 +213,45 @@ const editRegulation = async (req, res) => {
   }
 };
 
+// 규정 공지 삭제
+const deleteRegulation = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 데이터베이스에서 해당 규정 공지 찾기
+    const notice = await Notice.findByPk(id);
+
+    if (!notice) {
+      return res
+        .status(404)
+        .json({ error: "해당 규정 공지를 찾을 수 없습니다." });
+    }
+
+    // 첨부파일 삭제
+    if (notice.attachment && notice.attachment.fileUrl) {
+      await fs.unlink(notice.attachment.fileUrl);
+    }
+
+    // 데이터베이스에서 해당 규정 공지 삭제
+    await Notice.destroy({
+      where: { id: id },
+    });
+
+    // ID 재정렬
+    await reorderIds();
+
+    res.status(200).json({ message: "규정 공지 삭제 완료" });
+  } catch (error) {
+    console.error("규정 공지 삭제 에러:", error);
+    res.status(500).json({ error: "규정 공지 삭제 중 오류가 발생했습니다." });
+  }
+};
+
 module.exports = {
   writeAnnouncement,
   editAnnouncement,
+  deleteAnnouncement,
   writeRegulation,
   editRegulation,
+  deleteRegulation,
 };
