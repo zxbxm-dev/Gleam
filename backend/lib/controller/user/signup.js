@@ -70,6 +70,28 @@ const createUser = async (req, res) => {
   }
 };
 
+//아이디 중복 확인
+const checkDuplicate = async (req, res) => {
+  try {
+    const { userID } = req.body;
+
+    const existingUser = await signupUser.findOne({
+      where: {
+        [Sequelize.Op.or]: [{ userId: userID }],
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "아이디가 이미 존재합니다." });
+    }
+
+    res.status(200).json({ success: "사용 가능한 아이디 입니다." });
+  } catch (error) {
+    console.error("중복 체크 오류:", error);
+    res.status(500).json({ error: "중복 체크 서버 오류" });
+  }
+};
+
 // 모든 회원을 조회
 const getAllUsers = async (req, res) => {
   try {
@@ -174,6 +196,7 @@ const userleaves = async (req, res) => {
 
 module.exports = {
   createUser,
+  checkDuplicate,
   getAllUsers,
   approveUser,
   deleteUser,

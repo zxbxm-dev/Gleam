@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const expenses = sequelize.define('expenses', {
+  const Expenses = sequelize.define('Expenses', {
     team: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -29,5 +29,5 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true, // createdAt, updatedAt 자동 생성
   });
 
-  return expenses;
+  return Expenses;
 };
