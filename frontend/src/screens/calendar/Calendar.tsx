@@ -29,6 +29,8 @@ const Calendar = () => {
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("");
   const [activeTab, setActiveTab] = useState(0);
+  const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px'});
+  const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px'});
   const calendarRef1 = useRef<FullCalendar>(null);
   const calendarRef2 = useRef<FullCalendar>(null);
   const [key, setKey] = useState(0);
@@ -37,6 +39,16 @@ const Calendar = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [calender, setCalender] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+  useEffect(() => {
+    if (activeTab === 0) {
+      setTabHeights({0: '41px', 1: '35px'});
+      setTabMargins({0: '0px', 1: '6px'});
+    } else {
+      setTabHeights({0: '35px', 1: '41px'});
+      setTabMargins({0: '6px', 1: '0px'});
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     setKey(prevKey => prevKey + 1);
@@ -171,8 +183,8 @@ const Calendar = () => {
       <div className="content_container">
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
-            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>본사</Tab>
-            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>R&D 연구센터</Tab>
+            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>본사</Tab>
+            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>R&D 연구센터</Tab>
           </TabList>
 
           <TabPanels>

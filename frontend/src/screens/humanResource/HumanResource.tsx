@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./HumanResource.scss";
 import { Link } from "react-router-dom";
 import { Input } from '@chakra-ui/react';
@@ -36,6 +36,9 @@ type PDFFile = string | File | null;
 const HumanResource = () => {
   const { isOpen: isAdd, onOpen: AddOpen, onClose: AddClose } = useDisclosure();
   const { isOpen: isEdit, onOpen: EditOpen, onClose: EditClose } = useDisclosure();
+  const [activeTab, setActiveTab] = useState(0);
+  const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px', 2: '35px'});
+  const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px', 2: '6px'});
   const [numPages, setNumPages] = useState<number>(0);
   const [file, setFile] = useState<PDFFile>(testPDF_구민석);
   const [files, setFiles] = useState<PDFFile[]>([]);
@@ -53,6 +56,19 @@ const HumanResource = () => {
     date: '',
     classify: '',
   })
+
+  useEffect(() => {
+    if (activeTab === 0) {
+      setTabHeights({0: '41px', 1: '35px', 2: '35px'});
+      setTabMargins({0: '0px', 1: '6px', 2: '6px'});
+    } else if (activeTab === 1){
+      setTabHeights({0: '35px', 1: '41px', 2: '35px'});
+      setTabMargins({0: '6px', 1: '0px', 2: '6px'});
+    } else {
+      setTabHeights({0: '35px', 1: '35px', 2: '41px'});
+      setTabMargins({0: '6px', 1: '6px', 2: '0px'});
+    }
+  }, [activeTab]);
 
   const handleDeptChange = (event: any) => {
     setForm({...form, dept: event.target.value})
@@ -231,11 +247,11 @@ const HumanResource = () => {
       </div>
       
       <div className="content_container">
-        <Tabs variant='enclosed'>
+        <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
-            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>인사기록카드</Tab>
-            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>근로자명부</Tab>
-            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>인사이동</Tab>
+            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>인사기록카드</Tab>
+            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>근로자명부</Tab>
+            <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[2]} marginTop={tabMargins[2]}>인사이동</Tab>
           </TabList>
 
           <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="tab_container">
