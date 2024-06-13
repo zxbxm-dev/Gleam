@@ -67,7 +67,6 @@ const AttendanceRegist = () => {
     ['우현지', '관리부', '관리팀'],
     ['염승희', '관리부', '관리팀'],
     ['김태희', '관리부', '지원팀'],
-    ['이주범', '관리부', '지원팀'],
   ], []);
 
   const initialMembersRD: Member[] = useMemo(() => [
