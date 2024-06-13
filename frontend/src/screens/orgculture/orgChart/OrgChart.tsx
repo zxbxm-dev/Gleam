@@ -100,7 +100,6 @@ const OrgChart = () => {
                   <TreeNode label={<div className="nodeicon5">지원팀</div>} >
                     <div className="TeamColumn">
                       <div className="nodeicon6">김태희 | 팀장</div>
-                      <div className="nodeicon6">이주범 | 사원</div>
                     </div>
                   </TreeNode>
                   <TreeNode label={<div className="nodeicon5">시설팀</div>} />
