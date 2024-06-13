@@ -6,23 +6,23 @@ const writeOperating = async (req, res) => {
   try {
     // 클라이언트에서 보낸 데이터 확인
     const {
-      common811,
+      common811, //공용
       common812,
       common813,
       common814,
       common815,
-      common818,
+      common818, //816 어디갔음??
       common819,
-      management,
-      support,
-      devOne,
-      devTwo,
-      blockchain,
-      design,
-      planning,
+      management, //관리팀
+      support, //지원팀
+      devOne, //개발 1팀
+      devTwo, //개발 2탐
+      blockchain, //블록체인1팀
+      design, //디자인팀
+      planning, //기획팀
     } = req.body;
 
-    // 팀 데이터 배열로 구성
+    // 클라이언트로 부터 전달 받은 데이터를 팀별로 구분 및 배열로 처리
     const teamsData = [
       { team: "common811", data: common811 },
       { team: "common812", data: common812 },
@@ -41,11 +41,11 @@ const writeOperating = async (req, res) => {
     ];
 
     // 저장할 새로운 데이터와 기존 데이터를 비교하기 위해 새로운 데이터의 키 집합 생성
-    const newKeys = new Set();
+    const newKeys = new Set(); //중복된 값 금지
     teamsData.forEach((teamData) => {
       if (Array.isArray(teamData.data)) {
         teamData.data.forEach((row) => {
-          const [accountCode, accountName, cost, note] = row;
+          const [accountCode, accountName, cost ] = row;
           if (accountCode && accountName && cost) {
             newKeys.add(`${teamData.team}_${accountCode}`);
           }
@@ -53,7 +53,7 @@ const writeOperating = async (req, res) => {
       }
     });
 
-    // 데이터베이스의 기존 항목 가져오기
+    // 데이터베이스의 기존 항목 가져오기 (날짜를 기준으로 찾음)
     const existingData = await Operating.findAll({
       where: { year: new Date().getFullYear() },
     });
@@ -84,7 +84,7 @@ const writeOperating = async (req, res) => {
         for (const row of teamData.data) {
           const [accountCode, accountName, cost, note] = row;
 
-          // 빈 데이터가 아닌 경우에만 처리
+          // 빈 데이터가 아닌 경우에만 처리 (계정코드 또는 계정명 또는 연간편성액)
           if (accountCode || accountName || cost) {
             // 기존 데이터베이스에 해당 팀과 계정 코드를 가진 항목이 있는지 확인
             const existingItem = await Operating.findOne({
@@ -95,8 +95,9 @@ const writeOperating = async (req, res) => {
               // 이미 데이터베이스에 있는 경우 업데이트
               await existingItem.update({
                 accountName: accountName || existingItem.accountName,
+                // 값이 없으면 0으로 처리, 쉽표 제거하고 정수로 변환
                 cost: parseInt(cost.replace(/,/g, "")) || existingItem.cost,
-                note: note || existingItem.note,
+                note: note || existingItem.note, // 값이 없으면 빈 문자열
                 year: new Date().getFullYear(), // 현재 연도
               });
             } else {
@@ -118,7 +119,7 @@ const writeOperating = async (req, res) => {
     // 처리 완료 후 응답
     res
       .status(201)
-      .json({ message: "운영 데이터가 성공적으로 작성되었습니다." });
+      .json({ success: "운영 데이터가 성공적으로 작성되었습니다." });
   } catch (error) {
     console.error("운영 데이터 작성 중 오류 발생:", error);
     res.status(500).json({
