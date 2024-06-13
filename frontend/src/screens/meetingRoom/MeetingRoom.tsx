@@ -1,4 +1,4 @@
-import "../calendar/Calendar.scss";
+import "./MeetingRoom.scss";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
@@ -117,7 +117,7 @@ const MeetingRoom = () => {
                 <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
                     <TabPanels>
                         <TabPanel>
-                            <div className="calendar_container">
+                            <div className="meetingroom_container">
                                 <FullCalendar
                                     key={key}
                                     ref={calendarRef1}
@@ -126,7 +126,7 @@ const MeetingRoom = () => {
                                     height="100%"
                                     customButtons={{
                                         Addschedule: {
-                                            text: '예약 추가　+',
+                                            text: '일정 추가　+',
                                             click: function () {
                                                 setAddEventModalOPen(true);
                                             },
@@ -293,22 +293,22 @@ const MeetingRoom = () => {
                 isOpen={iseventModalOpen}
                 onClose={() => setEventModalOPen(false)}
                 header={'일정 확인'}
-                footer1={'삭제'}
-                footer1Class="red-btn"
-                onFooter1Click={handleDeleteEventModal}
-                footer2={'수정'}
+                footer1={'편집'}
+                footer1Class="gray-btn"
+                onFooter1Click={handleEditEvent}
+                footer2={'확인'}
                 footer2Class="green-btn"
-                onFooter2Click={handleEditEvent}
-                footer3={'취소'}
-                footer3Class="gray-btn"
-                onFooter3Click={() => setEventModalOPen(false)}
+                onFooter2Click={() => setEventModalOPen(false)}
+                footer3={'삭제'}
+                footer3Class="red-btn"
+                onFooter3Click={handleDeleteEventModal}
                 width="360px"
                 height="300px"
             >
                 <div className="body-container">
                     <div className="body-content">
                         <div className="content-right">
-                            <div className="content-type">
+                            <div className="content-title">
                                 업무 회의
                             </div>
                         </div>
@@ -327,7 +327,17 @@ const MeetingRoom = () => {
                     </div>
                     <div className="body-content">
                         <div className="content-left content-center">
-                            참여인원
+                            장소
+                        </div>
+                        <div className="content-right">
+                            <div className="content-date">
+                                <span>라운지룸</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="body-content">
+                        <div className="content-left content-center">
+                            참여
                         </div>
                         <div className="content-right">
                             <div className="content-memo">

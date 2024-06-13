@@ -1024,8 +1024,8 @@ const AttendanceRegist = () => {
         ) : (
           <Tabs variant='enclosed'>
             <TabList>
-              {yearData.map(monthData => (
-                <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' >{months[monthData.month - 1].name}</Tab>
+              {yearData.map((monthData, index) => (
+                <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[index]} marginTop={tabMargins[index]}>{months[monthData.month - 1].name}</Tab>
               ))}
             </TabList>
 
