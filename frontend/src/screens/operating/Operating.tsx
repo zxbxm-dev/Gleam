@@ -10,6 +10,18 @@ import { CheckOperating, WriteOperating } from '../../services/operating/Operati
 
 type TeamType = 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
 
+type Expense = {
+  id: number;
+  team: string;
+  accountCode: string;
+  accountName: string;
+  cost: number;
+  note: string;
+  createdAt: string;
+  updatedAt: string;
+  year: number;
+};
+
 const Operating = () => {
   const [editMode, setEditMode] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -19,6 +31,49 @@ const Operating = () => {
   const [customInputValue, setCustomInputValue] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
+  const distributeExpenses = (expenses: Expense[]) => {
+    const teams: { [key: string]: string[][] } = {
+      common811: [['', '', '', '']],
+      common812: [['', '', '', '']],
+      common813: [['', '', '', '']],
+      common814: [['', '', '', '']],
+      common815: [['', '', '', '']],
+      common818: [['', '', '', '']],
+      common819: [['', '', '', '']],
+      management: [['', '', '', '']],
+      support: [['', '', '', '']],
+      devOne: [['', '', '', '']],
+      devTwo: [['', '', '', '']],
+      blockchain: [['', '', '', '']],
+      design: [['', '', '', '']],
+      planning: [['', '', '', '']]
+    };
+
+    expenses.forEach((expense) => {
+      const { team, accountCode, accountName, cost, note } = expense;
+      if (teams[team]) {
+        if (teams[team][0][0] === '' && teams[team][0][1] === '' && teams[team][0][2] === '' && teams[team][0][3] === '') {
+          teams[team] = [];
+        }
+        teams[team].push([accountCode, accountName, cost.toLocaleString(), note]);
+      }
+    });
+
+    setCommon811Team(teams.common811);
+    setCommon812Team(teams.common812);
+    setCommon813Team(teams.common813);
+    setCommon814Team(teams.common814);
+    setCommon815Team(teams.common815);
+    setCommon818Team(teams.common818);
+    setCommon819Team(teams.common819);
+    setManagementTeam(teams.management);
+    setSupportTeam(teams.support);
+    setDevOneTeam(teams.devOne);
+    setDevTwoTeam(teams.devTwo);
+    setBlockChainTeam(teams.blockchain);
+    setDesignTeam(teams.design);
+    setPlanningTeam(teams.planning);
+  };
 
   // 운영비 관리 조회
   const fetchOperating = async () => {
@@ -31,9 +86,11 @@ const Operating = () => {
   }
 
   useQuery("operating", fetchOperating, {
-    onSuccess: (data) => console.log(data),
+    onSuccess: (data) => {
+      distributeExpenses(data);
+    },
     onError: (error) => {
-      console.log(error)
+      console.log(error);
     }
   });
 
@@ -125,20 +182,20 @@ const Operating = () => {
   }
 
 
-  const [common811Team, setCommon811Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common812Team, setCommon812Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common813Team, setCommon813Team] = useState<string[][]>([['', '', '', ''],['', '', '', '']]);
-  const [common814Team, setCommon814Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common815Team, setCommon815Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common818Team, setCommon818Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [common819Team, setCommon819Team] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [managementTeam, setManagementTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [supportTeam, setSupportTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [devOneTeam, setDevOneTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [devTwoTeam, setDevTwoTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [blockchainTeam, setBlockChainTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
-  const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', ''],['', '', '', ''],['', '', '', ''],['', '', '', '']]);
+  const [common811Team, setCommon811Team] = useState<string[][]>([['', '', '', '']]);
+  const [common812Team, setCommon812Team] = useState<string[][]>([['', '', '', '']]);
+  const [common813Team, setCommon813Team] = useState<string[][]>([['', '', '', '']]);
+  const [common814Team, setCommon814Team] = useState<string[][]>([['', '', '', '']]);
+  const [common815Team, setCommon815Team] = useState<string[][]>([['', '', '', '']]);
+  const [common818Team, setCommon818Team] = useState<string[][]>([['', '', '', '']]);
+  const [common819Team, setCommon819Team] = useState<string[][]>([['', '', '', '']]);
+  const [managementTeam, setManagementTeam] = useState<string[][]>([['', '', '', '']]);
+  const [supportTeam, setSupportTeam] = useState<string[][]>([['', '', '', '']]);
+  const [devOneTeam, setDevOneTeam] = useState<string[][]>([['', '', '', '']]);
+  const [devTwoTeam, setDevTwoTeam] = useState<string[][]>([['', '', '', '']]);
+  const [blockchainTeam, setBlockChainTeam] = useState<string[][]>([['', '', '', '']]);
+  const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', '']]);
+  const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', '']]);
   
   const [common811Cost, setCommon811Cost] = useState<number>(0);
   const [common812Cost, setCommon812Cost] = useState<number>(0);
@@ -232,100 +289,142 @@ const Operating = () => {
     switch (team) {
       case 'common811':
         setCommon811Team(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'common812':
         setCommon812Team(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'common813':
         setCommon813Team(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'common814':
         setCommon814Team(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'common815':
         setCommon815Team(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'common818':
         setCommon818Team(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'common819':
         setCommon819Team(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'management':
         setManagementTeam(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'support':
         setSupportTeam(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'devOne':
         setDevOneTeam(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'devTwo':
         setDevTwoTeam(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'blockchain':
         setBlockChainTeam(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'design':
         setDesignTeam(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       case 'planning':
         setPlanningTeam(prevTeam => {
-          const newTeam = [...prevTeam];
-          newTeam.pop();
-          return newTeam;
+          if (prevTeam.length > 1) {
+            const newTeam = [...prevTeam];
+            newTeam.pop();
+            return newTeam;
+          }
+          return prevTeam;
         });
         break;
       default:
@@ -552,7 +651,7 @@ const handleSubmit = () => {
   // API 호출
   WriteOperating(formData)
     .then(response => {
-      console.log("운영비 데이터 전송 성공")
+      console.log("운영비 데이터 전송 성공", response)
     })
     .catch(error => {
       console.log("운영비 데이터 전송 오류", error);

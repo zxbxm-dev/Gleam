@@ -37,6 +37,9 @@ type TeamOrderType = {
 
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
+  const [activeTab, setActiveTab] = useState(0);
+  const [tabHeights, setTabHeights] = useState<Record<number, string>>({0: '41px', 1: '35px', 2: '35px'});
+  const [tabMargins, setTabMargins] = useState<Record<number, string>>({0: '6px', 1: '6px', 2: '6px'});
   const [isLoading, setIsLoading] = useState(true);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [isAddAttend, setAddAttend] = useState(false);
@@ -47,6 +50,19 @@ const AttendanceRegist = () => {
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
   // 모달 창 입력값
   const { register, handleSubmit, reset } = useForm();
+
+  useEffect(() => {
+    if (activeTab === 0) {
+      setTabHeights({0: '41px', 1: '35px', 2: '35px'});
+      setTabMargins({0: '0px', 1: '6px', 2: '6px'});
+    } else if (activeTab === 1){
+      setTabHeights({0: '35px', 1: '41px', 2: '35px'});
+      setTabMargins({0: '6px', 1: '0px', 2: '6px'});
+    } else {
+      setTabHeights({0: '35px', 1: '35px', 2: '41px'});
+      setTabMargins({0: '6px', 1: '6px', 2: '0px'});
+    }
+  }, [activeTab]);
 
   const initialMembers: Member[] = useMemo(() => [
     ['권상원', '블록체인 사업부', ''],
@@ -958,10 +974,10 @@ const AttendanceRegist = () => {
         </div>
 
         {selectedScreen === 'R&D' ? (
-          <Tabs variant='enclosed'>
+          <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
             <TabList>
-              {yearData.map(monthData => (
-                <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' >{months[monthData.month - 1].name}</Tab>
+              {yearData.map((monthData, index) => (
+                <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[index]} marginTop={tabMargins[index]}>{months[monthData.month - 1].name}</Tab>
               ))}
             </TabList>
 
