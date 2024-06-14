@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Regulations.scss";
 import {
   DeleteIcon,
@@ -11,6 +11,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { WriteRegul, EditRegul } from "../../../services/announcement/Regulation";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
+
 interface Attachment {
   file: File;
   fileName: string;
@@ -21,7 +22,7 @@ const WriteRegulation = () => {
   const { state: editData } = useLocation();
   const editorRef = useRef<any>(null);
   const [value, setValue] = useState("");
-  const [isfileUpload, setIsFileUpload] = useState(false);
+  const [isFileUpload, setIsFileUpload] = useState(false);
 
   const [form, setForm] = useState<{
     content: string;
@@ -32,6 +33,7 @@ const WriteRegulation = () => {
     title: "",
     attachment: null,
   });
+
   const user = useRecoilValue(userState);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +41,7 @@ const WriteRegulation = () => {
     if (files && files.length > 0) {
       const file = files[0];
       const fileData = { file: file, fileName: file.name };
-      setForm({ ...form, attachment: fileData as any });
+      setForm({ ...form, attachment: fileData });
     }
   };
 
@@ -55,8 +57,25 @@ const WriteRegulation = () => {
   const handleTitleChange = (event: any) => {
     setForm({ ...form, title: event.target.value });
   };
+
+  useEffect(() => {
+    if (editData) {
+      const { content, title, attachment } = editData;
+      setForm({
+        content: content || "",
+        title: title || "",
+        attachment: attachment ? { file: attachment.file, fileName: attachment.fileName } : null,
+      });
+      setValue(content || "");
+      if (attachment) {
+        setIsFileUpload(true);
+      }
+    }
+  }, [editData]);
+
+  const Regul_id = sessionStorage.getItem('Regul_id');
   
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async () => {
     const { title, content } = form;
 
     if (title === "") {
@@ -73,35 +92,35 @@ const WriteRegulation = () => {
     formData.append("date", currentDate);
     formData.append("title", title);
     formData.append("content", content);
+
     if (form.attachment) {
-      formData.append("attachment", (form.attachment as any).file);
-      formData.append("attachmentName", (form.attachment as any).fileName);
+      formData.append("attachment", form.attachment.file);
+      formData.append("attachmentName", form.attachment.fileName);
     }
 
-    WriteRegul(formData)
-      .then(response => {
-        // 성공적으로 등록되었을 때 처리
-        navigate("/regulations");
-      })
-      .catch(error => {
-        // 실패 시 처리
-        console.error("등록에 실패했습니다.");
-      });
-
+    try {
       if (editData) {
-        data = { ...data, id: editData.id };
-        await EditRegul(data, formData);
+        const data = { ...editData, id: editData.id };
+        await EditRegul(data, formData, Regul_id);
+        console.log("사내규정 수정 성공");
+      } else {
+        const response = await WriteRegul(formData);
+        console.log("사내규정 등록 성공:", response.data);
       }
+      navigate("/regulations");
+    } catch (error) {
+      console.error("사내규정 처리 중 오류:", error);
+      alert("사내규정 처리 중 오류가 발생했습니다.");
+    }
   };
 
   const onChange = () => {
     const data = editorRef.current.getInstance().getHTML();
-    setForm({ ...form, content: data })
-    
-    if (editData && editData?.fileUrl) {
-      setIsFileUpload(true);
-    } else setIsFileUpload(false);
+    setForm({ ...form, content: data });
   };
+console.log(form.attachment?.fileName);
+console.log(form.content);
+
 
   return (
     <div className="content">
@@ -119,7 +138,7 @@ const WriteRegulation = () => {
 
           <div className="content_container">
             <div className="write_container">
-              <input type="text" className="write_title" placeholder="제목을 입력해 주세요." onChange={handleTitleChange} />
+              <input type="text" className="write_title" placeholder="제목을 입력해 주세요." value={form.title} onChange={handleTitleChange} />
               <div className="writor_container">
                 <div className="write_info">작성자</div>
                 <div className="write_info">{user.username}</div>
@@ -130,7 +149,6 @@ const WriteRegulation = () => {
               <div className="DesktopInput">
                 <Editor
                   ref={editorRef}
-                  initialValue="내용을 입력해 주세요."
                   height='60vh'
                   onChange={onChange}
                   initialEditType="wysiwyg"
@@ -138,19 +156,20 @@ const WriteRegulation = () => {
                   hideModeSwitch={true}
                   plugins={[colorSyntax]}
                   language="ko-KR"
+                  initialValue={value || "내용을 입력하세요."}
                 />
               </div>
 
               <div className="LaptopInput">
                 <Editor
                   ref={editorRef}
-                  initialValue="내용을 입력해 주세요."
                   height='53vh'
                   onChange={onChange}
                   initialEditType="wysiwyg"
                   useCommandShortcut={false}
                   hideModeSwitch={true}
                   plugins={[colorSyntax]}
+                  initialValue={value || "내용을 입력하세요."}
                   language="ko-KR"
                 />
               </div>
