@@ -43,6 +43,16 @@ module.exports = (sequelize, Sequelize) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      // 게시글 고정
+      pinned: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      // 게시글 고정 날짜
+      pinnedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
       date: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,

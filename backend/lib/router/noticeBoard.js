@@ -10,6 +10,10 @@ module.exports = (app) => {
 
   // 공지사항 작성
   router.post("/writeAnno", multerMiddleware.single("attachment"), writeBoardController.writeAnnouncement);
+  // 공지사항 조회수 증가
+  router.put("/incrementViewCount/:id", writeBoardController.incrementViewCount);
+  // 공지사항 게시글 고정
+  router.put("/pinnedAnnouncement/:id", writeBoardController.pinnedAnnouncement);
   // 공지사항 수정
   router.put("/editAnno/:id", multerMiddleware.single("attachment"), writeBoardController.editAnnouncement);
   // 공지사항 삭제
