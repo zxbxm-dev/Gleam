@@ -10,7 +10,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { DetailTableAnnounce, DeleteAnno } from "../../../services/announcement/Announce";
-import testPDF from '../../../assets/pdf/취업규칙_포체인스_001.pdf';
+// import testPDF from '../../../assets/pdf/취업규칙_포체인스_001.pdf';
 import { useLocation } from 'react-router-dom';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -20,16 +20,19 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 interface Announcement {
-  name: string;
+  content: string;
   date: string;
+  title: string;
+  username: string;
   view: number;
+  pdffile: string;
 }
 
 const DetailAnnounce = () => {
   let navigate = useNavigate();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [detailAnno, setDetailAnno] = useState<Announcement | null>(null);
-  const [file, setFile] = useState<PDFFile>(testPDF);
+  const [file, setFile] = useState<PDFFile>();
   const [numPages, setNumPages] = useState<number>(0);
   const [pageWidth, setPageWidth] = useState<number>(800); // 초기 페이지 너비
 
@@ -37,7 +40,9 @@ const DetailAnnounce = () => {
   const pathnameParts = location.pathname.split('/');
   const Anno_id = pathnameParts[pathnameParts.length - 1];
 
-  console.log(Anno_id);
+  useEffect(() => {
+    sessionStorage.setItem('Anno_id', Anno_id);
+  }, [Anno_id]);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
@@ -45,9 +50,9 @@ const DetailAnnounce = () => {
 
   const downloadPDF = () => {
     const link = document.createElement('a');
-    setFile(testPDF)
-    link.href = testPDF;
-    link.download = 'test.pdf';
+    // detailAnno에서 직접적으로 pdffile 경로를 사용하도록 설정
+    link.href = detailAnno?.pdffile || '';
+    link.download = 'download.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -83,7 +88,17 @@ const DetailAnnounce = () => {
   const fetchDetailAnno = async (Anno_id: string) => {
     try {
       const response = await DetailTableAnnounce(Anno_id);
-      setDetailAnno(response.data);
+      console.log(response.data);
+
+      setDetailAnno({
+        content: response.data.content,
+        date: response.data.date,
+        title: response.data.title,
+        username: response.data.username,
+        view: response.data.view,
+        pdffile: response.data.pdffile
+      });
+      setFile(`http://localhost:3000/${response.data.pdffile}`);
     } catch (error) {
       console.error("fetching detailanno : ", error);
     }
@@ -122,10 +137,10 @@ const DetailAnnounce = () => {
               {detailAnno && (
                 <div className="info_content">
                   <div className="write_info">작성자</div>
-                  <div className="write_info">{detailAnno.name}</div>
+                  <div className="write_info">{detailAnno.username}</div>
                   <div className="write_border" />
                   <div className="write_info">작성일</div>
-                  <div className="write_info">{detailAnno.date}</div>
+                  <div className="write_info">{new Date(detailAnno.date).toISOString().substring(0, 10)}</div>
                   <div className="write_border" />
                   <div className="write_info">조회수</div>
                   <div className="write_info">{detailAnno.view}</div>
@@ -144,9 +159,14 @@ const DetailAnnounce = () => {
           </div>
 
           <div className="detail_content">
-            <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-              {renderPages()}
-            </Document>
+            {detailAnno && (
+              <div>
+                <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                  {renderPages()}
+                </Document>
+                <div dangerouslySetInnerHTML={{ __html: detailAnno.content }} />
+              </div>
+            )}
           </div>
 
         </div>

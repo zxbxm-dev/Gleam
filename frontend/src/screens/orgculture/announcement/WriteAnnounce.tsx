@@ -70,51 +70,48 @@ const WriteAnnouncement = () => {
 
   const currentDate = formatDate(new Date());
 
-  const handleSubmit = async () => {
-    const { title, content } = form;
+    const Anno_id = sessionStorage.getItem('Anno_id');
 
-    if (title === "") {
-      alert("게시물 제목을 입력해 주세요.");
-      return;
-    } else if (content === "") {
-      alert("내용을 입력해 주세요.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("userID", user.id);
-    formData.append("username", user.username);
-    formData.append("date", currentDate);
-    formData.append("title", title);
-    formData.append("content", content);
-    formData.append("views", views.toString());
-
-    if (form.attachment) {
-      formData.append("attachment", form.attachment.file);
-      formData.append("attachmentName", form.attachment.fileName);
-    }
-
-    try {
-      const response = await WriteAnnounce(formData);
-      console.log("공지사항 등록 성공:", response.data);
-      navigate("/");
-    } catch (error) {
-      console.error("공지사항 등록 실패:", error);
-      alert("공지사항 등록 중 오류가 발생했습니다.");
-    }
-
-    if (editData) {
-      const data = { ...editData, id: editData.id };
+    const handleSubmit = async () => {
+      const { title, content } = form;
+    
+      if (title === "") {
+        alert("게시물 제목을 입력해 주세요.");
+        return;
+      } else if (content === "") {
+        alert("내용을 입력해 주세요.");
+        return;
+      }
+    
+      const formData = new FormData();
+      formData.append("userID", user.id);
+      formData.append("username", user.username);
+      formData.append("date", currentDate);
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("views", views.toString());
+    
+      if (form.attachment) {
+        formData.append("attachment", form.attachment.file);
+        formData.append("attachmentName", form.attachment.fileName);
+      }
+    
       try {
-        await EditAnno(data, formData);
-        console.log("공지사항 수정 성공");
+        if (editData) {
+          const data = { ...editData, id: editData.id };
+          await EditAnno(data, formData, Anno_id);
+          console.log("공지사항 수정 성공");
+        } else {
+          const response = await WriteAnnounce(formData);
+          console.log("공지사항 등록 성공:", response.data);
+        }
         navigate("/");
       } catch (error) {
-        console.error("공지사항 수정 실패:", error);
-        alert("공지사항 수정 중 오류가 발생했습니다.");
+        console.error("공지사항 처리 중 오류:", error);
+        alert("공지사항 처리 중 오류가 발생했습니다.");
       }
-    }
-  };
+    };
+    
 
   const onChange = () => {
     const data = editorRef.current.getInstance().getHTML();
