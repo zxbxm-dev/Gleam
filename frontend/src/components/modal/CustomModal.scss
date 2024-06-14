@@ -49,6 +49,7 @@
 
     .modal-body {
       width: 100%;
+      height: 100%;
       overflow-y: auto;
       font-family: var(--font-family-Noto-B);
       font-size: 18px;
@@ -58,32 +59,64 @@
       align-items: center;
       flex-grow: 1;
 
-      .body-container {
+      .text-center {
+        text-align: center;
         display: flex;
         flex-direction: column;
-        gap: 7px;
+        gap: 5px;
+      }
 
-        .TextInputCon{
-          text-align: center;
-          height: 33px;
-          border: 1px solid #DCDCDC;
-          border-radius: 5px;
-          font-size: 14px;
+      .body-container {
+        width: 100%;
+        height: 100%;
+        padding: 5%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .AddTitle {
+          display: flex;
+
+          .div{
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse;
+            width: 60px;
+            font-size: 14px;
+            color: #929292;
+            font-weight: 300;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 10px;
+          }
+
+          .TextInputCon{
+            width: 360px;
+            height: 33px;
+            border: 1px solid #DCDCDC;
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 10px;
+          }
+          .TextInputCon::placeholder{
+            font-size: 14px;
+            font-weight: 400;
+            color: #d9d9d9;
+          }
+          .TextInputCon:focus{
+            outline: none;
+          }
         }
-        .TextInputCon::placeholder{
-          font-size: 14px;
-          font-weight: 400;
-          color: #d9d9d9;
-        }
-        .TextInputCon:focus{
-          outline: none;
-        }
+
         .AddPeoples{
           margin-bottom: 10px;
           display: flex;
           align-items: center;
 
-          .span{
+          .div{
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse;
+            width: 60px;
             font-size: 14px;
             color: #929292;
             font-weight: 300;
@@ -94,22 +127,28 @@
           .MeetingRoom{
             display: flex;
             width: 80%;
-            gap: 10px;
-            justify-content: center;
+            gap: 20px;
 
             .SelectRoom{
               font-size: 14px;
+              width: 196px;
+              height: 32px;
+              border: 1px solid #DCDCDC;
+              border-radius: 5px;
             }
             .SelectRoom:focus{
               outline: none;
             }
 
             .Field{
-              gap: 10px;
+              gap: 20px;
               display: flex;
 
               label{
                 display: flex;
+                align-items: center;
+                gap: 5px;
+
                 span{
                   font-size: 14px;
                   margin-left: 5px;
@@ -122,41 +161,70 @@
         .AddPeople{
           margin-bottom: 10px;
           display: flex;
-          align-items: center;
-          justify-content: space-between;
           width: 100%;
-          .span{
+
+          .div{
+            display: flex;
+            flex-direction: row-reverse;
+            width: 60px;
             font-size: 14px;
             color: #929292;
             font-weight: 300;
             font-family: var(--font-family-Noto-M);
             margin-right: 10px;
+            padding-top: 5px;
           }
-
-          .AddInputCon{
-            text-align: center;
-            height: 33px;
-            border-bottom: 1px solid #DCDCDC;
-            font-size: 14px;
-            width: 300px;
-          }
-          .AddInputCon::placeholder{
-            font-size: 14px;
-            font-weight: 400;
-            color: #d9d9d9;
-          }
-          .AddInputCon:focus{
-            outline: none;
+          
+          .InputContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            
+            .AddInputCon{
+              width: 360px;
+              height: 33px;
+              border-bottom: 1px solid #DCDCDC;
+              font-size: 14px;
+              padding: 10px;
+            }
+            .AddInputCon::placeholder{
+              font-size: 14px;
+              font-weight: 400;
+              color: #d9d9d9;
+            }
+            .AddInputCon:focus{
+              outline: none;
+            }
+  
+            .AddsInputCon {
+              width: 360px;
+              height: 77px;
+              border: 1px solid #DCDCDC;
+              border-radius: 5px;
+              font-size: 14px;
+              padding: 10px;
+            }
+            .AddsInputCon::placeholder{
+              font-size: 14px;
+              font-weight: 400;
+              color: #d9d9d9;
+            }
+            .AddsInputCon:focus{
+              outline: none;
+            }
           }
 
           .timespan{
-            margin-left: 10px;
-            margin-right: 10px;
+            margin-left: 20px;
+            margin-right: 20px;
           }
+
           .Date{
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 20px;
+            padding: 0 5px;
 
             .datepicker{
               font-size: 14px;
@@ -189,7 +257,7 @@
             padding-left: 8px;
             display: flex;
             align-items: center;
-            width: 50px;
+            width: 60px;
             height: 28px;
             font-size: 14px;
             color: #929292;
@@ -204,7 +272,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            width: 100%;
+            width: 86%;
             font-size: 14px;
 
             .textinput {
@@ -231,15 +299,15 @@
             }
 
             .textareainput {
-              width: 310px;
-              height: 100px;
+              width: 360px;
+              height: 84px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
               padding: 7px;
               resize: none;
             }
             .textareainput:focus {
-              outline: 2px solid #746e58;
+              outline: none;
             }
             .textareainput::placeholder {
               font-size: 12px;

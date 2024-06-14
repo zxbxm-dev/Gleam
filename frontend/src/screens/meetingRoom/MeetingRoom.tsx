@@ -22,10 +22,9 @@ const MeetingRoom = () => {
     const [isEditeventModalOpen, setEditEventModalOPen] = useState(false);
     const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
     const [ischeckPeopleModalOpen, setcheckPeopleModalOPen] = useState(false);
-    const [isMeetingModalOpen, setMeetingModalOPen] = useState(false);
+    const [isMeetingModalOpen, setMeetingModalOPen] = useState(true);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
-    const [title, setTitle] = useState("");
     const [memo, setMemo] = useState("");
     const [activeTab, setActiveTab] = useState(0);
     const calendarRef1 = useRef<FullCalendar>(null);
@@ -166,23 +165,30 @@ const MeetingRoom = () => {
             <CustomModal
                 isOpen={isAddeventModalOpen}
                 onClose={() => setAddEventModalOPen(false)}
-                header={'회의실 예약하기'}
+                header={'회의실 예약'}
                 footer1={'등록'}
                 footer1Class="back-green-btn"
                 // onFooter1Click={handleAddEvent}
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setAddEventModalOPen(false)}
-                height="430px"
+                height="520px"
+                width="513px"
             >
                 <div className="body-container">
-                    <input className="TextInputCon" type="text" placeholder="제목을 입력해 주세요." />
-                    <div className="AddPeople">
-                        <span className="span">참여인원</span>
-                        <input className="AddInputCon" type="text" placeholder="인원을 입력해 주세요." />
+                    <div className="AddTitle">
+                        <div className="div">제목</div>        
+                        <input className="TextInputCon" type="text" placeholder="제목을 입력해 주세요." />
                     </div>
                     <div className="AddPeople">
-                        <span className="span">시간</span>
+                        <div className="div">참여인원</div>
+                        <div className="InputContainer">
+                            <input className="AddInputCon" type="text" placeholder="인원을 입력해 주세요." />
+                            <input className="AddsInputCon" type="text" />
+                        </div>
+                    </div>
+                    <div className="AddPeople">
+                        <div className="div">시간</div>
                         <div className="Date">
                             <DatePicker
                                 selected={startDate}
@@ -252,7 +258,7 @@ const MeetingRoom = () => {
                         </div>
                     </div>
                     <div className="AddPeoples">
-                        <span className="span">장소</span>
+                        <div className="div">장소</div>
                         <div className="MeetingRoom">
                             <select className="SelectRoom" value={location} onChange={handleLocationChange}>
                                 <option value="">회의실 선택</option>
@@ -267,13 +273,12 @@ const MeetingRoom = () => {
 
                             <fieldset className="Field" onChange={handleCompanyChange}>
                                 <label>
-                                    <input type="radio" name="company" value="R&D" />
-                                    <span>R&D</span>
-                                </label>
-
-                                <label>
                                     <input type="radio" name="company" value="본사" />
                                     <span>본사</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="company" value="R&D" />
+                                    <span>R&D</span>
                                 </label>
                             </fieldset>
                         </div>
@@ -283,7 +288,7 @@ const MeetingRoom = () => {
                             메모
                         </div>
                         <div className="content-right">
-                            <textarea className="textareainput" placeholder='내용을 입력해주세요.' onChange={handleMemoChange} />
+                            <textarea className="textareainput" onChange={handleMemoChange} />
                         </div>
                     </div>
                 </div>
@@ -497,10 +502,13 @@ const MeetingRoom = () => {
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setcheckPeopleModalOPen(false)}
+                width="400px"
+                height="327px"
             >
-                <div>
-                    선택하신 사용자 중 다른 일정이 예약되어 있는 분이 계십니다.<br />
-                    그래도 등록을 진행하시겠습니까?
+                <div className="text-center">
+                    <span>OOO님이 선택하신 시간에 다른 일정이</span>
+                    <span>예약되어 있습니다.</span>
+                    <span>그래도 등록을 진행하시겠습니까?</span>
                 </div>
             </CustomModal>
             <CustomModal
@@ -510,10 +518,12 @@ const MeetingRoom = () => {
                 footer1={'확인'}
                 footer1Class="gray-btn"
                 onFooter1Click={() => setMeetingModalOPen(false)}
+                width="400px"
+                height="327px"
             >
-                <div>
-                    선택하신 시간대의 해당 장소는<br />
-                    이미 예약되어 있습니다.
+                <div className="text-center">
+                    <span>선택하신 시간대의 해당 장소는</span>
+                    <span>이미 예약되어 있습니다.</span>
                 </div>
             </CustomModal>
         </div>
