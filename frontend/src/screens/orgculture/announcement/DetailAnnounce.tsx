@@ -151,7 +151,7 @@ const DetailAnnounce = () => {
                 <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn" /></button>
                 <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn" /></button>
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
-                <button className="download_button" onClick={downloadPDF}>다운로드</button>
+                <button className="white_button" onClick={downloadPDF}>다운로드</button>
                 <Link to="/writeAnnounce" state={detailAnno} ><button className="white_button">수정</button></Link>
                 <button className="second_button" onClick={() => navigate("/")}>목록</button>
               </div>
