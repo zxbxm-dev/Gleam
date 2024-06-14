@@ -19,6 +19,16 @@ const DetailTableAnnounce = (Anno_id) => {
     return api.get(`/detailAnno/${Anno_id}`);
 };
 
+// 조회수 증가
+const incrementViewCount = (Anno_id) => {
+    return api.put(`/incrementViewCount/${Anno_id}`)
+}
+
+// 게시글 고정
+const PinnedAnnouncement = (Anno_id) => {
+    return api.put(`/pinnedAnnouncement/${Anno_id}`)
+}
+
 //공지사항 수정
 const EditAnno = (data, formData,Anno_id) => {
     return api.put(`/editAnno/${Anno_id}`, formData,{
@@ -33,4 +43,4 @@ const DeleteAnno = (Anno_id) => {
     return api.delete(`/deleteAnno/${Anno_id}`, Anno_id);
 };
 
-export { WriteAnnounce, CheckAnnounce, DetailTableAnnounce, EditAnno, DeleteAnno };
+export { WriteAnnounce, CheckAnnounce, DetailTableAnnounce, incrementViewCount, PinnedAnnouncement, EditAnno, DeleteAnno };

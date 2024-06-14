@@ -35,6 +35,8 @@ const writeAnnouncement = async (req, res) => {
       attachment: attachment,
       pdffile: req.file ? req.file.path : null, // 첨부 파일 경로 저장
       views: views,
+      pinned: false,
+      pinnedAt: null,
       date: date,
     });
 
@@ -48,6 +50,48 @@ const writeAnnouncement = async (req, res) => {
     res.status(500).json({ error: "공지사항 작성 중 오류가 발생했습니다." });
   }
 };
+
+// 공지사항 조회수 증가
+const incrementViewCount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const announcement = await Notice.findByPk(id);
+
+    if (!announcement) {
+      return res.status(404).json({ error: "공지사항이 없습니다." });
+    }
+
+    announcement.views += 1;
+    await announcement.save();
+
+    res.status(200).json({ message: "조회수 증가가 완료되었습니다.", views: announcement.views });
+  } catch (error) {
+    console.error("조회수 증가 에러", error);
+    res.status(500).json({ error: "조회수 증가 중 오류가 발생했습니다." });
+  }
+}
+
+// 공지사항 게시글 고정
+const pinnedAnnouncement = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const announcement = await Notice.findByPk(id);
+
+    if (!announcement) {
+      return res.status(404).json({ error: "공지사항이 없습니다." });
+    }
+
+    announcement.pinned = !announcement.pinned;
+    announcement.pinnedAt = announcement.pinned ? new Date() : null;
+    await announcement.save();
+    
+    res.status(200).json({ message: "게시글 고정이 완료되었습니다."});
+  } catch (error) {
+    console.error("게시글 고정 에러", error);
+    res.status(500).json({ error: "게시글 고정 중 오류가 발생했습니다." });
+  }
+}
+
 
 // 공지사항 수정
 const editAnnouncement = async (req, res) => {
@@ -249,6 +293,8 @@ const deleteRegulation = async (req, res) => {
 
 module.exports = {
   writeAnnouncement,
+  incrementViewCount,
+  pinnedAnnouncement,
   editAnnouncement,
   deleteAnnouncement,
   writeRegulation,
