@@ -20,8 +20,12 @@ const DetailTableAnnounce = (Anno_id) => {
 };
 
 //공지사항 수정
-const EditAnno = (data, formData) => {
-    return api.put("/editAnno", formData);
+const EditAnno = (data, formData,Anno_id) => {
+    return api.put(`/editAnno/${Anno_id}`, formData,{
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
 
 //공지사항 삭제

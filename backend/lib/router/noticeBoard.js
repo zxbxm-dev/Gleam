@@ -6,6 +6,8 @@ module.exports = (app) => {
   const express = require("express");
   const router = express.Router();
 
+  const path = require("path");
+
   // 공지사항 작성
   router.post("/writeAnno", multerMiddleware.single("attachment"), writeBoardController.writeAnnouncement);
   // 공지사항 수정
@@ -28,5 +30,9 @@ module.exports = (app) => {
   //사내규정 상세 조회
   router.get("/detailRegul/:id", checkBoardController.getRegulationById);
 
+  app.use(
+    "/uploads",
+    express.static(path.join(__dirname, "../../uploads"))
+);
   app.use("/api", router);
 };
