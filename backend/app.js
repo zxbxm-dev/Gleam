@@ -4,6 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const secure = require("express-force-https");
+const cors = require("cors");
 
 const app = express();
 
@@ -38,7 +39,13 @@ require("./lib/router/noticeBoard")(app);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
+  })
+);
 
 // 404에러 핸들러
 app.use(function (req, res, next) {
