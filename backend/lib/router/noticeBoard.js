@@ -1,6 +1,6 @@
 module.exports = (app) => {
-  const writeBoardController = require("../controller/noticeBoard/crtBoard");
-  const checkBoardController = require("../controller/noticeBoard/chcblBoard")
+  const writeBoardController = require("../controller/noticeBoard/createBoard");
+  const checkBoardController = require("../controller/noticeBoard/checkBoard")
   const multerMiddleware = require("../controller/noticeBoard/multerMiddleware");
 
   const express = require("express");
