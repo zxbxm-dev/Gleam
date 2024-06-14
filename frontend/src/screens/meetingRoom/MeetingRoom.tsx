@@ -22,7 +22,7 @@ const MeetingRoom = () => {
     const [isEditeventModalOpen, setEditEventModalOPen] = useState(false);
     const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
     const [ischeckPeopleModalOpen, setcheckPeopleModalOPen] = useState(false);
-    const [isMeetingModalOpen, setMeetingModalOPen] = useState(true);
+    const [isMeetingModalOpen, setMeetingModalOPen] = useState(false);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [memo, setMemo] = useState("");
@@ -113,55 +113,49 @@ const MeetingRoom = () => {
             </div>
 
             <div className="content_container">
-                <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
-                    <TabPanels>
-                        <TabPanel>
-                            <div className="meetingroom_container">
-                                <FullCalendar
-                                    key={key}
-                                    ref={calendarRef1}
-                                    plugins={[dayGridPlugin]}
-                                    initialView="dayGridMonth"
-                                    height="100%"
-                                    customButtons={{
-                                        Addschedule: {
-                                            text: '일정 추가　+',
-                                            click: function () {
-                                                setAddEventModalOPen(true);
-                                            },
-                                        },
-                                    }}
-                                    headerToolbar={{
-                                        start: 'prev title next',
-                                        center: '',
-                                        end: 'Addschedule',
-                                    }}
-                                    dayHeaderFormat={{ weekday: 'long' }}
-                                    titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-                                    dayCellContent={(info) => {
-                                        var number = document.createElement("a");
-                                        number.classList.add("fc-daygrid-day-number");
-                                        number.innerHTML = info.dayNumberText.replace("일", "");
-                                        if (info.view.type === "dayGridMonth") {
-                                            return { html: number.outerHTML };
-                                        }
-                                        return { domNodes: [] };
-                                    }}
-                                    locale='kr'
-                                    fixedWeekCount={false}
-                                    events={events1}
-                                    eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
-                                    dayMaxEventRows={true}
-                                    eventDisplay="block"
-                                    eventClick={handleEventClick}
-                                    moreLinkText='개 일정 더보기'
-                                />
-                            </div>
-                        </TabPanel>
-                    </TabPanels>
-                </Tabs>
+                <div className="meetingroom_container">
+                    <FullCalendar
+                        key={key}
+                        ref={calendarRef1}
+                        plugins={[dayGridPlugin]}
+                        initialView="dayGridMonth"
+                        height="100%"
+                        customButtons={{
+                            Addschedule: {
+                                text: '일정 추가　+',
+                                click: function () {
+                                    setAddEventModalOPen(true);
+                                },
+                            },
+                        }}
+                        headerToolbar={{
+                            start: 'prev title next',
+                            center: '',
+                            end: 'Addschedule',
+                        }}
+                        dayHeaderFormat={{ weekday: 'long' }}
+                        titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
+                        dayCellContent={(info) => {
+                            var number = document.createElement("a");
+                            number.classList.add("fc-daygrid-day-number");
+                            number.innerHTML = info.dayNumberText.replace("일", "");
+                            if (info.view.type === "dayGridMonth") {
+                                return { html: number.outerHTML };
+                            }
+                            return { domNodes: [] };
+                        }}
+                        locale='kr'
+                        fixedWeekCount={false}
+                        events={events1}
+                        eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
+                        dayMaxEventRows={true}
+                        eventDisplay="block"
+                        eventClick={handleEventClick}
+                        moreLinkText='개 일정 더보기'
+                    />
+                </div>
             </div>
-
+            
             <CustomModal
                 isOpen={isAddeventModalOpen}
                 onClose={() => setAddEventModalOPen(false)}
