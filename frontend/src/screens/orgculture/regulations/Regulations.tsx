@@ -127,7 +127,7 @@ const Regulations = () => {
                       <td style={{ textAlign: "left", paddingLeft: "20px" }}>
                         <Link to={`/detailRegulation/${announcement.id}`}>{announcement.title}</Link>
                       </td>
-                      <td>{announcement.date}</td>
+                      <td>{new Date(announcement.date).toISOString().substring(0, 10)}</td>
                     </tr>
                   ))}
               </tbody>
