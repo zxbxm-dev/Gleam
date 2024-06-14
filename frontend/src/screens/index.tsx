@@ -53,3 +53,6 @@ export { default as UserManagement } from "./usermanagement/UserManagement";
 
 //회의실 관리
 export { default as MeetingRoom } from "./meetingRoom/MeetingRoom";
+
+// 프로젝트
+export { default as Project } from "./project/Project";
