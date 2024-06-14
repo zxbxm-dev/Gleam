@@ -43,23 +43,23 @@ const Announcement = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const initialAnnouncements = [
-      { id: 1, title: "공지사항", views: 100, date: "2024-05-01", isPinned: false },
-      { id: 2, title: "ㅁㄹㄴㅇ", views: 200, date: "2024-05-02", isPinned: false },
-      { id: 3, title: "ㅂㅈㄷㄱ", views: 300, date: "2024-05-03", isPinned: false },
-      { id: 4, title: "ㅌㅊㅋㅍ", views: 100, date: "2024-05-01", isPinned: false },
-      { id: 5, title: "ㄴㅇㅎㄴ", views: 200, date: "2024-05-02", isPinned: false },
-      { id: 6, title: "sgdfg", views: 300, date: "2024-05-03", isPinned: false },
-      { id: 7, title: "df", views: 100, date: "2024-05-01", isPinned: false },
-      { id: 8, title: "ewretwrwet", views: 200, date: "2024-05-02", isPinned: false },
-      { id: 9, title: "sdfh", views: 100, date: "2024-05-01", isPinned: false },
-      { id: 10, title: "xcvb", views: 200, date: "2024-05-02", isPinned: false },
-      { id: 11, title: "tyoyyty", views: 100, date: "2024-05-01", isPinned: false },
-      { id: 12, title: "op", views: 200, date: "2024-05-02", isPinned: false },
-    ];
-    setAnnouncements(initialAnnouncements);
-  }, []);
+  // useEffect(() => {
+  //   const initialAnnouncements = [
+  //     { id: 1, title: "공지사항", views: 100, date: "2024-05-01", isPinned: false },
+  //     { id: 2, title: "ㅁㄹㄴㅇ", views: 200, date: "2024-05-02", isPinned: false },
+  //     { id: 3, title: "ㅂㅈㄷㄱ", views: 300, date: "2024-05-03", isPinned: false },
+  //     { id: 4, title: "ㅌㅊㅋㅍ", views: 100, date: "2024-05-01", isPinned: false },
+  //     { id: 5, title: "ㄴㅇㅎㄴ", views: 200, date: "2024-05-02", isPinned: false },
+  //     { id: 6, title: "sgdfg", views: 300, date: "2024-05-03", isPinned: false },
+  //     { id: 7, title: "df", views: 100, date: "2024-05-01", isPinned: false },
+  //     { id: 8, title: "ewretwrwet", views: 200, date: "2024-05-02", isPinned: false },
+  //     { id: 9, title: "sdfh", views: 100, date: "2024-05-01", isPinned: false },
+  //     { id: 10, title: "xcvb", views: 200, date: "2024-05-02", isPinned: false },
+  //     { id: 11, title: "tyoyyty", views: 100, date: "2024-05-01", isPinned: false },
+  //     { id: 12, title: "op", views: 200, date: "2024-05-02", isPinned: false },
+  //   ];
+  //   setAnnouncements(initialAnnouncements);
+  // }, []);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -221,7 +221,7 @@ const Announcement = () => {
                         </Link>
                       </td>
                       <td>{announcement.views}</td>
-                      <td>{announcement.date}</td>
+                      <td>{new Date(announcement.date).toISOString().substring(0, 10)}</td>
                     </tr>
                   ))}
               </tbody>
