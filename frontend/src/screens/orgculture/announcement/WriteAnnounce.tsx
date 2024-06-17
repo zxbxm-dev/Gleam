@@ -47,8 +47,10 @@ const WriteAnnouncement = () => {
   };
 
   useEffect(() => {
+    console.log(editData);
+    
     if (editData) {
-      const { title, attachment, pdffile } = editData;
+      const { title, attachment, pdffile, view } = editData;
 
       const content = editData.content;
       setForm({
@@ -94,7 +96,6 @@ const WriteAnnouncement = () => {
     formData.append("date", currentDate);
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("views", views.toString());
 
     if (form.attachment) {
       formData.append("attachment", form.attachment.file);
@@ -103,11 +104,13 @@ const WriteAnnouncement = () => {
 
     try {
       if (editData) {
+
+        formData.append("views", editData.view.toString());
         const data = { ...editData, id: editData.id };
         await EditAnno(data, formData, Anno_id);
         console.log("공지사항 수정 성공");
       } else {
-
+        formData.append("views", views.toString());
         if (title === "") {
           alert("게시물 제목을 입력해 주세요.");
           return;
