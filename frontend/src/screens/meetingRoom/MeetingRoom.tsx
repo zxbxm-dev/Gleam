@@ -279,7 +279,9 @@ const MeetingRoom = () => {
                     </div>
                     <div className="body-content">
                         <div className="content-left">
-                            메모
+                            <div className="div">
+                                메모
+                            </div>
                         </div>
                         <div className="content-right">
                             <textarea className="textareainput" onChange={handleMemoChange} />

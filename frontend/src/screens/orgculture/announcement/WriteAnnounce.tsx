@@ -44,19 +44,22 @@ const WriteAnnouncement = () => {
 
   useEffect(() => {
     if (editData) {
+      console.log('불러온 데이터', editData);
       const { content, title, attachment } = editData;
       setForm({
         content: content || "",
         title: title || "",
         attachment: attachment || null,
       });
-      setValue(content || "");
+      if (editorRef.current) {
+        editorRef.current.getInstance().setHTML(content || "");
+      }
       if (attachment && attachment.fileUrl) {
         setIsFileUpload(true);
       }
     }
   }, [editData]);
-
+  
   const formatDate = (date: any) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -122,7 +125,8 @@ const WriteAnnouncement = () => {
       setIsFileUpload(false);
     }
   };
-
+  console.log(form.title);
+  
   return (
     <div className="content">
       <div className="content_header">
@@ -147,26 +151,12 @@ const WriteAnnouncement = () => {
                 <div className="write_info">작성일</div>
                 <div className="write_info">{currentDate}</div>
               </div>
-              <div className="DesktopInput">
+              <div>
                 <Editor
                   ref={editorRef}
-                  initialValue="내용을 입력해 주세요."
-                  height="60vh"
+                  initialValue={form.content ? "있음" : "내용을 입력해주세요."}
+                  height={window.innerWidth >= 1600 ? '60vh' : '53vh'}
                   onChange={onChange}
-                  initialEditType="wysiwyg"
-                  useCommandShortcut={false}
-                  hideModeSwitch={true}
-                  plugins={[colorSyntax]}
-                  language="ko-KR"
-                />
-              </div>
-
-              <div className="LaptopInput">
-                <Editor
-                  ref={editorRef}
-                  onChange={onChange}
-                  initialValue="내용을 입력해 주세요."
-                  height='53vh'
                   initialEditType="wysiwyg"
                   useCommandShortcut={false}
                   hideModeSwitch={true}

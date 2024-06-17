@@ -10,7 +10,6 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { DetailTableAnnounce, DeleteAnno } from "../../../services/announcement/Announce";
-// import testPDF from '../../../assets/pdf/취업규칙_포체인스_001.pdf';
 import { useLocation } from 'react-router-dom';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -140,18 +139,18 @@ const DetailAnnounce = () => {
                 <div className="info_content">
                   <div className="write_info">작성자</div>
                   <div className="write_info">{detailAnno.username}</div>
-                  <div className="write_border" />
+                  <div className="write_border">|</div>
                   <div className="write_info">작성일</div>
                   <div className="write_info">{new Date(detailAnno.date).toISOString().substring(0, 10)}</div>
-                  <div className="write_border" />
+                  <div className="write_border">|</div>
                   <div className="write_info">조회수</div>
                   <div className="write_info">{detailAnno.view}</div>
                 </div>
               )}
 
               <div className="btn_content">
-                <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn" /></button>
-                <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn" /></button>
+                <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn" className="resize_button"/></button>
+                <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn" className="resize_button"/></button>
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
                 <button className="white_button" onClick={downloadPDF}>다운로드</button>
                 <Link to="/writeAnnounce" state={detailAnno} ><button className="white_button">수정</button></Link>
@@ -162,16 +161,18 @@ const DetailAnnounce = () => {
 
           <div className="detail_content">
             {detailAnno && (
-              <div>
-                {detailAnno.pdffile ? (
-                  <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                    {renderPages()}
-                  </Document>
-                ) : (
-                  <>
-                  </>
-                )}
-                <div dangerouslySetInnerHTML={{ __html: detailAnno.content }} />
+              <div className="detail_content_box">
+                <div className="detail_content_pdf">
+                  {detailAnno.pdffile ? (
+                    <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                      {renderPages()}
+                    </Document>
+                  ) : (
+                    <>
+                    </>
+                  )}
+                </div>
+                <div className="detail_content_title" dangerouslySetInnerHTML={{ __html: detailAnno.content }} />
               </div>
             )}
           </div>

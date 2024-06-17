@@ -2,6 +2,7 @@ import "./Project.scss";
 import { Link } from "react-router-dom";
 import {
   Right_Arrow,
+  White_Arrow,
 } from "../../assets/images/index";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
@@ -22,7 +23,7 @@ const Project = () => {
   const [key, setKey] = useState(0);
   const calendarRef = useRef<FullCalendar>(null);
   const [slideVisible, setSlideVisible] = useState(false);
-  const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: false, 1: false, 2: false});
+  const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: true, 1: true, 2: true});
 
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
@@ -117,14 +118,23 @@ const Project = () => {
               </div>
 
               <div className={`project_slide ${slideVisible ? 'visible' : ''}`} onClick={toggleSlide}>
-                전체 프로젝트 일정
+                <span>전체 프로젝트 일정</span>
+                {slideVisible ? (
+                  <img src={White_Arrow} alt="White_Arrow" className="img_rotate"/>
+                ) : (
+                  <img src={White_Arrow} alt="White_Arrow"/>
+                )}
               </div>
 
               <div className={`additional_content ${slideVisible ? 'visible' : ''}`}>
                 <div className="project_content">
                   <div className="project_name_container">
-                    <div className="name_left">
-                      <img src={Right_Arrow} alt="Right_Arrow" onClick={() => toggleProjectVisibility(0)} />
+                    <div className="name_left" onClick={() => toggleProjectVisibility(0)}>
+                      {projectVisible[0] ? (
+                        <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                      ) : (
+                        <img src={Right_Arrow} alt="Right_Arrow"/>
+                      )}
                       <span className="project_name">Chain-Linker</span>
                     </div>
                     <div className="name_right">
@@ -143,8 +153,12 @@ const Project = () => {
 
                 <div className="project_content">
                   <div className="project_name_container">
-                    <div className="name_left">
-                      <img src={Right_Arrow} alt="Right_Arrow" onClick={() => toggleProjectVisibility(1)} />
+                    <div className="name_left" onClick={() => toggleProjectVisibility(1)}>
+                      {projectVisible[1] ? (
+                        <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                      ) : (
+                        <img src={Right_Arrow} alt="Right_Arrow"/>
+                      )}
                       <span className="project_name">FCTS</span>
                     </div>
                     <div className="name_right">
@@ -163,8 +177,12 @@ const Project = () => {
 
                 <div className="project_content">
                   <div className="project_name_container">
-                    <div className="name_left">
-                      <img src={Right_Arrow} alt="Right_Arrow" onClick={() => toggleProjectVisibility(2)} />
+                    <div className="name_left" onClick={() => toggleProjectVisibility(2)}>
+                      {projectVisible[2] ? (
+                        <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                      ) : (
+                        <img src={Right_Arrow} alt="Right_Arrow"/>
+                      )}
                       <span className="project_name">DRChat</span>
                     </div>
                     <div className="name_right">

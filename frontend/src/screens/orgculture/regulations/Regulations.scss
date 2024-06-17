@@ -115,11 +115,11 @@
     margin: 10px 0;
 
     .write_info {
-      color: #9E9E9E
+      color: #9E9E9E;
     }
 
     .write_border {
-      border-right: 1px solid black;
+      color: #9E9E9E;
     }
   }
 }
@@ -137,11 +137,11 @@
     margin: 10px 0;
 
     .write_info {
-      color: #9E9E9E
+      color: #9E9E9E;
     }
 
     .write_border {
-      border-right: 1px solid black;
+      color: #9E9E9E;
     }
   }
 
@@ -150,6 +150,14 @@
     position: relative;
     top: -10px;
     gap: 10px;
+
+    .resize_button {
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 10px;
+    }
   }
 }
 
