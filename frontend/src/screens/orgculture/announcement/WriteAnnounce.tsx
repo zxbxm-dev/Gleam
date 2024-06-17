@@ -23,12 +23,12 @@ const WriteAnnouncement = () => {
     content: string;
     title: string;
     attachment: Attachment | null;
-    pdffile:string;
+    pdffile: string;
   }>({
     content: "",
     title: "",
     attachment: null,
-    pdffile:""
+    pdffile: ""
   });
 
   const [value, setValue] = useState("");
@@ -38,7 +38,7 @@ const WriteAnnouncement = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    
+
     if (files && files.length > 0) {
       const file = files[0];
       const fileData = { file: file, fileName: file.name };
@@ -55,7 +55,7 @@ const WriteAnnouncement = () => {
         title: title || "",
         content: content || "",
         attachment: attachment || null,
-        pdffile:pdffile || ""
+        pdffile: pdffile || ""
       });
 
       if (attachment && attachment.fileUrl) {
@@ -84,7 +84,9 @@ const WriteAnnouncement = () => {
   const Anno_id = sessionStorage.getItem('Anno_id');
 
   const handleSubmit = async () => {
-    const { title, content } = form;
+    const { content } = form;
+
+    const title = form.title || (editData ? editData.title : '');
 
     const formData = new FormData();
     formData.append("userID", user.id);
@@ -186,7 +188,11 @@ const WriteAnnouncement = () => {
                   language="ko-KR"
                 />
               </div>
-              {editData?<div>기존 파일 : {editData.pdffile.slice(18)}</div> : <div></div>}
+              {editData && editData.pdffile ? (
+                <div>기존 파일 : {editData.pdffile.slice(18)}</div>
+              ) : (
+                <div></div>
+              )}
               <div className="announce_main_bottom">
                 <div className="attachment_content">
                   <label htmlFor="fileInput" className="primary_button">
@@ -198,9 +204,9 @@ const WriteAnnouncement = () => {
                       onChange={handleFileChange}
                     />
                   </label>
-                      {form.attachment && <div className="attachment_name">{form.attachment.fileName}</div>}
-                      {form.attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setForm({ ...form, attachment: null })} />}
-                
+                  {form.attachment && <div className="attachment_name">{form.attachment.fileName}</div>}
+                  {form.attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setForm({ ...form, attachment: null })} />}
+
                 </div>
                 <div>
                   <button className="second_button" onClick={handleSubmit}>등록</button>
