@@ -7,6 +7,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import CustomModal from "../../components/modal/CustomModal";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 
 
@@ -17,6 +18,7 @@ interface Event {
 }
 
 const Project = () => {
+  const [iseventModalOpen, setEventModalOPen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px'});
   const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px'});
@@ -52,6 +54,7 @@ const Project = () => {
       startDate: info.event.start.toISOString().substring(0, 10),
       endDate: info.event.end ? info.event.end.toISOString().substring(0, 10) : info.event.start.toISOString().substring(0, 10),
     });
+    setEventModalOPen(true);
   };
 
   const toggleSlide = () => {
@@ -116,94 +119,149 @@ const Project = () => {
                   moreLinkText='개 일정 더보기'
                 />
               </div>
-
-              <div className={`project_slide ${slideVisible ? 'visible' : ''}`} onClick={toggleSlide}>
-                <span>전체 프로젝트 일정</span>
-                {slideVisible ? (
-                  <img src={White_Arrow} alt="White_Arrow" className="img_rotate"/>
-                ) : (
-                  <img src={White_Arrow} alt="White_Arrow"/>
-                )}
-              </div>
-
-              <div className={`additional_content ${slideVisible ? 'visible' : ''}`}>
-                <div className="project_content">
-                  <div className="project_name_container">
-                    <div className="name_left" onClick={() => toggleProjectVisibility(0)}>
-                      {projectVisible[0] ? (
-                        <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
-                      ) : (
-                        <img src={Right_Arrow} alt="Right_Arrow"/>
-                      )}
-                      <span className="project_name">Chain-Linker</span>
-                    </div>
-                    <div className="name_right">
-                      <span className="project_state">진행 중</span>
-                      <div></div>
-                    </div>
-                  </div>
-                  {projectVisible[0] && (
-                    <div className="project_content_container">
-                      <div>3 | 프론트엔드 개발</div>
-                      <div>팀리더 : 개발1팀 장현지</div>
-                      <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
-                    </div>
+              
+              <div className="project_slide_container">
+                <div className={`project_slide ${slideVisible ? 'visible' : ''}`} onClick={toggleSlide}>
+                  <span>전체 프로젝트 일정</span>
+                  {slideVisible ? (
+                    <img src={White_Arrow} alt="White_Arrow" className="img_rotate"/>
+                  ) : (
+                    <img src={White_Arrow} alt="White_Arrow"/>
                   )}
                 </div>
 
-                <div className="project_content">
-                  <div className="project_name_container">
-                    <div className="name_left" onClick={() => toggleProjectVisibility(1)}>
-                      {projectVisible[1] ? (
-                        <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
-                      ) : (
-                        <img src={Right_Arrow} alt="Right_Arrow"/>
-                      )}
-                      <span className="project_name">FCTS</span>
+                <div className={`additional_content ${slideVisible ? 'visible' : ''}`}>
+                  <div className="project_content">
+                    <div className="project_name_container">
+                      <div className="name_left" onClick={() => toggleProjectVisibility(0)}>
+                        {projectVisible[0] ? (
+                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                        ) : (
+                          <img src={Right_Arrow} alt="Right_Arrow"/>
+                        )}
+                        <span className="project_name">Chain-Linker</span>
+                      </div>
+                      <div className="name_right">
+                        <span className="project_state">진행 중</span>
+                        <div></div>
+                      </div>
                     </div>
-                    <div className="name_right">
-                      <span className="project_state">진행 중</span>
-                      <div></div>
-                    </div>
+                    {projectVisible[0] && (
+                      <div className="project_content_container">
+                        <div>3 | 프론트엔드 개발</div>
+                        <div>팀리더 : 개발1팀 장현지</div>
+                        <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
+                      </div>
+                    )}
                   </div>
-                  {projectVisible[1] && (
-                    <div className="project_content_container">
-                      <div>3 | 프론트엔드 개발</div>
-                      <div>팀리더 : 개발1팀 장현지</div>
-                      <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
-                    </div>
-                  )}
-                </div>
 
-                <div className="project_content">
-                  <div className="project_name_container">
-                    <div className="name_left" onClick={() => toggleProjectVisibility(2)}>
-                      {projectVisible[2] ? (
-                        <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
-                      ) : (
-                        <img src={Right_Arrow} alt="Right_Arrow"/>
-                      )}
-                      <span className="project_name">DRChat</span>
+                  <div className="project_content">
+                    <div className="project_name_container">
+                      <div className="name_left" onClick={() => toggleProjectVisibility(1)}>
+                        {projectVisible[1] ? (
+                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                        ) : (
+                          <img src={Right_Arrow} alt="Right_Arrow"/>
+                        )}
+                        <span className="project_name">FCTS</span>
+                      </div>
+                      <div className="name_right">
+                        <span className="project_state">진행 중</span>
+                        <div></div>
+                      </div>
                     </div>
-                    <div className="name_right">
-                      <span className="project_state">진행 중</span>
-                      <div></div>
-                    </div>
+                    {projectVisible[1] && (
+                      <div className="project_content_container">
+                        <div>3 | 프론트엔드 개발</div>
+                        <div>팀리더 : 개발1팀 장현지</div>
+                        <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
+                      </div>
+                    )}
                   </div>
-                  {projectVisible[2] && (
-                    <div className="project_content_container">
-                      <div>3 | 프론트엔드 개발</div>
-                      <div>팀리더 : 개발1팀 장현지</div>
-                      <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
+
+                  <div className="project_content">
+                    <div className="project_name_container">
+                      <div className="name_left" onClick={() => toggleProjectVisibility(2)}>
+                        {projectVisible[2] ? (
+                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                        ) : (
+                          <img src={Right_Arrow} alt="Right_Arrow"/>
+                        )}
+                        <span className="project_name">DRChat</span>
+                      </div>
+                      <div className="name_right">
+                        <span className="project_state">진행 중</span>
+                        <div></div>
+                      </div>
                     </div>
-                  )}
+                    {projectVisible[2] && (
+                      <div className="project_content_container">
+                        <div>3 | 프론트엔드 개발</div>
+                        <div>팀리더 : 개발1팀 장현지</div>
+                        <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </TabPanel>
           </TabPanels>
         </Tabs>
       </div>
-
+      
+      <CustomModal
+        isOpen={iseventModalOpen}
+        onClose={() => setEventModalOPen(false)}
+        header={'이벤트 제목'}
+        footer1={'확인'}
+        footer1Class="red-btn"
+        onFooter1Click={() => setEventModalOPen(false)}
+        width="496px"
+        height="300px"
+      >
+        <div className="body-container">
+          <div className="body-content">
+            <div className="content-left">
+              상태
+            </div>
+            <div className="content-right">
+              <div className="content-type">
+                진행 중
+              </div>
+            </div>
+          </div>
+          <div className="body-content">
+            <div className="content-left content-center">
+              팀리더
+            </div>
+            <div className="content-right">
+              <div className="content-date">
+                개발1팀 장현지
+              </div>
+            </div>
+          </div>
+          <div className="body-content">
+            <div className="content-left">
+              담당 팀원
+            </div>
+            <div className="content-right">
+              <div className="content-memo">
+                개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석
+              </div>
+            </div>
+          </div>
+          <div className="body-content">
+            <div className="content-left">
+              프로젝트 기간
+            </div>
+            <div className="content-right">
+              <div className="content-memo">
+                2024-06-13 ~ 2024-06-13
+              </div>
+            </div>
+          </div>
+        </div>
+      </CustomModal>
     </div>
   );
 };
