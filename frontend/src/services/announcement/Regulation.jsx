@@ -21,8 +21,13 @@ const DetailTableRegul = (Regul_id) => {
 
 //사내규정 수정
 const EditRegul = (data, formData, Regul_id) => {
-    return api.put(`/editRegul/${Regul_id}`, formData);
+    return api.put(`/editRegul/${Regul_id}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
+
 
 //사내규정 삭제
 const DeleteRegul = (Regul_id) => {

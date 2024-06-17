@@ -2,18 +2,6 @@ const fs = require("fs-extra");
 const models = require("../../models");
 const Notice = models.noticeBoard;
 
-// ID 재정렬 함수
-const reorderIds = async () => {
-  const notices = await Notice.findAll({
-    order: [["id", "ASC"]],
-  });
-
-  for (let i = 0; i < notices.length; i++) {
-    notices[i].id = i + 1;
-    await notices[i].save();
-  }
-};
-
 // 공지사항 작성
 const writeAnnouncement = async (req, res) => {
   try {
@@ -114,26 +102,25 @@ const editAnnouncement = async (req, res) => {
     }
 
     // 데이터베이스에서 해당 공지사항을 수정
-    const updatedNotice = await Notice.update(
-      {
-        userId: userID,
-        username: username,
-        title: title,
-        content: content,
-        attachment: attachment,
-        pdffile: req.file ? req.file.path : null, // 첨부 파일 경로 저장
-        views: views,
-        date: date,
-      },
-      {
-        where: { id: id },
-        returning: true, // 업데이트된 레코드를 반환하도록 설정
-      }
-    );
+    const updatedNotice = await Notice.findByPk(id);
+    
+    if (!updatedNotice) {
+      return res.status(404).json({ error: "해당 ID를 가진 공지사항을 찾을 수 없습니다." });
+    }
 
-    console.log(`공지사항 수정: ${updatedNotice[1][0].title}`);
-    // 업데이트된 행의 수 / 실제로 업데이트된 데이터 배열 형태로 반환
-    res.status(200).json(updatedNotice[1][0]);
+    updatedNotice.userId = userID;
+    updatedNotice.username = username;
+    updatedNotice.title = title;
+    updatedNotice.content = content;
+    updatedNotice.attachment = attachment;
+    updatedNotice.pdffile = req.file ? req.file.path : null;
+    updatedNotice.views = views;
+    updatedNotice.date = date;
+
+    await updatedNotice.save();
+
+    console.log(`공지사항 수정: ${updatedNotice.title}`);
+    res.status(200).json(updatedNotice);
   } catch (error) {
     console.error("공지사항 수정 에러:", error);
     res.status(500).json({ error: "공지사항 수정 중 오류가 발생했습니다." });
@@ -163,9 +150,6 @@ const deleteAnnouncement = async (req, res) => {
     await Notice.destroy({
       where: { id: id },
     });
-
-    // ID 재정렬
-    await reorderIds();
 
     res.status(200).json({ message: "공지사항 삭제 완료" });
   } catch (error) {
@@ -214,6 +198,7 @@ const editRegulation = async (req, res) => {
     const { id } = req.params;
     const { userID, username, date, title, content } = req.body;
     let attachment = null;
+    let pdffile = null;
 
     if (req.file) {
       attachment = {
@@ -229,28 +214,33 @@ const editRegulation = async (req, res) => {
     }
 
     // 데이터베이스에서 해당 규정공지를 수정
-    const updatedNotice = await Notice.update(
-      {
-        userId: userID,
-        username: username,
-        title: title,
-        content: content,
-        attachment: attachment,
-        pdffile: req.file ? req.file.path : null, // 첨부 파일 경로 저장
-        date: date,
-      },
-      {
-        where: { id: id },
-      }
-    );
+    const updatedNotice = await Notice.findByPk(id);
 
-    if (updatedNotice[0] === 1) {
-      res.status(200).json({ message: "규정공지 수정 완료" });
-    } else {
-      res
-        .status(404)
-        .json({ error: "해당 ID를 가진 규정공지를 찾을 수 없습니다." });
+    if (!updatedNotice) {
+      return res.status(404).json({ error: "해당 ID를 가진 규정공지를 찾을 수 없습니다." });
     }
+
+    // 업데이트할 필드 설정
+    updatedNotice.userId = userID;
+    updatedNotice.username = username;
+    updatedNotice.title = title;
+    updatedNotice.content = content;
+
+    // 첨부 파일 및 PDF 파일 업데이트
+    if (attachment) {
+      updatedNotice.attachment = attachment;
+    }
+
+    if (req.file) {
+      updatedNotice.pdffile = req.file.path;
+    }
+
+    updatedNotice.date = date;
+
+    await updatedNotice.save();
+
+    console.log(`규정공지 수정: ${updatedNotice.title}`);
+    res.status(200).json({ message: "규정공지 수정 완료" });
   } catch (error) {
     console.error("규정공지 수정 에러:", error);
     res.status(500).json({ error: "규정공지 수정 중 오류가 발생했습니다." });
@@ -280,9 +270,6 @@ const deleteRegulation = async (req, res) => {
     await Notice.destroy({
       where: { id: id },
     });
-
-    // ID 재정렬
-    await reorderIds();
 
     res.status(200).json({ message: "규정 공지 삭제 완료" });
   } catch (error) {
