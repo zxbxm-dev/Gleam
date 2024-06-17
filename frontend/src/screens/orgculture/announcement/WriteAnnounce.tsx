@@ -23,11 +23,14 @@ const WriteAnnouncement = () => {
     content: string;
     title: string;
     attachment: Attachment | null;
+    pdffile: string;
   }>({
     content: "",
     title: "",
     attachment: null,
+    pdffile: ""
   });
+
   const [value, setValue] = useState("");
   const [isfileUpload, setIsFileUpload] = useState(false);
   const [views, setView] = useState(0);
@@ -35,6 +38,7 @@ const WriteAnnouncement = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+
     if (files && files.length > 0) {
       const file = files[0];
       const fileData = { file: file, fileName: file.name };
@@ -44,22 +48,26 @@ const WriteAnnouncement = () => {
 
   useEffect(() => {
     if (editData) {
-      console.log('불러온 데이터', editData);
-      const { content, title, attachment } = editData;
+      const { title, attachment, pdffile } = editData;
+
+      const content = editData.content;
       setForm({
-        content: content || "",
         title: title || "",
+        content: content || "",
         attachment: attachment || null,
+        pdffile: pdffile || ""
       });
-      if (editorRef.current) {
-        editorRef.current.getInstance().setHTML(content || "");
-      }
+
       if (attachment && attachment.fileUrl) {
         setIsFileUpload(true);
       }
+      if (editorRef.current) {
+        editorRef.current.getInstance().setHTML(content || "");
+      }
     }
+
   }, [editData]);
-  
+
   const formatDate = (date: any) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -73,50 +81,52 @@ const WriteAnnouncement = () => {
 
   const currentDate = formatDate(new Date());
 
-    const Anno_id = sessionStorage.getItem('Anno_id');
+  const Anno_id = sessionStorage.getItem('Anno_id');
 
-    const handleSubmit = async () => {
-      const { title, content } = form;
-    
-      if (title === "") {
-        alert("게시물 제목을 입력해 주세요.");
-        return;
-      } else if (content === "") {
-        alert("내용을 입력해 주세요.");
-        return;
-      }
-    
-      const formData = new FormData();
-      formData.append("userID", user.id);
-      formData.append("username", user.username);
-      formData.append("date", currentDate);
-      formData.append("title", title);
-      formData.append("content", content);
-      formData.append("views", views.toString());
-    
-      if (form.attachment) {
-        formData.append("attachment", form.attachment.file);
-        formData.append("attachmentName", form.attachment.fileName);
-      }
-    
-      try {
-        if (editData) {
-          const data = { ...editData, id: editData.id };
-          await EditAnno(data, formData, Anno_id);
-          console.log("공지사항 수정 성공");
-        } else {
-          const response = await WriteAnnounce(formData);
-          console.log("공지사항 등록 성공:", response.data);
+  const handleSubmit = async () => {
+    const { content } = form;
+
+    const title = form.title || (editData ? editData.title : '');
+
+    const formData = new FormData();
+    formData.append("userID", user.id);
+    formData.append("username", user.username);
+    formData.append("date", currentDate);
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("views", views.toString());
+
+    if (form.attachment) {
+      formData.append("attachment", form.attachment.file);
+      formData.append("attachmentName", form.attachment.fileName);
+    }
+
+    try {
+      if (editData) {
+        const data = { ...editData, id: editData.id };
+        await EditAnno(data, formData, Anno_id);
+        console.log("공지사항 수정 성공");
+      } else {
+
+        if (title === "") {
+          alert("게시물 제목을 입력해 주세요.");
+          return;
+        } else if (content === "") {
+          alert("내용을 입력해 주세요.");
+          return;
         }
-        navigate("/");
-      } catch (error) {
-        console.error("공지사항 처리 중 오류:", error);
-        alert("공지사항 처리 중 오류가 발생했습니다.");
-      }
-    };
-    
 
-  const onChange = () => {
+        const response = await WriteAnnounce(formData);
+        console.log("공지사항 등록 성공:", response.data);
+      }
+      navigate("/");
+    } catch (error) {
+      console.error("공지사항 처리 중 오류:", error);
+      alert("공지사항 처리 중 오류가 발생했습니다.");
+    }
+  };
+
+  const oncontentChange = () => {
     const data = editorRef.current.getInstance().getHTML();
     setForm({ ...form, content: data });
     if (editData && editData.fileUrl) {
@@ -125,8 +135,7 @@ const WriteAnnouncement = () => {
       setIsFileUpload(false);
     }
   };
-  console.log(form.title);
-  
+
   return (
     <div className="content">
       <div className="content_header">
@@ -138,17 +147,31 @@ const WriteAnnouncement = () => {
       <div className="content_container">
         <div className="container">
           <div className="main_header">
-            <div className="header_name_sm">공지사항 작성</div>
+            {editData ? (
+              <div className="header_name_sm">공지사항 수정</div>
+            ) : (
+              <div className="header_name_sm">공지사항 작성</div>
+            )}
           </div>
 
           <div className="content_container">
             <div className="write_container">
-              <input type="text" className="write_title" placeholder="제목을 입력해 주세요." value={form.title} onChange={handleTitleChange} />
+              <input
+                type="text"
+                className="write_title"
+                placeholder="제목을 입력해 주세요."
+                value={form.title || (editData ? editData.title : '')}
+                onChange={handleTitleChange}
+              />
               <div className="writor_container">
                 <div className="write_info">작성자</div>
                 <div className="write_info">{user.username}</div>
                 <div className="write_border" />
-                <div className="write_info">작성일</div>
+                {editData ? (
+                  <div className="write_info">수정일</div>
+                ) : (
+                  <div className="write_info">작성일</div>
+                )}
                 <div className="write_info">{currentDate}</div>
               </div>
               <div>
@@ -156,7 +179,7 @@ const WriteAnnouncement = () => {
                   ref={editorRef}
                   initialValue={form.content ? "있음" : "내용을 입력해주세요."}
                   height={window.innerWidth >= 1600 ? '60vh' : '53vh'}
-                  onChange={onChange}
+                  onChange={oncontentChange}
                   initialEditType="wysiwyg"
                   useCommandShortcut={false}
                   hideModeSwitch={true}
@@ -164,7 +187,11 @@ const WriteAnnouncement = () => {
                   language="ko-KR"
                 />
               </div>
-
+              {editData && editData.pdffile ? (
+                <div>기존 파일 : {editData.pdffile.slice(18)}</div>
+              ) : (
+                <div></div>
+              )}
               <div className="announce_main_bottom">
                 <div className="attachment_content">
                   <label htmlFor="fileInput" className="primary_button">
@@ -178,6 +205,7 @@ const WriteAnnouncement = () => {
                   </label>
                   {form.attachment && <div className="attachment_name">{form.attachment.fileName}</div>}
                   {form.attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setForm({ ...form, attachment: null })} />}
+
                 </div>
                 <div>
                   <button className="second_button" onClick={handleSubmit}>등록</button>
