@@ -162,16 +162,18 @@ const DetailAnnounce = () => {
 
           <div className="detail_content">
             {detailAnno && (
-              <div>
-                {detailAnno.pdffile ? (
-                  <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                    {renderPages()}
-                  </Document>
-                ) : (
-                  <>
-                  </>
-                )}
-                <div dangerouslySetInnerHTML={{ __html: detailAnno.content }} />
+              <div className="detail_content_box">
+                <div className="detail_content_pdf">
+                  {detailAnno.pdffile ? (
+                    <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                      {renderPages()}
+                    </Document>
+                  ) : (
+                    <>
+                    </>
+                  )}
+                </div>
+                <div className="detail_content_title" dangerouslySetInnerHTML={{ __html: detailAnno.content }} />
               </div>
             )}
           </div>
