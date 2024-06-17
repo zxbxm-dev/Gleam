@@ -140,7 +140,11 @@ const WriteRegulation = () => {
       <div className="content_container">
         <div className="container">
           <div className="main_header">
-            <div className="header_name_sm">사내규정 작성</div>
+            {editData ? (
+              <div className="header_name_sm">사내규정 수정</div>
+            ) : (
+              <div className="header_name_sm">사내규정 작성</div>
+            )}
           </div>
 
           <div className="content_container">
@@ -156,7 +160,11 @@ const WriteRegulation = () => {
                 <div className="write_info">작성자</div>
                 <div className="write_info">{user.username}</div>
                 <div className="write_border" />
-                <div className="write_info">작성일</div>
+                {editData ? (
+                  <div className="write_info">수정일</div>
+                ) : (
+                  <div className="write_info">작성일</div>
+                )}
                 <div className="write_info">{currentDate}</div>
               </div>
               <div className="">
