@@ -126,7 +126,6 @@ const WriteAnnouncement = () => {
     }
   };
 
-
   const oncontentChange = () => {
     const data = editorRef.current.getInstance().getHTML();
     setForm({ ...form, content: data });
