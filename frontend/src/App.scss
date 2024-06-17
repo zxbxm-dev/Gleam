@@ -52,8 +52,9 @@
 @mixin lightMode {
   --primary-color: #746E58;
   --secondary-color: #fff;
-  --background-color: #fafafa;
-  --side-link-hover-color: #f6f6f6;
+  --background-color: #FBFBFB;
+  --side-link-hover-color: #F5F5F5;
+  --side-link-click-color: rgba(221,221,221,0.37);
   --side-text-color: #000;
   --logo-color: var(--primary-color);
   --xl-text-color: #292929;
@@ -401,9 +402,10 @@ ul {
     transition: transform 0.3s ease-in-out;
     font-size: 12px;
     padding: 24px 30px;
+    z-index: 999;
 
     &.visible {
-      transform: translateY(-393px);
+      transform: translateY(-394px);
     }
 
     .project_content {

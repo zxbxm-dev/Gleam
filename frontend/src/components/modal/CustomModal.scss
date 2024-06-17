@@ -257,7 +257,7 @@
             padding-left: 9px;
             display: flex;
             align-items: center;
-            width: 61px;
+            width: 15%;
             height: 28px;
             font-size: 14px;
             color: #929292;
@@ -276,16 +276,16 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            width: 86%;
+            width: 80%;
             font-size: 14px;
 
             .textinput {
-              width: 310px;
+              width: 270px;
               height: 28px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
               padding-left: 7px;
-
+              margin-left: 15px;
             }
             .textinput:focus {
               outline: 2px solid #746e58;
@@ -296,14 +296,14 @@
             }
 
             .datepicker {
-              width: 146px;
+              width: 118px;
               height: 28px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
             }
 
             .textareainput {
-              width: 360px;
+              width: 272px;
               height: 84px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
@@ -342,7 +342,6 @@
             }
             .content-memo {
               width: 300px;
-              padding-top: 4px;
             }
           }
         }
