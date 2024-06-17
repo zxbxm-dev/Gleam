@@ -125,7 +125,9 @@ const DetailRegulation = () => {
         <div className="container">
           <div className="main_header2">
             <div className="header_name_bg">
-              취업규칙
+            {detailRegul && (
+                <div>{detailRegul.title}</div>
+              )}
             </div>
             <div className="detail_container">
               {detailRegul && (

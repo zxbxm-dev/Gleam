@@ -10,7 +10,6 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { DetailTableAnnounce, DeleteAnno } from "../../../services/announcement/Announce";
-// import testPDF from '../../../assets/pdf/취업규칙_포체인스_001.pdf';
 import { useLocation } from 'react-router-dom';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
