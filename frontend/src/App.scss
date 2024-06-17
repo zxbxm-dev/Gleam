@@ -559,15 +559,7 @@ ul {
   }
 
   .download_button {
-    width: 92px;
-    height: 35px;
-    background-color: #fff;
-    border: 1px solid #746E58;
-    border-radius: 5px;
-    margin-top: 5px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #746E58;
+    @include report-button;
   }
 }
 

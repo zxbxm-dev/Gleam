@@ -95,7 +95,7 @@ const DetailAnnounce = () => {
         date: response.data.date,
         title: response.data.title,
         username: response.data.username,
-        view: response.data.view,
+        view: response.data.views,
         pdffile: response.data.pdffile
       });
       setFile(`http://localhost:3000/${response.data.pdffile}`);
@@ -118,7 +118,7 @@ const DetailAnnounce = () => {
     }
   };
 
-
+  console.log(detailAnno)
   return (
     <div className="content">
       <div className="content_header">
@@ -131,7 +131,9 @@ const DetailAnnounce = () => {
         <div className="container">
           <div className="main_header2">
             <div className="header_name_bg">
-              2025년 인사평가 공지
+              {detailAnno && (
+                <div>{detailAnno.title}</div>
+              )}
             </div>
             <div className="detail_container">
               {detailAnno && (
@@ -151,7 +153,7 @@ const DetailAnnounce = () => {
                 <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn" /></button>
                 <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn" /></button>
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
-                <button className="download_button" onClick={downloadPDF}>다운로드</button>
+                <button className="white_button" onClick={downloadPDF}>다운로드</button>
                 <Link to="/writeAnnounce" state={detailAnno} ><button className="white_button">수정</button></Link>
                 <button className="second_button" onClick={() => navigate("/")}>목록</button>
               </div>
@@ -161,9 +163,14 @@ const DetailAnnounce = () => {
           <div className="detail_content">
             {detailAnno && (
               <div>
-                <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                  {renderPages()}
-                </Document>
+                {detailAnno.pdffile ? (
+                  <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                    {renderPages()}
+                  </Document>
+                ) : (
+                  <>
+                  </>
+                )}
                 <div dangerouslySetInnerHTML={{ __html: detailAnno.content }} />
               </div>
             )}

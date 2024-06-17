@@ -20,8 +20,8 @@ const DetailTableRegul = (Regul_id) => {
 };
 
 //사내규정 수정
-const EditRegul = (data, formData) => {
-    return api.put("/editRegul", formData);
+const EditRegul = (data, formData, Regul_id) => {
+    return api.put(`/editRegul/${Regul_id}`, formData);
 };
 
 //사내규정 삭제

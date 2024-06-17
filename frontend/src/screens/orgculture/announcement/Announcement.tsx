@@ -7,12 +7,15 @@ import { ReactComponent as LastRightIcon } from "../../../assets/images/Common/L
 import { ReactComponent as FirstLeftIcon } from "../../../assets/images/Common/FirstLeftIcon.svg";
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
-import { CheckAnnounce } from "../../../services/announcement/Announce";
+import { CheckAnnounce, incrementViewCount, PinnedAnnouncement } from "../../../services/announcement/Announce";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
 
+import { useQueryClient, useQuery } from "react-query";
+
 const Announcement = () => {
   let navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [announcements, setAnnouncements] = useState<any[]>([]);
@@ -43,18 +46,23 @@ const Announcement = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const response = await CheckAnnounce();
-        setAnnouncements(response.data);
-      } catch (error) {
-        console.error("Error fetching announcements:", error);
-      }
-    };
+  const fetchAnnouncements = async () => {
+    try {
+      const response = await CheckAnnounce();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  }
 
-    fetchAnnouncements();
-  }, []);
+  useQuery("announcements", fetchAnnouncements, {
+    onSuccess: (data) => {
+      setAnnouncements(data);
+    },
+    onError: (error) => {
+      console.log(error)
+    }
+  })
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -73,45 +81,36 @@ const Announcement = () => {
     setClickIdx(index);
   };
 
-  const handlePinClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handlePinClick = async(event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    try {
+      await PinnedAnnouncement(clickIdx);
+      
+      const pinnedAnnouncements = announcements.filter(announcement => announcement.pinned);
 
-    const pinnedAnnouncements = announcements.filter(announcement => announcement.isPinned);
+      if (pinnedAnnouncements.length >= 5) {
+        const oldestPinnedAnnouncement = pinnedAnnouncements.reduce((oldest, current) =>
+          new Date(oldest.pinnedAt) < new Date(current.pinnedAt) ? oldest : current
+        );
 
-    if (pinnedAnnouncements.length >= 5) {
-      const oldestPinnedAnnouncement = pinnedAnnouncements.reduce((oldest, current) =>
-        new Date(oldest.pinnedAt) < new Date(current.pinnedAt) ? oldest : current
-      );
-
-      setAnnouncements(prevState =>
-        prevState.map(announcement =>
-          announcement.id === oldestPinnedAnnouncement.id
-            ? { ...announcement, isPinned: false, pinnedAt: null }
-            : announcement.id === clickIdx
-            ? { ...announcement, isPinned: true, pinnedAt: new Date().toISOString() }
-            : announcement
-        )
-      );
-    } else {
-      setAnnouncements(prevState =>
-        prevState.map(announcement =>
-          announcement.id === clickIdx
-            ? { ...announcement, isPinned: !announcement.isPinned, pinnedAt: !announcement.isPinned ? new Date().toISOString() : null }
-            : announcement
-        )
-      );
-    }
+        PinnedAnnouncement(oldestPinnedAnnouncement.id)
+        queryClient.invalidateQueries("announcements");
+      }
 
     setDropdownOpen(false);
-  };
+    queryClient.invalidateQueries("announcements");
+    } catch (error) {
+      console.error('게시글 고정 에러', error);
+    }
+  }
 
   const sortedAnnouncements = [...announcements].sort((a, b) => {
-    if (a.isPinned && b.isPinned) {
+    if (a.pinned && b.pinned) {
       return new Date(b.pinnedAt).getTime() - new Date(a.pinnedAt).getTime();
-    } else if (a.isPinned) {
+    } else if (a.pinned) {
       return -1;
-    } else if (b.isPinned) {
+    } else if (b.pinned) {
       return 1;
     } else {
       return 0;
@@ -186,8 +185,8 @@ const Announcement = () => {
                     <tr key={announcement.id} className={`board_content ${announcement.isPinned ? "pinned" : ""}`}>
                       <td style={{ color: "#D56D6D" }}>공지</td>
                       <td style={{ textAlign: "left", paddingLeft: "20px" }} onContextMenu={(e) => handleRightClick(announcement.id, e)}>
-                        <Link to={`/detailAnnounce/${announcement.id}`} style={{ display: 'flex', gap: '10px', alignItems: 'center'}}>
-                          {announcement.isPinned ? (
+                        <Link to={`/detailAnnounce/${announcement.id}`} style={{ display: 'flex', gap: '10px', alignItems: 'center'}} onClick={() => {incrementViewCount(announcement.id)}}>
+                          {announcement.pinned ? (
                             <img src={PinnedIcon} alt="PinnedIcon" className="pinned_icon" />
                           ) : null}
                           <div className="dropdown">
@@ -195,7 +194,7 @@ const Announcement = () => {
                             {dropdownOpen && clickIdx === announcement.id && (
                               <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
                                 <button className="dropdown_pin" onClick={handlePinClick}>
-                                  {announcement.isPinned ? "고정 해제" : "고정"}
+                                  {announcement.pinned ? "고정 해제" : "고정"}
                                 </button>
                               </div>
                             )}
