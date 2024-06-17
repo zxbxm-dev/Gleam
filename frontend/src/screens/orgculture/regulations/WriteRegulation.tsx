@@ -28,10 +28,12 @@ const WriteRegulation = () => {
     content: string;
     title: string;
     attachment: Attachment | null;
+    pdffile: string;
   }>({
     content: "",
     title: "",
     attachment: null,
+    pdffile: ""
   });
 
   const user = useRecoilValue(userState);
@@ -60,13 +62,16 @@ const WriteRegulation = () => {
 
   useEffect(() => {
     if (editData) {
-      const { content, title, attachment } = editData;
+      const { content, title, attachment, pdffile } = editData;
       setForm({
         content: content || "",
         title: title || "",
         attachment: attachment ? { file: attachment.file, fileName: attachment.fileName } : null,
+        pdffile: pdffile || ""
       });
-      setValue(content || "");
+      if (editorRef.current) {
+        editorRef.current.getInstance().setHTML(content || "");
+      }
       if (attachment) {
         setIsFileUpload(true);
       }
@@ -74,9 +79,11 @@ const WriteRegulation = () => {
   }, [editData]);
 
   const Regul_id = sessionStorage.getItem('Regul_id');
-  
+
   const handleSubmit = async () => {
-    const { title, content } = form;
+    const { content } = form;
+
+    const title = form.title || (editData ? editData.title : '');
 
     if (title === "") {
       alert("게시물 제목을 입력해 주세요.");
@@ -114,12 +121,12 @@ const WriteRegulation = () => {
     }
   };
 
-  const onChange = () => {
+  const oncontentChange = () => {
     const data = editorRef.current.getInstance().getHTML();
     setForm({ ...form, content: data });
   };
-console.log(form.attachment?.fileName);
-console.log(form.content);
+  console.log(form.attachment?.fileName);
+  console.log(form.content);
 
 
   return (
@@ -133,46 +140,51 @@ console.log(form.content);
       <div className="content_container">
         <div className="container">
           <div className="main_header">
-            <div className="header_name_sm">사내규정 작성</div>
+            {editData ? (
+              <div className="header_name_sm">사내규정 수정</div>
+            ) : (
+              <div className="header_name_sm">사내규정 작성</div>
+            )}
           </div>
 
           <div className="content_container">
             <div className="write_container">
-              <input type="text" className="write_title" placeholder="제목을 입력해 주세요." value={form.title} onChange={handleTitleChange} />
+              <input
+                type="text"
+                className="write_title"
+                placeholder="제목을 입력해 주세요."
+                value={form.title || (editData ? editData.title : '')}
+                onChange={handleTitleChange}
+              />
               <div className="writor_container">
                 <div className="write_info">작성자</div>
                 <div className="write_info">{user.username}</div>
                 <div className="write_border" />
-                <div className="write_info">작성일</div>
+                {editData ? (
+                  <div className="write_info">수정일</div>
+                ) : (
+                  <div className="write_info">작성일</div>
+                )}
                 <div className="write_info">{currentDate}</div>
               </div>
-              <div className="DesktopInput">
+              <div className="">
                 <Editor
                   ref={editorRef}
-                  height='60vh'
-                  onChange={onChange}
+                  initialValue={form.content ? "있음" : "내용을 입력해주세요."}
+                  height={window.innerWidth >= 1600 ? '60vh' : '53vh'}
+                  onChange={oncontentChange}
                   initialEditType="wysiwyg"
                   useCommandShortcut={false}
                   hideModeSwitch={true}
                   plugins={[colorSyntax]}
                   language="ko-KR"
-                  initialValue={value || "내용을 입력하세요."}
                 />
               </div>
-
-              <div className="LaptopInput">
-                <Editor
-                  ref={editorRef}
-                  height='53vh'
-                  onChange={onChange}
-                  initialEditType="wysiwyg"
-                  useCommandShortcut={false}
-                  hideModeSwitch={true}
-                  plugins={[colorSyntax]}
-                  initialValue={value || "내용을 입력하세요."}
-                  language="ko-KR"
-                />
-              </div>
+              {editData && editData.pdffile ? (
+                <div>기존 파일 : {editData.pdffile.slice(18)}</div>
+              ) : (
+                <div></div>
+              )}
               <div className="regulation_main_bottom">
                 <div className="attachment_content">
                   <label htmlFor="fileInput" className="primary_button">
