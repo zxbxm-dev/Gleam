@@ -24,7 +24,11 @@ const CheckAttendance = () => {
 
 // 출근부 데이터 작성
 const WriteAttendance = (formData) => {
-  return api.post("/writeAttendance", formData);
+  return api.post("/writeAttendance", formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }
 
 // 출근부 데이터 수정
