@@ -368,6 +368,7 @@ ul {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 15px;
     font-family: var(--font-family-Noto-R);
     width: 324px;
     height: 26px;
@@ -379,6 +380,10 @@ ul {
     box-shadow: var(--light-shadow1);
     transition: transform 0.3s ease-in-out;
     z-index: 999;
+
+    .img_rotate {
+      transform: rotate(180deg);
+    }
   }
 
   .additional_content {
@@ -418,9 +423,10 @@ ul {
           display: flex;
           align-items: center;
           gap: 10px;
+          cursor: pointer;
 
-          img {
-            cursor: pointer;
+          .img_rotate {
+            transform: rotate(90deg);
           }
 
           .project_name {
@@ -455,6 +461,7 @@ ul {
         transition: 0.3s ease-in-out;
         margin-bottom: 5px;
         padding: 10px 13px;
+        margin-bottom: 25px;
 
         div {
           width: 100%;

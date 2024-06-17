@@ -43,3 +43,4 @@ export { default as UserIcon_dark } from "./sidebar/UserIcon_dark.svg";
 
 // project
 export { default as Right_Arrow } from "./project/Right_Arrow.svg";
+export { default as White_Arrow } from "./project/White_Arrow.svg";
