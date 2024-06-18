@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import "./Report.scss";
 import {
   FileUploadIcon,
   UserIcon_dark,
@@ -381,7 +380,7 @@ const handleSubmit = () => {
 
       <div className="content_container">
         <div className="container">
-          <div className="write_container">
+          <div className="report_write_container">
             <div className="write_top_container">
               <div className="top_left_content">
                 <div className="sub_title">양식 선택</div>
@@ -599,7 +598,7 @@ const handleSubmit = () => {
                     </PopoverContent>
                   </Portal>
                 </Popover>
-                <button className="upload_button">
+                <button className="white_button">
                   <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
                     <input
                       id="file-upload"
