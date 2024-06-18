@@ -20,8 +20,20 @@ const UserManagement = () => {
   const [isDelModalOpen, setDelModalOpen] = useState(false);
   const [postPerPage, setPostPerPage] = useState<number>(10);
   const [activeTab, setActiveTab] = useState(0);
+  const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px'});
+  const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px'});
   const [clickIdx, setClickIdx] = useState<string>('');
 
+  useEffect(() => {
+    if (activeTab === 0) {
+      setTabHeights({0: '41px', 1: '35px'});
+      setTabMargins({0: '0px', 1: '6px'});
+    } else {
+      setTabHeights({0: '35px', 1: '41px'});
+      setTabMargins({0: '6px', 1: '0px'});
+    }
+  }, [activeTab]);
+  
   // 회원관리 조회
   const fetchUserManage = async () => {
     try {
@@ -118,15 +130,15 @@ const UserManagement = () => {
 
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
-            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>가입승인</Tab>
-            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)'>회원관리</Tab>
+            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>가입승인</Tab>
+            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>회원관리</Tab>
           </TabList>
 
           <TabPanels>
             <TabPanel>
               <div className="UserManage_container">
                 <div style={{ marginTop: '50px' }}>
-                  <table className="UserManage_board_list">
+                  <table className="UserManage_approve_board_list">
                     <colgroup>
                       <col width="10%" />
                       <col width="10%" />
@@ -155,9 +167,9 @@ const UserManagement = () => {
                             <td>{usermanage.department}</td>
                             <td>{usermanage.position}</td>
                             <td>{new Date(usermanage.createdAt).toISOString().substring(0, 10)}</td>
-                            <td>
-                              <button className="edits_button" onClick={() => { setSignModalOpen(true); setClickIdx(usermanage.userId) }}>승인</button>
-                              <button className="dels_button" onClick={() => { setDelModalOpen(true); setClickIdx(usermanage.userId) }}>삭제</button>
+                            <td className="flex_center">
+                              <button className="white_button" onClick={() => { setSignModalOpen(true); setClickIdx(usermanage.userId) }}>승인</button>
+                              <button className="red_button" onClick={() => { setDelModalOpen(true); setClickIdx(usermanage.userId) }}>삭제</button>
                             </td>
                           </tr>
                         ))}
@@ -214,10 +226,11 @@ const UserManagement = () => {
                             <td>{new Date(usermanage.entering).toISOString().substring(0, 10)}</td>
                             <td>
                               <button
-                                className="dels_button"
+                                className="delete_small_button"
                                 onClick={() => {
                                   setDelModalOpen(true);
                                   setClickIdx(usermanage.userId);
+                                  handleEdit(usermanage.userId)
                                 }}
                               >
                                 탈퇴
@@ -270,8 +283,8 @@ const UserManagement = () => {
         header={'알림'}
         footer1={'확인'}
         footer1Class="red-btn"
-        footer2={'취소'}
         onFooter1Click={() => handleDelete(clickIdx)}
+        footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setDelModalOpen(false)}
       >

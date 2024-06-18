@@ -10,6 +10,10 @@
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 
+  .UserManage_approve_board_list {
+    @include board_list;
+  }
+
   .UserManage_board_list {
     @include board_list;
   }
@@ -27,8 +31,19 @@
 
 @include laptop {
   .UserManage_container {
+    .UserManage_approve_board_list {
+      .board_container {
+        .board_content {
+          height: 55px;
+
+          .flex_center {
+            height: 55px;
+          }
+        }
+      }
+    }
+
     .UserManage_board_list {
-      @include board_list;
       .board_container {
         .board_content {
           height: 55px;
