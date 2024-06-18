@@ -8,7 +8,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { writeCalen } from "../../services/calender/calender";
 import { SelectArrow } from "../../assets/images/index";
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 import { isSidebarVisibleState } from '../../recoil/atoms';
 import { CheckCalen, DeleteCalen } from "../../services/calender/calender";
 
@@ -19,6 +20,7 @@ interface Event {
 }
 
 const Calendar = () => {
+  const user = useRecoilValue(userState);
   const [isAddeventModalOpen, setAddEventModalOPen] = useState(false);
   const [iseventModalOpen, setEventModalOPen] = useState(false);
   const [isEditeventModalOpen, setEditEventModalOPen] = useState(false);
@@ -108,12 +110,20 @@ const Calendar = () => {
     const isoEndDate = endDate.toISOString().substring(0, 10);
 
     const eventData = {
+      name: user.username,
+      company: user.company,
+      department: user.department,
+      team: user.team,
       title: title,
       startDate: isoStartDate,
       endDate: isoEndDate,
+      dateType: title.slice(-2),
       memo: memo,
+      year: isoEndDate.substring(0, 4),
       backgroundColor: selectedColor,
     };
+
+    console.log(eventData)
 
     writeCalen(eventData)
       .then(response => {
@@ -173,6 +183,7 @@ const Calendar = () => {
   const SelectOpen = () => {
     setSelectOpen(!selectOpen)
   }
+
   return (
     <div className="content">
       <div className="content_header">
