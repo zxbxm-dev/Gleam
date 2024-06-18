@@ -1,4 +1,3 @@
-import "./Regulations.scss";
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import {
@@ -129,14 +128,14 @@ const DetailRegulation = () => {
                 <div>{detailRegul.title}</div>
               )}
             </div>
-            <div className="detail_container">
+            <div className="regulation_detail_container">
               {detailRegul && (
                 <div className="info_content">
-                  <div className="write_info">작성자</div>
-                  <div className="write_info">{detailRegul.username}</div>
-                  <div className="write_border">|</div>
-                  <div className="write_info">작성일</div>
-                  <div className="write_info">{new Date(detailRegul.date).toISOString().substring(0, 10)}</div>
+                  <div>작성자</div>
+                  <div>{detailRegul.username}</div>
+                  <div>|</div>
+                  <div>작성일</div>
+                  <div>{new Date(detailRegul.date).toISOString().substring(0, 10)}</div>
                 </div>
               )}
               <div className="btn_content">
@@ -149,16 +148,25 @@ const DetailRegulation = () => {
               </div>
             </div>
           </div>
-          <div className="content_container">
+
+          <div className="regultaion_detail_content">
             {detailRegul && (
-              <div>
-                <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                  {renderPages()}
-                </Document>
-                <div dangerouslySetInnerHTML={{ __html: detailRegul.content }} />
+              <div className="detail_content_box">
+                <div className="detail_content_pdf">
+                  {detailRegul.pdffile ? (
+                    <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                      {renderPages()}
+                    </Document>
+                  ) : (
+                    <>
+                    </>
+                  )}
+                </div>
+                <div className="detail_content_title" dangerouslySetInnerHTML={{ __html: detailRegul.content }} />
               </div>
             )}
           </div>
+
         </div>
       </div>
       <CustomModal
