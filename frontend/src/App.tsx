@@ -1,4 +1,5 @@
 import "./App.scss";
+import "./style/index.scss";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BaseLayout from "./layout/BaseLayout";
 import { useRecoilValue } from 'recoil';
