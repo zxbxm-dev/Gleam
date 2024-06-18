@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./Regulations.scss";
 import {
   DeleteIcon,
 } from "../../../assets/images/index";
@@ -157,15 +156,15 @@ const WriteRegulation = () => {
                 onChange={handleTitleChange}
               />
               <div className="writor_container">
-                <div className="write_info">작성자</div>
-                <div className="write_info">{user.username}</div>
-                <div className="write_border" />
+                <div>작성자</div>
+                <div>{user.username}</div>
+                <div>|</div>
                 {editData ? (
-                  <div className="write_info">수정일</div>
+                  <div>수정일</div>
                 ) : (
-                  <div className="write_info">작성일</div>
+                  <div>작성일</div>
                 )}
-                <div className="write_info">{currentDate}</div>
+                <div>{currentDate}</div>
               </div>
               <div className="">
                 <Editor

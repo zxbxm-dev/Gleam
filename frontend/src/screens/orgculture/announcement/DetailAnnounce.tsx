@@ -1,4 +1,3 @@
-import "./Announcement.scss";
 import { useEffect, useState } from 'react';
 import {
   Plus_btn,
@@ -134,17 +133,17 @@ const DetailAnnounce = () => {
                 <div>{detailAnno.title}</div>
               )}
             </div>
-            <div className="detail_container">
+            <div className="announce_detail_container">
               {detailAnno && (
                 <div className="info_content">
-                  <div className="write_info">작성자</div>
-                  <div className="write_info">{detailAnno.username}</div>
-                  <div className="write_border">|</div>
-                  <div className="write_info">작성일</div>
-                  <div className="write_info">{new Date(detailAnno.date).toISOString().substring(0, 10)}</div>
-                  <div className="write_border">|</div>
-                  <div className="write_info">조회수</div>
-                  <div className="write_info">{detailAnno.view}</div>
+                  <div>작성자</div>
+                  <div>{detailAnno.username}</div>
+                  <div>|</div>
+                  <div>작성일</div>
+                  <div>{new Date(detailAnno.date).toISOString().substring(0, 10)}</div>
+                  <div>|</div>
+                  <div>조회수</div>
+                  <div>{detailAnno.view}</div>
                 </div>
               )}
 
@@ -159,7 +158,7 @@ const DetailAnnounce = () => {
             </div>
           </div>
 
-          <div className="detail_content">
+          <div className="announce_detail_content">
             {detailAnno && (
               <div className="detail_content_box">
                 <div className="detail_content_pdf">

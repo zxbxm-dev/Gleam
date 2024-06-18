@@ -2,7 +2,11 @@ import api from "../../api/auth";
 
 //일정 추가
 const writeCalen = (formData) => {
-    return api.post("/writecalender", formData);
+    return api.post("/writecalender", formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
 
 //일정 전체 목록 조회

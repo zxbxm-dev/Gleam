@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./Announcement.scss";
 import { DeleteIcon } from "../../../assets/images/index";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Editor } from '@toast-ui/react-editor';
@@ -167,15 +166,15 @@ const WriteAnnouncement = () => {
                 onChange={handleTitleChange}
               />
               <div className="writor_container">
-                <div className="write_info">작성자</div>
-                <div className="write_info">{user.username}</div>
-                <div className="write_border" />
+                <div>작성자</div>
+                <div>{user.username}</div>
+                <div>|</div>
                 {editData ? (
-                  <div className="write_info">수정일</div>
+                  <div>수정일</div>
                 ) : (
-                  <div className="write_info">작성일</div>
+                  <div>작성일</div>
                 )}
-                <div className="write_info">{currentDate}</div>
+                <div>{currentDate}</div>
               </div>
               <div>
                 <Editor

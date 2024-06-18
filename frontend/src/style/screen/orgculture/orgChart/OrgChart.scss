@@ -1,0 +1,266 @@
+@import "../../../mixin";
+@import "../../../Common/board.scss";
+@import "../../../Common/scrollbar.scss";
+
+
+.orgchart_tab_container {
+  height: 779px;
+
+  .FC_logo {
+    position: relative;
+    top: -60px;
+    right: -90px;
+    width: 135px;
+    color: #DEDEDE;
+    
+    .Logoimg {
+      width: 120px;
+    }
+
+    .MenuName {
+      font-family: var(--font-family-Noto-M);
+      font-size: 26px;
+      width: 135px;
+    }
+  }
+
+  .TabPanel {
+    margin-top: 80px;
+
+    .FC_logo2 {
+      position: relative;
+      width: 140px;
+    
+      .Logoimg {
+        width: 140px;
+      }
+    
+      .MenuName {
+        font-family: var(--font-family-Noto-M);
+        font-size: 26px;
+        width: 140px;
+        color: #DEDEDE;
+      }
+    
+      .MenuName2 {
+        font-family: var(--font-family-Noto-M);
+        font-size: 21px;
+        width: 140px;
+        color: #DEDEDE;
+      }
+    }
+
+    .nodeicon {
+      font-family: var(--font-family-Noto-B);
+      height: 150px;
+      width: 140px;
+      padding: 5px;
+      border-radius: 8px;
+      display: inline-block;
+      border: 1px solid #DEDEDE;
+      font-size: 14px;
+      padding: 10px;
+      cursor: pointer;
+
+      .nodeicon_content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+
+        .UserIcon {
+          width: 50px;
+          height: 50px;
+        }
+      }
+    }
+
+    .nodeicon2 {
+      font-family: var(--font-family-Noto-B);
+      height: 150px;
+      width: 140px;
+      padding: 5px;
+      border-radius: 8px;
+      display: inline-block;
+      border: 1px solid #DEDEDE;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 10px;
+      margin-top: 20px;
+    }
+
+    .nodeicon3 {
+      font-family: var(--font-family-Noto-B);
+      height: 50px;
+      width: 180px;
+      border-radius: 5px;
+      border: 1px solid #DEDEDE;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .nodeicon4 {
+      font-family: var(--font-family-Noto-B);
+      height: 50px;
+      width: 180px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #DEDEDE;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .nodeicon5 {
+      font-family: var(--font-family-Noto-B);
+      height: 45px;
+      width: 160px;
+      padding: 5px;
+      border-radius: 8px;
+      display: inline-block;
+      border: 1px solid #DEDEDE;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 10px;
+    }
+
+    .TeamColumn {
+      @include custom-scrollbar();
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      height: 180px;
+      overflow-x: hidden;
+      gap: 5px;
+
+      .nodeicon6 {
+        font-family: var(--font-family-Noto-B);
+        height: 45px;
+        width: 155px;
+        padding: 5px;
+        border-radius: 8px;
+        display: inline-block;
+        border: 1px solid #DEDEDE;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 10px;
+      }
+
+      .nodeicon7 {
+        font-family: var(--font-family-Noto-B);
+        height: 50px;
+        width: 180px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #DEDEDE;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@include laptop {
+  .tab_container {
+    height: 580px;
+
+    .FC_logo {
+      position: relative;
+      top: 0px;
+      left: 180px;
+      width: 80px;
+  
+      .Logoimg {
+        width: 80px;
+      }
+  
+      .MenuName {
+        width: 80px;
+        font-size: 16px;
+      }
+  
+      .MenuName2 {
+        width: 80px;
+        font-size: 21px;
+      }
+    }
+  
+
+    .FC_logo2 {
+      left: 50px;
+      width: 80px;
+
+      .Logoimg {
+        width: 80px;
+      }
+
+      .MenuName {
+        font-size: 16px;
+        width: 80px;
+      }
+
+      .MenuName2 {
+        font-size: 13px;
+        width: 80px;
+      }
+    }
+
+
+    .TabPanel {
+      margin-top: 20px;
+
+      .nodeicon {
+        height: 120px;
+        width: 130px;
+
+        .nodeicon_content {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+    
+          .UserIcon {
+            width: 35px;
+            height: 35px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+          }
+        }
+      }
+
+      .nodeicon2 {
+        height: 100px;
+        width: 120px;
+      }
+
+      .nodeline {
+        width: 61px;
+      }
+
+      .nodeicon5 {
+        width: 120px;
+      }
+
+      .TeamColumn {
+        height: 130px;
+
+        .nodeicon6 {
+          width: 125px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+      }
+    }
+  }
+}
