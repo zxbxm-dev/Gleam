@@ -1,6 +1,7 @@
 const models = require("../../models");
-const userList = models.User;
+const userList = models.userData;
 
+//유저 정보 리스트 전달
 const getAllUserList = async (req, res) => {
   try {
     const users = await userList.findAll();
@@ -30,7 +31,11 @@ const getAllUserList = async (req, res) => {
 
     res.json(userProfiles);
   } catch (error) {
-    res.status(500).json({ error: "유저 리스트 확인 서버 오류" });
+    console.error("유저 정보를 가져오는 중에 오류가 발생했습니다.:", error.message);
+    console.error(error.stack);
+    res
+      .status(500)
+      .json({ error: "유저 리스트 확인 서버 오류", details: error.message });
   }
 };
 
