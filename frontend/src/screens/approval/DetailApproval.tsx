@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import "./Approval.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -142,12 +141,12 @@ const DetailApproval = () => {
 
       <div className="content_container">
         <div className="container">
-          <div className="write_container">
-            <div className="write_top_container">
+          <div className="approval_write_container">
+            <div className="approval_write_container">
               <div className="top_left_content">
                 <Popover placement="right-start">
                   <PopoverTrigger>
-                    <button className="save_button">의견 작성</button>
+                    <button className="white_button">의견 작성</button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='400px' height='274px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
@@ -175,11 +174,11 @@ const DetailApproval = () => {
               </div>
 
               <div className="top_right_content">
-                <button className="approve_button">결재</button>
-                <button className="save_button" onClick={exportToPDF}>다운로드</button>
+                <button className="approval_button">결재하기</button>
+                <button className="white_button" onClick={exportToPDF}>다운로드</button>
                 <Popover placement="right-start">
                   <PopoverTrigger>
-                    <button className="reject_button">반려하기</button>
+                    <button className="red_button">반려하기</button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='410px' height='274px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>

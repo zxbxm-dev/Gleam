@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import "./Approval.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -108,7 +107,7 @@ const DetailDocument = () => {
 
       <div className="content_container">
         <div className="container">
-          <div className="write_container">
+          <div className="approval_write_container">
             <div className="write_top_container_document">
               {memoState ? (
                 memoState === 'reject' ?

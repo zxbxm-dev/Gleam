@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "./Approval.scss";
 import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";

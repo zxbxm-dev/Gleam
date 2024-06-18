@@ -442,12 +442,14 @@ ul {
 
   .white_button {
     @include report-button;
+    height: 35px;
   }
 
   .red_button {
     @include report-button;
     border: 1px solid #D56D6D;
     color: #D56D6D;
+    height: 35px;
   }
 
   .delete_button {
@@ -472,13 +474,10 @@ ul {
   }
 
   .approval_button {
-    width: 92px;
+    @include report-button;
     height: 35px;
     background-color: #746E58;
     border: 1px solid #746E58;
-    border-radius: 5px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
     color: #fff;
   }
 

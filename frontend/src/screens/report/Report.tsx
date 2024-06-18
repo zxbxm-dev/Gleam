@@ -1,4 +1,3 @@
-import "./Report.scss";
 import { useNavigate, Link } from "react-router-dom";
 
 const reportCategories = [
@@ -14,9 +13,9 @@ const reportCategories = [
       "최종보고서",
       "TF팀 기획서",
       "TF팀 프로젝트 계획서",
-"TF팀 중간보고서",
-"TF팀 프로젝트 결과 보고서",
-"박람회 보고서"
+      "TF팀 중간보고서",
+      "TF팀 프로젝트 결과 보고서",
+      "박람회 보고서"
     ],
   },
   {
