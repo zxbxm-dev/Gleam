@@ -4,8 +4,9 @@ const userList = models.User;
 const getAllUserList = async (req, res) => {
   try {
     const users = await userList.findAll();
+    //이미지 업로드 디렉토리의 경로
     const baseUrl = `${req.protocol}://${req.get("host")}/uploads/`;
-
+    //배열로 반환
     const userProfiles = users.map((user) => ({
       userId: user.userId,
       username: user.username,
@@ -26,8 +27,6 @@ const getAllUserList = async (req, res) => {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     }));
-
-    console.log(attachment, Sign);
 
     res.json(userProfiles);
   } catch (error) {

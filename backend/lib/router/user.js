@@ -22,6 +22,7 @@ module.exports = (app) => {
 
   // POST 요청을 처리할 라우터 설정
   router.post('/postResEditData', upload.fields([{ name: 'attachment' }, { name: 'sign' }]), signinController.editRegistration);
+  
   // 유저 정보 전달
   router.get('/checkInformation', userListController.getAllUserList);
 

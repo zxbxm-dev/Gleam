@@ -21,7 +21,7 @@ const writeAnnouncement = async (req, res) => {
       title: title,
       content: content,
       attachment: attachment,
-      pdffile: req.file ? req.file.path : null, // 첨부 파일 경로 저장
+      pdffile: req.file ? req.file.path : null,
       views: views,
       pinned: false,
       pinnedAt: null,
@@ -177,7 +177,7 @@ const writeRegulation = async (req, res) => {
       title: title,
       content: content,
       attachment: attachment,
-      pdffile: req.file ? req.file.path : null, // 첨부 파일 경로 저장
+      pdffile: req.file ? req.file.path : null,
       date: date,
     });
 
