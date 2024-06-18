@@ -2,10 +2,19 @@ module.exports = (sequelize, DataTypes) => {
   const AnnualLeave = sequelize.define(
     "AnnualLeave",
     {
+      title: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      memo: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       username: {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // 연차 사용가능 일수
       availableDate: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -14,44 +23,54 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // 연차 잔여 일수
       extraDate: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      StartDate: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      EndDate: {
-        type: DataTypes.INTEGER,
+      // 휴가 시작일
+      startDate: {
+        type: DataTypes.DATE,
         allowNull: true,
       },
-      DateType: {
-        type: DataTypes.INTEGER,
+      // 휴가 종료일
+      endDate: {
+        type: DataTypes.DATE,
         allowNull: true,
       },
+      // 연차 종류
+      dateType: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      // 입사일
       entering: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.DATE,
         allowNull: true,
       },
+      // 퇴사일
       leavedate: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.DATE,
         allowNull: true,
       },
       company: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       department: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       team: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       year: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      backgroundColor: {
+        type: DataTypes.STRING,
         allowNull: true,
       },
     },

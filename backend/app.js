@@ -33,8 +33,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // 라우터 불러오기
 require("./lib/router/user")(app);
-require("./lib/router/costOperation")(app);
+require("./lib/router/expense")(app);
 require("./lib/router/noticeBoard")(app);
+require("./lib/router/attendance")(app);
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
