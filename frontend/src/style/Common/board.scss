@@ -23,6 +23,15 @@
       border-bottom: 1px solid #DCDCDC;
       text-align: center;
 
+      .flex_center {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
       .pinned_icon {
         width: 20px;
         height: 20px;

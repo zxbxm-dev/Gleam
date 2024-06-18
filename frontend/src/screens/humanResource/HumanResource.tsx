@@ -312,13 +312,13 @@ const HumanResource = () => {
                   <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
                     {isEditing ? (
                       <>
-                        <button className="adds_button" onClick={handleToggleEdit}>등록</button>
-                        <button className="edits_button" onClick={handleToggleEdit}>취소</button>
+                        <button className="second_button" onClick={handleToggleEdit}>등록</button>
+                        <button className="red_button" onClick={handleToggleEdit}>취소</button>
                       </>
                     ) : (
                       <>
-                        <button className="edits_button" onClick={handleToggleEdit}>업로드</button>
-                        <button className="downloads_button">다운로드</button>
+                        <button className="white_button" onClick={handleToggleEdit}>업로드</button>
+                        <button className="white_button">다운로드</button>
                       </>
                     )}
                   </div>
@@ -358,7 +358,7 @@ const HumanResource = () => {
               <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh'}}>
                 <Popover placement="left-start" isOpen={isAdd} onClose={AddClose}>
                   <PopoverTrigger>
-                    <button className="adds_button" onClick={AddOpen}>등록</button>
+                    <button className="second_button" onClick={AddOpen}>등록</button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
