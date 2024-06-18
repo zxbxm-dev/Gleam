@@ -17,10 +17,10 @@ module.exports = (app) => {
   router.post("/logout", signinController.logout);
   router.post("/postFindID", signinController.findUsername);
   router.post("/postresetpw", signinController.resetPassword);
+
   // 이미지 파일 업로드 및 회원 정보 수정을 위한 라우터
   const upload = require('../controller/user/multerMiddleware');
-
-  // POST 요청을 처리할 라우터 설정
+  // 회원 정보 수정
   router.post('/postResEditData', upload.fields([{ name: 'attachment' }, { name: 'sign' }]), signinController.editRegistration);
   
   // 유저 정보 전달
