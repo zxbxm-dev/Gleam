@@ -170,7 +170,7 @@
 @include laptop {
   .orgchart_tab_container {
     height: 580px;
-
+    
     .FC_logo {
       position: relative;
       top: 0px;
@@ -241,23 +241,35 @@
         width: 120px;
       }
 
-      .nodeline {
-        width: 61px;
+      .nodeicon3 {
+        height: 40px;
+        width: 150px;
+      }
+
+      .nodeicon4 {
+        height: 40px;
+        width: 150px;
       }
 
       .nodeicon5 {
-        width: 120px;
+        width: 100px;
       }
 
       .TeamColumn {
         height: 130px;
 
         .nodeicon6 {
-          width: 125px;
+          width: 100px;
           height: 40px;
           display: flex;
           align-items: center;
           justify-content: center;
+        }
+        
+        .nodeicon7 {
+          height: 40px;
+          width: 150px;
+          font-size: 14px;
         }
         
       }

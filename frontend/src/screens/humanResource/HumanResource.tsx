@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./HumanResource.scss";
 import { Link } from "react-router-dom";
 import { Input } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
@@ -254,7 +253,7 @@ const HumanResource = () => {
             <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[2]} marginTop={tabMargins[2]}>인사이동</Tab>
           </TabList>
 
-          <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="tab_container">
+          <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="hr_tab_container">
             <TabPanel display='flex' flexDirection='column'>
               {isSelectMember[0] === '' ? (
                 <></>
@@ -263,17 +262,17 @@ const HumanResource = () => {
                   <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
                     {isEditing ? (
                       <>
-                        <button className="adds_button" onClick={handleToggleEdit}>등록</button>
-                        <button className="edits_button" onClick={handleToggleEdit}>취소</button>
+                        <button className="second_button" onClick={handleToggleEdit}>등록</button>
+                        <button className="red_button" onClick={handleToggleEdit}>취소</button>
                       </>
                     ) : (
                       <>
-                        <button className="edits_button" onClick={handleToggleEdit}>업로드</button>
-                        <button className="downloads_button" onClick={downloadPDF}>다운로드</button>
+                        <button className="white_button" onClick={handleToggleEdit}>업로드</button>
+                        <button className="white_button" onClick={downloadPDF}>다운로드</button>
                       </>
                     )}
                   </div>
-                  <div className="pdf-container">
+                  <div className="hr_pdf_container">
                     {isEditing ? (
                       <div
                         className="upload-area"
@@ -323,7 +322,7 @@ const HumanResource = () => {
                       </>
                     )}
                   </div>
-                  <div className="pdf-container">
+                  <div className="hr_pdf_container">
                     {isEditing ? (
                       <div
                         className="upload-area"
@@ -395,7 +394,7 @@ const HumanResource = () => {
               </div>
               
               <div>
-                <table className="announce_board_list">
+                <table className="hr_board_list">
                   <colgroup>
                     <col width="20%"/>
                     <col width="20%"/>

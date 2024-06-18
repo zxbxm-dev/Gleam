@@ -3,14 +3,62 @@ import { Link } from "react-router-dom";
 import {
   FourchainsLogo,
   UserIcon_dark,
+  UserIcon,
 } from "../../../assets/images/index";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Tree, TreeNode } from 'react-organizational-chart';
-import CustomPopover from "../../../components/popover/CustomPopover";
 import { PersonData } from "../../../services/person/PersonServices";
+import CustomPopover from "../../../components/popover/CustomPopover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverCloseButton,
+  Portal,
+} from '@chakra-ui/react';
+
+interface Person {
+  userId: string;
+  username: string;
+  position: string;
+  department: string;
+  team: string;
+  phoneNumber?: string;
+  usermail?: string;
+  entering: Date;
+}
+
+const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
+  <Popover placement={'top'}>
+    <PopoverTrigger>
+      <div style={{ cursor: 'pointer' }}>{member.username} | {member.position}</div>
+    </PopoverTrigger>
+    <Portal>
+      <PopoverContent width='400px' height='200px' border='0' borderRadius='1px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
+        <PopoverHeader height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize='14px' borderTopRightRadius='5px' borderTopLeftRadius='5px'>{member.department} - {member.team}</PopoverHeader>
+        <PopoverCloseButton color='white' />
+        <PopoverBody display='flex' flexDirection='row' alignItems='center' borderBottomLeftRadius='5px' borderBottomRightRadius='5px'>
+          <div style={{ width: '140px', height: '150px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <img src={UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px' }} />
+            <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{member.username}</div>
+            <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{member.position}</div>
+          </div>
+          <div style={{ width: '300px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)' }}>연락처</div>
+            <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{member.phoneNumber}</div>
+            <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', marginTop: '20px' }}>메일주소</div>
+            <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{member.usermail}</div>
+          </div>
+        </PopoverBody>
+      </PopoverContent>
+    </Portal>
+  </Popover>
+);
 
 const OrgChart = () => {
-  const [personData, setPersonData] = useState(null);
+  const [personData, setPersonData] = useState<Person[] | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px'});
   const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px'});
@@ -36,6 +84,17 @@ const OrgChart = () => {
 
     fetchData();
   }, []);
+
+  if (!personData) {
+    return <div></div>;
+  }
+
+ 
+  const getSortedTeamMembers = (teamName: string) => {
+    return personData
+      .filter((person: Person) => person.team === teamName)
+      .sort((a: Person, b: Person) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
+  };
 
   return (
     <div className="content">
@@ -89,32 +148,27 @@ const OrgChart = () => {
                   }>
                 </TreeNode>
                 
-                <TreeNode
-                  label={
+                <TreeNode label={
                   <CustomPopover 
                     direction={'right'}
-                    position={'관리부'}
+                    position={'블록체인 사업부'}
                     position2={'부서장'}
-                    dept={'관리부'}
+                    dept={'블록체인 사업부'}
                     team={'부서장'}
-                    name={'이정열'}
+                    name={'권상원'}
                     phone={'010-0000-0000'}
                     mail={'OOOO@four-chains.com'}
                   />
                 }>
-                  <TreeNode label={<div className="nodeicon5">관리팀</div>}>
+                  <TreeNode label={<div className="nodeicon5" style={{ marginTop: '20px' }}>블록체인 1팀</div>} >
                     <div className="TeamColumn">
-                      <div className="nodeicon6">김효은 | 팀장</div>
-                      <div className="nodeicon6">우현지 | 사원</div>
-                      <div className="nodeicon6">염승희 | 사원</div>
+                      {getSortedTeamMembers('블록체인 1팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
                     </div>
                   </TreeNode>
-                  <TreeNode label={<div className="nodeicon5">지원팀</div>} >
-                    <div className="TeamColumn">
-                      <div className="nodeicon6">김태희 | 팀장</div>
-                    </div>
-                  </TreeNode>
-                  <TreeNode label={<div className="nodeicon5">시설팀</div>} />
                 </TreeNode>
 
                 <TreeNode label={
@@ -131,40 +185,24 @@ const OrgChart = () => {
                 }>
                   <TreeNode label={<div className="nodeicon5">개발 1팀</div>} >
                     <div className="TeamColumn">
-                        <div className="nodeicon6">장현지 | 사원</div>
-                        <div className="nodeicon6">구민석 | 사원</div>
-                        <div className="nodeicon6">박세준 | 사원</div>
-                        <div className="nodeicon6">OOO | 사원</div>
-                      </div>
-                    </TreeNode>
+                      {getSortedTeamMembers('개발 1팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
+                    </div>
+                  </TreeNode>
                   <TreeNode label={<div className="nodeicon5">개발 2팀</div>} >
                     <div className="TeamColumn">
-                        <div className="nodeicon6">변도일 | 팀장</div>
-                        <div className="nodeicon6">이로운 | 사원</div>
-                      </div>
-                    </TreeNode>
-                </TreeNode>
-
-                <TreeNode label={
-                  <CustomPopover 
-                    direction={'left'}
-                    position={'블록체인 사업부'}
-                    position2={'부서장'}
-                    dept={'블록체인 사업부'}
-                    team={'부서장'}
-                    name={'권상원'}
-                    phone={'010-0000-0000'}
-                    mail={'OOOO@four-chains.com'}
-                  />
-                }>
-                  <TreeNode label={<div className="nodeicon5" style={{ marginTop: '20px' }}>블록체인 1팀</div>} >
-                    <div className="TeamColumn">
-                      <div className="nodeicon6">김도환 | 팀장</div>
-                      <div className="nodeicon6">권준우 | 사원</div>
+                      {getSortedTeamMembers('개발 2팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
                     </div>
                   </TreeNode>
                 </TreeNode>
-
+                
                 <TreeNode label={
                   <CustomPopover 
                     direction={'left'}
@@ -179,16 +217,56 @@ const OrgChart = () => {
                 }>
                   <TreeNode label={<div className="nodeicon5">기획팀</div>} >
                     <div className="TeamColumn">
-                      <div className="nodeicon6">전아름 | 팀장</div>
-                      <div className="nodeicon6">함다슬 | 사원</div>
-                      <div className="nodeicon6">전규미 | 사원</div>
+                      {getSortedTeamMembers('기획팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
                     </div>
                   </TreeNode>
                   <TreeNode label={<div className="nodeicon5">디자인팀</div>} >
                     <div className="TeamColumn">
-                      <div className="nodeicon6">서주희 | 사원</div>
+                      {getSortedTeamMembers('디자인팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
                     </div>
                   </TreeNode>
+                </TreeNode>
+
+                <TreeNode
+                  label={
+                  <CustomPopover 
+                    direction={'left'}
+                    position={'관리부'}
+                    position2={'부서장'}
+                    dept={'관리부'}
+                    team={'부서장'}
+                    name={'이정열'}
+                    phone={'010-0000-0000'}
+                    mail={'OOOO@four-chains.com'}
+                  />
+                }>
+                  <TreeNode label={<div className="nodeicon5">관리팀</div>}>
+                    <div className="TeamColumn">
+                      {getSortedTeamMembers('관리팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
+                    </div>
+                  </TreeNode>
+                  <TreeNode label={<div className="nodeicon5">지원팀</div>} >
+                    <div className="TeamColumn">
+                      {getSortedTeamMembers('지원팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
+                    </div>
+                  </TreeNode>
+                  <TreeNode label={<div className="nodeicon5">시설팀</div>} />
                 </TreeNode>
               </Tree>
             </TabPanel>
@@ -219,8 +297,11 @@ const OrgChart = () => {
                   <TreeNode label={<div className="nodeicon3">암호 연구팀</div>} />
                   <TreeNode label={<div className="nodeicon3">AI 연구팀</div>} >
                     <div className="TeamColumn">
-                      <div className="nodeicon7">임지현 | 연구원</div>
-                      <div className="nodeicon7">김희진 | 연구원</div>
+                      {getSortedTeamMembers('AI 연구팀').map(member => (
+                        <div key={member.userId} className="nodeicon7">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
                     </div>
                   </TreeNode>
                 </TreeNode>
@@ -235,7 +316,11 @@ const OrgChart = () => {
                   </div>}>
                   <TreeNode label={<div className="nodeicon4">동형분석 연구팀</div>} >
                     <div className="TeamColumn">
-                      <div className="nodeicon7">이채영 | 연구원</div>
+                      {getSortedTeamMembers('동형분석 연구팀').map(member => (
+                        <div key={member.userId} className="nodeicon7">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
                     </div>
                   </TreeNode>
                 </TreeNode>
@@ -251,8 +336,11 @@ const OrgChart = () => {
                   <TreeNode label={<div className="nodeicon3">크립토 블록체인 연구팀</div>} />
                   <TreeNode label={<div className="nodeicon3">AI 개발팀</div>} >
                     <div className="TeamColumn">
-                      <div className="nodeicon7">박소연 | 연구원</div>
-                      <div className="nodeicon7">김경현 | 연구원</div>
+                      {getSortedTeamMembers('AI 개발팀').map(member => (
+                        <div key={member.userId} className="nodeicon7">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
                     </div>
                   </TreeNode>
                 </TreeNode>

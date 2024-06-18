@@ -1,27 +1,35 @@
-/* orgculture */
-/* -- Announcement */
+/* orgculture  조직문화 */
+/* -- Announcement  공지사항 */
 @import "./screen/orgculture/announcement/Announcement.scss";
-/* -- Regulations.scss */
+/* -- Regulations.scss  사내규정 */
 @import "./screen/orgculture/regulations/Regulations.scss";
-/* -- OrgChart.scss */
+/* -- OrgChart.scss 인사조직도 */
 @import "./screen/orgculture/orgChart/OrgChart.scss";
 
 
-/* calendar */
+/* calendar 휴가관리 */
 @import "./screen/calendar/Calendar.scss";
 
 
-/* report */
+/* report 보고서 */
 @import "./screen/report/Report.scss";
 
 
-/* approval */
+/* approval 보고서 결재 */
 @import "./screen/approval/Approval.scss";
 
 
-/* employment */
+/* employment 채용공고 */
 @import "./screen/employment/Employment.scss";
 
 
-/* performance */
+/* performance 인사평가 */
 @import "./screen/performance/Performance.scss";
+
+
+/* humanResource 인사 정보 관리 */
+@import "./screen/humanResource/HumanResource.scss";
+
+
+/* usermanagement */
+@import "./screen/usermanagement/UserManagement.scss";
