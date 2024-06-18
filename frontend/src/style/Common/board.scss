@@ -1,0 +1,76 @@
+@mixin board_list {
+  font-family: var(--font-family-Noto-R);
+  width: 100%;
+  height: auto;
+  margin-top: 5px;
+
+  .board_header {
+    font-family: var(--font-family-Noto-M);
+    height: 45px;
+    font-size: 17px;
+    border-top: 2px solid #DCDCDC;
+    background-color: #EEEEEE;
+  }
+
+  .board_container {
+    width: 100%;
+    height: auto;
+
+    .board_content {
+      height: 60px;
+      font-size: 17px;
+      border-top: 1px solid #DCDCDC;
+      border-bottom: 1px solid #DCDCDC;
+      text-align: center;
+
+      .pinned_icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .dropdown {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 300px;
+  
+        .dropdown-menu {
+          font-family: var(--font-family-Noto-B);
+          font-size: 16px;
+          cursor: pointer;
+  
+          .dropdown_pin {
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 92px;
+            height: 35px;
+            border: 1px solid #746E58;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #ffffff;
+          }
+          .dropdown_pin:hover{
+            background-color: #746E58;
+            color: #fff;
+          }
+        }
+      }
+    }
+    .pinned {
+      .dropdown {
+        font-family: var(--font-family-Noto-B);
+      }
+    }
+  }
+}
+
+.main_bottom {
+  font-family: var(--font-family-Noto-R);
+  position: absolute;
+  bottom: 8%;
+  width: 94%;
+  display: flex;
+  align-items: center;
+}

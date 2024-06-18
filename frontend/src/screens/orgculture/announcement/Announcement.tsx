@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./Announcement.scss";
 import { SearchIcon, PinnedIcon } from "../../../assets/images/index";
 import { ReactComponent as RightIcon } from "../../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../../assets/images/Common/LeftIcon.svg";
