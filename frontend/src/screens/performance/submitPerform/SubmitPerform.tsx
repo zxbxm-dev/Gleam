@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import "../Performance.scss";
 import { useNavigate, Link } from "react-router-dom";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';

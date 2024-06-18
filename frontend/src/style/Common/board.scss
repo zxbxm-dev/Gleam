@@ -33,12 +33,12 @@
         overflow: hidden;
         white-space: nowrap;
         max-width: 300px;
-  
+        
         .dropdown-menu {
           font-family: var(--font-family-Noto-B);
           font-size: 16px;
           cursor: pointer;
-  
+          
           .dropdown_pin {
             z-index: 999;
             display: flex;

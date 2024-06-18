@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import "../Performance.scss";
 import { Link } from "react-router-dom";
 import {
   FileUploadIcon,
@@ -74,7 +73,7 @@ const SubmitPerform = () => {
       
       <div className="content_container">
         <div className="container">
-          <div className="write_container">
+          <div className="Submit_write_container">
             <div className="write_top_container">
               <div className="top_left_content">
                 <span style={{fontFamily: 'var(--font-family-Noto-M)', fontSize: '32px'}}>제출 파일 리스트</span>
@@ -82,8 +81,8 @@ const SubmitPerform = () => {
 
               <div className="top_right_content">
 
-                <button className='approve_button' onClick={handleSumbitFile}>제출하기</button>
-                <button className="upload_button">
+                <button className='approval_button' onClick={handleSumbitFile}>제출하기</button>
+                <button className="white_button">
                   <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
                     <input
                       id="file-upload"
