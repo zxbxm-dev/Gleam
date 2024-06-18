@@ -1,3 +1,6 @@
+@import "../../mixin";
+@import "../../Common/scrollbar.scss";
+
 .UserManage_container {
   height: 81.7vh;
   background-color: white;
@@ -6,6 +9,10 @@
   border-top-right-radius: 5px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+
+  .UserManage_board_list {
+    @include board_list;
+  }
 }
 
 .UserManage_bottom {
@@ -15,4 +22,18 @@
   display: flex;
   align-items: center;
   font-family: var(--font-family-Noto-R);
+}
+
+
+@include laptop {
+  .UserManage_container {
+    .UserManage_board_list {
+      @include board_list;
+      .board_container {
+        .board_content {
+          height: 55px;
+        }
+      }
+    }
+  }
 }

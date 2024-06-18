@@ -31,7 +31,7 @@ interface Person {
 }
 
 const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
-  <Popover>
+  <Popover placement={'top'}>
     <PopoverTrigger>
       <div style={{ cursor: 'pointer' }}>{member.username} | {member.position}</div>
     </PopoverTrigger>
@@ -86,7 +86,7 @@ const OrgChart = () => {
   }, []);
 
   if (!personData) {
-    return <div>비어있음</div>;
+    return <div></div>;
   }
 
  
@@ -148,38 +148,27 @@ const OrgChart = () => {
                   }>
                 </TreeNode>
                 
-                <TreeNode
-                  label={
+                <TreeNode label={
                   <CustomPopover 
                     direction={'right'}
-                    position={'관리부'}
+                    position={'블록체인 사업부'}
                     position2={'부서장'}
-                    dept={'관리부'}
+                    dept={'블록체인 사업부'}
                     team={'부서장'}
-                    name={'이정열'}
+                    name={'권상원'}
                     phone={'010-0000-0000'}
                     mail={'OOOO@four-chains.com'}
                   />
                 }>
-                  <TreeNode label={<div className="nodeicon5">관리팀</div>}>
+                  <TreeNode label={<div className="nodeicon5" style={{ marginTop: '20px' }}>블록체인 1팀</div>} >
                     <div className="TeamColumn">
-                      {getSortedTeamMembers('관리팀').map(member => (
+                      {getSortedTeamMembers('블록체인 1팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
                           <MemberPopover member={member} />
                         </div>
                       ))}
                     </div>
                   </TreeNode>
-                  <TreeNode label={<div className="nodeicon5">지원팀</div>} >
-                    <div className="TeamColumn">
-                      {getSortedTeamMembers('지원팀').map(member => (
-                        <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
-                        </div>
-                      ))}
-                    </div>
-                  </TreeNode>
-                  <TreeNode label={<div className="nodeicon5">시설팀</div>} />
                 </TreeNode>
 
                 <TreeNode label={
@@ -213,30 +202,7 @@ const OrgChart = () => {
                     </div>
                   </TreeNode>
                 </TreeNode>
-
-                <TreeNode label={
-                  <CustomPopover 
-                    direction={'left'}
-                    position={'블록체인 사업부'}
-                    position2={'부서장'}
-                    dept={'블록체인 사업부'}
-                    team={'부서장'}
-                    name={'권상원'}
-                    phone={'010-0000-0000'}
-                    mail={'OOOO@four-chains.com'}
-                  />
-                }>
-                  <TreeNode label={<div className="nodeicon5" style={{ marginTop: '20px' }}>블록체인 1팀</div>} >
-                    <div className="TeamColumn">
-                      {getSortedTeamMembers('블록체인 1팀').map(member => (
-                        <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
-                        </div>
-                      ))}
-                    </div>
-                  </TreeNode>
-                </TreeNode>
-
+                
                 <TreeNode label={
                   <CustomPopover 
                     direction={'left'}
@@ -267,6 +233,40 @@ const OrgChart = () => {
                       ))}
                     </div>
                   </TreeNode>
+                </TreeNode>
+
+                <TreeNode
+                  label={
+                  <CustomPopover 
+                    direction={'left'}
+                    position={'관리부'}
+                    position2={'부서장'}
+                    dept={'관리부'}
+                    team={'부서장'}
+                    name={'이정열'}
+                    phone={'010-0000-0000'}
+                    mail={'OOOO@four-chains.com'}
+                  />
+                }>
+                  <TreeNode label={<div className="nodeicon5">관리팀</div>}>
+                    <div className="TeamColumn">
+                      {getSortedTeamMembers('관리팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
+                    </div>
+                  </TreeNode>
+                  <TreeNode label={<div className="nodeicon5">지원팀</div>} >
+                    <div className="TeamColumn">
+                      {getSortedTeamMembers('지원팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
+                    </div>
+                  </TreeNode>
+                  <TreeNode label={<div className="nodeicon5">시설팀</div>} />
                 </TreeNode>
               </Tree>
             </TabPanel>

@@ -166,7 +166,7 @@ const Sidebar = () => {
                 {menuList.map(({ menu, label, link, menuType, toggleMenuType, subMenu, requiresHrSideClick }) => (
                   <li key={menu} className={`menu-item ${selectedMenu === menu ? 'active' : ''}`}>
                     {link ? (
-                      <Link to={link} className="menu-link" onClick={() => {
+                      <Link to={link} className={`menu-link ${selectedMenu === menu ? 'active' : ''}`} onClick={() => {
                         handleMenuClick(menu);
                         if (requiresHrSideClick) handleHrSideClick();
                       }}>

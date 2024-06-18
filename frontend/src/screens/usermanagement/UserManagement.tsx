@@ -1,4 +1,3 @@
-import "./UserManagement.scss";
 import { useState, useEffect } from "react";
 import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
@@ -127,7 +126,7 @@ const UserManagement = () => {
             <TabPanel>
               <div className="UserManage_container">
                 <div style={{ marginTop: '50px' }}>
-                  <table className="regulation_board_list">
+                  <table className="UserManage_board_list">
                     <colgroup>
                       <col width="10%" />
                       <col width="10%" />
@@ -146,7 +145,7 @@ const UserManagement = () => {
                         <th>승인/삭제</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="board_container">
                       {pendingusermanages
                         .slice((page - 1) * postPerPage, page * postPerPage)
                         .map((usermanage) => (
@@ -184,7 +183,7 @@ const UserManagement = () => {
             <TabPanel>
               <div className="UserManage_container">
                 <div style={{ marginTop: '50px' }}>
-                  <table className="regulation_board_list">
+                  <table className="UserManage_board_list">
                     <colgroup>
                       <col width="10%" />
                       <col width="10%" />
@@ -203,7 +202,7 @@ const UserManagement = () => {
                         <th>탈퇴</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="board_container">
                       {approvedusermanages
                         .slice((page - 1) * postPerPage, page * postPerPage)
                         .map((usermanage) => (
@@ -219,7 +218,6 @@ const UserManagement = () => {
                                 onClick={() => {
                                   setDelModalOpen(true);
                                   setClickIdx(usermanage.userId);
-                                  handleEdit(usermanage.userId);
                                 }}
                               >
                                 탈퇴
