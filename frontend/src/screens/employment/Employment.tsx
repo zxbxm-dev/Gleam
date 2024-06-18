@@ -80,7 +80,7 @@ const Employment = () => {
     const initialEmployments = [
       { id: 1, title: "[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
       { id: 2, title: "사무직 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
-      { id: 3, title: "보안 개발자 채용공고입니다 길이서 안보일때는 축ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ", url: "https://www.google.com/search?q=react+%ED%99%94%EB%A9%B4+%ED%81%B4%EB%A6%AD+%EB%A7%89%EA%B8%B0&sca_esv=7eaaf1f71c224ebe&sxsrf=ADLYWIK4VaEnoapwDyNe3QJVvPaKm6ZTng%3A1715912925544&ei=3cBGZr-sIOzr2roP1b65-Ao&udm=&ved=0ahUKEwj_jpHj0ZOGAxXstVYBHVVfDq8Q4dUDCBA&uact=5&oq=react+%ED%99%94%EB%A9%B4+%ED%81%B4%EB%A6%AD+%EB%A7%89%EA%B8%B0&gs_lp=Egxnd3Mtd2l6LXNlcnAiGnJlYWN0IO2ZlOuptCDtgbTrpq0g66eJ6riwMggQABiABBiiBDIIEAAYgAQYogQyCBAAGIAEGKIEMggQABiABBiiBEiZMVAAWPcvcAB4AZABAJgBkwGgAfsMqgEEMC4xM7gBA8gBAPgBAZgCBqACogbCAgUQABiABMICBRAhGKABwgIEECEYFZgDAJIHAzAuNqAHyS8&sclient=gws-wiz-serp#ip=1", site: "잡코리아", date: "2024-05-01"  },
+      { id: 3, title: "보안 개발자 채용공고입니다 길이서 안보일때는 축ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ", url: "https://www.jobkorea.co.kr/Recruit/GI_Read/44884435?Oem_Code=C1&logpath=1&stext=%ED%8F%AC%EC%B2%B4%EC%9D%B8%EC%8A%A4&listno=2", site: "잡코리아", date: "2024-05-01"  },
       { id: 4, title: "	R&D 연구센터 채용...", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
       { id: 5, title: "	빅데이터 분석 채용...", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
       { id: 6, title: "	[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01"  },
@@ -245,7 +245,7 @@ const Employment = () => {
           </div>
 
           <div>
-            <table className="regulation_board_list">
+            <table className="employment_board_list">
               <colgroup>
                 <col width="6%"/>
                 <col width="29%"/>
@@ -262,7 +262,7 @@ const Employment = () => {
                   <th>등록일</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="board_container">
                 {filteredEmployments
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((employment) => (
@@ -270,14 +270,14 @@ const Employment = () => {
                       <td>{employment.id}</td>
                       <td style={{ textAlign: "left", paddingLeft: "100px"}} onContextMenu={(e) => handleRightClick(employment.id, e)}>
                         <div
-                        className="dropdown" // 드롭다운 클래스 추가
+                          className="dropdown" // 드롭다운 클래스 추가
                         >
                           {employment.title}
                           {dropdownOpen && ( // 드롭다운 메뉴 열림 여부에 따라 메뉴 표시
                             <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
                               <Popover placement="right-start">
                                 <PopoverTrigger>
-                                  <button className="dropdown_edit">수정하기</button>
+                                  <button className="dropdown_pin">수정하기</button>
                                 </PopoverTrigger>
                                 <Portal>
                                   <PopoverContent onClick={(e) => e.stopPropagation()} width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
@@ -306,12 +306,12 @@ const Employment = () => {
                                   </PopoverContent>
                                 </Portal>
                               </Popover>
-                              <div className="dropdown_del" onClick={() => setDeleteModalOpen(true)} >삭제하기</div>
+                              <div className="dropdown_pin" onClick={() => setDeleteModalOpen(true)} >삭제하기</div>
                             </div>
                           )}
                         </div>
                       </td>
-                      <td className="text-overflow" style={{ textAlign: "left", paddingLeft: "150px", textDecoration: "underline"}}>
+                      <td className="dropdown" style={{ textAlign: "left", paddingLeft: "150px", textDecoration: "underline"}}>
                         <a href={employment.url} target="_blank" rel="noopener noreferrer">{employment.url}</a>
                       </td>
                       <td>{employment.site}</td>

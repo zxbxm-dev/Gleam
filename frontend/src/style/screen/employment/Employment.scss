@@ -1,0 +1,5 @@
+@import "../../Common/board.scss";
+
+.employment_board_list {
+  @include board_list;
+}
