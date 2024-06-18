@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "./Regulations.scss";
 import {
   SearchIcon
 } from "../../../assets/images/index";

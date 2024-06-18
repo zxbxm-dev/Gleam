@@ -133,7 +133,7 @@ const DetailAnnounce = () => {
                 <div>{detailAnno.title}</div>
               )}
             </div>
-            <div className="detail_container">
+            <div className="announce_detail_container">
               {detailAnno && (
                 <div className="info_content">
                   <div>작성자</div>
@@ -158,7 +158,7 @@ const DetailAnnounce = () => {
             </div>
           </div>
 
-          <div className="detail_content">
+          <div className="announce_detail_content">
             {detailAnno && (
               <div className="detail_content_box">
                 <div className="detail_content_pdf">

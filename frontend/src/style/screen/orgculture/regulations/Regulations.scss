@@ -2,16 +2,14 @@
 @import "../../../Common/board.scss";
 @import "../../../Common/scrollbar.scss";
 
-
-// Announcement.tsx
-.announce_board_list {
+// Regulations.tsx
+.regulation_board_list {
   @include board_list;
 }
 
 
-// DetailAnnounce.tsx
-.announce_detail_container {
-  font-family: var(--font-family-Noto-R);
+// DetailRegulation.tsx
+.regulation_detail_container {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #DCDCDC;
@@ -30,7 +28,7 @@
     height: 35px;
     top: -10px;
     gap: 10px;
-    
+
     .resize_button {
       margin-top: 5px;
     }
@@ -41,7 +39,7 @@
   }
 }
 
-.announce_detail_content {
+.regultaion_detail_content {
   @include custom-scrollbar();
   font-family: var(--font-family-Noto-R);
   width: 100%;
@@ -64,10 +62,9 @@
 }
 
 
-// WriteAnnounce.tsx
+// WriteRegulation.tsx
 .write_container {
   .write_title {
-    font-family: var(--font-family-Noto-B);
     font-size: 32px;
     color: #000;
   }
@@ -82,14 +79,14 @@
   }
 
   .writor_container {
-    font-family: var(--font-family-Noto-R);
     display: flex;
     gap: 10px;
     margin: 10px 0;
     color: #9E9E9E;
   }
 }
-.announce_main_bottom {
+
+.regulation_main_bottom {
   font-family: var(--font-family-Noto-R);
   display: flex;
   align-items: center;
@@ -108,12 +105,27 @@
   }
 }
 
+
+
 @include laptop {
-  .announce_board_list {
-    @include board_list;
-    .board_container {
-      .board_content {
-        height: 55px;
+  .regulation_board_list {
+    .board_content {
+      height: 55px;
+
+      .dropdown {
+        .dropdown-menu {
+          font-size: 14px;
+
+          .dropdown_edit {
+            width: 80px;
+            height: 30px;
+          }
+
+          .dropdown_del {
+            width: 80px;
+            height: 30px;
+          }
+        }
       }
     }
   }
