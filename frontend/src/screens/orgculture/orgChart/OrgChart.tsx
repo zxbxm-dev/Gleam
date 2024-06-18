@@ -1,4 +1,3 @@
-import "./OrgChart.scss";
 import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import {
@@ -53,7 +52,7 @@ const OrgChart = () => {
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>R&D 연구센터</Tab>
           </TabList>
 
-          <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="tab_container">
+          <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="orgchart_tab_container">
             <TabPanel display='flex' marginRight="70px" justifyContent='center' className="TabPanel">
               <div className="FC_logo">
                 <img src={FourchainsLogo} alt="FourchainsLogo" className="Logoimg" />
