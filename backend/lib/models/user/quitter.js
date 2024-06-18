@@ -1,8 +1,5 @@
-const { DataTypes } = require("sequelize");
-
-//퇴사자 데이터베이스
-module.exports = (sequelize, Sequelize) => {
-  const quitter = sequelize.define(
+module.exports = (sequelize, DataTypes) => {
+  const Quitter = sequelize.define(
     "quitter",
     {
       //PK
@@ -99,5 +96,5 @@ module.exports = (sequelize, Sequelize) => {
   // Quitter.hasMany(OtherModel, { foreignKey: 'userId', as: 'User' });
   // // OtherModel.belongsTo(Quitter, { foreignKey: 'userId' }); // OtherModel이 퇴사자를 참조할 경우
 
-  return quitter;
+  return Quitter;
 };
