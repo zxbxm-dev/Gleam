@@ -6,13 +6,13 @@ const getAllAnnouncements = async (req, res) => {
     try {
       const announcements = await Notice.findAll({
         where: {
-          boardType: 'Anno' // 공지사항인 경우 필터링
+          boardType: 'Anno'
         }
       });
       res.status(200).json(announcements);
     } catch (error) {
-      console.error("Error fetching announcements:", error);
-      res.status(500).json({ error: "Error fetching announcements" });
+      console.error("공지사항 전체 목록 조회 중 오류가 발생했습니다.:", error);
+      res.status(500).json({ error: "공지사항 전체 목록 조회 서버 오류" });
     }
   };
   
@@ -23,17 +23,17 @@ const getAllAnnouncements = async (req, res) => {
       const announcement = await Notice.findOne({
         where: {
           id,
-          boardType: 'Anno' // 공지사항인 경우 필터링
+          boardType: 'Anno'
         }
       });
       if (announcement) {
         res.status(200).json(announcement);
       } else {
-        res.status(404).json({ error: "Announcement not found" });
+        res.status(404).json({ error: "해당 상세공지 사항을 찾을 수 없습니다." });
       }
     } catch (error) {
-      console.error("Error fetching announcement:", error);
-      res.status(500).json({ error: "Error fetching announcement" });
+      console.error("공지사항 상세 조회 중 오류가 발생했습니다.:", error);
+      res.status(500).json({ error: "상세공지 사항 조회 서버 오류" });
     }
   };
 
@@ -42,13 +42,13 @@ const getAllRegulations = async (req, res) => {
   try {
     const regulations = await Notice.findAll({
       where: {
-        boardType: 'Regul' // 사내규정인 경우 필터링
+        boardType: 'Regul'
       }
     });
     res.status(200).json(regulations);
   } catch (error) {
-    console.error("Error fetching regulations:", error);
-    res.status(500).json({ error: "Error fetching regulations" });
+    console.error("사내규정 전체 목록 조회 중 오류가 발생했습니다.:", error);
+    res.status(500).json({ error: "사내규정 전체 목록 조회 서버 오류" });
   }
 };
 
@@ -59,17 +59,17 @@ const getRegulationById = async (req, res) => {
     const regulation = await Notice.findOne({
       where: {
         id,
-        boardType: 'Regul' // 사내규정인 경우 필터링
+        boardType: 'Regul'
       }
     });
     if (regulation) {
       res.status(200).json(regulation);
     } else {
-      res.status(404).json({ error: "Regulation not found" });
+      res.status(404).json({ error: "해당 사내규정 사항을 찾을 수 없습니다." });
     }
   } catch (error) {
-    console.error("Error fetching regulation:", error);
-    res.status(500).json({ error: "Error fetching regulation" });
+    console.error("사내규정 상세 조회 중 오류가 발생했습니다.:", error);
+    res.status(500).json({ error: "사내규정 상세 조회 서버 오류" });
   }
 };
 
