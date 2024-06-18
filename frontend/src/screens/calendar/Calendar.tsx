@@ -1,4 +1,3 @@
-import "./Calendar.scss";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
