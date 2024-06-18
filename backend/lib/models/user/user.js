@@ -93,5 +93,12 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
+  User.associate = (models) => {
+    User.hasMany(models.AnnualLeave, {
+      foreignKey: "userId",
+      as: "annualLeaves",
+    });
+  };
+
   return User;
 };
