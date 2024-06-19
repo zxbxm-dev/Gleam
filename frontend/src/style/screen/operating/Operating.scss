@@ -1,33 +1,14 @@
-@import "../../style/mixin";
+@import "../../mixin";
+@import "../../Common/scrollbar.scss";
 
 .container_operating {
+  @include custom-scrollbar();
   font-family: var(--font-family-Noto-R);
   width: 100%;
   height: 100%;
   display: grid;
-  overflow-x: scroll;
-  overflow-y: scroll;
-}
-
-.container_operating::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-.container_operating::-webkit-scrollbar-thumb {
-  background-color: #A8A8A8;
-  border-radius: 10px;
-  background-clip: padding-box;
-  border: 2px solid transparent;
-}
-
-.container_operating::-webkit-scrollbar-corner {
-  background-color: none;
-}
-
-.container_operating::-webkit-scrollbar-track {
-  box-shadow: none;
-  background-color: #fff;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .Excel_operating {
@@ -261,61 +242,6 @@
     font-family: var(--font-family-Noto-M);
     padding: 5px;
   }
-
-  .oper_download_button {
-    width: 92px;
-    height: 35px;
-    background-color: #fff;
-    border: 1px solid #746E58;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #746E58;
-  }
-  
-  .oper_edit_button {
-    width: 66px;
-    height: 35px;
-    background-color: #fff;
-    border: 1px solid #746E58;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #746E58;
-  }
-
-  .oper_delete_button {
-    width: 66px;
-    height: 35px;
-    background-color: #fff;
-    border: 1px solid #D56D6D;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #D56D6D;
-  }
-
-  .rnd_company_button {
-    width: 99px;
-    height: 35px;
-    background-color: #746E58;
-    border: 1px solid #746E58;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #fff;
-  }
-
-  .head_company_button {
-    width: 66px;
-    height: 35px;
-    background-color: #746E58;
-    border: 1px solid #746E58;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #fff;
-  }
 }
 
 
@@ -323,35 +249,5 @@
 @include laptop {
   .oper_header_right {
     top: 10px;
-
-    .oper_year_select {
-      width: 100px;
-      height: 35px;
-      font-size: 14px;
-    }
-  
-    .oper_download_button {
-      width: 92px;
-      height: 35px;
-      font-size: 14px;
-    }
-    
-    .oper_edit_button {
-      width: 66px;
-      height: 35px;
-      font-size: 14px;
-    }
-  
-    .rnd_company_button {
-      width: 99px;
-      height: 35px;
-      font-size: 14px;
-    }
-  
-    .head_company_button {
-      width: 66px;
-      height: 35px;
-      font-size: 14px;
-    }
   }
 }

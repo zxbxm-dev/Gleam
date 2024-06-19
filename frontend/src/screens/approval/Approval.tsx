@@ -257,7 +257,7 @@ const Approval = () => {
                       <td>{approvaling.progress} / {approvaling.maxprogress}</td>
                       <td>{approvaling.state}</td>
                       <td>{approvaling.writer}</td>
-                      <td><button className="approval_button" onClick={() => { navigate('/detailApproval') }}>결재하기</button></td>
+                      <td><button className="approve_button" onClick={() => { navigate('/detailApproval') }}>결재하기</button></td>
                     </tr>
                   ))
                 }

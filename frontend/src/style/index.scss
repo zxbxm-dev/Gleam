@@ -3,35 +3,30 @@
 @import "./screen/orgculture/regulations/Regulations.scss";
 @import "./screen/orgculture/orgChart/OrgChart.scss";
 
-
 /* calendar 휴가관리 */
 @import "./screen/calendar/Calendar.scss";
-
 
 /* report 보고서 */
 @import "./screen/report/Report.scss";
 
-
 /* approval 보고서 결재 */
 @import "./screen/approval/Approval.scss";
-
 
 /* employment 채용공고 */
 @import "./screen/employment/Employment.scss";
 
-
 /* performance 인사평가 */
 @import "./screen/performance/Performance.scss";
 
-
 /* humanResource 인사 정보 관리 */
 @import "./screen/humanResource/HumanResource.scss";
-
 
 /* attendance 근태관리 */
 @import "./screen/attendance/AnnualManage.scss";
 @import "./screen/attendance/AttendanceRegist.scss";
 
+/* operating 운영비 관리 */
+@import "./screen/operating/Operating.scss";
 
-/* usermanagement */
+/* usermanagement 회원관리 */
 @import "./screen/usermanagement/UserManagement.scss";

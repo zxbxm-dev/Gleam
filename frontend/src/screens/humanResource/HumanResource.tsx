@@ -384,8 +384,8 @@ const HumanResource = () => {
                           </div>
                         </div>
                         <div className='button-wrap'>
-                          <button className="adds_button" onClick={handleAppointSubmit}>등록</button>
-                          <button className="edits_button" onClick={AddClose}>취소</button>
+                          <button className="second_button" onClick={handleAppointSubmit}>등록</button>
+                          <button className="white_button" onClick={AddClose}>취소</button>
                         </div>
                       </PopoverBody>
                     </PopoverContent>
@@ -417,10 +417,10 @@ const HumanResource = () => {
                       <td>팀장</td>
                       <td>2024-05-04</td>
                       <td>승진</td>
-                      <td>
+                      <td className="flex_center">
                         <Popover placement="left-start" isOpen={isEdit} onClose={EditClose}>
                           <PopoverTrigger>
-                            <button className="edits_button" onClick={EditOpen}>수정</button>
+                            <button className="white_button" onClick={EditOpen}>수정</button>
                           </PopoverTrigger>
                           <Portal>
                             <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
@@ -446,14 +446,14 @@ const HumanResource = () => {
                                   </div>
                                 </div>
                                 <div className='button-wrap'>
-                                  <button className="edits_button" onClick={handleAppointmentEdit}>수정</button>
-                                  <button className="edits_button" onClick={EditClose}>취소</button>
+                                  <button className="white_button" onClick={handleAppointmentEdit}>수정</button>
+                                  <button className="white_button" onClick={EditClose}>취소</button>
                                 </div>
                               </PopoverBody>
                             </PopoverContent>
                           </Portal>
                         </Popover>
-                        <button className="dels_button" onClick={() => {setDeleteModalOpen(true); handleAppointmentDelete()}}>삭제</button>
+                        <button className="red_button" onClick={() => {setDeleteModalOpen(true); handleAppointmentDelete()}}>삭제</button>
                       </td>
                     </tr>
 
@@ -462,9 +462,9 @@ const HumanResource = () => {
                       <td>사원</td>
                       <td>2024-05-04</td>
                       <td>부서이동</td>
-                      <td>
-                        <button className="edits_button">수정</button>
-                        <button className="dels_button">삭제</button>
+                      <td className="flex_center">
+                        <button className="white_button">수정</button>
+                        <button className="red_button">삭제</button>
                       </td>
                     </tr>
 
@@ -473,9 +473,9 @@ const HumanResource = () => {
                       <td>사원</td>
                       <td>2024-05-04</td>
                       <td>강등</td>
-                      <td>
-                        <button className="edits_button">수정</button>
-                        <button className="dels_button">삭제</button>
+                      <td className="flex_center">
+                        <button className="white_button">수정</button>
+                        <button className="red_button">삭제</button>
                       </td>
                     </tr>
 
@@ -484,9 +484,9 @@ const HumanResource = () => {
                       <td>팀장</td>
                       <td>2024-05-04</td>
                       <td>부서이동</td>
-                      <td>
-                        <button className="edits_button">수정</button>
-                        <button className="dels_button">삭제</button>
+                      <td className="flex_center">
+                        <button className="white_button">수정</button>
+                        <button className="red_button">삭제</button>
                       </td>
                     </tr>
                   </tbody>
