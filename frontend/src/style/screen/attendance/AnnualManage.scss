@@ -1,0 +1,350 @@
+@import "../../mixin";
+@import "../../Common/scrollbar.scss";
+
+.anuual_header_right {
+  display: flex;
+  flex-direction: row-reverse;
+  position: absolute;
+  top: 20px;
+  right: 18px;
+  gap: 7px;
+
+  .anuual_year_select {
+    width: 100px;
+    height: 35px;
+    background-color: #fff;
+    border: 1px solid #DCDCDC;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-M);
+    padding: 5px;
+  }
+}
+
+.container_anuual {
+  @include custom-scrollbar();
+  font-family: var(--font-family-Noto-R);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.conta_three_annual {
+  border-bottom: 2px solid #858585;
+  border-right: 2px solid #858585;
+}
+
+.conta_three_last_annual {
+  border-right: 2px solid #858585;
+  border-bottom: 2px solid #858585;
+}
+
+.conta_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 70px;
+  height: 40px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+
+
+  input {
+    width: 100%;
+    height: 90%;
+    box-sizing: border-box;
+    text-align: center;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.conta_name_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 100px;
+  height: 40px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.conta_date_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 130px;
+  height: 40px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+
+  input {
+    width: 100%;
+    height: 90%;
+    box-sizing: border-box;
+    text-align: center;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+
+.countTotal_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 72px;
+  height: 43px;
+  text-align: center;
+  font-size: 16px;
+  display: flex;
+  border-top: 2px solid #858585;
+  border-bottom: 2px solid #858585;
+  border-right: 2px solid #858585;
+
+  .total_annual {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.countTotal_annual_last {
+  font-family: var(--font-family-Noto-M);
+  width: 71.5px;
+  height: 43px;
+  text-align: center;
+  font-size: 16px;
+  display: flex;
+  border-top: 2px solid #858585;
+  border-bottom: 2px solid #858585;
+  border-right: 2px solid #858585;
+
+  .total_annual {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.countName_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 102px;
+  height: 43px;
+  text-align: center;
+  font-size: 16px;
+  display: flex;
+  border-top: 2px solid #858585;
+  border-bottom: 2px solid #858585;
+  border-right: 2px solid #858585;
+
+  .total_annual {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.countDate_annual {
+  font-family: var(--font-family-Noto-M);
+  width: 132px;
+  height: 43px;
+  text-align: center;
+  font-size: 16px;
+  display: flex;
+  border-top: 2px solid #858585;
+  border-bottom: 2px solid #858585;
+  border-right: 2px solid #858585;
+
+  .total_annual {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.Excel_annual {
+  display: flex;
+
+  .Explan_annual {
+    font-family: var(--font-family-Noto-M);
+    width: 280px;
+    overflow-x: auto;
+
+    div {
+      border-top: 2px solid #858585;
+      border-left: 2px solid #858585;
+
+      tr {
+        .TopS_no {
+          width: 50px;
+          height: 39.5px;
+        }
+        .TopS_annual {
+          width: 230px;
+          height: 39.5px;
+        }
+        td {
+          border-right: 2px solid #858585;
+          border-bottom: 2px solid #858585;;
+          text-align: center;
+          height: 41.98px;
+        }
+      }
+    }
+  }
+}
+
+.Excel_annual_RD {
+  display: flex;
+
+  .Explan_annual_RD {
+    font-family: var(--font-family-Noto-M);
+    width: 280px;
+    overflow-x: auto;
+
+    div {
+      border-top: 2px solid #858585;
+      border-left: 2px solid #858585;
+
+      tr {
+        .TopS_no {
+          width: 50px;
+          height: 40px;
+        }
+        .TopS_annual {
+          width: 230px;
+          height: 40px;
+        }
+        td {
+          border-right: 2px solid #858585;
+          border-bottom: 2px solid #858585;;
+          text-align: center;
+          height: 41.8px;
+        }
+      }
+    }
+  }
+}
+
+
+
+@include laptop {
+  .conta_name_annual {
+    width: 99.5px;
+    height: 40px;
+  }
+  
+  .conta_date_annual {
+    width: 120px;
+    height: 40px;
+  }
+  
+  
+  .countTotal_annual {
+    width: 69.6px;
+    height: 40px;
+  
+    .total_annual {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .countTotal_annual_last {
+    width: 69.6px;
+    height: 40px;
+  
+    .total_annual {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .countName_annual {
+    width: 101px;
+    height: 40px;
+  
+    .total_annual {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .countDate_annual {
+    width: 121.5px;
+    height: 40px;
+
+    .total_annual {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .CountTable {
+    height: 40px;
+    tbody {
+      height: 40px;
+    }
+  }
+  .conta_name_annual {
+    height: 40px;
+  }
+
+  .conta_annual {
+    width: 68px;
+    height: 40px;
+  }
+
+  .Excel_annual {
+    .Explan_annual {
+      div {
+        tr {
+          .TopS_no {
+            height: 37.5px;
+            font-size: 14px;
+          }
+          .TopS_annual {
+            height: 37.5px;
+            font-size: 14px;
+          }
+          td {  
+            height: 41.6px;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
+  .Excel_annual_RD {
+    .Explan_annual_RD {
+      width: 280px;
+  
+      div {
+        tr {
+          .TopS_no {
+            height: 37.5px;
+            font-size: 14px;
+          }
+          .TopS_annual {
+            height: 37.5px;
+            font-size: 14px;
+          }
+          td {  
+            height: 41.6px;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
