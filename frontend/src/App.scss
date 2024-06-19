@@ -1,4 +1,5 @@
 @import "./style/mixin";
+@import "./style/Common/scrollbar.scss";
 
 // fonts
 @font-face {
@@ -265,6 +266,7 @@ ul {
   }
 
   .additional_content {
+    @include custom-scrollbar();
     position: absolute;
     bottom: -393px;
     right: -15px;
@@ -354,27 +356,6 @@ ul {
     }
   }
 
-  .additional_content::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-
-  .additional_content::-webkit-scrollbar-thumb {
-    background-color: #A8A8A8;
-    border-radius: 10px;
-    background-clip: padding-box;
-    border: 2px solid transparent;
-  }
-
-  .additional_content::-webkit-scrollbar-corner {
-    background-color: none;
-  }
-
-  .additional_content::-webkit-scrollbar-track {
-    box-shadow: none;
-    background-color: #fff;
-  }
-
   .project_slide.visible, .additional_content.visible {
     transform: translateY(-340px);
     z-index: 999;
@@ -430,6 +411,17 @@ ul {
     height: 35px;
     background-color: #746E58;
     border: 1px solid #746E58;
+    color: #fff;
+  }
+
+  .approve_button {
+    width: 92px;
+    height: 35px;
+    background-color: #746E58;
+    border: 1px solid #746E58;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: var(--font-family-Noto-B);
     color: #fff;
   }
 

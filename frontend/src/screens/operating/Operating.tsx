@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import "./Operating.scss";
 import { Link } from "react-router-dom";
 import { evaluate } from "mathjs";
 import { jsPDF } from 'jspdf';
@@ -677,20 +676,20 @@ const handleSubmit = () => {
         </select>
         {editMode ? 
           <button
-          className='head_company_button'
+          className='second_button'
           onClick={handleSubmit}
           >
             등록
           </button>
           :
           <button
-          className='oper_edit_button'
+          className='white_button'
           onClick={() => setEditMode(!editMode)}
           >
             수정
           </button>
         }
-        <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
+        <button className='white_button' onClick={exportToPDF}>다운로드</button>
       </div>
       <div className="content_container">
         <div className="container">
