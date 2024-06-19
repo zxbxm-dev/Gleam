@@ -8,8 +8,8 @@ const CheckAnnual = () => {
 }
 
 // 연차관리 데이터 수정
-const EditAnnual = (annual_id) => {
-  return api.put(`/editAnnual/${annual_id}`);
+const EditAnnual = (formData) => {
+  return api.put("/editAnnual", formData);
 }
 
 
