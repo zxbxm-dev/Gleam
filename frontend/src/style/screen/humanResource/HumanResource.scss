@@ -4,7 +4,7 @@
 
 
 .hr_tab_container {
-  height: 779px;
+  height: 87vh;
 
   .hr_pdf_container {
     @include custom-scrollbar;
@@ -42,6 +42,6 @@
 
 @include laptop {
   .hr_tab_container {
-    height: 580px;
+    height: 84vh;
   }
 }

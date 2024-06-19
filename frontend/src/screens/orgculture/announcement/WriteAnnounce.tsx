@@ -140,14 +140,7 @@ const WriteAnnouncement = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <div className="main_header">조직문화</div>
-        <div className="main_header">＞</div>
-        <Link to={"/"} className="sub_header">공지사항</Link>
-      </div>
-
       <div className="content_container">
-        <div className="container">
           <div className="main_header">
             {editData ? (
               <div className="header_name_sm">공지사항 수정</div>
@@ -180,7 +173,7 @@ const WriteAnnouncement = () => {
                 <Editor
                   ref={editorRef}
                   initialValue={form.content ? "있음" : "내용을 입력해주세요."}
-                  height={window.innerWidth >= 1600 ? '60vh' : '53vh'}
+                  height={window.innerWidth >= 1600 ? '70vh' : '60vh'}
                   onChange={oncontentChange}
                   initialEditType="wysiwyg"
                   useCommandShortcut={false}
@@ -215,7 +208,6 @@ const WriteAnnouncement = () => {
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );

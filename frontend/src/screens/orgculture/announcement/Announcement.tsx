@@ -138,15 +138,7 @@ const Announcement = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <div className="main_header">조직문화</div>
-        <div className="main_header">＞</div>
-        <Link to={"/"} className="sub_header">
-          공지사항{userName}
-        </Link>
-      </div>
       <div className="content_container">
-        <div className="container">
           <div className="main_header">
             <div className="header_name">공지사항</div>
             <div className="input-wrapper">
@@ -206,8 +198,8 @@ const Announcement = () => {
                   ))}
               </tbody>
             </table>
-
-            <div className="main_bottom">
+          </div>
+        <div className="main_bottom">
               <Pagination
                 activePage={page}
                 itemsCountPerPage={postPerPage}
@@ -228,8 +220,6 @@ const Announcement = () => {
                 게시물 작성
               </button>
             </div>
-          </div>
-        </div>
       </div>
     </div>
   );

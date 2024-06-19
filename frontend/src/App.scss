@@ -101,7 +101,7 @@ ul {
 // 데스크탑 기준 전체 레이아웃
 .content {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 20px 15px;
 
   .content_header {
@@ -133,7 +133,7 @@ ul {
     }
 
     .container {
-      height: 86vh;
+      height: 84vh;
       background-color: white;
       border: 1px solid #DEDEDE;
       border-radius: 10px;
@@ -468,7 +468,7 @@ ul {
       
 
       .container {
-        height: 84.5vh;
+        // height: 84.5vh;
         padding: 20px;
       }
 

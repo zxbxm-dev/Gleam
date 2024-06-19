@@ -77,9 +77,10 @@
 
 .main_bottom {
   font-family: var(--font-family-Noto-R);
-  position: absolute;
-  bottom: 8%;
-  width: 94%;
+  width: calc(100% - 230px);
   display: flex;
+  position: fixed;
+  bottom: 10px;
   align-items: center;
+  padding-right: 5px;
 }

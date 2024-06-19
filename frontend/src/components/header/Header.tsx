@@ -48,25 +48,20 @@ const Header = () => {
   return (
     <div className="header">
       <div className="header-left">
-        <div className="MainLogo">
           <Link to="/">
             <img src={Logo} alt="Logo" />
           </Link>
-        </div>
       </div>
 
       <div className="header-right">
         <div className="UserTab">
           <Popover>
-            <PopoverTrigger>
               <div className="UserInfo">
+              <PopoverTrigger>
                 <img src={UserIcon} alt="UserIcon" />
+                </PopoverTrigger>
                 <div className="UserName">{user.username}</div>
-                <div className="ArrowIcon">
-                  <img src={MenuArrow_down} alt="MenuArrow" />
-                </div>
               </div>
-            </PopoverTrigger>
             <Portal>
               <PopoverContent width='400px' height='200px' border='0' borderRadius='5px' marginTop='7px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
                 <PopoverHeader height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize='14px' borderTopRightRadius='5px' borderTopLeftRadius='5px'>{user.department}</PopoverHeader>

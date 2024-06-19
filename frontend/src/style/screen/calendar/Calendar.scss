@@ -2,7 +2,7 @@
 @import "../../Common/scrollbar.scss";
 
 .calendar_container {
-  height: 82vh;
+  height: 87vh;
   background-color: white;
   border: 1px solid #DEDEDE;
   padding: 20px;
@@ -220,5 +220,11 @@
 .fc-event-main {
   div {
     color: #000;
+  }
+}
+
+@include laptop{
+  .calendar_container{
+    height: 84vh;
   }
 }
