@@ -113,10 +113,6 @@ const OrgChart = () => {
 
           <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="orgchart_tab_container">
             <TabPanel display='flex' marginRight="70px" justifyContent='center' className="TabPanel">
-              <div className="FC_logo">
-                <img src={FourchainsLogo} alt="FourchainsLogo" className="Logoimg" />
-                <p className="MenuName">인사 조직도</p>
-              </div>
 
               <Tree 
                 lineWidth={'1px'} 
@@ -149,29 +145,6 @@ const OrgChart = () => {
                 </TreeNode>
                 
                 <TreeNode label={
-                  <CustomPopover 
-                    direction={'right'}
-                    position={'블록체인 사업부'}
-                    position2={'부서장'}
-                    dept={'블록체인 사업부'}
-                    team={'부서장'}
-                    name={'권상원'}
-                    phone={'010-0000-0000'}
-                    mail={'OOOO@four-chains.com'}
-                  />
-                }>
-                  <TreeNode label={<div className="nodeicon5" style={{ marginTop: '20px' }}>블록체인 1팀</div>} >
-                    <div className="TeamColumn">
-                      {getSortedTeamMembers('블록체인 1팀').map(member => (
-                        <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
-                        </div>
-                      ))}
-                    </div>
-                  </TreeNode>
-                </TreeNode>
-
-                <TreeNode label={
                     <CustomPopover 
                       direction={'right'}
                       position={'개발부'}
@@ -202,31 +175,22 @@ const OrgChart = () => {
                     </div>
                   </TreeNode>
                 </TreeNode>
-                
+
                 <TreeNode label={
                   <CustomPopover 
-                    direction={'left'}
-                    position={'마케팅부'}
+                    direction={'right'}
+                    position={'블록체인 사업부'}
                     position2={'부서장'}
-                    dept={'마케팅부'}
+                    dept={'블록체인 사업부'}
                     team={'부서장'}
-                    name={'김현지'}
+                    name={'권상원'}
                     phone={'010-0000-0000'}
                     mail={'OOOO@four-chains.com'}
                   />
                 }>
-                  <TreeNode label={<div className="nodeicon5">기획팀</div>} >
+                  <TreeNode label={<div className="nodeicon5" style={{ marginTop: '20px' }}>블록체인 1팀</div>} >
                     <div className="TeamColumn">
-                      {getSortedTeamMembers('기획팀').map(member => (
-                        <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
-                        </div>
-                      ))}
-                    </div>
-                  </TreeNode>
-                  <TreeNode label={<div className="nodeicon5">디자인팀</div>} >
-                    <div className="TeamColumn">
-                      {getSortedTeamMembers('디자인팀').map(member => (
+                      {getSortedTeamMembers('블록체인 1팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
                           <MemberPopover member={member} />
                         </div>
@@ -268,15 +232,43 @@ const OrgChart = () => {
                   </TreeNode>
                   <TreeNode label={<div className="nodeicon5">시설팀</div>} />
                 </TreeNode>
+                
+                <TreeNode label={
+                  <CustomPopover 
+                    direction={'left'}
+                    position={'마케팅부'}
+                    position2={'부서장'}
+                    dept={'마케팅부'}
+                    team={'부서장'}
+                    name={'김현지'}
+                    phone={'010-0000-0000'}
+                    mail={'OOOO@four-chains.com'}
+                  />
+                }>
+                  <TreeNode label={<div className="nodeicon5">기획팀</div>} >
+                    <div className="TeamColumn">
+                      {getSortedTeamMembers('기획팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
+                    </div>
+                  </TreeNode>
+                  <TreeNode label={<div className="nodeicon5">디자인팀</div>} >
+                    <div className="TeamColumn">
+                      {getSortedTeamMembers('디자인팀').map(member => (
+                        <div key={member.userId} className="nodeicon6">
+                          <MemberPopover member={member} />
+                        </div>
+                      ))}
+                    </div>
+                  </TreeNode>
+                </TreeNode>
+
               </Tree>
             </TabPanel>
 
             <TabPanel display='flex' justifyContent='center' className="TabPanel">
-              <div className="FC_logo2">
-                <img src={FourchainsLogo} alt="FourchainsLogo" width='130px' />
-                <p className="MenuName2">R&D 연구센터</p>
-                <p className="MenuName">인사 조직도</p>
-              </div>
               <Tree lineWidth={'1px'} lineColor={'#D3D3D3'} label={
                   <div className="nodeicon"> 
                     <div className="nodeicon_content">
