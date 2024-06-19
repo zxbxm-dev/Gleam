@@ -23,7 +23,8 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
-import { submitReport } from '../../services/report/ReportServices';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 
 type Member = [string, string, string, string];
 
@@ -38,6 +39,7 @@ type PDFFile = string | File | null;
 
 
 const WriteReport = () => {
+  const user = useRecoilValue(userState);
   const location = useLocation();
   const { state } = location;
   const reportName = state?.reportName || '';
@@ -64,15 +66,16 @@ const WriteReport = () => {
 
   const createFormData = (selectedReport:string, approvalLines:any, file:any, sendDate:any, approvalValue:any) => {
     const formData = new FormData();
-      // formData.append('username', username);
-    // formData.append('dept', dept);
+    formData.append('userID', user.userID);
+      formData.append('username', user.username);
+    formData.append('dept', user.department);
     formData.append('selectForm', selectedReport);
     formData.append('Payment', JSON.stringify(approvalLines));
     if (file) {
         formData.append('attachment', file);
         formData.append('pdffile', file.name);
     }
-      // formData.append('receiptDate', receiptDate.toISOString());
+      formData.append('receiptDate', "");
     formData.append('sendDate', sendDate.toISOString());
     formData.append('opinionName', "");
     formData.append('opinionContent', "");
