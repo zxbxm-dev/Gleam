@@ -17,22 +17,13 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
-import { isSidebarVisibleState, isHrSidebarVisibleState, userState } from '../../recoil/atoms';
+import { userState } from '../../recoil/atoms';
 import { LogoutServices } from "../../services/login/LoginService";
 
 const Header = () => {
   let navigate = useNavigate();
-  const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
-  const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
   const user = useRecoilValue(userState);
   const resetUserState = useResetRecoilState(userState);
-
-  const handleSideMenuClick = () => {
-    setIsSidebarVisible(!isSidebarVisible);
-    if (isHrSidebarVisible === true) {
-      setIsHrSidebarVisible(!isHrSidebarVisible)
-    }
-  };
 
   const formatPhoneNumber = (phoneNumber: any) => {
     if (phoneNumber.length === 11) {
@@ -56,11 +47,7 @@ const Header = () => {
 
   return (
     <div className="header">
-
       <div className="header-left">
-        <div className="SideMenu" onClick={handleSideMenuClick}>
-          <img src={SideMenu} alt="SideMenu" />
-        </div>
         <div className="MainLogo">
           <Link to="/">
             <img src={Logo} alt="Logo" />
