@@ -165,6 +165,7 @@ const Calendar = () => {
     DeleteCalen(selectedEvent)
       .then(response => {
         console.log("Event deleted successfully:", response);
+        fetchCalendar();
       })
       .catch(error => {
         console.error("Error deleting event:", error);
@@ -208,6 +209,7 @@ const Calendar = () => {
       .then(() => {
         setEventModalOPen(false);
         setEditEventModalOPen(true);
+        fetchCalendar();
       })
       .catch((error) => {
         console.error("Failed to update event:", error);
@@ -242,7 +244,7 @@ const Calendar = () => {
   };
 
   const events1 = transformEvents(calendar.filter(event => event.company === '본사'));
-  const events2 = transformEvents(calendar.filter(event => event.company === 'R&D 연구센터'));
+  const events2 = transformEvents(calendar.filter(event => event.company === 'R&D'));
 
   return (
     <div className="content">
