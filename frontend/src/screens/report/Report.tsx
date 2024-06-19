@@ -73,12 +73,8 @@ const Report = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <Link to="/report" className="sub_header">보고서</Link>
-      </div>
-
-      <div className="content_container">
-        <div className="container">
+      {/* <div className="content_container">
+        <div className="container"> */}
           <div className="report_container">
             {reportCategories.map((category) => (
               <div className="report_type" key={category.title}>
@@ -86,8 +82,8 @@ const Report = () => {
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        {/* </div>
+      </div> */}
     </div>
   );
 };

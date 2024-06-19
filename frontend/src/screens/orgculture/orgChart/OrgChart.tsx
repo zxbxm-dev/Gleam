@@ -98,11 +98,11 @@ const OrgChart = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
+      {/* <div className="content_header">
         <div className="main_header">조직문화</div>
         <div className="main_header">＞</div>
         <Link to={"/orgchart"} className="sub_header">인사조직도</Link>
-      </div>
+      </div> */}
 
       <div className="content_container">
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>

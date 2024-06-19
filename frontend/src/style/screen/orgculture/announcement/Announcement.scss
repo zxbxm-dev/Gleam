@@ -58,7 +58,7 @@
     }
 
     .detail_content_title {
-      padding: 0 20px;
+      padding: 20px;
     }
   }
 }
@@ -70,6 +70,7 @@
     font-family: var(--font-family-Noto-B);
     font-size: 32px;
     color: #000;
+    background-color: #FBFBFB;
   }
 
   .write_title::placeholder {

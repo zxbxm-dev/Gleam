@@ -35,24 +35,6 @@ const Regulations = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  
-  // useEffect(() => {
-  //   const initialAnnouncements = [
-  //     { id: 1, title: "공지사항", views: 100, date: "2024-05-01" },
-  //     { id: 2, title: "ㅁㄹㄴㅇ", views: 200, date: "2024-05-02" },
-  //     { id: 3, title: "ㅂㅈㄷㄱ", views: 300, date: "2024-05-03" },
-  //     { id: 4, title: "ㅌㅊㅋㅍ", views: 100, date: "2024-05-01" },
-  //     { id: 5, title: "ㄴㅇㅎㄴ", views: 200, date: "2024-05-02" },
-  //     { id: 6, title: "sgdfg", views: 300, date: "2024-05-03" },
-  //     { id: 7, title: "df", views: 100, date: "2024-05-01" },
-  //     { id: 8, title: "ewretwrwet", views: 200, date: "2024-05-02" },
-  //     { id: 9, title: "sdfh", views: 100, date: "2024-05-01" },
-  //     { id: 10, title: "xcvb", views: 200, date: "2024-05-02" },
-  //     { id: 11, title: "tyoyyty", views: 100, date: "2024-05-01" },
-  //     { id: 12, title: "op", views: 200, date: "2024-05-02" },
-  //   ];
-  //   setAnnouncements(initialAnnouncements);
-  // }, []);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -81,12 +63,6 @@ const Regulations = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <div className="main_header">조직문화</div>
-        <div className="main_header">＞</div>
-        <Link to={"/regulations"} className="sub_header">사내규정</Link>
-      </div>
-
       <div className="content_container">
         <div className="container">
           <div className="main_header">
@@ -131,9 +107,9 @@ const Regulations = () => {
                   ))}
               </tbody>
             </table>
-
-
-            <div className="main_bottom">
+          </div>
+        </div>
+        <div className="main_bottom">
               <Pagination
                 activePage={page}
                 itemsCountPerPage={postPerPage}
@@ -147,8 +123,6 @@ const Regulations = () => {
               />
               <button className="primary_button" onClick={() => { navigate("/writeRegulation") }}>게시물 작성</button>
             </div>
-          </div>
-        </div>
       </div>
     </div>
   );

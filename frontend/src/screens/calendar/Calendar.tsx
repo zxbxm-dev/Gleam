@@ -248,10 +248,6 @@ const Calendar = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <Link to={"/calendar"} className="sub_header">휴가관리</Link>
-      </div>
-
       <div className="content_container">
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>

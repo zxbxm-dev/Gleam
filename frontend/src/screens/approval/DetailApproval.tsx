@@ -135,10 +135,6 @@ const DetailApproval = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <Link to={"/report"} className="sub_header">보고서 결재</Link>
-      </div>
-
       <div className="content_container">
         <div className="container">
           <div className="approval_write_container">

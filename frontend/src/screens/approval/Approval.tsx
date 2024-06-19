@@ -792,12 +792,12 @@ const Approval = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
+      {/* <div className="content_header">
         <Link to={"/approval"} className="sub_header">보고서 결재</Link>
-      </div>
+      </div> */}
 
-      <div className="content_container">
-        <div className="container">
+      {/* <div className="content_container">
+        <div className="container"> */}
           <div className="approval_top">
             <div className="approval_top_first">
             <div className={`${selectedTab === "myDocuments" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("myDocuments")}>
@@ -829,8 +829,8 @@ const Approval = () => {
           <div className="approval_btm">
             {renderTabContent()}
           </div>
-        </div>
-      </div>
+        {/* </div>
+      </div> */}
 
     </div>
   );

@@ -119,14 +119,7 @@ const DetailAnnounce = () => {
   console.log(detailAnno)
   return (
     <div className="content">
-      <div className="content_header">
-        <div className="main_header">조직문화</div>
-        <div className="main_header">＞</div>
-        <Link to={"/"} className="sub_header">공지사항</Link>
-      </div>
-
       <div className="content_container">
-        <div className="container">
           <div className="main_header2">
             <div className="header_name_bg">
               {detailAnno && (
@@ -175,8 +168,6 @@ const DetailAnnounce = () => {
               </div>
             )}
           </div>
-
-        </div>
       </div>
       <CustomModal
         isOpen={isDeleteModalOpen}

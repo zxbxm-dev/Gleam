@@ -4,7 +4,7 @@
 
 
 .orgchart_tab_container {
-  height: 779px;
+  height: 87vh;
 
   .TabPanel {
     margin-top: 80px;
@@ -129,7 +129,7 @@
 
 @include laptop {
   .orgchart_tab_container {
-    height: 580px;
+    height: 84vh;
     
     .TabPanel {
       margin-top: 20px;
