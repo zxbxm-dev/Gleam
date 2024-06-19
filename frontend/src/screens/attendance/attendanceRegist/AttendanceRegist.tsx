@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import "./AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import CustomModal from "../../../components/modal/CustomModal";
