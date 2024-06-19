@@ -11,9 +11,10 @@ import { SelectArrow } from "../../assets/images/index";
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { isSidebarVisibleState } from '../../recoil/atoms';
-import { CheckCalen, DeleteCalen } from "../../services/calender/calender";
+import { CheckCalen, DeleteCalen, EditCalen } from "../../services/calender/calender";
 
 type Event = {
+  id: string;
   title: string;
   startDate: string;
   endDate: string;
@@ -95,7 +96,7 @@ const Calendar = () => {
     const isoEndDate = endDate.toISOString().substring(0, 10);
 
     const eventData = {
-      userID : user.userID,
+      userID: user.userID,
       name: user.username,
       company: user.company,
       department: user.department,
@@ -123,21 +124,23 @@ const Calendar = () => {
     setAddEventModalOPen(false);
   };
 
-    const fetchCalendar = async () => {
-      try {
-        const response = await CheckCalen();
-        setCalendar(response.data);
-      } catch (error) {
-        console.error("Error fetching calendar:", error);
-      }
-    };
+  const fetchCalendar = async () => {
+    try {
+      const response = await CheckCalen();
+      setCalendar(response.data);
 
-    useEffect(() => {
-      fetchCalendar();
-    }, []);
+    } catch (error) {
+      console.error("Error fetching calendar:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCalendar();
+  }, []);
 
   const handleEventClick = (info: any) => {
     setSelectedEvent({
+      id: info.event.id,
       title: info.event.title,
       startDate: info.event.start.toISOString().substring(0, 10),
       endDate: info.event.end ? info.event.end.toISOString().substring(0, 10) : info.event.start.toISOString().substring(0, 10),
@@ -149,6 +152,8 @@ const Calendar = () => {
       memo: info.event.extendedProps.memo || "",
       year: info.event.start.toISOString().substring(0, 4),
     });
+
+    console.log("Selected Event ID:", info.event.id);
     setEventModalOPen(true);
   };
 
@@ -170,9 +175,44 @@ const Calendar = () => {
   };
 
   const handleEditEvent = () => {
+    if (!selectedEvent) {
+      console.error("No event selected for edit.");
+      return;
+    }
+    setStartDate(new Date(selectedEvent.startDate));
+    setEndDate(new Date(selectedEvent.endDate));
+    setTitle(selectedEvent.title);
+    setMemo(selectedEvent.memo);
+
     setEventModalOPen(false);
     setEditEventModalOPen(true);
-  }
+  };
+
+  const handleCalenEdit = () => {
+    if (!selectedEvent) {
+      console.error("No event selected for edit.");
+      return;
+    }
+
+    const eventData = {
+      userID: user.userID,
+      startDate: startDate?.toISOString(),
+      endDate: endDate?.toISOString(),
+      title,
+      memo
+    };
+
+    const event_id = selectedEvent?.id;
+
+    EditCalen(eventData, event_id)
+      .then(() => {
+        setEventModalOPen(false);
+        setEditEventModalOPen(true);
+      })
+      .catch((error) => {
+        console.error("Failed to update event:", error);
+      });
+  };
 
   const handleDeleteEventModal = () => {
     setDeleteEventModalOPen(true);
@@ -192,6 +232,7 @@ const Calendar = () => {
 
   const transformEvents = (calendarData: Event[]) => {
     return calendarData.map(event => ({
+      id: event.id,
       title: event.title,
       start: event.startDate,
       end: event.endDate,
@@ -422,7 +463,7 @@ const Calendar = () => {
             </div>
             <div className="content-right">
               <div className="content-type">
-              {selectedEvent?.title}
+                {selectedEvent?.title}
               </div>
             </div>
           </div>
@@ -444,7 +485,7 @@ const Calendar = () => {
             </div>
             <div className="content-right">
               <div className="content-memo">
-              {selectedEvent?.memo}
+                {selectedEvent?.memo}
               </div>
             </div>
           </div>
@@ -457,7 +498,7 @@ const Calendar = () => {
         header={'일정 수정하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
-        onFooter1Click={handleAddEvent}
+        onFooter1Click={handleCalenEdit}
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setEditEventModalOPen(false)}
@@ -498,7 +539,7 @@ const Calendar = () => {
               )}
             </div>
             <div className="content-right">
-              <input className="textinput" type="text" placeholder='ex) OOO 반차' onChange={handleTitleChange} />
+              <input className="textinput" value={title} type="text" placeholder='ex) OOO 반차' onChange={handleTitleChange} />
             </div>
           </div>
           <div className="body-content">
@@ -535,7 +576,7 @@ const Calendar = () => {
               메모
             </div>
             <div className="content-right">
-              <textarea className="textareainput" placeholder='내용을 입력해주세요.' onChange={handleMemoChange} />
+              <textarea className="textareainput" value={memo} placeholder='내용을 입력해주세요.' onChange={handleMemoChange} />
             </div>
           </div>
         </div>
