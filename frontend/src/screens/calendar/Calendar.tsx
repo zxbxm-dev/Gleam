@@ -117,7 +117,7 @@ const Calendar = () => {
       title: title,
       startDate: isoStartDate,
       endDate: isoEndDate,
-      dateType: title.slice(-2),
+      dateType: title.split(' ')[1],
       memo: memo,
       year: isoEndDate.substring(0, 4),
       backgroundColor: selectedColor,

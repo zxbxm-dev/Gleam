@@ -1,9 +1,6 @@
 /* orgculture  조직문화 */
-/* -- Announcement  공지사항 */
 @import "./screen/orgculture/announcement/Announcement.scss";
-/* -- Regulations.scss  사내규정 */
 @import "./screen/orgculture/regulations/Regulations.scss";
-/* -- OrgChart.scss 인사조직도 */
 @import "./screen/orgculture/orgChart/OrgChart.scss";
 
 
@@ -29,6 +26,11 @@
 
 /* humanResource 인사 정보 관리 */
 @import "./screen/humanResource/HumanResource.scss";
+
+
+/* attendance 근태관리 */
+@import "./screen/attendance/AnnualManage.scss";
+@import "./screen/attendance/AttendanceRegist.scss";
 
 
 /* usermanagement */

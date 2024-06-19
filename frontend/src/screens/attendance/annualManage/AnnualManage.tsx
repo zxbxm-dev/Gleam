@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import "../attendanceRegist/AttendanceRegist.scss";
 import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -463,11 +462,11 @@ const AnnualManage = () => {
         <div className="main_header">＞</div>
         <Link to={"/annual-manage"} className="sub_header">연차관리</Link>
       </div>
-      <div className='oper_header_right'>
+      <div className='anuual_header_right'>
         <select
           name="yearSelect"
           id="yearSelect"
-          className='oper_year_select'
+          className='anuual_year_select'
           value={selectedYear}
           onChange={handleYearChange}
         >
@@ -476,27 +475,27 @@ const AnnualManage = () => {
         </select>
         {editMode ? 
           <button
-          className='head_company_button'
+          className='second_button'
           onClick={() => setEditMode(!editMode)}
           >
             등록
           </button>
           :
           <button
-          className='oper_edit_button'
+          className='white_button'
           onClick={() => setEditMode(!editMode)}
           >
             수정
           </button>
         }
-        <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
+        <button className='white_button' onClick={exportToPDF}>다운로드</button>
         {user.username === '이정훈' ? (
           selectedScreen === 'R&D' ? (
-            <button className='rnd_company_button' onClick={handleScreenChange}>
+            <button className='second_button' onClick={handleScreenChange}>
               R&D 센터
             </button>
           ) : (
-            <button className='head_company_button' onClick={handleScreenChange}>
+            <button className='second_button' onClick={handleScreenChange}>
               본사
             </button>
           )
@@ -505,7 +504,7 @@ const AnnualManage = () => {
       
       <div className="content_container">
         <div className="container">
-          <div className="container_attendance" id="table-to-xls">
+          <div className="container_anuual" id="table-to-xls">
             {selectedScreen === '본사' ? (
               <div className="Excel_annual_RD">
                 <table className="Explan_annual_RD">

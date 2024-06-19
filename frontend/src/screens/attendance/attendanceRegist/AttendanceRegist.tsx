@@ -948,8 +948,8 @@ const AttendanceRegist = () => {
 
       <div className="content_container">
         <div className='attend_header_right'>
-          <button className='attend_download_button' onClick={exportToPDF}>다운로드</button>
-          <button className='attend_upload_button'>
+          <button className='white_button' onClick={exportToPDF}>다운로드</button>
+          <button className='white_button'>
             <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
               업로드
               <input
@@ -962,11 +962,11 @@ const AttendanceRegist = () => {
           </button>
           {user.username === '이정훈' ? (
             selectedScreen === 'R&D' ? (
-              <button className='rnd_company_button' onClick={handleScreenChange}>
+              <button className='second_button' onClick={handleScreenChange}>
                 R&D 센터
               </button>
             ) : (
-              <button className='head_company_button' onClick={handleScreenChange}>
+              <button className='second_button' onClick={handleScreenChange}>
                 본사
               </button>
             )
@@ -981,7 +981,7 @@ const AttendanceRegist = () => {
               ))}
             </TabList>
 
-            <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="tab_container">
+            <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="attend_tab_container">
               {yearData.map(monthData => (
                 <TabPanel key={monthData.month} className="container_attendance">
                   <div className="Excel" id="table-to-xls">
@@ -1029,7 +1029,7 @@ const AttendanceRegist = () => {
               ))}
             </TabList>
 
-            <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="tab_container">
+            <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="attend_tab_container">
               {yearData.map(monthData => (
                 <TabPanel key={monthData.month} className="container_attendance">
                   <div className="Excel_RD" id="table-to-xls">
