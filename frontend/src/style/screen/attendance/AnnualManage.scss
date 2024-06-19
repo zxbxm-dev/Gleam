@@ -171,6 +171,15 @@
   }
 }
 
+.CountTable {
+  height: 40px;
+
+  tbody {
+    display: flex;
+    height: 40px;
+  }
+}
+
 .Excel_annual {
   display: flex;
 
@@ -238,6 +247,10 @@
 
 
 @include laptop {
+  .anuual_header_right {
+    top: 10px;
+  }
+  
   .conta_name_annual {
     width: 99.5px;
     height: 40px;
