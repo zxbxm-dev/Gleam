@@ -130,77 +130,69 @@ const WriteRegulation = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <div className="main_header">조직문화</div>
-        <div className="main_header">＞</div>
-        <Link to={"/regulations"} className="sub_header">사내규정</Link>
-      </div>
-
       <div className="content_container">
-        <div className="container">
-          <div className="main_header">
-            {editData ? (
-              <div className="header_name_sm">사내규정 수정</div>
-            ) : (
-              <div className="header_name_sm">사내규정 작성</div>
-            )}
-          </div>
+        <div className="main_header">
+          {editData ? (
+            <div className="header_name_sm">사내규정 수정</div>
+          ) : (
+            <div className="header_name_sm">사내규정 작성</div>
+          )}
+        </div>
 
-          <div className="content_container">
-            <div className="write_container">
-              <input
-                type="text"
-                className="write_title"
-                placeholder="제목을 입력해 주세요."
-                value={form.title || (editData ? editData.title : '')}
-                onChange={handleTitleChange}
-              />
-              <div className="writor_container">
-                <div>작성자</div>
-                <div>{user.username}</div>
-                <div>|</div>
-                {editData ? (
-                  <div>수정일</div>
-                ) : (
-                  <div>작성일</div>
-                )}
-                <div>{currentDate}</div>
-              </div>
-              <div className="">
-                <Editor
-                  ref={editorRef}
-                  initialValue={form.content ? "있음" : "내용을 입력해주세요."}
-                  height={window.innerWidth >= 1600 ? '60vh' : '53vh'}
-                  onChange={oncontentChange}
-                  initialEditType="wysiwyg"
-                  useCommandShortcut={false}
-                  hideModeSwitch={true}
-                  plugins={[colorSyntax]}
-                  language="ko-KR"
-                />
-              </div>
-              {editData && editData.pdffile ? (
-                <div>기존 파일 : {editData.pdffile.slice(18)}</div>
+        <div className="content_container">
+          <div className="write_container">
+            <input
+              type="text"
+              className="write_title"
+              placeholder="제목을 입력해 주세요."
+              value={form.title || (editData ? editData.title : '')}
+              onChange={handleTitleChange}
+            />
+            <div className="writor_container">
+              <div>작성자</div>
+              <div>{user.username}</div>
+              <div>|</div>
+              {editData ? (
+                <div>수정일</div>
               ) : (
-                <div></div>
+                <div>작성일</div>
               )}
-              <div className="regulation_main_bottom">
-                <div className="attachment_content">
-                  <label htmlFor="fileInput" className="primary_button">
-                    파일 첨부하기
-                    <input
-                      id="fileInput"
-                      type="file"
-                      style={{ display: "none" }}
-                      onChange={handleFileChange}
-                    />
-                  </label>
-                  {form.attachment && <div className="attachment_name">{form.attachment.fileName}</div>}
-                  {form.attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setForm({ ...form, attachment: null })} />}
-                </div>
-                <div>
-                  <button className="second_button" onClick={handleSubmit}>등록</button>
-                </div>
+              <div>{currentDate}</div>
+            </div>
+            <div className="">
+              <Editor
+                ref={editorRef}
+                initialValue={form.content ? "있음" : "내용을 입력해주세요."}
+                height={window.innerWidth >= 1600 ? '70vh' : '60vh'}
+                onChange={oncontentChange}
+                initialEditType="wysiwyg"
+                useCommandShortcut={false}
+                hideModeSwitch={true}
+                plugins={[colorSyntax]}
+                language="ko-KR"
+              />
+            </div>
+            {editData && editData.pdffile ? (
+              <div>기존 파일 : {editData.pdffile.slice(18)}</div>
+            ) : (
+              <div></div>
+            )}
+            <div className="regulation_main_bottom">
+              <div className="attachment_content">
+                <label htmlFor="fileInput" className="primary_button">
+                  파일 첨부하기
+                  <input
+                    id="fileInput"
+                    type="file"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                </label>
+                {form.attachment && <div className="attachment_name">{form.attachment.fileName}</div>}
+                {form.attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setForm({ ...form, attachment: null })} />}
+              </div>
+              <div>
+                <button className="second_button" onClick={handleSubmit}>등록</button>
               </div>
             </div>
           </div>

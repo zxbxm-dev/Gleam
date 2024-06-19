@@ -39,7 +39,7 @@
 
 // color mode toggle mixins
 @mixin lightMode {
-  --primary-color: #746E58;
+  --primary-color: rgba(69,197,82,0.75);
   --secondary-color: #fff;
   --background-color: #FBFBFB;
   --side-link-hover-color: #F5F5F5;
@@ -234,8 +234,9 @@ ul {
 
       &:active,
       &.active {
-        background-color: #746E58;
-        color: white;
+        background-color: rgba(199, 199, 199, 0.75);
+        color: rgb(36, 36, 36);
+        font-weight: bold;
       }
     }
   }
@@ -367,15 +368,21 @@ ul {
 
   .second_button {
     @include report-button;
-    background-color: #746E58;
-    border: 1px solid #746E58;
+    background-color: rgba(69,197,82,0.75);
+    border: 1px solid rgba(69,197,82,0.75);
     color: #fff;
     height: 35px;
   }
 
   .white_button {
     @include report-button;
-    height: 35px;
+    color: rgba(69,197,82,0.75);
+    box-shadow: 0 0 0 2px rgba(69,197,82,0.75) inset;
+    background-color: #FBFBFB;
+    padding: 8px 20px;
+        display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .red_button {
@@ -409,16 +416,14 @@ ul {
   .approval_button {
     @include report-button;
     height: 35px;
-    background-color: #746E58;
-    border: 1px solid #746E58;
     color: #fff;
   }
 
   .approve_button {
     width: 92px;
     height: 35px;
-    background-color: #746E58;
-    border: 1px solid #746E58;
+    background-color: rgba(69,197,82,0.75);
+    border: 1px solid rgba(69,197,82,0.75);
     border-radius: 5px;
     font-size: 14px;
     font-family: var(--font-family-Noto-B);
@@ -426,14 +431,9 @@ ul {
   }
 
   .document_button {
+    @include report-button;
     width: 92px;
     height: 35px;
-    background-color: #fff;
-    border: 1px solid #746E58;
-    border-radius: 5px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #746E58;
   }
 
   .download_button {

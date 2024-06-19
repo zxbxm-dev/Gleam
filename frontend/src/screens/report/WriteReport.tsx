@@ -377,12 +377,7 @@ const handleSubmit = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <Link to={"/report"} className="sub_header">보고서</Link>
-      </div>
-
       <div className="content_container">
-        <div className="container">
           <div className="report_write_container">
             <div className="write_top_container">
               <div className="top_left_content">
@@ -645,7 +640,6 @@ const handleSubmit = () => {
               )}
             </div>
           </div>
-        </div>
       </div>
       <CustomModal
         isOpen={isSubmitModalOpen}

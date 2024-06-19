@@ -64,7 +64,6 @@ const Regulations = () => {
   return (
     <div className="content">
       <div className="content_container">
-        <div className="container">
           <div className="main_header">
             <div className="header_name">사내규정</div>
             <div className="input-wrapper">
@@ -108,7 +107,6 @@ const Regulations = () => {
               </tbody>
             </table>
           </div>
-        </div>
         <div className="main_bottom">
               <Pagination
                 activePage={page}
