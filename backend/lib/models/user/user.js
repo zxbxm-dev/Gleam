@@ -1,6 +1,4 @@
-const { DataTypes } = require("sequelize");
-
-module.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
     {
@@ -8,8 +6,6 @@ module.exports = (sequelize, Sequelize) => {
       userId: {
         type: DataTypes.STRING,
         allowNull: false,
-        //고유값
-        unique: true,
         primaryKey: true,
       },
       password: {
@@ -92,13 +88,6 @@ module.exports = (sequelize, Sequelize) => {
       tableName: "user",
     }
   );
-
-  User.associate = (models) => {
-    User.hasMany(models.AnnualLeave, {
-      foreignKey: "userId",
-      as: "annualLeaves",
-    });
-  };
 
   return User;
 };
