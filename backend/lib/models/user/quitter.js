@@ -2,12 +2,9 @@ module.exports = (sequelize, DataTypes) => {
   const Quitter = sequelize.define(
     "quitter",
     {
-      //PK
       userId: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        primaryKey: true,
       },
       password: {
         type: DataTypes.STRING,
@@ -20,12 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       usermail: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
       },
       phoneNumber: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
       },
       //null값 허용
       company: {
@@ -91,10 +86,5 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "quitter",
     }
   );
-
-  // // 다른 테이블과의 관계 설정
-  // Quitter.hasMany(OtherModel, { foreignKey: 'userId', as: 'User' });
-  // // OtherModel.belongsTo(Quitter, { foreignKey: 'userId' }); // OtherModel이 퇴사자를 참조할 경우
-
   return Quitter;
 };

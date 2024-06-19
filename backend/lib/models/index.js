@@ -12,8 +12,6 @@ const noticeBoard = require("./noticeBoard/noticeBoard");
 //연차관리 (관리자)
 const annualLeaveData = require("./attendance/annualLeave");
 
-
-
 const db = {};
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
@@ -26,14 +24,5 @@ db.Quitter = quitterUser(sequelize, Sequelize);
 db.Expenses = expenses(sequelize, Sequelize);
 db.Notice = noticeBoard(sequelize, Sequelize);
 db.AnnualLeave = annualLeaveData(sequelize, Sequelize);
-
-// 관계 설정
-if (db.User.associate) {
-    db.User.associate(db);
-  }
-  if (db.AnnualLeave.associate) {
-    db.AnnualLeave.associate(db);
-  }
-
 
 module.exports = db;
