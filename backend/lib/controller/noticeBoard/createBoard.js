@@ -1,6 +1,6 @@
 const fs = require("fs-extra");
 const models = require("../../models");
-const Notice = models.noticeBoard;
+const Notice = models.Notice;
 
 // 공지사항 작성
 const writeAnnouncement = async (req, res) => {

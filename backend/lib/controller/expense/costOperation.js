@@ -1,5 +1,5 @@
 const models = require("../../models");
-const Operating = models.expenses;
+const Operating = models.Expenses;
 
 //운영비 관리 작성 등록
 const writeOperating = async (req, res) => {

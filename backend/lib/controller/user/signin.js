@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const fs = require("fs");
 const path = require("path");
 const Models = require("../../models");
-const User = Models.userData;
+const User = Models.User;
 
 require("dotenv").config();
 

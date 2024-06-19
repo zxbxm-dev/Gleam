@@ -19,6 +19,7 @@ const db = {};
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
 db.User = userData(sequelize, Sequelize);
 db.Quitter = quitterUser(sequelize, Sequelize);
@@ -27,8 +28,12 @@ db.Notice = noticeBoard(sequelize, Sequelize);
 db.AnnualLeave = annualLeaveData(sequelize, Sequelize);
 
 // 관계 설정
-db.User.associate(db);
-db.AnnualLeave.associate(db);
+if (db.User.associate) {
+    db.User.associate(db);
+  }
+  if (db.AnnualLeave.associate) {
+    db.AnnualLeave.associate(db);
+  }
 
 
 module.exports = db;
