@@ -13,11 +13,19 @@ import { userState } from '../../recoil/atoms';
 import { isSidebarVisibleState } from '../../recoil/atoms';
 import { CheckCalen, DeleteCalen } from "../../services/calender/calender";
 
-interface Event {
+type Event = {
   title: string;
   startDate: string;
   endDate: string;
-}
+  backgroundColor: string;
+  company: string;
+  department: string;
+  team: string;
+  dateType: string;
+  memo: string;
+  year: string;
+};
+
 
 const Calendar = () => {
   const user = useRecoilValue(userState);
@@ -30,24 +38,24 @@ const Calendar = () => {
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("");
   const [activeTab, setActiveTab] = useState(0);
-  const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px'});
-  const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px'});
+  const [tabHeights, setTabHeights] = useState({ 0: '41px', 1: '35px' });
+  const [tabMargins, setTabMargins] = useState({ 0: '6px', 1: '6px' });
   const calendarRef1 = useRef<FullCalendar>(null);
   const calendarRef2 = useRef<FullCalendar>(null);
   const [key, setKey] = useState(0);
   const [selectedColor, setSelectedColor] = useState("#ABF0FF");
   const [selectOpen, setSelectOpen] = useState(false);
   const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
-  const [calender, setCalender] = useState([]);
+  const [calendar, setCalendar] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     if (activeTab === 0) {
-      setTabHeights({0: '41px', 1: '35px'});
-      setTabMargins({0: '0px', 1: '6px'});
+      setTabHeights({ 0: '41px', 1: '35px' });
+      setTabMargins({ 0: '0px', 1: '6px' });
     } else {
-      setTabHeights({0: '35px', 1: '41px'});
-      setTabMargins({0: '6px', 1: '0px'});
+      setTabHeights({ 0: '35px', 1: '41px' });
+      setTabMargins({ 0: '6px', 1: '0px' });
     }
   }, [activeTab]);
 
@@ -56,27 +64,17 @@ const Calendar = () => {
   }, [activeTab, isSidebarVisible]);
 
   useEffect(() => {
-    const fetchCalender = async () => {
+    const fetchCalendar = async () => {
       try {
         const response = await CheckCalen();
-        setCalender(response.data);
+        setCalendar(response.data);
       } catch (error) {
-        console.error("Error fetching calender:", error);
+        console.error("Error fetching calendar:", error);
       }
     };
 
-    fetchCalender();
+    fetchCalendar();
   }, []);
-
-  const events1 = [
-    { title: '본사 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: '본사 출장', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
-    { title: '본사 외근', start: new Date('2024-05-17'), end: new Date('2024-05-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
-  ];
-
-  const events2 = [
-    { title: 'R&D 연차', start: new Date('2024-05-17'), end: new Date('2024-05-18'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-  ];
 
   const handleTitleChange = (event: any) => {
     setTitle(event.target.value);
@@ -110,6 +108,7 @@ const Calendar = () => {
     const isoEndDate = endDate.toISOString().substring(0, 10);
 
     const eventData = {
+      userID : user.userID,
       name: user.username,
       company: user.company,
       department: user.department,
@@ -136,11 +135,18 @@ const Calendar = () => {
     setAddEventModalOPen(false);
   };
 
-  const handleEventClick = (info:any) => {
+  const handleEventClick = (info: any) => {
     setSelectedEvent({
       title: info.event.title,
       startDate: info.event.start.toISOString().substring(0, 10),
       endDate: info.event.end ? info.event.end.toISOString().substring(0, 10) : info.event.start.toISOString().substring(0, 10),
+      backgroundColor: info.event.backgroundColor,
+      company: info.event.extendedProps.company || "",
+      department: info.event.extendedProps.department || "",
+      team: info.event.extendedProps.team || "",
+      dateType: info.event.extendedProps.dateType || "",
+      memo: info.event.extendedProps.memo || "",
+      year: info.event.start.toISOString().substring(0, 4),
     });
     setEventModalOPen(true);
   };
@@ -157,11 +163,10 @@ const Calendar = () => {
       .catch(error => {
         console.error("Error deleting event:", error);
       });
-  
+
     setDeleteEventModalOPen(false);
     setEventModalOPen(false);
   };
-  
 
   const handleEditEvent = () => {
     setEventModalOPen(false);
@@ -169,7 +174,7 @@ const Calendar = () => {
   }
 
   const handleDeleteEventModal = () => {
-    setDeleteEventModalOPen(true)
+    setDeleteEventModalOPen(true);
   }
 
   useEffect(() => {
@@ -181,8 +186,21 @@ const Calendar = () => {
   };
 
   const SelectOpen = () => {
-    setSelectOpen(!selectOpen)
+    setSelectOpen(!selectOpen);
   }
+
+  const transformEvents = (calendarData: Event[]) => {
+    return calendarData.map(event => ({
+      title: event.title,
+      start: event.startDate,
+      end: event.endDate,
+      backgroundColor: event.backgroundColor,
+    }));
+  };
+
+  const events1 = transformEvents(calendar.filter(event => event.company === '본사'));
+  const events2 = transformEvents(calendar.filter(event => event.company === 'R&D 연구센터'));
+  console.log(calendar);
 
   return (
     <div className="content">
@@ -230,6 +248,7 @@ const Calendar = () => {
                     }
                     return { domNodes: [] };
                   }}
+                  buttonText={{ today: '오늘' }}
                   locale='kr'
                   fixedWeekCount={false}
                   events={events1}
@@ -241,7 +260,6 @@ const Calendar = () => {
                 />
               </div>
             </TabPanel>
-
             <TabPanel>
               <div className="calendar_container">
                 <FullCalendar
@@ -274,6 +292,7 @@ const Calendar = () => {
                     }
                     return { domNodes: [] };
                   }}
+                  buttonText={{ today: '오늘' }}
                   locale='kr'
                   fixedWeekCount={false}
                   events={events2}
