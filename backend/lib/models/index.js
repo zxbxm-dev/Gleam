@@ -20,11 +20,15 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 db.sequelize = sequelize;
 
-db.userData = userData(sequelize, Sequelize);
-db.quitterUser = quitterUser(sequelize, Sequelize);
-db.expenses = expenses(sequelize, Sequelize);
-db.noticeBoard = noticeBoard(sequelize, Sequelize);
-db.annualLeaveData = annualLeaveData(sequelize, Sequelize);
+db.User = userData(sequelize, Sequelize);
+db.Quitter = quitterUser(sequelize, Sequelize);
+db.Expenses = expenses(sequelize, Sequelize);
+db.Notice = noticeBoard(sequelize, Sequelize);
+db.AnnualLeave = annualLeaveData(sequelize, Sequelize);
+
+// 관계 설정
+db.User.associate(db);
+db.AnnualLeave.associate(db);
 
 
 module.exports = db;
