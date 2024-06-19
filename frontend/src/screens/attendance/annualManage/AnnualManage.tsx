@@ -7,12 +7,123 @@ import { userState } from '../../../recoil/atoms';
 
 import { useQuery } from 'react-query';
 import { CheckAnnual } from '../../../services/attendance/AttendanceServices';
+import { PersonData } from '../../../services/person/PersonServices';
 
 type Member = [string, number, number, number, string[], string, string, string, string];
 type MemberRD = [string, number, number, number, string[], string, string, string, string];
 type TeamOrderType = {
   [key: string]: string[];
 };
+
+const fetchUser = async () => { // 모든 회원 정보 가져오기
+  try {
+    const response = await PersonData();
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch data");
+  }
+}
+
+const fetchAnnual = async () => { // 모든 휴가 관리 데이터 가져오기
+  try {
+    const response = await CheckAnnual();
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch data");
+  }
+};
+
+const formatDate = (date: Date, dateType: string) => {
+  const d = new Date(date);
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
+  const suffix = dateType === '연차' ? 'A' : 'H';
+  return `${month}.${day}${suffix}`;
+};
+
+const formatEnteringDate = (date: string) => {
+  const d = new Date(date);
+  const year = d.getFullYear().toString();
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const useAnnualData = () => {
+  const [annualData, setAnnualData] = useState([]);
+  const [HO_Data, setHO_Data] = useState([]);
+  const [RnD_Data, setRnD_Data] = useState([]);
+
+
+  useQuery("Users", fetchUser, {
+    onSuccess: (data) => {
+      const HO_Data = data.filter((item: any) => item.company === "본사");
+      const RnD_Data = data.filter((item: any) => item.company === "R&D");
+      setHO_Data(HO_Data);
+      setRnD_Data(RnD_Data);
+    },
+    onError: (error) => {
+      console.error(error);
+    }
+  });
+
+  useQuery("annual", fetchAnnual, {
+    onSuccess: (data) => {
+      setAnnualData(data);
+    },
+    onError: (error) => {
+      console.error(error);
+    }
+  });
+
+  const processedHOData = useMemo(() => {
+    const result = HO_Data.map((user: any) => {
+      const userAnnualData = annualData.filter((annual: any) => annual.username === user.username);
+      const formattedStartDates = userAnnualData.map((annual: any) => 
+        annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
+      ).filter(date => date !== ''); // 빈 문자열 제거
+
+      return [
+        user.username || '',
+        user.availableDate || 0,
+        user.usedDate || 0,
+        user.extraDate || 0,
+        formattedStartDates.length ? formattedStartDates : [''],
+        user.entering ? formatEnteringDate(user.entering) : '',
+        user.leavedate || '',
+        user.department || '',
+        user.team || ''
+      ];
+    });
+    return result;
+  }, [HO_Data, annualData]);
+
+  const processedRndData = useMemo(() => {
+    const result = RnD_Data.map((user: any) => {
+      const userAnnualData = annualData.filter((annual: any) => annual.username === user.username);
+      const formattedStartDates = userAnnualData.map((annual: any) => 
+        annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
+      ).filter(date => date !== ''); // 빈 문자열 제거
+
+      return [
+        user.username || '',
+        user.availableDate || 0,
+        user.usedDate || 0,
+        user.extraDate || 0,
+        formattedStartDates.length ? formattedStartDates : [''],
+        user.entering ? formatEnteringDate(user.entering) : '',
+        user.leavedate || '',
+        user.department || '',
+        user.team || ''
+      ];
+    });
+    return result;
+  }, [RnD_Data, annualData]);
+
+  return { HO_Data: processedHOData, RnD_Data: processedRndData };
+};
+
+
 
 const AnnualManage = () => {
   const user = useRecoilValue(userState);
@@ -24,6 +135,7 @@ const AnnualManage = () => {
   const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
+  const { HO_Data, RnD_Data } = useAnnualData();
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
@@ -80,26 +192,9 @@ const AnnualManage = () => {
     }
   };
 
-  // 연차관리 데이터 조회
-  const fetchAnnual = async () => {
-    try {
-      const response = await CheckAnnual();
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch data");
-    }
-  };
-
-  useQuery("annual", fetchAnnual, {
-    onSuccess: (data) => console.log(data),
-    onError: (error) => {
-      console.log(error)
-    }
-  });
-
   const initialMembers: Member[] = useMemo(() => [
-    ['권상원', 0, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '', '블록체인 사업부', ''],
-    ['진유빈', 0, 1, 14.0, ['04.20A'], '2099-01-01', '', '개발부', ''],
+    ['권상원', 0, 2, 13.0, [''], '2099-01-01', '', '블록체인 사업부', ''],
+    ['진유빈', 0, 1, 14.0, [''], '2099-01-01', '', '개발부', ''],
     ['장현지', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
     ['구민석', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
     ['박세준', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
@@ -134,27 +229,44 @@ const AnnualManage = () => {
       '마케팅부': ['디자인팀', '기획팀'],
       '관리부': ['관리팀', '지원팀'],
     };
-
-    const sortedMembers = [...initialMembers].sort((a, b) => {
+  
+    const sortedMembers: Member[] = [...HO_Data].map((member) => {
+      if (member.length === 9) {
+        return member as Member;
+      } else {
+        return [
+          member[0] || '',
+          member[1] || 0,
+          member[2] || 0,
+          member[3] || 0,
+          member[4] || [],
+          member[5] || '',
+          member[6] || '',
+          member[7] || '',
+          member[8] || ''
+        ] as Member;
+      }
+    }).sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[7]);
       const deptBIndex = departmentOrder.indexOf(b[7]);
-
+  
       if (deptAIndex < deptBIndex) return -1;
       if (deptAIndex > deptBIndex) return 1;
-
+  
       const teamAIndex = teamOrder[a[7]].indexOf(a[8]);
       const teamBIndex = teamOrder[b[7]].indexOf(b[8]);
-
+  
       if (teamAIndex < teamBIndex) return -1;
       if (teamAIndex > teamBIndex) return 1;
-
+  
       const nameA = a[0];
       const nameB = b[0];
       return nameA.localeCompare(nameB);
     });
-
+  
     setMembers(sortedMembers);
-  }, [initialMembers]);
+  }, [HO_Data]);
+  
 
   useEffect(() => {
     const groupedData = members.reduce((acc, member) => {
@@ -188,11 +300,27 @@ const AnnualManage = () => {
     });
     setRowsData(rows);
   }, [members]);
-
+  
   useEffect(() => {
     const departmentOrder = ['알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
 
-    const sortedMembers = [...initialMembersRD].sort((a, b) => {
+    const sortedMembers: Member[] = [...RnD_Data].map((member) => {
+      if (member.length === 9) {
+        return member as Member;
+      } else {
+        return [
+          member[0] || '',
+          member[1] || 0,
+          member[2] || 0,
+          member[3] || 0,
+          member[4] || [],
+          member[5] || '',
+          member[6] || '',
+          member[7] || '',
+          member[8] || ''
+        ] as Member;
+      }
+    }).sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[7]);
       const deptBIndex = departmentOrder.indexOf(b[7]);
 
@@ -203,9 +331,9 @@ const AnnualManage = () => {
       const nameB = b[8];
       return nameA.localeCompare(nameB);
     });
-
+  
     setMembersRD(sortedMembers);
-  }, [initialMembers]);
+  }, [RnD_Data]);
 
   useEffect(() => {
     const groupedData = membersRD.reduce((acc, member) => {
@@ -454,7 +582,8 @@ const AnnualManage = () => {
     );
   };
 
-  console.log(rowsData)
+  console.log("전처리된 본사 데이터", HO_Data)
+
   return (
     <div className="content">
       <div className="content_header">
