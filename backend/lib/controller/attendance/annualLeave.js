@@ -1,6 +1,6 @@
 const models = require("../../models");
-const vacation = models.annualLeaveData;
-const User = models.userData
+const vacation = models.AnnualLeave;
+const User = models.User
 
 // 휴가 관리 등록
 const AddVacation = async (req, res) => {
@@ -55,7 +55,7 @@ const getAllCalendarEvents = async (req, res) => {
     res.status(500).json({ error: "캘린더 일정 불러오기에 실패했습니다." });
   }
 };
-
+// 퇴사 회원의 leavedate 업데이트 (user 데이터베이스에서 퇴사자의 정보를 가져와 annualLeave에 업데이트)
 // 🔥🔥연차 관리 조회 (관리자)🔥🔥
 const administratorCalendar = async (req, res) => {
   try {
@@ -63,15 +63,15 @@ const administratorCalendar = async (req, res) => {
       include: [
         {
           model: User,
-          as: "user",
-          attributes: ["status", "leavedate"],
+          as: 'user',
+          attributes: ['status', 'leavedate'],
         },
       ],
     });
 
-    // 퇴사 회원의 leavedate 업데이트 (user 데이터베이스에서 퇴사자의 정보를 가져와 annualLeave에 업데이트)
+    // 퇴사 회원의 leavedate 업데이트
     const updatePromises = events.map(async (event) => {
-      if (event.user && event.user.status === "quitter") {
+      if (event.user && event.user.status === 'quitter') {
         event.leavedate = event.user.leavedate;
         return event.save();
       }
@@ -83,10 +83,11 @@ const administratorCalendar = async (req, res) => {
     // 클라이언트 응답
     res.status(200).json(events);
   } catch (error) {
-    console.error("관리자 연차 관리 조회 정보를 가져오는 중에 오류가 발생했습니다.:", error);
-    res.status(500).json({ error: "관리자 연차 일정 불러오기에 실패했습니다." });
+    console.error('관리자 연차 관리 조회 정보를 가져오는 중에 오류가 발생했습니다.:', error);
+    res.status(500).json({ error: '관리자 연차 일정 불러오기에 실패했습니다.' });
   }
 };
+
 
 // 🔥🔥연차 관리 수정(관리자)🔥🔥
 

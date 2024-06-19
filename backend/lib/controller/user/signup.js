@@ -1,8 +1,8 @@
 const Sequelize = require("sequelize");
 const bcrypt = require("bcrypt");
 const Models = require("../../models");
-const signupUser = Models.userData;
-const quitter = Models.quitterUser;
+const signupUser = Models.User;
+const quitter = Models.Quitter;
 
 // 회원가입
 const createUser = async (req, res) => {

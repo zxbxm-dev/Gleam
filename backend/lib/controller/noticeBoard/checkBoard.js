@@ -1,5 +1,5 @@
 const models = require("../../models");
-const Notice = models.noticeBoard;
+const Notice = models.Notice;
 
 // 공지사항 전체 목록 조회
 const getAllAnnouncements = async (req, res) => {
