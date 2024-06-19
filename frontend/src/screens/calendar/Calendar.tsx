@@ -63,19 +63,6 @@ const Calendar = () => {
     setKey(prevKey => prevKey + 1);
   }, [activeTab, isSidebarVisible]);
 
-  useEffect(() => {
-    const fetchCalendar = async () => {
-      try {
-        const response = await CheckCalen();
-        setCalendar(response.data);
-      } catch (error) {
-        console.error("Error fetching calendar:", error);
-      }
-    };
-
-    fetchCalendar();
-  }, []);
-
   const handleTitleChange = (event: any) => {
     setTitle(event.target.value);
     const value = event.target.value.toLowerCase();
@@ -127,6 +114,7 @@ const Calendar = () => {
     writeCalen(eventData)
       .then(response => {
         console.log("Event added successfully:", response);
+        fetchCalendar();
       })
       .catch(error => {
         console.error('Error adding event:', error);
@@ -134,6 +122,19 @@ const Calendar = () => {
 
     setAddEventModalOPen(false);
   };
+
+    const fetchCalendar = async () => {
+      try {
+        const response = await CheckCalen();
+        setCalendar(response.data);
+      } catch (error) {
+        console.error("Error fetching calendar:", error);
+      }
+    };
+
+    useEffect(() => {
+      fetchCalendar();
+    }, []);
 
   const handleEventClick = (info: any) => {
     setSelectedEvent({
@@ -195,12 +196,12 @@ const Calendar = () => {
       start: event.startDate,
       end: event.endDate,
       backgroundColor: event.backgroundColor,
+      memo: event.memo,
     }));
   };
 
   const events1 = transformEvents(calendar.filter(event => event.company === '본사'));
   const events2 = transformEvents(calendar.filter(event => event.company === 'R&D 연구센터'));
-  console.log(calendar);
 
   return (
     <div className="content">
@@ -421,7 +422,7 @@ const Calendar = () => {
             </div>
             <div className="content-right">
               <div className="content-type">
-                OOO 출장
+              {selectedEvent?.title}
               </div>
             </div>
           </div>
@@ -431,9 +432,9 @@ const Calendar = () => {
             </div>
             <div className="content-right">
               <div className="content-date">
-                <span>2000년 00월 00일</span>
+                <span> {selectedEvent?.startDate}</span>
                 <span>-</span>
-                <span>2000년 00월 00일</span>
+                <span> {selectedEvent?.endDate}</span>
               </div>
             </div>
           </div>
@@ -443,7 +444,7 @@ const Calendar = () => {
             </div>
             <div className="content-right">
               <div className="content-memo">
-                2일간 해외로 출장 예정입니다.
+              {selectedEvent?.memo}
               </div>
             </div>
           </div>

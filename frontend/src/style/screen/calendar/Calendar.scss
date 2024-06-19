@@ -11,6 +11,7 @@
   border-bottom-right-radius: 5px;
 
   .fc {
+    
     .fc-toolbar.fc-header-toolbar {
       flex-direction: row;
       font-size: 16px;
@@ -85,11 +86,11 @@
         overflow-y: auto;
       }
     }
-    
+
     .fc-daygrid-body-balanced .fc-daygrid-day-events {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      gap: 3px;
     }
   }
 
@@ -211,5 +212,11 @@
 
 .fc .fc-event {
   border: none;
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.fc-event-main{
+  div{
+    color: #000;
+  }
 }
