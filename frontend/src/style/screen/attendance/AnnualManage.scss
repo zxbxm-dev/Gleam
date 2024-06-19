@@ -176,7 +176,7 @@
 
   tbody {
     display: flex;
-    height: 40px;
+    height: 42px;
   }
 }
 
@@ -315,6 +315,15 @@
   .conta_annual {
     width: 68px;
     height: 40px;
+  }
+
+  .CountTable {
+    height: 40px;
+  
+    tbody {
+      display: flex;
+      height: 40px;
+    }
   }
 
   .Excel_annual {
