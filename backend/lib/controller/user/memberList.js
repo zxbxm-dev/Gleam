@@ -1,5 +1,5 @@
 const models = require("../../models");
-const userList = models.userData;
+const userList = models.User;
 
 //유저 정보 리스트 전달
 const getAllUserList = async (req, res) => {
