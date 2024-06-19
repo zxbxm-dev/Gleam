@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
 
 import { useQuery } from 'react-query';
-import { CheckAnnual } from '../../../services/attendance/AttendanceServices';
+import { CheckAnnual, EditAnnual } from '../../../services/attendance/AttendanceServices';
 import { PersonData } from '../../../services/person/PersonServices';
 
 type Member = [string, number, number, number, string[], string, string, string, string];
@@ -15,14 +15,21 @@ type TeamOrderType = {
   [key: string]: string[];
 };
 
-const fetchUser = async () => { // 모든 회원 정보 가져오기
+const fetchUser = async () => {
   try {
     const response = await PersonData();
-    return response.data;
+    const userMap = new Map();
+    response.data.forEach((user: any) => {
+      userMap.set(user.username, user.userId);
+    });
+    return {
+      users: response.data,
+      userMap
+    };
   } catch (error) {
     throw new Error("Failed to fetch data");
   }
-}
+};
 
 const fetchAnnual = async () => { // 모든 휴가 관리 데이터 가져오기
   try {
@@ -53,14 +60,16 @@ const useAnnualData = () => {
   const [annualData, setAnnualData] = useState([]);
   const [HO_Data, setHO_Data] = useState([]);
   const [RnD_Data, setRnD_Data] = useState([]);
+  const [userMap, setUserMap] = useState(new Map());
 
 
   useQuery("Users", fetchUser, {
     onSuccess: (data) => {
-      const HO_Data = data.filter((item: any) => item.company === "본사");
-      const RnD_Data = data.filter((item: any) => item.company === "R&D");
+      const HO_Data = data.users.filter((item: any) => item.company === "본사");
+      const RnD_Data = data.users.filter((item: any) => item.company === "R&D");
       setHO_Data(HO_Data);
       setRnD_Data(RnD_Data);
+      setUserMap(data.userMap);
     },
     onError: (error) => {
       console.error(error);
@@ -120,7 +129,7 @@ const useAnnualData = () => {
     return result;
   }, [RnD_Data, annualData]);
 
-  return { HO_Data: processedHOData, RnD_Data: processedRndData };
+  return { HO_Data: processedHOData, RnD_Data: processedRndData, userMap };
 };
 
 
@@ -135,7 +144,8 @@ const AnnualManage = () => {
   const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
-  const { HO_Data, RnD_Data } = useAnnualData();
+  const { HO_Data, RnD_Data, userMap } = useAnnualData();
+  const [changeData, setChangeData] = useState<any[]>([]); 
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
@@ -148,29 +158,42 @@ const AnnualManage = () => {
   const handleAvailableChange = (member: any, index: any, event: any) => {
     const newMembers = [...member];
     newMembers[index][1] = event.target.value;
+  
     if (selectedScreen === 'R&D') {
-      setMembers(newMembers)
+      setMembers(newMembers);
     } else {
-      setMembersRD(newMembers)
+      setMembersRD(newMembers);
     }
+  
+    const updatedChangeData = newMembers
+      .filter((m) => m[1] !== 0)
+      .map((m) => ({
+        userID:  userMap.get(m[0]),
+        username: m[0],
+        availableDate: m[1]
+      }));
+  
+    setChangeData(updatedChangeData);
   };
+
+  const handleSubmit = () => {
+    setEditMode(!editMode);
+    console.log('보낸 데이터', changeData)
+    EditAnnual(changeData)
+      .then(response => {
+        console.log("연차관리 데이터 전송 성공", response)
+      })
+      .catch(error => {
+        console.log("연차관리 데이터 전송 오류", error);
+      })
+    
+  }
 
   const isRetiredBeforeToday = (retirementDate: any) => {
     const formattedRetirementDate = retirementDate.replace(/-/g, '');
     const formattedToday = today.replace(/-/g, '');
   
     return formattedRetirementDate !== '' && formattedRetirementDate < formattedToday;
-  };
-
-  const handleRetirementChange = (member: any, index: any, event: any) => {
-    const newMembers = [...member];
-    newMembers[index][6] = event.target.value;
-    
-    if (selectedScreen === 'R&D') {
-      setMembers(newMembers)
-    } else {
-      setMembersRD(newMembers)
-    }
   };
 
   const exportToPDF = () => {
@@ -191,35 +214,6 @@ const AnnualManage = () => {
       console.error('Element not found');
     }
   };
-
-  const initialMembers: Member[] = useMemo(() => [
-    ['권상원', 0, 2, 13.0, [''], '2099-01-01', '', '블록체인 사업부', ''],
-    ['진유빈', 0, 1, 14.0, [''], '2099-01-01', '', '개발부', ''],
-    ['장현지', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
-    ['구민석', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
-    ['박세준', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 1팀'],
-    ['변도일', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 2팀'],
-    ['이로운', 0, 0, 15.0, [''], '2099-01-01', '', '개발부', '개발 2팀'],
-    ['김현지', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', ''],
-    ['서주희', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '디자인팀'],
-    ['전아름', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
-    ['함다슬', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
-    ['전규미', 0, 0, 15.0, [''], '2099-01-01', '', '마케팅부', '기획팀'],
-    ['김효은', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
-    ['우현지', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
-    ['염승희', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '관리팀'],
-    ['김태희', 0, 0, 15.0, [''], '2099-01-01', '', '관리부', '지원팀'],
-  ], []);
-
-  const initialMembersRD: MemberRD[] = useMemo(() => [
-    ['심민지', 0, 2, 13.0, ['04.17A', '04.18H'], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
-    ['임지현', 0, 1, 14.0, ['04.20A'], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
-    ['김희진', 0, 0, 15.0, [''], '2099-01-01', '', '알고리즘 연구실', 'AI 연구팀'],
-    ['윤민지', 0, 0, 15.0, [''], '2099-01-01', '', '동형분석 연구실', '동형분석 연구팀'],
-    ['이채영', 0, 0, 15.0, [''], '2099-01-01', '', '동형분석 연구실', '동형분석 연구팀'],
-    ['박소연', 0, 0, 15.0, [''], '2099-01-01', '', '블록체인 연구실', 'AI 개발팀'],
-    ['김경현', 0, 0, 15.0, [''], '2099-01-01', '', '블록체인 연구실', 'AI 개발팀'],
-  ], []);
 
   useEffect(() => {
     const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
@@ -553,14 +547,7 @@ const AnnualManage = () => {
             className="conta_three_annual"
             key={`${i}-${j}`}
           >
-            <td className='conta_date_annual'> 
-              <input 
-                type="text"
-                value={member[j][6]}
-                onChange={(event) => handleRetirementChange(member, j, event)}
-                disabled={!editMode}
-              /> 
-            </td>
+            <td className='conta_date_annual'> {member[j][6]} </td>
           </tr>
         );
       }
@@ -582,7 +569,7 @@ const AnnualManage = () => {
     );
   };
 
-  console.log("전처리된 본사 데이터", HO_Data)
+  console.log('userMap',userMap)
 
   return (
     <div className="content">
@@ -605,7 +592,7 @@ const AnnualManage = () => {
         {editMode ? 
           <button
           className='second_button'
-          onClick={() => setEditMode(!editMode)}
+          onClick={handleSubmit}
           >
             등록
           </button>
