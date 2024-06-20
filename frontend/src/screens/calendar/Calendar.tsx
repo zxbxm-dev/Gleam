@@ -162,7 +162,14 @@ const Calendar = () => {
       console.error("No event selected for deletion.");
       return;
     }
-    DeleteCalen(selectedEvent)
+    const userID = user.userID;
+
+    const data = {
+      event: selectedEvent,
+      userID: userID
+    };
+
+    DeleteCalen(data)
       .then(response => {
         console.log("Event deleted successfully:", response);
         fetchCalendar();
@@ -245,7 +252,7 @@ const Calendar = () => {
   const events2 = transformEvents(calendar.filter(event => event.company === 'R&D'));
 
   return (
-    <div className="content" style={{padding: '0px 20px'}}>
+    <div className="content" style={{ padding: '0px 20px' }}>
       <div className="content_container">
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>

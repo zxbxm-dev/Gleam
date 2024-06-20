@@ -2,7 +2,7 @@
   position: fixed;
   left: 0;
   top:0;  
-  height: 60px;
+  // height: 60px;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -11,6 +11,7 @@
   padding-left: 22px;
   align-items: center;
   padding-right: 27px;
+  padding-top: 10px;
 
   .header-left {
     display: flex;
@@ -52,17 +53,23 @@
         justify-content: center;
         gap: 10px;
         cursor: pointer;
+        padding: 7px;
+
+        img{
+          width: 35px;
+          height: 35px;
+        }
 
         .UserName {
           color: #000000;
           font-family: var(--font-family-Noto-M);
+          font-size: 18px;
           cursor: default;
         }
+      }
 
-        img:hover{
-          box-shadow: 0 0 0 2px #4FA157 inset;
-border-radius: 50px;
-        }
+      .UserInfo:hover{
+        box-shadow: 0 0 0 1px #746E58 inset;
       }
     }
   }

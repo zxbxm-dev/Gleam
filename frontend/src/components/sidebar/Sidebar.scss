@@ -189,6 +189,8 @@
 }
 
 .memberSidebar {
+  border: 2px solid #dadada;
+  border-radius: 5px;
   font-family: var(--font-family-Noto-M);
   position: fixed;
   left: 200px;
@@ -204,7 +206,7 @@
 
   .department {
     color: #717171;
-    background-color: #DDDDDD;
+    background-color: #e7e7e7;
     border-bottom: 1px solid #DCDCDC;
     border-radius: 5px;
     font-size: 14px;
@@ -220,7 +222,7 @@
     display: flex;
     align-items: center;
     color: #717171;
-    background-color: #EEEEEE;
+    background-color: #f1f1f1;
     border-bottom: 1px solid #DCDCDC;
     gap: 10px;
     padding-left: 10px;
@@ -240,7 +242,7 @@
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #FFF8E0;
+      background-color: #eeffef;
     }
 
     .name_img {
@@ -258,13 +260,13 @@
   }
 
   .clicked {
-    background-color: #FFF8E0;
+    background-color: #d6f3d8;
   }
 }
 
 .memberSidebar::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 .memberSidebar::-webkit-scrollbar-thumb {
@@ -280,7 +282,7 @@
 
 .memberSidebar::-webkit-scrollbar-track {
   box-shadow: none;
-  background-color: #fff;
+  background-color: #FBFBFB;
 }
 
 @include desktop {

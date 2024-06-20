@@ -4,9 +4,7 @@
 .anuual_header_right {
   display: flex;
   flex-direction: row-reverse;
-  position: absolute;
-  top: 20px;
-  right: 18px;
+  margin-bottom: 10px;
   gap: 7px;
 
   .anuual_year_select {

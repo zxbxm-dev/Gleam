@@ -64,7 +64,7 @@ const Header = () => {
               </div>
             <Portal>
               {/* 1차 개발 */}
-              <PopoverContent width='400px' height='200px' border='0' borderRadius='5px' marginTop='7px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
+              {/* <PopoverContent width='400px' height='200px' border='0' borderRadius='5px' marginTop='7px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
                 <PopoverHeader height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize='14px' borderTopRightRadius='5px' borderTopLeftRadius='5px'>{user.department}</PopoverHeader>
                 <PopoverCloseButton color='white' />
                 <PopoverBody display='flex' flexDirection='row' alignItems='center'>
@@ -84,10 +84,10 @@ const Header = () => {
                     <div style={{ fontSize: '12px', marginTop: '6px', textDecoration: 'underLine', color: '#929292' }} onClick={handleLogout}>로그아웃</div>
                   </div>
                 </PopoverBody>
-              </PopoverContent>
+              </PopoverContent> */}
 
               {/* 2차 개발 */}
-              {/* <PopoverContent border='1px solid #45C552' borderRadius='5px' marginTop='10px' padding='10px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px' style={{ width: 'fit-content' }}>
+              <PopoverContent border='1px solid #45C552' borderRadius='5px' marginTop='10px' padding='10px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px' style={{ width: 'fit-content' }}>
                 <PopoverBody>
                   <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
                     <img src={SettingIcon} alt="SettingIcon" style={{ width: '20px', height: '20px', cursor: 'pointer', position: 'absolute', top: '8px', right: '8px' }} onClick={() => navigate('/editres')}/>
@@ -111,7 +111,7 @@ const Header = () => {
                     <span style={{ fontSize: '14px', textDecoration: 'underLine', cursor: 'pointer', color: '#929292' }} onClick={handleLogout}>로그아웃</span>
                   </div>
                 </PopoverBody>
-              </PopoverContent> */}
+              </PopoverContent>
 
             </Portal>
           </Popover>

@@ -105,7 +105,7 @@ const ManagePerform = () => {
                     <th>순번</th>
                     <th>제목</th>
                     <th>날짜</th>
-                    <th>문서확인/삭제</th>
+                    <th>문서확인 / 삭제</th>
                   </tr>
                 </thead>
                 <tbody className="board_container">

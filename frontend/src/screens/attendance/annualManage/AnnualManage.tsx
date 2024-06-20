@@ -573,12 +573,7 @@ const AnnualManage = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <div className="main_header">근태관리</div>
-        <div className="main_header">＞</div>
-        <Link to={"/annual-manage"} className="sub_header">연차관리</Link>
-      </div>
-      <div className='anuual_header_right'>
+            <div className='anuual_header_right'>
         <select
           name="yearSelect"
           id="yearSelect"
@@ -619,7 +614,6 @@ const AnnualManage = () => {
       </div>
       
       <div className="content_container">
-        <div className="container">
           <div className="container_anuual" id="table-to-xls">
             {selectedScreen === '본사' ? (
               <div className="Excel_annual_RD">
@@ -670,9 +664,7 @@ const AnnualManage = () => {
               </div>
             )}
           </div>
-        </div>
       </div>  
-      
     </div>
   );
 };
