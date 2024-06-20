@@ -1,10 +1,11 @@
 const models = require("../../models");
 const vacation = models.AnnualLeave;
-const User = models.User
+const Quitter = models.Quitter;
 
 // 휴가 관리 등록
 const AddVacation = async (req, res) => {
   const {
+    userID,
     name,
     company,
     department,
@@ -23,6 +24,7 @@ const AddVacation = async (req, res) => {
   try {
     // 데이터베이스에 일정 추가
     const newCalendar = await vacation.create({
+      userId: userID,
       username: name,
       company,
       department,
@@ -55,44 +57,41 @@ const getAllCalendarEvents = async (req, res) => {
     res.status(500).json({ error: "캘린더 일정 불러오기에 실패했습니다." });
   }
 };
-// 퇴사 회원의 leavedate 업데이트 (user 데이터베이스에서 퇴사자의 정보를 가져와 annualLeave에 업데이트)
+
 // 🔥🔥연차 관리 조회 (관리자)🔥🔥
 const administratorCalendar = async (req, res) => {
   try {
-    const events = await vacation.findAll({
-      include: [
+    // 퇴사 상태인 사용자를 모두 조회
+    const quitters = await Quitter.findAll({
+      where: {
+        status: "quitter",
+      },
+    });
+
+    for (const quitter of quitters) {
+      // 같은 userId를 가진 leavedate를 업데이트
+      await vacation.update(
+        { leavedate: quitter.leavedate },
         {
-          model: User,
-          as: 'user',
-          attributes: ['status', 'leavedate'],
-        },
-      ],
-    });
-
-    // 퇴사 회원의 leavedate 업데이트
-    const updatePromises = events.map(async (event) => {
-      if (event.user && event.user.status === 'quitter') {
-        event.leavedate = event.user.leavedate;
-        return event.save();
-      }
-    });
-
-    // 모든 업데이트 작업 완료 후 응답
-    await Promise.all(updatePromises);
-
-    // 클라이언트 응답
-    res.status(200).json(events);
+          where: {
+            userId: quitter.userId,
+          },
+        }
+      );
+    }
+    //퇴자사들의 leavedate 업데이트 이후 클라이언트 응답
+    const updatedAnnualLeaves = await vacation.findAll();
+    res.status(200).json(updatedAnnualLeaves);
   } catch (error) {
-    console.error('관리자 연차 관리 조회 정보를 가져오는 중에 오류가 발생했습니다.:', error);
-    res.status(500).json({ error: '관리자 연차 일정 불러오기에 실패했습니다.' });
+    console.error("연차 데이터 업데이트 중 오류 발생:", error);
+    res.status(500).json({ error: "연차 데이터 업데이트에 실패했습니다." });
   }
 };
-
 
 // 🔥🔥연차 관리 수정(관리자)🔥🔥
 
 module.exports = {
   AddVacation,
   getAllCalendarEvents,
-  administratorCalendar
+  administratorCalendar,
 };

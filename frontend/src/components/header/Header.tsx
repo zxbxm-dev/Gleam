@@ -1,9 +1,9 @@
 import "./Header.scss";
 import { useNavigate, Link } from "react-router-dom";
 import {
-  SideMenu,
   Logo,
   UserIcon,
+  UserIcon_dark,
   MenuArrow_down,
   SettingIcon,
 } from "../../assets/images/index";
@@ -63,6 +63,7 @@ const Header = () => {
                 <div className="UserName">{user.username}</div>
               </div>
             <Portal>
+              {/* 1차 개발 */}
               <PopoverContent width='400px' height='200px' border='0' borderRadius='5px' marginTop='7px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
                 <PopoverHeader height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize='14px' borderTopRightRadius='5px' borderTopLeftRadius='5px'>{user.department}</PopoverHeader>
                 <PopoverCloseButton color='white' />
@@ -78,12 +79,40 @@ const Header = () => {
                     <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', marginTop: '20px' }}>메일주소</div>
                     <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{user.usermail}</div>
                   </div>
-                  <div style={{ position: 'absolute', top: '50px', right: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }} onClick={() => navigate('/editres')}>
-                    <img src={SettingIcon} alt="SettingIcon" />
+                  <div style={{ position: 'absolute', top: '50px', right: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+                    <img src={SettingIcon} alt="SettingIcon" onClick={() => navigate('/editres')}/>
                     <div style={{ fontSize: '12px', marginTop: '6px', textDecoration: 'underLine', color: '#929292' }} onClick={handleLogout}>로그아웃</div>
                   </div>
                 </PopoverBody>
               </PopoverContent>
+
+              {/* 2차 개발 */}
+              {/* <PopoverContent border='1px solid #45C552' borderRadius='5px' marginTop='10px' padding='10px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px' style={{ width: 'fit-content' }}>
+                <PopoverBody>
+                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                    <img src={SettingIcon} alt="SettingIcon" style={{ width: '20px', height: '20px', cursor: 'pointer', position: 'absolute', top: '8px', right: '8px' }} onClick={() => navigate('/editres')}/>
+                    <img src={UserIcon_dark} alt="UserIcon_dark" style={{ width: '50px', height: '50px' }} />
+                  </span>
+                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', margin: '10px 0', gap: '3px', width: 'fit-content'}}>
+                    <span style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{user.username} | {user.position}</span>
+                    {
+                      user.team ? (
+                        <span style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{user.team}</span>
+                      ) : (
+                        user.department ? (
+                          <span style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{user.department}</span>
+                        ) : (
+                          <></>
+                        )
+                      )
+                    }
+                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                    <span style={{ fontSize: '14px', textDecoration: 'underLine', cursor: 'pointer', color: '#929292' }} onClick={handleLogout}>로그아웃</span>
+                  </div>
+                </PopoverBody>
+              </PopoverContent> */}
+
             </Portal>
           </Popover>
         </div>
