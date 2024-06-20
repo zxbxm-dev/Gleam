@@ -184,7 +184,9 @@ const Calendar = () => {
       userID: userID
     };
 
-    DeleteCalen(data)
+    const event_id = selectedEvent?.id;
+
+    DeleteCalen(data, event_id)
       .then(response => {
         console.log("Event deleted successfully:", response);
         fetchCalendar();
@@ -225,7 +227,9 @@ const Calendar = () => {
       memo
     };
 
-    EditCalen(eventData)
+    const event_id = selectedEvent?.id;
+
+    EditCalen(eventData, event_id)
       .then(() => {
         setEditEventModalOPen(false);
         fetchCalendar();
