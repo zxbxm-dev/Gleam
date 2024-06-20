@@ -1,11 +1,12 @@
 import "./Sidebar.scss";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MenuArrow_down,
   UserIcon_dark,
 } from "../../assets/images/index";
 import { userState } from '../../recoil/atoms';
 import { useRecoilState } from 'recoil';
+import { useLocation } from 'react-router-dom';
 
 type Member = [string, string, string, string, string, string, string[]]; // 멤버 배열의 타입
 
@@ -15,6 +16,7 @@ interface Props {
 
 const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
   const user = useRecoilState(userState);
+  const location = useLocation();
   const [clickedMember, setClickedMember] = useState<Member | null>(null); // 클릭된 멤버 상태 추가
   const members: Member[] = [
     ['id1', 'pw1', '이정훈', '포체인스 주식회사', '', '대표', ['']],
@@ -45,18 +47,23 @@ const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
 
   const [expandedTeams, setExpandedTeams] = useState<string[]>([]); // 확장된 팀의 배열
 
+  useEffect(() => {
+    const allTeams = members.map(member => member[4]).filter(team => team);
+    setExpandedTeams([...(allTeams)]);
+  }, []);
+
   const getFilteredMembers = () => {
-    if (user[0].position === '대표' || user[0].position === '이사') {
-      return members;
-    } else {
+    if (location.pathname === "/manage-perform") {
       if (user[0].company === '본사') {
         return members.filter(member => member[6].includes('본사'));
-      } else if (user[0].company === 'R&D') {
-        return members.filter(member =>member[6].includes('R&D'));
       } else {
-        return members;
+        return members.filter(member => member[6].includes('R&D'));
       }
-    } 
+    } else if (location.pathname === "/human-resources") {
+      return members;
+    } else {
+      return members;
+    }
   };
   // 부서별로 팀을 묶어주는 함수
   const renderDepartmentsWithTeams = () => {
@@ -81,7 +88,6 @@ const MemberSidebar: React.FC<Props> = ({onClickMember}) => {
       departments[dept][team].push({name, position}); // 이름과 직위 추가
     });
     
-
     // 각 부서별로 팀을 묶어서 출력
     return (
       <div className="memberSidebar">
