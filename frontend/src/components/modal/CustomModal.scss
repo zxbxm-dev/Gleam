@@ -89,6 +89,17 @@
             margin-right: 10px;
           }
 
+          .employ_div {
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse;
+            width: 70px;
+            font-size: 14px;
+            color: #929292;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 10px;
+          }
+
           .TextInputCon{
             width: 360px;
             height: 33px;

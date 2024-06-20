@@ -8,8 +8,11 @@ import {
   mail_spam, 
   mail_write,
   White_Arrow } from "../../assets/images/index";
+import { useState } from "react";
 
 const Mail = () => {
+  const [settingVisible, setSettingVisible] = useState(false);
+
   return (
     <div className="content">
       <div className="mail_container">

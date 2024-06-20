@@ -14,7 +14,7 @@ const BaseLayout = () => {
     marginLeft += 200;
   }
   if (isHrSidebarVisible) {
-    marginLeft += 200;
+    marginLeft += 220;
   }
   
   const handleMemberClick = (name: string, dept: string, team: string, position: string) => {
