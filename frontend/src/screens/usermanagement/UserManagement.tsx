@@ -122,12 +122,7 @@ const UserManagement = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <Link to={"/employment"} className="sub_header">회원관리</Link>
-      </div>
-
       <div className="content_container">
-
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>가입승인</Tab>

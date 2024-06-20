@@ -136,7 +136,7 @@ const DetailRegulation = () => {
               <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn" className="resize_button" /></button>
               <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
               <button className="white_button" onClick={downloadPDF}>다운로드</button>
-              <Link to="/writeRegulation" state={detailRegul} ><button className="white_button">수정</button></Link>
+              <Link to="/writeRegulation" className="white_button" state={detailRegul} ><button>수정</button></Link>
               <button className="primary_button" onClick={() => navigate("/regulations")}>목록</button>
             </div>
           </div>
