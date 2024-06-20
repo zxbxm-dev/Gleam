@@ -203,9 +203,7 @@ const Calendar = () => {
       memo
     };
 
-    const event_id = selectedEvent?.id;
-
-    EditCalen(eventData, event_id)
+    EditCalen(eventData)
       .then(() => {
         setEventModalOPen(false);
         setEditEventModalOPen(true);

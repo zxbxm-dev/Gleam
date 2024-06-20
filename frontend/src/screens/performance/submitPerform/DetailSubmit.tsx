@@ -67,12 +67,7 @@ const SubmitPerform = () => {
   
   return (
     <div className="content">
-      <div className="content_header" style={{ justifyContent: 'space-between' }}>
-        <Link to={"/submitPerform"} className="sub_header">인사평가 제출</Link>
-      </div>
-      
       <div className="content_container">
-        <div className="container">
           <div className="Submit_write_container">
             <div className="write_top_container">
               <div className="top_left_content">
@@ -134,9 +129,7 @@ const SubmitPerform = () => {
                 </div>
               )}
             </div>
-          
           </div>
-        </div>
       </div>  
       <CustomModal
         isOpen={isSubmitModalOpen}

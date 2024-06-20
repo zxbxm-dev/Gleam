@@ -86,22 +86,8 @@ const ManagePerform = () => {
   
   return (
     <div className="content">
-      <div className="content_header">
-        {isSelectMember[0] === '' ? (
-          <>
-            <Link to={"/submitPerform"} className="sub_header">인사평가 관리</Link>
-          </>
-        ) : (
-          <>
-            <Link to={"/submitPerform"} className="main_header">인사평가 관리</Link>
-            <div className="main_header">＞</div>
-            <div className="sub_header">{isSelectMember[0]}</div>
-          </>
-        )}
-      </div>
-      
       <div className="content_container">
-        <div className="container">
+      <div className="sub_header">{isSelectMember[0]}</div>
           {isSelectMember[0] === '' ? (
             <>
             </>
@@ -154,8 +140,6 @@ const ManagePerform = () => {
               </table>
             </div>
           )}
-          
-        </div>
       </div>  
       <CustomModal
         isOpen={isDeleteModalOpen}

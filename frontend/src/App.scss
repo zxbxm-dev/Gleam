@@ -40,7 +40,7 @@
 // color mode toggle mixins
 @mixin lightMode {
   --primary-color: rgba(69,197,82,0.75);
-  --secondary-color: #fff;
+  --secondary-color: #FBFBFB;
   --background-color: #FBFBFB;
   --side-link-hover-color: #F5F5F5;
   --side-link-click-color: rgba(221,221,221,0.37);
@@ -117,13 +117,12 @@ ul {
       color: #8F8F8F;
       font-family: var(--font-family-Noto-R);
     }
-
-    .sub_header {
-      color: #000000;
-      font-family: var(--font-family-Noto-B);
-    }
   }
-
+  .sub_header {
+    color: #000000;
+    font-family: var(--font-family-Noto-B);
+    margin-bottom: 10px;
+  }
   .content_container {
     width: 100%;
     height: 80%;
