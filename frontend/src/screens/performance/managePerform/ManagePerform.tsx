@@ -116,7 +116,7 @@ const ManagePerform = () => {
                         <td>{userPerform.id}</td>
                         <td style={{textAlign: 'center'}}>{userPerform.title}</td>
                         <td>{userPerform.date}</td>
-                        <td>
+                        <td style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'10px'}}>
                           <button className="primary_button">문서확인</button>
                           <button className="red_button" onClick={() => {setDeleteModalOpen(true); setClickIdx(Number(userPerform.id));}}>삭제</button>
                         </td>
