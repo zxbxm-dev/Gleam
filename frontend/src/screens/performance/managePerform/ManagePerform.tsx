@@ -117,8 +117,8 @@ const ManagePerform = () => {
                         <td style={{textAlign: 'center'}}>{userPerform.title}</td>
                         <td>{userPerform.date}</td>
                         <td>
-                          <button className="document_button">문서확인</button>
-                          <button className="delete_small_button" onClick={() => {setDeleteModalOpen(true); setClickIdx(Number(userPerform.id));}}>삭제</button>
+                          <button className="primary_button">문서확인</button>
+                          <button className="red_button" onClick={() => {setDeleteModalOpen(true); setClickIdx(Number(userPerform.id));}}>삭제</button>
                         </td>
                       </tr>
                     ))

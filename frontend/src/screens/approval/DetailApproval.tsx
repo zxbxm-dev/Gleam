@@ -170,7 +170,7 @@ const DetailApproval = () => {
               </div>
 
               <div className="top_right_content">
-                <button className="approval_button">결재하기</button>
+                <button className="primary_button">결재하기</button>
                 <button className="white_button" onClick={exportToPDF}>다운로드</button>
                 <Popover placement="right-start">
                   <PopoverTrigger>

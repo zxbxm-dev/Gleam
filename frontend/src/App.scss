@@ -6,14 +6,17 @@
   font-family: 'Noto sans KR-light';
   src: url('./assets/fonts/NotoSansKR-Light.ttf');
 }
+
 @font-face {
   font-family: 'Noto sans KR-Regular';
   src: url('./assets/fonts/NotoSansKR-Regular.ttf');
 }
+
 @font-face {
   font-family: 'Noto sans KR-Medium';
   src: url('./assets/fonts/NotoSansKR-Medium.ttf');
 }
+
 @font-face {
   font-family: 'Noto sans KR-Bold';
   src: url('./assets/fonts/NotoSansKR-Bold.ttf');
@@ -22,7 +25,7 @@
 :root {
   // colors
   --light-color: #ffffff;
-  --chainlinker-color : #76CB7E;
+  --chainlinker-color: #76CB7E;
   // typography
   --font-family-Noto-L: "Noto sans KR-Light";
   --font-family-Noto-R: "Noto sans KR-Regular";
@@ -39,11 +42,11 @@
 
 // color mode toggle mixins
 @mixin lightMode {
-  --primary-color: rgba(69,197,82,0.75);
+  --primary-color: rgba(69, 197, 82, 0.75);
   --secondary-color: #FBFBFB;
   --background-color: #FBFBFB;
   --side-link-hover-color: #F5F5F5;
-  --side-link-click-color: rgba(221,221,221,0.37);
+  --side-link-click-color: rgba(221, 221, 221, 0.37);
   --side-text-color: #000;
   --base-text-color: #676767;
   --scroll-track-bg-color: #fff;
@@ -118,11 +121,13 @@ ul {
       font-family: var(--font-family-Noto-R);
     }
   }
+
   .sub_header {
     color: #000000;
     font-family: var(--font-family-Noto-B);
     margin-bottom: 10px;
   }
+
   .content_container {
     width: 100%;
     height: 80%;
@@ -323,7 +328,7 @@ ul {
           .project_state {
             font-family: var(--font-family-Noto-M);
           }
-  
+
           div {
             width: 10px;
             height: 10px;
@@ -356,7 +361,8 @@ ul {
     }
   }
 
-  .project_slide.visible, .additional_content.visible {
+  .project_slide.visible,
+  .additional_content.visible {
     transform: translateY(-340px);
     z-index: 999;
   }
@@ -367,11 +373,11 @@ ul {
 
   .white_button {
     @include report-button;
-    color: rgba(69,197,82,0.75);
-    box-shadow: 0 0 0 2px rgba(69,197,82,0.75) inset;
+    color: rgba(69, 197, 82, 0.75);
+    box-shadow: 0 0 0 2px rgba(69, 197, 82, 0.75) inset;
     background-color: #FBFBFB;
     padding: 8px 20px;
-        display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
   }
@@ -387,52 +393,15 @@ ul {
     justify-content: center;
   }
 
-  .delete_button {
-    width: 92px;
-    height: 35px;
-    border: 1px solid #D56D6D;
-    border-radius: 5px;
-    font-family: var(--font-family-Noto-B);
-    font-size: 14px;
-    color: #D56D6D;
-  }
-
-  .delete_small_button {
-    width: 66px;
-    height: 35px;
-    border: 1px solid #D56D6D;
-    border-radius: 5px;
-    font-family: var(--font-family-Noto-B);
-    font-size: 14px;
-    color: #D56D6D;
-    margin-left: 7px;
-  }
-
-  .approval_button {
+  .cancle_button {
     @include report-button;
-    height: 35px;
-    color: #fff;
-  }
-
-  .approve_button {
-    width: 92px;
-    height: 35px;
-    background-color: rgba(69,197,82,0.75);
-    border: 1px solid rgba(69,197,82,0.75);
-    border-radius: 5px;
-    font-size: 14px;
-    font-family: var(--font-family-Noto-B);
-    color: #fff;
-  }
-
-  .document_button {
-    @include report-button;
-    width: 92px;
-    height: 35px;
-  }
-
-  .download_button {
-    @include report-button;
+    background-color: #FBFBFB;
+    border: 2px solid #929292;
+    color: #929292;
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -444,12 +413,12 @@ ul {
       position: absolute;
       bottom: -13px;
     }
-  
+
     .additional_content {
       position: absolute;
       bottom: -383px;
       right: -15px;
-  
+
       &.visible {
         transform: translateY(-366px);
       }
@@ -460,7 +429,7 @@ ul {
     }
 
     .content_container {
-      
+
 
       .container {
         // height: 84.5vh;
