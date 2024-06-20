@@ -38,7 +38,8 @@ import {
   EditRegis,
   UserManagement,
   MeetingRoom,
-  Project
+  Project,
+  Mail,
 } from "./screens";
 
 function App() {
@@ -68,6 +69,12 @@ function App() {
             <Route path="/editres" element={<EditRegis />} />
             <Route element={<BaseLayout />}>
               <Route path="/" element={<Announcement />} />
+
+              {/* 메일 */}
+              <Route path="/mail" element={<Mail />} />
+              
+
+              {/* 조직문화 */}
               <Route path="/writeAnnounce" element={<WriteAnnounce />} />
               <Route path="/detailAnnounce/:id" element={<DetailAnnounce />} />
 

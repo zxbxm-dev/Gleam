@@ -44,3 +44,13 @@ export { default as UserIcon_dark } from "./sidebar/UserIcon_dark.svg";
 // project
 export { default as Right_Arrow } from "./project/Right_Arrow.svg";
 export { default as White_Arrow } from "./project/White_Arrow.svg";
+
+// mail
+export { default as mail_calendar } from "./mail/mail_calendar.svg";
+export { default as mail_delete } from "./mail/mail_delete.svg";
+export { default as mail_download } from "./mail/mail_download.svg";
+export { default as mail_important_active } from "./mail/mail_important_active.svg";
+export { default as mail_important } from "./mail/mail_important.svg";
+export { default as mail_setting } from "./mail/mail_setting.svg";
+export { default as mail_spam } from "./mail/mail_spam.svg";
+export { default as mail_write } from "./mail/mail_write.svg";
