@@ -4,9 +4,6 @@
 .attend_header_right {
   display: flex;
   flex-direction: row-reverse;
-  position: absolute;
-  top: 50px;
-  right: 18px;
   gap: 7px;
   z-index: 9;
 }
@@ -20,7 +17,7 @@
 }
 
 .attend_tab_container {
-  height: 87vh;
+  height: 82vh;
 
   .container_attendance {
     @include custom-scrollbar();
@@ -267,5 +264,11 @@
 
   .TabKey {
     width: 7%;
+  }
+}
+
+@include laptop{
+  .attend_tab_container{
+    height: 76vh;
   }
 }

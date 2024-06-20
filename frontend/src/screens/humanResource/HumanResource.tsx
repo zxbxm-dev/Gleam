@@ -231,21 +231,8 @@ const HumanResource = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        {isSelectMember[0] === '' ? (
-          <>
-            <Link to={"/human-resources"} className="sub_header">인사 정보 관리</Link>
-          </>
-        ) : (
-          <>
-            <Link to={"/human-resources"} className="main_header">인사 정보 관리</Link>
-            <div className="main_header">＞</div>
-            <div className="sub_header">{isSelectMember[0]}</div>
-          </>
-        )}
-      </div>
-      
       <div className="content_container">
+      <div className="sub_header">{isSelectMember[0]}</div>
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
             <Tab _selected={{bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)'}} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>인사기록카드</Tab>
@@ -259,7 +246,7 @@ const HumanResource = () => {
                 <></>
               ) : (
                 <>
-                  <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
+                  <div style={{ display: 'flex', flexDirection: 'row-reverse', width: '100%',borderBottom: '1px solid #DCDCDC', gap: '10px', paddingBottom:'15px'}}>
                     {isEditing ? (
                       <>
                         <button className="second_button" onClick={handleToggleEdit}>등록</button>

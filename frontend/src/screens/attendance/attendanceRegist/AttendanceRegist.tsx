@@ -939,12 +939,6 @@ const AttendanceRegist = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <div className="main_header">근태관리</div>
-        <div className="main_header">＞</div>
-        <Link to={"/attendance-regist"} className="sub_header">출근부</Link>
-      </div>
-
       <div className="content_container">
         <div className='attend_header_right'>
           <button className='white_button' onClick={exportToPDF}>다운로드</button>

@@ -660,9 +660,6 @@ const handleSubmit = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <Link to={"/operating-manage"} className="sub_header">운영비 관리</Link>
-      </div>
       <div className='oper_header_right'>
         <select
           name="yearSelect"
@@ -692,7 +689,6 @@ const handleSubmit = () => {
         <button className='white_button' onClick={exportToPDF}>다운로드</button>
       </div>
       <div className="content_container">
-        <div className="container">
           <div className="container_operating" id="table-to-xls">
             <div className="Excel_operating"> 
               <table className='Explan_operating'>
@@ -1370,7 +1366,6 @@ const handleSubmit = () => {
               </table>
             </div>
           </div>
-        </div>
       </div>  
       {dropdownOpen && dropdownTeam && (
         <span className="oper-dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
