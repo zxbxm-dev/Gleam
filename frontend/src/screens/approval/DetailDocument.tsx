@@ -96,9 +96,6 @@ const DetailDocument = () => {
 
   return (
     <div className="content">
-      <div className="content_header">
-        <Link to={"/report"} className="sub_header">보고서 결재</Link>
-      </div>
       <div className='oper_header_right'>
         <button className='oper_edit_button'>확인</button>
         <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
@@ -106,7 +103,6 @@ const DetailDocument = () => {
       </div>
 
       <div className="content_container">
-        <div className="container">
           <div className="approval_write_container">
             <div className="write_top_container_document">
               {memoState ? (
@@ -156,7 +152,6 @@ const DetailDocument = () => {
               </Document>
             </div>
           </div>
-        </div>
       </div>
       
       <CustomModal

@@ -73,8 +73,6 @@ const Report = () => {
 
   return (
     <div className="content">
-      {/* <div className="content_container">
-        <div className="container"> */}
           <div className="report_container">
             {reportCategories.map((category) => (
               <div className="report_type" key={category.title}>
@@ -82,8 +80,6 @@ const Report = () => {
               </div>
             ))}
           </div>
-        {/* </div>
-      </div> */}
     </div>
   );
 };

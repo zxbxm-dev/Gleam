@@ -23,9 +23,9 @@ const SubmitPerform = () => {
     const pages = [];
     for (let i = 1; i <= numPages; i++) {
       pages.push(
-        <Page 
+        <Page
           key={`page_${i}`}
-          pageNumber={i} 
+          pageNumber={i}
           width={1200}
         />
       );
@@ -35,26 +35,19 @@ const SubmitPerform = () => {
 
   return (
     <div className="content">
-      <div className="content_header" style={{ justifyContent: 'space-between' }}>
-        <Link to={"/submitPerform"} className="sub_header">인사평가 제출</Link>
-      </div>
-      
       <div className="content_container">
-        <div className="container">
-          <div className="perform_content">
-            <div className="pdf-container">
-              <Document file={testPDF} onLoadSuccess={onDocumentLoadSuccess}>
-                {renderPages()}
-                <div className='pdf-button'>
-                  <div>* 위 내용을 읽고 확인했습니다.</div>
-                  <button className='approval_button' onClick={() => navigate('/detailSubmit')}>제출하기</button>
-                </div>
-              </Document>
-            </div>
+        <div className="perform_content">
+          <div className="pdf-container">
+            <Document file={testPDF} onLoadSuccess={onDocumentLoadSuccess}>
+              {renderPages()}
+              <div className='pdf-button'>
+                <div>* 위 내용을 읽고 확인했습니다.</div>
+                <button className='approval_button' onClick={() => navigate('/detailSubmit')}>제출하기</button>
+              </div>
+            </Document>
           </div>
         </div>
-      </div>  
-      
+      </div>
     </div>
   );
 };

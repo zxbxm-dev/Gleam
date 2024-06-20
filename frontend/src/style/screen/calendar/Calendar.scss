@@ -103,8 +103,8 @@
   .fc-Addschedule-button {
     width: 107px;
     height: 35px;
-    background-color: #746E58 !important;
-    border: 1px solid #746E58;
+    background-color: rgba(69,197,82,0.75) !important;
+    border: 1px solid rgba(69,197,82,0.75);
     border-radius: 5px;
     font-family: var(--font-family-Noto-B);
     font-size: 14px;
@@ -225,6 +225,6 @@
 
 @include laptop{
   .calendar_container{
-    height: 84vh;
+    height: 82vh;
   }
 }

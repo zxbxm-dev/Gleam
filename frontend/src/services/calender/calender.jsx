@@ -11,8 +11,8 @@ const CheckCalen = () => {
 };
 
 //일정 수정
-const EditCalen = (eventData, event_id) => {
-    return api.put(`/editCalender/${event_id}`, { data: eventData });
+const EditCalen = (eventData) => {
+    return api.put(`/editCalender`, { data: eventData });
 }
 
 //일정 삭제

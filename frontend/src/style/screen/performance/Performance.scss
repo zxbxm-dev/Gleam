@@ -42,18 +42,12 @@
     display: flex;
     align-items: center;
     flex-direction: column;
+    margin-top: 20px;
 
 
     .approval_button {
-      width: 100px;
-      height: 35px;
-      background-color: #746E58;
-      border: 1px solid #746E58;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: var(--font-family-Noto-B);
-      color: #fff;
-      margin-top: 20px;
+      @include report-button;
+      margin-top: 10px;
     }
   }
 }
@@ -66,7 +60,7 @@
 
   .write_top_container {
     width: 100%;
-    height: 7%;
+    padding-bottom: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

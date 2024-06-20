@@ -203,9 +203,7 @@ const Calendar = () => {
       memo
     };
 
-    const event_id = selectedEvent?.id;
-
-    EditCalen(eventData, event_id)
+    EditCalen(eventData)
       .then(() => {
         setEventModalOPen(false);
         setEditEventModalOPen(true);
@@ -247,12 +245,12 @@ const Calendar = () => {
   const events2 = transformEvents(calendar.filter(event => event.company === 'R&D'));
 
   return (
-    <div className="content">
+    <div className="content" style={{padding: '0px 20px'}}>
       <div className="content_container">
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
-            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>본사</Tab>
-            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>R&D 연구센터</Tab>
+            <Tab _selected={{ bg: '#FFFFFF' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>본사</Tab>
+            <Tab _selected={{ bg: '#FFFFFF' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>R&D 연구센터</Tab>
           </TabList>
 
           <TabPanels>
