@@ -23,7 +23,7 @@
       height: 36px;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
-      background-color: #746E58;
+      background-color: var(--chainlinker-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -288,7 +288,7 @@
               margin-left: 15px;
             }
             .textinput:focus {
-              outline: 2px solid #746e58;
+              outline: 2px solid var(--chainlinker-color);
             }
             .textinput::placeholder {
               font-size: 12px;
@@ -370,12 +370,12 @@
 
         &.green-btn {
           background-color: #fff;
-          border: 1px solid #746E58;
-          color: #746E58;
+          border: 1px solid var(--chainlinker-color);
+          color: var(--chainlinker-color);
         }
         &.back-green-btn {
-          background-color: #746E58;
-          border: 1px solid #746E58;
+          background-color: var(--chainlinker-color);
+          border: 1px solid var(--chainlinker-color);
           color: #fff;
         }
         &.red-btn {
