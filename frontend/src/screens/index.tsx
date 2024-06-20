@@ -56,3 +56,6 @@ export { default as MeetingRoom } from "./meetingRoom/MeetingRoom";
 
 // 프로젝트
 export { default as Project } from "./project/Project";
+
+// 메일
+export { default as Mail } from "./mail/Mail";
