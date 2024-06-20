@@ -11,13 +11,13 @@ const CheckCalen = () => {
 };
 
 //일정 수정
-const EditCalen = (eventData) => {
-    return api.put(`/editCalender`, { data: eventData });
+const EditCalen = (eventData, event_id) => {
+    return api.put(`/editCalender/${event_id}`, { data: eventData });
 }
 
 //일정 삭제
-const DeleteCalen = (eventData) => {
-    return api.delete("/deleteCalender", { data: eventData });
+const DeleteCalen = (eventData, event_id) => {
+    return api.delete(`/deleteCalender/${event_id}`, { data: eventData });
 }
 
 export { writeCalen, CheckCalen, EditCalen, DeleteCalen };
