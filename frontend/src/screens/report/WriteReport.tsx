@@ -487,7 +487,7 @@ const handleSubmit = () => {
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='440px' height='700px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
+                      <PopoverHeader color='#000' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
                       <PopoverCloseButton color='white' />
                       <PopoverBody display='flex' flexDirection='row' padding='0px'>
                         <div style={{ width: '200px', height: '650px', overflowY: 'scroll', scrollbarWidth: 'thin' }}>

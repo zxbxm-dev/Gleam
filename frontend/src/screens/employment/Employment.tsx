@@ -276,7 +276,7 @@ const Employment = () => {
                               </PopoverTrigger>
                               <Portal>
                                 <PopoverContent onClick={(e) => e.stopPropagation()} width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
-                                  <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 수정하기</PopoverHeader>
+                                  <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 수정하기</PopoverHeader>
                                   <PopoverCloseButton color='white' />
                                   <PopoverBody display='flex' flexDirection='column' alignItems='center'>
                                     <div style={{ width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px' }}>
@@ -294,7 +294,7 @@ const Employment = () => {
                                       </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px' }}>
-                                      <button style={{ width: '70px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }} onClick={handleEdit}>수정</button>
+                                      <button style={{ width: '70px', height: '35px', color: '#76CB7E', backgroundColor: '#fff', border: '1px solid #76CB7E', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }} onClick={handleEdit}>수정</button>
                                       <button style={{ width: '70px', height: '35px', color: '#929292', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }}>취소</button>
                                     </div>
                                   </PopoverBody>
@@ -336,7 +336,7 @@ const Employment = () => {
               </PopoverTrigger>
               <Portal>
                 <PopoverContent width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
-                  <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 등록하기</PopoverHeader>
+                  <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 등록하기</PopoverHeader>
                   <PopoverCloseButton color='white' />
                   <PopoverBody display='flex' flexDirection='column' alignItems='center'>
                     <div style={{ width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px' }}>
@@ -354,8 +354,8 @@ const Employment = () => {
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: '7px' }}>
-                      <button style={{ width: '66px', height: '35px', color: '#fff', backgroundColor: '#746E58', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }} onClick={handleSubmit}>등록</button>
-                      <button style={{ width: '66px', height: '35px', color: '#746E58', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }} onClick={AddClose}>취소</button>
+                      <button style={{ width: '66px', height: '35px', color: '#fff', backgroundColor: '#76CB7E', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }} onClick={handleSubmit}>등록</button>
+                      <button style={{ width: '66px', height: '35px', color: '#76CB7E', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }} onClick={AddClose}>취소</button>
                     </div>
                   </PopoverBody>
                 </PopoverContent>

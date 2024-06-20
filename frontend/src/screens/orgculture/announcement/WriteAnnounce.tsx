@@ -189,7 +189,7 @@ const WriteAnnouncement = () => {
               )}
               <div className="announce_main_bottom">
                 <div className="attachment_content">
-                  <label htmlFor="fileInput" className="primary_button">
+                  <label htmlFor="fileInput" className="white_button">
                     파일 첨부하기
                     <input
                       id="fileInput"
@@ -203,7 +203,7 @@ const WriteAnnouncement = () => {
 
                 </div>
                 <div>
-                  <button className="second_button" onClick={handleSubmit}>등록</button>
+                  <button className="primary_button" onClick={handleSubmit}>등록</button>
                 </div>
               </div>
             </div>

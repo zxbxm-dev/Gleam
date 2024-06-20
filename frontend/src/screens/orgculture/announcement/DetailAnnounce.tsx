@@ -146,7 +146,7 @@ const DetailAnnounce = () => {
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
                 <button className="white_button" onClick={downloadPDF}>다운로드</button>
                 <Link to="/writeAnnounce" state={detailAnno} ><button className="white_button">수정</button></Link>
-                <button className="second_button" onClick={() => navigate("/")}>목록</button>
+                <button className="primary_button" onClick={() => navigate("/")}>목록</button>
               </div>
             </div>
           </div>

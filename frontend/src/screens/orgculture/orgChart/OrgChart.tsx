@@ -37,7 +37,7 @@ const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
     </PopoverTrigger>
     <Portal>
       <PopoverContent width='400px' height='200px' border='0' borderRadius='1px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
-        <PopoverHeader height='34px' color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' fontSize='14px' borderTopRightRadius='5px' borderTopLeftRadius='5px'>{member.department} - {member.team}</PopoverHeader>
+        <PopoverHeader height='34px' color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' fontSize='14px' borderTopRightRadius='5px' borderTopLeftRadius='5px'>{member.department} - {member.team}</PopoverHeader>
         <PopoverCloseButton color='white' />
         <PopoverBody display='flex' flexDirection='row' alignItems='center' borderBottomLeftRadius='5px' borderBottomRightRadius='5px'>
           <div style={{ width: '140px', height: '150px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
