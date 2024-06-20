@@ -56,12 +56,12 @@ const Header = () => {
       <div className="header-right">
         <div className="UserTab">
           <Popover>
+          <PopoverTrigger>
               <div className="UserInfo">
-              <PopoverTrigger>
                 <img src={UserIcon} alt="UserIcon" />
-                </PopoverTrigger>
                 <div className="UserName">{user.username}</div>
               </div>
+              </PopoverTrigger>
             <Portal>
               {/* 1차 개발 */}
               {/* <PopoverContent width='400px' height='200px' border='0' borderRadius='5px' marginTop='7px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px'>
@@ -87,7 +87,7 @@ const Header = () => {
               </PopoverContent> */}
 
               {/* 2차 개발 */}
-              <PopoverContent border='1px solid #45C552' borderRadius='5px' marginTop='10px' padding='10px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px' style={{ width: 'fit-content' }}>
+              <PopoverContent border='1px solid #45C552' borderRadius='5px' marginRight='25px' padding='10px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px' style={{ width: 'fit-content' }}>
                 <PopoverBody>
                   <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
                     <img src={SettingIcon} alt="SettingIcon" style={{ width: '20px', height: '20px', cursor: 'pointer', position: 'absolute', top: '8px', right: '8px' }} onClick={() => navigate('/editres')}/>

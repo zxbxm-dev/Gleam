@@ -93,7 +93,7 @@ const handleLogin = async () => {
         onChange={(e) => setuserID(e.target.value)}
         onKeyDown={handleKeyPress}
         className='InputClass'
-        focusBorderColor='#746E58.400'
+        focusBorderColor='#76CB7E.400'
       />
       <Input
         placeholder='패스워드를 입력해 주세요.'
@@ -103,7 +103,7 @@ const handleLogin = async () => {
         onChange={(e) => setPassword(e.target.value)}
         onKeyDown={handleKeyPress}
         className='InputClass'
-        focusBorderColor='#746E58.400'
+        focusBorderColor='#76CB7E.400'
       />
       <button className="login_btn" onClick={handleLogin}>로그인</button>
 

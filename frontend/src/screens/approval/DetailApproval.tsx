@@ -146,7 +146,7 @@ const DetailApproval = () => {
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='400px' height='274px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>의견 작성</PopoverHeader>
+                      <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>의견 작성</PopoverHeader>
                       <PopoverCloseButton color='white' />
                       <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px' paddingRight="15px">
                         <div className='opinionBox'>
@@ -178,7 +178,7 @@ const DetailApproval = () => {
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='410px' height='274px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>반려 사유 작성</PopoverHeader>
+                      <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px' fontSize='14px'>반려 사유 작성</PopoverHeader>
                       <PopoverCloseButton color='white' />
                       <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center' fontSize='14px' paddingRight="15px">
                         <div className='opinionBox'>

@@ -162,10 +162,25 @@ const Calendar = () => {
       console.error("No event selected for deletion.");
       return;
     }
+
     const userID = user.userID;
+    const startDate = new Date(selectedEvent.startDate);
+    const endDate = new Date(selectedEvent.endDate);
 
     const data = {
-      event: selectedEvent,
+      event: {
+        id: selectedEvent.id,
+        title: selectedEvent.title,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        backgroundColor: selectedEvent.backgroundColor,
+        company: selectedEvent.company,
+        department: selectedEvent.department,
+        team: selectedEvent.team,
+        dateType: selectedEvent.dateType,
+        memo: selectedEvent.memo,
+        year: selectedEvent.year,
+      },
       userID: userID
     };
 
@@ -184,7 +199,7 @@ const Calendar = () => {
 
   const handleEditEvent = () => {
     if (!selectedEvent) {
-      console.error("No event selected for edit.");
+      console.error("수정할 이벤트가 선택되지 않았습니다.");
       return;
     }
     setStartDate(new Date(selectedEvent.startDate));
@@ -198,28 +213,28 @@ const Calendar = () => {
 
   const handleCalenEdit = () => {
     if (!selectedEvent) {
-      console.error("No event selected for edit.");
+      console.error("수정할 이벤트가 선택되지 않았습니다.");
       return;
     }
 
     const eventData = {
       userID: user.userID,
-      startDate: startDate?.toISOString(),
-      endDate: endDate?.toISOString(),
+      startDate: startDate,
+      endDate: endDate,
       title,
       memo
     };
 
     EditCalen(eventData)
       .then(() => {
-        setEventModalOPen(false);
-        setEditEventModalOPen(true);
+        setEditEventModalOPen(false);
         fetchCalendar();
       })
       .catch((error) => {
-        console.error("Failed to update event:", error);
+        console.error("이벤트 수정에 실패했습니다:", error);
       });
   };
+
 
   const handleDeleteEventModal = () => {
     setDeleteEventModalOPen(true);
