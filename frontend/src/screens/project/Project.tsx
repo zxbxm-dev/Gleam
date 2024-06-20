@@ -66,11 +66,7 @@ const Project = () => {
   };
 
   return (
-    <div className="content">
-      <div className="content_header">
-        <Link to={"/project"} className="sub_header">프로젝트</Link>
-      </div>
-      
+    <div className="content">      
       <div className="content_container">
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
