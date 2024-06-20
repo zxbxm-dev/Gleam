@@ -226,7 +226,7 @@ const UserManagement = () => {
                             <td>{new Date(usermanage.entering).toISOString().substring(0, 10)}</td>
                             <td>
                               <button
-                                className="delete_small_button"
+                                className="red_button"
                                 onClick={() => {
                                   setDelModalOpen(true);
                                   setClickIdx(usermanage.userId);

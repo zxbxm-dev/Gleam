@@ -97,9 +97,9 @@ const DetailDocument = () => {
   return (
     <div className="content">
       <div className='oper_header_right'>
-        <button className='oper_edit_button'>확인</button>
-        <button className='oper_download_button' onClick={exportToPDF}>다운로드</button>
-        <button className='oper_delete_button'>삭제</button>
+        <button className='primary_button'>확인</button>
+        <button className='white_button' onClick={exportToPDF}>다운로드</button>
+        <button className='red_button'>삭제</button>
       </div>
 
       <div className="content_container">

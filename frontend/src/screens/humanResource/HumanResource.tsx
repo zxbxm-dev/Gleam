@@ -349,7 +349,7 @@ const HumanResource = () => {
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 등록하기</PopoverHeader>
+                      <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 등록하기</PopoverHeader>
                       <PopoverCloseButton color='white'/>
                       <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
@@ -411,7 +411,7 @@ const HumanResource = () => {
                           </PopoverTrigger>
                           <Portal>
                             <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                              <PopoverHeader color='white' bg='#746E58' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
+                              <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
                               <PopoverCloseButton color='white'/>
                               <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
                                 <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>

@@ -76,7 +76,7 @@ const SubmitPerform = () => {
 
               <div className="top_right_content">
 
-                <button className='approval_button' onClick={handleSumbitFile}>제출하기</button>
+                <button className='primary_button' onClick={handleSumbitFile}>제출하기</button>
                 <button className="white_button">
                   <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
                     <input

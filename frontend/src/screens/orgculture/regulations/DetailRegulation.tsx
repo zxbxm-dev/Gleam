@@ -137,7 +137,7 @@ const DetailRegulation = () => {
               <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
               <button className="white_button" onClick={downloadPDF}>다운로드</button>
               <Link to="/writeRegulation" state={detailRegul} ><button className="white_button">수정</button></Link>
-              <button className="second_button" onClick={() => navigate("/regulations")}>목록</button>
+              <button className="primary_button" onClick={() => navigate("/regulations")}>목록</button>
             </div>
           </div>
         </div>
