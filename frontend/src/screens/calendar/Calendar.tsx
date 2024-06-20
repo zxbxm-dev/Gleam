@@ -463,13 +463,13 @@ const Calendar = () => {
         onClose={() => setEventModalOPen(false)}
         header={'일정 확인'}
         footer1={'삭제'}
-        footer1Class="red-btn"
+        footer1Class="red_button"
         onFooter1Click={handleDeleteEventModal}
         footer2={'수정'}
-        footer2Class="green-btn"
+        footer2Class="white_button"
         onFooter2Click={handleEditEvent}
         footer3={'취소'}
-        footer3Class="gray-btn"
+        footer3Class="cancle_button"
         onFooter3Click={() => setEventModalOPen(false)}
         width="360px"
         height="300px"

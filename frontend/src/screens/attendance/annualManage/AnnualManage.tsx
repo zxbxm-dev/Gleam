@@ -586,7 +586,7 @@ const AnnualManage = () => {
         </select>
         {editMode ? 
           <button
-          className='second_button'
+          className='primary_button'
           onClick={handleSubmit}
           >
             등록
@@ -602,11 +602,11 @@ const AnnualManage = () => {
         <button className='white_button' onClick={exportToPDF}>다운로드</button>
         {user.username === '이정훈' ? (
           selectedScreen === 'R&D' ? (
-            <button className='second_button' onClick={handleScreenChange}>
+            <button className='primary_button' onClick={handleScreenChange}>
               R&D 센터
             </button>
           ) : (
-            <button className='second_button' onClick={handleScreenChange}>
+            <button className='primary_button' onClick={handleScreenChange}>
               본사
             </button>
           )

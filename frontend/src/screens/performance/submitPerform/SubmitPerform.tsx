@@ -42,7 +42,7 @@ const SubmitPerform = () => {
               {renderPages()}
               <div className='pdf-button'>
                 <div>* 위 내용을 읽고 확인했습니다.</div>
-                <button className='approval_button' onClick={() => navigate('/detailSubmit')}>제출하기</button>
+                <button className='primary_button' onClick={() => navigate('/detailSubmit')}>제출하기</button>
               </div>
             </Document>
           </div>

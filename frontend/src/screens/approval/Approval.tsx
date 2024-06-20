@@ -257,7 +257,7 @@ const Approval = () => {
                       <td>{approvaling.progress} / {approvaling.maxprogress}</td>
                       <td>{approvaling.state}</td>
                       <td>{approvaling.writer}</td>
-                      <td><button className="approve_button" onClick={() => { navigate('/detailApproval') }}>결재하기</button></td>
+                      <td><button className="white_button" onClick={() => { navigate('/detailApproval') }}>결재하기</button></td>
                     </tr>
                   ))
                 }
@@ -358,7 +358,7 @@ const Approval = () => {
                       <td>{inProgres.progress} / {inProgres.maxprogress}</td>
                       <td>{inProgres.state}</td>
                       <td>{inProgres.writer}</td>
-                      <td><button className="document_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
                     </tr>
                   ))
                 }
@@ -459,7 +459,7 @@ const Approval = () => {
                       <td>{rejected.progress} / {rejected.maxprogress}</td>
                       <td>{rejected.state}</td>
                       <td>{rejected.writer}</td>
-                      <td><button className="document_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
                     </tr>
                   ))
                 }
@@ -560,7 +560,7 @@ const Approval = () => {
                       <td>{compledocument.progress} / {compledocument.maxprogress}</td>
                       <td>{compledocument.state}</td>
                       <td>{compledocument.writer}</td>
-                      <td><button className="document_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
                     </tr>
                   ))
                 }
@@ -661,7 +661,7 @@ const Approval = () => {
                       <td>{mydocument.progress} / {mydocument.maxprogress}</td>
                       <td>{mydocument.state}</td>
                       <td>{mydocument.writer}</td>
-                      <td><button className="document_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
                     </tr>
                   ))
                 }
@@ -762,7 +762,7 @@ const Approval = () => {
                         <td>{vacation.progress} / {vacation.maxprogress}</td>
                         <td>{vacation.state}</td>
                         <td>{vacation.writer}</td>
-                        <td><button className="document_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                        <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
                       </tr>
                     ))
                   }

@@ -483,12 +483,12 @@ const handleSubmit = () => {
               <div className="top_right_content">
                 <Popover placement="left-start">
                   <PopoverTrigger>
-                    <button className="approval_button">결재라인 선택</button>
+                    <button className="primary_button">결재라인 선택</button>
                   </PopoverTrigger>
                   <Portal>
-                    <PopoverContent width='440px' height='700px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='#000' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
-                      <PopoverCloseButton color='white' />
+                    <PopoverContent width='440px' height='700px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #d9d9d9'>
+                      <PopoverHeader color='#272727' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-M)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
+                      <PopoverCloseButton color='#272727' />
                       <PopoverBody display='flex' flexDirection='row' padding='0px'>
                         <div style={{ width: '200px', height: '650px', overflowY: 'scroll', scrollbarWidth: 'thin' }}>
                           <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />

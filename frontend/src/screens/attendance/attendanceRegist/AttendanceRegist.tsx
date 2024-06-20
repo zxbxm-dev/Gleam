@@ -942,7 +942,7 @@ const AttendanceRegist = () => {
       <div className="content_container">
         <div className='attend_header_right'>
           <button className='white_button' onClick={exportToPDF}>다운로드</button>
-          <button className='white_button'>
+          <button className='primary_button'>
             <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
               업로드
               <input
@@ -955,11 +955,11 @@ const AttendanceRegist = () => {
           </button>
           {user.username === '이정훈' ? (
             selectedScreen === 'R&D' ? (
-              <button className='second_button' onClick={handleScreenChange}>
+              <button className='primary_button' onClick={handleScreenChange}>
                 R&D 센터
               </button>
             ) : (
-              <button className='second_button' onClick={handleScreenChange}>
+              <button className='primary_button' onClick={handleScreenChange}>
                 본사
               </button>
             )
