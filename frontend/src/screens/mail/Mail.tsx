@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { 
   mail_calendar, 
   mail_delete, 
@@ -12,21 +13,127 @@ import {
   White_Arrow,
   SearchIcon,
  } from "../../assets/images/index";
-import { useState } from "react";
+import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
+import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
+import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
+import { ReactComponent as FirstLeftIcon } from "../../assets/images/Common/FirstLeftIcon.svg";
+import Pagination from "react-js-pagination";
 
 const Mail = () => {
-  const [settingVisible, setSettingVisible] = useState(false);
-  const [mailcontentVisible, setMailContentVisible] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [postPerPage, setPostPerPage] = useState<number>(11);
+  const [settingVisible, setSettingVisible] = useState(true);
+  const [hoverState, setHoverState] = useState<string>("");
+
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [selectdMenuOption, setSelectedMenuOption] = useState('전체 메일');
+  const [dueDateIsOpen, setDuedDateIsOpen] = useState(false);
+  const [selectdDueDateOption, setSelectedDueDateOption] = useState('전체');
+
+  const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [mails, setMails] = useState<any[]>([]);
+
+  const menuOptions = [
+    '전체 메일',
+    '중요 메일',
+    '받은 메일함',
+    '보낸 메일함',
+    '안 읽은 메일',
+    '임시 보관함',
+    '스팸 메일함',
+  ];
+
+  const dueDateOptions = [
+    '전체',
+    '최근 1주일',
+    '최근 1개월',
+    '최근 1년',
+  ];
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setPostPerPage(11); // Desktop
+      } else if (window.innerWidth >= 992) {
+        setPostPerPage(8); // Laptop
+      } else {
+        setPostPerPage(8);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    const initialMails = [
+      { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정1.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 2, title: "홈페이지 조직도 관련 안내", content: "메일입니다.2", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정2.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정3.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 4, title: "개발 1팀 업무 설정 보고", content: "메일입니다.4", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정4.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 5, title: "개발 1팀 업무 설정 보고", content: "메일입니다.5", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정5.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 6, title: "개발 1팀 업무 설정 보고", content: "메일입니다.6", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정6.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 7, title: "개발 1팀 업무 설정 보고", content: "메일입니다.7", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정7.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 8, title: "개발 1팀 업무 설정 보고", content: "메일입니다.8", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정8.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정9.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정10.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정11.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정12.pdf", mailType: "받은 메일함", date: "2024-05-01" },      
+    ];
+    setMails(initialMails);
+  }, []);
+
+  const filteredMails = mails.filter((mail) =>
+    mail.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handlePageChange = (page: number) => {
+    setPage(page);
+  };
+  
+  const toggleDropdown = () => {
+    setMenuIsOpen(!menuIsOpen);
+  };
+
+  const handleOptionSelect = (option: string) => {
+    setSelectedMenuOption(option);
+    setMenuIsOpen(false);
+  };
+
+  const toggleDueDate = () => {
+    setDuedDateIsOpen(!dueDateIsOpen);
+  }
+
+  const handleDueDateSelect = (option: string) => {
+    setSelectedDueDateOption(option);
+    setDuedDateIsOpen(false);
+  }
 
   const toggleSetting = () => {
     setSettingVisible(!settingVisible);
   };
 
-  const toggleMailContent = () => {
-    setMailContentVisible(!mailcontentVisible);
-  }
+  const handleHover = (imageName: string) => {
+    setHoverState(imageName);
+  };
 
-
+  const toggleMailContent = (mailId: number) => {
+    const newVisibility = Object.fromEntries(
+      Object.keys(mailContentVisibility).map((key) => [key, false])
+    );
+  
+    setMailContentVisibility((prevVisibility) => ({
+      ...newVisibility,
+      [mailId]: !prevVisibility[mailId],
+    }));
+  };
+  
   return (
     <div className="content">
       <div className="mail_container">
@@ -36,9 +143,18 @@ const Mail = () => {
               <input type="checkbox" id="check1" />
               <span></span>
             </label>
-            <img src={mail_delete} alt="mail_delete" />
-            <img src={mail_spam} alt="mail_spam" />
-            <img src={mail_write} alt="mail_write" />
+            <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")}>
+              <img src={mail_delete} alt="mail_delete" />
+              {hoverState === "delete" && <div className="tooltip" style={{width: '40px'}}>삭제</div>}
+            </div>
+            <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")}>
+              <img src={mail_spam} alt="mail_spam" />
+              {hoverState === "spam" && <div className="tooltip">스팸차단</div>}
+            </div>
+            <div className="image-container" onMouseEnter={() => handleHover("write")} onMouseLeave={() => handleHover("")}>
+              <img src={mail_write} alt="mail_write" />
+              {hoverState === "write" && <div className="tooltip">메일 작성</div>}
+            </div>
           </div>
 
           <div className="mail_header_right">
@@ -67,13 +183,35 @@ const Mail = () => {
               <button className={`spam_button`}>스팸 설정</button>
               <button className={`card_button`}>모바일 명함</button>
               <div className="select_duedate_box">
-                <span>기간</span>
-                <img src={White_Arrow} alt="White_Arrow" />
+                <div className="selected_option" onClick={toggleDueDate}>
+                  <span>기간 : {selectdDueDateOption}</span>
+                  <img src={White_Arrow} alt="White_Arrow" />
+                </div>
+                {dueDateIsOpen && (
+                  <ul className="dropdown_menu">
+                    {dueDateOptions.map((option: string) => (
+                      <li key={option} onClick={() => handleDueDateSelect(option)}>
+                        {option}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
             <div className="select_box">
-              <span>전체 메일</span>
-              <img src={White_Arrow} alt="White_Arrow" />
+              <div className="selected_option" onClick={toggleDropdown}>
+                <span>{selectdMenuOption}</span>
+                <img src={White_Arrow} alt="White_Arrow" />
+              </div>
+              {menuIsOpen && (
+                <ul className="dropdown_menu">
+                  {menuOptions.map((option: string) => (
+                    <li key={option} onClick={() => handleOptionSelect(option)}>
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
@@ -95,325 +233,91 @@ const Mail = () => {
               </tr>
             </thead>
             <tbody className="board_container">
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발 1팀 구민석</td>
-                <td>
-                  <div>
-                    <img src={mail_important_active} alt="mail_important_active" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    2024년 5월 급여명세서 보내드립니다.
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle"/>
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
+              {filteredMails
+                .slice((page - 1) * postPerPage, page * postPerPage)
+                .map((mail) => (
+                  <>
+                  <tr key={mail.id} className="board_content">
+                    <td>
+                      <label className="custom-checkbox">
+                        <input type="checkbox" id="check1" />
+                        <span></span>
+                      </label>
+                    </td>
+                    <td>{mail.sender}</td>
+                    <td>
+                      <div>
+                        <img src={mail_important_active} alt="mail_important_active" />
+                        <img src={mail_attachment} alt="mail_attachment" />
+                      </div>
+                      <span>[{mail.mailType}]</span>
+                      <div onClick={() => toggleMailContent(mail.id)}>
+                        {mail.title}
+                        <img src={mail_triangle} alt="mail_triangle"/>
+                      </div>
+                    </td>
+                    <td>{mail.date}</td>
+                  </tr>
 
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발부 진유빈</td>
-                <td>
-                  <div>
-                    <img src={mail_important} alt="mail_important" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    홈페이지 조직도 관련 안내
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle" />
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발부 진유빈</td>
-                <td>
-                  <div>
-                    <img src={mail_important} alt="mail_important" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    개발 1팀 업무 설정 보고
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle" />
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발부 진유빈</td>
-                <td>
-                  <div>
-                    <img src={mail_important} alt="mail_important" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    개발 1팀 업무 설정 보고
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle" />
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발부 진유빈</td>
-                <td>
-                  <div>
-                    <img src={mail_important} alt="mail_important" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    개발 1팀 업무 설정 보고
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle" />
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발부 진유빈</td>
-                <td>
-                  <div>
-                    <img src={mail_important} alt="mail_important" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    개발 1팀 업무 설정 보고
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle" />
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발부 진유빈</td>
-                <td>
-                  <div>
-                    <img src={mail_important} alt="mail_important" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    개발 1팀 업무 설정 보고
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle" />
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발 1팀 구민석</td>
-                <td>
-                  <div>
-                    <img src={mail_important_active} alt="mail_important_active" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    2024년 5월 급여명세서 보내드립니다.
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle"/>
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-              
-
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발 1팀 구민석</td>
-                <td>
-                  <div>
-                    <img src={mail_important_active} alt="mail_important_active" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    2024년 5월 급여명세서 보내드립니다.
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle"/>
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-              
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발 1팀 구민석</td>
-                <td>
-                  <div>
-                    <img src={mail_important_active} alt="mail_important_active" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    2024년 5월 급여명세서 보내드립니다.
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle"/>
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-
-              <tr className="board_content">
-                <td>
-                  <label className="custom-checkbox">
-                    <input type="checkbox" id="check1" />
-                    <span></span>
-                  </label>
-                </td>
-                <td>개발 1팀 구민석</td>
-                <td>
-                  <div>
-                    <img src={mail_important_active} alt="mail_important_active" />
-                    <img src={mail_attachment} alt="mail_attachment" />
-                  </div>
-                  <span>[받은 메일함]</span>
-                  <div>
-                    2024년 5월 급여명세서 보내드립니다.
-                  </div>
-                  <div>
-                    <img src={mail_triangle} alt="mail_triangle" onClick={toggleMailContent}/>
-                  </div>
-                </td>
-                <td>2024.12.30</td>
-              </tr>
-              {mailcontentVisible && (
-                <tr className="mail_detail_overlay">
-                  <td colSpan={4}>
-                    <div className="mail_detail_header">
-                      <span>2024년 5월 급여명세서 보내드립니다.</span>
-                      <img src={mail_delete} alt="mail_delete" />
-                    </div>
-                    <div className="mail_detail_content">
-                      <div className="mail_detail_content_top">
-                        <div>
-                          <div>
-                            <div>개발1팀 장현지</div>
-                            <span>2024.04.04 10:37</span>
+                  <tr className={`mail_detail_overlay ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
+                    <td colSpan={4}>
+                      <div className={`mail_detail_wrapper ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
+                        <div className="mail_detail_header">
+                          <span>{mail.title}</span>
+                          <img src={mail_delete} alt="mail_delete" />
+                        </div>
+                        <div className="mail_detail_content">
+                          <div className="mail_detail_content_top">
+                            <div>
+                              <div>
+                                <div>{mail.sender}</div>
+                                <span>{mail.date}</span>
+                              </div>
+                              <div>
+                                <span>{mail.attachment}</span>
+                                <img src={mail_download} alt="mail_download" />
+                              </div>
+                            </div>
+                            <div>
+                              <div>받는 사람 :</div>
+                              <div>{mail.recipient}</div>
+                            </div>
                           </div>
-                          <div>
-                            <span>업무설정.pdf</span>
-                            <img src={mail_download} alt="mail_download" />
+
+                          <div className="mail_detail_content_middle">
+                            <div>
+                              {mail.content}
+                            </div>
+                          </div>
+
+                          <div className="mail_detail_content_bottom">
+                            <button className="white_button">전달</button>
                           </div>
                         </div>
-                        <div>
-                          <div>받는 사람 :</div>
-                          <div>개발부 진유빈</div>
-                        </div>
                       </div>
-
-                      <div className="mail_detail_content_middle">
-                        <div>
-                          안녕하세요. 각 팀의 조직도에 변경 사항이 있어 안내문을 배포합니다. <br/>
-                          개발부 - 개발1부, 개발2부가 아닌 개발 1팀 및 개발 2팀으로 부서 이름이 변경되었음을 알립니다. <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                          스크롤 <br/>
-                        </div>
-                      </div>
-
-                      <div className="mail_detail_content_bottom">
-                        <button className="white_button">전달</button>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
+                    </td>
+                  </tr>
+                </>
+              ))}
             </tbody>
           </table>
         </div>
-
       </div>
+
+      <div className="mail_pagination">
+        <Pagination
+          activePage={page}
+          itemsCountPerPage={postPerPage}
+          totalItemsCount={filteredMails.length}
+          pageRangeDisplayed={5}
+          prevPageText={<LeftIcon />}
+          nextPageText={<RightIcon />}
+          firstPageText={<FirstLeftIcon />}
+          lastPageText={<LastRightIcon />}
+          onChange={handlePageChange}
+        />
+      </div>
+
     </div>
   );
 };
