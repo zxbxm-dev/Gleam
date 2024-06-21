@@ -1,4 +1,3 @@
-// models/AnnualLeave.js
 module.exports = (sequelize, DataTypes) => {
   const AnnualLeave = sequelize.define(
     "AnnualLeave",
@@ -13,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       userId: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       username: {
         type: DataTypes.STRING,
