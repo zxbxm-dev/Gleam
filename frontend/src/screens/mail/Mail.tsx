@@ -1,26 +1,24 @@
 import { useState, useEffect } from "react";
-import { 
-  mail_calendar, 
-  mail_delete, 
-  mail_download, 
-  mail_important, 
-  mail_important_active, 
-  mail_setting, 
-  mail_spam, 
+import {
+  mail_calendar,
+  mail_delete,
+  mail_download,
+  mail_important,
+  mail_important_active,
+  mail_setting,
+  mail_spam,
   mail_write,
   mail_attachment,
   mail_triangle,
   White_Arrow,
   SearchIcon,
- } from "../../assets/images/index";
-import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
-import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
-import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
-import { ReactComponent as FirstLeftIcon } from "../../assets/images/Common/FirstLeftIcon.svg";
-import Pagination from "react-js-pagination";
+  LeftIcon,
+  RightIcon,
+} from "../../assets/images/index";
 
 const Mail = () => {
   const [page, setPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [postPerPage, setPostPerPage] = useState<number>(11);
   const [settingVisible, setSettingVisible] = useState(true);
   const [hoverState, setHoverState] = useState<string>("");
@@ -33,6 +31,8 @@ const Mail = () => {
   const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [mails, setMails] = useState<any[]>([]);
+
+  const itemsPerPage = 8;
 
   const menuOptions = [
     '전체 메일',
@@ -70,7 +70,6 @@ const Mail = () => {
     };
   }, []);
 
-
   useEffect(() => {
     const initialMails = [
       { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정1.pdf", mailType: "받은 메일함", date: "2024-05-01" },
@@ -84,7 +83,7 @@ const Mail = () => {
       { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정9.pdf", mailType: "받은 메일함", date: "2024-05-01" },
       { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정10.pdf", mailType: "받은 메일함", date: "2024-05-01" },
       { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정11.pdf", mailType: "받은 메일함", date: "2024-05-01" },
-      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정12.pdf", mailType: "받은 메일함", date: "2024-05-01" },      
+      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정12.pdf", mailType: "받은 메일함", date: "2024-05-01" },
     ];
     setMails(initialMails);
   }, []);
@@ -93,10 +92,13 @@ const Mail = () => {
     mail.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredMails.length / itemsPerPage);
+
   const handlePageChange = (page: number) => {
     setPage(page);
+    setCurrentPage(page);
   };
-  
+
   const toggleDropdown = () => {
     setMenuIsOpen(!menuIsOpen);
   };
@@ -127,13 +129,13 @@ const Mail = () => {
     const newVisibility = Object.fromEntries(
       Object.keys(mailContentVisibility).map((key) => [key, false])
     );
-  
+
     setMailContentVisibility((prevVisibility) => ({
       ...newVisibility,
       [mailId]: !prevVisibility[mailId],
     }));
   };
-  
+
   return (
     <div className="content">
       <div className="mail_container">
@@ -145,7 +147,7 @@ const Mail = () => {
             </label>
             <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")}>
               <img src={mail_delete} alt="mail_delete" />
-              {hoverState === "delete" && <div className="tooltip" style={{width: '40px'}}>삭제</div>}
+              {hoverState === "delete" && <div className="tooltip" style={{ width: '40px' }}>삭제</div>}
             </div>
             <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")}>
               <img src={mail_spam} alt="mail_spam" />
@@ -162,11 +164,11 @@ const Mail = () => {
               {settingVisible ? (
                 <>
                   <img src={mail_setting} alt="mail_setting" />
-                  <img src={White_Arrow} alt="White_Arrow" className="Arrow_right"/>
+                  <img src={White_Arrow} alt="White_Arrow" className="Arrow_right" />
                 </>
               ) : (
                 <>
-                  <img src={White_Arrow} alt="White_Arrow" className="Arrow_left"/>
+                  <img src={White_Arrow} alt="White_Arrow" className="Arrow_left" />
                   <img src={mail_setting} alt="mail_setting" />
                 </>
               )}
@@ -178,6 +180,8 @@ const Mail = () => {
                   type="search"
                   className="input_form"
                   placeholder="검색어를 입력해 주세요."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <button className={`spam_button`}>스팸 설정</button>
@@ -219,10 +223,10 @@ const Mail = () => {
         <div className="mail_content">
           <table className="mail_board_list">
             <colgroup>
-              <col width="3%"/>
-              <col width="15%"/>
-              <col width="67%"/>
-              <col width="13%"/>
+              <col width="3%" />
+              <col width="15%" />
+              <col width="67%" />
+              <col width="13%" />
             </colgroup>
             <thead>
               <tr className="board_header">
@@ -237,87 +241,128 @@ const Mail = () => {
                 .slice((page - 1) * postPerPage, page * postPerPage)
                 .map((mail) => (
                   <>
-                  <tr key={mail.id} className="board_content">
-                    <td>
-                      <label className="custom-checkbox">
-                        <input type="checkbox" id="check1" />
-                        <span></span>
-                      </label>
-                    </td>
-                    <td>{mail.sender}</td>
-                    <td>
-                      <div>
-                        <img src={mail_important_active} alt="mail_important_active" />
-                        <img src={mail_attachment} alt="mail_attachment" />
-                      </div>
-                      <span>[{mail.mailType}]</span>
-                      <div onClick={() => toggleMailContent(mail.id)}>
-                        {mail.title}
-                        <img src={mail_triangle} alt="mail_triangle"/>
-                      </div>
-                    </td>
-                    <td>{mail.date}</td>
-                  </tr>
-
-                  <tr className={`mail_detail_overlay ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
-                    <td colSpan={4}>
-                      <div className={`mail_detail_wrapper ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
-                        <div className="mail_detail_header">
-                          <span>{mail.title}</span>
-                          <img src={mail_delete} alt="mail_delete" />
+                    <tr key={mail.id} className="board_content">
+                      <td>
+                        <label className="custom-checkbox">
+                          <input type="checkbox" id="check1" />
+                          <span></span>
+                        </label>
+                      </td>
+                      <td>{mail.sender}</td>
+                      <td>
+                        <div>
+                          <img src={mail_important_active} alt="mail_important_active" />
+                          <img src={mail_attachment} alt="mail_attachment" />
                         </div>
-                        <div className="mail_detail_content">
-                          <div className="mail_detail_content_top">
-                            <div>
+                        <span>[{mail.mailType}]</span>
+                        <div onClick={() => toggleMailContent(mail.id)}>
+                          {mail.title}
+                          <img src={mail_triangle} alt="mail_triangle" />
+                        </div>
+                      </td>
+                      <td>{mail.date}</td>
+                    </tr>
+
+                    <tr className={`mail_detail_overlay ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
+                      <td colSpan={4}>
+                        <div className={`mail_detail_wrapper ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
+                          <div className="mail_detail_header">
+                            <span>{mail.title}</span>
+                            <img src={mail_delete} alt="mail_delete" />
+                          </div>
+                          <div className="mail_detail_content">
+                            <div className="mail_detail_content_top">
                               <div>
-                                <div>{mail.sender}</div>
-                                <span>{mail.date}</span>
+                                <div>
+                                  <div>{mail.sender}</div>
+                                  <span>{mail.date}</span>
+                                </div>
+                                <div>
+                                  <span>{mail.attachment}</span>
+                                  <img src={mail_download} alt="mail_download" />
+                                </div>
                               </div>
                               <div>
-                                <span>{mail.attachment}</span>
-                                <img src={mail_download} alt="mail_download" />
+                                <div>받는 사람 :</div>
+                                <div>{mail.recipient}</div>
                               </div>
                             </div>
-                            <div>
-                              <div>받는 사람 :</div>
-                              <div>{mail.recipient}</div>
-                            </div>
-                          </div>
 
-                          <div className="mail_detail_content_middle">
-                            <div>
-                              {mail.content}
+                            <div className="mail_detail_content_middle">
+                              <div>
+                                {mail.content}
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="mail_detail_content_bottom">
-                            <button className="white_button">전달</button>
+                            <div className="mail_detail_content_bottom">
+                              <button className="white_button">전달</button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                </>
-              ))}
+                      </td>
+                    </tr>
+                  </>
+                ))}
             </tbody>
           </table>
         </div>
       </div>
 
       <div className="mail_pagination">
-        <Pagination
-          activePage={page}
-          itemsCountPerPage={postPerPage}
-          totalItemsCount={filteredMails.length}
-          pageRangeDisplayed={5}
-          prevPageText={<LeftIcon />}
-          nextPageText={<RightIcon />}
-          firstPageText={<FirstLeftIcon />}
-          lastPageText={<LastRightIcon />}
-          onChange={handlePageChange}
-        />
+        {filteredMails.length > itemsPerPage && (
+          <div className="Pagination">
+            <img
+              src={LeftIcon}
+              onClick={() => {
+                if (page > 1) {
+                  setPage(page - 1);
+                  setCurrentPage(page - 1);
+                }
+              }}
+              alt="Previous Page"
+            />
+            <input
+              type="text"
+              value={page}
+              className="PageInput"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const inputPage = e.target.value.replace(/\D/g, '');
+                setPage(inputPage ? Number(inputPage) : 0);
+              }}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === 'Enter') {
+                  const inputPage = Number(e.currentTarget.value);
+                  if (!isNaN(inputPage) && inputPage >= 1 && inputPage <= totalPages) {
+                    setCurrentPage(inputPage);
+                  } else {
+                    setPage(1);
+                  }
+                }
+              }}
+              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                const inputPage = Number(e.currentTarget.value);
+                if (!isNaN(inputPage) && inputPage >= 1 && inputPage <= totalPages) {
+                  setCurrentPage(inputPage);
+                } else {
+                  setPage(1);
+                }
+              }}
+            />
+            <span> / </span>
+            <span className="PagesTotal">{totalPages}</span>
+            <img
+              src={RightIcon}
+              onClick={() => {
+                if (page < totalPages) {
+                  setPage(page + 1);
+                  setCurrentPage(page + 1);
+                }
+              }}
+              alt="Next Page"
+            />
+          </div>
+        )}
       </div>
-
     </div>
   );
 };
