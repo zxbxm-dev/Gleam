@@ -219,7 +219,7 @@ const UserManagement = () => {
                             <td>{usermanage.department}</td>
                             <td>{usermanage.position}</td>
                             <td>{new Date(usermanage.entering).toISOString().substring(0, 10)}</td>
-                            <td>
+                            <td className="TdContain">
                               <button
                                 className="red_button"
                                 onClick={() => {

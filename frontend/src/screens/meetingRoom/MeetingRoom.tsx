@@ -108,10 +108,6 @@ const MeetingRoom = () => {
 
     return (
         <div className="content">
-            <div className="content_header">
-                <Link to={"/meetingroom"} className="sub_header">회의실 관리</Link>
-            </div>
-
             <div className="content_container">
                 <div className="meetingroom_container">
                     <FullCalendar

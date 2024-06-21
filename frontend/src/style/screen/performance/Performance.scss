@@ -44,10 +44,8 @@
     flex-direction: column;
     margin-top: 20px;
 
-
-    .approval_button {
-      @include report-button;
-      margin-top: 10px;
+    div{
+      margin-bottom: 20px;
     }
   }
 }
