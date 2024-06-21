@@ -12,15 +12,11 @@ import {
   mail_triangle,
   White_Arrow,
   SearchIcon,
- } from "../../assets/images/index";
-import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
-import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
-import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
-import { ReactComponent as FirstLeftIcon } from "../../assets/images/Common/FirstLeftIcon.svg";
-import Pagination from "react-js-pagination";
+} from "../../assets/images/index";
 
 const Mail = () => {
   const [page, setPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [postPerPage, setPostPerPage] = useState<number>(11);
   const [settingVisible, setSettingVisible] = useState(true);
   const [hoverState, setHoverState] = useState<string>("");
@@ -33,6 +29,8 @@ const Mail = () => {
   const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [mails, setMails] = useState<any[]>([]);
+
+  const itemsPerPage = 8;
 
   const menuOptions = [
     '전체 메일',
@@ -70,7 +68,6 @@ const Mail = () => {
     };
   }, []);
 
-
   useEffect(() => {
     const initialMails = [
       { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정1.pdf", mailType: "받은 메일함", date: "2024-05-01" },
@@ -93,8 +90,11 @@ const Mail = () => {
     mail.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredMails.length / itemsPerPage);
+
   const handlePageChange = (page: number) => {
     setPage(page);
+    setCurrentPage(page);
   };
   
   const toggleDropdown = () => {
@@ -178,6 +178,8 @@ const Mail = () => {
                   type="search"
                   className="input_form"
                   placeholder="검색어를 입력해 주세요."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <button className={`spam_button`}>스팸 설정</button>
@@ -305,18 +307,39 @@ const Mail = () => {
       </div>
 
       <div className="mail_pagination">
-        <Pagination
-          activePage={page}
-          itemsCountPerPage={postPerPage}
-          totalItemsCount={filteredMails.length}
-          pageRangeDisplayed={5}
-          prevPageText={<LeftIcon />}
-          nextPageText={<RightIcon />}
-          firstPageText={<FirstLeftIcon />}
-          lastPageText={<LastRightIcon />}
-          onChange={handlePageChange}
-        />
-      </div>
+  {filteredMails.length > itemsPerPage && (
+    <div className="Pagination">
+      <input
+        type="text"
+        value={page}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          const inputPage = e.target.value.replace(/\D/g, '');
+          setPage(inputPage ? Number(inputPage) : 0);
+        }}
+        onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          if ( e.key === 'Enter') {
+            const inputPage = Number(e.currentTarget.value);
+            if (!isNaN(inputPage) && inputPage >= 1 && inputPage <= totalPages) {
+              setCurrentPage(inputPage);
+            } else {
+              setPage(1);
+            }
+          }
+        }}
+        onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+          const inputPage = Number(e.currentTarget.value);
+          if (!isNaN(inputPage) && inputPage >= 1 && inputPage <= totalPages) {
+            setCurrentPage(inputPage);
+          } else {
+            setPage(1);
+          }
+        }}
+      />
+      <span>/</span>
+      <span>{totalPages}</span>
+    </div>
+  )}
+</div>
 
     </div>
   );
