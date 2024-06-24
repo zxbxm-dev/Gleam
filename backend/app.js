@@ -36,6 +36,7 @@ require("./lib/router/user")(app);
 require("./lib/router/expense")(app);
 require("./lib/router/noticeBoard")(app);
 require("./lib/router/attendance")(app);
+require("./lib/router/workLog")(app);
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
