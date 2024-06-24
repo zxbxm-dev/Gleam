@@ -9,8 +9,9 @@ const quitterUser = require("./user/quitter");
 const expenses = require("./expense/costOperation");
 // 게시판관리
 const noticeBoard = require("./noticeBoard/noticeBoard");
-//연차관리 (관리자)
+// 근태관리
 const annualLeaveData = require("./attendance/annualLeave");
+const attendance = require("./attendance/officeHour");
 
 const db = {};
 
@@ -24,5 +25,6 @@ db.Quitter = quitterUser(sequelize, Sequelize);
 db.Expenses = expenses(sequelize, Sequelize);
 db.Notice = noticeBoard(sequelize, Sequelize);
 db.AnnualLeave = annualLeaveData(sequelize, Sequelize);
+db.Attendance = attendance(sequelize, Sequelize);
 
 module.exports = db;
