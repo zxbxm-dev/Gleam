@@ -40,6 +40,7 @@ import {
   MeetingRoom,
   Project,
   Mail,
+  WriteMail,
 } from "./screens";
 
 function App() {
@@ -72,6 +73,7 @@ function App() {
 
               {/* 메일 */}
               <Route path="/mail" element={<Mail />} />
+              <Route path="/writeMail" element={<WriteMail />} />
               
 
               {/* 조직문화 */}

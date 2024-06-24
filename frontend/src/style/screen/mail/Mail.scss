@@ -334,6 +334,14 @@
             div {
               display: flex;
               gap: 10px;
+              
+              &:hover {
+                font-family: var(--font-family-Noto-B);
+              }
+
+              &.clicked {
+                color: var(--primary-color);
+              }
             }
 
             span {
@@ -367,6 +375,45 @@
               padding: 0 30px;
               background-color: #EDEDED;
               font-size: 18px;
+
+              .mail_reservation {
+                background-color: var(--primary-color);
+                border: 1px solid var(--primary-color);
+                border-radius: 5px;
+                padding: 4px 8px;
+                color: #fff;
+                font-size: 14px;
+                margin-right: 20px;
+              }
+
+              .image-container {
+                position: relative;
+                cursor: pointer;
+              }
+        
+              .tooltip {
+                display: flex;
+                width: 65px;
+                font-size: 12px;
+                font-family: var(--font-family-Noto-M);
+                visibility: hidden;
+                background-color: var(--primary-color);
+                color: black;
+                padding: 4px 8px;
+                border-radius: 5px;
+                position: absolute;
+                z-index: 999;
+                bottom: 50%;
+                right: 100%;
+                transform: translateX(20%);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+              }
+        
+              .image-container:hover .tooltip {
+                visibility: visible;
+                opacity: 1;
+              }
 
               img {
                 width: 25px;
