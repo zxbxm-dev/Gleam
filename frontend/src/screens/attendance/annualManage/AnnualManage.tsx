@@ -1,19 +1,26 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from 'react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
 
-import { useQuery } from 'react-query';
+import { useQueryClient, useQuery } from 'react-query';
 import { CheckAnnual, EditAnnual } from '../../../services/attendance/AttendanceServices';
 import { PersonData } from '../../../services/person/PersonServices';
 
 type Member = [string, number, number, number, string[], string, string, string, string];
-type MemberRD = [string, number, number, number, string[], string, string, string, string];
 type TeamOrderType = {
   [key: string]: string[];
 };
+
+interface AnnualData {
+  username: string;
+  availableDate: number;
+  usedDate : number;
+  extraDate: number;
+  startDate?: string;
+  dateType?: string;
+}
 
 const fetchUser = async () => {
   try {
@@ -87,16 +94,16 @@ const useAnnualData = () => {
 
   const processedHOData = useMemo(() => {
     const result = HO_Data.map((user: any) => {
-      const userAnnualData = annualData.filter((annual: any) => annual.username === user.username);
+      const userAnnualData: AnnualData[] = annualData.filter((annual: any) => annual.username === user.username);
       const formattedStartDates = userAnnualData.map((annual: any) => 
         annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
       ).filter(date => date !== ''); // 빈 문자열 제거
 
       return [
         user.username || '',
-        user.availableDate || 0,
-        user.usedDate || 0,
-        user.extraDate || 0,
+        userAnnualData[0]?.availableDate || 0,
+        userAnnualData[0]?.usedDate || 0,
+        userAnnualData[0]?.extraDate || 0,
         formattedStartDates.length ? formattedStartDates : [''],
         user.entering ? formatEnteringDate(user.entering) : '',
         user.leavedate || '',
@@ -136,6 +143,7 @@ const useAnnualData = () => {
 
 const AnnualManage = () => {
   const user = useRecoilValue(userState);
+  const queryClient = useQueryClient();
   const [editMode, setEditMode] = useState(false);
   const today = new Date().toISOString().split('T')[0];
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -178,10 +186,10 @@ const AnnualManage = () => {
 
   const handleSubmit = () => {
     setEditMode(!editMode);
-    console.log('보낸 데이터', changeData)
     EditAnnual(changeData)
       .then(response => {
         console.log("연차관리 데이터 전송 성공", response)
+        queryClient.invalidateQueries("annual");
       })
       .catch(error => {
         console.log("연차관리 데이터 전송 오류", error);
@@ -261,7 +269,6 @@ const AnnualManage = () => {
     setMembers(sortedMembers);
   }, [HO_Data]);
   
-
   useEffect(() => {
     const groupedData = members.reduce((acc, member) => {
       const dept = member[7];
@@ -568,8 +575,6 @@ const AnnualManage = () => {
       </table>
     );
   };
-
-  console.log('userMap',userMap)
 
   return (
     <div className="content">

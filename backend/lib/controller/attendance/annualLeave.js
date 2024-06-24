@@ -146,30 +146,44 @@ const administratorCalendar = async (req, res) => {
       );
     }
 
-    // 모든 연차 정보 조회
-    const allVacations = await vacation.findAll();
-    for (const vac of allVacations) {
-      const usedDaysCount = await vacation.count({
-        where: {
-          userId: vac.userId,
-        },
-      });
+  // 모든 연차 정보 조회
+  const allVacations = await vacation.findAll();
+  for (const vac of allVacations) {
+    const userVacations = await vacation.findAll({
+      where: {
+        userId: vac.userId,
+      },
+    });
 
-      await vac.update(
-        { usedDate: usedDaysCount.toString() },
-        {
-          where: {
-            id: vac.id,
-          },
-        }
-      );
+    // Type별 휴가 일수 계산
+    let usedDaysCount = 0;
+    for (const userVac of userVacations) {
+      if (!userVac.dateType) {
+        continue; // dateType 빈값이면 일수 카운트 안함
+      }
+      
+      if (userVac.dateType === '연차') {
+        usedDaysCount += 1;
+      } else if (userVac.dateType === '반차') {
+        usedDaysCount += 0.5;
+      }
     }
+
+    await vac.update(
+      { usedDate: usedDaysCount.toString() },
+      {
+        where: {
+          id: vac.id,
+        },
+      }
+    );
+  }
 
     // extraDate 계산 및 업데이트
     const updatedVacations = await vacation.findAll();
     for (const vac of updatedVacations) {
       const availableDate = vac.availableDate || 0;
-      const usedDate = parseInt(vac.usedDate) || 0;
+      const usedDate = parseFloat(vac.usedDate) || 0;
 
       // extraDate 계산 및 음수 방지 로직 추가
       const extraDate = Math.max(availableDate - usedDate, 0);
