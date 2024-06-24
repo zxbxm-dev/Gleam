@@ -151,11 +151,11 @@ const resetPassword = async (req, res) => {
 // 이미지 파일 업로드 및 회원 정보 수정을 위한 함수
 const uploadDirectory = "./uploads";
 
-//uploads 파일 없을시 생성
+// uploads 폴더가 없으면 생성
 if (!fs.existsSync(uploadDirectory)) {
   fs.mkdirSync(uploadDirectory);
 }
-
+// 회원정보 수정
 const editRegistration = async (req, res) => {
   try {
     const formData = req.body;
@@ -167,6 +167,7 @@ const editRegistration = async (req, res) => {
     // 사용자 정보와 함께 파일 이름을 데이터베이스에 저장
     const {
       password,
+      newPassword,
       phoneNumber,
       company,
       department,
@@ -176,8 +177,14 @@ const editRegistration = async (req, res) => {
       userID,
     } = formData;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // 새로운 비밀번호가 주어진 경우에만 해싱
+    let hashedPassword = password; // 기본값으로 이전 비밀번호 사용
 
+    if (newPassword) {
+      hashedPassword = await bcrypt.hash(newPassword, 10); // 새로운 비밀번호 해싱
+    }
+
+    // 데이터 업데이트
     const updateData = {
       password: hashedPassword,
       phoneNumber: phoneNumber,
@@ -190,6 +197,7 @@ const editRegistration = async (req, res) => {
       Sign: signFile ? signFile.originalname : null,
     };
 
+    // 사용자 정보 업데이트
     const [updatedRows] = await User.update(updateData, {
       where: {
         userId: userID,
@@ -200,6 +208,7 @@ const editRegistration = async (req, res) => {
       return res.status(404).send("회원 정보를 찾을 수 없습니다.");
     }
 
+    // 업데이트된 사용자 정보 가져오기
     const updatedUser = await User.findOne({ where: { userId: userID } });
 
     console.log("업데이트된 사용자 정보:", updatedUser);
