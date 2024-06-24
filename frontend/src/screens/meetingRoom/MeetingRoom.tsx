@@ -273,15 +273,9 @@ const MeetingRoom = () => {
                             </fieldset>
                         </div>
                     </div>
-                    <div className="body-content">
-                        <div className="content-left">
-                            <div className="div">
-                                메모
-                            </div>
-                        </div>
-                        <div className="content-right">
-                            <textarea className="textareainput" onChange={handleMemoChange} />
-                        </div>
+                    <div className="AddTitle">
+                        <div className="div">메모</div>        
+                        <input className="TextInputCon" type="text" />
                     </div>
                 </div>
             </CustomModal>
@@ -289,7 +283,7 @@ const MeetingRoom = () => {
             <CustomModal
                 isOpen={iseventModalOpen}
                 onClose={() => setEventModalOPen(false)}
-                header={'일정 확인'}
+                header={'업무 회의'}
                 footer1={'편집'}
                 footer1Class="gray-btn"
                 onFooter1Click={handleEditEvent}
@@ -299,26 +293,17 @@ const MeetingRoom = () => {
                 footer3={'삭제'}
                 footer3Class="red-btn"
                 onFooter3Click={handleDeleteEventModal}
-                width="360px"
-                height="300px"
+                width="400px"
+                height="260px"
             >
                 <div className="body-container">
-                    <div className="body-content">
-                        <div className="content-right">
-                            <div className="content-title">
-                                업무 회의
-                            </div>
-                        </div>
-                    </div>
                     <div className="body-content">
                         <div className="content-left content-center">
                             시간
                         </div>
                         <div className="content-right">
                             <div className="content-date">
-                                <span>00월 00일 오후 13:30</span>
-                                <span>-</span>
-                                <span>00월 00일 오후 15:30</span>
+                                <span>2024.04.11 (목) 오후 13:30 ~ 14 : 30</span>
                             </div>
                         </div>
                     </div>

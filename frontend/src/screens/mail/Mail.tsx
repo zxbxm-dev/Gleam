@@ -84,7 +84,7 @@ const Mail = () => {
       { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정9.pdf", mailType: "받은 메일함", date: "2024-05-01" },
       { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정10.pdf", mailType: "받은 메일함", date: "2024-05-01" },
       { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정11.pdf", mailType: "받은 메일함", date: "2024-05-01" },
-      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정12.pdf", mailType: "받은 메일함", date: "2024-05-01" },      
+      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "", mailType: "받은 메일함", date: "2024-05-01" },      
     ];
     setMails(initialMails);
   }, []);
@@ -92,6 +92,10 @@ const Mail = () => {
   const filteredMails = mails.filter((mail) =>
     mail.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const renderMailContent = (mail: any) => {
+    return { __html: mail.content };
+  };
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -248,7 +252,7 @@ const Mail = () => {
                     <td>
                       <div>
                         <img src={mail_important_active} alt="mail_important_active" />
-                        <img src={mail_attachment} alt="mail_attachment" />
+                        {mail.attachment && <img src={mail_attachment} alt="attachment" />}
                       </div>
                       <span>[{mail.mailType}]</span>
                       <div onClick={() => toggleMailContent(mail.id)}>
@@ -285,8 +289,8 @@ const Mail = () => {
                           </div>
 
                           <div className="mail_detail_content_middle">
-                            <div>
-                              {mail.content}
+                            <div dangerouslySetInnerHTML={renderMailContent(mail)}>
+                             
                             </div>
                           </div>
 
