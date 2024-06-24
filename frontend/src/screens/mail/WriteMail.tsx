@@ -2,6 +2,10 @@ import { useState } from "react";
 import {
   White_Arrow,
 } from "../../assets/images/index";
+import { Editor } from '@toast-ui/react-editor';
+import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+import '@toast-ui/editor/dist/i18n/ko-kr';
+import '@toast-ui/editor/dist/toastui-editor.css';
 
 const WriteMail = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -69,14 +73,30 @@ const WriteMail = () => {
               <div>제목</div>
               <input type="text"/>
             </div>
-            <div className="write_form">
+            <div className="attach_form">
               <div>파일 첨부</div>
-              <input type="text"/>
+              <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept=".pdf"
+                />
+                <span>파일 첨부하기 +</span>
+                <span>클릭 후 파일선택이나 드래그로 파일 첨부 가능합니다.</span>
+              </label>
             </div>
           </div>
 
           <div className="write_mail_content_bottom">
-            메일 작성란
+            <Editor
+              initialValue={"내용을 입력해주세요."}
+              height={window.innerWidth >= 1600 ? '45vh' : '35vh'}
+              initialEditType="wysiwyg"
+              useCommandShortcut={false}
+              hideModeSwitch={true}
+              plugins={[colorSyntax]}
+              language="ko-KR"
+            />
           </div>
         </div>
       </div>

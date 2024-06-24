@@ -3,7 +3,7 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
-
+import CustomModal from "../../../components/modal/CustomModal";
 import { useQueryClient, useQuery } from 'react-query';
 import { CheckAnnual, EditAnnual } from '../../../services/attendance/AttendanceServices';
 import { PersonData } from '../../../services/person/PersonServices';
@@ -106,7 +106,7 @@ const useAnnualData = () => {
         userAnnualData[0]?.extraDate || 0,
         formattedStartDates.length ? formattedStartDates : [''],
         user.entering ? formatEnteringDate(user.entering) : '',
-        user.leavedate || '',
+        user.leavedate ? formatEnteringDate(user.leavedate) : '',
         user.department || '',
         user.team || ''
       ];
@@ -145,6 +145,7 @@ const AnnualManage = () => {
   const user = useRecoilValue(userState);
   const queryClient = useQueryClient();
   const [editMode, setEditMode] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
   const today = new Date().toISOString().split('T')[0];
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedScreen, setSelectedScreen] = useState('R&D');
@@ -188,7 +189,8 @@ const AnnualManage = () => {
     setEditMode(!editMode);
     EditAnnual(changeData)
       .then(response => {
-        console.log("연차관리 데이터 전송 성공", response)
+        console.log("연차관리 데이터 전송 성공", response);
+        setEditModalOpen(true);
         queryClient.invalidateQueries("annual");
       })
       .catch(error => {
@@ -201,7 +203,7 @@ const AnnualManage = () => {
     const formattedRetirementDate = retirementDate.replace(/-/g, '');
     const formattedToday = today.replace(/-/g, '');
   
-    return formattedRetirementDate !== '' && formattedRetirementDate < formattedToday;
+    return formattedRetirementDate !== '' && formattedRetirementDate <= formattedToday;
   };
 
   const exportToPDF = () => {
@@ -438,7 +440,7 @@ const AnnualManage = () => {
     for (let i = 0; i < 1; i++) {
       const rowCells = [];
       for (let j = 0; j < member.length; j++) {
-        const isRetired = isRetiredBeforeToday(members[j][6]);
+        const isRetired = isRetiredBeforeToday(member[j][6]);
 
         rowCells.push(
           <tr
@@ -669,7 +671,19 @@ const AnnualManage = () => {
               </div>
             )}
           </div>
-      </div>  
+      </div>
+      <CustomModal
+        isOpen={isEditModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        header={'알림'}
+        footer1={'확인'}
+        footer1Class="gray-btn"
+        onFooter1Click={() => setEditModalOpen(false)}
+      >
+        <div>
+          수정이 완료되었습니다.
+        </div>
+      </CustomModal>
     </div>
   );
 };
