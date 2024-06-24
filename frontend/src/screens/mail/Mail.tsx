@@ -96,10 +96,7 @@ const Mail = () => {
     return { __html: mail.content };
   };
 
-  const handlePageChange = (page: number) => {
-    setPage(page);
-    setCurrentPage(page);
-  };
+  const totalPages = Math.ceil(filteredMails.length / postPerPage);
 
   const toggleDropdown = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -243,34 +240,23 @@ const Mail = () => {
                 .slice((page - 1) * postPerPage, page * postPerPage)
                 .map((mail) => (
                   <>
-                  <tr key={mail.id} className="board_content">
-                    <td>
-                      <label className="custom-checkbox">
-                        <input type="checkbox" id="check1" />
-                        <span></span>
-                      </label>
-                    </td>
-                    <td>{mail.sender}</td>
-                    <td>
-                      <div>
-                        <img src={mail_important_active} alt="mail_important_active" />
-                        {mail.attachment && <img src={mail_attachment} alt="attachment" />}
-                      </div>
-                      <span>[{mail.mailType}]</span>
-                      <div onClick={() => toggleMailContent(mail.id)}>
-                        {mail.title}
-                        <img src={mail_triangle} alt="mail_triangle"/>
-                      </div>
-                    </td>
-                    <td>{mail.date}</td>
-                  </tr>
-
-                  <tr className={`mail_detail_overlay ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
-                    <td colSpan={4}>
-                      <div className={`mail_detail_wrapper ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
-                        <div className="mail_detail_header">
-                          <span>{mail.title}</span>
-                          <img src={mail_delete} alt="mail_delete" />
+                    <tr key={mail.id} className="board_content">
+                      <td>
+                        <label className="custom-checkbox">
+                          <input type="checkbox" id="check1" />
+                          <span></span>
+                        </label>
+                      </td>
+                      <td>{mail.sender}</td>
+                      <td>
+                        <div>
+                          <img src={mail_important_active} alt="mail_important_active" />
+                          {mail.attachment && <img src={mail_attachment} alt="attachment" />}
+                        </div>
+                        <span>[{mail.mailType}]</span>
+                        <div onClick={() => toggleMailContent(mail.id)}>
+                          {mail.title}
+                          <img src={mail_triangle} alt="mail_triangle"/>
                         </div>
                       </td>
                       <td>{mail.date}</td>
@@ -283,6 +269,7 @@ const Mail = () => {
                             <span>{mail.title}</span>
                             <img src={mail_delete} alt="mail_delete" />
                           </div>
+
                           <div className="mail_detail_content">
                             <div className="mail_detail_content_top">
                               <div>
@@ -303,6 +290,7 @@ const Mail = () => {
 
                             <div className="mail_detail_content_middle">
                               <div dangerouslySetInnerHTML={renderMailContent(mail)}>
+                              </div>
                             </div>
 
                             <div className="mail_detail_content_bottom">
