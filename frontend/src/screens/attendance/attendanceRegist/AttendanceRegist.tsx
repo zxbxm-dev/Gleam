@@ -213,8 +213,27 @@ const AttendanceRegist = () => {
     if (file) {
       setAttachment(file);
     }
-    console.log(attachment);
-};
+  };
+
+  const handleFileSubmit = async (event: any) => {
+    console.log('보낸 파일', attachment)
+    event.preventDefault();
+
+    if (!attachment) {
+      alert('선택된 파일이 없습니다.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', attachment);
+
+    try {
+      const response = await WriteAttendance(formData);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
 
   const handleScreenChange = () => {
     setSelectedScreen(selectedScreen === 'R&D' ? '본사' : 'R&D');
@@ -337,21 +356,21 @@ const AttendanceRegist = () => {
   };
 
   // 출근부 데이터 조회
-  const fetchAttentRegist = async () => {
-    try {
-      const response = await CheckAttendance();
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch data");
-    }
-  };
+  // const fetchAttentRegist = async () => {
+  //   try {
+  //     const response = await CheckAttendance();
+  //     return response.data;
+  //   } catch (error) {
+  //     throw new Error("Failed to fetch data");
+  //   }
+  // };
 
-  useQuery("attendregist", fetchAttentRegist, {
-    onSuccess: (data) => console.log(data),
-    onError: (error) => {
-      console.log(error)
-    }
-  });
+  // useQuery("attendregist", fetchAttentRegist, {
+  //   onSuccess: (data) => console.log(data),
+  //   onError: (error) => {
+  //     console.log(error)
+  //   }
+  // });
 
 
   const virtualData = [
@@ -915,19 +934,7 @@ const AttendanceRegist = () => {
       date: `${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`,
       data: [data.startTime, data.endTime, data.otherValue],
     }
-
-    console.log(formData)
-    WriteAttendance(formData)
-      .then(response => {
-        console.log('출근부 데이터 전송 성공')
-      })
-      .catch(error => {
-        console.log('출근부 데이터 전송 실패')
-      })
-    
-    reset();
   }
-  console.log(rowsData)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -942,17 +949,21 @@ const AttendanceRegist = () => {
       <div className="content_container">
         <div className='attend_header_right'>
           <button className='white_button' onClick={exportToPDF}>다운로드</button>
-          <button className='primary_button'>
-            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-              업로드
-              <input
-                id="fileInput"
-                type="file"
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-            </label>
-          </button>
+          {attachment ? (
+            <button className='primary_button' onClick={handleFileSubmit}>등록</button>
+          ) : (
+            <button className='primary_button'>
+                <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                  업로드
+                  <input
+                    id="fileInput"
+                    type="file"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                </label>
+            </button>
+          )}
           {user.username === '이정훈' ? (
             selectedScreen === 'R&D' ? (
               <button className='primary_button' onClick={handleScreenChange}>
