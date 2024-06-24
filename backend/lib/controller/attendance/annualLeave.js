@@ -135,7 +135,6 @@ const administratorCalendar = async (req, res) => {
         status: "quitter",
       },
     });
-
     for (const quitter of quitters) {
       await vacation.update(
         { leavedate: quitter.leavedate },
@@ -146,6 +145,47 @@ const administratorCalendar = async (req, res) => {
         }
       );
     }
+
+    // 모든 연차 정보 조회
+    const allVacations = await vacation.findAll();
+    for (const vac of allVacations) {
+      const usedDaysCount = await vacation.count({
+        where: {
+          userId: vac.userId,
+        },
+      });
+
+      await vac.update(
+        { usedDate: usedDaysCount.toString() },
+        {
+          where: {
+            id: vac.id,
+          },
+        }
+      );
+    }
+
+    // extraDate 계산 및 업데이트
+    const updatedVacations = await vacation.findAll();
+    for (const vac of updatedVacations) {
+      const availableDate = vac.availableDate || 0;
+      const usedDate = parseInt(vac.usedDate) || 0;
+
+      // extraDate 계산 및 음수 방지 로직 추가
+      const extraDate = Math.max(availableDate - usedDate, 0);
+
+      await vacation.update(
+        {
+          extraDate: extraDate,
+        },
+        {
+          where: {
+            userId: vac.userId,
+          },
+        }
+      );
+    }
+
     const updatedAnnualLeaves = await vacation.findAll();
     res.status(200).json(updatedAnnualLeaves);
   } catch (error) {
