@@ -83,7 +83,7 @@ const Mail = () => {
       { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정9.pdf", mailType: "받은 메일함", date: "2024-05-01" },
       { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정10.pdf", mailType: "받은 메일함", date: "2024-05-01" },
       { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정11.pdf", mailType: "받은 메일함", date: "2024-05-01" },
-      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정12.pdf", mailType: "받은 메일함", date: "2024-05-01" },
+      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "", mailType: "받은 메일함", date: "2024-05-01" },      
     ];
     setMails(initialMails);
   }, []);
@@ -92,7 +92,9 @@ const Mail = () => {
     mail.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredMails.length / itemsPerPage);
+  const renderMailContent = (mail: any) => {
+    return { __html: mail.content };
+  };
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -241,23 +243,34 @@ const Mail = () => {
                 .slice((page - 1) * postPerPage, page * postPerPage)
                 .map((mail) => (
                   <>
-                    <tr key={mail.id} className="board_content">
-                      <td>
-                        <label className="custom-checkbox">
-                          <input type="checkbox" id="check1" />
-                          <span></span>
-                        </label>
-                      </td>
-                      <td>{mail.sender}</td>
-                      <td>
-                        <div>
-                          <img src={mail_important_active} alt="mail_important_active" />
-                          <img src={mail_attachment} alt="mail_attachment" />
-                        </div>
-                        <span>[{mail.mailType}]</span>
-                        <div onClick={() => toggleMailContent(mail.id)}>
-                          {mail.title}
-                          <img src={mail_triangle} alt="mail_triangle" />
+                  <tr key={mail.id} className="board_content">
+                    <td>
+                      <label className="custom-checkbox">
+                        <input type="checkbox" id="check1" />
+                        <span></span>
+                      </label>
+                    </td>
+                    <td>{mail.sender}</td>
+                    <td>
+                      <div>
+                        <img src={mail_important_active} alt="mail_important_active" />
+                        {mail.attachment && <img src={mail_attachment} alt="attachment" />}
+                      </div>
+                      <span>[{mail.mailType}]</span>
+                      <div onClick={() => toggleMailContent(mail.id)}>
+                        {mail.title}
+                        <img src={mail_triangle} alt="mail_triangle"/>
+                      </div>
+                    </td>
+                    <td>{mail.date}</td>
+                  </tr>
+
+                  <tr className={`mail_detail_overlay ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
+                    <td colSpan={4}>
+                      <div className={`mail_detail_wrapper ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
+                        <div className="mail_detail_header">
+                          <span>{mail.title}</span>
+                          <img src={mail_delete} alt="mail_delete" />
                         </div>
                       </td>
                       <td>{mail.date}</td>
@@ -289,9 +302,7 @@ const Mail = () => {
                             </div>
 
                             <div className="mail_detail_content_middle">
-                              <div>
-                                {mail.content}
-                              </div>
+                              <div dangerouslySetInnerHTML={renderMailContent(mail)}>
                             </div>
 
                             <div className="mail_detail_content_bottom">

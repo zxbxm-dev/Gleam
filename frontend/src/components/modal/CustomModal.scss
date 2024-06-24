@@ -20,13 +20,13 @@
 
     .modal-header {
       width: inherit;
-      height: 36px;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       background-color: #76CB7E;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 18px 0;
 
       .modal-header-text {
         position: absolute;
@@ -34,7 +34,7 @@
         left: 15px;
         font-size: 14px;
         font-family: var(--font-family-Noto-B);
-        color: #fff;
+        color: black;
       }
 
       .modal-close-button {
@@ -291,7 +291,7 @@
             font-size: 14px;
 
             .textinput {
-              width: 270px;
+              width: 100%;
               height: 28px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
@@ -307,14 +307,14 @@
             }
 
             .datepicker {
-              width: 118px;
+              width: 100%;
               height: 28px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
             }
 
             .textareainput {
-              width: 272px;
+              width: 100%;
               height: 84px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
