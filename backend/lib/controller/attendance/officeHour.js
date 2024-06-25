@@ -24,7 +24,7 @@ const writeAttendance = async (req, res) => {
     }
     // 다음 경로에 csv파일 저장 및 원본파일 이름 저장
     const originalFileName = req.file.originalname;
-    const uploadDir = path.join(__dirname, "../../../uploads/reportFile");
+    const uploadDir = path.join(__dirname, "../../../uploads/officeHourFile");
     // 폴더가 없으면 생성
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });

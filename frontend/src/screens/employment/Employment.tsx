@@ -177,36 +177,37 @@ const Employment = () => {
 
 
   // 채용공고 게시물 작성
-  const handleSubmit = () => {
+const handleSubmit = () => {
+  const { title, url, site } = form;
 
-    const { title, url, site } = form;
+  if (title === "") {
+    alert("공고 제목을 입력해 주세요.")
+    return;
+  } else if (url === "") {
+    alert("링크를 입력해 주세요.")
+    return;
+  } else if (site === "") {
+    alert("사이트명을 입력해 주세요.")
+    return;
+  }
 
-    if (title === "") {
-      alert("공고 제목을 입력해 주세요.")
-      return;
-    } else if (url === "") {
-      alert("링크를 입력해 주세요.")
-      return;
-    } else if (site === "") {
-      alert("사이트명을 입력해 주세요.")
-      return;
-    }
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("url", url);
-    formData.append("site", site);
-    formData.append("date", currentDate);
-
-    WriteEmploy(formData)
-      .then(response => {
-        console.log('게시물 작성 성공')
-        AddClose();
-      })
-      .catch(error => {
-        console.log('게시물 작성 실패')
-        AddClose();
-      })
+  const formData = {
+    title: title,
+    url: url,
+    site: site,
+    date: currentDate
   };
+
+  WriteEmploy(formData)
+    .then(response => {
+      console.log('게시물 작성 성공')
+      AddClose();
+    })
+    .catch(error => {
+      console.log('게시물 작성 실패')
+      AddClose();
+    })
+};
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
