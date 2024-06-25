@@ -114,7 +114,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
             <div onClick={() => handleClick('블록체인사업부')}>블록체인사업부</div>
             <div onClick={() => handleClick('마케팅부')}>마케팅부</div>
             <div onClick={() => handleClick('관리부')}>관리부</div>
-            <div onClick={() => handleClick('R&D센터')}>R&D센터센터</div>
+            <div onClick={() => handleClick('R&D센터')}>R&D</div>
           </>
         )}
         {currentPage === '개발부' && (

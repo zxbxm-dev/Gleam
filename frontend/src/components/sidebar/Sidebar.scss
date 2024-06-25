@@ -15,7 +15,7 @@
 .memberDetails {
   min-height: 500px;
   padding: 10px 0px;
-  background-color: #f0f0f0;
+  background-color: #f3f3f3;
   border-top: 1px solid #ccc;
 
   .MemberTab {
@@ -55,7 +55,7 @@
     }
 
     .member:hover {
-      background-color: #fff;
+      background-color: #f8f8f8;
       font-family: var(--font-family-Noto-B);
     }
   }
@@ -72,6 +72,7 @@
     margin-left: 14px;
     font-family: var(--font-family-Noto-M);
     cursor: pointer;
+    color: #717171;
   }
 
   div:hover {
