@@ -4,6 +4,8 @@ module.exports = (app) => {
 
   const express = require("express");
   const router = express.Router();
+  const multer = require("multer");
+  const upload = multer();
 
   // ⚠️⚠️연차관리 router ----------------------------------------------------------------------- ⚠️⚠️
   // 일반 유저 휴가 관리 라우터
@@ -26,11 +28,12 @@ module.exports = (app) => {
   router.put("/editAnnual", annualLeaveController.updateUserAnnualLeave);
 
   // ⚠️⚠️출근부 router ----------------------------------------------------------------------- ⚠️⚠️
-  const multer = require("multer");
-  const upload = multer();
-
-  router.post("/checkAttendance", officeHourController.getAllAttendance);
-  router.post("/writeAttendance", upload.single("file"), officeHourController.writeAttendance);
+  // 출근부 관리 라우터
+  router.get("/checkAttendance", officeHourController.getAllAttendance);
+  // 출근부 작성 라우터
+  router.post("/writeAttendance", upload.single("handleFileSubmit"), // 클라이언트의 필드명과 동일하도록
+  officeHourController.writeAttendance
+  );
 
   app.use("/api", router);
 };

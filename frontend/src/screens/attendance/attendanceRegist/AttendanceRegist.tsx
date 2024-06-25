@@ -225,7 +225,7 @@ const AttendanceRegist = () => {
     }
 
     const formData = new FormData();
-    formData.append('file', attachment);
+    formData.append('handleFileSubmit', attachment);
 
     try {
       const response = await WriteAttendance(formData);
@@ -958,6 +958,7 @@ const AttendanceRegist = () => {
                   <input
                     id="fileInput"
                     type="file"
+                    name="handleFileSubmit"
                     style={{ display: "none" }}
                     onChange={handleFileChange}
                   />
