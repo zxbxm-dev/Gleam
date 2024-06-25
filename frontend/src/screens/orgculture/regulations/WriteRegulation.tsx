@@ -192,7 +192,7 @@ const WriteRegulation = () => {
                 {form.attachment && <img src={DeleteIcon} alt="DeleteIcon" onClick={() => setForm({ ...form, attachment: null })} />}
               </div>
               <div>
-                <button className="second_button" onClick={handleSubmit}>등록</button>
+                <button className="primary_button" onClick={handleSubmit}>등록</button>
               </div>
             </div>
           </div>
