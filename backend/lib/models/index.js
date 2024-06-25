@@ -14,6 +14,8 @@ const annualLeaveData = require("./attendance/annualLeave");
 const attendance = require("./attendance/officeHour");
 // 보고서
 const report = require("./workLog/workLog");
+// 채용공고
+const jobPosting = require("./employment/JobPosting");
 
 const db = {};
 
@@ -29,5 +31,7 @@ db.Notice = noticeBoard(sequelize, Sequelize);
 db.AnnualLeave = annualLeaveData(sequelize, Sequelize);
 db.Attendance = attendance(sequelize, Sequelize);
 db.Report = report(sequelize, Sequelize);
+db.JobPosting = jobPosting(sequelize, Sequelize);
+
 
 module.exports = db;
