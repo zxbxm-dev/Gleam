@@ -14,7 +14,7 @@ const BaseLayout = () => {
     marginLeft += 200;
   }
   if (isHrSidebarVisible) {
-    marginLeft += 220;
+    marginLeft += 0;
   }
   
   const handleMemberClick = (name: string, dept: string, team: string, position: string) => {
@@ -30,7 +30,7 @@ const BaseLayout = () => {
 
       <div className="content-wrapper" style={{ marginLeft: `${marginLeft}px` }}>
         {isSidebarVisible && <Sidebar />}
-        {isHrSidebarVisible && <MemberSidebar onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position)}/>}
+        {/* {isHrSidebarVisible && <MemberSidebar onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position)}/>} */}
         <Outlet />
       </div>
     </main>
