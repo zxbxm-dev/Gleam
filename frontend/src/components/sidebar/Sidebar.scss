@@ -209,7 +209,7 @@
         }
 
         .member-manage {
-          margin-bottom: 25px;
+          margin-bottom: 50px;
           margin-left: 15px;
         }
       }
@@ -232,4 +232,57 @@
   border-top-right-radius: 50px;
   border-bottom-right-radius: 50px;
   color: #000;
+}
+
+.hrsidebar {
+  font-family: var(--font-family-Noto-M);
+
+  .department {
+    color: #717171;
+    background-color: #DDDDDD;
+    border-bottom: 1px solid #DCDCDC;
+
+    .department_name {
+      padding-left: 10px;
+    }
+  }
+
+  .team {
+    display: flex;
+    align-items: center;
+    color: #717171;
+    background-color: #EEEEEE;
+    border-bottom: 1px solid #DCDCDC;
+    gap: 10px;
+    padding-left: 10px;
+  }
+
+  .name {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ECECEC;
+    color: #000;
+    padding: 0 20px;
+    gap: 8px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #FFF8E0;
+    }
+
+    .name_img {
+      margin-right: 10px;
+    }
+
+    .name_text {
+      font-size: 14px;
+    }
+
+    .name_border {
+      height: 20px;
+      border-right: 1px solid black;
+    }
+  }
 }
