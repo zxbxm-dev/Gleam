@@ -47,11 +47,13 @@ const HumanResource = () => {
   const [form, setForm] = useState<{
     dept: string;
     position: string;
+    spot:string;
     date: string;
     classify: string;
   }>({
     dept: '',
     position: '',
+    spot:'',
     date: '',
     classify: '',
   })
@@ -75,6 +77,10 @@ const HumanResource = () => {
 
   const handlePositionChange = (event: any) => {
     setForm({...form, position: event.target.value})
+  }
+
+  const handleSpotChange = (event: any) => {
+    setForm({...form, spot: event.target.value})
   }
 
   const handleDateChange = (event: any) => {
@@ -123,11 +129,12 @@ const HumanResource = () => {
 
   // 인사이동 등록
   const handleAppointSubmit = () => {
-    const {dept, position, date, classify} = form;
+    const {dept, position, spot, date, classify} = form;
 
     const formData = new FormData();
     formData.append('dept', dept);
     formData.append('position', position);
+    formData.append('spot', spot);
     formData.append('date', date);
     formData.append('classify', classify);
 
@@ -348,11 +355,11 @@ const HumanResource = () => {
                     <button className="second_button" onClick={AddOpen}>등록</button>
                   </PopoverTrigger>
                   <Portal>
-                    <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                    <PopoverContent width='25vw' height='350px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
                       <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 등록하기</PopoverHeader>
                       <PopoverCloseButton color='white'/>
-                      <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
+                      <PopoverBody display='flex' flexDirection='column' padding='25px 0px' justifyContent='center' alignItems='center'>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' , alignItems: 'center'}}>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
                             <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' onChange={handleDeptChange}/>
@@ -360,6 +367,10 @@ const HumanResource = () => {
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
                             <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw' onChange={handlePositionChange}/>
+                          </div>
+                          <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                            <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직책</div>
+                            <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw' onChange={handleSpotChange}/>
                           </div>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
@@ -384,7 +395,8 @@ const HumanResource = () => {
                 <table className="hr_board_list">
                   <colgroup>
                     <col width="20%"/>
-                    <col width="20%"/>
+                    <col width="10%"/>
+                    <col width="10%"/>
                     <col width="20%"/>
                     <col width="20%"/>
                     <col width="20%"/>
@@ -392,6 +404,7 @@ const HumanResource = () => {
                   <thead>
                     <tr className="board_header">
                       <th>부서</th>
+                      <th>직책</th>
                       <th>직위</th>
                       <th>날짜</th>
                       <th>구분</th>
@@ -402,6 +415,7 @@ const HumanResource = () => {
                     <tr className="board_content">
                       <td>마케팅부 디자인팀</td>
                       <td>팀장</td>
+                      <td>수석</td>
                       <td>2024-05-04</td>
                       <td>승진</td>
                       <td className="flex_center">
@@ -410,17 +424,21 @@ const HumanResource = () => {
                             <button className="white_button" onClick={EditOpen}>수정</button>
                           </PopoverTrigger>
                           <Portal>
-                            <PopoverContent width='25vw' height='35vh' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                            <PopoverContent width='25vw' height='350px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
                               <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
                               <PopoverCloseButton color='white'/>
-                              <PopoverBody display='flex' flexDirection='column' padding='0px' justifyContent='center' alignItems='center'>
-                                <div style={{display: 'flex', flexDirection: 'column', gap: '10px', height: '24vh', justifyContent: 'center' , alignItems: 'center'}}>
+                              <PopoverBody display='flex' flexDirection='column' padding='25px 0px' justifyContent='center' alignItems='center'>
+                                <div style={{display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' , alignItems: 'center'}}>
                                   <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                                     <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
                                     <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' />
                                   </div>
                                   <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                                     <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
+                                    <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
+                                  </div>
+                                  <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                    <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직책</div>
                                     <Input placeholder='내용을 입력해주세요.' size='sm' width='20vw'/>
                                   </div>
                                   <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
@@ -447,6 +465,7 @@ const HumanResource = () => {
                     <tr className="board_content">
                       <td>관리부 지원팀</td>
                       <td>사원</td>
+                      <td>수석</td>
                       <td>2024-05-04</td>
                       <td>부서이동</td>
                       <td className="flex_center">
@@ -458,6 +477,7 @@ const HumanResource = () => {
                     <tr className="board_content">
                       <td>개발부 개발 1팀</td>
                       <td>사원</td>
+                      <td>수석</td>
                       <td>2024-05-04</td>
                       <td>강등</td>
                       <td className="flex_center">
@@ -469,6 +489,7 @@ const HumanResource = () => {
                     <tr className="board_content">
                       <td>개발부 개발 1팀</td>
                       <td>팀장</td>
+                      <td>수석</td>
                       <td>2024-05-04</td>
                       <td>부서이동</td>
                       <td className="flex_center">
