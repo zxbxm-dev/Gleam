@@ -4,7 +4,7 @@ import { MenuArrow_down, MenuArrow_right } from "../../assets/images/index";
 import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isSidebarVisibleState, isHrSidebarVisibleState, isSelectMemberState, userState } from '../../recoil/atoms';
-
+import MemberSidebar from "./MemberSidebar";
 interface SubMenu {
   menu: string;
   label: string;
@@ -31,6 +31,13 @@ const Sidebar = () => {
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("");
   const user = useRecoilValue(userState);
+
+  const handleMemberClick = (name: string, dept: string, team: string, position: string) => {
+    // 선택된 멤버 정보를 새로운 Member 배열로 생성
+    const newMember = [name, dept, team, position];
+    setIsSelectMember(newMember);
+    console.log(isSelectMember)
+  };
 
   const handleMenuClick = (menu: string) => {
     setSelectedMenu(menu);
@@ -163,6 +170,7 @@ const Sidebar = () => {
           <div className="sidebar-body">
             <div className="sidebar-menu">
               <ul className="menu-list">
+                <div>
                 {menuList.map(({ menu, label, link, menuType, toggleMenuType, subMenu, requiresHrSideClick }) => (
                   <li key={menu} className={`menu-item ${selectedMenu === menu ? 'active' : ''}`}>
                     {link ? (
@@ -189,6 +197,8 @@ const Sidebar = () => {
                     )}
                   </li>
                 ))}
+                </div>
+                <div>
                 {isAuthorized && (
                   <li className="member-manage">
                     <Link to="/user-management" onClick={() => handleMenuClick('user-management')}>
@@ -196,8 +206,10 @@ const Sidebar = () => {
                     </Link>
                   </li>
                 )}
+                </div>
               </ul>
             </div>
+            <div><MemberSidebar onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position)} /></div>
           </div>
         </nav>
       )}
