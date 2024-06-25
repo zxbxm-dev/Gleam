@@ -46,6 +46,7 @@ const Mail = () => {
     '안 읽은 메일',
     '임시 보관함',
     '스팸 메일함',
+    '메일 작성',
   ];
 
   const dueDateOptions = [

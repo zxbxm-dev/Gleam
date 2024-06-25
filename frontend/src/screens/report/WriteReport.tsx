@@ -25,6 +25,7 @@ import {
 } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
+import { submitReport } from '../../services/report/ReportServices';
 
 type Member = [string, string, string, string];
 
@@ -67,7 +68,7 @@ const WriteReport = () => {
   const createFormData = (selectedReport:string, approvalLines:any, file:any, sendDate:any, approvalValue:any) => {
     const formData = new FormData();
     formData.append('userID', user.userID);
-      formData.append('username', user.username);
+    formData.append('username', user.username);
     formData.append('dept', user.department);
     formData.append('selectForm', selectedReport);
     formData.append('Payment', JSON.stringify(approvalLines));
@@ -75,7 +76,7 @@ const WriteReport = () => {
         formData.append('attachment', file);
         formData.append('pdffile', file.name);
     }
-      formData.append('receiptDate', "");
+    formData.append('receiptDate', "");
     formData.append('sendDate', sendDate.toISOString());
     formData.append('opinionName', "");
     formData.append('opinionContent', "");
@@ -83,25 +84,19 @@ const WriteReport = () => {
     formData.append('rejectContent', "");
     formData.append('approval', approvalValue.toString()); 
     return formData;
-};
+  };
 
-const handleSubmit = () => {
+  const handleSubmit = () => {
     const formData = createFormData(selectedReport, approvalLines, file, sendDate, approvalValue);
-    fetch('/submitReport', {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if (response.ok) {
-            setSubmitModalOpen(true);
-        } else {
-            // Handle error
-        }
-    })
-    .catch(error => {
-        // Handle error
-    });
-};
+    
+    submitReport(formData)
+      .then(response => {
+        console.log('보고서 제출 완료', response)
+      })
+      .catch(error => {
+        console.log('보고서 제출 실패', error)
+      })
+  };
 
 
   const members: Member[] = [

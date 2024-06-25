@@ -246,9 +246,9 @@ ul {
   }
 
   .project_slide {
-    position: absolute;
-    bottom: -49px;
-    right: -15px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -272,9 +272,9 @@ ul {
 
   .additional_content {
     @include custom-scrollbar();
-    position: absolute;
-    bottom: -393px;
-    right: -15px;
+    position: fixed;
+    bottom: -343px;
+    right: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -363,7 +363,7 @@ ul {
 
   .project_slide.visible,
   .additional_content.visible {
-    transform: translateY(-340px);
+    transform: translateY(-343px);
     z-index: 999;
   }
 
@@ -409,35 +409,16 @@ ul {
 @include laptop {
   .content {
 
-    .project_slide {
-      position: absolute;
-      bottom: -13px;
-    }
-
-    .additional_content {
-      position: absolute;
-      bottom: -383px;
-      right: -15px;
-
-      &.visible {
-        transform: translateY(-366px);
-      }
-    }
-
     .content_header {
       margin-bottom: 10px;
     }
 
     .content_container {
-
-
       .container {
-        // height: 84.5vh;
         padding: 20px;
       }
 
       .main_header {
-
         .header_name {
           font-size: 28px;
         }
