@@ -18,7 +18,6 @@ const Announcement = () => {
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [announcements, setAnnouncements] = useState<any[]>([]);
-  // const [detailAnno, setDetailAnno] = useState<any[]>([]);
   const userName = useRecoilValue(userState).name;
   const [postPerPage, setPostPerPage] = useState<number>(10);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -105,17 +104,17 @@ const Announcement = () => {
   }
 
   const sortedAnnouncements = [...announcements].sort((a, b) => {
-    if (a.pinned && b.pinned) {
-      return new Date(b.pinnedAt).getTime() - new Date(a.pinnedAt).getTime();
-    } else if (a.pinned) {
+    if (a.pinned && !b.pinned) {
       return -1;
-    } else if (b.pinned) {
+    } else if (!a.pinned && b.pinned) {
       return 1;
+    } else if (a.pinned && b.pinned) {
+      return new Date(b.pinnedAt).getTime() - new Date(a.pinnedAt).getTime();
     } else {
-      return 0;
+      return b.id - a.id;
     }
   });
-
+  
   const filteredAnnouncements = sortedAnnouncements.filter((announcement) =>
     announcement.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
