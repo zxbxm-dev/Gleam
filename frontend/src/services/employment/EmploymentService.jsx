@@ -7,11 +7,7 @@ const CheckEmploy = () => {
 
 // 채용공고 작성
 const WriteEmploy = (formData) => {
-  return api.post("/writeEmploy", formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
+  return api.post("/writeEmploy", formData);
 };
 
 // 채용공고 수정
