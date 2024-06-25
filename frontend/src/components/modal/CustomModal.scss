@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 900;
 
   .modal-content {
     background: #fff;
@@ -290,13 +290,62 @@
             width: 80%;
             font-size: 14px;
 
+            .event_title_input {
+              position: relative;
+              width: 100%;
+
+              .textinput {
+                width: 100%;
+                height: 28px;
+                border: 1px solid #DCDCDC;
+                border-radius: 5px;
+                padding-left: 7px;
+              }
+              .textinput:focus {
+                outline: 2px solid #76CB7E;
+              }
+              .textinput::placeholder {
+                font-size: 12px;
+                color: #C7C7C7;
+              }
+  
+              .userlist_dropdown {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 999;
+                background-color: #fff;
+                color: black;
+                border: 1px solid var(--primary-color);
+                border-top: none;
+                border-radius: 0 0 5px 5px;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                font-size: 12px;
+                font-family: var(--font-family-Noto-M);
+                max-height: 150px;
+                overflow-y: auto;
+      
+                li {
+                  padding: 8px;
+                  cursor: pointer;
+                  transition: background-color 0.3s ease;
+                }
+      
+                li:hover {
+                  background-color: #f0f0f0;
+                }
+              }
+            }
+
             .textinput {
               width: 100%;
               height: 28px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
               padding-left: 7px;
-              margin-left: 15px;
             }
             .textinput:focus {
               outline: 2px solid #76CB7E;
