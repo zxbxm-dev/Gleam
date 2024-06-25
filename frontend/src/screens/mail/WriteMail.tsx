@@ -13,7 +13,7 @@ import { useQuery } from 'react-query';
 const WriteMail = () => {
   const [persondata, setPersonData] = useState<any[]>([]);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [selectdMenuOption, setSelectedMenuOption] = useState('전체 메일');
+  const [selectdMenuOption, setSelectedMenuOption] = useState('메일 작성');
   const [recipients, setRecipients] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,6 +54,7 @@ const WriteMail = () => {
     '안 읽은 메일',
     '임시 보관함',
     '스팸 메일함',
+    '메일 작성'
   ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
