@@ -33,7 +33,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
   const [user, setUser] = useRecoilState(userState);
   const location = useLocation();
   const [sidebarState, setSidebarState] = useState<{ isExpanded: boolean; currentPage: CurrentPageType }>({
-    isExpanded: false,
+    isExpanded: true,
     currentPage: '포체인스주식회사',
   });
 

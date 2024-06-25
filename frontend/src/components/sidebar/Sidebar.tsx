@@ -209,7 +209,11 @@ const Sidebar = () => {
                 </div>
               </ul>
             </div>
-            <div><MemberSidebar onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position)} /></div>
+            <div>
+              {isHrSidebarVisible && 
+                <MemberSidebar onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position)} />
+              }
+            </div>
           </div>
         </nav>
       )}
