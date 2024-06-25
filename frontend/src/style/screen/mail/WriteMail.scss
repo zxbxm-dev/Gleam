@@ -102,24 +102,106 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      padding: 30px 0;
+      padding: 20px 0;
 
       .write_form {
         display: flex;
         align-items: center;
-        padding: 10px 0;
+        position: relative;
+        margin: 10px 0;
 
         div {
           width: 6%;
         }
+
         input {
           width: 94%;
+          height: 40px;
           background: none;
           border: none;
           outline: none;
           border-bottom: solid 2px #aaaaaa;
         }
-        input:focus { outline: none; border-bottom: solid 2px var(--primary-color); }
+
+        input:focus {
+          outline: none;
+          border-bottom: solid 2px var(--primary-color);
+        }
+
+        .input_recipients {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          width: 94%;
+          height: 40px;
+          gap: 5px;
+          border-bottom: solid 2px #aaaaaa;
+
+          &.clicked {
+            border-bottom-color: var(--primary-color);
+          }
+
+          .recipient {
+            display: flex;
+            align-items: center;
+            flex: 0 1 auto;
+            width: auto;
+            background-color: var(--primary-color);
+            border-radius: 15px;
+            padding: 5px 10px;
+            margin-bottom: 3px;
+            font-size: 12px;
+
+            .remove {
+              cursor: pointer;
+              margin-left: 5px;
+            }
+          }
+
+          #recipient_input_element {
+            min-width: 0;
+            width: auto;
+            height: inherit;
+            flex: 1 1 auto;
+            background: none;
+            border: none;
+            outline: none;
+          }
+
+          #recipient_input_element:focus {
+            outline: none;
+          }
+        }
+
+        .autocomplete_dropdown {
+          @include custom-scrollbar;
+          position: absolute;
+          top: 100%;
+          left: 6%;
+          z-index: 10;
+          background-color: #fff;
+          border: 1px solid var(--primary-color);
+          border-top: none;
+          border-radius: 0 0 5px 5px;
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          width: 94%;
+          font-size: 12px;
+          font-family: var(--font-family-Noto-M);
+          max-height: 150px;
+          overflow-y: auto;
+
+          li {
+            padding: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+          }
+
+          li:hover {
+            background-color: #f0f0f0;
+          }
+        }
       }
 
       .attach_form {
