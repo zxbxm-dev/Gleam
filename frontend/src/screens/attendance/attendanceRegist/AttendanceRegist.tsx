@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
@@ -33,6 +32,7 @@ type Member = [string, string, string];
 type TeamOrderType = {
   [key: string]: string[];
 };
+type ProcessedAttendance = [string, string, [string, string, string]];
 
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
@@ -47,6 +47,8 @@ const AttendanceRegist = () => {
   const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
+  const [HO_Data, setHO_Data] = useState<ProcessedAttendance[]>([]);
+  const [RnD_Data, setRnD_Data] = useState([]);
   // 모달 창 입력값
   const { register, handleSubmit, reset } = useForm();
 
@@ -358,43 +360,60 @@ const AttendanceRegist = () => {
   };
 
   // 출근부 데이터 조회
-  // const fetchAttentRegist = async () => {
-  //   try {
-  //     const response = await CheckAttendance();
-  //     return response.data;
-  //   } catch (error) {
-  //     throw new Error("Failed to fetch data");
-  //   }
-  // };
+  const fetchAttentRegist = async () => {
+    try {
+      const response = await CheckAttendance();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
 
-  // useQuery("attendregist", fetchAttentRegist, {
-  //   onSuccess: (data) => console.log(data),
-  //   onError: (error) => {
-  //     console.log(error)
-  //   }
-  // });
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}-${month}-${day}`;
+  };
 
+  const formatTime = (timeString: string): string => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    const hours = time.getHours().toString().padStart(2, '0');
+    const minutes = time.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
 
-  const virtualData = [
-    ['권상원', '2024-4-1', ['14:00', '17:00', '오전반차']],
-    ['권상원', '2024-4-2', ['10:00', '17:00', '연차']],
-    ['권상원', '2024-4-3', ['10:00', '17:00', '재택']],
-    ['권상원', '2024-4-4', ['10:05', '14:00', '오후반차']],
-    ['권상원', '2024-4-5', ['10:30', '17:00', '']],
-    ['권상원', '2024-4-8', ['10:10', '17:00', '']],
-    ['권상원', '2024-4-9', ['11:20', '17:00', '']],
-    ['김도환', '2024-4-1', ['10:30', '17:00', '연차']],
-    ['권준우', '2024-4-4', ['10:00', '17:00', '당일반차']],
-    ['진유빈', '2024-4-5', ['10:00', '17:00', '재택']],
-    ['권상원', '2024-5-1', ['10:00', '17:00', '오전반차']],
-    ['김도환', '2024-5-1', ['10:30', '17:00', '연차']],
-    ['권준우', '2024-5-2', ['10:00', '17:00', '당일반차']],
-    ['진유빈', '2024-5-2', ['10:00', '17:00', '재택']],
-    ['권상원', '2024-5-3', ['10:00', '17:00', '오후반차']],
-    ['김도환', '2024-5-3', ['10:30', '17:00', '연차']],
-    ['권준우', '2024-5-3', ['10:00', '17:00', '당일반차']],
-    ['진유빈', '2024-5-3', ['10:00', '17:00', '재택']],
-  ];
+  useQuery("attendregist", fetchAttentRegist, {
+    onSuccess: (data) => {
+      const filteredData = data.filter(
+        (item: any) => item.mode === '출근' || item.mode === '퇴근'
+      );
+
+      const result: ProcessedAttendance[] = [];
+
+      filteredData.forEach((item: any) => {
+        // 이름 중복 체크
+        let person = result.find((p) => p[0] === item.name);
+        if (!person) {
+          // 없으면 추가
+          person = [item.name, formatDate(item.occurrenceDate), ['', '', '']];
+          result.push(person);
+        }
+
+        if (item.mode === '출근') {
+            person[2][0] = formatTime(item.occurrenceTime);
+          } else if (item.mode === '퇴근') {
+            person[2][1] = formatTime(item.occurrenceTime);
+          }
+      });
+
+      setHO_Data(result);
+    },
+    onError: (error) => {
+      console.log(error)
+    }
+  });
 
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
     const tableRows = [];
@@ -927,7 +946,7 @@ const AttendanceRegist = () => {
   };
 
 
-  // 출근부 데이터 작성
+  // 출근부 데이터 수정
   const onSubmit = (data: any) => {
     setAddAttend(false);
 
@@ -1019,7 +1038,7 @@ const AttendanceRegist = () => {
                         </table>
                         <div>
                           {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
-                          {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month, virtualData)}
+                          {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month, HO_Data)}
                         </div>
                       </>
                     )}
@@ -1061,7 +1080,7 @@ const AttendanceRegist = () => {
                     </table>
                     <div>
                       {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
-                      {generateDivsRD(monthData.numberOfDaysInMonth, selectedYear, monthData.month, virtualData)}
+                      {generateDivsRD(monthData.numberOfDaysInMonth, selectedYear, monthData.month, HO_Data)}
                     </div>
                   </div>
                 </TabPanel>
