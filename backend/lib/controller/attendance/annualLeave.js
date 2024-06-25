@@ -74,7 +74,7 @@ const getAllCalendarEvents = async (req, res) => {
 
 // 일정 수정 하기
 const editCalendarEvent = async (req, res) => {
-  const { userID, startDate, endDate, title, memo } = req.body.data;
+  const { userID, startDate, endDate, title, memo, backgroundColor, dateType } = req.body.data;
   const { event_id: eventId } = req.params;
 
   console.log("요청 파라미터:", req.params);
@@ -87,7 +87,7 @@ const editCalendarEvent = async (req, res) => {
   }
   try {
     const event = await vacation.findOne({
-      where: { id: eventId, userId: userID },
+      where: { id: eventId },
     });
     if (!event) {
       return res
@@ -98,6 +98,8 @@ const editCalendarEvent = async (req, res) => {
     event.memo = memo;
     event.startDate = startDate;
     event.endDate = endDate;
+    event.backgroundColor = backgroundColor;
+    event.dateType = dateType;
 
     await event.save();
 

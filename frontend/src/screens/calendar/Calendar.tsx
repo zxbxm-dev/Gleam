@@ -276,6 +276,8 @@ const Calendar = () => {
       userID: userID,
       startDate: startDate,
       endDate: endDate,
+      backgroundColor:selectedColor,
+      dateType:title.split(' ')[1],
       title,
       memo
     };
