@@ -6,7 +6,6 @@ import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIco
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
 import { ReactComponent as FirstLeftIcon } from "../../assets/images/Common/FirstLeftIcon.svg";
-import { Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import {
   Popover,
@@ -16,18 +15,17 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
-  useDisclosure,
 } from '@chakra-ui/react';
 import CustomModal from "../../components/modal/CustomModal";
 import { Input } from '@chakra-ui/react';
 
-import { useQuery } from "react-query";
+import { useQueryClient, useQuery } from "react-query";
 import { CheckEmploy, WriteEmploy, EditEmploy, DeleteEmploy } from "../../services/employment/EmploymentService";
 
 
 const Employment = () => {
-  const { isOpen: isAdd, onOpen: AddOpen, onClose: AddClose } = useDisclosure();
   const [page, setPage] = useState<number>(1);
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [employments, setEmployments] = useState<any[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -77,24 +75,6 @@ const Employment = () => {
     setForm({ ...form, site: event.target.value })
   };
 
-  useEffect(() => {
-    const initialEmployments = [
-      { id: 1, title: "[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 2, title: "사무직 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 3, title: "보안 개발자 채용공고입니다 길이서 안보일때는 축ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ", url: "https://www.jobkorea.co.kr/Recruit/GI_Read/44884435?Oem_Code=C1&logpath=1&stext=%ED%8F%AC%EC%B2%B4%EC%9D%B8%EC%8A%A4&listno=2", site: "잡코리아", date: "2024-05-01" },
-      { id: 4, title: "	R&D 연구센터 채용...", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 5, title: "	빅데이터 분석 채용...", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 6, title: "	[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 7, title: "	[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 8, title: "	[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 9, title: "	[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 10, title: "[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 11, title: "[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-      { id: 12, title: "[신입 환영] 채용공고", url: "https://www.jobkorea.co.kr/", site: "잡코리아", date: "2024-05-01" },
-    ];
-    setEmployments(initialEmployments);
-  }, []);
-
   // 채용공고 목록 불러오기
   const fetchEmployments = async () => {
     try {
@@ -111,8 +91,6 @@ const Employment = () => {
       console.log(error)
     }
   });
-
-
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -131,7 +109,17 @@ const Employment = () => {
     setDropdownOpen(true);
     setDropdownPosition({ x: event.pageX, y: event.pageY });
     setClickIdx(index);
+  
+    const employment = employments.find(e => e.id === index);
+    if (employment) {
+      setForm({
+        title: employment.title,
+        url: employment.url,
+        site: employment.site
+      });
+    }
   };
+  
 
   const formatDate = (date: any) => {
     const year = date.getFullYear();
@@ -154,6 +142,7 @@ const Employment = () => {
     EditEmploy(clickIdx, formData)
       .then((response) => {
         console.log("채용공고가 성공적으로 수정되었습니다.", response);
+        queryClient.invalidateQueries("employments");
         setDropdownOpen(false);
       })
       .catch((error) => {
@@ -166,6 +155,7 @@ const Employment = () => {
     DeleteEmploy(clickIdx)
       .then((response) => {
         console.log("채용공고가 성공적으로 삭제되었습니다.", response);
+        queryClient.invalidateQueries("employments");
       })
       .catch((error) => {
         console.error("채용공고 삭제에 실패했습니다.", error);
@@ -200,12 +190,13 @@ const handleSubmit = () => {
 
   WriteEmploy(formData)
     .then(response => {
-      console.log('게시물 작성 성공')
-      AddClose();
+      console.log('게시물 작성 성공', response);
+      queryClient.invalidateQueries("employments");
+      setAddModalOpen(false);
     })
     .catch(error => {
-      console.log('게시물 작성 실패')
-      AddClose();
+      console.log('게시물 작성 실패', error);
+      setAddModalOpen(false);
     })
 };
 
@@ -262,9 +253,9 @@ const handleSubmit = () => {
             <tbody className="board_container">
               {filteredEmployments
                 .slice((page - 1) * postPerPage, page * postPerPage)
-                .map((employment) => (
+                .map((employment, index) => (
                   <tr key={employment.id} className="board_content">
-                    <td>{employment.id}</td>
+                    <td>{index + 1}</td>
                     <td style={{ textAlign: "left", paddingLeft: "100px" }} onContextMenu={(e) => handleRightClick(employment.id, e)}>
                       <div
                         className="dropdown" // 드롭다운 클래스 추가
@@ -284,15 +275,15 @@ const handleSubmit = () => {
                                     <div style={{ width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px' }}>
                                       <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <div style={{ width: '80px', textAlign: 'right' }}>공고제목</div>
-                                        <Input placeholder='ex) 디자인 채용공고' size='sm' color='#323232' />
+                                        <Input value={form.title} size='sm' color='#323232' onChange={handleTitleChange}/>
                                       </div>
                                       <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <div style={{ width: '80px', textAlign: 'right' }}>링크</div>
-                                        <Input placeholder='내용을 입력해주세요.' size='sm' color='#323232' />
+                                        <Input value={form.url} size='sm' color='#323232' onChange={handleUrlChange}/>
                                       </div>
                                       <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <div style={{ width: '80px', textAlign: 'right' }}>사이트명</div>
-                                        <Input placeholder='내용을 입력해주세요.' size='sm' color='#323232' />
+                                        <Input value={form.site} size='sm' color='#323232' onChange={handleSiteChange}/>
                                       </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px' }}>
@@ -312,7 +303,7 @@ const handleSubmit = () => {
                       <a href={employment.url} target="_blank" rel="noopener noreferrer">{employment.url}</a>
                     </td>
                     <td>{employment.site}</td>
-                    <td>{employment.date}</td>
+                    <td>{new Date(employment.createdAt).toISOString().substring(0, 10)}</td>
                   </tr>
                 ))}
             </tbody>
@@ -355,11 +346,11 @@ const handleSubmit = () => {
           </div>
           <div className="AddTitle">
             <div className="employ_div">링크</div>
-            <Input placeholder='내용을 입력해주세요.' className="TextInputCon" onChange={handleUrlChange} />
+            <input placeholder='내용을 입력해주세요.' className="TextInputCon" onChange={handleUrlChange} />
           </div>
           <div className="AddTitle">
             <div className="employ_div">사이트명</div>
-            <Input placeholder='내용을 입력해주세요.' className="TextInputCon" onChange={handleSiteChange} />
+            <input placeholder='내용을 입력해주세요.' className="TextInputCon" onChange={handleSiteChange} />
           </div>
         </div>
       </CustomModal>
