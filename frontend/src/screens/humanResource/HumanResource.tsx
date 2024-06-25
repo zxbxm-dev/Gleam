@@ -256,7 +256,7 @@ const HumanResource = () => {
                   <div style={{ display: 'flex', flexDirection: 'row-reverse', width: '100%',borderBottom: '1px solid #DCDCDC', gap: '10px', paddingBottom:'15px'}}>
                     {isEditing ? (
                       <>
-                        <button className="second_button" onClick={handleToggleEdit}>등록</button>
+                        <button className="primary_button" onClick={handleToggleEdit}>등록</button>
                         <button className="red_button" onClick={handleToggleEdit}>취소</button>
                       </>
                     ) : (

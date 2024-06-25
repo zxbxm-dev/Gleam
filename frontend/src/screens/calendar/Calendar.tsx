@@ -12,6 +12,8 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { isSidebarVisibleState } from '../../recoil/atoms';
 import { CheckCalen, DeleteCalen, EditCalen } from "../../services/calender/calender";
+import { PersonData } from '../../services/person/PersonServices';
+import { useQuery } from 'react-query';
 
 type Event = {
   id: string;
@@ -27,16 +29,28 @@ type Event = {
   year: string;
 };
 
+type User = {
+  userId: string;
+  username: string;
+  usermail: string;
+  company: string;
+  department: string;
+  team: string;
+};
+
 
 const Calendar = () => {
   const user = useRecoilValue(userState);
+  const [persondata, setPersonData] = useState<any[]>([]);
   const [isAddeventModalOpen, setAddEventModalOPen] = useState(false);
   const [iseventModalOpen, setEventModalOPen] = useState(false);
   const [isEditeventModalOpen, setEditEventModalOPen] = useState(false);
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState("");
+  const [addEventUser, setAddEventUser] = useState<User | null>(null);
   const [memo, setMemo] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({ 0: '41px', 1: '35px' });
@@ -49,6 +63,24 @@ const Calendar = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [calendar, setCalendar] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const response = await PersonData();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("person", fetchUser, {
+    onSuccess: (data) => {
+      setPersonData(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  })
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -82,6 +114,24 @@ const Calendar = () => {
     }
   };
 
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      if (title.trim()) {
+        setTitle(title);
+      }
+    }
+  };
+
+  const handleAutoCompleteClick = (person: any) => {
+    setAddEventUser(person);
+    setTitle(person.username)
+  };
+
+  const filteredName = persondata.filter(person =>
+    person.username.toLowerCase().includes(title.toLowerCase())
+  );
+
   const handleMemoChange = (event: any) => {
     setMemo(event.target.value);
   };
@@ -96,11 +146,11 @@ const Calendar = () => {
     const isoEndDate = endDate.toISOString().substring(0, 10);
 
     const eventData = {
-      userID: user.userID,
-      name: user.username,
-      company: user.company,
-      department: user.department,
-      team: user.team,
+      userID: addEventUser?.userId,
+      name: addEventUser?.username,
+      company: addEventUser?.company,
+      department: addEventUser?.department,
+      team: addEventUser?.team,
       title: title,
       startDate: isoStartDate,
       endDate: isoEndDate,
@@ -162,8 +212,8 @@ const Calendar = () => {
       console.error("No event selected for deletion.");
       return;
     }
-
-    const userID = user.userID;
+    const finduser = persondata.find(person => person.username === selectedEvent.title.split(' ')[0])
+    const userID = finduser.userId;
     const startDate = new Date(selectedEvent.startDate);
     const endDate = new Date(selectedEvent.endDate);
 
@@ -219,10 +269,15 @@ const Calendar = () => {
       return;
     }
 
+    const finduser = persondata.find(person => person.username === selectedEvent.title.split(' ')[0])
+    const userID = finduser.userId;
+
     const eventData = {
-      userID: user.userID,
+      userID: userID,
       startDate: startDate,
       endDate: endDate,
+      backgroundColor:selectedColor,
+      dateType:title.split(' ')[1],
       title,
       memo
     };
@@ -419,7 +474,26 @@ const Calendar = () => {
               )}
             </div>
             <div className="content-right">
-              <input className="textinput" type="text" placeholder='ex) OOO 반차' onChange={handleTitleChange} />
+              <div className="event_title_input">
+                <input 
+                  className="textinput" 
+                  type="text" 
+                  placeholder='ex) OOO 반차' 
+                  onChange={handleTitleChange}
+                  onKeyDown={handleInputKeyDown}
+                  value={title}
+                  ref={inputRef}
+                />
+                {title && (
+                  <ul className="userlist_dropdown">
+                    {filteredName.map(person => (
+                      <li key={person.name} onClick={() => handleAutoCompleteClick(person)}>
+                        {person.username} - {person.department} {person.team}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
           <div className="body-content">

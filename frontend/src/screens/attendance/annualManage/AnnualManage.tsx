@@ -72,8 +72,12 @@ const useAnnualData = () => {
 
   useQuery("Users", fetchUser, {
     onSuccess: (data) => {
-      const HO_Data = data.users.filter((item: any) => item.company === "본사");
-      const RnD_Data = data.users.filter((item: any) => item.company === "R&D");
+      const HO_Data = data.users
+        .filter((item: any) => item.company === "본사")
+
+      const RnD_Data = data.users
+        .filter((item: any) => item.company === "R&D")
+
       setHO_Data(HO_Data);
       setRnD_Data(RnD_Data);
       setUserMap(data.userMap);
@@ -85,7 +89,8 @@ const useAnnualData = () => {
 
   useQuery("annual", fetchAnnual, {
     onSuccess: (data) => {
-      setAnnualData(data);
+      const filteredData = data.filter((item: any) => item.dateType === '연차' || item.dateType === '반차');
+      setAnnualData(filteredData);
     },
     onError: (error) => {
       console.error(error);
@@ -116,19 +121,19 @@ const useAnnualData = () => {
 
   const processedRndData = useMemo(() => {
     const result = RnD_Data.map((user: any) => {
-      const userAnnualData = annualData.filter((annual: any) => annual.username === user.username);
+      const userAnnualData: AnnualData[] = annualData.filter((annual: any) => annual.username === user.username);
       const formattedStartDates = userAnnualData.map((annual: any) => 
         annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
       ).filter(date => date !== ''); // 빈 문자열 제거
 
       return [
         user.username || '',
-        user.availableDate || 0,
-        user.usedDate || 0,
-        user.extraDate || 0,
+        userAnnualData[0]?.availableDate || 0,
+        userAnnualData[0]?.usedDate || 0,
+        userAnnualData[0]?.extraDate || 0,
         formattedStartDates.length ? formattedStartDates : [''],
         user.entering ? formatEnteringDate(user.entering) : '',
-        user.leavedate || '',
+        user.leavedate ? formatEnteringDate(user.leavedate) : '',
         user.department || '',
         user.team || ''
       ];
@@ -138,7 +143,6 @@ const useAnnualData = () => {
 
   return { HO_Data: processedHOData, RnD_Data: processedRndData, userMap };
 };
-
 
 
 const AnnualManage = () => {
@@ -253,23 +257,29 @@ const AnnualManage = () => {
     }).sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[7]);
       const deptBIndex = departmentOrder.indexOf(b[7]);
-  
+    
       if (deptAIndex < deptBIndex) return -1;
       if (deptAIndex > deptBIndex) return 1;
-  
+    
       const teamAIndex = teamOrder[a[7]].indexOf(a[8]);
       const teamBIndex = teamOrder[b[7]].indexOf(b[8]);
-  
+    
       if (teamAIndex < teamBIndex) return -1;
       if (teamAIndex > teamBIndex) return 1;
-  
+    
+      const enteringDateA = new Date(a[5]);
+      const enteringDateB = new Date(b[5]);
+    
+      if (enteringDateA < enteringDateB) return -1;
+      if (enteringDateA > enteringDateB) return 1;
+    
       const nameA = a[0];
       const nameB = b[0];
       return nameA.localeCompare(nameB);
     });
-  
+    
     setMembers(sortedMembers);
-  }, [HO_Data]);
+    }, [HO_Data]);
   
   useEffect(() => {
     const groupedData = members.reduce((acc, member) => {
@@ -306,7 +316,7 @@ const AnnualManage = () => {
   
   useEffect(() => {
     const departmentOrder = ['알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
-
+  
     const sortedMembers: Member[] = [...RnD_Data].map((member) => {
       if (member.length === 9) {
         return member as Member;
@@ -326,12 +336,18 @@ const AnnualManage = () => {
     }).sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[7]);
       const deptBIndex = departmentOrder.indexOf(b[7]);
-
+  
       if (deptAIndex < deptBIndex) return -1;
       if (deptAIndex > deptBIndex) return 1;
-
-      const nameA = a[8];
-      const nameB = b[8];
+  
+      const enteringDateA = new Date(a[5]);
+      const enteringDateB = new Date(b[5]);
+  
+      if (enteringDateA < enteringDateB) return -1;
+      if (enteringDateA > enteringDateB) return 1;
+  
+      const nameA = a[0];
+      const nameB = b[0];
       return nameA.localeCompare(nameB);
     });
   
@@ -347,19 +363,19 @@ const AnnualManage = () => {
       }
       acc[dept].rowSpan += 1;
       if (!acc[dept].teams[team]) {
-        acc[dept].teams[team] = { rowSpan: 0, members: [] };
+        acc[dept].teams[team] = { rowSpan: 0, membersRD: [] };
       }
       acc[dept].teams[team].rowSpan += 1;
-      acc[dept].teams[team].members.push(member);
+      acc[dept].teams[team].membersRD.push(member);
       return acc;
-    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; members: Member[] }> }>);
+    }, {} as Record<string, { rowSpan: number; teams: Record<string, { rowSpan: number; membersRD: Member[] }> }>);
 
     const rows: any[] = [];
     Object.keys(groupedData).forEach(dept => {
       const deptData = groupedData[dept];
       Object.keys(deptData.teams).forEach((team, teamIndex) => {
         const teamData = deptData.teams[team];
-        teamData.members.forEach((member, memberIndex) => {
+        teamData.membersRD.forEach((member, memberIndex) => {
           rows.push({
             member,
             deptRowSpan: teamIndex === 0 && memberIndex === 0 ? deptData.rowSpan : 0,
@@ -577,6 +593,8 @@ const AnnualManage = () => {
       </table>
     );
   };
+  console.log(members)
+  console.log(membersRD)
 
   return (
     <div className="content">

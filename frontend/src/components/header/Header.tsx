@@ -33,6 +33,7 @@ const Header = () => {
       localStorage.setItem('usertoken', '');
       resetUserState();
       navigate('/login');
+      window.location.reload();
     } catch (error) {
       console.error('Logout failed', error);
     }

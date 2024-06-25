@@ -229,10 +229,12 @@ const AttendanceRegist = () => {
 
     try {
       const response = await WriteAttendance(formData);
+      setAttachment(null);
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch data");
     }
+
   };
 
   const handleScreenChange = () => {
