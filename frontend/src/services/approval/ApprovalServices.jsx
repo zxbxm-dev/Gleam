@@ -7,11 +7,7 @@ const CheckApproval = () => {
 
 // 보고서 결재 의견, 반려 작성
 const WriteApproval = (report_id, formData) => {
-  return api.post(`/writeApproval/${report_id}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
+  return api.post(`/writeApproval/${report_id}`, formData);
 }
 
 // 보고서 상세 조회

@@ -7,7 +7,11 @@ const CheckPerform = () => {
 
 // 인사평가 제출
 const WritePerform = (formData) => {
-  return api.post("/writePerform", formData);
+  return api.post("/writePerform", formData , {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 };
 
 // 인사평가 삭제

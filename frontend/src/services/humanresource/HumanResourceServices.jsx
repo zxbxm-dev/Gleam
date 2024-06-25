@@ -15,8 +15,12 @@ const WriteHrInfo = (formData) => {
 }
 
 // 인사정보관리 수정
-const EditHrInfo = (hrinfo_id) => {
-  return api.put(`/editHrInfo/${hrinfo_id}`);
+const EditHrInfo = (hrinfo_id, formData) => {
+  return api.put(`/editHrInfo/${hrinfo_id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }
 
 
@@ -28,11 +32,7 @@ const CheckAppointment = (user_id) => {
 
 // 인사이동 등록
 const writeAppointment = (formData) => {
-  return api.post(`${api.defaults.baseURL}/writeAppointment`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
+  return api.post(`${api.defaults.baseURL}/writeAppointment`, formData);
 }
 
 // 인사이동 수정
