@@ -1,3 +1,4 @@
+@import '../../mixin';
 @import '../../Common/board.scss';
 @import '../../Common/scrollbar.scss';
 
@@ -135,29 +136,18 @@
           }
         }
 
-        .spam_button {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100px;
-          height: 35px;
-          border: 1px solid var(--primary-color);
-          border-radius: 5px;
-          background-color: var(--primary-color);
-          color: black;
-          font-family: var(--font-family-Noto-M);
-        }
-
         .card_button {
+          @include report-button;
           display: flex;
           align-items: center;
-          justify-content: center;
-          width: 110px;
-          height: 35px;
+          background-color: #FFFFFF;
           border: 1px solid var(--primary-color);
-          color: black;
-          font-family: var(--font-family-Noto-M);
-          border-radius: 5px;
+          height: 35px;
+          color: #000;
+
+          &:hover {
+            background-color: var(--primary-color);
+          }
         }
 
         .select_duedate_box {
@@ -192,8 +182,8 @@
 
           .dropdown_menu {
             position: absolute;
-            top: 100%;
-            left: 0;
+            top: 95%;
+            left: -0.5%;
             z-index: 10;
             background-color: #fff;
             border-right: 1px solid var(--primary-color);
@@ -203,8 +193,8 @@
             border-radius: 0 0 5px 5px;
             list-style-type: none;
             margin: 0;
-            padding: 0;
-            width: 100%;
+            padding-top: 5%;
+            width: 101%;
             font-size: 12px;
             font-family: var(--font-family-Noto-M);
           }
@@ -252,8 +242,8 @@
 
         .dropdown_menu {
           position: absolute;
-          top: 100%;
-          left: 0;
+          top: 95%;
+          left: -0.5%;
           z-index: 10;
           background-color: #fff;
           border-right: 1px solid var(--primary-color);
@@ -263,8 +253,8 @@
           border-radius: 0 0 5px 5px;
           list-style-type: none;
           margin: 0;
-          padding: 0;
-          width: 100%;
+          padding-top: 5%;
+          width: 101%;
           font-size: 12px;
           font-family: var(--font-family-Noto-M);
         }
@@ -386,41 +376,45 @@
                 margin-right: 20px;
               }
 
-              .image-container {
-                position: relative;
-                cursor: pointer;
-              }
-        
-              .tooltip {
+              .button_wrap {
                 display: flex;
-                width: 65px;
-                font-size: 12px;
-                font-family: var(--font-family-Noto-M);
-                visibility: hidden;
-                background-color: var(--primary-color);
-                color: black;
-                padding: 4px 8px;
-                border-radius: 5px;
-                position: absolute;
-                z-index: 999;
-                bottom: 50%;
-                right: 100%;
-                transform: translateX(20%);
-                opacity: 0;
-                transition: opacity 0.3s ease;
-              }
-        
-              .image-container:hover .tooltip {
-                visibility: visible;
-                opacity: 1;
-              }
-
-              img {
-                width: 25px;
-                height: 25px;
+                gap: 10px;
+                
+                .image-container {
+                  position: relative;
+                  cursor: pointer;
+                }
+          
+                .tooltip {
+                  display: flex;
+                  width: 65px;
+                  font-size: 12px;
+                  font-family: var(--font-family-Noto-M);
+                  visibility: hidden;
+                  background-color: var(--primary-color);
+                  color: black;
+                  padding: 4px 8px;
+                  border-radius: 5px;
+                  position: absolute;
+                  z-index: 999;
+                  bottom: 50%;
+                  right: 100%;
+                  transform: translateX(20%);
+                  opacity: 0;
+                  transition: opacity 0.3s ease;
+                }
+          
+                .image-container:hover .tooltip {
+                  visibility: visible;
+                  opacity: 1;
+                }
+  
+                img {
+                  width: 25px;
+                  height: 25px;
+                }
               }
             }
-
             .mail_detail_content {
               height: 350px;
               background-color: #F3F3F3;
@@ -475,6 +469,7 @@
               .mail_detail_content_bottom {
                 display: flex;
                 justify-content: end;
+                gap: 10px;
               }
             }
           }
