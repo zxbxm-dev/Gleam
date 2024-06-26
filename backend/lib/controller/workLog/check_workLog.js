@@ -47,7 +47,7 @@ const getDocumentsToApprove = async (req, res) => {
     const reports = await Report.findAll({
       where: {
         // 결재 진행 중인 문서만 조회
-        approval: "pending",
+        approval: "draft",
         // Payment 필드에 userName이 포함된 경우
         Payment: {
           [Op.like]: `%${userName}%`,
@@ -86,7 +86,7 @@ const getDocumentsInProgress = async (req, res) => {
     const reports = await Report.findAll({
       where: {
         // 결재 진행 중인 문서만 조회
-        approval: "processing",
+        approval: "pending",
           Payment: {
             [Op.like]: `%${userName}%`,
           },
@@ -162,7 +162,7 @@ const getApprovedDocuments = async (req, res) => {
     const reports = await Report.findAll({
       where: {
         // 결재 완료된 문서만 조회
-        approval: "approved",
+        approval: "completed",
         Payment: {
           [Op.like]: `%${userName}%`,
         },
