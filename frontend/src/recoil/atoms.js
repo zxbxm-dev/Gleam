@@ -8,7 +8,7 @@ export const isSidebarVisibleState = atom({
 
 export const isHrSidebarVisibleState = atom({
   key: 'isHrSidebarVisibleState',
-  default: true, // 기본값: HR사이드바가 안 보이는 상태
+  default: false, // 기본값: HR사이드바가 안 보이는 상태
 });
 
 const getUserStateFromLocalStorage = () => {
