@@ -1,13 +1,13 @@
 import api from "../../api/auth";
 
 // 인사정보관리 조회
-const CheckHrInfo = (user_id) => {
-  return api.get(`/checkHrInfo/${user_id}`);
+const CheckHrInfo = () => {
+  return api.get(`/checkHrInfo`);
 }
 
 // 인사정보관리 제출
 const WriteHrInfo = (formData) => {
-  return api.post(`${api.defaults.baseURL}/writeHrInfo`, formData, {
+  return api.post(`/writeHrInfo`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
@@ -26,13 +26,13 @@ const EditHrInfo = (hrinfo_id, formData) => {
 
 
 // 인사이동 조희
-const CheckAppointment = (user_id) => {
-  return api.get(`/checkAppointment/${user_id}`);
+const CheckAppointment = () => {
+  return api.get(`/checkAppointment`);
 }
 
 // 인사이동 등록
 const writeAppointment = (formData) => {
-  return api.post(`${api.defaults.baseURL}/writeAppointment`, formData);
+  return api.post(`/writeAppointment`, formData);
 }
 
 // 인사이동 수정

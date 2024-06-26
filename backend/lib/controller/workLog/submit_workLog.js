@@ -52,6 +52,7 @@ const submitReport = async (req, res) => {
             rejectName: rejectName,
             rejectContent: rejectContent,
             approval: approval,
+            currentSigner:currentSigner,
             // 보고서 상태 저장 기본값 draft
             status: 'draft',
             currentSigner: currentSigner

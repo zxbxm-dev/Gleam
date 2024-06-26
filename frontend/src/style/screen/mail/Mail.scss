@@ -598,3 +598,42 @@
     transform: rotate(45deg);
   }
 }
+
+
+// 모달창
+.modal_container_wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    font-size: 16px;
+  }
+
+  button {
+    @include report-button;
+    padding: 3px 12px;
+    background-color: #E9E9E9;
+    color: #545454;
+    border: 1px solid #E3E3E3;
+  }
+
+  input {
+    width: 200px;
+    background: none;
+    border: none;
+    outline: none;
+    border-bottom: solid 1px #D1D1D1;
+  }
+  input:focus {
+    outline: none;
+    border-bottom: solid 1px var(--primary-color);
+  }
+}
+
+.modal_spamlist_wrap {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #D9D9D9;
+  border-radius: 5px;
+}
