@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      // 서명 갯수?????/
+      // 서명 완료 갯수 진행중인 문서
       approval: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -78,13 +78,9 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "draft", // 기본값 설정
         allowNull: false,
       },
-      // 진행 중인 결재자
-      // 사용할지 모르겠지만.... 진행 중인 결재자 나타내는 컬럼
-      // 예를 들어 1번 결제자가 완료하면 2번 결제자로 넘어가고.... 이렇게 3번 4번까지
-      // 결제 상태를 나타내는 컬럼 입니다.
-      // index id 번호를 받아 처리하도록...
+      // 서명 받아야 하는 총 갯수
       currentSigner: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
     },

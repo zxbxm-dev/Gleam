@@ -55,6 +55,7 @@ const submitReport = async (req, res) => {
             currentSigner:currentSigner,
             // 보고서 상태 저장 기본값 draft
             status: 'draft',
+            currentSigner: currentSigner
         };
 
         console.log('데이터베이스에 저장할 데이터:', reportData);
