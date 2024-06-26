@@ -30,8 +30,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 
-type PDFFile = string | File | null;
-
 const HumanResource = () => {
   const { isOpen: isAdd, onOpen: AddOpen, onClose: AddClose } = useDisclosure();
   const { isOpen: isEdit, onOpen: EditOpen, onClose: EditClose } = useDisclosure();
@@ -39,8 +37,7 @@ const HumanResource = () => {
   const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px', 2: '35px'});
   const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px', 2: '6px'});
   const [numPages, setNumPages] = useState<number>(0);
-  const [file, setFile] = useState<PDFFile>(testPDF_구민석);
-  const [files, setFiles] = useState<PDFFile[]>([]);
+  const [attachment, setAttachment] = useState<File | null>(null);
   const [isSelectMember] = useRecoilState(isSelectMemberState);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -150,11 +147,12 @@ const HumanResource = () => {
 
   // 인사이동 수정
   const handleAppointmentEdit = () => {
-    const {dept, position, date, classify} = form;
+    const {dept, position, spot, date, classify} = form;
 
     const formData = new FormData();
     formData.append('dept', dept);
     formData.append('position', position);
+    formData.append('spot', spot);
     formData.append('date', date);
     formData.append('classify', classify);
 
@@ -181,7 +179,6 @@ const HumanResource = () => {
 
   const downloadPDF = () => {
     const link = document.createElement('a');
-    setFile(testPDF_구민석)
     link.href = testPDF_구민석;
     link.download = '인사기록카드_구민석.pdf';
     document.body.appendChild(link);
@@ -208,19 +205,18 @@ const HumanResource = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const selectedFiles = Array.from(event.target.files);
-      setFiles([...files, ...selectedFiles]);
-      console.log(files)
+    const file = event.target.files?.[0];
+    if (file) {
+      setAttachment(file);
     }
   };
 
   const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const droppedFiles = Array.from(event.dataTransfer.files);
-    setFiles([...files, ...droppedFiles]);
-    // 인사정보관리 제출
-    WriteHrInfo()
+    const droppedFiles = event.dataTransfer.files?.[0];
+    if (droppedFiles) {
+      setAttachment(droppedFiles);
+    }
   };
   
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -235,6 +231,27 @@ const HumanResource = () => {
     setDeleteModalOpen(false);
   }
 
+  // 인사기록카드, 근로자명부 제출
+  const handleSubmitHrInfo = async () => {
+    console.log('보낸파일이름', attachment)
+
+    if (!attachment) {
+      alert('선택된 파일이 없습니다.');
+      return;
+    }
+    
+    const formData = new FormData();
+    formData.append('attachment', attachment);
+    formData.append('pdffile', attachment.name);
+    formData.append('manager', '김효은');
+    
+    try {
+      const response = await WriteHrInfo(formData);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  }
 
   return (
     <div className="content">
@@ -249,25 +266,36 @@ const HumanResource = () => {
 
           <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="hr_tab_container">
             <TabPanel display='flex' flexDirection='column'>
-              {isSelectMember[0] === '' ? (
+              {isSelectMember[0] !== '' ? (
                 <></>
               ) : (
                 <>
                   <div style={{ display: 'flex', flexDirection: 'row-reverse', width: '100%',borderBottom: '1px solid #DCDCDC', gap: '10px', paddingBottom:'15px'}}>
-                    {isEditing ? (
+                    {attachment ? (
                       <>
-                        <button className="primary_button" onClick={handleToggleEdit}>등록</button>
+                        <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
                         <button className="red_button" onClick={handleToggleEdit}>취소</button>
                       </>
                     ) : (
                       <>
-                        <button className="white_button" onClick={handleToggleEdit}>업로드</button>
+                        <button className="white_button">
+                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                            업로드
+                            <input
+                              id="fileInput"
+                              type="file"
+                              name="handleFileSubmit"
+                              style={{ display: "none" }}
+                              onChange={handleFileChange}
+                            />
+                          </label>
+                        </button>
                         <button className="white_button" onClick={downloadPDF}>다운로드</button>
                       </>
                     )}
                   </div>
                   <div className="hr_pdf_container">
-                    {isEditing ? (
+                    {!attachment ? (
                       <div
                         className="upload-area"
                         onDrop={handleFileDrop}
@@ -288,7 +316,7 @@ const HumanResource = () => {
                         <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                       </div>
                     ) : (
-                      <Document file={testPDF_구민석} onLoadSuccess={onDocumentLoadSuccess}>
+                      <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
                         {renderPages()}
                       </Document>
                     )}
@@ -299,25 +327,36 @@ const HumanResource = () => {
             </TabPanel>
 
             <TabPanel display='flex' flexDirection='column'>
-            {isSelectMember[0] === '' ? (
+            {isSelectMember[0] !== '' ? (
                 <></>
               ) : (
                 <>
                   <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
-                    {isEditing ? (
+                  {attachment ? (
                       <>
-                        <button className="second_button" onClick={handleToggleEdit}>등록</button>
+                        <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
                         <button className="red_button" onClick={handleToggleEdit}>취소</button>
                       </>
                     ) : (
                       <>
-                        <button className="white_button" onClick={handleToggleEdit}>업로드</button>
-                        <button className="white_button">다운로드</button>
+                        <button className="white_button">
+                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                            업로드
+                            <input
+                              id="fileInput"
+                              type="file"
+                              name="handleFileSubmit"
+                              style={{ display: "none" }}
+                              onChange={handleFileChange}
+                            />
+                          </label>
+                        </button>
+                        <button className="white_button" onClick={downloadPDF}>다운로드</button>
                       </>
                     )}
                   </div>
                   <div className="hr_pdf_container">
-                    {isEditing ? (
+                    {!attachment ? (
                       <div
                         className="upload-area"
                         onDrop={handleFileDrop}
@@ -338,7 +377,7 @@ const HumanResource = () => {
                         <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                       </div>
                     ) : (
-                      <Document file={test2PDF_구민석} onLoadSuccess={onDocumentLoadSuccess}>
+                      <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
                         {renderPages()}
                       </Document>
                     )}
