@@ -6,7 +6,7 @@ import {
   DeleteIcon,
 } from "../../../assets/images/index";
 import CustomModal from '../../../components/modal/CustomModal';
-import { DeletePerform } from '../../../services/performance/PerformanceServices';
+import { WritePerform } from '../../../services/performance/PerformanceServices';
 
 type PDFFile = string | File | null;
 
@@ -55,7 +55,7 @@ const SubmitPerform = () => {
       formData.append(`file${index}`, file!);
     });
 
-    DeletePerform(formData)
+    WritePerform(formData)
       .then(response => {
         console.log("Files submitted successfully:", response);
         setSubmitModalOpen(true);

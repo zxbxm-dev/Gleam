@@ -1,9 +1,30 @@
 import api from "../../api/auth";
 
-// 보고서 결재 목록 조회
-const CheckApproval = () => {
-  return api.get("/checkApproval");
+// 내 문서 목록 조회
+const getMyReports = (formData) => {
+  return api.get("/getMyReports", formData);
 }
+
+// 결재할 문서 목록 조회
+const getDocumentsToApprove = (formData) => {
+  return api.get("/getDocumentsToApprove", formData);
+}
+
+// 결재 진행 중인 문서 목록 조회
+const getDocumentsInProgress = (formData) => {
+  return api.get("/getDocumentsInProgress", formData);
+}
+
+// 반려된 문서 목록 조회
+const getRejectedDocuments = (formData) => {
+  return api.get("/getRejectedDocuments", formData);
+}
+
+// 결재 완료된 문서 목록 조회
+const getApprovedDocuments = (formData) => {
+  return api.get("/getApprovedDocuments", formData);
+}
+
 
 // 보고서 결재 의견, 반려 작성
 const WriteApproval = (report_id, formData) => {
@@ -21,4 +42,4 @@ const DeleteReport = (report_id) => {
 }
 
 
-export { CheckApproval, WriteApproval, CheckReport, DeleteReport };
+export { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments, WriteApproval, CheckReport, DeleteReport };
