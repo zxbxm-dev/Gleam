@@ -13,7 +13,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 
 import { useQuery } from "react-query";
-import { CheckApproval } from "../../services/approval/ApprovalServices";
+import { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments } from "../../services/approval/ApprovalServices";
 
 const Approval = () => {
   let navigate = useNavigate();
@@ -21,13 +21,12 @@ const Approval = () => {
   const [page, setPage] = useState<number>(1);
   const [selectedTab, setSelectedTab] = useState<string>("myDocuments");
   const [postPerPage, setPostPerPage] = useState<number>(10);
-  const [approval, setApproval] = useState<any[]>([]);
-  const [approvalings, setApprovaling] = useState<any[]>([]);
-  const [inProgress, setInProgress] = useState<any[]>([]);
-  const [rejecteds, setRejected] = useState<any[]>([]);
-  const [mydocuments, setMyDocument] = useState<any[]>([]);
+  const [mydocuments, setMyDocument] = useState<any[]>([]); // 내 문서
+  const [approvalings, setApprovaling] = useState<any[]>([]); // 결재할 문서
+  const [inProgress, setInProgress] = useState<any[]>([]); // 결재 진행중 문서
+  const [rejecteds, setRejected] = useState<any[]>([]); // 반려된 문서
+  const [compleDocuments, setCompleDocument] = useState<any[]>([]); // 완료된 문서
   const [vacations, setVacation] = useState<any[]>([]);
-  const [compleDocuments, setCompleDocument] = useState<any[]>([]);
   const [idSortOrder, setIdSortOrder] = useState<"asc" | "desc">("asc");
   const [titleSortOrder, setTitleSortOrder] = useState<"asc" | "desc">("asc");
   const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");
@@ -61,77 +60,108 @@ const Approval = () => {
     setSelectedTab(tab);
   };
 
-  // 보고서 결재 목록 불러오기
-  const fetchApproval = async () => {
+  // 내 문서 목록 불러오기
+  const fetchMyReports = async () => {
+    const formdata = new FormData();
+    formdata.append('username', user.username)
+    formdata.append('userID', user.userID)
+
     try {
-      const response = await CheckApproval();
+      const response = await getMyReports(formdata);
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch data");
     }
   };
 
-  useQuery("approval", fetchApproval, {
-    onSuccess: (data) => setApproval(data),
+  useQuery("myReports", fetchMyReports, {
+    onSuccess: (data) => setMyDocument(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+  
+  // 결재할 문서 목록 불러오기
+  const fetchDocumentsToApprove = async () => {
+    const formdata = new FormData();
+    formdata.append('username', user.username)
+
+    try {
+      const response = await getDocumentsToApprove(formdata);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("DocumentsToApprove", fetchDocumentsToApprove, {
+    onSuccess: (data) => setApprovaling(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
+  // 결재 진행 중인 문서 목록 불러오기
+  const fetchDocumentsInProgress = async () => {
+    const formdata = new FormData();
+    formdata.append('username', user.username)
+
+    try {
+      const response = await getDocumentsInProgress(formdata);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("DocumentsInProgress", fetchDocumentsInProgress, {
+    onSuccess: (data) => setInProgress(data),
     onError: (error) => {
       console.log(error)
     }
   });
 
 
-  useEffect(() => { // 결재할문서 필터링
-    const filteredDocuments = approval.filter(doc => doc.approvalline.indexOf('진유빈') === doc.progress && doc.state === '미결재');
-    const initializedDocuments = filteredDocuments.map((doc, index) => ({
-      ...doc,
-      id: filteredDocuments.length - index
-    }));
-    setApprovaling(initializedDocuments);
-  }, [approval]);
+  // 반려된 문서 목록 불러오기
+  const fetchRejectedDocuments = async () => {
+    const formdata = new FormData();
+    formdata.append('username', user.username)
 
-  useEffect(() => { // 결재진행중문서 필터링
-    const filteredDocuments = approval.filter(doc => doc.approvalline.includes('진유빈') && doc.state === '미결재');
-    const initializedDocuments = filteredDocuments.map((doc, index) => ({
-      ...doc,
-      id: filteredDocuments.length - index
-    }));
-    setInProgress(initializedDocuments);
-  }, [approval]);
+    try {
+      const response = await getRejectedDocuments(formdata);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
 
-  useEffect(() => { // 반려문서 필터링
-    const filteredDocuments = approval.filter(doc => doc.state === '반려');
-    const initializedDocuments = filteredDocuments.map((doc, index) => ({
-      ...doc,
-      id: filteredDocuments.length - index
-    }));
-    setRejected(initializedDocuments);
-  }, [approval]);
+  useQuery("RejectedDocuments", fetchRejectedDocuments, {
+    onSuccess: (data) => setRejected(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
 
-  useEffect(() => { // 결재완료문서 필터링
-    const filteredDocuments = approval.filter(doc => doc.progress === doc.maxprogress);
-    const initializedDocuments = filteredDocuments.map((doc, index) => ({
-      ...doc,
-      id: filteredDocuments.length - index
-    }));
-    setCompleDocument(initializedDocuments);
-  }, [approval]);
+  // 결재 완료된 문서 목록 불러오기
+  const fetchApprovedDocuments = async () => {
+    const formdata = new FormData();
+    formdata.append('username', user.username)
 
-  useEffect(() => { // 내문서 필터링
-    const filteredDocuments = approval.filter(doc => doc.writer === "구민석");
-    const initializedDocuments = filteredDocuments.map((doc, index) => ({
-      ...doc,
-      id: filteredDocuments.length - index
-    }));
-    setMyDocument(initializedDocuments);
-  }, [approval]);
+    try {
+      const response = await getApprovedDocuments(formdata);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
 
-  useEffect(() => { // 휴가문서관리 필터링
-    const filteredDocuments = approval.filter(doc => doc.title.includes('휴가신청서'));
-    const initializedDocuments = filteredDocuments.map((doc, index) => ({
-      ...doc,
-      id: filteredDocuments.length - index
-    }));
-    setVacation(initializedDocuments);
-  }, [approval]);
+  useQuery("ApprovedDocuments", fetchApprovedDocuments, {
+    onSuccess: (data) => setCompleDocument(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
 
   const handleSort = (sortKey: string, targetState: any[], setTargetState: React.Dispatch<React.SetStateAction<any[]>>) => {
     // 정렬 상태 변수를 저장하는 Map
@@ -766,8 +796,6 @@ const Approval = () => {
         return null;
     }
   };
-
-  console.log(mydocuments)
 
   return (
     <div className="content">
