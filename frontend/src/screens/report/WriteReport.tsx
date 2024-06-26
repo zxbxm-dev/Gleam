@@ -65,6 +65,11 @@ const WriteReport = () => {
   const sendDate = new Date();
   const approvalValue = 0;
 
+  const countSelectedMembers = (approvalLines: any) => {
+    return approvalLines.reduce((count: number, line: any) => {
+      return count + (line.hasOwnProperty('selectedMember') ? 1 : 0);
+    }, 0);
+  };
   const createFormData = (selectedReport:string, approvalLines:any, file:any, sendDate:any, approvalValue:any) => {
     const formData = new FormData();
     formData.append('userID', user.userID);
@@ -82,7 +87,11 @@ const WriteReport = () => {
     formData.append('opinionContent', "");
     formData.append('rejectName', "");
     formData.append('rejectContent', "");
-    formData.append('approval', approvalValue.toString()); 
+    formData.append('approval', approvalValue); 
+
+    const selectedMemberCount = countSelectedMembers(approvalLines);
+    formData.append('currentSigner', selectedMemberCount);
+
     return formData;
   };
 
