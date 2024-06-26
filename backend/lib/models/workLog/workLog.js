@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       // 서명 갯수?????/
       approval: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       // 보고서 상태 (작성중, 대기중, 반려됨, 완료됨)

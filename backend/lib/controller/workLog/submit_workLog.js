@@ -1,70 +1,82 @@
 const models = require('../../models');
 const Report = models.Report;
-const upload = require('./multerMiddleware');
-const multer = require('multer');
 
-// 보고서 제출 처리 함수
+// 보고서 제출 함수
 const submitReport = async (req, res) => {
-    upload(req, res, async function(err) {
-        if (err instanceof multer.MulterError) {
-            // Multer 에러 처리
-            console.error('Multer 에러 발생:', err);
-            return res.status(500).json({ error: '파일 업로드 실패' });
-        } else if (err) {
-            // 기타 에러 처리
-            console.error('파일 업로드 중 오류 발생:', err);
-            return res.status(500).json({ error: '파일 업로드 실패' });
-        }
+    try {
+        console.log('파일 업로드 성공:', req.file);
 
-        // 파일 업로드 성공 시 req.body 및 req.file 정보를 사용하여 보고서 데이터 생성
+        const {
+            userID,
+            username,
+            dept,
+            selectForm,
+            Payment,
+            pdffile,
+            // 클라이언트에서 전달한 데이터가 아닌 현재 날짜로 전달받음
+            receiptDate,
+            sendDate,
+            opinionName,
+            opinionContent,
+            rejectName,
+            rejectContent,
+            approval,
+        } = req.body;
+
+        console.log('클라이언트로부터 받은 데이터:');
+        console.log('userID:', userID);
+        console.log('username:', username);
+        console.log('dept:', dept);
+        console.log('selectForm:', selectForm);
+        console.log('Payment:', Payment);
+        console.log('pdffile:', pdffile);
+        console.log('sendDate:', sendDate);
+
+        // attachment 업로드된 파일 경로
+        const attachmentPath = req.file.path;
+        console.log('업로드된 파일 경로:', attachmentPath);
+
+        const reportData = {
+            userId: userID,
+            username: username,
+            dept: dept,
+            selectForm: selectForm,
+            Payment: JSON.stringify(Payment),
+            attachment: attachmentPath,
+            pdffile: pdffile,
+            receiptDate: new Date(),
+            sendDate: sendDate,
+            opinionName: opinionName,
+            opinionContent: opinionContent,
+            rejectName: rejectName,
+            rejectContent: rejectContent,
+            approval: approval,
+            // 보고서 상태 저장 기본값 draft
+            status: 'draft',
+        };
+
+        console.log('데이터베이스에 저장할 데이터:', reportData);
+
         try {
-            const {
-                userID,
-                username,
-                dept,
-                selectForm,
-                Payment,
-                receiptDate,
-                sendDate,
-                opinionName,
-                opinionContent,
-                rejectName,
-                rejectContent,
-                approval
-            } = req.body;
+            const newReport = await Report.create(reportData);
+            console.log('새로운 보고서 생성:', newReport);
 
-            // 업로드된 파일 정보 (업로드된 파일 이름 저장)
-            const pdffile = req.file.filename;
-
-            // 데이터베이스에 새 보고서 엔트리 생성
-            const newReport = await Report.create({
-                userId: userID,
-                username,
-                dept,
-                selectForm,
-                // JSON 형식 문자열로 변환하여 저장
-                Payment: JSON.stringify(Payment),
-                pdffile,
-                receiptDate,
-                sendDate,
-                opinionName,
-                opinionContent,
-                rejectName,
-                rejectContent,
-                approval,
-                 // 기본값으로 '작성중' 설정
-                status: 'draft',
-                 // 초기에 결재자는 null로 설정
-                currentSigner: null
+            res.status(201).json({
+                message: '보고서가 성공적으로 제출되었습니다.',
+                report: newReport
             });
-
-            // 성공 메시지 또는 새 보고서 데이터 응답
-            res.status(201).json({ message: '보고서가 성공적으로 제출되었습니다', report: newReport });
-        } catch (error) {
-            console.error('보고서 제출 중 오류 발생:', error);
-            res.status(500).json({ error: '보고서 제출 실패' });
+        } catch (dbError) {
+            console.error('데이터베이스 저장 중 에러:', dbError);
+            res.status(500).json({
+                message: '데이터베이스 오류로 인해 보고서 제출에 실패하였습니다.'
+            });
         }
-    });
+    } catch (error) {
+        console.error('보고서 제출 중 에러:', error);
+        res.status(500).json({
+            message: '서버 오류로 인해 보고서 제출에 실패하였습니다.'
+        });
+    }
 };
 
 module.exports = {

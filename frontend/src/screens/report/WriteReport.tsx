@@ -77,11 +77,13 @@ const WriteReport = () => {
     formData.append('dept', user.department);
     formData.append('selectForm', selectedReport);
     formData.append('Payment', JSON.stringify(approvalLines));
+    
     if (file) {
-        formData.append('attachment', file);
+        formData.append('handleSubmit', file);
         formData.append('pdffile', file.name);
     }
-    formData.append('receiptDate', "");
+    
+    formData.append('receiptDate', ""); 
     formData.append('sendDate', sendDate.toISOString());
     formData.append('opinionName', "");
     formData.append('opinionContent', "");
@@ -94,6 +96,7 @@ const WriteReport = () => {
 
     return formData;
   };
+
 
   const handleSubmit = () => {
     const formData = createFormData(selectedReport, approvalLines, file, sendDate, approvalValue);
