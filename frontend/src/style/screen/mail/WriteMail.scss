@@ -65,8 +65,8 @@
 
         .dropdown_menu {
           position: absolute;
-          top: 100%;
-          left: 0;
+          top: 95%;
+          left: -0.5%;
           z-index: 10;
           background-color: #fff;
           border-right: 1px solid var(--primary-color);
@@ -76,8 +76,8 @@
           border-radius: 0 0 5px 5px;
           list-style-type: none;
           margin: 0;
-          padding: 0;
-          width: 100%;
+          padding-top: 5%;
+          width: 101%;
           font-size: 12px;
           font-family: var(--font-family-Noto-M);
         }
