@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { userState } from '../../recoil/atoms';
 import { useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
-import { SideUp } from "../../assets/images/index";
+import { SideUp, SideDown } from "../../assets/images/index";
 
 type Member = [string, string, string, string, string, string, string[]];
 
@@ -154,7 +154,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
 
   return (
     <div className={`memberSidebar ${isExpanded ? 'expanded' : ''}`}>
-      <img src={SideUp} alt="Expand Sidebar" onClick={toggleSidebar} />
+      <img src={isExpanded ? SideDown : SideUp} alt="Expand Sidebar" onClick={toggleSidebar} />
       <div className="memberDetails">
         {renderMembers()}
         {renderDept()}

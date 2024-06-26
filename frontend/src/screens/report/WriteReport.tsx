@@ -7,6 +7,7 @@ import {
   Approval_Plus,
   Approval_Plus_green,
   Approval_Minus,
+  SelectDownArrow
 } from "../../assets/images/index";
 import { useLocation, Link } from "react-router-dom";
 import HrSidebar from "../../components/sidebar/HrSidebar";
@@ -70,26 +71,26 @@ const WriteReport = () => {
       return count + (line.hasOwnProperty('selectedMember') ? 1 : 0);
     }, 0);
   };
-  const createFormData = (selectedReport:string, approvalLines:any, file:any, sendDate:any, approvalValue:any) => {
+  const createFormData = (selectedReport: string, approvalLines: any, file: any, sendDate: any, approvalValue: any) => {
     const formData = new FormData();
     formData.append('userID', user.userID);
     formData.append('username', user.username);
     formData.append('dept', user.department);
     formData.append('selectForm', selectedReport);
     formData.append('Payment', JSON.stringify(approvalLines));
-    
+
     if (file) {
-        formData.append('handleSubmit', file);
-        formData.append('pdffile', file.name);
+      formData.append('handleSubmit', file);
+      formData.append('pdffile', file.name);
     }
-    
-    formData.append('receiptDate', ""); 
+
+    formData.append('receiptDate', "");
     formData.append('sendDate', sendDate.toISOString());
     formData.append('opinionName', "");
     formData.append('opinionContent', "");
     formData.append('rejectName', "");
     formData.append('rejectContent', "");
-    formData.append('approval', approvalValue); 
+    formData.append('approval', approvalValue);
 
     const selectedMemberCount = countSelectedMembers(approvalLines);
     formData.append('currentSigner', selectedMemberCount);
@@ -100,7 +101,7 @@ const WriteReport = () => {
 
   const handleSubmit = () => {
     const formData = createFormData(selectedReport, approvalLines, file, sendDate, approvalValue);
-    
+
     submitReport(formData)
       .then(response => {
         console.log('보고서 제출 완료', response)
@@ -298,12 +299,12 @@ const WriteReport = () => {
     updatedApprovalLines.forEach((line, idx) => {
       if (idx === index) {
         line.checked = !line.checked;
-        if(line.selectedMember) {
+        if (line.selectedMember) {
           line.selectedMember = null;
-        } else if(line.selectedMembers) {
+        } else if (line.selectedMembers) {
           line.selectedMembers = [];
         }
-        
+
       } else {
         if (!line.selectedMember && (!line.selectedMembers || line.selectedMembers.length === 0)) {
           line.checked = false;
@@ -385,225 +386,252 @@ const WriteReport = () => {
   return (
     <div className="content">
       <div className="content_container">
-          <div className="report_write_container">
-            <div className="write_top_container">
-              <div className="top_left_content">
-                <div className="sub_title">양식 선택</div>
-                <div className="Select_report">
-                  <div className="Select_report_Header" onClick={SelectOpen}>
-                    <img src={SelectArrow} alt="SelectArrow" className="SelectArrow" />
-                    <span>{selectedReport}</span>
-                  </div>
-                  {selectOpen ? (
-                    <div className="Select_report_Content">
-                      <div>공동</div>
-                      <div className="Option" onClick={() => SelectOptions('주간업무일지')}>
-                        <span>주간업무일지</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('휴가신청서')}>
-                        <span>휴가신청서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('지출품의서')}>
-                        <span>지출품의서</span>
-                      </div>
-
-                      <div>프로젝트</div>
-                      <div className="Option" onClick={() => SelectOptions('기획서')}>
-                        <span>기획서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('중간보고서')}>
-                        <span>중간보고서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('최종보고서')}>
-                        <span>최종보고서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('TF팀 기획서')}>
-                        <span>TF팀 기획서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 계획서')}>
-                        <span>TF팀 프로젝트 계획서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('TF팀 중간보고서')}>
-                        <span>TF팀 중간보고서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 결과 보고서')}>
-                        <span>TF팀 프로젝트 결과 보고서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('박람회 보고서')}>
-                        <span>박람회 보고서</span>
-                      </div>
-
-                      <div>인사</div>
-                      <div className="Option" onClick={() => SelectOptions('휴직원')}>
-                        <span>휴직원</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('복직원')}>
-                        <span>복직원</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('시말서')}>
-                        <span>시말서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('진급추천서')}>
-                        <span>진급추천서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('퇴직금 중간정산 신청서')}>
-                        <span>퇴직금 중간정산 신청서</span>
-                      </div>
-
-                      <div>총무</div>
-                      <div className="Option" onClick={() => SelectOptions('출장 신청서')}>
-                        <span>출장 신청서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('출장 보고서')}>
-                        <span>출장 보고서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('자기개발비 신청서')}>
-                        <span>자기개발비 신청서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('법인카드 신청서')}>
-                        <span>법인카드 신청서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('지출내역서')}>
-                        <span>지출내역서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('예산신청서')}>
-                        <span>예산신청서</span>
-                      </div>
-
-                      <div>기타</div>
-                      <div className="Option" onClick={() => SelectOptions('워크숍 신청서')}>
-                        <span>워크숍 신청서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('야유회 보고서')}>
-                        <span>야유회 보고서</span>
-                      </div>
-                      <div className="Option" onClick={() => SelectOptions('프로젝트 회의 보고서')}>
-                        <span>프로젝트 회의 보고서</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
+        <div className="report_write_container">
+          <div className="write_top_container">
+            <div className="top_left_content">
+              <div className="sub_title">양식 선택</div>
+              <div className="Select_report">
+                <div className="Select_report_Header" onClick={SelectOpen}>
+                  <img src={selectOpen ? SelectDownArrow : SelectArrow} alt="SelectArrow" className="SelectArrow" />
+                  <span>{selectedReport}</span>
                 </div>
+                {selectOpen ? (
+                  <div className="Select_report_Content">
+                    <div>공동</div>
+                    <div className="Option" onClick={() => SelectOptions('주간업무일지')}>
+                      <span>주간업무일지</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('휴가신청서')}>
+                      <span>휴가신청서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('지출품의서')}>
+                      <span>지출품의서</span>
+                    </div>
+
+                    <div>프로젝트</div>
+                    <div className="Option" onClick={() => SelectOptions('기획서')}>
+                      <span>기획서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('중간보고서')}>
+                      <span>중간보고서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('최종보고서')}>
+                      <span>최종보고서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('TF팀 기획서')}>
+                      <span>TF팀 기획서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 계획서')}>
+                      <span>TF팀 프로젝트 계획서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('TF팀 중간보고서')}>
+                      <span>TF팀 중간보고서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 결과 보고서')}>
+                      <span>TF팀 프로젝트 결과 보고서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('박람회 보고서')}>
+                      <span>박람회 보고서</span>
+                    </div>
+
+                    <div>인사</div>
+                    <div className="Option" onClick={() => SelectOptions('휴직원')}>
+                      <span>휴직원</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('복직원')}>
+                      <span>복직원</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('시말서')}>
+                      <span>시말서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('진급추천서')}>
+                      <span>진급추천서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('퇴직금 중간정산 신청서')}>
+                      <span>퇴직금 중간정산 신청서</span>
+                    </div>
+
+                    <div>총무</div>
+                    <div className="Option" onClick={() => SelectOptions('출장 신청서')}>
+                      <span>출장 신청서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('출장 보고서')}>
+                      <span>출장 보고서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('자기개발비 신청서')}>
+                      <span>자기개발비 신청서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('법인카드 신청서')}>
+                      <span>법인카드 신청서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('지출내역서')}>
+                      <span>지출내역서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('예산신청서')}>
+                      <span>예산신청서</span>
+                    </div>
+
+                    <div>기타</div>
+                    <div className="Option" onClick={() => SelectOptions('워크숍 신청서')}>
+                      <span>워크숍 신청서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('야유회 보고서')}>
+                      <span>야유회 보고서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('프로젝트 회의 보고서')}>
+                      <span>프로젝트 회의 보고서</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
               </div>
+            </div>
 
-              <div className="top_right_content">
-                <Popover placement="left-start">
-                  <PopoverTrigger>
-                    <button className="primary_button">결재라인 선택</button>
-                  </PopoverTrigger>
-                  <Portal>
-                    <PopoverContent width='440px' height='700px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #d9d9d9'>
-                      <PopoverHeader color='#272727' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-M)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
-                      <PopoverCloseButton color='#272727' />
-                      <PopoverBody display='flex' flexDirection='row' padding='0px'>
-                        <div style={{ width: '200px', height: '650px', overflowY: 'scroll', scrollbarWidth: 'thin' }}>
-                          <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
-                        </div>
-                        <div className='FlexContentBox'>
-                          <div className='ContentBox' style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative' }}>
-                            {approvalLines.filter(line => line.name !== '참조').map((line, index) => (
-                              <div key={index} className="approval_content" onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
-                                <div className='approval_line'>
-                                  <input type="text" value={line.name} onChange={(e) => handleNameChange(index+1, e.target.value)} />
-                                  {hoveredIndex === index ?
-                                    <img src={Approval_Minus} alt="Approval_Minus" onClick={() => { removeApprovalLine(index+1) }} style={{ cursor: 'pointer' }} />
-                                    :
-                                    <></>
-                                  }
-                                </div>
-                                {line.checked ? (
-                                  line.selectedMember ? (
-                                    <div className='approval_name' onClick={() => handleCheckboxChange(index+1)}>
-                                      <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
-                                      <div className='name_text'>{line.selectedMember[0]}</div>
-                                      <div className='name_border'></div>
-                                      <div className='name_text'>{line.selectedMember[3]}</div>
-                                    </div>
-                                  ) : (
-                                    <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index+1)}>
-                                      <div>&nbsp;</div>
-                                    </div>
-                                  )
-                                ) : (
-                                  <div className="approval_unchecked" onClick={() => handleCheckboxChange(index+1)}>
-                                    칸 선택 후 좌측 리스트에서<br />
-                                    결재라인을 선택해주세요
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                            {approvalLines.length <= 6 ? (
-                              <img src={isHovered ? Approval_Plus_green : Approval_Plus}
-                                alt="Approval_Plus"
-                                onClick={addApprovalLine}
-                                style={{ cursor: 'pointer' }}
-                                onMouseEnter={() => setIsHovered(true)}
-                                onMouseLeave={() => setIsHovered(false)}
-                              />
-                            ) : (
-                              <></>
-
-                            )}
-                          </div>
-                          {approvalLines.filter(line => line.name === '참조').map((line, index) => (
-                            <div key={index} className="last_approval_content">
+            <div className="top_right_content">
+              <Popover placement="left-start">
+                <PopoverTrigger>
+                  <button className="primary_button">결재라인 선택</button>
+                </PopoverTrigger>
+                <Portal>
+                  <PopoverContent width='440px' height='700px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #d9d9d9'>
+                    <PopoverHeader color='#272727' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-M)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
+                    <PopoverCloseButton color='#272727' />
+                    <PopoverBody display='flex' flexDirection='row' padding='0px'>
+                      <div style={{ width: '200px', height: '650px', overflowY: 'scroll', scrollbarWidth: 'thin' }}>
+                        <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                      </div>
+                      <div className='FlexContentBox'>
+                        <div className='ContentBox' style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative' }}>
+                          {approvalLines.filter(line => line.name !== '참조').map((line, index) => (
+                            <div key={index} className="approval_content" onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
                               <div className='approval_line'>
-                                <input
-                                  type="checkbox"
-                                  checked={line.checked}
-                                  onChange={() => handleCheckboxChange(index)}
-                                  className='approval_checkbox'
-                                  id="chk"
-                                  style={{ cursor: 'pointer' }}
-                                />
-                                <label htmlFor="chk" style={{ cursor: 'pointer' }}>{line.name}</label>
+                                <input type="text" value={line.name} onChange={(e) => handleNameChange(index + 1, e.target.value)} />
+                                {hoveredIndex === index ?
+                                  <img src={Approval_Minus} alt="Approval_Minus" onClick={() => { removeApprovalLine(index + 1) }} style={{ cursor: 'pointer' }} />
+                                  :
+                                  <></>
+                                }
                               </div>
                               {line.checked ? (
                                 line.selectedMember ? (
-                                  <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
+                                  <div className='approval_name' onClick={() => handleCheckboxChange(index + 1)}>
                                     <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
                                     <div className='name_text'>{line.selectedMember[0]}</div>
                                     <div className='name_border'></div>
                                     <div className='name_text'>{line.selectedMember[3]}</div>
                                   </div>
                                 ) : (
-                                  line.name === '참조' && line.selectedMembers ? (
-                                    <div className='approvals_contents'>
-                                      {line.selectedMembers.map((member, index) => (
-                                        <div key={index} className='approval_small_name'>
-                                          <div className='name_text'>{member[0]}</div>
-                                          <div className='name_border'></div>
-                                          <div className='name_text'>{member[3]}</div>
-                                          <img src={CloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
-                                        </div>
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index)}>
-                                      <div>&nbsp;</div>
-                                    </div>
-                                  )
+                                  <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index + 1)}>
+                                    <div>&nbsp;</div>
+                                  </div>
                                 )
                               ) : (
-                                <div className="approval_unchecked" onClick={() => handleCheckboxChange(index)}>
+                                <div className="approval_unchecked" onClick={() => handleCheckboxChange(index + 1)}>
                                   칸 선택 후 좌측 리스트에서<br />
                                   결재라인을 선택해주세요
                                 </div>
                               )}
                             </div>
                           ))}
+                          {approvalLines.length <= 6 ? (
+                            <img src={isHovered ? Approval_Plus_green : Approval_Plus}
+                              alt="Approval_Plus"
+                              onClick={addApprovalLine}
+                              style={{ cursor: 'pointer' }}
+                              onMouseEnter={() => setIsHovered(true)}
+                              onMouseLeave={() => setIsHovered(false)}
+                            />
+                          ) : (
+                            <></>
 
-                          <div className='button-wrap'>
-                            <button className="second_button" onClick={() => handleSubmit()}>제출</button>
-                            <button className="white_button">취소</button>
-                          </div>
+                          )}
                         </div>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Portal>
-                </Popover>
-                <button className="white_button">
+                        {approvalLines.filter(line => line.name === '참조').map((line, index) => (
+                          <div key={index} className="last_approval_content">
+                            <div className='approval_line'>
+                              <input
+                                type="checkbox"
+                                checked={line.checked}
+                                onChange={() => handleCheckboxChange(index)}
+                                className='approval_checkbox'
+                                id="chk"
+                                style={{ cursor: 'pointer' }}
+                              />
+                              <label htmlFor="chk" style={{ cursor: 'pointer' }}>{line.name}</label>
+                            </div>
+                            {line.checked ? (
+                              line.selectedMember ? (
+                                <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
+                                  <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                  <div className='name_text'>{line.selectedMember[0]}</div>
+                                  <div className='name_border'></div>
+                                  <div className='name_text'>{line.selectedMember[3]}</div>
+                                </div>
+                              ) : (
+                                line.name === '참조' && line.selectedMembers ? (
+                                  <div className='approvals_contents'>
+                                    {line.selectedMembers.map((member, index) => (
+                                      <div key={index} className='approval_small_name'>
+                                        <div className='name_text'>{member[0]}</div>
+                                        <div className='name_border'></div>
+                                        <div className='name_text'>{member[3]}</div>
+                                        <img src={CloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index)}>
+                                    <div>&nbsp;</div>
+                                  </div>
+                                )
+                              )
+                            ) : (
+                              <div className="approval_unchecked" onClick={() => handleCheckboxChange(index)}>
+                                칸 선택 후 좌측 리스트에서<br />
+                                결재라인을 선택해주세요
+                              </div>
+                            )}
+                          </div>
+                        ))}
+
+                        <div className='button-wrap'>
+                          <button className="second_button" onClick={() => handleSubmit()}>제출</button>
+                          <button className="white_button">취소</button>
+                        </div>
+                      </div>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Portal>
+              </Popover>
+              <button className="white_button">
+                <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                  />
+                  <img src={FileUploadIcon} alt="FileUploadIcon" />
+                  파일 업로드
+                </label>
+              </button>
+            </div>
+          </div>
+
+          <div className="write_btm_container2">
+            {file ? (
+              <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                {renderPages()}
+              </Document>
+            ) : (
+              <div
+                className="upload-area"
+                onDrop={handleFileDrop}
+                onDragOver={handleDragOver}
+              >
+                <div className='upload-text-top'>
                   <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
                     <input
                       id="file-upload"
@@ -612,41 +640,14 @@ const WriteReport = () => {
                       onChange={handleFileChange}
                       style={{ display: 'none' }}
                     />
-                    <img src={FileUploadIcon} alt="FileUploadIcon" />
-                    파일 업로드
+                    파일 첨부하기 +
                   </label>
-                </button>
-              </div>
-            </div>
-
-            <div className="write_btm_container2">
-              {file ? (
-                <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                  {renderPages()}
-                </Document>
-              ) : (
-                <div
-                  className="upload-area"
-                  onDrop={handleFileDrop}
-                  onDragOver={handleDragOver}
-                >
-                  <div className='upload-text-top'>
-                    <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
-                      <input
-                        id="file-upload"
-                        type="file"
-                        accept=".pdf"
-                        onChange={handleFileChange}
-                        style={{ display: 'none' }}
-                      />
-                      파일 첨부하기 +
-                    </label>
-                  </div>
-                  <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                 </div>
-              )}
-            </div>
+                <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
+              </div>
+            )}
           </div>
+        </div>
       </div>
       <CustomModal
         isOpen={isSubmitModalOpen}

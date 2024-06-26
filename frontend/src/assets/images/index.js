@@ -19,6 +19,7 @@ export { default as NewIcon } from "./Common/NewIcon.svg";
 export { default as SelectArrow } from "./Common/SelectArrow.svg";
 export { default as PageNotIcon } from "./Common/PageNotIcon.svg";
 export { default as PinnedIcon } from "./Common/PinnedIcon.svg";
+export { default as SelectDownArrow } from "./Common/Select_report_Header.svg";
 
 // Approval
 export { default as Approval_Plus } from "./Approval/Approval_Plus.svg";
@@ -41,6 +42,7 @@ export { default as MenuArrow_down } from "./sidebar/MenuArrow_down.svg";
 export { default as MenuArrow_right } from "./sidebar/MenuArrow_right.svg";
 export { default as UserIcon_dark } from "./sidebar/UserIcon_dark.svg";
 export { default as SideUp } from "./sidebar/SideUp.svg";
+export { default as SideDown } from "./sidebar/SideDown.svg";
 
 // project
 export { default as Right_Arrow } from "./project/Right_Arrow.svg";
