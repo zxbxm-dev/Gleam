@@ -11,11 +11,13 @@ import {
   mail_write,
   mail_attachment,
   mail_triangle,
+  mail_cancle,
   White_Arrow,
   SearchIcon,
   LeftIcon,
   RightIcon,
 } from "../../assets/images/index";
+import CustomModal from "../../components/modal/CustomModal";
 
 const Mail = () => {
   let navigate = useNavigate();
@@ -24,6 +26,8 @@ const Mail = () => {
   const [postPerPage, setPostPerPage] = useState<number>(11);
   const [settingVisible, setSettingVisible] = useState(true);
   const [hoverState, setHoverState] = useState<string>("");
+  const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
+  const [isMobileCardModal, setIsMobileCardModal] = useState(false);
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('전체 메일');
@@ -34,7 +38,6 @@ const Mail = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [mails, setMails] = useState<any[]>([]);
   const [clickedMails, setClickedMails] = useState<{ [key: number]: boolean }>({});
-  const [fixedMails, setFixedMails] = useState<{ [key: number]: boolean }>({});
 
   const itemsPerPage = 8;
 
@@ -46,7 +49,6 @@ const Mail = () => {
     '안 읽은 메일',
     '임시 보관함',
     '스팸 메일함',
-    '메일 작성',
   ];
 
   const dueDateOptions = [
@@ -77,21 +79,53 @@ const Mail = () => {
 
   useEffect(() => {
     const initialMails = [
-      { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정1.pdf", mailType: "받은 메일함", reservation: true, date: "2024-05-01" },
-      { id: 2, title: "홈페이지 조직도 관련 안내", content: "메일입니다.2", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정2.pdf", mailType: "받은 메일함", reservation: true, date: "2024-05-01" },
-      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정3.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 4, title: "개발 1팀 업무 설정 보고", content: "메일입니다.4", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정4.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 5, title: "개발 1팀 업무 설정 보고", content: "메일입니다.5", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정5.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 6, title: "개발 1팀 업무 설정 보고", content: "메일입니다.6", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정6.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 7, title: "개발 1팀 업무 설정 보고", content: "메일입니다.7", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정7.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 8, title: "개발 1팀 업무 설정 보고", content: "메일입니다.8", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정8.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정9.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정10.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정11.pdf", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },
-      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "", mailType: "받은 메일함", reservation: false, date: "2024-05-01" },      
+      { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정1.pdf", mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "2024-05-01" },
+      { id: 2, title: "홈페이지 조직도 관련 안내", content: "메일입니다.2", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정2.pdf", mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "2024-05-01" },
+      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정3.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
+      { id: 4, title: "개발 1팀 업무 설정 보고", content: "메일입니다.4", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정4.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
+      { id: 5, title: "개발 1팀 업무 설정 보고", content: "메일입니다.5", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정5.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
+      { id: 6, title: "개발 1팀 업무 설정 보고", content: "메일입니다.6", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정6.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
+      { id: 7, title: "개발 1팀 업무 설정 보고", content: "메일입니다.7", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정7.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
+      { id: 8, title: "개발 1팀 업무 설정 보고", content: "메일입니다.8", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정8.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
+      { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정9.pdf", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
+      { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정10.pdf", mailType: "보낸 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
+      { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정11.pdf", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
+      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },      
+      { id: 13, title: "스팸 메일입니다", content: "스팸메일입니다.13", sender: "개발1팀 구민석", recipient: "개발1팀 구민석", attachment: "", mailType: "받은 메일함", reservation: false, important: true, spam: true, date: "2024-05-01" },      
     ];
-    setMails(initialMails);
-  }, []);
+    switch (selectdMenuOption) {
+      case "전체 메일":
+        return (
+          setMails(initialMails.filter((mail) => (mail.spam ===false)))
+        )
+      case "중요 메일":
+        return (
+          setMails(initialMails.filter((mail) => (mail.important === true && mail.spam === false)))
+        )
+      case "받은 메일함":
+        return (
+          setMails(initialMails.filter((mail) => (mail.mailType === '받은 메일함' && mail.spam === false)))
+        )
+      case "보낸 메일함":
+        return (
+          setMails(initialMails.filter((mail) => (mail.mailType === '보낸 메일함' && mail.spam === false)))
+        )
+      case "안 읽은 메일":
+        return (
+          // 안 읽은 메일 처리 (Clicked 타입 boolean 으로 설정)
+          setMails(initialMails)
+        )
+      case "임시 보관함":
+        return (
+          // 임시 보관메일 처리
+          setMails(initialMails)
+        )
+      case "스팸 메일함":
+        return (
+          setMails(initialMails.filter((mail) => mail.spam === true))
+        )
+    }
+  }, [selectdMenuOption]);
 
   const filteredMails = mails.filter((mail) =>
     mail.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -146,12 +180,9 @@ const Mail = () => {
     }));
   };
 
-  // 메일 고정
+  // 중요 메일
   const handleMailFixed = (mailId: number) => {
-    setFixedMails((prevFixedMails) => ({
-      ...prevFixedMails,
-      [mailId]: true,
-    }))
+    // 메일 important 변수 boolean 값 변경
   }
 
   // 메일 발송 취소
@@ -170,11 +201,11 @@ const Mail = () => {
             </label>
             <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")}>
               <img src={mail_delete} alt="mail_delete" />
-              {hoverState === "delete" && <div className="tooltip" style={{ width: '40px' }}>삭제</div>}
+              {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
             </div>
             <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")}>
               <img src={mail_spam} alt="mail_spam" />
-              {hoverState === "spam" && <div className="tooltip">스팸차단</div>}
+              {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
             </div>
             <div className="image-container" onMouseEnter={() => handleHover("write")} onMouseLeave={() => handleHover("")} onClick={() => {navigate("/writeMail")}}>
               <img src={mail_write} alt="mail_write" />
@@ -207,8 +238,8 @@ const Mail = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <button className={`spam_button`}>스팸 설정</button>
-              <button className={`card_button`}>모바일 명함</button>
+              <button className={`card_button`} onClick={() => setIsSpamSettingModal(true)}>스팸 설정</button>
+              <button className={`card_button`} onClick={() => setIsMobileCardModal(true)}>모바일 명함</button>
               <div className="select_duedate_box">
                 <div className="selected_option" onClick={toggleDueDate}>
                   <span>기간 : {selectdDueDateOption}</span>
@@ -275,7 +306,7 @@ const Mail = () => {
                       <td>
                         <div>
                           <div onClick={() => handleMailFixed(mail.id)}>
-                            {fixedMails[mail.id] ? (
+                            {mail.important ? (
                               <img src={mail_important_active} alt="mail_important_active" />
                             ) : (
                               <img src={mail_important} alt="mail_important" />
@@ -300,10 +331,26 @@ const Mail = () => {
                               {mail.reservation && <span className="mail_reservation">예약</span>}
                               <span>{mail.title}</span>
                             </span>
-                            <div className="image-container" onMouseEnter={() => handleHover("cancle")} onMouseLeave={() => handleHover("")} onClick={handleSendCancle}>
-                              <img src={mail_delete} alt="mail_delete" />
-                              {hoverState === "cancle" && <div className="tooltip">발송 취소</div>}
-                            </div>
+                            {mail.mailType === '받은 메일함' && (
+                              <span className="button_wrap">
+                                <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={handleSendCancle}>
+                                  <img src={mail_spam} alt="mail_spam" />
+                                  {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
+                                </div>
+                                <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={handleSendCancle}>
+                                  <img src={mail_delete} alt="mail_delete" />
+                                  {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
+                                </div>
+                              </span>
+                            )}
+                            {mail.mailType === '보낸 메일함' && (
+                              <span className="button_wrap">
+                                <div className="image-container" onMouseEnter={() => handleHover("cancle")} onMouseLeave={() => handleHover("")} onClick={handleSendCancle}>
+                                  <img src={mail_cancle} alt="mail_cancle" />
+                                  {hoverState === "cancle" && <div className="tooltip">발송취소</div>}
+                                </div>
+                              </span>
+                            )}
                           </div>
                           <div className="mail_detail_content">
                             <div className="mail_detail_content_top">
@@ -327,10 +374,15 @@ const Mail = () => {
                               <div dangerouslySetInnerHTML={renderMailContent(mail)}>
                               </div>
                             </div>
-
-                            <div className="mail_detail_content_bottom">
-                              <button className="white_button">전달</button>
-                            </div>
+                            
+                            {mail.mailType === '받은 메일함' ? (
+                              <div className="mail_detail_content_bottom">
+                                <button className="white_button">전달</button>
+                                <button className="primary_button">답장</button>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
                           </div>
                         </div>
                       </td>
@@ -397,6 +449,30 @@ const Mail = () => {
           </div>
         )}
       </div>
+
+      <CustomModal
+        isOpen={isSpamSettingModal}
+        onClose={() => setIsSpamSettingModal(false)}
+        header={'스팸 설정'}
+        width="380px"
+        height="360px"
+      >
+        <div>
+          스팸 설정 모달
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isMobileCardModal}
+        onClose={() => setIsMobileCardModal(false)}
+        header={'모바일 명함'}
+        width="380px"
+        height="360px"
+      >
+        <div>
+          모바일 명함 모달
+        </div>
+      </CustomModal>
     </div>
   );
 };

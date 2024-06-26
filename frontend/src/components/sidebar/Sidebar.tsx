@@ -158,10 +158,15 @@ const Sidebar = () => {
       menu: 'operating-manage',
       label: '운영비 관리',
       link: '/operating-manage',
+    },
+    (user.team === '관리팀' || user.position === '대표이사') && {
+      menu: 'user-management',
+      label: '회원관리',
+      link: '/user-management',
     }
   ].filter(Boolean) as MenuItem[];
 
-  const isAuthorized = user.team === '관리팀' || user.position === '대표이사';
+  // const isAuthorized = user.team === '관리팀' || user.position === '대표이사';
 
   return (
     <>
@@ -189,7 +194,7 @@ const Sidebar = () => {
                             setActiveTab(menu);
                           }}
                         >
-                          <img src={menuType ? MenuArrow_right : MenuArrow_down} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
+                          <img src={menuType ? MenuArrow_down : MenuArrow_right} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
                           <span className="menu-link-text">{label}</span>
                         </Link>
                         {renderSubMenu(menuType, subMenu)}
@@ -199,13 +204,13 @@ const Sidebar = () => {
                 ))}
                 </div>
                 <div>
-                {isAuthorized && (
+                {/* {isAuthorized && (
                   <li className="member-manage">
                     <Link to="/user-management" onClick={() => handleMenuClick('user-management')}>
                       회원 관리
                     </Link>
                   </li>
-                )}
+                )} */}
                 </div>
               </ul>
             </div>
