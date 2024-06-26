@@ -457,8 +457,23 @@ const Mail = () => {
         width="380px"
         height="360px"
       >
-        <div>
-          스팸 설정 모달
+        <div className="body-container">
+          <div className="modal_container_wrap">
+            <span>차단 등록</span>
+            <div>
+              <input 
+                type="text"
+              />
+            </div>
+            <button>확인</button>
+          </div>
+          <div className="modal_container_wrap">
+            <span>수신 차단 목록</span>
+            <button>해제</button>
+          </div>
+          <div className="modal_spamlist_wrap">
+
+          </div>
         </div>
       </CustomModal>
 
