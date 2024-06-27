@@ -159,7 +159,7 @@ const UserManagement = () => {
                           <tr key={usermanage.userID} className="board_content">
                             <td>{usermanage.username}</td>
                             <td>{usermanage.company}</td>
-                            <td>{usermanage.department}</td>
+                            <td>{usermanage.department}&nbsp;&nbsp;{usermanage.team}</td>
                             <td>{usermanage.position}</td>
                             <td>{new Date(usermanage.createdAt).toISOString().substring(0, 10)}</td>
                             <td className="flex_center">
@@ -216,7 +216,7 @@ const UserManagement = () => {
                           <tr key={usermanage.userID} className="board_content">
                             <td>{usermanage.username}</td>
                             <td>{usermanage.company}</td>
-                            <td>{usermanage.department}</td>
+                            <td>{usermanage.department}&nbsp;&nbsp;{usermanage.team}</td>
                             <td>{usermanage.position}</td>
                             <td>{new Date(usermanage.entering).toISOString().substring(0, 10)}</td>
                             <td className="TdContain">
