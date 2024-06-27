@@ -48,8 +48,6 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
   const handleMemberClick = (member: Member) => {
     const [id, pw, name, dept, team, position, extras] = member;
     onClickMember(name, dept, team, position);
-
-    sessionStorage.setItem('SelectMember', JSON.stringify({ name, dept, team, position }));
   };
 
   const { isExpanded, currentPage } = sidebarState;

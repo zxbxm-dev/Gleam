@@ -46,12 +46,14 @@ const HumanResource = () => {
     dept: string;
     position: string;
     spot:string;
+    team:string;
     date: string;
     classify: string;
   }>({
     dept: '',
     position: '',
     spot:'',
+    team:'',
     date: '',
     classify: '',
   })
@@ -71,6 +73,9 @@ const HumanResource = () => {
 
   const handleDeptChange = (event: any) => {
     setForm({...form, dept: event.target.value})
+  }
+  const handleTeamChange = (event: any) => {
+    setForm({...form, team: event.target.value})
   }
 
   const handlePositionChange = (event: any) => {
@@ -127,12 +132,17 @@ const HumanResource = () => {
 
   // 인사이동 등록
   const handleAppointSubmit = () => {
-    const {dept, position, spot, date, classify} = form;
+    const {dept,team, position, spot, date, classify} = form;
 
     const formData = new FormData();
-    formData.append('dept', dept);
-    formData.append('position', position);
-    formData.append('spot', spot);
+    formData.append('username', isSelectMember[0]);
+    formData.append('team', isSelectMember[2]);
+    formData.append('dept', isSelectMember[1]);
+    formData.append('position', isSelectMember[3]);
+    formData.append('Newdept', dept);
+    formData.append('Newteam', team);
+    formData.append('Newposition', position);
+    formData.append('Newspot', spot);
     formData.append('date', date);
     formData.append('classify', classify);
 
@@ -405,17 +415,21 @@ const HumanResource = () => {
               <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh'}}>
                 <Popover placement="left-start" isOpen={isAdd} onClose={AddClose}>
                   <PopoverTrigger>
-                    <button className="second_button" onClick={AddOpen}>등록</button>
+                    <button className="primary_button" onClick={AddOpen}>등록</button>
                   </PopoverTrigger>
                   <Portal>
-                    <PopoverContent width='25vw' height='350px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                    <PopoverContent width='25vw' height='370px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
                       <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily= 'var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 등록하기</PopoverHeader>
                       <PopoverCloseButton color='white'/>
                       <PopoverBody display='flex' flexDirection='column' padding='25px 0px' justifyContent='center' alignItems='center'>
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' , alignItems: 'center'}}>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
-                            <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='20vw' onChange={handleDeptChange}/>
+                            <Input placeholder='ex) 개발부' size='sm' width='20vw' onChange={handleDeptChange}/>
+                          </div>
+                          <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                            <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>부서</div>
+                            <Input placeholder='ex) 개발 1팀' size='sm' width='20vw' onChange={handleTeamChange}/>
                           </div>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>직위</div>
@@ -427,14 +441,14 @@ const HumanResource = () => {
                           </div>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>날짜</div>
-                            <Input placeholder='small size' size='sm' width='20vw' onChange={handleDateChange}/>
+                            <Input placeholder='날짜' size='sm' width='20vw' onChange={handleDateChange}/>
                           </div>
                           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <div style={{width: '2vw', textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)'}}>구분</div>
                             <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='20vw' onChange={handleClassifyChange}/>
                           </div>
                         </div>
-                        <div className='button-wrap'>
+                        <div className='button-wrap' style={{marginTop:'15px'}}>
                           <button className="second_button" onClick={handleAppointSubmit}>등록</button>
                           <button className="white_button" onClick={AddClose}>취소</button>
                         </div>
