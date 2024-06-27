@@ -41,6 +41,7 @@ const HumanResource = () => {
   const [isSelectMember] = useRecoilState(isSelectMemberState);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
   const [form, setForm] = useState<{
     dept: string;
     position: string;
@@ -233,39 +234,39 @@ const HumanResource = () => {
 
   // 인사기록카드, 근로자명부 제출
   const handleSubmitHrInfo = async () => {
-    console.log('보낸파일이름', attachment)
-
     if (!attachment) {
       alert('선택된 파일이 없습니다.');
       return;
     }
-    
+  
+    let TabName;
+    if (activeTab === 0) {
+      TabName = "인사기록카드";
+    } else if (activeTab === 1) {
+      TabName = "근로자 명부";
+    } else {
+      alert('유효하지 않은 탭입니다.');
+      return;
+    }
+  
     const formData = new FormData();
     formData.append('attachment', attachment);
     formData.append('pdffile', attachment.name);
-    
+    formData.append('username', isSelectMember[0]);
+    formData.append('team', isSelectMember[2]);
+    formData.append('dept', isSelectMember[1]);
+    formData.append('TabData', TabName);
+  
     try {
       const response = await WriteHrInfo(formData);
+      console.log('Data successfully sent:', response.data);
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch data");
     }
   }
-
-  const getSessionMember = (): { name: string, dept: string, team: string, position: string } | null => {
-    const storedMemberString = sessionStorage.getItem('SelectMember');
-    if (storedMemberString) {
-      const member = JSON.parse(storedMemberString);
-      console.log('Session Member:', member);
-      return member;
-    }
-    return null;
-  };
-
-  useEffect(()=>{
-    getSessionMember();
-  },[])
   
+
   return (
     <div className="content">
       <div className="content_container">
@@ -279,9 +280,9 @@ const HumanResource = () => {
 
           <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="hr_tab_container">
             <TabPanel display='flex' flexDirection='column'>
-              {isSelectMember[0] !== '' ? (
+              {/* {isSelectMember[0] !== '' ? (
                 <></>
-              ) : (
+              ) : ( */}
                 <>
                   <div style={{ display: 'flex', flexDirection: 'row-reverse', width: '100%',borderBottom: '1px solid #DCDCDC', gap: '10px', paddingBottom:'15px'}}>
                     {attachment ? (
@@ -335,14 +336,14 @@ const HumanResource = () => {
                     )}
                   </div>
                 </>
-              )}
+              {/* )} */}
 
             </TabPanel>
 
             <TabPanel display='flex' flexDirection='column'>
-            {isSelectMember[0] !== '' ? (
+            {/* {isSelectMember[0] !== '' ? (
                 <></>
-              ) : (
+              ) : ( */}
                 <>
                   <div style={{display: 'flex', flexDirection: 'row-reverse', width: '100%', height: '5vh' ,borderBottom: '1px solid #DCDCDC', gap: '10px'}}>
                   {attachment ? (
@@ -396,7 +397,7 @@ const HumanResource = () => {
                     )}
                   </div>
                 </>
-              )}
+              {/* )} */}
               
             </TabPanel>
 
