@@ -63,7 +63,8 @@ const Approval = () => {
 // 내 문서 목록 불러오기
 const fetchMyReports = async () => {
   const params = {
-    userID: user.userID
+    userID: user.userID,
+    username : user.username
   };
 
   try {
