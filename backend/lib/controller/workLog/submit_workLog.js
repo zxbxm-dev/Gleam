@@ -21,7 +21,8 @@ const submitReport = async (req, res) => {
             rejectName,
             rejectContent,
             approval,
-            currentSigner
+            currentSigner,
+            position
         } = req.body;
 
         console.log('클라이언트로부터 받은 데이터:');
@@ -52,7 +53,8 @@ const submitReport = async (req, res) => {
             rejectName: rejectName,
             rejectContent: rejectContent,
             approval: approval,
-            currentSigner:currentSigner,
+            currentSigner: currentSigner,
+            position: position,
             // 보고서 상태 저장 기본값 draft
             status: 'draft',
             currentSigner: currentSigner

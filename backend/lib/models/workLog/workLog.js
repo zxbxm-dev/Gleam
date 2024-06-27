@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // 직책
+      currentSigner: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       // 보고서 양식
       selectForm: {
         type: DataTypes.STRING,
