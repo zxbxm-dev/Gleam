@@ -15,6 +15,17 @@ import { userState } from '../../recoil/atoms';
 import { useQuery } from "react-query";
 import { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments } from "../../services/approval/ApprovalServices";
 
+interface Document {
+  id: number;
+  title: string;
+  sendDate: string;
+  updatedAt: string;
+  approval: number;
+  currentSigner: number;
+  username: string;
+  dept: string;
+}
+
 const Approval = () => {
   let navigate = useNavigate();
   const user = useRecoilValue(userState);
@@ -64,14 +75,32 @@ const Approval = () => {
 const fetchMyReports = async () => {
   const params = {
     userID: user.userID,
-    username : user.username
+    username: user.username
   };
 
   try {
-    const response = await getMyReports(params); // params를 직접 전달
-    return response.data;
+    const response = await getMyReports(params);
+
+    const documentsWithData: Document[] = response.data.map((document: Document) => {
+      let status = "";
+      if (document.approval === 0) {
+        status = "미결재";
+      } else if (document.approval < document.currentSigner) {
+        status = "결재 진행 중";
+      } else if (document.approval === document.currentSigner) {
+        status = "결재 완료";
+      }
+
+      return {
+        ...document,
+        status: document.username !== user.username ? "참조" : status
+      };
+    });
+
+    setMyDocument(documentsWithData);
+    return documentsWithData;
+    
   } catch (error) {
-    // throw new Error("Failed to fetch data");
     console.log("Failed to fetch data");
   }
 };
@@ -84,6 +113,9 @@ const fetchDocumentsToApprove = async () => {
 
   try {
     const response = await getDocumentsToApprove(params);
+    // setApprovaling(response.data);
+    console.log(response.data);
+    
     return response.data;
   } catch (error) {
     // throw new Error("Failed to fetch data");
@@ -151,6 +183,8 @@ useEffect(() => {
     fetchMyReports();
   }
 }, [selectedTab]);
+
+
   const handleSort = (sortKey: string, targetState: any[], setTargetState: React.Dispatch<React.SetStateAction<any[]>>) => {
     // 정렬 상태 변수를 저장하는 Map
     const sortOrders: Map<string, ["asc" | "desc", React.Dispatch<React.SetStateAction<"asc" | "desc">>]> = new Map([
@@ -190,9 +224,8 @@ useEffect(() => {
             <table className="approval_board_list">
               <colgroup>
                 <col width="6%" />
-                <col width="20%" />
+                <col width="30%" />
                 <col width="22%" />
-                <col width="10%" />
                 <col width="10%" />
                 <col width="22%" />
                 <col width="10%" />
@@ -224,14 +257,6 @@ useEffect(() => {
                     }
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", approvalings, setApprovaling)}>
-                    처리상황
-                    {stateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
                   <th className="HoverTab" onClick={() => handleSort("writer", approvalings, setApprovaling)}>
                     작성자/부서
                     {writerSortOrder === 'asc' ?
@@ -244,21 +269,22 @@ useEffect(() => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                {approvalings
+              {approvalings
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((approvaling) => (
-                    <tr key={approvaling.id} className="board_content">
-                      <td>{approvaling.id}</td>
-                      <td style={{ textAlign: 'center' }}>{approvaling.title}</td>
-                      <td>{approvaling.date}</td>
-                      <td>{approvaling.progress} / {approvaling.maxprogress}</td>
-                      <td>{approvaling.state}</td>
-                      <td>{approvaling.writer}</td>
-                      <td style={{ display: 'flex', justifyContent: 'center', height: '52px', alignItems: 'center' }}><button className="primary_button" onClick={() => { navigate(`/detailApproval`) }}>결재하기</button></td>
+                  .map((approvalings) => (
+                    <tr key={approvalings.id} className="board_content">
+                      <td>{approvalings.id}</td>
+                      <td style={{ textAlign: 'center' }}>{approvalings.selectForm}</td>
+                      <td>{approvalings.sendDate}</td>
+                      <td>{approvalings.updatedAt}</td>
+                      <td>{approvalings.approval} / {approvalings.currentSigner}</td>
+                      <td>{approvalings.status}</td>
+                      <td>{approvalings.username} / {approvalings.dept}</td>
+                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
                     </tr>
                   ))
                 }
-              </tbody>
+    </tbody>
               <div className="approval_main_bottom">
                 <Pagination
                   activePage={page}
@@ -281,10 +307,9 @@ useEffect(() => {
             <table className="approval_board_list">
               <colgroup>
                 <col width="6%" />
-                <col width="14%" />
+                <col width="24%" />
                 <col width="15%" />
                 <col width="15%" />
-                <col width="10%" />
                 <col width="10%" />
                 <col width="20%" />
                 <col width="10%" />
@@ -324,14 +349,6 @@ useEffect(() => {
                     }
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", inProgress, setInProgress)}>
-                    처리상황
-                    {stateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
                   <th className="HoverTab" onClick={() => handleSort("writer", inProgress, setInProgress)}>
                     작성자/부서
                     {writerSortOrder === 'asc' ?
@@ -382,10 +399,9 @@ useEffect(() => {
             <table className="approval_board_list">
               <colgroup>
                 <col width="6%" />
-                <col width="14%" />
+                <col width="24%" />
                 <col width="15%" />
                 <col width="15%" />
-                <col width="10%" />
                 <col width="10%" />
                 <col width="20%" />
                 <col width="10%" />
@@ -425,14 +441,6 @@ useEffect(() => {
                     }
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", rejecteds, setRejected)}>
-                    처리상황
-                    {stateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
                   <th className="HoverTab" onClick={() => handleSort("writer", rejecteds, setRejected)}>
                     작성자/부서
                     {writerSortOrder === 'asc' ?
@@ -483,10 +491,9 @@ useEffect(() => {
             <table className="approval_board_list">
               <colgroup>
                 <col width="6%" />
-                <col width="14%" />
+                <col width="24%" />
                 <col width="15%" />
                 <col width="15%" />
-                <col width="10%" />
                 <col width="10%" />
                 <col width="20%" />
                 <col width="10%" />
@@ -526,14 +533,6 @@ useEffect(() => {
                     }
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", compleDocuments, setCompleDocument)}>
-                    처리상황
-                    {stateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
                   <th className="HoverTab" onClick={() => handleSort("writer", compleDocuments, setCompleDocument)}>
                     작성자/부서
                     {writerSortOrder === 'asc' ?
@@ -611,7 +610,7 @@ useEffect(() => {
                     }
                   </th>
                   <th className="HoverTab" onClick={() => handleSort("date", mydocuments, setMyDocument)}>
-                    결재수신일자
+                    결재발신일자
                     {dateSortOrder === 'asc' ?
                       <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
                       :
@@ -652,12 +651,12 @@ useEffect(() => {
                   .map((mydocument) => (
                     <tr key={mydocument.id} className="board_content">
                       <td>{mydocument.id}</td>
-                      <td style={{ textAlign: 'center' }}>{mydocument.title}</td>
-                      <td>{mydocument.date}</td>
-                      <td>{mydocument.date}</td>
-                      <td>{mydocument.progress} / {mydocument.maxprogress}</td>
-                      <td>{mydocument.state}</td>
-                      <td>{mydocument.writer}</td>
+                      <td style={{ textAlign: 'center' }}>{mydocument.selectForm}</td>
+                      <td>{mydocument.sendDate}</td>
+                      <td>{mydocument.updatedAt}</td>
+                      <td>{mydocument.approval} / {mydocument.currentSigner}</td>
+                      <td>{mydocument.status}</td>
+                      <td>{mydocument.username} / {mydocument.dept}</td>
                       <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
                     </tr>
                   ))
@@ -679,107 +678,107 @@ useEffect(() => {
             </table>
           </>
         );
-      case "vacation":
-        return (
-          <>
-            <table className="approval_board_list">
-              <colgroup>
-                <col width="6%" />
-                <col width="14%" />
-                <col width="15%" />
-                <col width="15%" />
-                <col width="10%" />
-                <col width="10%" />
-                <col width="20%" />
-                <col width="10%" />
-              </colgroup>
-              <thead>
-                <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", vacations, setVacation)}>
-                    순번
-                    {idSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
-                  <th className="HoverTab" onClick={() => handleSort("title", vacations, setVacation)}>
-                    제목
-                    {titleSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
-                  <th className="HoverTab" onClick={() => handleSort("date", vacations, setVacation)}>
-                    결재수신일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
-                  <th className="HoverTab" onClick={() => handleSort("sadate", vacations, setVacation)}>
-                    결재발신일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
-                  <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", vacations, setVacation)}>
-                    처리상황
-                    {stateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
-                  <th className="HoverTab" onClick={() => handleSort("writer", vacations, setVacation)}>
-                    작성자/부서
-                    {writerSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
-                  </th>
-                  <th>결재</th>
-                </tr>
-              </thead>
-              <tbody className="board_container">
-                {vacations
-                  .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((vacation) => (
-                    <tr key={vacation.id} className="board_content">
-                      <td>{vacation.id}</td>
-                      <td style={{ textAlign: 'center' }}>{vacation.title}</td>
-                      <td>{vacation.date}</td>
-                      <td>{vacation.date}</td>
-                      <td>{vacation.progress} / {vacation.maxprogress}</td>
-                      <td>{vacation.state}</td>
-                      <td>{vacation.writer}</td>
-                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
-                    </tr>
-                  ))
-                }
-              </tbody>
-              <div className="approval_main_bottom">
-                <Pagination
-                  activePage={page}
-                  itemsCountPerPage={postPerPage}
-                  totalItemsCount={mydocuments.length}
-                  pageRangeDisplayed={Math.ceil(mydocuments.length / postPerPage)}
-                  prevPageText={<LeftIcon />}
-                  nextPageText={<RightIcon />}
-                  firstPageText={<FirstLeftIcon />}
-                  lastPageText={<LastRightIcon />}
-                  onChange={handlePageChange}
-                />
-              </div>
-            </table>
-          </>
-        );
+      // case "vacation":
+      //   return (
+      //     <>
+      //       <table className="approval_board_list">
+      //         <colgroup>
+      //           <col width="6%" />
+      //           <col width="14%" />
+      //           <col width="15%" />
+      //           <col width="15%" />
+      //           <col width="10%" />
+      //           <col width="10%" />
+      //           <col width="20%" />
+      //           <col width="10%" />
+      //         </colgroup>
+      //         <thead>
+      //           <tr className="board_header">
+      //             <th className="HoverTab" onClick={() => handleSort("id", vacations, setVacation)}>
+      //               순번
+      //               {idSortOrder === 'asc' ?
+      //                 <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
+      //                 :
+      //                 <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+      //               }
+      //             </th>
+      //             <th className="HoverTab" onClick={() => handleSort("title", vacations, setVacation)}>
+      //               제목
+      //               {titleSortOrder === 'asc' ?
+      //                 <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
+      //                 :
+      //                 <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+      //               }
+      //             </th>
+      //             <th className="HoverTab" onClick={() => handleSort("date", vacations, setVacation)}>
+      //               결재수신일자
+      //               {dateSortOrder === 'asc' ?
+      //                 <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
+      //                 :
+      //                 <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+      //               }
+      //             </th>
+      //             <th className="HoverTab" onClick={() => handleSort("sadate", vacations, setVacation)}>
+      //               결재발신일자
+      //               {dateSortOrder === 'asc' ?
+      //                 <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
+      //                 :
+      //                 <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+      //               }
+      //             </th>
+      //             <th>진행상황</th>
+      //             <th className="HoverTab" onClick={() => handleSort("state", vacations, setVacation)}>
+      //               처리상황
+      //               {stateSortOrder === 'asc' ?
+      //                 <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
+      //                 :
+      //                 <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+      //               }
+      //             </th>
+      //             <th className="HoverTab" onClick={() => handleSort("writer", vacations, setVacation)}>
+      //               작성자/부서
+      //               {writerSortOrder === 'asc' ?
+      //                 <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
+      //                 :
+      //                 <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+      //               }
+      //             </th>
+      //             <th>결재</th>
+      //           </tr>
+      //         </thead>
+      //         <tbody className="board_container">
+      //           {vacations
+      //             .slice((page - 1) * postPerPage, page * postPerPage)
+      //             .map((vacation) => (
+      //               <tr key={vacation.id} className="board_content">
+      //                 <td>{vacation.id}</td>
+      //                 <td style={{ textAlign: 'center' }}>{vacation.title}</td>
+      //                 <td>{vacation.date}</td>
+      //                 <td>{vacation.date}</td>
+      //                 <td>{vacation.progress} / {vacation.maxprogress}</td>
+      //                 <td>{vacation.state}</td>
+      //                 <td>{vacation.writer}</td>
+      //                 <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+      //               </tr>
+      //             ))
+      //           }
+      //         </tbody>
+      //         <div className="approval_main_bottom">
+      //           <Pagination
+      //             activePage={page}
+      //             itemsCountPerPage={postPerPage}
+      //             totalItemsCount={mydocuments.length}
+      //             pageRangeDisplayed={Math.ceil(mydocuments.length / postPerPage)}
+      //             prevPageText={<LeftIcon />}
+      //             nextPageText={<RightIcon />}
+      //             firstPageText={<FirstLeftIcon />}
+      //             lastPageText={<LastRightIcon />}
+      //             onChange={handlePageChange}
+      //           />
+      //         </div>
+      //       </table>
+      //     </>
+      //   );
       default:
         return null;
     }
