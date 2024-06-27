@@ -19,7 +19,7 @@ import sign from "../../assets/images/sign/구민석_서명.png";
 import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
-import { WriteApproval } from '../../services/approval/ApprovalServices';
+import { WriteApproval, CheckReport } from '../../services/approval/ApprovalServices';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -147,17 +147,31 @@ const DetailApproval = () => {
     setRejection(e.target.value);
   }
 
+
+  const fetchCheckReport = async () => {
+    try {
+      const response = await CheckReport();
+      return response.data;
+    } catch (error) {
+      console.log("Failed to fetch data");
+    }
+  };
+
+  useEffect(() => {
+    fetchCheckReport();
+  }, [])
+
   const handleSubmitOpinion = async () => {
     try {
       const formData = {
-        userID : user.userID,
+        userID: user.userID,
         username: user.username,
         position: user.position,
         opinion: opinion,
       };
       await WriteApproval(formData);
       alert('Opinion submitted successfully.');
-      setOpinion(''); 
+      setOpinion('');
     } catch (error) {
       alert('Failed to submit opinion.');
     }
@@ -166,7 +180,7 @@ const DetailApproval = () => {
   const handleSubmitRejection = async () => {
     try {
       const formData = {
-        userID : user.userID,
+        userID: user.userID,
         username: user.username,
         position: user.position,
         rejection: rejection,
@@ -204,10 +218,10 @@ const DetailApproval = () => {
                           <div className='TextAreaBox'>
                             <div className='Title'>내용</div>
                             <textarea
-                            className='TextAreaStyle'
-                            placeholder='내용을 입력해주세요.'
-                            value={opinion}
-                            onChange={handleOpinionChange}
+                              className='TextAreaStyle'
+                              placeholder='내용을 입력해주세요.'
+                              value={opinion}
+                              onChange={handleOpinionChange}
                             />
                           </div>
                         </div>
@@ -241,10 +255,10 @@ const DetailApproval = () => {
                           <div className='TextAreaBox'>
                             <div className='CompanionTitle'>반려 사유</div>
                             <textarea
-                            className='TextAreaCompanion'
-                            placeholder='내용을 입력해주세요.'
-                            value={rejection}
-                            onChange={handleRejectionChange}
+                              className='TextAreaCompanion'
+                              placeholder='내용을 입력해주세요.'
+                              value={rejection}
+                              onChange={handleRejectionChange}
                             />
                           </div>
                         </div>
