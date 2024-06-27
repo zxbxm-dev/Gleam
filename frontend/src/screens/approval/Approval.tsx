@@ -60,109 +60,96 @@ const Approval = () => {
     setSelectedTab(tab);
   };
 
-  // 내 문서 목록 불러오기
-  const fetchMyReports = async () => {
-    const formdata = new FormData();
-    formdata.append('username', user.username)
-    formdata.append('userID', user.userID)
-
-    try {
-      const response = await getMyReports(formdata);
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch data");
-    }
+// 내 문서 목록 불러오기
+const fetchMyReports = async () => {
+  const params = {
+    userID: user.userID
   };
 
-  useQuery("myReports", fetchMyReports, {
-    onSuccess: (data) => setMyDocument(data),
-    onError: (error) => {
-      console.log(error)
-    }
-  });
-  
-  // 결재할 문서 목록 불러오기
-  const fetchDocumentsToApprove = async () => {
-    const formdata = new FormData();
-    formdata.append('username', user.username)
+  try {
+    const response = await getMyReports(params); // params를 직접 전달
+    return response.data;
+  } catch (error) {
+    // throw new Error("Failed to fetch data");
+    console.log("Failed to fetch data");
+  }
+};
 
-    try {
-      const response = await getDocumentsToApprove(formdata);
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch data");
-    }
+// 결재할 문서 목록 불러오기
+const fetchDocumentsToApprove = async () => {
+  const params = {
+    userID: user.userID
   };
 
-  useQuery("DocumentsToApprove", fetchDocumentsToApprove, {
-    onSuccess: (data) => setApprovaling(data),
-    onError: (error) => {
-      console.log(error)
-    }
-  });
+  try {
+    const response = await getDocumentsToApprove(params);
+    return response.data;
+  } catch (error) {
+    // throw new Error("Failed to fetch data");
+    console.log("Failed to fetch data");
+  }
+};
 
-  // 결재 진행 중인 문서 목록 불러오기
-  const fetchDocumentsInProgress = async () => {
-    const formdata = new FormData();
-    formdata.append('username', user.username)
 
-    try {
-      const response = await getDocumentsInProgress(formdata);
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch data");
-    }
+// 결재 진행 중인 문서 목록 불러오기
+const fetchDocumentsInProgress = async () => {
+  const params = {
+    userID: user.userID
   };
 
-  useQuery("DocumentsInProgress", fetchDocumentsInProgress, {
-    onSuccess: (data) => setInProgress(data),
-    onError: (error) => {
-      console.log(error)
-    }
-  });
+  try {
+    const response = await getDocumentsInProgress(params);
+    return response.data;
+  } catch (error) {
+    // throw new Error("Failed to fetch data");
+    console.log("Failed to fetch data");
+  }
+};
 
-
-  // 반려된 문서 목록 불러오기
-  const fetchRejectedDocuments = async () => {
-    const formdata = new FormData();
-    formdata.append('username', user.username)
-
-    try {
-      const response = await getRejectedDocuments(formdata);
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch data");
-    }
+// 반려된 문서 목록 불러오기
+const fetchRejectedDocuments = async () => {
+  const params = {
+    userID: user.userID
   };
 
-  useQuery("RejectedDocuments", fetchRejectedDocuments, {
-    onSuccess: (data) => setRejected(data),
-    onError: (error) => {
-      console.log(error)
-    }
-  });
+  try {
+    const response = await getRejectedDocuments(params);
+    return response.data;
+  } catch (error) {
+    // throw new Error("Failed to fetch data");
+    console.log("Failed to fetch data");
+  }
+};
 
-  // 결재 완료된 문서 목록 불러오기
-  const fetchApprovedDocuments = async () => {
-    const formdata = new FormData();
-    formdata.append('username', user.username)
-
-    try {
-      const response = await getApprovedDocuments(formdata);
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch data");
-    }
+// 결재 완료된 문서 목록 불러오기
+const fetchApprovedDocuments = async () => {
+  const params = {
+    userID: user.userID
   };
 
-  useQuery("ApprovedDocuments", fetchApprovedDocuments, {
-    onSuccess: (data) => setCompleDocument(data),
-    onError: (error) => {
-      console.log(error)
-    }
-  });
+  try {
+    const response = await getApprovedDocuments(params);
+    return response.data;
+  } catch (error) {
+    // throw new Error("Failed to fetch data");
+    console.log("Failed to fetch data");
+  }
+};
 
 
+useEffect(() => {
+  if (selectedTab === "approval") {
+    fetchDocumentsToApprove();
+  } else if (selectedTab === "inProgress") {
+    fetchDocumentsInProgress();
+  } else if (selectedTab === "rejected") {
+    fetchRejectedDocuments();
+  } else if (selectedTab === "completed") {
+    fetchApprovedDocuments();
+  } else if (selectedTab === "myDocuments") {
+    fetchMyReports();
+  }
+}, [selectedTab]);
   const handleSort = (sortKey: string, targetState: any[], setTargetState: React.Dispatch<React.SetStateAction<any[]>>) => {
     // 정렬 상태 변수를 저장하는 Map
     const sortOrders: Map<string, ["asc" | "desc", React.Dispatch<React.SetStateAction<"asc" | "desc">>]> = new Map([

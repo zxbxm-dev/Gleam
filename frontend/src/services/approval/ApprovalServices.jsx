@@ -1,30 +1,29 @@
 import api from "../../api/auth";
 
 // 내 문서 목록 조회
-const getMyReports = (formData) => {
-  return api.get("/getMyReports", formData);
-}
+const getMyReports = (params) => {
+  return api.get("/getMyReports", { params });
+};
 
 // 결재할 문서 목록 조회
-const getDocumentsToApprove = (formData) => {
-  return api.get("/getDocumentsToApprove", formData);
+const getDocumentsToApprove = (params) => {
+  return api.get("/getDocumentsToApprove", { params });
 }
 
 // 결재 진행 중인 문서 목록 조회
-const getDocumentsInProgress = (formData) => {
-  return api.get("/getDocumentsInProgress", formData);
+const getDocumentsInProgress = (params) => {
+  return api.get("/getDocumentsInProgress", { params });
 }
 
 // 반려된 문서 목록 조회
-const getRejectedDocuments = (formData) => {
-  return api.get("/getRejectedDocuments", formData);
+const getRejectedDocuments = (params) => {
+  return api.get("/getRejectedDocuments", { params });
 }
 
 // 결재 완료된 문서 목록 조회
-const getApprovedDocuments = (formData) => {
-  return api.get("/getApprovedDocuments", formData);
+const getApprovedDocuments = (params) => {
+  return api.get("/getApprovedDocuments", { params });
 }
-
 
 // 보고서 결재 의견, 반려 작성
 const WriteApproval = (report_id, formData) => {
