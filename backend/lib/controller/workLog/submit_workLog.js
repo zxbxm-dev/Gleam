@@ -1,87 +1,63 @@
+const moment = require('moment');
 const models = require('../../models');
 const Report = models.Report;
 
-// 보고서 제출 함수
 const submitReport = async (req, res) => {
     try {
-        console.log('파일 업로드 성공:', req.file);
-
+        // 클라이언트로부터 받은 데이터
         const {
             userID,
             username,
             dept,
+            position,
             selectForm,
             Payment,
             pdffile,
-            // 클라이언트에서 전달한 데이터가 아닌 현재 날짜로 정함
             receiptDate,
             sendDate,
+            stopDate,
             opinionName,
             opinionContent,
             rejectName,
             rejectContent,
             approval,
-            currentSigner,
-            position,
-            stopDate
+            currentSigner
         } = req.body;
 
-         // stopDate 값이 유효한지 확인
-         const parsedStopDate = new Date(stopDate);
-         const validStopDate = isNaN(parsedStopDate.getTime()) ? null : parsedStopDate; 
+        // 날짜 데이터를 올바른 형식으로 변환
+        const formattedReceiptDate = moment(receiptDate).isValid() ? moment(receiptDate).format('YYYY-MM-DD HH:mm:ss') : null;
+        const formattedSendDate = moment(sendDate).isValid() ? moment(sendDate).format('YYYY-MM-DD HH:mm:ss') : null;
+        const formattedStopDate = moment(stopDate).isValid() ? moment(stopDate).format('YYYY-MM-DD HH:mm:ss') : null;
 
-        console.log('클라이언트로부터 받은 데이터:');
-        console.log('userID:', userID);
-        console.log('username:', username);
-        console.log('dept:', dept);
-        console.log('selectForm:', selectForm);
-        console.log('Payment:', Payment);
-        console.log('pdffile:', pdffile);
-        console.log('sendDate:', sendDate);
-
-        // attachment 업로드된 파일 경로
-        const attachmentPath = req.file.path;
-        console.log('업로드된 파일 경로:', attachmentPath);
-
+        // 데이터베이스에 저장할 데이터
         const reportData = {
             userId: userID,
             username: username,
             dept: dept,
+            position: position,
             selectForm: selectForm,
             Payment: JSON.stringify(Payment),
-            attachment: attachmentPath,
+            attachment: req.file.path,
             pdffile: pdffile,
-            receiptDate: new Date(),
-            sendDate: sendDate,
+            receiptDate: formattedReceiptDate,
+            sendDate: formattedSendDate,
+            stopDate: formattedStopDate,
             opinionName: opinionName,
             opinionContent: opinionContent,
             rejectName: rejectName,
             rejectContent: rejectContent,
             approval: approval,
             currentSigner: currentSigner,
-            position: position,
-            // 보고서 상태 저장 기본값 draft
-            status: 'draft',
-            currentSigner: currentSigner,
-            stopDate:stopDate
+            status: 'draft'
         };
 
-        console.log('데이터베이스에 저장할 데이터:', reportData);
+        // 보고서 생성 및 저장
+        const newReport = await Report.create(reportData);
 
-        try {
-            const newReport = await Report.create(reportData);
-            console.log('새로운 보고서 생성:', newReport);
-
-            res.status(201).json({
-                message: '보고서가 성공적으로 제출되었습니다.',
-                report: newReport
-            });
-        } catch (dbError) {
-            console.error('데이터베이스 저장 중 에러:', dbError);
-            res.status(500).json({
-                message: '데이터베이스 오류로 인해 보고서 제출에 실패하였습니다.'
-            });
-        }
+        res.status(201).json({
+            message: '보고서가 성공적으로 제출되었습니다.',
+            report: newReport
+        });
     } catch (error) {
         console.error('보고서 제출 중 에러:', error);
         res.status(500).json({
