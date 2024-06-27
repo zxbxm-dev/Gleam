@@ -2,7 +2,8 @@ import api from "../../api/auth";
 
 // 내 문서 목록 조회
 const getMyReports = (params) => {
-  return api.get("/getMyReports", { params });
+  const queryString = `?username=${params.username}&userID=${params.userID}`;
+  return api.get("/getMyReports" + queryString);
 };
 
 // 결재할 문서 목록 조회

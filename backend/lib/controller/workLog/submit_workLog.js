@@ -23,8 +23,7 @@ const submitReport = async (req, res) => {
             approval,
             currentSigner,
             position,
-            stopDate,
-            Signsituation,
+            stopDate
         } = req.body;
 
          // stopDate 값이 유효한지 확인
@@ -64,8 +63,7 @@ const submitReport = async (req, res) => {
             // 보고서 상태 저장 기본값 draft
             status: 'draft',
             currentSigner: currentSigner,
-            stopDate:validStopDate,
-            Signsituation:Signsituation
+            stopDate:stopDate
         };
 
         console.log('데이터베이스에 저장할 데이터:', reportData);
