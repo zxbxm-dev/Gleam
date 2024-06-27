@@ -298,9 +298,11 @@ const Register = () => {
 		CheckID(UserID)
 			.then(response => {
 				setIsCheckID(true);
+				alert("중복확인 완료");
 			})
 			.catch(error => {
 				console.error("중복확인 오류:", error);
+				alert("존재하는 아이디입니다.");
 			})
 	};
 
