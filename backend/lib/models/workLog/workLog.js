@@ -27,11 +27,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      // 처리 상황
-      Signsituation: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       // 결제라인 및 참조
       Payment: {
         type: DataTypes.JSON, // 데이터 형식을 JSON으로 변경
