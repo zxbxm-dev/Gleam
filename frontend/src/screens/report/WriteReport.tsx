@@ -75,6 +75,7 @@ const WriteReport = () => {
     const formData = new FormData();
     formData.append('userID', user.userID);
     formData.append('username', user.username);
+    formData.append('position', user.position);
     formData.append('dept', user.department);
     formData.append('selectForm', selectedReport);
     formData.append('Payment', JSON.stringify(approvalLines));

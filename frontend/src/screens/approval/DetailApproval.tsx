@@ -17,6 +17,8 @@ import {
 import CustomModal from '../../components/modal/CustomModal';
 import sign from "../../assets/images/sign/구민석_서명.png";
 import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
+import { userState } from '../../recoil/atoms';
+import { useRecoilValue } from 'recoil';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -33,6 +35,9 @@ const DetailApproval = () => {
   const [signupindex, setSignUpIndex] = useState<number>(0);
   const [signDates, setSignDates] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const user = useRecoilValue(userState);
+  const [opinion, setOpinion] = useState('');
+  const [rejection, setRejection] = useState('');
 
   const signatories = ['작성자', '팀장', '부서장', '지원팀장', '대표'];
 
@@ -133,6 +138,14 @@ const DetailApproval = () => {
     return pages;
   };
 
+  const handleOpinionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setOpinion(e.target.value);
+  }
+
+  const handleRejectionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setRejection(e.target.value);
+  }
+
   return (
     <div className="content">
       <div className="content_container">
@@ -152,11 +165,16 @@ const DetailApproval = () => {
                         <div className='opinionBox'>
                           <div className='WriterBox'>
                             <div className='Write'>작성자</div>
-                            <div className='Writer'>김효은 팀장</div>
+                            <div className='Writer'>{user.username}&nbsp;{user.position}</div>
                           </div>
                           <div className='TextAreaBox'>
                             <div className='Title'>내용</div>
-                            <textarea className='TextAreaStyle' placeholder='내용을 입력해주세요.' />
+                            <textarea
+                            className='TextAreaStyle'
+                            placeholder='내용을 입력해주세요.'
+                            value={opinion}
+                            onChange={handleOpinionChange}
+                            />
                           </div>
                         </div>
                         <div className='button-wrap'>
@@ -184,11 +202,16 @@ const DetailApproval = () => {
                         <div className='opinionBox'>
                           <div className='WriterBox'>
                             <div className='CompanionWrite'>반려자</div>
-                            <div className='Writer'>김효은 팀장</div>
+                            <div className='Writer'>{user.username}&nbsp;{user.position}</div>
                           </div>
                           <div className='TextAreaBox'>
                             <div className='CompanionTitle'>반려 사유</div>
-                            <textarea className='TextAreaCompanion' placeholder='내용을 입력해주세요.' />
+                            <textarea
+                            className='TextAreaCompanion'
+                            placeholder='내용을 입력해주세요.'
+                            value={rejection}
+                            onChange={handleRejectionChange}
+                            />
                           </div>
                         </div>
                         <div className='button-wrap'>
