@@ -19,6 +19,7 @@ import sign from "../../assets/images/sign/구민석_서명.png";
 import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
+import { WriteApproval } from '../../services/approval/ApprovalServices';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -146,6 +147,39 @@ const DetailApproval = () => {
     setRejection(e.target.value);
   }
 
+  const handleSubmitOpinion = async () => {
+    try {
+      const formData = {
+        userID : user.userID,
+        username: user.username,
+        position: user.position,
+        opinion: opinion,
+      };
+      await WriteApproval(formData);
+      alert('Opinion submitted successfully.');
+      setOpinion(''); 
+    } catch (error) {
+      alert('Failed to submit opinion.');
+    }
+  };
+
+  const handleSubmitRejection = async () => {
+    try {
+      const formData = {
+        userID : user.userID,
+        username: user.username,
+        position: user.position,
+        rejection: rejection,
+      };
+      await WriteApproval(formData);
+      alert('Rejection submitted successfully.');
+      setRejection('');
+    } catch (error) {
+      alert('Failed to submit rejection.');
+    }
+  };
+
+
   return (
     <div className="content">
       <div className="content_container">
@@ -178,7 +212,7 @@ const DetailApproval = () => {
                           </div>
                         </div>
                         <div className='button-wrap'>
-                          <button className="second_button">등록</button>
+                          <button className="second_button" onClick={handleSubmitOpinion}>등록</button>
                           <button className="white_button">취소</button>
                         </div>
                       </PopoverBody>
@@ -215,7 +249,7 @@ const DetailApproval = () => {
                           </div>
                         </div>
                         <div className='button-wrap'>
-                          <button className="second_button">등록</button>
+                          <button className="second_button" onClick={handleSubmitRejection}>등록</button>
                           <button className="white_button">취소</button>
                         </div>
                       </PopoverBody>

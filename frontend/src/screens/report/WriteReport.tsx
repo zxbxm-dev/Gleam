@@ -146,6 +146,7 @@ const WriteReport = () => {
   const approvalFixed = members.find(member => member[0] === '이정훈') || null;
   const ManagementFixed = members.find(member => member[0] === '김효은') || null;
   const SupportFixed = members.find(member => member[0] === '김태희') || null;
+  const vacationFixed = members.find(member => member[0] === '우현지') || null;
 
   const updateApprovalLines = (report: string) => {
     let newApprovalLines;
@@ -172,6 +173,18 @@ const WriteReport = () => {
       ];
     }
 
+    
+    function vacationLines() {
+      return [
+        { name: '참조', checked: true, selectedMembers: vacationFixed ? [vacationFixed] : [] },
+        { name: '대표', checked: true, selectedMember: approvalFixed },
+        { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
+        { name: '부서장', checked: false, selectedMember: null },
+        { name: '팀장', checked: false, selectedMember: null },
+        { name: '작성자', checked: false, selectedMember: null },
+      ];
+    }
+
     switch (report) {
       case '주간업무일지':
         newApprovalLines = [
@@ -185,7 +198,7 @@ const WriteReport = () => {
         newApprovalLines = SupportLines();
         break;
       case '휴가신청서':
-        newApprovalLines = ManagementLines();
+        newApprovalLines = vacationLines();
         break;
       case '시말서':
         newApprovalLines = ManagementLines();

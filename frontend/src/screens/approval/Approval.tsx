@@ -78,7 +78,7 @@ const fetchMyReports = async () => {
 // 결재할 문서 목록 불러오기
 const fetchDocumentsToApprove = async () => {
   const params = {
-    userID: user.userID
+    username: user.username
   };
 
   try {
@@ -94,7 +94,7 @@ const fetchDocumentsToApprove = async () => {
 // 결재 진행 중인 문서 목록 불러오기
 const fetchDocumentsInProgress = async () => {
   const params = {
-    userID: user.userID
+    username: user.username
   };
 
   try {
@@ -109,7 +109,7 @@ const fetchDocumentsInProgress = async () => {
 // 반려된 문서 목록 불러오기
 const fetchRejectedDocuments = async () => {
   const params = {
-    userID: user.userID
+    username: user.username
   };
 
   try {
@@ -124,7 +124,7 @@ const fetchRejectedDocuments = async () => {
 // 결재 완료된 문서 목록 불러오기
 const fetchApprovedDocuments = async () => {
   const params = {
-    userID: user.userID
+    username: user.username
   };
 
   try {
