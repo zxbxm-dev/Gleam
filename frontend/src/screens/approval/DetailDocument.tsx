@@ -7,6 +7,8 @@ import CustomModal from "../../components/modal/CustomModal";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
+import { DeleteReport } from "../../services/approval/ApprovalServices";
+import { useLocation } from 'react-router-dom';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -21,6 +23,9 @@ const DetailDocument = () => {
   const [memoState, setMemoState] = useState<string>('');
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
+  const location = useLocation();
+  const pathnameParts = location.pathname.split('/');
+  const report_id = pathnameParts[pathnameParts.length - 1];
 
   const signatories = ['작성자', '팀장', '부서장', '지원팀장', '대표'];
 
@@ -89,71 +94,79 @@ const DetailDocument = () => {
     return pages;
   };
 
-  const handleDeleteEvent = () => {
-    console.log('삭제')
-  }
+  const handleDeleteEvent = async () => {
+    try {
+      const response = await DeleteReport(report_id);
+      console.log("Report deleted successfully:", response);
+    } catch (error) {
+      console.log("Failed to delete report:", error);
+    }
+  };
 
+  const DeleteOpen = () => {
+    setDeleteEventModalOPen(true);
+  };
 
   return (
     <div className="content">
       <div className='oper_header_right'>
         <button className='primary_button'>확인</button>
         <button className='white_button' onClick={exportToPDF}>다운로드</button>
-        <button className='red_button'>삭제</button>
+        <button className='red_button' onClick={DeleteOpen}>삭제</button>
       </div>
 
       <div className="content_container">
-          <div className="approval_write_container">
-            <div className="write_top_container_document">
-              {memoState ? (
-                memoState === 'reject' ?
-                  <>
-                    <div className='document_container'>
-                      <div className='document_title'>반려자</div>
-                      <div className='document_content'>반려한 사람</div>
-                    </div>
-                    <div className='document_container'>
-                      <div className='document_title'>반려사유</div>
-                      <div className='document_content'>반려 내용</div>
-                    </div>
-                  </>
-                  :
-                  <>
-                    <div className='document_container'>
-                      <div className='document_title'>작성자</div>
-                      <div className='document_content'>의견 장석한 사람</div>
-                    </div>
-                    <div className='document_container'>
-                      <div className='document_title'>의견 내용</div>
-                      <div className='document_content'>의견 내용</div>
-                    </div>
-                  </>
-              ) : (
+        <div className="approval_write_container">
+          <div className="write_top_container_document">
+            {memoState ? (
+              memoState === 'reject' ?
                 <>
-                </>
-              )}
-            </div>
-            <div className="write_btm_container">
-              <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                <div ref={containerRef} id="report-to-xls">
-                  <div className='PaymentLine'>
-                    {signatories.map((signatory, index) => (
-                      <div className='Pay' key={index}>
-                        <input className='Top' type="text" placeholder={signatory} disabled />
-                        <div className='Bottom'>
-                          
-                        </div>
-                        <div className='BtmDate'></div>
-                      </div>
-                    ))}
+                  <div className='document_container'>
+                    <div className='document_title'>반려자</div>
+                    <div className='document_content'>반려한 사람</div>
                   </div>
-                  {renderPages()}
-                </div>
-              </Document>
-            </div>
+                  <div className='document_container'>
+                    <div className='document_title'>반려사유</div>
+                    <div className='document_content'>반려 내용</div>
+                  </div>
+                </>
+                :
+                <>
+                  <div className='document_container'>
+                    <div className='document_title'>작성자</div>
+                    <div className='document_content'>의견 장석한 사람</div>
+                  </div>
+                  <div className='document_container'>
+                    <div className='document_title'>의견 내용</div>
+                    <div className='document_content'>의견 내용</div>
+                  </div>
+                </>
+            ) : (
+              <>
+              </>
+            )}
           </div>
+          <div className="write_btm_container">
+            <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+              <div ref={containerRef} id="report-to-xls">
+                <div className='PaymentLine'>
+                  {signatories.map((signatory, index) => (
+                    <div className='Pay' key={index}>
+                      <input className='Top' type="text" placeholder={signatory} disabled />
+                      <div className='Bottom'>
+
+                      </div>
+                      <div className='BtmDate'></div>
+                    </div>
+                  ))}
+                </div>
+                {renderPages()}
+              </div>
+            </Document>
+          </div>
+        </div>
       </div>
-      
+
       <CustomModal
         isOpen={isDeleteeventModalOpen}
         onClose={() => setDeleteEventModalOPen(false)}

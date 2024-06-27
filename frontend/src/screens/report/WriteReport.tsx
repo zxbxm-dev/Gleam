@@ -86,6 +86,8 @@ const WriteReport = () => {
     }
 
     formData.append('receiptDate', "");
+    formData.append('stopDate', "");
+    formData.append('Signsituation', "미결재");
     formData.append('sendDate', sendDate.toISOString());
     formData.append('opinionName', "");
     formData.append('opinionContent', "");

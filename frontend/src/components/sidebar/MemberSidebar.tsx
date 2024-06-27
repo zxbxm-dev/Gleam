@@ -45,6 +45,13 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
     setSidebarState({ ...sidebarState, currentPage: page });
   };
 
+  const handleMemberClick = (member: Member) => {
+    const [id, pw, name, dept, team, position, extras] = member;
+    onClickMember(name, dept, team, position);
+
+    sessionStorage.setItem('SelectMember', JSON.stringify({ name, dept, team, position }));
+  };
+
   const { isExpanded, currentPage } = sidebarState;
 
   const renderMembers = () => {
@@ -97,7 +104,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
             }
           })
           .map((member, index) => (
-            <div key={index} className="member">
+            <div key={index} className="member" onClick={() => handleMemberClick(member)}>
               <div>{member[2]} | {member[5]}</div>
             </div>
           ))}
