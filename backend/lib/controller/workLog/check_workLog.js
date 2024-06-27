@@ -1,33 +1,101 @@
+const { Op } = require("sequelize");
 const models = require("../../models");
 const Report = models.Report;
 
 // 내 문서 목록 조회
 const getMyReports = async (req, res) => {
-  const { userName, userId } = req.body.username;
+  const {userId} = req.query.userID;
+  const userName = decodeURIComponent(userId);
 
   try {
     const reports = await Report.findAll({
       where: {
-        userId: userId,
-        userName: userName,
+        [Op.or]: [
+          { userId: userId },
+          {
+            Payment: {
+              [Op.like]: `%${userName}%`,
+            },
+          },
+        ],
       },
-      // 필요한 필드 조회
       attributes: [
         "id",
         "userId",
         "username",
+        "dept",
+        "currentSigner",
         "selectForm",
+        "Signsituation",
+        "Payment",
+        "attachment",
+        "pdffile",
+        "receiptDate",
         "sendDate",
+        "stopDate",
+        "opinionName",
+        "opinionContent",
+        "rejectName",
+        "rejectContent",
+        "approval",
         "status",
+        "currentSigner",
+        "createdAt",
+        "updatedAt",
       ],
-      // sendDate 기준으로 내림차순 정렬
       order: [["sendDate", "DESC"]],
+    });
+
+    const modifiedReports = reports.map(report => {
+      // Payment 데이터를 파싱
+      let paymentData;
+      try {
+        paymentData = JSON.parse(report.Payment);
+      } catch (e) {
+        console.error("Payment 데이터 파싱 오류:", e);
+        paymentData = [];
+      }
+
+      // 사용자가 참조된 목록에 포함되어 있는지 확인
+      const isReferUser = paymentData.some(payment => 
+        payment.selectedMembers?.some(member => member[0] === userName)
+      );
+
+      // 상태 설정
+      let status;
+      if (isReferUser) {
+        status = "refer";
+      } else if (report.userId === userId) {
+        switch (report.approval) {
+          case "draft":
+            status = "draft";
+            break;
+          case "pending":
+            status = "pending";
+            break;
+          case "rejected":
+            status = "rejected";
+            break;
+          case "completed":
+            status = "completed";
+            break;
+          default:
+            status = report.status;
+        }
+      } else {
+        status = report.status;
+      }
+
+      return {
+        ...report.toJSON(),
+        status: status,
+      };
     });
 
     res.status(200).json({
       success: true,
       message: "내 문서 목록 조회 성공",
-      reports: reports,
+      reports: modifiedReports,
     });
   } catch (error) {
     console.error("내 문서 목록 조회 오류:", error);
@@ -40,14 +108,12 @@ const getMyReports = async (req, res) => {
 
 // 결제할 문서 목록 조회
 const getDocumentsToApprove = async (req, res) => {
-  const userName = req.body.username;
+  const userName = req.query.username;
 
   try {
     const reports = await Report.findAll({
       where: {
-        // 결재 진행 중인 문서만 조회
         approval: "draft",
-        // Payment 필드에 userName이 포함된 경우
         Payment: {
           [Op.like]: `%${userName}%`,
         },
@@ -56,10 +122,26 @@ const getDocumentsToApprove = async (req, res) => {
         "id",
         "userId",
         "username",
+        "dept",
+        "currentSigner",
         "selectForm",
+        "Signsituation",
+        "Payment",
+        "attachment",
+        "pdffile",
+        "receiptDate",
         "sendDate",
+        "stopDate",
+        "opinionName",
+        "opinionContent",
+        "rejectName",
+        "rejectContent",
+        "approval",
         "status",
-      ], // 필요한 필드 선택
+        "currentSigner",
+        "createdAt",
+        "updatedAt",
+      ],
       order: [["sendDate", "DESC"]],
     });
 
@@ -77,26 +159,41 @@ const getDocumentsToApprove = async (req, res) => {
   }
 };
 
-// 결제 진행 중인 문서 목록 조회
+// 결재 진행 중인 문서 목록 조회
 const getDocumentsInProgress = async (req, res) => {
-  const userName = req.body.username;
+  const userName = req.query.username;
 
   try {
     const reports = await Report.findAll({
       where: {
-        // 결재 진행 중인 문서만 조회
         approval: "pending",
-          Payment: {
-            [Op.like]: `%${userName}%`,
-          },
+        Payment: {
+          [Op.like]: `%${userName}%`,
+        },
       },
       attributes: [
         "id",
         "userId",
         "username",
+        "dept",
+        "currentSigner",
         "selectForm",
+        "Signsituation",
+        "Payment",
+        "attachment",
+        "pdffile",
+        "receiptDate",
         "sendDate",
+        "stopDate",
+        "opinionName",
+        "opinionContent",
+        "rejectName",
+        "rejectContent",
+        "approval",
         "status",
+        "currentSigner",
+        "createdAt",
+        "updatedAt",
       ],
       order: [["sendDate", "DESC"]],
     });
@@ -117,24 +214,39 @@ const getDocumentsInProgress = async (req, res) => {
 
 // 반려된 문서 목록 조회
 const getRejectedDocuments = async (req, res) => {
-  const userName = req.body.username;
+  const userName = req.query.username;
 
   try {
     const reports = await Report.findAll({
       where: {
-        // 반려된 문서만 조회
-        approval: "rejected", 
-           Payment: {
-            [Op.like]: `%${userName}%`,
-          },
+        approval: "rejected",
+        Payment: {
+          [Op.like]: `%${userName}%`,
+        },
       },
       attributes: [
         "id",
         "userId",
         "username",
+        "dept",
+        "currentSigner",
         "selectForm",
+        "Signsituation",
+        "Payment",
+        "attachment",
+        "pdffile",
+        "receiptDate",
         "sendDate",
+        "stopDate",
+        "opinionName",
+        "opinionContent",
+        "rejectName",
+        "rejectContent",
+        "approval",
         "status",
+        "currentSigner",
+        "createdAt",
+        "updatedAt",
       ],
       order: [["sendDate", "DESC"]],
     });
@@ -155,12 +267,11 @@ const getRejectedDocuments = async (req, res) => {
 
 // 결재 완료된 문서 목록 조회
 const getApprovedDocuments = async (req, res) => {
-  const userName = req.body.username;
+  const userName = req.query.username;
 
   try {
     const reports = await Report.findAll({
       where: {
-        // 결재 완료된 문서만 조회
         approval: "completed",
         Payment: {
           [Op.like]: `%${userName}%`,
@@ -170,9 +281,25 @@ const getApprovedDocuments = async (req, res) => {
         "id",
         "userId",
         "username",
+        "dept",
+        "currentSigner",
         "selectForm",
+        "Signsituation",
+        "Payment",
+        "attachment",
+        "pdffile",
+        "receiptDate",
         "sendDate",
+        "stopDate",
+        "opinionName",
+        "opinionContent",
+        "rejectName",
+        "rejectContent",
+        "approval",
         "status",
+        "currentSigner",
+        "createdAt",
+        "updatedAt",
       ],
       order: [["sendDate", "DESC"]],
     });
