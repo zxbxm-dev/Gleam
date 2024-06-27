@@ -253,7 +253,7 @@ useEffect(() => {
                       <td>{approvaling.progress} / {approvaling.maxprogress}</td>
                       <td>{approvaling.state}</td>
                       <td>{approvaling.writer}</td>
-                      <td style={{ display: 'flex', justifyContent: 'center', height: '52px', alignItems: 'center' }}><button className="primary_button" onClick={() => { navigate('/detailApproval') }}>결재하기</button></td>
+                      <td style={{ display: 'flex', justifyContent: 'center', height: '52px', alignItems: 'center' }}><button className="primary_button" onClick={() => { navigate(`/detailApproval`) }}>결재하기</button></td>
                     </tr>
                   ))
                 }
@@ -642,7 +642,7 @@ useEffect(() => {
                       <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
                     }
                   </th>
-                  <th>결재</th>
+                  <th>확인</th>
                 </tr>
               </thead>
               <tbody className="board_container">

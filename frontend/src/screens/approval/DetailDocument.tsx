@@ -8,6 +8,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 import { DeleteReport } from "../../services/approval/ApprovalServices";
+import { useLocation } from 'react-router-dom';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -22,6 +23,9 @@ const DetailDocument = () => {
   const [memoState, setMemoState] = useState<string>('');
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
+  const location = useLocation();
+  const pathnameParts = location.pathname.split('/');
+  const report_id = pathnameParts[pathnameParts.length - 1];
 
   const signatories = ['작성자', '팀장', '부서장', '지원팀장', '대표'];
 
@@ -90,10 +94,9 @@ const DetailDocument = () => {
     return pages;
   };
 
-
   const handleDeleteEvent = async () => {
     try {
-      const response = await DeleteReport();
+      const response = await DeleteReport(report_id);
       console.log("Report deleted successfully:", response);
     } catch (error) {
       console.log("Failed to delete report:", error);
