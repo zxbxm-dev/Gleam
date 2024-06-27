@@ -243,7 +243,6 @@ const HumanResource = () => {
     const formData = new FormData();
     formData.append('attachment', attachment);
     formData.append('pdffile', attachment.name);
-    formData.append('manager', '김효은');
     
     try {
       const response = await WriteHrInfo(formData);
@@ -253,6 +252,20 @@ const HumanResource = () => {
     }
   }
 
+  const getSessionMember = (): { name: string, dept: string, team: string, position: string } | null => {
+    const storedMemberString = sessionStorage.getItem('SelectMember');
+    if (storedMemberString) {
+      const member = JSON.parse(storedMemberString);
+      console.log('Session Member:', member);
+      return member;
+    }
+    return null;
+  };
+
+  useEffect(()=>{
+    getSessionMember();
+  },[])
+  
   return (
     <div className="content">
       <div className="content_container">
