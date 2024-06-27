@@ -87,9 +87,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      // 보고서 상태 (작성중, 대기중, 반려됨, 완료됨)
+      // 보고서 상태 (작성중, 대기중, 반려됨, 완료됨, 참조)
       status: {
-        type: DataTypes.ENUM("draft", "pending", "rejected", "completed"),
+        type: DataTypes.ENUM("draft", "pending", "rejected", "completed", "refer"),
         defaultValue: "draft", // 기본값 설정
         allowNull: false,
       },

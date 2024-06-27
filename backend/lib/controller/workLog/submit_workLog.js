@@ -13,7 +13,7 @@ const submitReport = async (req, res) => {
             selectForm,
             Payment,
             pdffile,
-            // 클라이언트에서 전달한 데이터가 아닌 현재 날짜로 전달받음
+            // 클라이언트에서 전달한 데이터가 아닌 현재 날짜로 정함
             receiptDate,
             sendDate,
             opinionName,
@@ -24,8 +24,12 @@ const submitReport = async (req, res) => {
             currentSigner,
             position,
             stopDate,
-            Signsituation
+            Signsituation,
         } = req.body;
+
+         // stopDate 값이 유효한지 확인
+         const parsedStopDate = new Date(stopDate);
+         const validStopDate = isNaN(parsedStopDate.getTime()) ? null : parsedStopDate; 
 
         console.log('클라이언트로부터 받은 데이터:');
         console.log('userID:', userID);
@@ -60,7 +64,7 @@ const submitReport = async (req, res) => {
             // 보고서 상태 저장 기본값 draft
             status: 'draft',
             currentSigner: currentSigner,
-            stopDate:stopDate,
+            stopDate:validStopDate,
             Signsituation:Signsituation
         };
 
