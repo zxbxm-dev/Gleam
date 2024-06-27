@@ -3,7 +3,6 @@ const Report = models.Report;
 
 // 내 문서 목록 조회
 const getMyReports = async (req, res) => {
-  //const userId = req.params.userId;
   const { userName, userId } = req.body.username;
 
   try {
