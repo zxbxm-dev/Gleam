@@ -62,6 +62,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // 서명 완료 갯수 진행중인 문서
       approval: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -72,6 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 'draft',
         allowNull: false,
       },
+      // 서명 받아야 하는 총 갯수
       currentSigner: {
         type: DataTypes.INTEGER,
         allowNull: true,
