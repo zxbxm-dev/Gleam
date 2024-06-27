@@ -51,8 +51,8 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
     return (
       <div className="MemberTab">
         <div className="Fourchains">
-          <span onClick={() => handleClick('포체인스주식회사')}>&lt;</span>
-          <div>&nbsp;{currentPage}</div>
+          <span onClick={() => handleClick('포체인스주식회사')}>&lt; &nbsp;</span>
+          <div>{currentPage}</div>
         </div>
 
         {membersData

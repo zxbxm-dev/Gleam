@@ -7,12 +7,14 @@ import {
 } from "../../../assets/images/index";
 import CustomModal from '../../../components/modal/CustomModal';
 import { WritePerform } from '../../../services/performance/PerformanceServices';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/atoms';
 
 type PDFFile = string | File | null;
 
 const SubmitPerform = () => {
   const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
-
+  const user = useRecoilValue(userState);
   const [files, setFiles] = useState<PDFFile[]>([]);
 
   // 파일 선택 핸들러
@@ -53,7 +55,13 @@ const SubmitPerform = () => {
     const formData = new FormData();
     validFiles.forEach((file, index) => {
       formData.append(`file${index}`, file!);
+      formData.append(`filename${index}`, file instanceof File ? file.name : '');
     });
+    formData.append("userID", user.id);
+    formData.append("username", user.username);
+    formData.append("team", user.team);
+    formData.append("department", user.department);
+    formData.append("company", user.company);
 
     WritePerform(formData)
       .then(response => {
