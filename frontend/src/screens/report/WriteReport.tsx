@@ -183,8 +183,36 @@ const WriteReport = () => {
 
   const writer = members.find(member => member[0] === user.username) || null
 
+  const RDLead = members.find(member => member[0] === '이유정') || null;
+  const RDTeamLead = (user.department === '동형분석 연구실')
+    ? members.find(member => member[0] === '윤민지') || null
+    : (user.department === '알고리즘 연구실')
+      ? members.find(member => member[0] === '심민지') || null
+      : (user.department === '블록체인 연구실')
+        ? members.find(member => member[0] === '심민지') || null
+        : null;
+
   const updateApprovalLines = (report: string) => {
     let newApprovalLines;
+
+    function RDLines() {
+      return [
+        { name: '참조', checked: false, selectedMembers: [] as Member[] },
+        { name: '대표', checked: true, selectedMember: approvalFixed },
+        { name: '센터장', checked: true, selectedMember: RDLead },
+        { name: '연구실장', checked: true, selectedMember: RDTeamLead },
+      ];
+    }
+
+    function RDWriteLines() {
+      return [
+        { name: '참조', checked: false, selectedMembers: [] as Member[] },
+        { name: '대표', checked: true, selectedMember: approvalFixed },
+        { name: '센터장', checked: true, selectedMember: RDLead },
+        { name: '연구실장', checked: true, selectedMember: RDTeamLead },
+        { name: '작성자', checked: true, selectedMember: writer },
+      ];
+    }
 
     function SupportLines() {
       return [
@@ -220,60 +248,105 @@ const WriteReport = () => {
       ];
     }
 
+    function DefaltLines() {
+      return [
+        { name: '참조', checked: false, selectedMembers: [] as Member[] },
+        { name: '대표', checked: true, selectedMember: approvalFixed },
+        { name: '부서장', checked: true, selectedMember: departmentDirector },
+        { name: '팀장', checked: true, selectedMember: teamLeader },
+      ];
+    }
+
+    function supportLast() {
+      return [
+        { name: '참조', checked: false, selectedMembers: [] as Member[] },
+        { name: '대표', checked: true, selectedMember: approvalFixed },
+        { name: '지원팀장', checked: true, selectedMember: SupportFixed },
+      ]
+    }
+
+    function supportTeamLast() {
+      return [
+        { name: '참조', checked: false, selectedMembers: [] as Member[] },
+        { name: '지원팀장', checked: true, selectedMember: SupportFixed },
+        { name: '부서장', checked: true, selectedMember: departmentDirector },
+        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: '작성자', checked: true, selectedMember: writer },
+      ]
+    }
+
     switch (report) {
       case '주간업무일지':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '대표', checked: true, selectedMember: approvalFixed },
-          { name: '부서장', checked: true, selectedMember: departmentDirector },
-          { name: '팀장', checked: true, selectedMember: teamLeader },
-        ];
+        newApprovalLines = user.company === '본사' ? DefaltLines() : RDLines();
         break;
-      case '지출품의서':
-        newApprovalLines = user.company === '본사' ? SupportLines() : SupportLines();
+      case '퇴직금 중간정산 신청서':
+        newApprovalLines = user.company === '본사' ? DefaltLines() : RDLines();
         break;
       case '휴가신청서':
-        newApprovalLines = vacationLines();
-        break;
-      case '시말서':
-        newApprovalLines = ManagementLines();
-        break;
-      // case '사직서':
-      //   newApprovalLines = ManagementLines();
-      //   break;
-      case '휴직원':
-        newApprovalLines = ManagementLines();
-        break;
-      case '복직원':
-        newApprovalLines = ManagementLines();
-        break;
-      case '워크숍 신청서':
-        newApprovalLines = SupportLines();
-        break;
-      case '워크숍 보고서 (프로젝트 회의)':
-        newApprovalLines = SupportLines();
-        break;
-      case '워크숍 보고서 (야유회)':
-        newApprovalLines = SupportLines();
-        break;
-      case '지출내역서':
-        newApprovalLines = SupportLines();
-        break;
-      case '예산신청서 (지원팀)':
-        newApprovalLines = [
-          { name: '참조', checked: false, selectedMembers: [] as Member[] },
-          { name: '대표', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
-        ];
+        newApprovalLines = user.company === '본사' ? vacationLines() : RDWriteLines();
         break;
       case '기획서':
-        newApprovalLines = ManagementLines();
+        newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
+        break;
+      case '중간보고서':
+        newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
         break;
       case '최종보고서':
-        newApprovalLines = ManagementLines();
+        newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
         break;
-      case '프로젝트 계획서':
-        newApprovalLines = SupportLines();
+      case '휴직원':
+        newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
+        break;
+      case '복직원':
+        newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
+        break;
+      case '시말서':
+        newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
+        break;
+      case '진급추천서':
+        newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
+        break;
+      case '지출품의서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case 'TF팀 기획서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case '워크숍 신청서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case '지출내역서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case '박람회 보고서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case '야유회 보고서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case 'TF팀 프로젝트 계획서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case 'TF팀 중간보고서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case 'TF팀 프로젝트 결과 보고서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case '출장 보고서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case '출장 신청서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
+      case '예산신청서':
+        newApprovalLines = user.company === '본사' ? supportLast() : RDLines();
+        break;
+      case '자기개발비 신청서':
+        newApprovalLines = user.company === '본사' ? supportTeamLast() : RDWriteLines();
+        break;
+      case '법인카드 신청서':
+        newApprovalLines = user.company === '본사' ? supportTeamLast() : RDWriteLines();
         break;
       default:
         newApprovalLines = [
