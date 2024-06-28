@@ -29,6 +29,7 @@ interface Person {
   phoneNumber?: string;
   usermail?: string;
   entering: Date;
+  attachment : string;
 }
 
 const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
@@ -125,7 +126,6 @@ const OrgChart = () => {
 
           <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="orgchart_tab_container">
             <TabPanel display='flex' marginRight="70px" justifyContent='center' className="TabPanel">
-
               <Tree
                 lineWidth={'1px'}
                 lineColor={'#D3D3D3'}
@@ -136,6 +136,7 @@ const OrgChart = () => {
                       position={ceo.position}
                       dept={'대표이사'}
                       name={ceo.username}
+                      attachment={ceo?.attachment}
                       phone={personData.find(person => person.position === '대표이사')?.phoneNumber || 'N/A'}
                       mail={personData.find(person => person.position === '대표이사')?.usermail || 'N/A'}
                     />
@@ -149,6 +150,7 @@ const OrgChart = () => {
                       position={exec.position}
                       dept={'임원'}
                       name={exec.username}
+                      attachment={exec?.attachment}
                       phone={personData.find(person => person.position === '이사')?.phoneNumber || 'N/A'}
                       mail={personData.find(person => person.position === '이사')?.usermail || 'N/A'}
                     />
@@ -163,6 +165,7 @@ const OrgChart = () => {
                       position={devHead.position}
                       dept={devHead.department}
                       name={devHead.username}
+                      attachment={devHead?.attachment}
                       phone={personData.find(person => (person.position === '부서장') && (person.department === '개발부'))?.phoneNumber || 'N/A'}
                       mail={personData.find(person => (person.position === '부서장') && (person.department === '개발부'))?.usermail || 'N/A'}
                     />
@@ -195,6 +198,7 @@ const OrgChart = () => {
                       position={blockchainHead.position}
                       dept={blockchainHead.department}
                       name={blockchainHead.username}
+                      attachment={blockchainHead?.attachment}
                       phone={personData.find(person => (person.position === '부서장') && (person.department === '블록체인사업부'))?.phoneNumber || 'N/A'}
                       mail={personData.find(person => (person.position === '부서장') && (person.department === '블록체인사업부'))?.usermail || 'N/A'}
                     />
@@ -219,6 +223,7 @@ const OrgChart = () => {
                         position={adminHead.position}
                         dept={adminHead.department}
                         name={adminHead.username}
+                        attachment={adminHead?.attachment}
                         phone={personData.find(person => (person.position === '부서장') && (person.department === '관리부'))?.phoneNumber || 'N/A'}
                         mail={personData.find(person => (person.position === '부서장') && (person.department === '관리부'))?.usermail || 'N/A'}
                       />
@@ -252,6 +257,7 @@ const OrgChart = () => {
                       position={marketingHead.position}
                       dept={marketingHead.department}
                       name={marketingHead.username}
+                      attachment={marketingHead?.attachment}
                       phone={personData.find(person => (person.position === '부서장') && (person.department === '마케팅부'))?.phoneNumber || 'N/A'}
                       mail={personData.find(person => (person.position === '부서장') && (person.department === '마케팅부'))?.usermail || 'N/A'}
                     />
@@ -291,6 +297,7 @@ const OrgChart = () => {
                       position={rndHead.position}
                       dept={'센터장'}
                       name={rndHead.username}
+                      attachment={rndHead?.attachment}
                       phone={personData.find(person => person.position === '센터장')?.phoneNumber || 'N/A'}
                       mail={personData.find(person => person.position === '센터장')?.usermail || 'N/A'}
                     />
@@ -304,6 +311,7 @@ const OrgChart = () => {
                       position={algoHead.position}
                       dept={algoHead.department}
                       name={algoHead.username}
+                      attachment={algoHead?.attachment}
                       phone={personData.find(person => (person.position === '연구실장') && (person.department === '알고리즘 연구실'))?.phoneNumber || 'N/A'}
                       mail={personData.find(person => (person.position === '연구실장') && (person.department === '알고리즘 연구실'))?.usermail || 'N/A'}
                     />
@@ -328,6 +336,7 @@ const OrgChart = () => {
                       position={homomorphicHead.position}
                       dept={homomorphicHead.department}
                       name={homomorphicHead.username}
+                      attachment={homomorphicHead?.attachment}
                       phone={personData.find(person => (person.position === '연구실장') && (person.department === '동형분석 연구실'))?.phoneNumber || 'N/A'}
                       mail={personData.find(person => (person.position === '연구실장') && (person.department === '동형분석 연구실'))?.usermail || 'N/A'}
                     />
