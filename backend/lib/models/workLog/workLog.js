@@ -81,11 +81,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      // 미결제
-      draft: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       // 결재 진행 중
       pending: {
         type: DataTypes.STRING,

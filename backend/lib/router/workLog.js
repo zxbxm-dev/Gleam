@@ -60,6 +60,7 @@ module.exports = (app) => {
   // ⚠️⚠️문서 수정 및 삭제 router ----------------------------------------------------------------------- ⚠️⚠️
 
   router.get("/checkReport/:report_id", writeReportController.getReportById);
+  router.delete("/deleteReport/:report_id", writeReportController.deleteReportById);
 
   app.use("/api", router);
 };
