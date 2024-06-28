@@ -1,8 +1,5 @@
 import "./Sidebar.scss";
 import React, { useState } from "react";
-import { userState } from '../../recoil/atoms';
-import { useRecoilState } from 'recoil';
-import { useLocation } from 'react-router-dom';
 import { SideUp, SideDown } from "../../assets/images/index";
 
 type Member = [string, string, string, string, string, string, string[]];
@@ -30,8 +27,6 @@ type CurrentPageType =
   '시설팀' | 'R&D센터' | '알고리즘연구실' | '동형분석연구실' | '블록체인연구실';
 
 const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
-  const [user, setUser] = useRecoilState(userState);
-  const location = useLocation();
   const [sidebarState, setSidebarState] = useState<{ isExpanded: boolean; currentPage: CurrentPageType }>({
     isExpanded: true,
     currentPage: '포체인스주식회사',
@@ -46,7 +41,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
   };
 
   const handleMemberClick = (member: Member) => {
-    const [id, pw, name, dept, team, position, extras] = member;
+    const [name, dept, team, position] = member;
     onClickMember(name, dept, team, position);
   };
 
