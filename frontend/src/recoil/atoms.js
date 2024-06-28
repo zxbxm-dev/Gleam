@@ -24,7 +24,9 @@ const getUserStateFromLocalStorage = () => {
     team: '',
     position: '',
     spot: '',
-    entering: ''
+    entering: '',
+    attachment: '',
+    Sign: ''
   };
 };
 

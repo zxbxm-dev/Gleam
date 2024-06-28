@@ -40,7 +40,9 @@ const handleLogin = async () => {
       team: userData.team,
       position: userData.position,
       spot: userData.spot,
-      entering: enteringDateString
+      entering: enteringDateString,
+      attachment:userData.attachment,
+      Sign:userData.Sign
     };
 
     setUserState(userStateData);
