@@ -34,8 +34,7 @@ const CustomPopover: React.FC<CustomPopoverProps> = ({
   mail,
   attachment,
 }) => {
-
-
+  
   return (
     <Popover placement={direction}>
       <PopoverTrigger>
