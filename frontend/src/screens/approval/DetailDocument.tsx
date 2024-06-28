@@ -111,6 +111,7 @@ const DetailDocument = () => {
     try {
       const response = await DeleteReport(report_id);
       console.log("Report deleted successfully:", response);
+      setDeleteEventModalOPen(false);
     } catch (error) {
       console.log("Failed to delete report:", error);
     }
