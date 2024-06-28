@@ -153,7 +153,7 @@ const DetailApproval = () => {
   }
 
 
-  const fetchCheckReport = async (report_id:string) => {
+  const fetchCheckReport = async (report_id: string) => {
     try {
       const response = await CheckReport(report_id);
       return response.data;
@@ -166,7 +166,7 @@ const DetailApproval = () => {
     fetchCheckReport(report_id);
   }, [report_id])
 
-  const handleSubmitOpinion = async () => {
+  const handleSubmitOpinion = async (report_id: string) => {
     try {
       const formData = {
         userID: user.userID,
@@ -174,7 +174,7 @@ const DetailApproval = () => {
         position: user.position,
         opinion: opinion,
       };
-      await WriteApproval(formData);
+      await WriteApproval(report_id, formData);
       alert('Opinion submitted successfully.');
       setOpinion('');
     } catch (error) {
@@ -182,7 +182,7 @@ const DetailApproval = () => {
     }
   };
 
-  const handleSubmitRejection = async () => {
+  const handleSubmitRejection = async (report_id: string) => {
     try {
       const formData = {
         userID: user.userID,
@@ -190,7 +190,7 @@ const DetailApproval = () => {
         position: user.position,
         rejection: rejection,
       };
-      await WriteApproval(formData);
+      await WriteApproval(report_id, formData);
       alert('Rejection submitted successfully.');
       setRejection('');
     } catch (error) {
@@ -231,7 +231,7 @@ const DetailApproval = () => {
                           </div>
                         </div>
                         <div className='button-wrap'>
-                          <button className="second_button" onClick={handleSubmitOpinion}>등록</button>
+                          <button className="second_button" onClick={() => handleSubmitOpinion(report_id)}>등록</button>
                           <button className="white_button">취소</button>
                         </div>
                       </PopoverBody>
@@ -268,7 +268,7 @@ const DetailApproval = () => {
                           </div>
                         </div>
                         <div className='button-wrap'>
-                          <button className="second_button" onClick={handleSubmitRejection}>등록</button>
+                          <button className="second_button" onClick={() => handleSubmitRejection(report_id)}>등록</button>
                           <button className="white_button">취소</button>
                         </div>
                       </PopoverBody>
