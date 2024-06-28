@@ -23,6 +23,7 @@ interface CustomPopoverProps {
   name: string;
   phone: string;
   mail: string;
+  attachment: string;
 }
 
 const CustomPopover: React.FC<CustomPopoverProps> = ({
@@ -32,16 +33,16 @@ const CustomPopover: React.FC<CustomPopoverProps> = ({
   name,
   phone,
   mail,
+  attachment,
 }) => {
-
-
+  
   return (
     <Popover placement={direction}>
       <PopoverTrigger>
         <div className="nodeicon">
           <div className="nodeicon_content">
             <span>{dept}</span>
-            <img src={UserIcon_dark} alt="UserIcon_dark" className="UserIcon" />
+            <img src={attachment ? attachment : UserIcon_dark} alt="UserIcon_dark" className="UserIcon" />
             <div>{name} | {position}</div>
           </div>
         </div>
