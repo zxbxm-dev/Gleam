@@ -41,17 +41,34 @@
     }
 
     .member {
-      padding-left: 14px;
       font-size: 16px;
       width: 100%;
-      height: 42px;
+      padding: 7px 0px 7px 20px;
       display: flex;
       align-items: center;
+      margin-bottom: 7px;
       justify-content: flex-start;
       cursor: pointer;
       color: #323232;
       gap: 10px;
       font-family: var(--font-family-Noto-M);
+
+      .MemberFlex {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 35px;
+          height: 35px;
+          border-radius: 50px;
+          margin-right: 12px;
+        }
+
+        .Font {
+          font-size: 14px;
+        }
+      }
     }
 
     .member:hover {
@@ -206,6 +223,7 @@
               border-bottom-right-radius: 10px;
             }
           }
+
           .menu-link2.active {
             font-family: var(--font-family-Noto-B);
           }
@@ -228,8 +246,8 @@
 
 .sub-menu.open {
   max-height: 500px;
- background-color: #eeeeee;
- border-radius: 10px;
+  background-color: #eeeeee;
+  border-radius: 10px;
 }
 
 .sub-menu-item.active {
