@@ -23,6 +23,11 @@
       border-bottom: 1px solid #DCDCDC;
       text-align: center;
 
+      .text_left {
+        text-align: left;
+        padding-left: 100px;
+      }
+      
       .flex_center {
         width: 100%;
         height: 60px;
@@ -35,6 +40,12 @@
       .pinned_icon {
         width: 20px;
         height: 20px;
+      }
+
+      .url_wrap {
+        text-align: left;
+        text-decoration: underline;
+        padding-left: 150px;
       }
 
       .dropdown {

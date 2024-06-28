@@ -256,7 +256,7 @@ const handleSubmit = () => {
                 .map((employment, index) => (
                   <tr key={employment.id} className="board_content">
                     <td>{index + 1}</td>
-                    <td style={{ textAlign: "left", paddingLeft: "100px" }} onContextMenu={(e) => handleRightClick(employment.id, e)}>
+                    <td className="text_left" onContextMenu={(e) => handleRightClick(employment.id, e)}>
                       <div
                         className="dropdown" // 드롭다운 클래스 추가
                       >
@@ -268,27 +268,27 @@ const handleSubmit = () => {
                                 <button className="dropdown_pin">수정하기</button>
                               </PopoverTrigger>
                               <Portal>
-                                <PopoverContent onClick={(e) => e.stopPropagation()} width='400px' height='250px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444' fontSize='14px'>
-                                  <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>채용공고 수정하기</PopoverHeader>
-                                  <PopoverCloseButton color='white' />
-                                  <PopoverBody display='flex' flexDirection='column' alignItems='center'>
-                                    <div style={{ width: '400px', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px', padding: '10px' }}>
-                                      <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <div style={{ width: '80px', textAlign: 'right' }}>공고제목</div>
-                                        <Input value={form.title} size='sm' color='#323232' onChange={handleTitleChange}/>
+                                <PopoverContent onClick={(e) => e.stopPropagation()} className="employment_popover_content">
+                                  <PopoverHeader className="employment_popover_header">채용공고 수정하기</PopoverHeader>
+                                  <PopoverCloseButton className="employment_popover_header_close" />
+                                  <PopoverBody className="employment_popover_body">
+                                    <div className="employment_popover_body_wrap">
+                                      <div className="employment_popover_body_wrap_div">
+                                        <div className="div_title">공고제목</div>
+                                        <input value={form.title} color='#323232' onChange={handleTitleChange}/>
                                       </div>
-                                      <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <div style={{ width: '80px', textAlign: 'right' }}>링크</div>
-                                        <Input value={form.url} size='sm' color='#323232' onChange={handleUrlChange}/>
+                                      <div className="employment_popover_body_wrap_div">
+                                        <div className="div_title">링크</div>
+                                        <input value={form.url} color='#323232' onChange={handleUrlChange}/>
                                       </div>
-                                      <div style={{ fontSize: '14px', color: '#909090', fontFamily: 'var(--font-family-Noto-M)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <div style={{ width: '80px', textAlign: 'right' }}>사이트명</div>
-                                        <Input value={form.site} size='sm' color='#323232' onChange={handleSiteChange}/>
+                                      <div className="employment_popover_body_wrap_div">
+                                        <div className="div_title">사이트명</div>
+                                        <input value={form.site} color='#323232' onChange={handleSiteChange}/>
                                       </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '10px' }}>
-                                      <button style={{ width: '70px', height: '35px', color: '#76CB7E', backgroundColor: '#fff', border: '1px solid #76CB7E', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }} onClick={handleEdit}>수정</button>
-                                      <button style={{ width: '70px', height: '35px', color: '#929292', backgroundColor: '#fff', border: '1px solid #929292', borderRadius: '5px', fontFamily: 'var(--font-family-Noto-B)' }}>취소</button>
+                                    <div className="button_wrap">
+                                      <button className="white_button" onClick={handleEdit}>수정</button>
+                                      <button className="cancle_button">취소</button>
                                     </div>
                                   </PopoverBody>
                                 </PopoverContent>
@@ -299,7 +299,7 @@ const handleSubmit = () => {
                         )}
                       </div>
                     </td>
-                    <td className="dropdown" style={{ textAlign: "left", paddingLeft: "150px", textDecoration: "underline" }}>
+                    <td className="dropdown url_wrap">
                       <a href={employment.url} target="_blank" rel="noopener noreferrer">{employment.url}</a>
                     </td>
                     <td>{employment.site}</td>

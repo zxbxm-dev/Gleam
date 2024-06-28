@@ -279,7 +279,6 @@ const HumanResource = () => {
     }
   }
 
-
   return (
     <div className="content">
       <div className="content_container">
@@ -291,13 +290,13 @@ const HumanResource = () => {
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[2]} marginTop={tabMargins[2]}>인사이동</Tab>
           </TabList>
 
-          <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' borderRightRadius='10px' className="hr_tab_container">
-            <TabPanel display='flex' flexDirection='column'>
+          <TabPanels className="hr_tab_container">
+            <TabPanel className="hr_tab_container_select">
               {/* {isSelectMember[0] !== '' ? (
                 <></>
               ) : ( */}
               <>
-                <div style={{ display: 'flex', flexDirection: 'row-reverse', width: '100%', borderBottom: '1px solid #DCDCDC', gap: '10px', paddingBottom: '15px' }}>
+                <div className="hr_button_wrap">
                   {attachment ? (
                     <>
                       <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
@@ -353,12 +352,12 @@ const HumanResource = () => {
 
             </TabPanel>
 
-            <TabPanel display='flex' flexDirection='column'>
+            <TabPanel className="hr_tab_container_select">
               {/* {isSelectMember[0] !== '' ? (
                 <></>
               ) : ( */}
               <>
-                <div style={{ display: 'flex', flexDirection: 'row-reverse', width: '100%', borderBottom: '1px solid #DCDCDC', gap: '10px', paddingBottom: '15px' }}>
+                <div className="hr_button_wrap">
                   {attachment ? (
                     <>
                       <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
@@ -414,44 +413,44 @@ const HumanResource = () => {
 
             </TabPanel>
 
-            <TabPanel display='flex' flexDirection='column'>
-              <div style={{ display: 'flex', flexDirection: 'row-reverse', width: '100%' }}>
+            <TabPanel className="hr_tab_container_select">
+              <div className="appoint_button_wrap">
                 <Popover placement="left-start" isOpen={isAdd} onClose={AddClose}>
                   <PopoverTrigger>
                     <button className="primary_button" onClick={AddOpen}>등록</button>
                   </PopoverTrigger>
                   <Portal>
-                    <PopoverContent width='400px' height='370px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                      <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 등록하기</PopoverHeader>
-                      <PopoverCloseButton color='white' />
-                      <PopoverBody display='flex' flexDirection='column' padding='25px 0px' justifyContent='center' alignItems='flex-end' paddingRight='10px'>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'flex-end' }}>
-                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>부서</div>
-                            <Input placeholder='ex) 개발부' size='sm' width='335px' onChange={handleDeptChange} />
+                    <PopoverContent className="hr_popover_content">
+                      <PopoverHeader className="hr_popover_header">인사이동 등록하기</PopoverHeader>
+                      <PopoverCloseButton className="hr_popover_header_close"/>
+                      <PopoverBody className="hr_popover_body">
+                        <div className="hr_popover_body_wrap">
+                          <div className="hr_popover_body_content">
+                            <div>부서</div>
+                            <input placeholder='ex) 개발부' onChange={handleDeptChange} />
                           </div>
-                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>팀</div>
-                            <Input placeholder='ex) 개발 1팀' size='sm' width='335px' onChange={handleTeamChange} />
+                          <div className="hr_popover_body_content">
+                            <div>팀</div>
+                            <input placeholder='ex) 개발 1팀' onChange={handleTeamChange} />
                           </div>
-                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>직위</div>
-                            <Input placeholder='내용을 입력해주세요.' size='sm' width='335px' onChange={handlePositionChange} />
+                          <div className="hr_popover_body_content">
+                            <div>직위</div>
+                            <input placeholder='내용을 입력해주세요.' onChange={handlePositionChange} />
                           </div>
-                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>직책</div>
-                            <Input placeholder='내용을 입력해주세요.' size='sm' width='335px' onChange={handleSpotChange} />
+                          <div className="hr_popover_body_content">
+                            <div>직책</div>
+                            <input placeholder='내용을 입력해주세요.' onChange={handleSpotChange} />
                           </div>
-                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>날짜</div>
-                            <Input placeholder='20240627' size='sm' width='335px' onChange={handleDateChange} />
+                          <div className="hr_popover_body_content">
+                            <div>날짜</div>
+                            <input placeholder='20240627' onChange={handleDateChange} />
                           </div>
-                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>구분</div>
-                            <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='335px' onChange={handleClassifyChange} />
+                          <div className="hr_popover_body_content">
+                            <div>구분</div>
+                            <input placeholder='승진 / 부서이동 / 강등' onChange={handleClassifyChange} />
                           </div>
                         </div>
-                        <div className='button-wrap' style={{ marginTop: '15px' }}>
+                        <div className='button-wrap'>
                           <button className="second_button" onClick={handleAppointSubmit}>등록</button>
                           <button className="white_button" onClick={AddClose}>취소</button>
                         </div>
@@ -496,37 +495,37 @@ const HumanResource = () => {
                                   <button className="white_button" onClick={EditOpen}>수정</button>
                                 </PopoverTrigger>
                                 <Portal>
-                                  <PopoverContent width='400px' height='370px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                                    <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
-                                    <PopoverCloseButton color='white' />
-                                    <PopoverBody display='flex' flexDirection='column' padding='25px 0px' justifyContent='center' alignItems='flex-end' paddingRight='10px'>
-                                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'flex-end' }}>
-                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>부서</div>
-                                          <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='335px' />
+                                  <PopoverContent className="hr_popover_content">
+                                    <PopoverHeader className="hr_popover_header">인사이동 수정하기</PopoverHeader>
+                                    <PopoverCloseButton className="hr_popover_header_close"/>
+                                    <PopoverBody className="hr_popover_body">
+                                      <div className="hr_popover_body_wrap">
+                                        <div className="hr_popover_body_content">
+                                          <div>부서</div>
+                                          <input placeholder='ex) 개발부' onChange={handleDeptChange} />
                                         </div>
-                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>팀</div>
-                                          <Input placeholder='ex) 개발 1팀' size='sm' width='335px' onChange={handleTeamChange} />
+                                        <div className="hr_popover_body_content">
+                                          <div>팀</div>
+                                          <input placeholder='ex) 개발 1팀' onChange={handleTeamChange} />
                                         </div>
-                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>직위</div>
-                                          <Input placeholder='내용을 입력해주세요.' size='sm' width='335px' />
+                                        <div className="hr_popover_body_content">
+                                          <div>직위</div>
+                                          <input placeholder='내용을 입력해주세요.' onChange={handlePositionChange} />
                                         </div>
-                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>직책</div>
-                                          <Input placeholder='내용을 입력해주세요.' size='sm' width='335px' />
+                                        <div className="hr_popover_body_content">
+                                          <div>직책</div>
+                                          <input placeholder='내용을 입력해주세요.' onChange={handleSpotChange} />
                                         </div>
-                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>날짜</div>
-                                          <Input placeholder='20240513' size='sm' width='335px' />
+                                        <div className="hr_popover_body_content">
+                                          <div>날짜</div>
+                                          <input placeholder='20240627' onChange={handleDateChange} />
                                         </div>
-                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>구분</div>
-                                          <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='335px' />
+                                        <div className="hr_popover_body_content">
+                                          <div>구분</div>
+                                          <input placeholder='승진 / 부서이동 / 강등' onChange={handleClassifyChange} />
                                         </div>
                                       </div>
-                                      <div className='button-wrap' style={{ marginTop: '15px' }}>
+                                      <div className='button-wrap'>
                                         <button className="white_button" onClick={() => {handleAppointmentEdit(index)}}>수정</button>
                                         <button className="white_button" onClick={EditClose}>취소</button>
                                       </div>

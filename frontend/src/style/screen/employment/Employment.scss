@@ -1,5 +1,99 @@
 @import "../../Common/board.scss";
+@import "../../mixin";
 
 .employment_board_list {
   @include board_list;
+}
+
+.employment_popover_content {
+  width: 400px !important;
+  height: 250px;
+  border: 0;
+  border-radius: 5px;
+  box-sizing: 0px 0px 5px #444;
+  font-size: 14px;
+
+  .employment_popover_header {
+    color: #fff;
+    background-color: #76CB7E;
+    border: 0;
+    font-family: var(--font-family-Noto-B);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  .employment_popover_header_close {
+    color: #fff;
+  }
+
+  .employment_popover_body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .employment_popover_body_wrap {
+      width: 400px;
+      height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+
+      .employment_popover_body_wrap_div {
+        font-size: 14px;
+        color: #909090;
+        font-family: var(--font-family-Noto-M);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .div_title {
+          width: 60px;
+          text-align: right;
+        }
+
+        input {
+          width: 300px;
+          height: 30px;
+          border: 1px solid #DCDCDC;
+          border-radius: 5px;
+          padding-left: 10px;
+        }
+        input:focus {
+          outline: 2px solid #76CB7E;
+        }
+        input::placeholder {
+          font-size: 12px;
+          color: #C7C7C7;
+        }
+      }
+    }
+
+    .button_wrap {
+      display: flex;
+      gap: 10px;
+    }
+    .white_button {
+      @include report-button;
+      color: rgba(69, 197, 82, 0.75);
+      box-shadow: 0 0 0 2px rgba(69, 197, 82, 0.75) inset;
+      background-color: #FBFBFB;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .cancle_button {
+      @include report-button;
+      color: #929292;
+      box-shadow: 0 0 0 2px #929292 inset;
+      background-color: #FBFBFB;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 }
