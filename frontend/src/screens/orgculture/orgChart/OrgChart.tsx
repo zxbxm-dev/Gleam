@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import {
-  FourchainsLogo,
   UserIcon_dark,
   UserIcon,
 } from "../../../assets/images/index";
@@ -29,7 +27,7 @@ interface Person {
   phoneNumber?: string;
   usermail?: string;
   entering: Date;
-  attachment : string;
+  attachment: string;
 }
 
 const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
@@ -43,7 +41,7 @@ const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
         <PopoverCloseButton color='#272727' />
         <PopoverBody display='flex' flexDirection='row' alignItems='center' borderBottomLeftRadius='5px' borderBottomRightRadius='5px'>
           <div style={{ width: '140px', height: '150px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <img src={member.attachment?member.attachment:UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px', borderRadius:'50px' }} />
+            <img src={member.attachment ? member.attachment : UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px', borderRadius: '50px' }} />
             <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)', marginTop: '10px' }}>{member.username}</div>
             <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{member.position}</div>
           </div>
@@ -112,8 +110,8 @@ const OrgChart = () => {
   const adminHead = getPersonByPosition('관리부', '부서장');
   const marketingHead = getPersonByPosition('마케팅부', '부서장');
   const rndHead = getPersonByPosition('', '센터장');
-  const algoHead = getPersonByPosition('알고리즘 연구실','연구실장');
-  const homomorphicHead = getPersonByPosition('동형분석 연구실','연구실장');
+  const algoHead = getPersonByPosition('알고리즘 연구실', '연구실장');
+  const homomorphicHead = getPersonByPosition('동형분석 연구실', '연구실장');
 
   return (
     <div className="content" style={{ padding: '0px 20px' }}>
