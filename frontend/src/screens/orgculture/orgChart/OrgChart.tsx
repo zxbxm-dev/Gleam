@@ -43,7 +43,7 @@ const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
         <PopoverCloseButton color='#272727' />
         <PopoverBody display='flex' flexDirection='row' alignItems='center' borderBottomLeftRadius='5px' borderBottomRightRadius='5px'>
           <div style={{ width: '140px', height: '150px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <img src={UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px' }} />
+            <img src={member.attachment?member.attachment:UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px', borderRadius:'50px' }} />
             <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)', marginTop: '10px' }}>{member.username}</div>
             <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{member.position}</div>
           </div>
