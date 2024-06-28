@@ -22,6 +22,7 @@ interface CustomPopoverProps {
   name: string;
   phone: string;
   mail: string;
+  attachment: string;
 }
 
 const CustomPopover: React.FC<CustomPopoverProps> = ({
@@ -31,16 +32,16 @@ const CustomPopover: React.FC<CustomPopoverProps> = ({
   name,
   phone,
   mail,
+  attachment,
 }) => {
-
-
+  
   return (
     <Popover placement={direction}>
       <PopoverTrigger>
         <div className="nodeicon">
           <div className="nodeicon_content">
             <span>{dept}</span>
-            <img src={UserIcon_dark} alt="UserIcon_dark" className="UserIcon" />
+            <img src={attachment ? attachment : UserIcon_dark} alt="UserIcon_dark" className="UserIcon" />
             <div>{name} | {position}</div>
           </div>
         </div>
@@ -51,7 +52,7 @@ const CustomPopover: React.FC<CustomPopoverProps> = ({
           <PopoverCloseButton color='#272727' />
           <PopoverBody display='flex' flexDirection='row' alignItems='center' borderBottomLeftRadius='5px' borderBottomRightRadius='5px'>
             <div style={{ width: '140px', height: '150px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <img src={UserIcon} alt="UserIcon" style={{ width: '70px', height: '70px' }} />
+              <img src={attachment ? attachment : UserIcon_dark} alt="UserIcon" style={{ width: '70px', height: '70px', borderRadius: '50px' }} />
               <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)', marginTop: '10px' }}>{name}</div>
               <div style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{position}</div>
             </div>
