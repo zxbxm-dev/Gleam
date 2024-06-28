@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import CustomModal from '../../components/modal/CustomModal';
 import sign from "../../assets/images/sign/구민석_서명.png";
-import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
+// import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
 import { WriteApproval, CheckReport } from '../../services/approval/ApprovalServices';
@@ -48,7 +48,7 @@ const DetailApproval = () => {
   const signatories = ['작성자', '팀장', '부서장', '지원팀장', '대표'];
 
   useEffect(() => {
-    setFile(testPDF);
+    // setFile(testPDF);
     setCheckSignUp(new Array(signatories.length).fill(false));
     setSignDates(new Array(signatories.length).fill(''));
   }, []);
