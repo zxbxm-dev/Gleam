@@ -745,8 +745,8 @@ const handleSubmit = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
-                          <th rowSpan={CommonRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_bottom"> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
+                          <th rowSpan={CommonRowSpan} className="th_left th_right th_bottom text_right"> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
+                          <th rowSpan={CommonRowSpan} className="th_bottom text_right"> {(common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost).toLocaleString()} </th>
                         </>
                       ) : null}
                       
@@ -1011,8 +1011,8 @@ const handleSubmit = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={managementTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {managementCost.toLocaleString()} </th>
-                          <th rowSpan={ManageRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_bottom"> {(managementCost + supportCost).toLocaleString()} </th>
+                          <th rowSpan={managementTeam.length} className="th_left th_right th_bottom text_right"> {managementCost.toLocaleString()} </th>
+                          <th rowSpan={ManageRowSpan} className="th_bottom text_right"> {(managementCost + supportCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -1059,7 +1059,7 @@ const handleSubmit = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={supportTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {supportCost.toLocaleString()} </th>
+                          <th rowSpan={supportTeam.length} className="th_left th_right th_bottom text_right"> {supportCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -1107,8 +1107,8 @@ const handleSubmit = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devOneTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {devOneCost.toLocaleString()} </th>
-                          <th rowSpan={DevRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_bottom"> {(devOneCost + devTwoCost).toLocaleString()} </th>
+                          <th rowSpan={devOneTeam.length} className="th_left th_right th_bottom text_right"> {devOneCost.toLocaleString()} </th>
+                          <th rowSpan={DevRowSpan} className="th_bottom text_right"> {(devOneCost + devTwoCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -1156,7 +1156,7 @@ const handleSubmit = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={devTwoTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {devTwoCost.toLocaleString()} </th>
+                          <th rowSpan={devTwoTeam.length} className="th_left th_right th_bottom text_right"> {devTwoCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -1204,8 +1204,8 @@ const handleSubmit = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={BlockChainRowSpan} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {blockchainCost.toLocaleString()} </th>
-                          <th rowSpan={blockchainTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_bottom"> {blockchainCost.toLocaleString()} </th>
+                          <th rowSpan={BlockChainRowSpan} className="th_left th_right th_bottom text_right"> {blockchainCost.toLocaleString()} </th>
+                          <th rowSpan={blockchainTeam.length} className="th_bottom text_right"> {blockchainCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -1253,8 +1253,8 @@ const handleSubmit = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={designTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right th_bottom"> {designCost.toLocaleString()} </th>
-                          <th rowSpan={MarketingRowSpan} style={{textAlign: 'right', paddingRight: '5px'}}> {(designCost + planningCost).toLocaleString()} </th>
+                          <th rowSpan={designTeam.length} className="th_left th_right th_bottom text_right"> {designCost.toLocaleString()} </th>
+                          <th rowSpan={MarketingRowSpan} className="text_right">{(designCost + planningCost).toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
@@ -1302,7 +1302,7 @@ const handleSubmit = () => {
                       ))}
                       {index === 0 ? (
                         <>
-                          <th rowSpan={planningTeam.length} style={{textAlign: 'right', paddingRight: '5px'}} className="th_left th_right"> {planningCost.toLocaleString()} </th>
+                          <th rowSpan={planningTeam.length} className="th_left th_right text_right"> {planningCost.toLocaleString()} </th>
                         </>
                       ) : null}
                     </tr>
