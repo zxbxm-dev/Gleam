@@ -616,15 +616,15 @@ const WriteReport = () => {
                   <button className="primary_button">결재라인 선택</button>
                 </PopoverTrigger>
                 <Portal>
-                  <PopoverContent width='440px' height='700px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #d9d9d9'>
-                    <PopoverHeader color='#272727' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-M)' borderTopRadius='5px'>결재라인 선택</PopoverHeader>
-                    <PopoverCloseButton color='#272727' />
-                    <PopoverBody display='flex' flexDirection='row' padding='0px'>
-                      <div style={{ width: '200px', height: '650px', overflowY: 'scroll', scrollbarWidth: 'thin' }}>
+                  <PopoverContent className="approval_popover_content">
+                    <PopoverHeader className="approval_popover_header">결재라인 선택</PopoverHeader>
+                    <PopoverCloseButton className="approval_popover_header_close"/>
+                    <PopoverBody className="approval_popover_body">
+                      <div className="approval_popover_memberside">
                         <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
                       </div>
                       <div className='FlexContentBox'>
-                        <div className='ContentBox' style={{ width: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative' }}>
+                        <div className='ContentBox'>
                           {approvalLines.filter(line => line.name !== '참조').map((line, index) => (
                             <div key={index} className="approval_content" onMouseEnter={() => setHoveredIndex(index)} onMouseLeave={() => setHoveredIndex(null)}>
                               <div className='approval_line'>
