@@ -24,6 +24,10 @@ interface Document {
   currentSigner: number;
   username: string;
   dept: string;
+  referName: string;
+  pending: string;
+  rejected: string;
+  completed: string;
 }
 
 const Approval = () => {
@@ -71,120 +75,121 @@ const Approval = () => {
     setSelectedTab(tab);
   };
 
-// 내 문서 목록 불러오기
-const fetchMyReports = async () => {
-  const params = {
-    userID: user.userID,
-    username: user.username
+  // 내 문서 목록 불러오기
+  const fetchMyReports = async () => {
+    const params = {
+      userID: user.userID,
+      username: user.username
+    };
+
+    try {
+      const response = await getMyReports(params);
+
+      const documentsWithData: Document[] = response.data.map((document: Document) => {
+        let status = "";
+        if (document.referName !== "") {
+          status = "참조";
+        } else if (document.pending !== null) {
+          status = "결재 진행 중";
+        } else if (document.rejected !== null) {
+          status = "반려";
+        } else if (document.completed !== null && document.pending === null) {
+          status = "결재 완료";
+        } else if (document.approval === 0) {
+          status = "미결재";
+        }
+        return {
+          ...document,
+          status: status
+        };
+      });
+
+      setMyDocument(documentsWithData);
+      return documentsWithData;
+
+    } catch (error) {
+      console.log("Failed to fetch data");
+    }
   };
 
-  try {
-    const response = await getMyReports(params);
+  // 결재할 문서 목록 불러오기
+  const fetchDocumentsToApprove = async () => {
+    const params = {
+      username: user.username
+    };
 
-    // const documentsWithData: Document[] = response.data.map((document: Document) => {
-    //   let status = "";
-    //   if (document.approval === 0) {
-    //     status = "미결재";
-    //   } else if (document.approval < document.currentSigner) {
-    //     status = "결재 진행 중";
-    //   } else if (document.approval === document.currentSigner) {
-    //     status = "결재 완료";
-    //   }
+    try {
+      const response = await getDocumentsToApprove(params);
+      setApprovaling(response.data);
+      console.log(response.data);
 
-    //   return {
-    //     ...document,
-    //     status: document.username !== user.username ? "참조" : status
-    //   };
-    // });
-
-
-
-    setMyDocument(response.data);
-    return response.data;
-    
-  } catch (error) {
-    console.log("Failed to fetch data");
-  }
-};
-
-// 결재할 문서 목록 불러오기
-const fetchDocumentsToApprove = async () => {
-  const params = {
-    username: user.username
+      return response.data;
+    } catch (error) {
+      // throw new Error("Failed to fetch data");
+      console.log("Failed to fetch data");
+    }
   };
 
-  try {
-    const response = await getDocumentsToApprove(params);
-    // setApprovaling(response.data);
-    console.log(response.data);
-    
-    return response.data;
-  } catch (error) {
-    // throw new Error("Failed to fetch data");
-    console.log("Failed to fetch data");
-  }
-};
 
+  // 결재 진행 중인 문서 목록 불러오기
+  const fetchDocumentsInProgress = async () => {
+    const params = {
+      username: user.username
+    };
 
-// 결재 진행 중인 문서 목록 불러오기
-const fetchDocumentsInProgress = async () => {
-  const params = {
-    username: user.username
+    try {
+      const response = await getDocumentsInProgress(params);
+      return response.data;
+    } catch (error) {
+      // throw new Error("Failed to fetch data");
+      console.log("Failed to fetch data");
+    }
   };
 
-  try {
-    const response = await getDocumentsInProgress(params);
-    return response.data;
-  } catch (error) {
-    // throw new Error("Failed to fetch data");
-    console.log("Failed to fetch data");
-  }
-};
+  // 반려된 문서 목록 불러오기
+  const fetchRejectedDocuments = async () => {
+    const params = {
+      username: user.username
+    };
 
-// 반려된 문서 목록 불러오기
-const fetchRejectedDocuments = async () => {
-  const params = {
-    username: user.username
+    try {
+      const response = await getRejectedDocuments(params);
+      return response.data;
+    } catch (error) {
+      // throw new Error("Failed to fetch data");
+      console.log("Failed to fetch data");
+    }
   };
 
-  try {
-    const response = await getRejectedDocuments(params);
-    return response.data;
-  } catch (error) {
-    // throw new Error("Failed to fetch data");
-    console.log("Failed to fetch data");
-  }
-};
+  // 결재 완료된 문서 목록 불러오기
+  const fetchApprovedDocuments = async () => {
+    const params = {
+      username: user.username
+    };
 
-// 결재 완료된 문서 목록 불러오기
-const fetchApprovedDocuments = async () => {
-  const params = {
-    username: user.username
+    try {
+      const response = await getApprovedDocuments(params);
+      return response.data;
+    } catch (error) {
+      // throw new Error("Failed to fetch data");
+      console.log("Failed to fetch data");
+    }
   };
 
-  try {
-    const response = await getApprovedDocuments(params);
-    return response.data;
-  } catch (error) {
-    // throw new Error("Failed to fetch data");
-    console.log("Failed to fetch data");
-  }
-};
 
-
-useEffect(() => {
-  if (selectedTab === "approval") {
-    fetchDocumentsToApprove();
-  } else if (selectedTab === "inProgress") {
-    fetchDocumentsInProgress();
-  } else if (selectedTab === "rejected") {
-    fetchRejectedDocuments();
-  } else if (selectedTab === "completed") {
-    fetchApprovedDocuments();
-  } else if (selectedTab === "myDocuments") {
-    fetchMyReports();
-  }
-}, [selectedTab]);
+  useEffect(() => {
+    if (selectedTab === "approval") {
+      fetchDocumentsToApprove();
+    } else if (selectedTab === "inProgress") {
+      fetchDocumentsInProgress();
+    } else if (selectedTab === "rejected") {
+      fetchRejectedDocuments();
+    } else if (selectedTab === "completed") {
+      fetchApprovedDocuments();
+    } else if (selectedTab === "myDocuments") {
+      fetchMyReports();
+    }
+  }, [selectedTab]);
 
 
   const handleSort = (sortKey: string, targetState: any[], setTargetState: React.Dispatch<React.SetStateAction<any[]>>) => {
@@ -271,22 +276,20 @@ useEffect(() => {
                 </tr>
               </thead>
               <tbody className="board_container">
-              {approvalings
+                {approvalings
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((approvalings) => (
                     <tr key={approvalings.id} className="board_content">
                       <td>{approvalings.id}</td>
                       <td style={{ textAlign: 'center' }}>{approvalings.selectForm}</td>
-                      <td>{approvalings.sendDate}</td>
-                      <td>{approvalings.updatedAt}</td>
+                      <td>{new Date(approvalings.sendDate).toISOString().substring(0, 10)}</td>
                       <td>{approvalings.approval} / {approvalings.currentSigner}</td>
-                      <td>{approvalings.status}</td>
                       <td>{approvalings.username} / {approvalings.dept}</td>
-                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${approvalings.id}`) }}>문서확인</button></td>
                     </tr>
                   ))
                 }
-    </tbody>
+              </tbody>
               <div className="approval_main_bottom">
                 <Pagination
                   activePage={page}
