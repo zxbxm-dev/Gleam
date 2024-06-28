@@ -81,24 +81,26 @@ const fetchMyReports = async () => {
   try {
     const response = await getMyReports(params);
 
-    const documentsWithData: Document[] = response.data.map((document: Document) => {
-      let status = "";
-      if (document.approval === 0) {
-        status = "미결재";
-      } else if (document.approval < document.currentSigner) {
-        status = "결재 진행 중";
-      } else if (document.approval === document.currentSigner) {
-        status = "결재 완료";
-      }
+    // const documentsWithData: Document[] = response.data.map((document: Document) => {
+    //   let status = "";
+    //   if (document.approval === 0) {
+    //     status = "미결재";
+    //   } else if (document.approval < document.currentSigner) {
+    //     status = "결재 진행 중";
+    //   } else if (document.approval === document.currentSigner) {
+    //     status = "결재 완료";
+    //   }
 
-      return {
-        ...document,
-        status: document.username !== user.username ? "참조" : status
-      };
-    });
+    //   return {
+    //     ...document,
+    //     status: document.username !== user.username ? "참조" : status
+    //   };
+    // });
 
-    setMyDocument(documentsWithData);
-    return documentsWithData;
+
+
+    setMyDocument(response.data);
+    return response.data;
     
   } catch (error) {
     console.log("Failed to fetch data");
@@ -652,8 +654,8 @@ useEffect(() => {
                     <tr key={mydocument.id} className="board_content">
                       <td>{mydocument.id}</td>
                       <td style={{ textAlign: 'center' }}>{mydocument.selectForm}</td>
-                      <td>{mydocument.sendDate}</td>
-                      <td>{mydocument.updatedAt}</td>
+                      <td>{new Date(mydocument.sendDate).toISOString().substring(0, 10)}</td>
+                      <td>{new Date(mydocument.updatedAt).toISOString().substring(0, 10)}</td>
                       <td>{mydocument.approval} / {mydocument.currentSigner}</td>
                       <td>{mydocument.status}</td>
                       <td>{mydocument.username} / {mydocument.dept}</td>

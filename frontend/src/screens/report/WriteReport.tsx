@@ -149,6 +149,40 @@ const WriteReport = () => {
   const SupportFixed = members.find(member => member[0] === '김태희') || null;
   const vacationFixed = members.find(member => member[0] === '우현지') || null;
 
+  const departmentDirector = (user.department === '개발부')
+    ? members.find(member => member[0] === '진유빈') || null
+    : (user.department === '관리부')
+      ? members.find(member => member[0] === '이정열') || null
+      : (user.department === '블록체인사업부')
+        ? members.find(member => member[0] === '권상원') || null
+        : (user.department === '마케팅부')
+          ? members.find(member => member[0] === '김현지') || null
+          : (user.department === '')
+            ? null
+            : null;
+
+
+  const teamLeader = (user.team === '개발 1팀')
+    ? null
+    : (user.team === '개발 2팀')
+      ? members.find(member => member[0] === '변도일') || null
+      : (user.team === '블록체인 1팀')
+        ? members.find(member => member[0] === '김도환') || null
+        : (user.team === '기획팀')
+          ? members.find(member => member[0] === '전아름') || null
+          : (user.team === '관리팀')
+            ? members.find(member => member[0] === '김효은') || null
+            : (user.team === '지원팀')
+              ? members.find(member => member[0] === '김태희') || null
+              : (user.team === '디자인팀')
+                ? null
+                : (user.team === '')
+                  ? null
+                  : null;
+
+
+  const writer = members.find(member => member[0] === user.username) || null
+
   const updateApprovalLines = (report: string) => {
     let newApprovalLines;
 
@@ -157,9 +191,9 @@ const WriteReport = () => {
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표', checked: true, selectedMember: approvalFixed },
         { name: '지원팀장', checked: true, selectedMember: SupportFixed },
-        { name: '부서장', checked: false, selectedMember: null },
-        { name: '팀장', checked: false, selectedMember: null },
-        { name: '작성자', checked: false, selectedMember: null },
+        { name: '부서장', checked: true, selectedMember: departmentDirector },
+        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: '작성자', checked: true, selectedMember: writer },
       ];
     }
 
@@ -168,21 +202,21 @@ const WriteReport = () => {
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표', checked: true, selectedMember: approvalFixed },
         { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
-        { name: '부서장', checked: false, selectedMember: null },
-        { name: '팀장', checked: false, selectedMember: null },
-        { name: '작성자', checked: false, selectedMember: null },
+        { name: '부서장', checked: true, selectedMember: departmentDirector },
+        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: '작성자', checked: true, selectedMember: writer },
       ];
     }
 
-    
+
     function vacationLines() {
       return [
         { name: '참조', checked: true, selectedMembers: vacationFixed ? [vacationFixed] : [] },
         { name: '대표', checked: true, selectedMember: approvalFixed },
         { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
-        { name: '부서장', checked: false, selectedMember: null },
-        { name: '팀장', checked: false, selectedMember: null },
-        { name: '작성자', checked: false, selectedMember: null },
+        { name: '부서장', checked: true, selectedMember: departmentDirector },
+        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: '작성자', checked: true, selectedMember: writer },
       ];
     }
 
@@ -191,12 +225,12 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '대표', checked: true, selectedMember: approvalFixed },
-          { name: '부서장', checked: false, selectedMember: null },
-          { name: '팀장', checked: false, selectedMember: null },
+          { name: '부서장', checked: true, selectedMember: departmentDirector },
+          { name: '팀장', checked: true, selectedMember: teamLeader },
         ];
         break;
       case '지출품의서':
-        newApprovalLines = SupportLines();
+        newApprovalLines = user.company === '본사' ? SupportLines() : SupportLines();
         break;
       case '휴가신청서':
         newApprovalLines = vacationLines();
@@ -229,7 +263,7 @@ const WriteReport = () => {
         newApprovalLines = [
           { name: '참조', checked: false, selectedMembers: [] as Member[] },
           { name: '대표', checked: true, selectedMember: approvalFixed },
-          { name: '지원팀장', checked: false, selectedMember: null },
+          { name: '지원팀장', checked: true, selectedMember: SupportFixed },
         ];
         break;
       case '기획서':
