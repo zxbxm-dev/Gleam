@@ -135,6 +135,8 @@ const HumanResource = () => {
   const handleAppointSubmit = () => {
     const { dept, team, position, spot, date, classify } = form;
 
+    const DateType = `${date.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(6, 8)}`;
+
     const formData = new FormData();
     formData.append('username', isSelectMember[0]);
     formData.append('team', isSelectMember[2]);
@@ -144,7 +146,7 @@ const HumanResource = () => {
     formData.append('Newteam', team);
     formData.append('Newposition', position);
     formData.append('Newspot', spot);
-    formData.append('date', date);
+    formData.append('date', DateType);
     formData.append('classify', classify);
 
     writeAppointment(formData)
