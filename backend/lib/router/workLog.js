@@ -1,6 +1,7 @@
 module.exports = (app) => {
   const reportController = require("../controller/workLog/submit_workLog");
   const checkReportController = require("../controller/workLog/check_workLog");
+  const writeReportController = require("../controller/workLog/write_workLog");
 
   const express = require("express");
   const router = express.Router();
@@ -44,7 +45,7 @@ module.exports = (app) => {
   // 보고서 제출 API 라우트
   router.post("/submitReport", upload, reportController.submitReport);
 
-  // ⚠️⚠️보고서 결재 router ----------------------------------------------------------------------- ⚠️⚠️
+  // ⚠️⚠️문서 조회 router ----------------------------------------------------------------------- ⚠️⚠️
   //내 문서 목록 조회
   router.get("/getMyReports", checkReportController.getMyReports);
   // 결제 할 문서
@@ -55,6 +56,10 @@ module.exports = (app) => {
   router.get("/getRejectedDocuments", checkReportController.getRejectedDocuments);
   // 결제 완료한 문서
   router.get("/getApprovedDocuments", checkReportController.getApprovedDocuments);
+
+  // ⚠️⚠️문서 수정 및 삭제 router ----------------------------------------------------------------------- ⚠️⚠️
+
+  router.get("/checkReport/:report_id", writeReportController.getReportById);
 
   app.use("/api", router);
 };

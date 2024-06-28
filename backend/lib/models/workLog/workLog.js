@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Report = sequelize.define(
-    'Report',
+    "Report",
     {
       userId: {
         type: DataTypes.STRING,
@@ -46,18 +46,22 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      // 의견 작성자
       opinionName: {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // 의견 내용
       opinionContent: {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // 반려 작성자
       rejectName: {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // 반려 내용
       rejectContent: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -67,21 +71,44 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      // 보고서 상태 (작성중, 대기중, 반려됨, 완료됨, 참조)
-      status: {
-        type: DataTypes.ENUM('draft', 'pending', 'rejected', 'completed', 'refer'),
-        defaultValue: 'draft',
-        allowNull: false,
-      },
       // 서명 받아야 하는 총 갯수
       currentSigner: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      // 결제 싸인 진행자
+      personSigning: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      // 미결제
+      draft: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      // 결재 진행 중
+      pending: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      // 반려됨
+      rejected: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      // 결재 완료
+      completed: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      // 참조
+      referName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
-      tableName: 'report',
-      timestamps: true,
+      tableName: "report",
     }
   );
 

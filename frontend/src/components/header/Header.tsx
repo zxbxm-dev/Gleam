@@ -4,19 +4,16 @@ import {
   Logo,
   UserIcon,
   UserIcon_dark,
-  MenuArrow_down,
   SettingIcon,
 } from "../../assets/images/index";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverBody,
-  PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
-import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { LogoutServices } from "../../services/login/LoginService";
 
@@ -57,28 +54,28 @@ const Header = () => {
               </div>
               </PopoverTrigger>
             <Portal>
-              <PopoverContent border='1px solid #45C552' borderRadius='5px' marginRight='25px' padding='10px' boxShadow='rgba(100, 100, 111, 0.1) 0px 7px 29px 0px' style={{ width: 'fit-content' }}>
+              <PopoverContent className="header_popover">
                 <PopoverBody>
-                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                    <img src={SettingIcon} alt="SettingIcon" style={{ width: '20px', height: '20px', cursor: 'pointer', position: 'absolute', top: '8px', right: '8px' }} onClick={() => navigate('/editres')}/>
-                    <img src={UserIcon_dark} alt="UserIcon_dark" style={{ width: '50px', height: '50px' }} />
+                  <span className="Img_content">
+                    <img src={SettingIcon} alt="SettingIcon" className="setting_icon" onClick={() => navigate('/editres')}/>
+                    <img src={UserIcon_dark} alt="UserIcon_dark" className="user_icon" />
                   </span>
-                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', margin: '10px 0', gap: '3px', width: 'fit-content'}}>
-                    <span style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{user.username} | {user.position}</span>
+                  <span className="user_information">
+                    <span>{user.username} | {user.position}</span>
                     {
                       user.team ? (
-                        <span style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{user.team}</span>
+                        <span>{user.team}</span>
                       ) : (
                         user.department ? (
-                          <span style={{ fontSize: '16px', fontFamily: 'var(--font-family-Noto-M)' }}>{user.department}</span>
+                          <span>{user.department}</span>
                         ) : (
                           <></>
                         )
                       )
                     }
                   </span>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                    <span style={{ fontSize: '14px', textDecoration: 'underLine', cursor: 'pointer', color: '#929292' }} onClick={handleLogout}>로그아웃</span>
+                  <div className="logout_wrap">
+                    <span onClick={handleLogout}>로그아웃</span>
                   </div>
                 </PopoverBody>
               </PopoverContent>
