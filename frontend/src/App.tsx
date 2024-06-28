@@ -98,7 +98,7 @@ function App() {
               {/* 보고서 결재 */}
               <Route path="/approval" element={<Approval />} />
               <Route path="/detailApproval" element={<DetailApproval />} />
-              <Route path="/detailDocument" element={<DetailDocument />} />
+              <Route path="/detailDocument/:id" element={<DetailDocument />} />
 
               {/* 채용공고 */}
               <Route path="/employment" element={<Employment />} />

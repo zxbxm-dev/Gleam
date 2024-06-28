@@ -659,7 +659,7 @@ useEffect(() => {
                       <td>{mydocument.approval} / {mydocument.currentSigner}</td>
                       <td>{mydocument.status}</td>
                       <td>{mydocument.username} / {mydocument.dept}</td>
-                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${mydocument.id}`) }}>문서확인</button></td>
                     </tr>
                   ))
                 }

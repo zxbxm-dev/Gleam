@@ -20,6 +20,7 @@ import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
 import { WriteApproval, CheckReport } from '../../services/approval/ApprovalServices';
+import { useLocation } from 'react-router-dom';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -39,6 +40,10 @@ const DetailApproval = () => {
   const user = useRecoilValue(userState);
   const [opinion, setOpinion] = useState('');
   const [rejection, setRejection] = useState('');
+
+  const location = useLocation();
+  const pathnameParts = location.pathname.split('/');
+  const report_id = pathnameParts[pathnameParts.length - 1];
 
   const signatories = ['작성자', '팀장', '부서장', '지원팀장', '대표'];
 
@@ -148,9 +153,9 @@ const DetailApproval = () => {
   }
 
 
-  const fetchCheckReport = async () => {
+  const fetchCheckReport = async (report_id:string) => {
     try {
-      const response = await CheckReport();
+      const response = await CheckReport(report_id);
       return response.data;
     } catch (error) {
       console.log("Failed to fetch data");
@@ -158,8 +163,8 @@ const DetailApproval = () => {
   };
 
   useEffect(() => {
-    fetchCheckReport();
-  }, [])
+    fetchCheckReport(report_id);
+  }, [report_id])
 
   const handleSubmitOpinion = async () => {
     try {
