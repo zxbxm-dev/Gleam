@@ -41,6 +41,7 @@ const HumanResource = () => {
   const [isSelectMember] = useRecoilState(isSelectMemberState);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [appointments, setAppointments] = useState<any[]>([]);
 
   const [form, setForm] = useState<{
     dept: string;
@@ -124,7 +125,7 @@ const HumanResource = () => {
   }
 
   useQuery("Appointment", fetchAppointment, {
-    onSuccess: (data) => console.log(data),
+    onSuccess: (data) => setAppointments(data),
     onError: (error) => {
       console.log(error)
     }
@@ -157,7 +158,7 @@ const HumanResource = () => {
 
 
   // 인사이동 수정
-  const handleAppointmentEdit = () => {
+  const handleAppointmentEdit = (index: number) => {
     const { dept, position, spot, date, classify } = form;
 
     const formData = new FormData();
@@ -167,7 +168,7 @@ const HumanResource = () => {
     formData.append('date', date);
     formData.append('classify', classify);
 
-    EditAppointment(formData)
+    EditAppointment(index, formData)
       .then(response => {
         console.log("인사이동 등록 성공")
       })
@@ -177,8 +178,8 @@ const HumanResource = () => {
   }
 
   // 인사이동 삭제
-  const handleAppointmentDelete = () => {
-    DeleteAppointment()
+  const handleAppointmentDelete = (index: number) => {
+    DeleteAppointment(index)
       .then((response) => {
         console.log("인사이동이 성공적으로 삭제되었습니다.", response);
       })
@@ -479,95 +480,63 @@ const HumanResource = () => {
                     </tr>
                   </thead>
                   <tbody className="board_container">
-                    <tr className="board_content">
-                      <td>마케팅부 디자인팀</td>
-                      <td>팀장</td>
-                      <td>수석</td>
-                      <td>2024-05-04</td>
-                      <td>승진</td>
-                      <td className="flex_center">
-                        <Popover placement="left-start" isOpen={isEdit} onClose={EditClose}>
-                          <PopoverTrigger>
-                            <button className="white_button" onClick={EditOpen}>수정</button>
-                          </PopoverTrigger>
-                          <Portal>
-                            <PopoverContent width='400px' height='370px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
-                              <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
-                              <PopoverCloseButton color='white' />
-                              <PopoverBody display='flex' flexDirection='column' padding='25px 0px' justifyContent='center' alignItems='flex-end' paddingRight='10px'>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'flex-end' }}>
-                                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>부서</div>
-                                    <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='335px' />
-                                  </div>
-                                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>팀</div>
-                                    <Input placeholder='ex) 개발 1팀' size='sm' width='335px' onChange={handleTeamChange} />
-                                  </div>
-                                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>직위</div>
-                                    <Input placeholder='내용을 입력해주세요.' size='sm' width='335px' />
-                                  </div>
-                                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>직책</div>
-                                    <Input placeholder='내용을 입력해주세요.' size='sm' width='335px' />
-                                  </div>
-                                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>날짜</div>
-                                    <Input placeholder='20240513' size='sm' width='335px' />
-                                  </div>
-                                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>구분</div>
-                                    <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='335px' />
-                                  </div>
-                                </div>
-                                <div className='button-wrap' style={{ marginTop: '15px' }}>
-                                  <button className="white_button" onClick={handleAppointmentEdit}>수정</button>
-                                  <button className="white_button" onClick={EditClose}>취소</button>
-                                </div>
-                              </PopoverBody>
-                            </PopoverContent>
-                          </Portal>
-                        </Popover>
-                        <button className="red_button" onClick={() => { setDeleteModalOpen(true); handleAppointmentDelete() }}>삭제</button>
-                      </td>
-                    </tr>
-
-                    <tr className="board_content">
-                      <td>관리부 지원팀</td>
-                      <td>사원</td>
-                      <td>수석</td>
-                      <td>2024-05-04</td>
-                      <td>부서이동</td>
-                      <td className="flex_center">
-                        <button className="white_button">수정</button>
-                        <button className="red_button">삭제</button>
-                      </td>
-                    </tr>
-
-                    <tr className="board_content">
-                      <td>개발부 개발 1팀</td>
-                      <td>사원</td>
-                      <td>수석</td>
-                      <td>2024-05-04</td>
-                      <td>강등</td>
-                      <td className="flex_center">
-                        <button className="white_button">수정</button>
-                        <button className="red_button">삭제</button>
-                      </td>
-                    </tr>
-
-                    <tr className="board_content">
-                      <td>개발부 개발 1팀</td>
-                      <td>팀장</td>
-                      <td>수석</td>
-                      <td>2024-05-04</td>
-                      <td>부서이동</td>
-                      <td className="flex_center">
-                        <button className="white_button">수정</button>
-                        <button className="red_button">삭제</button>
-                      </td>
-                    </tr>
+                      {appointments
+                        .map((appointment, index) => (
+                          <tr key={appointment.id} className="board_content">
+                            <td>{appointment.department}</td>
+                            <td>{appointment.spot}</td>
+                            <td>{appointment.position}</td>
+                            <td>{appointment.date}</td>
+                            <td>{appointment.classify}</td>
+                            <td className="flex_center">
+                              <Popover placement="left-start" isOpen={isEdit} onClose={EditClose}>
+                                <PopoverTrigger>
+                                  <button className="white_button" onClick={EditOpen}>수정</button>
+                                </PopoverTrigger>
+                                <Portal>
+                                  <PopoverContent width='400px' height='370px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
+                                    <PopoverHeader color='white' bg='#76CB7E' border='0' fontFamily='var(--font-family-Noto-B)' borderTopRadius='5px'>인사이동 수정하기</PopoverHeader>
+                                    <PopoverCloseButton color='white' />
+                                    <PopoverBody display='flex' flexDirection='column' padding='25px 0px' justifyContent='center' alignItems='flex-end' paddingRight='10px'>
+                                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'flex-end' }}>
+                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>부서</div>
+                                          <Input placeholder='ex) 개발부 개발 1팀' size='sm' width='335px' />
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>팀</div>
+                                          <Input placeholder='ex) 개발 1팀' size='sm' width='335px' onChange={handleTeamChange} />
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>직위</div>
+                                          <Input placeholder='내용을 입력해주세요.' size='sm' width='335px' />
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>직책</div>
+                                          <Input placeholder='내용을 입력해주세요.' size='sm' width='335px' />
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>날짜</div>
+                                          <Input placeholder='20240513' size='sm' width='335px' />
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                          <div style={{ textAlign: 'right', color: '#929292', fontFamily: 'var(--font-family-Noto-M)' }}>구분</div>
+                                          <Input placeholder='승진 / 부서이동 / 강등' size='sm' width='335px' />
+                                        </div>
+                                      </div>
+                                      <div className='button-wrap' style={{ marginTop: '15px' }}>
+                                        <button className="white_button" onClick={() => {handleAppointmentEdit(index)}}>수정</button>
+                                        <button className="white_button" onClick={EditClose}>취소</button>
+                                      </div>
+                                    </PopoverBody>
+                                  </PopoverContent>
+                                </Portal>
+                              </Popover>
+                              <button className="red_button" onClick={() => { setDeleteModalOpen(true); handleAppointmentDelete(index) }}>삭제</button>
+                            </td>
+                          </tr>
+                        ))
+                      }
                   </tbody>
                 </table>
               </div>
