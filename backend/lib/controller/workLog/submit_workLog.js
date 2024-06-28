@@ -21,13 +21,33 @@ const submitReport = async (req, res) => {
             rejectName,
             rejectContent,
             approval,
-            currentSigner
+            currentSigner,
         } = req.body;
 
         // 날짜 데이터를 올바른 형식으로 변환
         const formattedReceiptDate = moment(receiptDate).isValid() ? moment(receiptDate).format('YYYY-MM-DD HH:mm:ss') : null;
         const formattedSendDate = moment(sendDate).isValid() ? moment(sendDate).format('YYYY-MM-DD HH:mm:ss') : null;
         const formattedStopDate = moment(stopDate).isValid() ? moment(stopDate).format('YYYY-MM-DD HH:mm:ss') : null;
+
+        // Payment 객체 파싱
+        let referNames = [];
+        let personSigning = [];
+        const parsedPayment = JSON.parse(Payment);
+        if (parsedPayment && Array.isArray(parsedPayment)) {
+            parsedPayment.forEach(payment => {
+                if (payment.name === '참조' && payment.checked) {
+                    if (Array.isArray(payment.selectedMembers)) {
+                        referNames = payment.selectedMembers.map(member => member[0]); // 모든 참조된 사람의 이름
+                    }
+                } else if (payment.checked) {
+                    if (Array.isArray(payment.selectedMembers)) {
+                        personSigning.push(...payment.selectedMembers.map(member => member[0])); // 모든 결제 받는 사람의 이름
+                    } else if (Array.isArray(payment.selectedMember)) {
+                        personSigning.push(payment.selectedMember[0]); // 단일 결제 받는 사람의 이름
+                    }
+                }
+            });
+        }
 
         // 데이터베이스에 저장할 데이터
         const reportData = {
@@ -48,7 +68,8 @@ const submitReport = async (req, res) => {
             rejectContent: rejectContent,
             approval: approval,
             currentSigner: currentSigner,
-            status: 'draft'
+            referName: referNames.join(', '), // 배열을 문자열로 변환하여 저장
+            personSigning: personSigning.join(', ')
         };
 
         // 보고서 생성 및 저장
