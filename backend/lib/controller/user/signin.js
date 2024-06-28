@@ -16,6 +16,9 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ where: { userId: userID } });
 
+    //이미지 업로드 디렉토리의 경로
+    const baseUrl = `${req.protocol}://${req.get("host")}/uploads/`;
+
     if (user) {
       const match = await bcrypt.compare(password, user.password);
       if (match) {
@@ -41,8 +44,8 @@ const login = async (req, res) => {
             team: user.team,
             position: user.position,
             spot: user.spot,
-            attachment: user.attachment,
-            Sign: user.Sign,
+            attachment: user.attachment ? baseUrl + user.attachment : null,
+            Sign: user.Sign ? baseUrl + user.Sign : null,
             ques1: user.question1,
             ques2: user.question2,
             entering: user.entering,

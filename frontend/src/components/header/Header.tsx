@@ -35,7 +35,7 @@ const Header = () => {
       console.error('Logout failed', error);
     }
   };
-
+  
   return (
     <div className="header">
       <div className="header-left">
@@ -49,7 +49,7 @@ const Header = () => {
           <Popover>
           <PopoverTrigger>
               <div className="UserInfo">
-                <img src={UserIcon} alt="UserIcon" />
+                <img src={user.attachment?user.attachment:UserIcon_dark} alt="UserIcon" />
                 <div className="UserName">{user.username}</div>
               </div>
               </PopoverTrigger>
@@ -58,7 +58,7 @@ const Header = () => {
                 <PopoverBody>
                   <span className="Img_content">
                     <img src={SettingIcon} alt="SettingIcon" className="setting_icon" onClick={() => navigate('/editres')}/>
-                    <img src={UserIcon_dark} alt="UserIcon_dark" className="user_icon" />
+                    <img src={user.attachment?user.attachment:UserIcon_dark} alt="UserIcon_dark" className="user_icon" />
                   </span>
                   <span className="user_information">
                     <span>{user.username} | {user.position}</span>
