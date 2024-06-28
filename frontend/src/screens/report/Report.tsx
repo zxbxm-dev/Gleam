@@ -52,14 +52,14 @@ const reportCategories = [
 const Report = () => {
   const navigate = useNavigate();
 
-  const handleReportClick = (reportName:any) => {
+  const handleReportClick = (reportName: any) => {
     navigate("/writeReport", { state: { reportName } });
   };
 
-  const renderReports = (category:any) => (
+  const renderReports = (category: any) => (
     <div className="report_content" key={category.title}>
       <div className="report_title">{category.title}</div>
-      {category.reports.map((report:any) => (
+      {category.reports.map((report: any) => (
         <div
           className="report_name"
           key={report}
@@ -73,13 +73,13 @@ const Report = () => {
 
   return (
     <div className="content">
-          <div className="report_container">
-            {reportCategories.map((category) => (
-              <div className="report_type" key={category.title}>
-                {renderReports(category)}
-              </div>
-            ))}
+      <div className="report_container">
+        {reportCategories.map((category) => (
+          <div className="report_type" key={category.title}>
+            {renderReports(category)}
           </div>
+        ))}
+      </div>
     </div>
   );
 };
