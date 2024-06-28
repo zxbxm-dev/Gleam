@@ -285,7 +285,7 @@ const Approval = () => {
                       <td>{new Date(approvalings.sendDate).toISOString().substring(0, 10)}</td>
                       <td>{approvalings.approval} / {approvalings.currentSigner}</td>
                       <td>{approvalings.username} / {approvalings.dept}</td>
-                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${approvalings.id}`) }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate(`/detailApproval/${approvalings.id}`) }}>문서확인</button></td>
                     </tr>
                   ))
                 }
