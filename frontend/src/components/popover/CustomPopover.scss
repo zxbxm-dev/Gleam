@@ -1,0 +1,60 @@
+.custom_popover {
+  width: 420px !important;
+  height: 200px;
+  border: 0 !important;
+  border-radius: 1px !important;
+  box-shadow: rgba(100, 100, 111, 0.1) 0px 7px 29px 0px;
+
+  .custom_popover_header {
+    height: 34px;
+    color: #272727;
+    background-color: #76CB7E;
+    border: 0;
+    font-family: var(--font-family-Noto-M);
+    font-size: 14px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+  }
+
+  .custom_popover_body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+    .custom_popover_body_left {
+      width: 140px;
+      height: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-family-Noto-M);
+
+      .user_icon {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 10px;
+      }
+    }
+
+    .custom_popover_body_right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 15px;
+
+      .custom_popover_body_right_div {
+        display: flex;
+        flex-direction: column;
+        font-family: var(--font-family-Noto-M);
+
+        div:nth-of-type(1) {
+          font-size: 14px;
+          color: #909090;
+        }
+      }
+    }
+  }
+}
