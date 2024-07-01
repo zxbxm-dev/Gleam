@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -19,7 +18,7 @@ import sign from "../../assets/images/sign/구민석_서명.png";
 // import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
-import { WriteApproval, CheckReport } from '../../services/approval/ApprovalServices';
+import { WriteApproval, HandleApproval, CheckReport } from '../../services/approval/ApprovalServices';
 import { useLocation } from 'react-router-dom';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -44,12 +43,24 @@ const DetailApproval = () => {
   const location = useLocation();
   const pathnameParts = location.pathname.split('/');
   const report_id = pathnameParts[pathnameParts.length - 1];
+  const documentInfo = useState(location.state?.documentInfo);
 
-  const signatories = ['작성자', '팀장', '부서장', '지원팀장', '대표'];
+  const [signatories, setSignatories] = useState<any[]>([]);
 
   useEffect(() => {
     // setFile(testPDF);
-    setCheckSignUp(new Array(signatories.length).fill(false));
+    const initialChecks = new Array(signatories.length).fill(false);
+    const approvedCount = Number(documentInfo[0].approval);
+
+    for (let i = 0; i < approvedCount; i++) {
+      initialChecks[i] = true;
+    }
+
+    for (let i = approvedCount; i < signatories.length; i++) {
+      initialChecks[i] = false;
+    }
+
+    setCheckSignUp(initialChecks);
     setSignDates(new Array(signatories.length).fill(''));
   }, []);
 
@@ -171,6 +182,19 @@ const DetailApproval = () => {
 
   useEffect(() => {
     fetchCheckReport(report_id);
+
+    try {
+      const parsedString = JSON.parse(documentInfo[0]?.Payment);
+      const parsedarray = JSON.parse(parsedString);
+  
+      const filteredApproveLine = parsedarray
+        .filter((item: any) => item.name !== '참조')
+        .map((item: any) => item.name);
+  
+      setSignatories(filteredApproveLine.reverse());
+    } catch (error) {
+      console.error('Failed to parse JSON:', error);
+    }
   }, [report_id])
 
   const handleSubmitOpinion = async (report_id: string) => {
@@ -205,6 +229,26 @@ const DetailApproval = () => {
     }
   };
 
+  
+  const handleApproval = async (report_id: string) => {
+    const addApproval = Number(documentInfo[0].approval) + 1;
+    const ApproveLines = (documentInfo[0].personSigning.split(',').map((item: string) => item.trim())).reverse();
+
+    const formData = new FormData();
+    formData.append("approval", String(addApproval));
+    formData.append("pending", ApproveLines[addApproval]);
+    formData.append("completed", '완료된 기안자');
+
+    HandleApproval(report_id, formData)
+    .then(() => {
+      console.log('보고서 결재에 성공했습니다.')
+    })
+    .catch((error) => {
+      console.error('보고서 결재에 실패했습니다.', error)
+    })
+  }
+
+  console.log(documentInfo[0])
 
   return (
     <div className="content">
@@ -248,7 +292,7 @@ const DetailApproval = () => {
               </div>
 
               <div className="top_right_content">
-                <button className="primary_button">결재하기</button>
+                <button className="primary_button" onClick={() => handleApproval(report_id)}>결재하기</button>
                 <button className="white_button" onClick={exportToPDF}>다운로드</button>
                 <Popover placement="right-start">
                   <PopoverTrigger>
