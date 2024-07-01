@@ -2,7 +2,12 @@ import api from "../../api/auth";
 
 // 인사정보관리 조회
 const CheckHrInfo = () => {
-  return api.get(`/checkHrInfo`);
+  return api.get(`/checkHrInfo`, {
+    responseType: 'blob',
+    headers: {
+      'Content-Type': 'application/pdf',
+    }
+  });
 }
 
 // 인사정보관리 제출
