@@ -34,12 +34,18 @@ const DetailDocument = () => {
     setMemoState('reject'); // 보고서 반려, 의견 작성 시 
   }, []);
 
-  const fetchCheckReport = async (report_id:string) => {
+  const fetchCheckReport = async (report_id: string) => {
     try {
       const response = await CheckReport(report_id);
-      return response.data;
+  
+      if (response.status === 200) {
+        const url = URL.createObjectURL(response.data);
+        setFile(url);
+      } else {
+        console.error("Failed to fetch data");
+      }
     } catch (error) {
-      console.log("Failed to fetch data");
+      console.error("Failed to fetch data", error);
     }
   };
 

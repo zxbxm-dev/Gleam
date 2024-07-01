@@ -33,8 +33,13 @@ const WriteApproval = (report_id, formData) => {
 
 // 보고서 상세 조회
 const CheckReport = (report_id) => {
-  return api.get(`/checkReport/${report_id}`);
-}
+  return api.get(/checkReport/${report_id}, {
+    responseType: 'blob',
+    headers: {
+      'Content-Type': 'application/pdf',
+    }
+  });
+};
 
 // 보고서 삭제
 const DeleteReport = (report_id) => {
