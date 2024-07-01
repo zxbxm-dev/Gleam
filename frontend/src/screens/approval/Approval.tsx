@@ -112,6 +112,13 @@ const Approval = () => {
     }
   };
 
+  useQuery("myReports", fetchMyReports, {
+    onSuccess: (data) => setMyDocument(data || []),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
   // 결재할 문서 목록 불러오기
   const fetchDocumentsToApprove = async () => {
     const params = {
@@ -129,7 +136,12 @@ const Approval = () => {
       console.log("Failed to fetch data");
     }
   };
-
+  useQuery("DocumentsToApprove", fetchDocumentsToApprove, {
+    onSuccess: (data) => setApprovaling(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
 
   // 결재 진행 중인 문서 목록 불러오기
   const fetchDocumentsInProgress = async () => {
@@ -146,6 +158,14 @@ const Approval = () => {
     }
   };
 
+  useQuery("DocumentsInProgress", fetchDocumentsInProgress, {
+    onSuccess: (data) => setInProgress(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
+
   // 반려된 문서 목록 불러오기
   const fetchRejectedDocuments = async () => {
     const params = {
@@ -160,6 +180,13 @@ const Approval = () => {
       console.log("Failed to fetch data");
     }
   };
+
+  useQuery("RejectedDocuments", fetchRejectedDocuments, {
+    onSuccess: (data) => setRejected(data),
+    onError: (error) => {
+      console.log(error)
+    }
+  });
 
   // 결재 완료된 문서 목록 불러오기
   const fetchApprovedDocuments = async () => {
@@ -176,21 +203,12 @@ const Approval = () => {
     }
   };
 
-
-  useEffect(() => {
-    if (selectedTab === "approval") {
-      fetchDocumentsToApprove();
-    } else if (selectedTab === "inProgress") {
-      fetchDocumentsInProgress();
-    } else if (selectedTab === "rejected") {
-      fetchRejectedDocuments();
-    } else if (selectedTab === "completed") {
-      fetchApprovedDocuments();
-    } else if (selectedTab === "myDocuments") {
-      fetchMyReports();
+  useQuery("ApprovedDocuments", fetchApprovedDocuments, {
+    onSuccess: (data) => setCompleDocument(data),
+    onError: (error) => {
+      console.log(error)
     }
-  }, [selectedTab]);
-
+  });
 
   const handleSort = (sortKey: string, targetState: any[], setTargetState: React.Dispatch<React.SetStateAction<any[]>>) => {
     // 정렬 상태 변수를 저장하는 Map
