@@ -14,9 +14,19 @@ const WritePerform = (formData) => {
   });
 };
 
+// 인사평가 상세조회
+const DetailPerform = (perform_id) => {
+  return api.get(`/detailPerform/${perform_id}`, {
+    responseType: 'blob',
+    headers: {
+      'Content-Type': 'application/pdf',
+    }
+  })
+}
+
 // 인사평가 삭제
 const DeletePerform = async (perform_id) => {
   return api.delete(`/deletePerform/${perform_id}`)
 }
 
-export { CheckPerform, WritePerform, DeletePerform };
+export { CheckPerform, WritePerform, DetailPerform, DeletePerform };

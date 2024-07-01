@@ -118,7 +118,7 @@ const ManagePerform = () => {
                         <td style={{textAlign: 'center'}}>{userPerform.title}</td>
                         <td>{userPerform.date}</td>
                         <td style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', height:'53px'}}>
-                          <button className="primary_button" onClick={() => navigate("/detail-manage-perform", {state: {username: isSelectMember[0]}})}>문서확인</button>
+                          <button className="primary_button" onClick={() => navigate("/detail-manage-perform", {state: {username: isSelectMember[0], perform_id: userPerform.id}})}>문서확인</button>
                           <button className="red_button" onClick={() => {setDeleteModalOpen(true); setClickIdx(Number(userPerform.id));}}>삭제</button>
                         </td>
                       </tr>

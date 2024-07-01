@@ -1,22 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import CustomModal from "../../../components/modal/CustomModal";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import { DetailPerform } from "../../../services/performance/PerformanceServices";
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
 ).toString();
 
+type PDFFile = string | File | null;
 
 const DetailManagePerform = () => {
-  const location = useLocation();
+  let location = useLocation();
   let navigate = useNavigate();
-  const [selectedMember] = useState(location.state?.username)
+  const [selectedMember] = useState(location.state?.username);
+  const [perform_id] = useState(location.state?.perform_id);
+  const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
-  const [attachment, setAttachment] = useState<File | null>(null);
   const [isDeleteDocuModalOpen, setDeleteDocuModalOPen] = useState(false);
+
+  const fetchDetailPerform = async (perform_id: string) => {
+    try {
+      const response = await DetailPerform(perform_id);
+
+      if(response.status === 200) {
+        const url = URL.createObjectURL(response.data);
+        setFile(url);
+        console.log(file)
+      } else {
+        console.error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchDetailPerform(perform_id);
+  }, [perform_id])
+
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
@@ -60,7 +84,7 @@ const DetailManagePerform = () => {
           </div>
 
           <div className="detail_pdf_container">
-            <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
+            <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
               {renderPages()}
             </Document>
           </div>
