@@ -2,6 +2,7 @@ const moment = require('moment');
 const models = require('../../models');
 const Report = models.Report;
 
+// 보고서 작성
 const submitReport = async (req, res) => {
     try {
         // 클라이언트로부터 받은 데이터
