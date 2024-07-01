@@ -33,7 +33,7 @@ const WriteApproval = (report_id, formData) => {
 
 // 결재하기
 const HandleApproval = (report_id, formData) => {
-  return api.put(`/handleApproval/${report_id}`, formData);
+  return api.post(`/handleApproval/${report_id}`, formData);
 }
 
 // 보고서 상세 조회
