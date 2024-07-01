@@ -37,6 +37,7 @@ export { default as Employment } from "./employment/Employment";
 export { default as SubmitPerform } from "./performance/submitPerform/SubmitPerform"
 export { default as DetailSubmit } from "./performance/submitPerform/DetailSubmit"
 export { default as ManagePerform } from "./performance/managePerform/ManagePerform"
+export { default as DetailManagePerform } from "./performance/managePerform/DetailManagePerform"
 
 // 인사 정보 관리
 export { default as HumanResource } from "./humanResource/HumanResource";
