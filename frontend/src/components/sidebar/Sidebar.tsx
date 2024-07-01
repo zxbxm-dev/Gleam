@@ -166,8 +166,6 @@ const Sidebar = () => {
     }
   ].filter(Boolean) as MenuItem[];
 
-  // const isAuthorized = user.team === '관리팀' || user.position === '대표이사';
-
   return (
     <>
       {isSidebarVisible && (
@@ -202,15 +200,6 @@ const Sidebar = () => {
                     )}
                   </li>
                 ))}
-                </div>
-                <div>
-                {/* {isAuthorized && (
-                  <li className="member-manage">
-                    <Link to="/user-management" onClick={() => handleMenuClick('user-management')}>
-                      회원 관리
-                    </Link>
-                  </li>
-                )} */}
                 </div>
               </ul>
             </div>

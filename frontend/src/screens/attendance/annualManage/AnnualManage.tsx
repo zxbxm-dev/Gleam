@@ -593,8 +593,6 @@ const AnnualManage = () => {
       </table>
     );
   };
-  console.log(members)
-  console.log(membersRD)
 
   return (
     <div className="content">

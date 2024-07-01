@@ -173,7 +173,7 @@ const DetailDocument = () => {
                   {signatories.map((signatory, index) => (
                     <div className='Pay' key={index}>
                       <input className='Top' type="text" placeholder={signatory} disabled />
-                      <div className='Bottom'>
+                      <div className='Bottoms'>
 
                       </div>
                       <div className='BtmDate'></div>
