@@ -385,7 +385,7 @@ ul {
   .red_button {
     @include report-button;
     background-color: #FBFBFB;
-    border: 2px solid #c97c7c;
+    box-shadow: 0 0 0 2px #c97c7c inset;
     color: #c97c7c;
     padding: 8px 20px;
     display: flex;
@@ -396,7 +396,7 @@ ul {
   .cancle_button {
     @include report-button;
     background-color: #FBFBFB;
-    border: 2px solid #929292;
+    box-shadow: 0 0 0 2px #929292 inset;
     color: #929292;
     padding: 8px 20px;
     display: flex;
