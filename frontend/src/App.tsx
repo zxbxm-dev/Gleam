@@ -28,6 +28,7 @@ import {
   SubmitPerform,
   DetailSubmit,
   ManagePerform,
+  DetailManagePerform,
   HumanResource,
   AnnualManage,
   AttendanceRegist,
@@ -108,6 +109,7 @@ function App() {
               <Route path="/detailSubmit" element={<DetailSubmit />} />
               <Route element={<ProtectedRoute isAllowed={isPerformance} redirectPath="/notAuth" />}>
                 <Route path="/manage-perform" element={<ManagePerform />} />
+                <Route path="/detail-manage-perform" element={<DetailManagePerform />} />
               </Route>
 
               <Route element={<ProtectedRoute isAllowed={isAttendance} redirectPath="/notAuth" />}>
