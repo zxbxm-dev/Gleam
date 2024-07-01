@@ -4,7 +4,7 @@ import CustomModal from "../../../components/modal/CustomModal";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { DetailPerform } from "../../../services/performance/PerformanceServices";
+import { DetailPerform, DeletePerform } from "../../../services/performance/PerformanceServices";
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
@@ -68,6 +68,17 @@ const DetailManagePerform = () => {
     document.body.removeChild(link);
   };
 
+  const handleDeleteDocument = (perform_id: number) => {
+    setDeleteDocuModalOPen(false);
+    DeletePerform(perform_id)
+    .then((response) => {
+      console.log("인사평가 문서가 삭제되었습니다.", response);
+    })
+    .catch((error) => {
+      console.error("인사평가 문서 삭제에 실패했습니다.", error);
+    });
+  };
+
   return (
     <div className="content">
       <div className="content_container">
@@ -79,7 +90,7 @@ const DetailManagePerform = () => {
             <div className="top_right_content">
               <button className="white_button" onClick={() => navigate(-1)}>확인</button>
               <button className="white_button" onClick={downloadPDF}>인쇄하기</button>
-              <button className="white_button" onClick={() => setDeleteDocuModalOPen(true)}>삭제</button>
+              <button className="white_button" onClick={() => {setDeleteDocuModalOPen(true)}}>삭제</button>
             </div>
           </div>
 
@@ -96,6 +107,7 @@ const DetailManagePerform = () => {
         onClose={() => setDeleteDocuModalOPen(false)}
         header={'알림'}
         footer1={'삭제'}
+        onFooter1Click={() => handleDeleteDocument(perform_id)}
         footer1Class="red-btn"
         footer2={'취소'}
         footer2Class="gray-btn"
