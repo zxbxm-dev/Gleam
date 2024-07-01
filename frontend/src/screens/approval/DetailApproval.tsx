@@ -231,13 +231,9 @@ const DetailApproval = () => {
 
   
   const handleApproval = async (report_id: string) => {
-    const addApproval = Number(documentInfo[0].approval) + 1;
-    const ApproveLines = (documentInfo[0].personSigning.split(',').map((item: string) => item.trim())).reverse();
-
     const formData = new FormData();
-    formData.append("approval", String(addApproval));
-    formData.append("pending", ApproveLines[addApproval]);
-    formData.append("completed", '완료된 기안자');
+    formData.append("userID", user.userID);
+    formData.append("username", user.username);
 
     HandleApproval(report_id, formData)
     .then(() => {
@@ -247,8 +243,6 @@ const DetailApproval = () => {
       console.error('보고서 결재에 실패했습니다.', error)
     })
   }
-
-  console.log(documentInfo[0])
 
   return (
     <div className="content">
@@ -335,13 +329,27 @@ const DetailApproval = () => {
                     {signatories.map((signatory, index) => (
                       <div className='Pay' key={index}>
                         <input className='Top' type="text" placeholder={signatory} disabled />
-                        <div className='Bottom' onClick={() => handleSignModal(index)}>
-                          {checksignup[index] ?
-                            <img className='SignImg' src={sign} alt="sign" />
-                            :
-                            <></>
-                          }
-                        </div>
+                        {signatory === user.position ? 
+                          (
+                          <div className='Bottom' onClick={() => handleSignModal(index)}>
+                            {checksignup[index] ?
+                              <img className='SignImg' src={sign} alt="sign" />
+                              :
+                              <></>
+                            }
+                          </div>)
+                          :
+                          (
+                          <div className='Bottom_notHover'>
+                            {checksignup[index] ?
+                              <img className='SignImg' src={sign} alt="sign" />
+                              :
+                              <></>
+                            }
+                          </div>
+                          )
+                        }
+                        
                         <div className='BtmDate'>{signDates[index] || ''}</div>
                       </div>
                     ))}

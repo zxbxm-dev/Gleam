@@ -491,6 +491,20 @@
         }
       }
 
+      .Bottom_notHover {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60px;
+        border-left: 1px solid #000;
+        cursor: pointer;
+
+        .SignImg {
+          width: 90%;
+          margin-top: 5px;
+        }
+      }
+
       .Bottoms {
         display: flex;
         align-items: center;
