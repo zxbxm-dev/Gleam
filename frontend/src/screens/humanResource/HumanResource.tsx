@@ -287,7 +287,7 @@ const HumanResource = () => {
 
           <TabPanels className="hr_tab_container">
             <TabPanel className="hr_tab_container_select">
-              {isSelectMember[0] !== '' ? (
+              {isSelectMember[0] === '' ? (
                 <></>
               ) : (
                 <>
@@ -348,7 +348,7 @@ const HumanResource = () => {
             </TabPanel>
 
             <TabPanel className="hr_tab_container_select">
-              {isSelectMember[0] !== '' ? (
+              {isSelectMember[0] === '' ? (
                 <></>
               ) : (
                 <>
