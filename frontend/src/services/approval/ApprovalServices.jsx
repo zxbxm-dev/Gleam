@@ -31,6 +31,11 @@ const WriteApproval = (report_id, formData) => {
   return api.post(`/writeApproval/${report_id}`, formData);
 }
 
+// 결재하기
+const HandleApproval = (report_id, formData) => {
+  return api.post(`/handleApproval/${report_id}`, formData);
+}
+
 // 보고서 상세 조회
 const CheckReport = (report_id) => {
   return api.get(`/checkReport/${report_id}`, {
@@ -47,4 +52,4 @@ const DeleteReport = (report_id) => {
 }
 
 
-export { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments, WriteApproval, CheckReport, DeleteReport };
+export { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments, HandleApproval, WriteApproval, CheckReport, DeleteReport };

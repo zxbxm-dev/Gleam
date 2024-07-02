@@ -7,7 +7,7 @@ import {
   Asc_Icon,
   Desc_Icon,
 } from "../../assets/images/index";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
@@ -28,6 +28,7 @@ interface Document {
   pending: string;
   rejected: string;
   completed: string;
+  Payment: [];
 }
 
 const Approval = () => {
@@ -233,7 +234,7 @@ const Approval = () => {
     setCurrentSortOrder(currentSortOrder === "asc" ? "desc" : "asc");
     setTargetState(sortedDocuments);
   };
-
+  
   const renderTabContent = () => {
     switch (selectedTab) {
       case "main":
@@ -295,14 +296,14 @@ const Approval = () => {
               <tbody className="board_container">
                 {approvalings
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((approvalings) => (
+                  .map((approvalings, index) => (
                     <tr key={approvalings.id} className="board_content">
-                      <td>{approvalings.id}</td>
+                      <td>{index + 1}</td>
                       <td style={{ textAlign: 'center' }}>{approvalings.selectForm}</td>
                       <td>{new Date(approvalings.sendDate).toISOString().substring(0, 10)}</td>
                       <td>{approvalings.approval} / {approvalings.currentSigner}</td>
                       <td>{approvalings.username} / {approvalings.dept}</td>
-                      <td><button className="primary_button" onClick={() => { navigate(`/detailApproval/${approvalings.id}`) }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate(`/detailApproval/${approvalings.id}` , {state: {documentInfo: approvalings}}) }}>결재하기</button></td>
                     </tr>
                   ))
                 }
@@ -385,9 +386,9 @@ const Approval = () => {
               <tbody className="board_container">
                 {inProgress
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((inProgres) => (
+                  .map((inProgres, index) => (
                     <tr key={inProgres.id} className="board_content">
-                      <td>{inProgres.id}</td>
+                      <td>{index + 1}</td>
                       <td style={{ textAlign: 'center' }}>{inProgres.title}</td>
                       <td>{inProgres.date}</td>
                       <td>{inProgres.date}</td>
@@ -477,9 +478,9 @@ const Approval = () => {
               <tbody className="board_container">
                 {rejecteds
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((rejected) => (
+                  .map((rejected, index) => (
                     <tr key={rejected.id} className="board_content">
-                      <td>{rejected.id}</td>
+                      <td>{index + 1}</td>
                       <td style={{ textAlign: 'center' }}>{rejected.title}</td>
                       <td>{rejected.date}</td>
                       <td>{rejected.date}</td>
@@ -569,9 +570,9 @@ const Approval = () => {
               <tbody className="board_container">
                 {compleDocuments
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((compledocument) => (
+                  .map((compledocument, index) => (
                     <tr key={compledocument.id} className="board_content">
-                      <td>{compledocument.id}</td>
+                      <td>{index + 1}</td>
                       <td style={{ textAlign: 'center' }}>{compledocument.title}</td>
                       <td>{compledocument.date}</td>
                       <td>{compledocument.date}</td>
@@ -670,16 +671,16 @@ const Approval = () => {
               <tbody className="board_container">
                 {mydocuments
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((mydocument) => (
+                  .map((mydocument, index) => (
                     <tr key={mydocument.id} className="board_content">
-                      <td>{mydocument.id}</td>
+                      <td>{index + 1}</td>
                       <td style={{ textAlign: 'center' }}>{mydocument.selectForm}</td>
                       <td>{new Date(mydocument.sendDate).toISOString().substring(0, 10)}</td>
                       <td>{new Date(mydocument.updatedAt).toISOString().substring(0, 10)}</td>
                       <td>{mydocument.approval} / {mydocument.currentSigner}</td>
                       <td>{mydocument.status}</td>
                       <td>{mydocument.username} / {mydocument.dept}</td>
-                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${mydocument.id}`) }}>문서확인</button></td>
+                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${mydocument.id}`, {state: {documentInfo: mydocument}})}}>문서확인</button></td>
                     </tr>
                   ))
                 }

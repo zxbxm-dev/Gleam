@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Link } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -7,7 +6,7 @@ import CustomModal from "../../components/modal/CustomModal";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 // import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
-import { WriteApproval, CheckReport, DeleteReport } from '../../services/approval/ApprovalServices';
+import { CheckReport, DeleteReport } from '../../services/approval/ApprovalServices';
 import { useLocation } from 'react-router-dom';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -18,21 +17,17 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const DetailDocument = () => {
+  let location = useLocation();
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [memoState, setMemoState] = useState<string>('');
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
-  const location = useLocation();
   const pathnameParts = location.pathname.split('/');
   const report_id = pathnameParts[pathnameParts.length - 1];
+  const documentInfo = useState(location.state?.documentInfo);
 
-  const signatories = ['작성자', '팀장', '부서장', '지원팀장', '대표'];
-
-  useEffect(() => {
-    // setFile(testPDF);
-    setMemoState('reject'); // 보고서 반려, 의견 작성 시 
-  }, []);
+  const [signatories, setSignatories] = useState<any[]>([]);
 
   const fetchCheckReport = async (report_id: string) => {
     try {
@@ -51,6 +46,26 @@ const DetailDocument = () => {
 
   useEffect(() => {
     fetchCheckReport(report_id);
+
+    if (documentInfo[0]?.opinionName) {
+      setMemoState('opinion');
+    } else if (documentInfo[0]?.rejectName) {
+      setMemoState('reject');
+    }
+
+    try {
+      const parsedString = JSON.parse(documentInfo[0]?.Payment);
+      const parsedarray = JSON.parse(parsedString);
+  
+      const filteredApproveLine = parsedarray
+        .filter((item: any) => item.name !== '참조')
+        .map((item: any) => item.name);
+  
+      setSignatories(filteredApproveLine.reverse());
+    } catch (error) {
+      console.error('Failed to parse JSON:', error);
+    }
+
   }, [report_id]);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
@@ -143,22 +158,22 @@ const DetailDocument = () => {
                 <>
                   <div className='document_container'>
                     <div className='document_title'>반려자</div>
-                    <div className='document_content'>반려한 사람</div>
+                    <div className='document_content'>{documentInfo[0].rejectName}</div>
                   </div>
                   <div className='document_container'>
                     <div className='document_title'>반려사유</div>
-                    <div className='document_content'>반려 내용</div>
+                    <div className='document_content'>{documentInfo[0].rejectContent}</div>
                   </div>
                 </>
                 :
                 <>
                   <div className='document_container'>
                     <div className='document_title'>작성자</div>
-                    <div className='document_content'>의견 장석한 사람</div>
+                    <div className='document_content'>{documentInfo[0].opinionName}</div>
                   </div>
                   <div className='document_container'>
                     <div className='document_title'>의견 내용</div>
-                    <div className='document_content'>의견 내용</div>
+                    <div className='document_content'>{documentInfo[0].opinionContent}</div>
                   </div>
                 </>
             ) : (
