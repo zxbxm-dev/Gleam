@@ -9,6 +9,10 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { CheckReport, DeleteReport } from '../../services/approval/ApprovalServices';
 import { useLocation } from 'react-router-dom';
 
+import sign1 from "../../assets/images/sign/구민석_서명.png";
+import sign2 from "../../assets/images/sign/이정훈_서명.png";
+
+
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
@@ -26,8 +30,25 @@ const DetailDocument = () => {
   const pathnameParts = location.pathname.split('/');
   const report_id = pathnameParts[pathnameParts.length - 1];
   const documentInfo = useState(location.state?.documentInfo);
+  const [checksignup, setCheckSignUp] = useState<boolean[]>([]);
 
   const [signatories, setSignatories] = useState<any[]>([]);
+  const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
+
+  useEffect(() => {
+    const initialChecks = new Array(signatories.length).fill(false);
+    const approvedCount = Number(documentInfo[0].approval);
+
+    for (let i = 0; i < approvedCount; i++) {
+      initialChecks[i] = true;
+    }
+
+    for (let i = approvedCount; i < signatories.length; i++) {
+      initialChecks[i] = false;
+    }
+
+    setCheckSignUp(initialChecks);
+  }, []);
 
   const fetchCheckReport = async (report_id: string) => {
     try {
@@ -43,7 +64,7 @@ const DetailDocument = () => {
       console.error("Failed to fetch data", error);
     }
   };
-
+  
   useEffect(() => {
     fetchCheckReport(report_id);
 
@@ -189,7 +210,9 @@ const DetailDocument = () => {
                     <div className='Pay' key={index}>
                       <input className='Top' type="text" placeholder={signatory} disabled />
                       <div className='Bottoms'>
-
+                        {checksignup[index] &&
+                          <img className='SignImg' src={require(`../../assets/images/sign/${approveLine[index]}_서명.png`)} alt="sign" />
+                        }
                       </div>
                       <div className='BtmDate'></div>
                     </div>

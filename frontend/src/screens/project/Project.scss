@@ -1,3 +1,15 @@
+.project_header_right {
+  display: flex;
+  flex-direction: row-reverse;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  button {
+    z-index: 999;
+  }
+}
+
 .project_container {
   height: 82.5vh;
   background-color: white;
@@ -6,6 +18,65 @@
   border-top-right-radius: 5px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+
+  .project_container_header {
+    display: flex;
+    justify-content: space-between;
+
+    div {
+      display: flex;
+      gap: 20px;
+
+      .custom-checkbox {
+        position: relative;
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+      
+        input[type="checkbox"] {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+      
+        span {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 25px;
+          width: 25px;
+          background-color: #fff;
+          border: 1px solid #DCDCDC;
+        }
+      
+        input:checked+span {
+          background-color: #fff;
+          border-color: #DCDCDC;
+        }
+      
+        span:after {
+          content: "";
+          position: absolute;
+          display: none;
+        }
+      
+        input:checked+span:after {
+          display: block;
+        }
+      
+        span:after {
+          left: 9px;
+          top: 5px;
+          width: 5px;
+          height: 10px;
+          border: solid black;
+          border-width: 0 3px 3px 0;
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
 
   .fc {
     .fc-toolbar.fc-header-toolbar {
@@ -150,4 +221,100 @@
 
 .react-datepicker-wrapper{
   width: 150px;
+}
+
+// 프로젝트 - 새 업무 모달
+.body-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .body_container_content {
+    position: relative;
+    font-family: var(--font-family-Noto-M);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+
+    .body_container_content_title {
+      width: 20%;
+      color: #909090;
+      text-align: right;
+    }
+
+    input {
+      width: 75%;
+      background: none;
+      border: none;
+      outline: none;
+      border-bottom: solid 1px #aaaaaa;
+      padding-left: 5px;
+    }
+
+    input:focus {
+      outline: none;
+      border-bottom: solid 1px var(--primary-color);
+    }
+
+    .autocomplete_dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      z-index: 10;
+      background-color: #fff;
+      border: 1px solid var(--primary-color);
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      width: 75%;
+      font-size: 12px;
+      font-family: var(--font-family-Noto-M);
+      max-height: 150px;
+      overflow-y: auto;
+
+      li {
+        padding: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      li:hover {
+        background-color: #f0f0f0;
+      }
+    }
+
+    .body_container_content_listbox {
+      overflow-y: auto;
+      width: 75%;
+      height: 80px;
+      border: 1px solid #B4B4B4;
+      border-radius: 5px;
+      margin-left: 25%;
+      padding: 10px;
+    }
+
+    .body_container_content_datepicker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 50px;
+      width: 75%;
+      
+      .datepicker{
+        font-size: 14px;
+        font-family: var(--font-family-Noto-M);
+        width: 80px;
+        height: 27px;
+      }
+      .datepicker:focus{
+        outline: none;
+      }
+      .react-datepicker-wrapper{
+        width: 80px;
+      }
+    }
+  }
 }

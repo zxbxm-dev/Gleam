@@ -53,7 +53,7 @@ const CustomPopover: React.FC<CustomPopoverProps> = ({
           <PopoverCloseButton />
           <PopoverBody className='custom_popover_body'>
             <div className='custom_popover_body_left'>
-              <img src={UserIcon} alt="UserIcon" className='user_icon'/>
+              <img src={attachment ? attachment : UserIcon} alt="UserIcon" className='user_icon'/>
               <div>{name}</div>
               <div>{position}</div>
             </div>
