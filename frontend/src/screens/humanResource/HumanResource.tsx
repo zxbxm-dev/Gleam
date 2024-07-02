@@ -137,9 +137,6 @@ const HumanResource = () => {
 
     const formData = new FormData();
     formData.append('username', isSelectMember[0]);
-    formData.append('team', isSelectMember[2]);
-    formData.append('dept', isSelectMember[1]);
-    formData.append('position', isSelectMember[3]);
     formData.append('Newdept', dept);
     formData.append('Newteam', team);
     formData.append('Newposition', position);
@@ -290,124 +287,124 @@ const HumanResource = () => {
 
           <TabPanels className="hr_tab_container">
             <TabPanel className="hr_tab_container_select">
-              {/* {isSelectMember[0] !== '' ? (
+              {isSelectMember[0] !== '' ? (
                 <></>
-              ) : ( */}
-              <>
-                <div className="hr_button_wrap">
-                  {attachment ? (
-                    <>
-                      <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
-                      <button className="red_button" onClick={handleToggleEdit}>취소</button>
-                    </>
-                  ) : (
-                    <>
-                      <button className="white_button">
-                        <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                          업로드
-                          <input
-                            id="fileInput"
-                            type="file"
-                            name="handleFileSubmit"
-                            style={{ display: "none" }}
-                            onChange={handleFileChange}
-                          />
-                        </label>
-                      </button>
-                      <button className="white_button" onClick={downloadPDF}>다운로드</button>
-                    </>
-                  )}
-                </div>
-                <div className="hr_pdf_container">
-                  {!attachment ? (
-                    <div
-                      className="upload-area"
-                      onDrop={handleFileDrop}
-                      onDragOver={handleDragOver}
-                    >
-                      <div className='upload-text-top'>
-                        <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
-                          <input
-                            id="file-upload"
-                            type="file"
-                            accept=".pdf"
-                            onChange={handleFileChange}
-                            style={{ display: 'none' }}
-                          />
-                          파일 첨부하기 +
-                        </label>
+              ) : (
+                <>
+                  <div className="hr_button_wrap">
+                    {attachment ? (
+                      <>
+                        <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
+                        <button className="red_button" onClick={handleToggleEdit}>취소</button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="white_button">
+                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                            업로드
+                            <input
+                              id="fileInput"
+                              type="file"
+                              name="handleFileSubmit"
+                              style={{ display: "none" }}
+                              onChange={handleFileChange}
+                            />
+                          </label>
+                        </button>
+                        <button className="white_button" onClick={downloadPDF}>다운로드</button>
+                      </>
+                    )}
+                  </div>
+                  <div className="hr_pdf_container">
+                    {!attachment ? (
+                      <div
+                        className="upload-area"
+                        onDrop={handleFileDrop}
+                        onDragOver={handleDragOver}
+                      >
+                        <div className='upload-text-top'>
+                          <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
+                            <input
+                              id="file-upload"
+                              type="file"
+                              accept=".pdf"
+                              onChange={handleFileChange}
+                              style={{ display: 'none' }}
+                            />
+                            파일 첨부하기 +
+                          </label>
+                        </div>
+                        <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                       </div>
-                      <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
-                    </div>
-                  ) : (
-                    <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
-                      {renderPages()}
-                    </Document>
-                  )}
-                </div>
-              </>
-              {/* )} */}
+                    ) : (
+                      <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
+                        {renderPages()}
+                      </Document>
+                    )}
+                  </div>
+                </>
+              )}
 
             </TabPanel>
 
             <TabPanel className="hr_tab_container_select">
-              {/* {isSelectMember[0] !== '' ? (
+              {isSelectMember[0] !== '' ? (
                 <></>
-              ) : ( */}
-              <>
-                <div className="hr_button_wrap">
-                  {attachment ? (
-                    <>
-                      <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
-                      <button className="red_button" onClick={handleToggleEdit}>취소</button>
-                    </>
-                  ) : (
-                    <>
-                      <button className="white_button">
-                        <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                          업로드
-                          <input
-                            id="fileInput"
-                            type="file"
-                            name="handleFileSubmit"
-                            style={{ display: "none" }}
-                            onChange={handleFileChange}
-                          />
-                        </label>
-                      </button>
-                      <button className="white_button" onClick={downloadPDF}>다운로드</button>
-                    </>
-                  )}
-                </div>
-                <div className="hr_pdf_container">
-                  {!attachment ? (
-                    <div
-                      className="upload-area"
-                      onDrop={handleFileDrop}
-                      onDragOver={handleDragOver}
-                    >
-                      <div className='upload-text-top'>
-                        <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
-                          <input
-                            id="file-upload"
-                            type="file"
-                            accept=".pdf"
-                            onChange={handleFileChange}
-                            style={{ display: 'none' }}
-                          />
-                          파일 첨부하기 +
-                        </label>
+              ) : (
+                <>
+                  <div className="hr_button_wrap">
+                    {attachment ? (
+                      <>
+                        <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
+                        <button className="red_button" onClick={handleToggleEdit}>취소</button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="white_button">
+                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                            업로드
+                            <input
+                              id="fileInput"
+                              type="file"
+                              name="handleFileSubmit"
+                              style={{ display: "none" }}
+                              onChange={handleFileChange}
+                            />
+                          </label>
+                        </button>
+                        <button className="white_button" onClick={downloadPDF}>다운로드</button>
+                      </>
+                    )}
+                  </div>
+                  <div className="hr_pdf_container">
+                    {!attachment ? (
+                      <div
+                        className="upload-area"
+                        onDrop={handleFileDrop}
+                        onDragOver={handleDragOver}
+                      >
+                        <div className='upload-text-top'>
+                          <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
+                            <input
+                              id="file-upload"
+                              type="file"
+                              accept=".pdf"
+                              onChange={handleFileChange}
+                              style={{ display: 'none' }}
+                            />
+                            파일 첨부하기 +
+                          </label>
+                        </div>
+                        <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                       </div>
-                      <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
-                    </div>
-                  ) : (
-                    <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
-                      {renderPages()}
-                    </Document>
-                  )}
-                </div>
-              </>
-              {/* )} */}
+                    ) : (
+                      <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
+                        {renderPages()}
+                      </Document>
+                    )}
+                  </div>
+                </>
+              )}
 
             </TabPanel>
 
@@ -420,7 +417,7 @@ const HumanResource = () => {
                   <Portal>
                     <PopoverContent className="hr_popover_content">
                       <PopoverHeader className="hr_popover_header">인사이동 등록하기</PopoverHeader>
-                      <PopoverCloseButton className="hr_popover_header_close"/>
+                      <PopoverCloseButton className="hr_popover_header_close" />
                       <PopoverBody className="hr_popover_body">
                         <div className="hr_popover_body_wrap">
                           <div className="hr_popover_body_content">
@@ -479,63 +476,63 @@ const HumanResource = () => {
                     </tr>
                   </thead>
                   <tbody className="board_container">
-                      {appointments
-                        .map((appointment, index) => (
-                          <tr key={appointment.id} className="board_content">
-                            <td>{appointment.department}</td>
-                            <td>{appointment.spot}</td>
-                            <td>{appointment.position}</td>
-                            <td>{appointment.date}</td>
-                            <td>{appointment.classify}</td>
-                            <td className="flex_center">
-                              <Popover placement="left-start" isOpen={isEdit} onClose={EditClose}>
-                                <PopoverTrigger>
-                                  <button className="white_button" onClick={EditOpen}>수정</button>
-                                </PopoverTrigger>
-                                <Portal>
-                                  <PopoverContent className="hr_popover_content">
-                                    <PopoverHeader className="hr_popover_header">인사이동 수정하기</PopoverHeader>
-                                    <PopoverCloseButton className="hr_popover_header_close"/>
-                                    <PopoverBody className="hr_popover_body">
-                                      <div className="hr_popover_body_wrap">
-                                        <div className="hr_popover_body_content">
-                                          <div>부서</div>
-                                          <input placeholder='ex) 개발부' onChange={handleDeptChange} />
-                                        </div>
-                                        <div className="hr_popover_body_content">
-                                          <div>팀</div>
-                                          <input placeholder='ex) 개발 1팀' onChange={handleTeamChange} />
-                                        </div>
-                                        <div className="hr_popover_body_content">
-                                          <div>직위</div>
-                                          <input placeholder='내용을 입력해주세요.' onChange={handlePositionChange} />
-                                        </div>
-                                        <div className="hr_popover_body_content">
-                                          <div>직책</div>
-                                          <input placeholder='내용을 입력해주세요.' onChange={handleSpotChange} />
-                                        </div>
-                                        <div className="hr_popover_body_content">
-                                          <div>날짜</div>
-                                          <input placeholder='20240627' onChange={handleDateChange} />
-                                        </div>
-                                        <div className="hr_popover_body_content">
-                                          <div>구분</div>
-                                          <input placeholder='승진 / 부서이동 / 강등' onChange={handleClassifyChange} />
-                                        </div>
+                    {appointments
+                      .map((appointment, index) => (
+                        <tr key={appointment.id} className="board_content">
+                          <td>{appointment.department}</td>
+                          <td>{appointment.spot}</td>
+                          <td>{appointment.position}</td>
+                          <td>{appointment.date}</td>
+                          <td>{appointment.classify}</td>
+                          <td className="flex_center">
+                            <Popover placement="left-start" isOpen={isEdit} onClose={EditClose}>
+                              <PopoverTrigger>
+                                <button className="white_button" onClick={EditOpen}>수정</button>
+                              </PopoverTrigger>
+                              <Portal>
+                                <PopoverContent className="hr_popover_content">
+                                  <PopoverHeader className="hr_popover_header">인사이동 수정하기</PopoverHeader>
+                                  <PopoverCloseButton className="hr_popover_header_close" />
+                                  <PopoverBody className="hr_popover_body">
+                                    <div className="hr_popover_body_wrap">
+                                      <div className="hr_popover_body_content">
+                                        <div>부서</div>
+                                        <input placeholder='ex) 개발부' onChange={handleDeptChange} />
                                       </div>
-                                      <div className='button-wrap'>
-                                        <button className="white_button" onClick={() => {handleAppointmentEdit(index)}}>수정</button>
-                                        <button className="white_button" onClick={EditClose}>취소</button>
+                                      <div className="hr_popover_body_content">
+                                        <div>팀</div>
+                                        <input placeholder='ex) 개발 1팀' onChange={handleTeamChange} />
                                       </div>
-                                    </PopoverBody>
-                                  </PopoverContent>
-                                </Portal>
-                              </Popover>
-                              <button className="red_button" onClick={() => { setDeleteModalOpen(true); handleAppointmentDelete(index) }}>삭제</button>
-                            </td>
-                          </tr>
-                        ))
-                      }
+                                      <div className="hr_popover_body_content">
+                                        <div>직위</div>
+                                        <input placeholder='내용을 입력해주세요.' onChange={handlePositionChange} />
+                                      </div>
+                                      <div className="hr_popover_body_content">
+                                        <div>직책</div>
+                                        <input placeholder='내용을 입력해주세요.' onChange={handleSpotChange} />
+                                      </div>
+                                      <div className="hr_popover_body_content">
+                                        <div>날짜</div>
+                                        <input placeholder='20240627' onChange={handleDateChange} />
+                                      </div>
+                                      <div className="hr_popover_body_content">
+                                        <div>구분</div>
+                                        <input placeholder='승진 / 부서이동 / 강등' onChange={handleClassifyChange} />
+                                      </div>
+                                    </div>
+                                    <div className='button-wrap'>
+                                      <button className="white_button" onClick={() => { handleAppointmentEdit(index) }}>수정</button>
+                                      <button className="white_button" onClick={EditClose}>취소</button>
+                                    </div>
+                                  </PopoverBody>
+                                </PopoverContent>
+                              </Portal>
+                            </Popover>
+                            <button className="red_button" onClick={() => { setDeleteModalOpen(true); handleAppointmentDelete(index) }}>삭제</button>
+                          </td>
+                        </tr>
+                      ))
+                    }
                   </tbody>
                 </table>
               </div>

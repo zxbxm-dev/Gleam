@@ -673,7 +673,7 @@ const handleSubmit = () => {
         </select>
         {editMode ? 
           <button
-          className='second_button'
+          className='primary_button'
           onClick={handleSubmit}
           >
             등록
