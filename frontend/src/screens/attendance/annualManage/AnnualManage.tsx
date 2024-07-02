@@ -596,7 +596,7 @@ const AnnualManage = () => {
 
   return (
     <div className="content">
-            <div className='anuual_header_right'>
+      <div className='anuual_header_right'>
         <select
           name="yearSelect"
           id="yearSelect"
