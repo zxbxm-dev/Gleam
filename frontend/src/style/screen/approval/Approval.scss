@@ -488,6 +488,7 @@
         .SignImg {
           width: 90%;
           margin-top: 5px;
+          overflow: hidden;
         }
       }
 
@@ -502,6 +503,7 @@
         .SignImg {
           width: 90%;
           margin-top: 5px;
+          overflow: hidden;
         }
       }
 
@@ -511,6 +513,12 @@
         justify-content: center;
         height: 60px;
         border-left: 1px solid #000;
+        
+        .SignImg {
+          width: 90%;
+          margin-top: 5px;
+          overflow: hidden;
+        }
       }
 
       .Bottom:hover {
