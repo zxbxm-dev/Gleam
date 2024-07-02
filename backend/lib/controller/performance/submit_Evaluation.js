@@ -1,17 +1,28 @@
 const models = require("../../models");
 const evaluation = models.Evaluation;
+const sanitizeFilename = require("sanitize-filename");
+const iconv = require('iconv-lite');
 
-// 인사평가서 제출 (작성)
+// 인사평가서 제출
 const submitReport = async (req, res) => {
   try {
     const { userID, username, team, department, company } = req.body;
 
     // 파일이 업로드된 경우
-    let file = null;
-    let filename = null;
-    if (req.file) {
-      file = req.file.path;
-      filename = req.file.filename;
+    let files = [];
+    let filenames = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const originalFilename = file.originalname;
+        // 원본 파일명 처리
+        const sanitizedFilename = sanitizeFilename(originalFilename);
+        const utf8Filename = iconv.encode(sanitizedFilename, 'utf8').toString();
+        files.push({
+          path: file.path,
+          filename: utf8Filename,
+        });
+        filenames.push(sanitizedFilename);
+      }
     }
 
     // 데이터베이스에 저장할 데이터
@@ -20,9 +31,10 @@ const submitReport = async (req, res) => {
       username,
       team,
       department,
-      file,
-      filename,
       company,
+      files: JSON.stringify(files),
+      filename: JSON.stringify(filenames),
+      isFormerEmployee: false,
     };
 
     // 인사평가서 생성 및 저장

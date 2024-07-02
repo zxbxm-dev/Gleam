@@ -5,18 +5,14 @@ const fs = require("fs");
 // Multer 인스턴스 생성
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = path.join(
-      __dirname,
-      "../../../backend/uploads/performanceFile"
-    );
+    const uploadDir = path.join(__dirname, "../../../uploads/performanceFile");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const timestamp = new Date().getTime();
-    cb(null, `${timestamp}_${file.originalname}`);
+    cb(null, file.originalname); // 원본 파일 이름 사용
   },
 });
 
@@ -30,8 +26,6 @@ const fileFilter = (req, file, cb) => {
 };
 
 // Multer 인스턴스 생성
-const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
-  "file"
-);
+const upload = multer({ storage: storage, fileFilter: fileFilter }).array("files", 10);
 
 module.exports = upload;
