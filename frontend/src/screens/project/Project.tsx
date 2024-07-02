@@ -1,14 +1,19 @@
 import "./Project.scss";
-import { Link } from "react-router-dom";
 import {
   Right_Arrow,
   White_Arrow,
+  mail_delete,
+  mail_important_active,
 } from "../../assets/images/index";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import CustomModal from "../../components/modal/CustomModal";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { PersonData } from '../../services/person/PersonServices';
+import { useQuery } from 'react-query';
 
 
 interface Event {
@@ -19,15 +24,43 @@ interface Event {
 
 const Project = () => {
   const [iseventModalOpen, setEventModalOPen] = useState(false);
+  const [isAddEventModalOpen, setAddEventModalOPen] = useState(false);
+  const [persondata, setPersonData] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px'});
   const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px'});
   const [key, setKey] = useState(0);
   const calendarRef = useRef<FullCalendar>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [teamLeader, setTeamLeader] = useState('');
+  const [inputteamLeader, setInputteamLeader] = useState('');
+  const [allMembers, setAllMembers] = useState<string[]>([]);
+  const [inputAllMember, setInputAllmember] = useState('');
+
   const [slideVisible, setSlideVisible] = useState(false);
   const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: true, 1: true, 2: true});
 
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const response = await PersonData();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("person", fetchUser, {
+    onSuccess: (data) => {
+      setPersonData(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  })
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -65,9 +98,74 @@ const Project = () => {
     setProjectVisible(prevState => ({ ...prevState, [index]: !prevState[index] }));
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputteamLeader(e.target.value);
+    setTeamLeader(e.target.value);
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      if (inputteamLeader.trim()) {
+        setTeamLeader(inputteamLeader.trim());
+        setInputteamLeader('');
+      }
+    }
+  };
+
+  const handleAutoCompleteClick = (username: string, department: string, team: string) => {
+    if (team) {
+      setTeamLeader(team+ ' ' + username);
+    } else {
+      setTeamLeader(department + ' ' + username);
+    }
+    setInputteamLeader('');
+  };
+
+  const handleInputAllMemberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputAllmember(e.target.value);
+  };
+
+  const handleInputAllMemberKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      if (inputAllMember.trim()) {
+        setAllMembers([...allMembers, inputAllMember.trim()]);
+        setInputAllmember('');
+      }
+    }
+  };
+
+  const handleRecipientRemove = (username: string) => {
+    setAllMembers(allMembers.filter(allMember => allMember !== username));
+  };
+
+  const handleAutoAllMembersCompleteClick = (username: string, department: string, team: string) => {
+    if (team) {
+      setAllMembers([...allMembers, team + ' ' + username]);
+    } else {
+      setAllMembers([...allMembers, department + ' ' + username]);
+    }
+      
+    setInputAllmember('');
+  };
+
+  const filteredNames = persondata.filter(person =>
+    person.username.toLowerCase().includes(inputteamLeader.toLowerCase())
+  );
+
+  const filteredAllmembersNames = persondata.filter(person =>
+    person.username.toLowerCase().includes(inputAllMember.toLowerCase())
+  );
+
   return (
-    <div className="content">      
+    <div className="content">
       <div className="content_container">
+        { activeTab === 0 &&
+          <div className="project_header_right">
+            <button className="primary_button" onClick={() => setAddEventModalOPen(true)}>새업무 +</button>
+          </div>
+        }
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>담당 업무</Tab>
@@ -77,7 +175,19 @@ const Project = () => {
           <TabPanels>
             <TabPanel>
               <div className="project_container">
-
+                <div className="project_container_header">
+                  <div>
+                    <label className="custom-checkbox">
+                      <input type="checkbox" id="check1" />
+                      <span></span>
+                    </label>
+                    <img src={mail_delete} alt="mail_delete" />
+                    <img src={mail_important_active} alt="mail_important_active" />
+                  </div>
+                  <div>
+                    
+                  </div>
+                </div>
               </div>
             </TabPanel>
 
@@ -205,6 +315,111 @@ const Project = () => {
         </Tabs>
       </div>
       
+      <CustomModal
+        isOpen={isAddEventModalOpen}
+        onClose={() => setAddEventModalOPen(false)}
+        header={'프로젝트 - 새 업무'}
+        footer1={'저장'}
+        footer1Class="green-btn"
+        onFooter1Click={() => setAddEventModalOPen(false)}
+        width="500px"
+        height="550px"
+      >
+        <div className="body-container">
+          <div className="body_container_content">
+            <div className="body_container_content_title">프로젝트 명</div>
+            <input type="text" />
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">팀리더</div>
+            <input
+              type="text" 
+              value={teamLeader}
+              onChange={handleInputChange}
+              onKeyDown={handleInputKeyDown}
+              ref={inputRef}
+            />
+            {inputteamLeader && (
+              <ul className="autocomplete_dropdown">
+                {filteredNames.map(person => (
+                  <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
+                    {person.team ? person.team : person.department} &nbsp;
+                    {person.username}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">전체 팀원</div>
+            <input 
+              type="text"
+              value={inputAllMember}
+              onChange={handleInputAllMemberChange}
+              onKeyDown={handleInputAllMemberKeyDown}
+              ref={inputRef}
+            />
+            {inputAllMember && (
+              <ul className="autocomplete_dropdown">
+                {filteredAllmembersNames.map(person => (
+                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
+                    {person.team ? person.team : person.department} &nbsp;
+                    {person.username}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="body_container_content">
+            <div className="body_container_content_listbox">
+              {allMembers.map((item:string) => item + ', ')}
+            </div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">참조자</div>
+            <input type="text" />
+          </div>
+          <div className="body_container_content">
+            <div className="body_container_content_listbox">
+              
+            </div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">프로젝트<br/>기간</div>
+            <div className="body_container_content_datepicker">
+              <DatePicker
+                selected={startDate}
+                onChange={date => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                dateFormat="yyyy-MM-dd"
+                className="datepicker"
+                popperPlacement="top"
+              />
+              <span className="timespan">~</span>
+              <DatePicker
+                selected={endDate}
+                onChange={date => setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                dateFormat="yyyy-MM-dd"
+                className="datepicker"
+                popperPlacement="top"
+              />
+            </div>
+          </div>
+        </div>
+      </CustomModal>
+
       <CustomModal
         isOpen={iseventModalOpen}
         onClose={() => setEventModalOPen(false)}

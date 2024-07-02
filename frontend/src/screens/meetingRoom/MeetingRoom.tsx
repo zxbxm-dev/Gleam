@@ -1,9 +1,7 @@
 import "./MeetingRoom.scss";
-import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { Tabs, TabPanels,TabPanel } from '@chakra-ui/react';
 import CustomModal from "../../components/modal/CustomModal";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -275,7 +273,7 @@ const MeetingRoom = () => {
                     </div>
                     <div className="AddTitle">
                         <div className="div">메모</div>        
-                        <input className="TextInputCon" type="text" />
+                        <textarea className="TextInputCon2" />
                     </div>
                 </div>
             </CustomModal>
@@ -340,16 +338,23 @@ const MeetingRoom = () => {
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setEditEventModalOPen(false)}
-                height="430px"
+                height="520px"
+                width="513px"
             >
                 <div className="body-container">
-                    <input className="TextInputCon" type="text" placeholder="제목을 입력해 주세요." />
-                    <div className="AddPeople">
-                        <span className="span">참여인원</span>
-                        <input className="AddInputCon" type="text" placeholder="인원을 입력해 주세요." />
+                    <div className="AddTitle">
+                        <div className="div">제목</div>        
+                        <input className="TextInputCon" type="text" placeholder="제목을 입력해 주세요." />
                     </div>
                     <div className="AddPeople">
-                        <span className="span">시간</span>
+                        <div className="div">참여인원</div>
+                        <div className="InputContainer">
+                            <input className="AddInputCon" type="text" placeholder="인원을 입력해 주세요." />
+                            <input className="AddsInputCon" type="text" />
+                        </div>
+                    </div>
+                    <div className="AddPeople">
+                        <div className="div">시간</div>
                         <div className="Date">
                             <DatePicker
                                 selected={startDate}
@@ -419,7 +424,7 @@ const MeetingRoom = () => {
                         </div>
                     </div>
                     <div className="AddPeoples">
-                        <span className="span">장소</span>
+                        <div className="div">장소</div>
                         <div className="MeetingRoom">
                             <select className="SelectRoom" value={location} onChange={handleLocationChange}>
                                 <option value="">회의실 선택</option>
@@ -434,24 +439,19 @@ const MeetingRoom = () => {
 
                             <fieldset className="Field" onChange={handleCompanyChange}>
                                 <label>
-                                    <input type="radio" name="company" value="R&D" />
-                                    <span>R&D</span>
-                                </label>
-
-                                <label>
                                     <input type="radio" name="company" value="본사" />
                                     <span>본사</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="company" value="R&D" />
+                                    <span>R&D</span>
                                 </label>
                             </fieldset>
                         </div>
                     </div>
-                    <div className="body-content">
-                        <div className="content-left">
-                            메모
-                        </div>
-                        <div className="content-right">
-                            <textarea className="textareainput" placeholder='내용을 입력해주세요.' onChange={handleMemoChange} />
-                        </div>
+                    <div className="AddTitle">
+                        <div className="div">메모</div>        
+                        <textarea className="TextInputCon2" />
                     </div>
                 </div>
             </CustomModal>

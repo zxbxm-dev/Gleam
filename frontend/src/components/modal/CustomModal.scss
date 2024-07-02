@@ -82,6 +82,7 @@
             align-items: center;
             flex-direction: row-reverse;
             width: 60px;
+            height: 33px;
             font-size: 14px;
             color: #929292;
             font-weight: 300;
@@ -114,6 +115,18 @@
             color: #d9d9d9;
           }
           .TextInputCon:focus{
+            outline: none;
+          }
+
+          .TextInputCon2{
+            width: 360px;
+            height: 84px;
+            border: 1px solid #DCDCDC;
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 10px;
+          }
+          .TextInputCon2:focus{
             outline: none;
           }
         }
