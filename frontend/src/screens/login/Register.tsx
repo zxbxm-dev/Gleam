@@ -544,7 +544,7 @@ const Register = () => {
 									<div className="op" onClick={() => handleOptionClick('spot', '수석')}>수석</div>
 									<div className="op" onClick={() => handleOptionClick('spot', '상무')}>상무</div>
 									<div className="op" onClick={() => handleOptionClick('spot', '전무')}>전무</div>
-									<div className="op" onClick={() => handleOptionClick('spot', '대표')}>대표</div>
+									<div className="op" onClick={() => handleOptionClick('spot', '대표이사')}>대표이사</div>
 								</div>
 							)}
 						</div>
