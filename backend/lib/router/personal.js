@@ -3,7 +3,7 @@ module.exports = (app) => {
     const express = require("express");
     const router = express.Router();
   
-    router.post("/checkHrInfo", checkController.getAllPersonal);
+    router.get("/checkHrInfo", checkController.getAllPersonal);
   
     app.use("/api", router);
   };
