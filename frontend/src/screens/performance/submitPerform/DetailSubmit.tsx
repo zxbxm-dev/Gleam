@@ -53,9 +53,8 @@ const SubmitPerform = () => {
     }
   
     const formData = new FormData();
-    validFiles.forEach((file, index) => {
-      formData.append(`file${index}`, file!);
-      formData.append(`filename${index}`, file instanceof File ? file.name : '');
+    validFiles.forEach((file) => {
+      formData.append('files', file!);
     });
     formData.append("userID", user.id);
     formData.append("username", user.username);
@@ -76,72 +75,74 @@ const SubmitPerform = () => {
   return (
     <div className="content">
       <div className="content_container">
-          <div className="Submit_write_container">
-            <div className="write_top_container">
-              <div className="top_left_content">
-                <span style={{fontFamily: 'var(--font-family-Noto-M)', fontSize: '32px'}}>제출 파일 리스트</span>
+        <div className="Submit_write_container">
+          <div className="write_top_container">
+            <div className="top_left_content">
+              <span style={{fontFamily: 'var(--font-family-Noto-M)', fontSize: '32px'}}>제출 파일 리스트</span>
+            </div>
+
+            <div className="top_right_content">
+
+              <button className='primary_button' onClick={handleSumbitFile}>제출하기</button>
+              <button className="white_button">
+                <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept=".pdf"
+                    multiple
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                  />
+                  <img src={FileUploadIcon} alt="FileUploadIcon" />
+                  파일 업로드
+                </label>
+              </button>
+            </div>
+          </div>
+
+          <div className="write_btm_container2">
+            {files.length > 0 ? (
+              <div className='attachment-area'>
+                <p className='attachment-title'>첨부파일</p>
+                <ul className='attachment-content'>
+                  {files.map((file, index) => (
+                    <div style={{display: 'flex', gap: '10px', marginBottom: '5px'}} key={index}>
+                      <img src={AttachmentIcon} alt="AttachmentIcon" />
+                      <li key={index}>{file instanceof File ? file.name : file}</li>
+                      <img src={DeleteIcon} alt="DeleteIcon" onClick={() => handleDeleteFile(index)} style={{cursor: 'pointer'}}/>
+                    </div>
+                  ))}
+                </ul>
               </div>
-
-              <div className="top_right_content">
-
-                <button className='primary_button' onClick={handleSumbitFile}>제출하기</button>
-                <button className="white_button">
+            ) : (
+              <div
+                className="upload-area"
+                onDrop={handleFileDrop}
+                onDragOver={handleDragOver}
+              >
+                <div className='upload-text-top'>
                   <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
                     <input
                       id="file-upload"
                       type="file"
                       accept=".pdf"
+                      multiple
                       onChange={handleFileChange}
                       style={{ display: 'none' }}
                     />
-                    <img src={FileUploadIcon} alt="FileUploadIcon" />
-                    파일 업로드
+                    파일 첨부하기 +
                   </label>
-                </button>
+                </div>
+                <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
               </div>
-            </div>
-
-            <div className="write_btm_container2">
-              {files.length > 0 ? (
-                <div className='attachment-area'>
-                  <p className='attachment-title'>첨부파일</p>
-                  <ul className='attachment-content'>
-                    {files.map((file, index) => (
-                      <div style={{display: 'flex', gap: '10px', marginBottom: '5px'}} key={index}>
-                        <img src={AttachmentIcon} alt="AttachmentIcon" />
-                        <li key={index}>{file instanceof File ? file.name : file}</li>
-                        <img src={DeleteIcon} alt="DeleteIcon" onClick={() => handleDeleteFile(index)} style={{cursor: 'pointer'}}/>
-                      </div>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <div
-                  className="upload-area"
-                  onDrop={handleFileDrop}
-                  onDragOver={handleDragOver}
-                >
-                  <div className='upload-text-top'>
-                    <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px'}}>
-                      <input
-                        id="file-upload"
-                        type="file"
-                        accept=".pdf"
-                        onChange={handleFileChange}
-                        style={{ display: 'none' }}
-                      />
-                      파일 첨부하기 +
-                    </label>
-                  </div>
-                  <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
-                </div>
-              )}
-            </div>
+            )}
           </div>
-      </div>  
+        </div>
+      </div>
       <CustomModal
         isOpen={isSubmitModalOpen}
-        onClose={() => setSubmitModalOpen(false)} 
+        onClose={() => setSubmitModalOpen(false)}
         header={'알림'}
         footer1={'확인'}
         footer1Class="green-btn"
