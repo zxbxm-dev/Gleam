@@ -39,6 +39,8 @@ const Mail = () => {
   const [mails, setMails] = useState<any[]>([]);
   const [clickedMails, setClickedMails] = useState<{ [key: number]: boolean }>({});
   const [allSelected, setAllSelected] = useState(false);
+  const [selectedMails, setSelectedMails] = useState<{ [key: number]: boolean }>({});
+
 
   const itemsPerPage = 8;
 
@@ -191,13 +193,31 @@ const Mail = () => {
   };
 
   const toggleAllCheckboxes = () => {
+    if (allSelected) {
+      setSelectedMails({});
+    } else {
+      const newSelectedMails = filteredMails.reduce((acc, mail) => {
+        acc[mail.id] = true;
+        return acc;
+      }, {});
+      setSelectedMails(newSelectedMails);
+    }
     setAllSelected(!allSelected);
   };
+
 
   // 메일 발송 취소
   const handleSendCancle = () => {
     window.alert("발송을 취소하면 수신자의 메일함에서 메일이 삭제됩니다.\n발송을 취소하시겠습니까?")
   }
+
+  const toggleMailSelection = (mailId: number) => {
+    setSelectedMails((prevSelectedMails) => ({
+      ...prevSelectedMails,
+      [mailId]: !prevSelectedMails[mailId],
+    }));
+  };
+
 
   return (
     <div className="content">
@@ -307,7 +327,11 @@ const Mail = () => {
                     <tr key={mail.id} className="board_content">
                       <td>
                         <label className="custom-checkbox">
-                          <input type="checkbox" checked={allSelected} />
+                          <input
+                            type="checkbox"
+                            checked={allSelected ? allSelected : selectedMails[mail.id] || false}
+                            onChange={() => toggleMailSelection(mail.id)}
+                          />
                           <span></span>
                         </label>
                       </td>
@@ -387,8 +411,8 @@ const Mail = () => {
                               </div>
                             ) : (
                               <div className="mail_detail_content_bottom">
-                              <button className="white_button">전달</button>
-                            </div>
+                                <button className="white_button">전달</button>
+                              </div>
                             )}
                           </div>
                         </div>
