@@ -58,6 +58,10 @@ const Project = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
 
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
+  const [clickIdx, setClickIdx] = useState<number | null>(null);
+
   const stateOptions = [
     '전체',
     '진행 중',
@@ -240,8 +244,27 @@ const Project = () => {
     setStateIsOpen(false);
   }
 
+  const handleRightClick = (index: number, event: React.MouseEvent<HTMLTableCellElement>) => {
+    event.preventDefault();
+    setDropdownOpen(true);
+    setDropdownPosition({ x: event.pageX, y: event.pageY });
+    setClickIdx(index);
+  };
 
-  console.log('어캐들어감 ?' , subprojectVisible)
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (dropdownOpen && !event.target.closest('.dropdown-menu')) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   return (
     <div className="content">
       <div className="content_container">
@@ -319,7 +342,21 @@ const Project = () => {
                             </td>
                             <td>{project.id}</td>
                             <td>{project.state}</td>
-                            <td className="text_left text_cursor" onClick={() => toggleSubProjects(project.id)}>{project.title}</td>
+                            <td 
+                              className="text_left text_cursor" 
+                              onClick={() => toggleSubProjects(project.id)}
+                              onContextMenu={(e) => handleRightClick(project.id, e)}
+                            >
+                              <div className="dropdown">
+                                {project.title}
+                                {dropdownOpen && (
+                                  <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
+                                    <div className="dropdown_pin">편집</div>
+                                    <div className="dropdown_pin">추가</div>
+                                  </div>
+                                )}
+                              </div>
+                            </td>
                             <td>{project.teamLeader}</td>
                             <td>{project.startDate}</td>
                             <td>{project.endDate}</td>

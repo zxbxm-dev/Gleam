@@ -85,28 +85,7 @@ const Approval = () => {
 
     try {
       const response = await getMyReports(params);
-
-      const documentsWithData: Document[] = response.data.map((document: Document) => {
-        let status = "";
-        if (document.referName !== "") {
-          status = "참조";
-        } else if (document.pending !== null) {
-          status = "결재 진행 중";
-        } else if (document.rejected !== null) {
-          status = "반려";
-        } else if (document.completed !== null && document.pending === null) {
-          status = "결재 완료";
-        } else if (document.approval === 0) {
-          status = "미결재";
-        }
-        return {
-          ...document,
-          status: status
-        };
-      });
-
-      setMyDocument(documentsWithData);
-      return documentsWithData;
+      return response.data;
 
     } catch (error) {
       console.log("Failed to fetch data");
@@ -114,7 +93,7 @@ const Approval = () => {
   };
 
   useQuery("myReports", fetchMyReports, {
-    onSuccess: (data) => setMyDocument(data || []),
+    onSuccess: (data) => setMyDocument(data),
     onError: (error) => {
       console.log(error)
     }
@@ -380,7 +359,7 @@ const Approval = () => {
                       <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
                     }
                   </th>
-                  <th>결재</th>
+                  <th>확인</th>
                 </tr>
               </thead>
               <tbody className="board_container">
@@ -389,13 +368,12 @@ const Approval = () => {
                   .map((inProgres, index) => (
                     <tr key={inProgres.id} className="board_content">
                       <td>{index + 1}</td>
-                      <td style={{ textAlign: 'center' }}>{inProgres.title}</td>
-                      <td>{inProgres.date}</td>
-                      <td>{inProgres.date}</td>
-                      <td>{inProgres.progress} / {inProgres.maxprogress}</td>
-                      <td>{inProgres.state}</td>
-                      <td>{inProgres.writer}</td>
-                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td style={{ textAlign: 'center' }}>{inProgres.selectForm}</td>
+                      <td>{new Date(inProgres.sendDate).toISOString().substring(0, 10)}</td>
+                      <td>{new Date(inProgres.updatedAt).toISOString().substring(0, 10)}</td>
+                      <td>{inProgres.approval} / {inProgres.currentSigner}</td>
+                      <td>{inProgres.username} / {inProgres.dept}</td>
+                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${inProgres.id}`, {state: {documentInfo: inProgres}})}}>문서확인</button></td>
                     </tr>
                   ))
                 }
@@ -564,7 +542,7 @@ const Approval = () => {
                       <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
                     }
                   </th>
-                  <th>결재</th>
+                  <th>확인</th>
                 </tr>
               </thead>
               <tbody className="board_container">
@@ -573,13 +551,12 @@ const Approval = () => {
                   .map((compledocument, index) => (
                     <tr key={compledocument.id} className="board_content">
                       <td>{index + 1}</td>
-                      <td style={{ textAlign: 'center' }}>{compledocument.title}</td>
-                      <td>{compledocument.date}</td>
-                      <td>{compledocument.date}</td>
-                      <td>{compledocument.progress} / {compledocument.maxprogress}</td>
-                      <td>{compledocument.state}</td>
-                      <td>{compledocument.writer}</td>
-                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td style={{ textAlign: 'center' }}>{compledocument.selectForm}</td>
+                      <td>{new Date(compledocument.sendDate).toISOString().substring(0, 10)}</td>
+                      <td>{new Date(compledocument.updatedAt).toISOString().substring(0, 10)}</td>
+                      <td>{compledocument.approval} / {compledocument.currentSigner}</td>
+                      <td>{compledocument.username} / {compledocument.dept}</td>
+                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${compledocument.id}`, {state: {documentInfo: compledocument}})}}>문서확인</button></td>
                     </tr>
                   ))
                 }
@@ -806,7 +783,7 @@ const Approval = () => {
         return null;
     }
   };
-
+  console.log('저장된 결재 완료된 문서',compleDocuments)
   return (
     <div className="content">
       <div className="approval_top">

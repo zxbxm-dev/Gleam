@@ -40,6 +40,8 @@ const handleLogin = async () => {
       team: userData.team,
       position: userData.position,
       spot: userData.spot,
+      question1: userData.ques1,
+      question2: userData.ques2,
       entering: enteringDateString,
       attachment:userData.attachment,
       Sign:userData.Sign

@@ -262,7 +262,7 @@ const handleSubmit = () => {
                       >
                         {employment.title}
                         {dropdownOpen && ( // 드롭다운 메뉴 열림 여부에 따라 메뉴 표시
-                          <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 50, left: dropdownPosition.x - 250 }}>
+                          <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
                             <Popover placement="right-start">
                               <PopoverTrigger>
                                 <button className="dropdown_pin">수정하기</button>
