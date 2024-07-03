@@ -3,7 +3,7 @@ import "./Register.scss";
 import { Login_Logo, DeleteIcon, ArrowDown, ArrowUp, FileUploadIcon } from "../../assets/images/index";
 import { RegisterEditServices } from "../../services/login/RegisterServices";
 import CustomModal from "../../components/modal/CustomModal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 
@@ -17,6 +17,7 @@ interface SelectedOptions {
     password: string;
 }
 const EditRegis = () => {
+    let navigate = useNavigate();
     const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({
         company: '',
         department: '',
@@ -524,7 +525,7 @@ const EditRegis = () => {
 
             <CustomModal
                 isOpen={isAddModalOpen}
-                onClose={() => setAddModalOpen(false)}
+                onClose={() => {setAddModalOpen(false); navigate('/')}}
                 header={'알림'}
             >
                 <div>
