@@ -74,7 +74,7 @@ const deleteReportById = async (req, res) => {
 // 보고서 결재 진행
 const SignProgress = async (req, res) => {
   const { report_id } = req.params;
-  const { userID, username } = req.body;
+  const { userID, username, approveDate } = req.body;
 
   try {
     // 보고서 조회
@@ -100,6 +100,7 @@ const SignProgress = async (req, res) => {
     // 결재자가 결재를 진행한 경우만 approval 증가
     if (!pendingSigners.includes(username)) {
       pendingSigners.push(username);
+      report.approveDate = report.approveDate ? `${report.approveDate},${approveDate}` : approveDate;
       // 결재 완료한 인원수 증가
       report.approval = (report.approval || 0) + 1;
     }
@@ -118,6 +119,7 @@ const SignProgress = async (req, res) => {
 
     // 변경 사항 저장
     report.pending = pendingSigners.join(",");
+    
     await report.save();
 
     res.status(200).json({ message: "보고서 결재 진행이 업데이트 되었습니다." });

@@ -101,6 +101,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // 결재된 날짜 
+      approveDate: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       tableName: "report",
