@@ -76,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      // 결제 싸인 진행자
+      // 결재 싸인 진행자
       personSigning: {
         type: DataTypes.STRING,
         allowNull: true,

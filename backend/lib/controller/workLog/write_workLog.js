@@ -1,6 +1,6 @@
 const models = require("../../models");
 const Report = models.Report;
-const path = require("path");
+const { Op } = require("sequelize");
 const fs = require("fs");
 
 // 보고서 상세 조회
@@ -72,11 +72,61 @@ const deleteReportById = async (req, res) => {
   }
 };
 
-// 보고서 결제
+// 보고서 결재 진행
 const SignProgress = async (req, res) => {
-  
-};
+  const { report_id } = req.params;
+  const { userID, username } = req.body;
 
+  try {
+    // 보고서 조회
+    const report = await Report.findByPk(report_id);
+
+    if (!report) {
+      return res.status(404).json({ error: "해당 보고서를 찾을 수 없습니다." });
+    }
+
+    // 현재 결재자가 아닌 경우 오류 반환
+    if (!report.personSigning.includes(username)) {
+      return res.status(403).json({ error: "현재 결재자가 아닙니다." });
+    }
+
+    // 이미 결재한 경우 오류 반환
+    let pendingSigners = report.pending ? report.pending.split(",") : [];
+    let completedSigners = report.completed ? report.completed.split(",") : [];
+
+    if (pendingSigners.includes(username) || completedSigners.includes(username)) {
+      return res.status(403).json({ error: "이미 결재를 완료한 사용자입니다." });
+    }
+
+    // 결재자가 결재를 진행한 경우만 approval 증가
+    if (!pendingSigners.includes(username)) {
+      pendingSigners.push(username);
+      // 결재 완료한 인원수 증가
+      report.approval = (report.approval || 0) + 1;
+    }
+
+    // 모든 결재 진행자가 결재를 완료했는지 확인
+    if (report.personSigning.split(",").length === pendingSigners.length) {
+      // completed 배열에 모든 결재자 추가
+      completedSigners = completedSigners.concat(pendingSigners);
+
+      // pending 배열 초기화
+      pendingSigners = [];
+
+      // 변경 사항 저장
+      report.completed = completedSigners.join(",");
+    }
+
+    // 변경 사항 저장
+    report.pending = pendingSigners.join(",");
+    await report.save();
+
+    res.status(200).json({ message: "보고서 결재 진행이 업데이트 되었습니다." });
+  } catch (error) {
+    console.error("보고서 결재 진행 업데이트 중 오류 발생:", error);
+    res.status(500).json({ error: "내부 서버 오류입니다." });
+  }
+};
 
 module.exports = {
   getReportById,
