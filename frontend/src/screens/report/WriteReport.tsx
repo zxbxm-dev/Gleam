@@ -9,7 +9,7 @@ import {
   Approval_Minus,
   SelectDownArrow
 } from "../../assets/images/index";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import HrSidebar from "../../components/sidebar/HrSidebar";
 import { Document, Page, pdfjs } from 'react-pdf';
 import CustomModal from '../../components/modal/CustomModal';
@@ -41,6 +41,7 @@ type PDFFile = string | File | null;
 
 
 const WriteReport = () => {
+  let navigate = useNavigate();
   const user = useRecoilValue(userState);
   const location = useLocation();
   const { state } = location;
@@ -107,6 +108,7 @@ const WriteReport = () => {
     submitReport(formData)
       .then(response => {
         console.log('보고서 제출 완료', response)
+        setSubmitModalOpen(true)
       })
       .catch(error => {
         console.log('보고서 제출 실패', error)
@@ -773,11 +775,11 @@ const WriteReport = () => {
       </div>
       <CustomModal
         isOpen={isSubmitModalOpen}
-        onClose={() => setSubmitModalOpen(false)}
+        onClose={() => {setSubmitModalOpen(false); navigate('/approval');}}
         header={'알림'}
         footer1={'확인'}
         footer1Class="green-btn"
-        onFooter1Click={() => setSubmitModalOpen(false)}
+        onFooter1Click={() => {setSubmitModalOpen(false); navigate('/approval');}}
       >
         <div>
           제출이 완료되었습니다.

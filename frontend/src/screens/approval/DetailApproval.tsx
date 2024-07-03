@@ -17,7 +17,7 @@ import CustomModal from '../../components/modal/CustomModal';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
 import { WriteApproval, HandleApproval, CheckReport } from '../../services/approval/ApprovalServices';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -27,8 +27,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const DetailApproval = () => {
+  let navigate = useNavigate();
   const [isSignModalOpen, setSignModalOpen] = useState(false);
   const [isEmptySignModalOpen, setEmptySignModalOpen] = useState(false);
+  const [isApproveModalOpen, setApproveModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<string>('');
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [checksignup, setCheckSignUp] = useState<boolean[]>([]);
@@ -246,9 +249,20 @@ const DetailApproval = () => {
     HandleApproval(report_id, formData)
     .then(() => {
       console.log('보고서 결재에 성공했습니다.')
+      setModalContent('결재완료되었습니다.');
+      setApproveModalOpen(true);
     })
     .catch((error) => {
       console.error('보고서 결재에 실패했습니다.', error)
+      if (error.response) {
+        const { status } = error.response;
+        switch (status) {
+          case 403:
+          setModalContent('이미 결재를 완료한 사용자입니다.');
+          setApproveModalOpen(true);
+          break;
+        }
+      }
     })
   }
 
@@ -400,6 +414,16 @@ const DetailApproval = () => {
           회원수정에서 서명을 등록해주세요.
         </div>
       </CustomModal>
+
+      <CustomModal
+        isOpen={isApproveModalOpen}
+        onClose={() => {setApproveModalOpen(false); navigate('/approval')}}
+        header={'알림'}
+    >
+        <div>
+          {modalContent}
+        </div>
+    </CustomModal>
     </div>
   );
 };
