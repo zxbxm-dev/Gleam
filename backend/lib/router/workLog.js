@@ -43,5 +43,8 @@ module.exports = (app) => {
   // ⚠️⚠️ 문서 결제 router ----------------------------------------------------------------------- ⚠️⚠️
   router.post("/handleApproval/:report_id", writeReportController.SignProgress);
 
+  // 싸인 이미지 정적 서빙
+  router.use("/uploads", express.static("uploads"));
+
   app.use("/api", router);
 };

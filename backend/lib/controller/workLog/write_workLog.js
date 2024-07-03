@@ -1,6 +1,6 @@
 const models = require("../../models");
 const Report = models.Report;
-const { Op } = require("sequelize");
+const User = models.User;
 const fs = require("fs");
 
 // 보고서 상세 조회
@@ -121,7 +121,14 @@ const SignProgress = async (req, res) => {
     report.pending = pendingSigners.join(",");
     await report.save();
 
-    res.status(200).json({ message: "보고서 결재 진행이 업데이트 되었습니다." });
+    // 유저 데이터 모델에서 싸인 이미지 조회
+    const user = await User.findOne({ where: { userId: userID } });
+    const signImage = user ? user.Sign  : null;
+
+    console.log(`클라이언트에 전송된 서명 이미지 경로: ${signImage}`); //❌로그 나중에 삭제할것❌
+
+    // 클라이언트에 싸인 이미지와 메시지를 반환
+    res.status(200).json({ message: "보고서 결재 진행이 업데이트 되었습니다.", signImage: signImage });
   } catch (error) {
     console.error("보고서 결재 진행 업데이트 중 오류 발생:", error);
     res.status(500).json({ error: "내부 서버 오류입니다." });
