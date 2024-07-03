@@ -14,8 +14,6 @@ import {
   mail_cancle,
   White_Arrow,
   SearchIcon,
-  LeftIcon,
-  RightIcon,
 } from "../../assets/images/index";
 import BlockMail from "./BlockMail";
 import MobileCard from "./MobileCard";
@@ -24,7 +22,6 @@ import Pagenation from "./Pagenation";
 const Mail = () => {
   let navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
-  const [currentPage, setCurrentPage] = useState(0);
   const [postPerPage, setPostPerPage] = useState<number>(11);
   const [settingVisible, setSettingVisible] = useState(true);
   const [hoverState, setHoverState] = useState<string>("");
@@ -186,8 +183,12 @@ const Mail = () => {
 
   // 중요 메일
   const handleMailFixed = (mailId: number) => {
-    // 메일 important 변수 boolean 값 변경
-  }
+    setMails((prevMails) =>
+      prevMails.map((mail) =>
+        mail.id === mailId ? { ...mail, important: !mail.important } : mail
+      )
+    );
+  };
 
   const toggleAllCheckboxes = () => {
     setAllSelected(!allSelected);
@@ -314,13 +315,9 @@ const Mail = () => {
                       <td>
                         <div>
                           <div onClick={() => handleMailFixed(mail.id)}>
-                            {mail.important ? (
-                              <img src={mail_important_active} alt="mail_important_active" />
-                            ) : (
-                              <img src={mail_important} alt="mail_important" />
-                            )}
+                            <img src={mail.important ? mail_important_active : mail_important} alt="mail_important" />
                           </div>
-                          {mail.attachment && <img src={mail_attachment} alt="attachment" />}
+                          {mail.attachment ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
                         </div>
                         <span>[{mail.mailType}]</span>
                         <div className={`${clickedMails[mail.id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.id)}>
@@ -367,7 +364,7 @@ const Mail = () => {
                                   <div>{mail.sender}</div>
                                   <span>{mail.date}</span>
                                 </div>
-                                <div>
+                                <div className="DownFile">
                                   <span>{mail.attachment}</span>
                                   <img src={mail_download} alt="mail_download" />
                                 </div>
@@ -389,7 +386,9 @@ const Mail = () => {
                                 <button className="primary_button">답장</button>
                               </div>
                             ) : (
-                              <></>
+                              <div className="mail_detail_content_bottom">
+                              <button className="white_button">전달</button>
+                            </div>
                             )}
                           </div>
                         </div>
