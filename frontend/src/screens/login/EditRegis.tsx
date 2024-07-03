@@ -528,7 +528,7 @@ const EditRegis = () => {
                 header={'알림'}
             >
                 <div>
-                    회원 가입 승인 요청이 완료되었습니다.
+                    회원 수정이 완료되었습니다.
                 </div>
             </CustomModal>
         </div>
