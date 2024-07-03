@@ -1,6 +1,7 @@
 const models = require("../../models");
 const User = models.User;
 
+// 인사정보관리 조회
 const getAllPersonal = async (req, res) => {
   try {
     const personnelInquiry = await User.findAll();
