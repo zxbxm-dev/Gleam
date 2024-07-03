@@ -27,6 +27,10 @@
         text-align: left;
         padding-left: 100px;
       }
+
+      .text_cursor {
+        cursor: pointer;
+      }
       
       .flex_center {
         width: 100%;
@@ -78,6 +82,11 @@
         }
       }
     }
+
+    .subproject {
+      background-color: #F1F1F1;
+    }
+    
     .pinned {
       .dropdown {
         font-family: var(--font-family-Noto-B);

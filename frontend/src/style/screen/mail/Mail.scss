@@ -152,6 +152,7 @@
 
         .select_duedate_box {
           position: relative;
+          background-color: #fff;
           display: inline-block;
           width: 240px;
           height: 35px;
@@ -182,19 +183,15 @@
 
           .dropdown_menu {
             position: absolute;
-            top: 95%;
-            left: -0.5%;
+            top: 30px;
+            left: -1px;
             z-index: 10;
             background-color: #fff;
-            border-right: 1px solid var(--primary-color);
-            border-left: 1px solid var(--primary-color);
-            border-bottom: 1px solid var(--primary-color);
+            border: 1px solid var(--primary-color);
             border-top: none;
             border-radius: 0 0 5px 5px;
             list-style-type: none;
-            margin: 0;
-            padding-top: 5%;
-            width: 101%;
+            width: 240px;
             font-size: 12px;
             font-family: var(--font-family-Noto-M);
           }
@@ -220,6 +217,7 @@
         border: 1px solid var(--primary-color);
         border-radius: 5px;
         cursor: pointer;
+        background-color: #fff;
 
         .selected_option {
           display: flex;
@@ -242,19 +240,15 @@
 
         .dropdown_menu {
           position: absolute;
-          top: 95%;
-          left: -0.5%;
+          top: 30px;
+          left: -1px;
           z-index: 10;
           background-color: #fff;
-          border-right: 1px solid var(--primary-color);
-          border-left: 1px solid var(--primary-color);
-          border-bottom: 1px solid var(--primary-color);
+          border: 1px solid var(--primary-color);
           border-top: none;
           border-radius: 0 0 5px 5px;
           list-style-type: none;
-          margin: 0;
-          padding-top: 5%;
-          width: 101%;
+          width: 110px;
           font-size: 12px;
           font-family: var(--font-family-Noto-M);
         }
@@ -332,6 +326,10 @@
               &.clicked {
                 color: var(--primary-color);
               }
+
+              .Blank{
+                width: 11px;
+              }
             }
 
             span {
@@ -378,7 +376,7 @@
 
               .button_wrap {
                 display: flex;
-                gap: 10px;
+                gap: 15px;
                 
                 .image-container {
                   position: relative;
@@ -436,6 +434,10 @@
                   span {
                     font-size: 14px;
                     color: #6A6A6A;
+                  }
+
+                  .DownFile{
+                    cursor: pointer;
                   }
                 }
 

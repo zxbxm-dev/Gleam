@@ -3,9 +3,9 @@ import {
   Right_Arrow,
   White_Arrow,
   mail_delete,
-  mail_important_active,
+  mail_important,
 } from "../../assets/images/index";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import DatePicker from 'react-datepicker';
@@ -20,6 +20,16 @@ interface Event {
   title: string;
   startDate: string;
   endDate: string;
+}
+
+interface Project {
+  id: string;
+  state: string;
+  title: string;
+  teamLeader: string;
+  startDate: string;
+  endDate: string;
+  subProjects?: Project[];
 }
 
 const Project = () => {
@@ -41,8 +51,48 @@ const Project = () => {
 
   const [slideVisible, setSlideVisible] = useState(false);
   const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: true, 1: true, 2: true});
+  const [stateIsOpen, setStateIsOpen] = useState(false);
+  const [selectedstateOption, setSelectedStateOption] = useState('전체');
 
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
+
+  const stateOptions = [
+    '전체',
+    '진행 중',
+    '진행 완료',
+  ];
+
+  useEffect(() => {
+    const initialProjects: Project[] = [
+      { id: '1', state: '진행 중', title: 'FCTS', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30', subProjects: [
+        { id: '1-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
+        { id: '1-2', state: '진행 중', title: 'FCTS 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
+        { id: '1-3', state: '진행 중', title: 'FCTS 리뉴얼 기획', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
+      ]},
+      { id: '2', state: '진행 중', title: 'DRChat', teamLeader: '개발부 진유빈', startDate: '2023.10.28', endDate: '2024.04.04', subProjects: [
+        { id: '2-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
+        { id: '2-2', state: '진행 중', title: 'DRChat 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
+      ]},
+    ];
+
+    setProjects(initialProjects);
+    setSubProjectVisible(initialProjects.reduce((acc: any, project: any) => {
+      acc[project.id] = false;
+      project.subProjects?.forEach((subProject: any) => {
+        acc[subProject.id] = false;
+      });
+      return acc;
+    }, {}));
+  }, []);
+
+  const toggleSubProjects = (projectId: string) => {
+    setSubProjectVisible(prev => ({
+      ...prev,
+      [projectId]: !prev[projectId]
+    }));
+  };
 
   const fetchUser = async () => {
     try {
@@ -150,14 +200,48 @@ const Project = () => {
     setInputAllmember('');
   };
 
-  const filteredNames = persondata.filter(person =>
-    person.username.toLowerCase().includes(inputteamLeader.toLowerCase())
-  );
+  const filteredNames = persondata.filter(person => {
+    const inputLowerCase = inputteamLeader.toLowerCase();
+    if (person.team) {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.team.toLowerCase().includes(inputLowerCase)
+      );
+    } else {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.department.toLowerCase().includes(inputLowerCase)
+      );
+    }
+  });
+  
+  const filteredAllmembersNames = persondata.filter(person => {
+    const inputLowerCase = inputAllMember.toLowerCase();
+    if (person.team) {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.team.toLowerCase().includes(inputLowerCase)
+      )
+    } else {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.department.toLowerCase().includes(inputLowerCase)
+      )
+    }
 
-  const filteredAllmembersNames = persondata.filter(person =>
-    person.username.toLowerCase().includes(inputAllMember.toLowerCase())
-  );
+  });
 
+  const togglestate = () => {
+    setStateIsOpen(!stateIsOpen);
+  }
+
+  const handleStateSelect = (option: string) => {
+    setSelectedStateOption(option);
+    setStateIsOpen(false);
+  }
+
+
+  console.log('어캐들어감 ?' , subprojectVisible)
   return (
     <div className="content">
       <div className="content_container">
@@ -176,17 +260,92 @@ const Project = () => {
             <TabPanel>
               <div className="project_container">
                 <div className="project_container_header">
-                  <div>
+                  <div className="project_container_header_left">
                     <label className="custom-checkbox">
                       <input type="checkbox" id="check1" />
                       <span></span>
                     </label>
                     <img src={mail_delete} alt="mail_delete" />
-                    <img src={mail_important_active} alt="mail_important_active" />
+                    <img src={mail_important} alt="mail_important" />
                   </div>
-                  <div>
-                    
+
+                  <div className="project_container_header_right" onClick={togglestate}>
+                    <span>상태 : {selectedstateOption}</span>
+                    <img src={White_Arrow} alt="White_Arrow" />
                   </div>
+                  {stateIsOpen && (
+                  <ul className="dropdown_menu">
+                    {stateOptions.map((option) => (
+                      <li key={option} onClick={() => handleStateSelect(option)}>
+                        {option} 
+                        <div className={option === '진행 중' ? 'blue_circle' : option === '진행 완료' ? 'brown_circle' : ''}></div>
+                      </li>
+                    ))}
+                  </ul>
+                  )}
+                </div>
+
+                <div className="project_content">
+                  <table className="project_board_list">
+                    <colgroup>
+                      <col width="3%" />
+                      <col width="7%" />
+                      <col width="10%" />
+                      <col width="35%" />
+                      <col width="15%" />
+                      <col width="15%" />
+                      <col width="15%" />
+                    </colgroup>
+                    <thead>
+                      <tr className="board_header">
+                        <th></th>
+                        <th>번호</th>
+                        <th>상태</th>
+                        <th>제목</th>
+                        <th>팀리더</th>
+                        <th>시작일</th>
+                        <th>마감일</th>
+                      </tr>
+                    </thead>
+                    <tbody className="board_container">
+                      {projects.map((project) => (
+                        <React.Fragment key={project.id}>
+                          <tr className="board_content">
+                            <td>
+                              <label className="custom-checkbox">
+                                <input type="checkbox" id="check1" />
+                                <span></span>
+                              </label>
+                            </td>
+                            <td>{project.id}</td>
+                            <td>{project.state}</td>
+                            <td className="text_left text_cursor" onClick={() => toggleSubProjects(project.id)}>{project.title}</td>
+                            <td>{project.teamLeader}</td>
+                            <td>{project.startDate}</td>
+                            <td>{project.endDate}</td>
+                          </tr>
+                          {subprojectVisible[project.id] && project.subProjects && (
+                            project.subProjects.map((subProject: any) => (
+                              <tr key={subProject.id} className="board_content subproject">
+                                <td>
+                                  <label className="custom-checkbox">
+                                    <input type="checkbox" id="check1" />
+                                    <span></span>
+                                  </label>
+                                </td>
+                                <td>{subProject.id}</td>
+                                <td>{subProject.state}</td>
+                                <td className="text_left text_cursor">{subProject.title}</td>
+                                <td>{subProject.teamLeader}</td>
+                                <td>{subProject.startDate}</td>
+                                <td>{subProject.endDate}</td>
+                              </tr>
+                            ))
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </TabPanel>

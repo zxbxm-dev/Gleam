@@ -14,30 +14,33 @@ import {
   mail_cancle,
   White_Arrow,
   SearchIcon,
-  LeftIcon,
-  RightIcon,
 } from "../../assets/images/index";
-import CustomModal from "../../components/modal/CustomModal";
+import BlockMail from "./BlockMail";
+import MobileCard from "./MobileCard";
+import Pagenation from "./Pagenation";
 
 const Mail = () => {
   let navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
-  const [currentPage, setCurrentPage] = useState(0);
   const [postPerPage, setPostPerPage] = useState<number>(11);
   const [settingVisible, setSettingVisible] = useState(true);
   const [hoverState, setHoverState] = useState<string>("");
-  const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
+
   const [isMobileCardModal, setIsMobileCardModal] = useState(false);
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('전체 메일');
   const [dueDateIsOpen, setDuedDateIsOpen] = useState(false);
   const [selectdDueDateOption, setSelectedDueDateOption] = useState('전체');
+  const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
 
   const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [mails, setMails] = useState<any[]>([]);
   const [clickedMails, setClickedMails] = useState<{ [key: number]: boolean }>({});
+  const [allSelected, setAllSelected] = useState(false);
+  const [selectedMails, setSelectedMails] = useState<{ [key: number]: boolean }>({});
+
 
   const itemsPerPage = 8;
 
@@ -90,13 +93,13 @@ const Mail = () => {
       { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정9.pdf", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
       { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정10.pdf", mailType: "보낸 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
       { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정11.pdf", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
-      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },      
-      { id: 13, title: "스팸 메일입니다", content: "스팸메일입니다.13", sender: "개발1팀 구민석", recipient: "개발1팀 구민석", attachment: "", mailType: "받은 메일함", reservation: false, important: true, spam: true, date: "2024-05-01" },      
+      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
+      { id: 13, title: "스팸 메일입니다", content: "스팸메일입니다.13", sender: "개발1팀 구민석", recipient: "개발1팀 구민석", attachment: "", mailType: "받은 메일함", reservation: false, important: true, spam: true, date: "2024-05-01" },
     ];
     switch (selectdMenuOption) {
       case "전체 메일":
         return (
-          setMails(initialMails.filter((mail) => (mail.spam ===false)))
+          setMails(initialMails.filter((mail) => (mail.spam === false)))
         )
       case "중요 메일":
         return (
@@ -182,13 +185,39 @@ const Mail = () => {
 
   // 중요 메일
   const handleMailFixed = (mailId: number) => {
-    // 메일 important 변수 boolean 값 변경
-  }
+    setMails((prevMails) =>
+      prevMails.map((mail) =>
+        mail.id === mailId ? { ...mail, important: !mail.important } : mail
+      )
+    );
+  };
+
+  const toggleAllCheckboxes = () => {
+    if (allSelected) {
+      setSelectedMails({});
+    } else {
+      const newSelectedMails = filteredMails.reduce((acc, mail) => {
+        acc[mail.id] = true;
+        return acc;
+      }, {});
+      setSelectedMails(newSelectedMails);
+    }
+    setAllSelected(!allSelected);
+  };
+
 
   // 메일 발송 취소
   const handleSendCancle = () => {
     window.alert("발송을 취소하면 수신자의 메일함에서 메일이 삭제됩니다.\n발송을 취소하시겠습니까?")
   }
+
+  const toggleMailSelection = (mailId: number) => {
+    setSelectedMails((prevSelectedMails) => ({
+      ...prevSelectedMails,
+      [mailId]: !prevSelectedMails[mailId],
+    }));
+  };
+
 
   return (
     <div className="content">
@@ -196,7 +225,7 @@ const Mail = () => {
         <div className="mail_header">
           <div className="mail_header_left">
             <label className="custom-checkbox">
-              <input type="checkbox" id="check1" />
+              <input type="checkbox" id="check1" checked={allSelected} onChange={toggleAllCheckboxes} />
               <span></span>
             </label>
             <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")}>
@@ -207,7 +236,7 @@ const Mail = () => {
               <img src={mail_spam} alt="mail_spam" />
               {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
             </div>
-            <div className="image-container" onMouseEnter={() => handleHover("write")} onMouseLeave={() => handleHover("")} onClick={() => {navigate("/writeMail")}}>
+            <div className="image-container" onMouseEnter={() => handleHover("write")} onMouseLeave={() => handleHover("")} onClick={() => { navigate("/writeMail") }}>
               <img src={mail_write} alt="mail_write" />
               {hoverState === "write" && <div className="tooltip">메일 작성</div>}
             </div>
@@ -298,7 +327,11 @@ const Mail = () => {
                     <tr key={mail.id} className="board_content">
                       <td>
                         <label className="custom-checkbox">
-                          <input type="checkbox" id="check1" />
+                          <input
+                            type="checkbox"
+                            checked={allSelected ? allSelected : selectedMails[mail.id] || false}
+                            onChange={() => toggleMailSelection(mail.id)}
+                          />
                           <span></span>
                         </label>
                       </td>
@@ -306,18 +339,14 @@ const Mail = () => {
                       <td>
                         <div>
                           <div onClick={() => handleMailFixed(mail.id)}>
-                            {mail.important ? (
-                              <img src={mail_important_active} alt="mail_important_active" />
-                            ) : (
-                              <img src={mail_important} alt="mail_important" />
-                            )}
+                            <img src={mail.important ? mail_important_active : mail_important} alt="mail_important" />
                           </div>
-                          {mail.attachment && <img src={mail_attachment} alt="attachment" />}
+                          {mail.attachment ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
                         </div>
                         <span>[{mail.mailType}]</span>
                         <div className={`${clickedMails[mail.id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.id)}>
                           {mail.title}
-                          <img src={mail_triangle} alt="mail_triangle"/>
+                          <img src={mail_triangle} alt="mail_triangle" />
                         </div>
                       </td>
                       <td>{mail.date}</td>
@@ -359,7 +388,7 @@ const Mail = () => {
                                   <div>{mail.sender}</div>
                                   <span>{mail.date}</span>
                                 </div>
-                                <div>
+                                <div className="DownFile">
                                   <span>{mail.attachment}</span>
                                   <img src={mail_download} alt="mail_download" />
                                 </div>
@@ -374,14 +403,16 @@ const Mail = () => {
                               <div dangerouslySetInnerHTML={renderMailContent(mail)}>
                               </div>
                             </div>
-                            
+
                             {mail.mailType === '받은 메일함' ? (
                               <div className="mail_detail_content_bottom">
                                 <button className="white_button">전달</button>
                                 <button className="primary_button">답장</button>
                               </div>
                             ) : (
-                              <></>
+                              <div className="mail_detail_content_bottom">
+                                <button className="white_button">전달</button>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -394,100 +425,23 @@ const Mail = () => {
         </div>
       </div>
 
-      <div className="mail_pagination">
-        {filteredMails.length > itemsPerPage && (
-          <div className="Pagination">
-            <img
-              src={LeftIcon}
-              onClick={() => {
-                if (page > 1) {
-                  setPage(page - 1);
-                  setCurrentPage(page - 1);
-                }
-              }}
-              alt="Previous Page"
-            />
-            <input
-              type="text"
-              value={page}
-              className="PageInput"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const inputPage = e.target.value.replace(/\D/g, '');
-                setPage(inputPage ? Number(inputPage) : 0);
-              }}
-              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === 'Enter') {
-                  const inputPage = Number(e.currentTarget.value);
-                  if (!isNaN(inputPage) && inputPage >= 1 && inputPage <= totalPages) {
-                    setCurrentPage(inputPage);
-                  } else {
-                    setPage(1);
-                  }
-                }
-              }}
-              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-                const inputPage = Number(e.currentTarget.value);
-                if (!isNaN(inputPage) && inputPage >= 1 && inputPage <= totalPages) {
-                  setCurrentPage(inputPage);
-                } else {
-                  setPage(1);
-                }
-              }}
-            />
-            <span> / </span>
-            <span className="PagesTotal">{totalPages}</span>
-            <img
-              src={RightIcon}
-              onClick={() => {
-                if (page < totalPages) {
-                  setPage(page + 1);
-                  setCurrentPage(page + 1);
-                }
-              }}
-              alt="Next Page"
-            />
-          </div>
-        )}
-      </div>
+      <Pagenation
+        setPage={setPage}
+        filteredMails={filteredMails}
+        itemsPerPage={itemsPerPage}
+        page={page}
+        totalPages={totalPages}
+      />
 
-      <CustomModal
-        isOpen={isSpamSettingModal}
-        onClose={() => setIsSpamSettingModal(false)}
-        header={'스팸 설정'}
-        width="380px"
-        height="360px"
-      >
-        <div className="body-container">
-          <div className="modal_container_wrap">
-            <span>차단 등록</span>
-            <div>
-              <input 
-                type="text"
-              />
-            </div>
-            <button>확인</button>
-          </div>
-          <div className="modal_container_wrap">
-            <span>수신 차단 목록</span>
-            <button>해제</button>
-          </div>
-          <div className="modal_spamlist_wrap">
+      <BlockMail
+        isSpamSettingModal={isSpamSettingModal}
+        setIsSpamSettingModal={setIsSpamSettingModal}
+      />
 
-          </div>
-        </div>
-      </CustomModal>
-
-      <CustomModal
-        isOpen={isMobileCardModal}
-        onClose={() => setIsMobileCardModal(false)}
-        header={'모바일 명함'}
-        width="380px"
-        height="360px"
-      >
-        <div>
-          모바일 명함 모달
-        </div>
-      </CustomModal>
+      <MobileCard
+        isMobileCardModal={isMobileCardModal}
+        setIsMobileCardModal={setIsMobileCardModal}
+      />
     </div>
   );
 };

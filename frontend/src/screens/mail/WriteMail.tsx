@@ -80,9 +80,22 @@ const WriteMail = () => {
     setInputValue('');
   };
 
-  const filteredEmails = persondata.filter(person =>
-    person.usermail.toLowerCase().includes(inputValue.toLowerCase())
-  );
+  const filteredEmails = persondata.filter(person => {
+    const inputLowerCase = inputValue.toLowerCase();
+    if (person.team) {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.usermail.toLowerCase().includes(inputLowerCase) ||
+        person.team.toLowerCase().includes(inputLowerCase)
+      )
+    } else {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.usermail.toLowerCase().includes(inputLowerCase) ||
+        person.department.toLowerCase().includes(inputLowerCase)
+      )
+    }
+  });
 
   const handleClick = () => {
     setIsClicked(!isClicked);
@@ -143,7 +156,7 @@ const WriteMail = () => {
                   <ul className="autocomplete_dropdown">
                     {filteredEmails.map(person => (
                       <li key={person.usermail} onClick={() => handleAutoCompleteClick(person.usermail)}>
-                        {person.usermail}
+                        {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
                     ))}
                   </ul>
