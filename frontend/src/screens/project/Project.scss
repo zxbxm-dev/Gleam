@@ -1,3 +1,5 @@
+@import '../../style/Common/board.scss';
+
 .project_header_right {
   display: flex;
   flex-direction: row-reverse;
@@ -22,8 +24,9 @@
   .project_container_header {
     display: flex;
     justify-content: space-between;
+    padding: 10px 0;
 
-    div {
+    .project_container_header_left {
       display: flex;
       gap: 20px;
 
@@ -75,6 +78,69 @@
           transform: rotate(45deg);
         }
       }
+
+      img {
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+      }
+    }
+
+    .project_container_header_right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 20px;
+      cursor: pointer;
+      z-index: 1;
+      font-family: var(--font-family-Noto-M);
+
+      img {
+        width: 15px;
+        height: 15px;
+        filter: invert(20%) sepia(0%) saturate(1007%) hue-rotate(164deg) brightness(88%) contrast(86%);
+        transform: rotate(180deg);
+      }
+    }
+
+    .dropdown_menu {
+      position: absolute;
+      top: 100px;
+      right: 25px;
+      z-index: 10;
+      background-color: #fff;
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      list-style-type: none;
+      margin: 0;
+      width: 7%;
+      font-size: 12px;
+      font-family: var(--font-family-Noto-M);
+    }
+
+    .dropdown_menu li {
+      padding: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .dropdown_menu li:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .project_content {
+    height: auto;
+    max-height: calc(100% - 80px);
+    overflow-y: auto;
+    border: 1px solid #EEEEEE;
+    border-radius: 5px;
+
+    .project_board_list {
+      @include board_list;
+      margin-top: 0;
+      box-shadow: var(--light-shadow1);
     }
   }
 
@@ -227,7 +293,7 @@
 .body-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 20px !important;
 
   .body_container_content {
     position: relative;
@@ -297,12 +363,20 @@
     }
 
     .body_container_content_datepicker {
+      width: 75%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 50px;
-      width: 75%;
+      padding: 0 60px;
       
+      input {
+        border: none;
+      }
+      .timespan{
+        display: flex;
+        justify-content: center;
+        width: 37.5px;
+      }
+
       .datepicker{
         font-size: 14px;
         font-family: var(--font-family-Noto-M);
