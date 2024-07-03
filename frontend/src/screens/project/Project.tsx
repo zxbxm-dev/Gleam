@@ -41,8 +41,26 @@ const Project = () => {
 
   const [slideVisible, setSlideVisible] = useState(false);
   const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: true, 1: true, 2: true});
+  const [stateIsOpen, setStateIsOpen] = useState(false);
+  const [selectedstateOption, setSelectedStateOption] = useState('전체');
 
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [projects, setProjects] = useState<any[]>([]);
+
+  const stateOptions = [
+    '전체',
+    '진행 중',
+    '진행 완료',
+  ];
+
+  useEffect(() => {
+    const initialProjects = [
+      { id: 1, state: '진행 중', title: 'FCTS', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
+      { id: 2, state: '진행 중', title: 'DRChat', teamLeader: '개발부 진유빈', startDate: '2023.10.28', endDate: '2024.04.04'},
+    ];
+
+    setProjects(initialProjects);
+  });
 
   const fetchUser = async () => {
     try {
@@ -158,6 +176,15 @@ const Project = () => {
     person.username.toLowerCase().includes(inputAllMember.toLowerCase())
   );
 
+  const togglestate = () => {
+    setStateIsOpen(!stateIsOpen);
+  }
+
+  const handleStateSelect = (option: string) => {
+    setSelectedStateOption(option);
+    setStateIsOpen(false);
+  }
+
   return (
     <div className="content">
       <div className="content_container">
@@ -176,7 +203,7 @@ const Project = () => {
             <TabPanel>
               <div className="project_container">
                 <div className="project_container_header">
-                  <div>
+                  <div className="project_container_header_left">
                     <label className="custom-checkbox">
                       <input type="checkbox" id="check1" />
                       <span></span>
@@ -184,9 +211,67 @@ const Project = () => {
                     <img src={mail_delete} alt="mail_delete" />
                     <img src={mail_important_active} alt="mail_important_active" />
                   </div>
-                  <div>
-                    
+
+                  <div className="project_container_header_right" onClick={togglestate}>
+                    <span>상태 : {selectedstateOption}</span>
+                    <img src={White_Arrow} alt="White_Arrow" />
                   </div>
+                  {stateIsOpen && (
+                  <ul className="dropdown_menu">
+                    {stateOptions.map((option: string) => (
+                      <li key={option} onClick={() => handleStateSelect(option)}>
+                        {option}
+                      </li>
+                    ))}
+                  </ul>
+                  )}
+                </div>
+
+                <div className="project_content">
+                  <table className="project_board_list">
+                    <colgroup>
+                      <col width="3%" />
+                      <col width="7%" />
+                      <col width="10%" />
+                      <col width="35%" />
+                      <col width="15%" />
+                      <col width="15%" />
+                      <col width="15%" />
+                    </colgroup>
+                    <thead>
+                      <tr className="board_header">
+                        <th></th>
+                        <th>번호</th>
+                        <th>상태</th>
+                        <th>제목</th>
+                        <th>팀리더</th>
+                        <th>시작일</th>
+                        <th>마감일</th>
+                      </tr>
+                    </thead>
+                    <tbody className="board_container">
+                      {projects
+                        .map((project) => (
+                          <>
+                            <tr key={project.id} className="board_content">
+                              <td>
+                                <label className="custom-checkbox">
+                                  <input type="checkbox" id="check1" />
+                                  <span></span>
+                                </label>
+                              </td>
+                              <td>{project.id}</td>
+                              <td>{project.state}</td>
+                              <td>{project.title}</td>
+                              <td>{project.teamLeader}</td>
+                              <td>{project.startDate}</td>
+                              <td>{project.endDate}</td>
+                            </tr>
+                          </>
+                        ))
+                      }
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </TabPanel>
