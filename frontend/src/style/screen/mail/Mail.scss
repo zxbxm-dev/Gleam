@@ -183,18 +183,15 @@
 
           .dropdown_menu {
             position: absolute;
-            top: 95%;
-            left: -0.5%;
+            top: 30px;
+            left: -1px;
             z-index: 10;
             background-color: #fff;
-            border-right: 1px solid var(--primary-color);
-            border-left: 1px solid var(--primary-color);
-            border-bottom: 1px solid var(--primary-color);
+            border: 1px solid var(--primary-color);
             border-top: none;
             border-radius: 0 0 5px 5px;
             list-style-type: none;
-            margin: 0;
-            width: 101%;
+            width: 240px;
             font-size: 12px;
             font-family: var(--font-family-Noto-M);
           }
@@ -243,18 +240,15 @@
 
         .dropdown_menu {
           position: absolute;
-          top: 95%;
-          left: -0.5%;
+          top: 30px;
+          left: -1px;
           z-index: 10;
           background-color: #fff;
-          border-right: 1px solid var(--primary-color);
-          border-left: 1px solid var(--primary-color);
-          border-bottom: 1px solid var(--primary-color);
+          border: 1px solid var(--primary-color);
           border-top: none;
           border-radius: 0 0 5px 5px;
           list-style-type: none;
-          margin: 0;
-          width: 101%;
+          width: 110px;
           font-size: 12px;
           font-family: var(--font-family-Noto-M);
         }
