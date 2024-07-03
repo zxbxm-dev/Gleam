@@ -9,9 +9,6 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { CheckReport, DeleteReport } from '../../services/approval/ApprovalServices';
 import { useLocation } from 'react-router-dom';
 
-import sign1 from "../../assets/images/sign/구민석_서명.png";
-import sign2 from "../../assets/images/sign/이정훈_서명.png";
-
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -211,7 +208,7 @@ const DetailDocument = () => {
                       <input className='Top' type="text" placeholder={signatory} disabled />
                       <div className='Bottoms'>
                         {checksignup[index] &&
-                          <img className='SignImg' src={require(`../../assets/images/sign/${approveLine[index]}_서명.png`)} alt="sign" />
+                          <img className='SignImg' src={`http://localhost:3000/uploads/${approveLine[index]}_서명.png`} alt="sign" />
                         }
                       </div>
                       <div className='BtmDate'></div>

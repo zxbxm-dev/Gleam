@@ -326,11 +326,11 @@ const EditRegis = () => {
                         <div className="Question">
                             <div className="Ques">
                                 <span>어머니의 성은 무엇입니까?</span>
-                                <span className="localinput">{user.id}</span>
+                                <span className="localinput">{user.question1}</span>
                             </div>
                             <div className="Ques">
                                 <span>졸업한 초등학교는 어디입니까?</span>
-                                <span className="localinput">{user.id}</span>
+                                <span className="localinput">{user.question2}</span>
                             </div>
                         </div>
                     </div>
