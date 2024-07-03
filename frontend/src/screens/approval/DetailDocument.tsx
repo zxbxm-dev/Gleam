@@ -31,6 +31,7 @@ const DetailDocument = () => {
 
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
+  const approveDates = documentInfo[0].approveDate.split(',').map((item:any) => item.trim());
 
   useEffect(() => {
     const initialChecks = new Array(signatories.length).fill(false);
@@ -211,7 +212,7 @@ const DetailDocument = () => {
                           <img className='SignImg' src={`http://localhost:3000/uploads/${approveLine[index]}_서명.png`} alt="sign" />
                         }
                       </div>
-                      <div className='BtmDate'></div>
+                      <div className='BtmDate'>{approveDates[index] || ''}</div>
                     </div>
                   ))}
                 </div>

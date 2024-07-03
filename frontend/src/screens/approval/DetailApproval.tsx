@@ -14,8 +14,6 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import CustomModal from '../../components/modal/CustomModal';
-import sign from "../../assets/images/sign/구민석_서명.png";
-// import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
 import { WriteApproval, HandleApproval, CheckReport } from '../../services/approval/ApprovalServices';
@@ -30,6 +28,7 @@ type PDFFile = string | File | null;
 
 const DetailApproval = () => {
   const [isSignModalOpen, setSignModalOpen] = useState(false);
+  const [isEmptySignModalOpen, setEmptySignModalOpen] = useState(false);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [checksignup, setCheckSignUp] = useState<boolean[]>([]);
@@ -46,7 +45,9 @@ const DetailApproval = () => {
   const documentInfo = useState(location.state?.documentInfo);
 
   const [signatories, setSignatories] = useState<any[]>([]);
-
+  const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
+  const approveDates = documentInfo[0].approveDate.split(',').map((item:any) => item.trim());
+  
   useEffect(() => {
     // setFile(testPDF);
     const initialChecks = new Array(signatories.length).fill(false);
@@ -110,8 +111,12 @@ const DetailApproval = () => {
   };
 
   const handleSignModal = (index: number) => {
-    setSignModalOpen(true);
-    setSignUpIndex(index);
+    if(!user.Sign) {
+      setEmptySignModalOpen(true);
+    } else {
+      setSignModalOpen(true);
+      setSignUpIndex(index);
+    }
   }
 
   const handleSign = (index: number) => {
@@ -231,9 +236,12 @@ const DetailApproval = () => {
 
   
   const handleApproval = async (report_id: string) => {
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear().toString().slice(2)}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getDate().toString().padStart(2, '0')}`;
     const formData = new FormData();
     formData.append("userID", user.userID);
     formData.append("username", user.username);
+    formData.append("approveDate",formattedDate);
 
     HandleApproval(report_id, formData)
     .then(() => {
@@ -331,18 +339,19 @@ const DetailApproval = () => {
                         <input className='Top' type="text" placeholder={signatory} disabled />
                         {signatory === user.position ? 
                           (
-                          <div className='Bottom' onClick={() => handleSignModal(index)}>
-                            {checksignup[index] ?
-                              <img className='SignImg' src={sign} alt="sign" />
-                              :
-                              <></>
-                            }
-                          </div>)
+                            <div className='Bottom' onClick={() => handleSignModal(index)}>
+                              {checksignup[index] ?
+                                <img className='SignImg' src={`http://localhost:3000/uploads/${user.username}_서명.png`} alt="sign" />
+                                :
+                                <></>
+                              }
+                            </div>
+                          )
                           :
                           (
                           <div className='Bottom_notHover'>
                             {checksignup[index] ?
-                              <img className='SignImg' src={sign} alt="sign" />
+                              <img className='SignImg' src={`http://localhost:3000/uploads/${approveLine[index]}_서명.png`} alt="sign" />
                               :
                               <></>
                             }
@@ -350,7 +359,7 @@ const DetailApproval = () => {
                           )
                         }
                         
-                        <div className='BtmDate'>{signDates[index] || ''}</div>
+                        <div className='BtmDate'>{approveDates[index] || ''}</div>
                       </div>
                     ))}
                   </div>
@@ -375,6 +384,20 @@ const DetailApproval = () => {
       >
         <div>
           서명하시겠습니까?
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isEmptySignModalOpen}
+        onClose={() => setEmptySignModalOpen(false)}
+        header={'알림'}
+        footer1={'확인'}
+        footer1Class="green-btn"
+        onFooter1Click={() => setEmptySignModalOpen(false)}
+      >
+        <div>
+          {user.username}님의 서명이 존재하지않습니다. <br/>
+          회원수정에서 서명을 등록해주세요.
         </div>
       </CustomModal>
     </div>
