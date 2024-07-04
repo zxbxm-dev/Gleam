@@ -78,13 +78,13 @@ const logout = (req, res) => {
 
 // 아이디 찾기
 const findUsername = async (req, res) => {
-  const { username, spot, phoneNumber } = req.body;
+  const { username, position, phoneNumber } = req.body;
 
   try {
     const user = await User.findOne({
       where: {
         username: username,
-        spot: spot,
+        position: position,
         phoneNumber: phoneNumber,
       },
     });
@@ -110,7 +110,7 @@ const resetPassword = async (req, res) => {
     userID,
     username,
     phoneNumber,
-    spot,
+    position,
     question1,
     question2,
     resetpassword,
@@ -121,7 +121,7 @@ const resetPassword = async (req, res) => {
       userId: userID,
       username: username,
       phoneNumber: phoneNumber,
-      spot: spot,
+      position: position,
       question1: question1,
       question2: question2,
     };

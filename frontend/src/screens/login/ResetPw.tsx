@@ -70,7 +70,7 @@ const ResetPw = () => {
     };
 
     const handleSubmit = () => {
-        if (!id || !name || !selectedOptions.spot || !phoneNumber || !question1 || !question2 || !resetpassword || !confirmPassword) {
+        if (!id || !name || !selectedOptions.position || !phoneNumber || !question1 || !question2 || !resetpassword || !confirmPassword) {
             console.error("필수 항목을 모두 작성해주세요.");
             return;
         }
@@ -78,7 +78,7 @@ const ResetPw = () => {
         const formData = {
             userID: id,
             username: name,
-            spot: selectedOptions.spot,
+            position: selectedOptions.position,
             phoneNumber: phoneNumber,
             question1: question1,
             question2: question2,
@@ -101,7 +101,7 @@ const ResetPw = () => {
         <div className="FindID">
             <div className="LogoBox">
                 <Link to="/login">
-                    <img className="ResLogo" src={Login_Logo} alt="LoginLogo"/>
+                    <img className="ResLogo" src={Login_Logo} alt="LoginLogo" />
                 </Link>
                 <span className="ResText">패스워드 재설정</span>
             </div>
@@ -143,17 +143,18 @@ const ResetPw = () => {
                     <span className="FlexSpan">직위</span>
                     <div className="custom-select">
                         <div className="select-header" onClick={() => toggleSelect()}>
-                            <span>{selectedOptions.spot ? selectedOptions.spot : '직위를 선택해주세요'}</span>
-                            <img src={isSpot ? ArrowUp : ArrowDown} alt="Arrow"/>
+                            <span>{selectedOptions.position ? selectedOptions.position : '직위를 선택해주세요'}</span>
+                            <img src={isSpot ? ArrowUp : ArrowDown} alt="Arrow" />
                         </div>
                         {isSpot && (
                             <div className="options">
-                                <div className="op" onClick={() => handleOptionClick('spot', '사원')}>사원</div>
-                                <div className="op" onClick={() => handleOptionClick('spot', '책임')}>책임</div>
-                                <div className="op" onClick={() => handleOptionClick('spot', '수석')}>수석</div>
-                                <div className="op" onClick={() => handleOptionClick('spot', '상무')}>상무</div>
-                                <div className="op" onClick={() => handleOptionClick('spot', '전무')}>전무</div>
-                                <div className="op" onClick={() => handleOptionClick('spot', '대표이사')}>대표이사</div>
+                                <div className="op" onClick={() => handleOptionClick('position', '사원')}>사원</div>
+                                <div className="op" onClick={() => handleOptionClick('position', '연구원')}>연구원</div>
+                                <div className="op" onClick={() => handleOptionClick('position', '팀장')}>팀장</div>
+                                <div className="op" onClick={() => handleOptionClick('position', '연구실장')}>연구실장</div>
+                                <div className="op" onClick={() => handleOptionClick('position', '부서장')}>부서장</div>
+                                <div className="op" onClick={() => handleOptionClick('position', '이사')}>이사</div>
+                                <div className="op" onClick={() => handleOptionClick('position', '대표이사')}>대표이사</div>
                             </div>
                         )}
                     </div>
@@ -235,7 +236,7 @@ const ResetPw = () => {
 
             <CustomModal
                 isOpen={isSuccessModalOpen}
-                onClose={() => setSuccessModalOpen(false)} 
+                onClose={() => setSuccessModalOpen(false)}
                 header={'알림'}
                 footer1={'확인'}
                 footer1Class="green-btn"
@@ -248,7 +249,7 @@ const ResetPw = () => {
 
             <CustomModal
                 isOpen={isFaliedIdModalOpen}
-                onClose={() => setFaliedModalOpen(false)} 
+                onClose={() => setFaliedModalOpen(false)}
                 header={'알림'}
                 footer1={'확인'}
                 footer1Class="green-btn"
