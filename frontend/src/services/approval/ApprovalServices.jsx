@@ -26,7 +26,12 @@ const getApprovedDocuments = (params) => {
   return api.get("/getApprovedDocuments", { params });
 }
 
-// 보고서 결재 의견, 반려 작성
+// 보고서 의견 작성하기
+const WriteApprovalOp = (report_id, formData) => {
+  return api.post(`/writeApprovalOp/${report_id}`, formData);
+}
+
+// 보고서 반려 작성하기
 const WriteApproval = (report_id, formData) => {
   return api.post(`/writeApproval/${report_id}`, formData);
 }
@@ -52,4 +57,4 @@ const DeleteReport = (report_id) => {
 }
 
 
-export { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments, HandleApproval, WriteApproval, CheckReport, DeleteReport };
+export { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments, HandleApproval, WriteApprovalOp, WriteApproval, CheckReport, DeleteReport };

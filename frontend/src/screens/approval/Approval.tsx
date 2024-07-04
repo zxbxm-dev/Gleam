@@ -281,7 +281,7 @@ const Approval = () => {
                       <td style={{ textAlign: 'center' }}>{approvalings.selectForm}</td>
                       <td>{new Date(approvalings.sendDate).toISOString().substring(0, 10)}</td>
                       <td>{approvalings.approval} / {approvalings.currentSigner}</td>
-                      <td>{approvalings.username} / {approvalings.dept}</td>
+                      <td>{approvalings.username} {approvalings.team ? ` / ${approvalings.team}` : (approvalings.dept ? ` / ${approvalings.dept}` : '')} </td>
                       <td><button className="primary_button" onClick={() => { navigate(`/detailApproval/${approvalings.id}` , {state: {documentInfo: approvalings}}) }}>결재하기</button></td>
                     </tr>
                   ))
@@ -372,7 +372,7 @@ const Approval = () => {
                       <td>{new Date(inProgres.sendDate).toISOString().substring(0, 10)}</td>
                       <td>{new Date(inProgres.updatedAt).toISOString().substring(0, 10)}</td>
                       <td>{inProgres.approval} / {inProgres.currentSigner}</td>
-                      <td>{inProgres.username} / {inProgres.dept}</td>
+                      <td>{inProgres.username} {inProgres.team ? ` / ${inProgres.team}` : (inProgres.dept ? ` / ${inProgres.dept}` : '')} </td>
                       <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${inProgres.id}`, {state: {documentInfo: inProgres}})}}>문서확인</button></td>
                     </tr>
                   ))
@@ -459,13 +459,12 @@ const Approval = () => {
                   .map((rejected, index) => (
                     <tr key={rejected.id} className="board_content">
                       <td>{index + 1}</td>
-                      <td style={{ textAlign: 'center' }}>{rejected.title}</td>
-                      <td>{rejected.date}</td>
-                      <td>{rejected.date}</td>
-                      <td>{rejected.progress} / {rejected.maxprogress}</td>
-                      <td>{rejected.state}</td>
-                      <td>{rejected.writer}</td>
-                      <td><button className="primary_button" onClick={() => { navigate('/detailDocument') }}>문서확인</button></td>
+                      <td style={{ textAlign: 'center' }}>{rejected.selectForm}</td>
+                      <td>{new Date(rejected.sendDate).toISOString().substring(0, 10)}</td>
+                      <td>{new Date(rejected.updatedAt).toISOString().substring(0, 10)}</td>
+                      <td>{rejected.approval} / {rejected.currentSigner}</td>
+                      <td>{rejected.username} {rejected.team ? ` / ${rejected.team}` : (rejected.dept ? ` / ${rejected.dept}` : '')} </td>
+                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${rejected.id}`, {state: {documentInfo: rejected}})}}>문서확인</button></td>
                     </tr>
                   ))
                 }
@@ -656,7 +655,7 @@ const Approval = () => {
                       <td>{new Date(mydocument.updatedAt).toISOString().substring(0, 10)}</td>
                       <td>{mydocument.approval} / {mydocument.currentSigner}</td>
                       <td>{mydocument.status}</td>
-                      <td>{mydocument.username} / {mydocument.dept}</td>
+                      <td>{mydocument.username} {mydocument.team ? ` / ${mydocument.team}` : (mydocument.dept ? ` / ${mydocument.dept}` : '')} </td>
                       <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${mydocument.id}`, {state: {documentInfo: mydocument}})}}>문서확인</button></td>
                     </tr>
                   ))

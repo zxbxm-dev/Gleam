@@ -12,11 +12,12 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
+  useDisclosure,
 } from '@chakra-ui/react';
 import CustomModal from '../../components/modal/CustomModal';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
-import { WriteApproval, HandleApproval, CheckReport } from '../../services/approval/ApprovalServices';
+import { WriteApprovalOp, WriteApproval, HandleApproval, CheckReport } from '../../services/approval/ApprovalServices';
 import { PersonData } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -46,6 +47,8 @@ const DetailApproval = () => {
   const [isEmptySignModalOpen, setEmptySignModalOpen] = useState(false);
   const [isApproveModalOpen, setApproveModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<string>('');
+  const { onOpen: onOpinionModalOpen, onClose: onOpinionModalClose, isOpen: isOpinionModalOpen } = useDisclosure();
+  const { onOpen: onRejectionModalOpen, onClose: onRejectionModalClose, isOpen: isRejectionModalOpen } = useDisclosure();
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [checksignup, setCheckSignUp] = useState<boolean[]>([]);
@@ -233,6 +236,7 @@ const DetailApproval = () => {
     }
   }, [report_id])
 
+  // 의견 작성하기
   const handleSubmitOpinion = async (report_id: string) => {
     try {
       const formData = {
@@ -241,14 +245,18 @@ const DetailApproval = () => {
         position: user.position,
         opinion: opinion,
       };
-      await WriteApproval(report_id, formData);
-      alert('Opinion submitted successfully.');
+      await WriteApprovalOp(report_id, formData);
+      alert('의견이 등록되었습니다.');
       setOpinion('');
+      onOpinionModalClose();
     } catch (error) {
       alert('Failed to submit opinion.');
+      onOpinionModalClose();
     }
   };
 
+
+  // 반려 작성하기
   const handleSubmitRejection = async (report_id: string) => {
     try {
       const formData = {
@@ -258,10 +266,12 @@ const DetailApproval = () => {
         rejection: rejection,
       };
       await WriteApproval(report_id, formData);
-      alert('Rejection submitted successfully.');
+      alert('반려 사유가 등록되었습니다.');
       setRejection('');
+      onRejectionModalClose();
     } catch (error) {
       alert('Failed to submit rejection.');
+      onRejectionModalClose();
     }
   };
 
@@ -306,7 +316,7 @@ const DetailApproval = () => {
           <div className="approval_write_container">
             <div className="approval_write_container">
               <div className="top_left_content">
-                <Popover placement="right-start">
+                <Popover placement="right-start" isOpen={isOpinionModalOpen} onOpen={onOpinionModalOpen} onClose={onOpinionModalClose}>
                   <PopoverTrigger>
                     <button className="white_button">의견 작성</button>
                   </PopoverTrigger>
@@ -332,7 +342,7 @@ const DetailApproval = () => {
                         </div>
                         <div className='button-wrap'>
                           <button className="second_button" onClick={() => handleSubmitOpinion(report_id)}>등록</button>
-                          <button className="white_button">취소</button>
+                          <button className="white_button" onClick={onOpinionModalClose}>취소</button>
                         </div>
                       </PopoverBody>
                     </PopoverContent>
@@ -343,7 +353,7 @@ const DetailApproval = () => {
               <div className="top_right_content">
                 <button className="primary_button" onClick={() => handleApproval(report_id)}>결재하기</button>
                 <button className="white_button" onClick={exportToPDF}>다운로드</button>
-                <Popover placement="right-start">
+                <Popover placement="right-start" isOpen={isRejectionModalOpen} onOpen={onRejectionModalOpen} onClose={onRejectionModalClose}>
                   <PopoverTrigger>
                     <button className="red_button">반려하기</button>
                   </PopoverTrigger>
@@ -369,7 +379,7 @@ const DetailApproval = () => {
                         </div>
                         <div className='button-wrap'>
                           <button className="second_button" onClick={() => handleSubmitRejection(report_id)}>등록</button>
-                          <button className="white_button">취소</button>
+                          <button className="white_button" onClick={onRejectionModalClose}>취소</button>
                         </div>
                       </PopoverBody>
                     </PopoverContent>
