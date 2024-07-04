@@ -50,6 +50,7 @@ const Calendar = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState("");
+  const [userDropdown, setuserDropdown] = useState(false);
   const [addEventUser, setAddEventUser] = useState<User | null>(null);
   const [memo, setMemo] = useState("");
   const [activeTab, setActiveTab] = useState(0);
@@ -97,6 +98,7 @@ const Calendar = () => {
   }, [activeTab, isSidebarVisible]);
 
   const handleTitleChange = (event: any) => {
+    setuserDropdown(true);
     setTitle(event.target.value);
     const value = event.target.value.toLowerCase();
     if (value.includes('반차')) {
@@ -125,7 +127,8 @@ const Calendar = () => {
 
   const handleAutoCompleteClick = (person: any) => {
     setAddEventUser(person);
-    setTitle(person.username)
+    setTitle(person.username);
+    setuserDropdown(false);
   };
 
   const filteredName = persondata.filter(person =>
@@ -142,8 +145,14 @@ const Calendar = () => {
       return;
     }
 
-    const isoStartDate = startDate.toISOString().substring(0, 10);
-    const isoEndDate = endDate.toISOString().substring(0, 10);
+    const getLocalISODateString = (date: Date) => {
+      const offset = date.getTimezoneOffset();
+      const adjustedDate = new Date(date.getTime() - (offset * 60 * 1000));
+      return adjustedDate.toISOString().substring(0, 10);
+    };
+    
+    const isoStartDate = getLocalISODateString(startDate);
+    const isoEndDate = getLocalISODateString(endDate);
 
     const eventData = {
       userID: addEventUser?.userId,
@@ -166,6 +175,9 @@ const Calendar = () => {
       .then(response => {
         console.log("Event added successfully:", response);
         fetchCalendar();
+        setTitle('');
+        setStartDate(null);
+        setEndDate(null);
       })
       .catch(error => {
         console.error('Error adding event:', error);
@@ -437,7 +449,7 @@ const Calendar = () => {
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setAddEventModalOPen(false)}
-        height="300px"
+        height="320px"
       >
         <div className="body-container">
           <div className="body-content">
@@ -484,7 +496,7 @@ const Calendar = () => {
                   value={title}
                   ref={inputRef}
                 />
-                {title && (
+                {title && userDropdown && (
                   <ul className="userlist_dropdown">
                     {filteredName.map(person => (
                       <li key={person.name} onClick={() => handleAutoCompleteClick(person)}>
@@ -598,7 +610,7 @@ const Calendar = () => {
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setEditEventModalOPen(false)}
-        height="300px"
+        height="320px"
       >
         <div className="body-container">
           <div className="body-content">
