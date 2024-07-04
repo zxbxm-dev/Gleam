@@ -450,6 +450,10 @@
         border-right: 1px solid #000;
       }
 
+      .Bottom_notHover {
+        border-right: 1px solid #000;
+      }
+
       .Bottoms {
         border-right: 1px solid #000;
       }
@@ -498,6 +502,7 @@
         justify-content: center;
         height: 60px;
         border-left: 1px solid #000;
+        border-collapse: collapse;
         cursor: default;
 
         .SignImg {
