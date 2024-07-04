@@ -66,7 +66,9 @@ const DetailApproval = () => {
   const documentInfo = useState(location.state?.documentInfo);
 
   const [signatories, setSignatories] = useState<any[]>([]);
-  const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
+  const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse(); // 결재 해야할 사람
+  const approvedLine = documentInfo[0].pending?.split(',').map((item:any) => item.trim()) ?? [];// 결재 끝난 사람
+  const combinedLine = approvedLine.concat(approveLine); // 전체 결재라인
   const approveDates = documentInfo[0]?.approveDate?.split(',').map((item:any) => item.trim()) ?? [];
   
   useEffect(() => {
@@ -309,6 +311,9 @@ const DetailApproval = () => {
     return user ? user.Sign : null;
   };
 
+
+  console.log('결재해야할사람',approveLine)
+  console.log('결재 끝난 사람',approvedLine)
   return (
     <div className="content">
       <div className="content_container">
@@ -394,7 +399,7 @@ const DetailApproval = () => {
                     {signatories.map((signatory, index) => (
                       <div className='Pay' key={index}>
                         <input className='Top' type="text" placeholder={signatory} disabled />
-                        {signatory === user.position || approveLine[index] === user.username ? 
+                        {signatory === user.position || combinedLine[index] === user.username ? 
                           (
                             <div className='Bottom' onClick={() => handleSignModal(index)}>
                               {checksignup[index] ?
@@ -408,7 +413,7 @@ const DetailApproval = () => {
                           (
                           <div className='Bottom_notHover'>
                             {checksignup[index] ?
-                              <img className='SignImg' src={`${getSignUrl(approveLine[index])}` || ''} alt="sign" />
+                              <img className='SignImg' src={`${getSignUrl(combinedLine[index])}` || ''} alt="sign" />
                               :
                               <></>
                             }
