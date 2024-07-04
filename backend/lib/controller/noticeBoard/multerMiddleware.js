@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
     }
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname); // 오리지널 파일 이름으로 저장
+    cb(null, Buffer.from(file.originalname, 'latin1').toString('utf8')); // 오리지널 파일 이름으로 저장
   },
 });
 

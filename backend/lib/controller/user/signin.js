@@ -196,8 +196,8 @@ const editRegistration = async (req, res) => {
       team: team,
       spot: spot,
       position: position,
-      attachment: attachmentFile ? attachmentFile.originalname : null,
-      Sign: signFile ? signFile.originalname : null,
+      attachment: attachmentFile ? Buffer.from(attachmentFile.originalname, 'latin1').toString('utf8') : null,
+      Sign: signFile ? Buffer.from(signFile.originalname, 'latin1').toString('utf8') : null,
     };
 
     // 사용자 정보 업데이트

@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname); // 원본 파일 이름 사용
+    cb(null, Buffer.from(file.originalname, 'latin1').toString('utf8')); // 원본 파일 이름 사용
   },
 });
 
