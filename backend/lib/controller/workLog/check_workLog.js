@@ -89,7 +89,7 @@ const getDocumentsToApprove = async (req, res) => {
   const { username } = req.query;
 
   try {
-    // 먼저 personSigning에서 이름이 끝부분에 있는 문서들을 조회합니다.
+    // personSigning에서 이름이 끝부분에 있는 문서들을 조회
     const documents = await Report.findAll({
       where: {
         personSigning: {
@@ -98,14 +98,14 @@ const getDocumentsToApprove = async (req, res) => {
       },
     });
 
-    // 필터링: pending에 이름이 있는 문서는 다음 결재자의 이름을 가져오도록 합니다.
+    // 필터링: pending에 이름이 있는 문서는 다음 결재자의 이름을 가져옴
     const filteredDocuments = documents.map(document => {
       const personSigningList = document.personSigning.split(",");
       const pendingList = document.pending ? document.pending.split(",") : [];
 
       // personSigning의 마지막 이름이 현재 username이고 pending에 같은 이름이 있다면
       if (personSigningList[personSigningList.length - 1] === username && pendingList.includes(username)) {
-        // 다음 사람의 이름을 가져옵니다.
+        // 다음 사람의 이름을 가져옴
         const nextSigner = personSigningList[personSigningList.indexOf(username) + 1];
         return {
           ...document.toJSON(),
@@ -118,12 +118,12 @@ const getDocumentsToApprove = async (req, res) => {
     // 조회된 문서 목록을 클라이언트에게 반환
     res.json(filteredDocuments);
   } catch (error) {
-    console.error('Error retrieving documents:', error);
-    res.status(500).json({ error: 'Error retrieving documents' });
+    console.error('문서를 검색하는 중 오류가 발생:', error);
+    res.status(500).json({ error: '내부 서버 오류입니다.' });
   }
 };
 
-// 결재 진행 중인 문서 목록 조회 -------------------------------------------------------------------------------- 여기서 부터 수정해야 함!!!!!!!!!!!!!!!!!!!
+// 결재 진행 중인 문서 목록 조회 --------------------------------------------------------------------------------
 const getDocumentsInProgress = async (req, res) => {
   const { username } = req.query;
 console.log(req.query);

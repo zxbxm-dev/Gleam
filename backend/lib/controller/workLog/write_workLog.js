@@ -2,7 +2,7 @@ const models = require("../../models");
 const Report = models.Report;
 const fs = require("fs");
 
-// 보고서 상세 조회
+// 보고서 상세 조회 --------------------------------------------------------------------------------
 const getReportById = async (req, res) => {
   const { report_id } = req.params;
 
@@ -37,7 +37,7 @@ const getReportById = async (req, res) => {
   }
 };
 
-// 보고서 삭제
+// 보고서 삭제 --------------------------------------------------------------------------------
 const deleteReportById = async (req, res) => {
   const { report_id } = req.params;
 
@@ -71,7 +71,12 @@ const deleteReportById = async (req, res) => {
   }
 };
 
-// 보고서 결재 진행
+// 보고서 반려 --------------------------------------------------------------------------------
+const cancelReportById = async (res, req) => {
+  
+}
+
+// 보고서 결재 진행 --------------------------------------------------------------------------------
 const SignProgress = async (req, res) => {
   const { report_id } = req.params;
   const { userID, username, approveDate } = req.body;
