@@ -131,7 +131,7 @@ console.log(req.query);
     const reports = await Report.findAll({
       where: {
         [Op.or]: [
-          { pending: { [Op.like]: `%${username}%` } }, // 결제 진행중
+          { pending: { [Op.like]: `%${username}%` } },
         ],
       },
     });
@@ -160,26 +160,22 @@ const getRejectedDocuments = async (req, res) => {
   try {
     const reports = await Report.findAll({
       where: {
-        [Op.or]: [
-          { rejected: { [Op.like]: `%${username}%` } }, // 결제 진행중
+        [Op.and]: [
+          { rejected: { [Op.like]: `%${username}%` } }, // 반려된 문서 중에서
+          { username: { [Op.ne]: username } } // 작성자가 현재 사용자가 아닌 문서만 선택
         ],
       },
     });
 
     const reportsToSend = reports.map((report) => report.toJSON());
 
-    console.log("클라이언트에게 결제할 문서 목록:");
+    console.log("클라이언트에게 반려된 문서 목록:");
     console.log(reportsToSend);
 
     res.status(200).json(reportsToSend);
   } catch (error) {
-    console.error(
-      "결제할 문서 목록을 가져오는 중에 오류가 발생했습니다.:",
-      error
-    );
-    res
-      .status(500)
-      .json({ error: "보결제할 문서 목록 불러오기에 실패했습니다." });
+    console.error("반려된 문서 목록을 가져오는 중에 오류가 발생했습니다.:", error);
+    res.status(500).json({ error: "반려된 문서 목록 불러오기에 실패했습니다." });
   }
 };
 
@@ -191,7 +187,7 @@ const getApprovedDocuments = async (req, res) => {
     const reports = await Report.findAll({
       where: {
         [Op.or]: [
-          { completed: { [Op.like]: `%${username}%` } }, // 결제 진행중
+          { completed: { [Op.like]: `%${username}%` } },
         ],
       },
     });

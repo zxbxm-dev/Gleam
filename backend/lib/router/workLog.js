@@ -39,6 +39,7 @@ module.exports = (app) => {
     "/deleteReport/:report_id",
     writeReportController.deleteReportById
   );
+  router.post("/writeApproval/:report_id", writeReportController.cancelReportById);
 
   // ⚠️⚠️ 문서 결제 router ----------------------------------------------------------------------- ⚠️⚠️
   router.post("/handleApproval/:report_id", writeReportController.SignProgress);
