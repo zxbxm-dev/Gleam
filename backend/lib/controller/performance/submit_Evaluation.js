@@ -1,7 +1,6 @@
 const models = require("../../models");
 const evaluation = models.Evaluation;
 const sanitizeFilename = require("sanitize-filename");
-const iconv = require('iconv-lite');
 
 // 인사평가서 제출
 const submitReport = async (req, res) => {
@@ -13,15 +12,12 @@ const submitReport = async (req, res) => {
     let filenames = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const originalFilename = file.originalname;
-        // 원본 파일명 처리
-        const sanitizedFilename = sanitizeFilename(originalFilename);
-        const utf8Filename = iconv.encode(sanitizedFilename, 'utf8').toString();
+        const originalFilename = Buffer.from(file.originalname, 'latin1').toString('utf8');
         files.push({
           path: file.path,
-          filename: utf8Filename,
+          filename: originalFilename,
         });
-        filenames.push(sanitizedFilename);
+        filenames.push(originalFilename);
       }
     }
 

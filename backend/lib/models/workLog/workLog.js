@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      team: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       position: {
         type: DataTypes.STRING,
         allowNull: true,

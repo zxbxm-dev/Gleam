@@ -5,7 +5,7 @@ module.exports = (app) => {
 
   const express = require("express");
   const router = express.Router();
-  const multerMiddleware = require("../controller/noticeBoard/multerMiddleware");
+  const multerMiddleware = require("../controller/workLog/multerMiddleware");
 
   // 보고서 제출 API 라우트
   router.post(

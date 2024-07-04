@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(
       __dirname,
-      "../../../backend/uploads/reportFile"
+      "../../../uploads/reportFile"
     );
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const timestamp = new Date().getTime();
-    cb(null, `${timestamp}_${file.originalname}`);
+    cb(null, `${timestamp}_${Buffer.from(file.originalname, 'latin1').toString('utf8')}`);
   },
 });
 
@@ -30,8 +30,6 @@ const fileFilter = (req, file, cb) => {
 };
 
 // Multer 인스턴스 생성
-const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
-  "handleSubmit"
-);
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 module.exports = upload;
