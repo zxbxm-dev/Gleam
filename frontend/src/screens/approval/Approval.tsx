@@ -291,8 +291,8 @@ const Approval = () => {
                 <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={approvalings.length}
-                  pageRangeDisplayed={Math.ceil(approvalings.length / postPerPage)}
+                  totalItemsCount={approvalings?.length}
+                  pageRangeDisplayed={Math.ceil(approvalings?.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -382,8 +382,8 @@ const Approval = () => {
                 <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={inProgress.length}
-                  pageRangeDisplayed={Math.ceil(inProgress.length / postPerPage)}
+                  totalItemsCount={inProgress?.length}
+                  pageRangeDisplayed={Math.ceil(inProgress?.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -473,8 +473,8 @@ const Approval = () => {
                 <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={rejecteds.length}
-                  pageRangeDisplayed={Math.ceil(rejecteds.length / postPerPage)}
+                  totalItemsCount={rejecteds?.length}
+                  pageRangeDisplayed={Math.ceil(rejecteds?.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -564,8 +564,8 @@ const Approval = () => {
                 <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={compleDocuments.length}
-                  pageRangeDisplayed={Math.ceil(compleDocuments.length / postPerPage)}
+                  totalItemsCount={compleDocuments?.length}
+                  pageRangeDisplayed={Math.ceil(compleDocuments?.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -665,8 +665,8 @@ const Approval = () => {
                 <Pagination
                   activePage={page}
                   itemsCountPerPage={postPerPage}
-                  totalItemsCount={mydocuments.length}
-                  pageRangeDisplayed={Math.ceil(mydocuments.length / postPerPage)}
+                  totalItemsCount={mydocuments?.length}
+                  pageRangeDisplayed={Math.ceil(mydocuments?.length / postPerPage)}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -788,19 +788,19 @@ const Approval = () => {
       <div className="approval_top">
         <div className="approval_top_first">
           <div className={`${selectedTab === "myDocuments" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("myDocuments")}>
-            <span>내문서</span> <span className="document_count">{mydocuments.length}</span>
+            <span>내문서</span> <span className="document_count">{mydocuments?.length}</span>
           </div>
           <div className={`${selectedTab === "approval" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("approval")}>
-            <span>결재 할 문서</span> <span className="document_count">{approvalings.length}</span>
+            <span>결재 할 문서</span> <span className="document_count">{approvalings?.length}</span>
           </div>
           <div className={`${selectedTab === "inProgress" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("inProgress")}>
-            <span>결재 진행 중 문서</span> <span className="document_count">{inProgress.length}</span>
+            <span>결재 진행 중 문서</span> <span className="document_count">{inProgress?.length}</span>
           </div>
           <div className={`${selectedTab === "rejected" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("rejected")}>
-            <span>반려 문서</span> <span className="document_count">{rejecteds.length}</span>
+            <span>반려 문서</span> <span className="document_count">{rejecteds?.length}</span>
           </div>
           <div className={`${selectedTab === "completed" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("completed")}>
-            <span>결재 완료 문서</span> <span className="document_count">{compleDocuments.length}</span>
+            <span>결재 완료 문서</span> <span className="document_count">{compleDocuments?.length}</span>
           </div>
           {/* {user.username === '우현지' ? (
             <div className={`${selectedTab === "vacation" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("vacation")}>

@@ -45,7 +45,8 @@ const DetailDocument = () => {
   const [personData, setPersonData] = useState<Person[] | null>(null);
 
   const [signatories, setSignatories] = useState<any[]>([]);
-  const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
+  const approveLine = documentInfo[0].pending?.split(',').map((item:any) => item.trim()) ?? []; // 아직 결재가 진행중일때
+  const completedapproveLine = documentInfo[0].completed?.split(',').map((item:any) => item.trim()) ?? []; // 결재가 모두 완료 됐을 시 결재라인
   const approveDates = documentInfo[0]?.approveDate?.split(',').map((item:any) => item.trim()) ?? [];
 
   useEffect(() => {
@@ -191,7 +192,6 @@ const DetailDocument = () => {
     return user ? user.Sign : null;
   };
 
-
   return (
     <div className="content">
       <div className='oper_header_right'>
@@ -240,7 +240,11 @@ const DetailDocument = () => {
                       <input className='Top' type="text" placeholder={signatory} disabled />
                       <div className='Bottoms'>
                         {checksignup[index] &&
-                          <img className='SignImg' src={`${getSignUrl(approveLine[index])}` || ''} alt="sign" />
+                          (documentInfo[0].approval < documentInfo[0].currentSigner ? (
+                            <img className='SignImg' src={`${getSignUrl(approveLine[index])}` || ''} alt="sign" />
+                          ) : (
+                            <img className='SignImg' src={`${getSignUrl(completedapproveLine[index])}` || ''} alt="sign" />
+                          ))
                         }
                       </div>
                       <div className='BtmDate'>{approveDates[index] || ''}</div>
