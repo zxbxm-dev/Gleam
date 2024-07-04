@@ -585,8 +585,7 @@ const Operating = () => {
         }
         handleInputChange(team, index, column, calculatedValue.toLocaleString());
       } catch (error) {
-        window.alert('수식이 잘못 입력됐습니다.')
-        // 수식 에러 처리
+        console.log('수식 입력이 잘못됐습니다.')
       }
     }
   };
