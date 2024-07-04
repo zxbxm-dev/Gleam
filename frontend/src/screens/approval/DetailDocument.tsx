@@ -5,9 +5,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import CustomModal from "../../components/modal/CustomModal";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-// import testPDF from '../../assets/pdf/[서식-A106-1] TF팀 기획서.pdf';
 import { CheckReport, DeleteReport } from '../../services/approval/ApprovalServices';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -18,6 +17,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const DetailDocument = () => {
+  let navigate = useNavigate();
   let location = useLocation();
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
@@ -31,7 +31,7 @@ const DetailDocument = () => {
 
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
-  const approveDates = documentInfo[0].approveDate.split(',').map((item:any) => item.trim());
+  const approveDates = documentInfo[0]?.approveDate?.split(',').map((item:any) => item.trim()) ?? [];
 
   useEffect(() => {
     const initialChecks = new Array(signatories.length).fill(false);
@@ -129,7 +129,7 @@ const DetailDocument = () => {
       }
     }
 
-    pdf.save('보고서.pdf');
+    pdf.save(`${documentInfo[0].pdffile}`);
   };
 
   const renderPages = () => {
@@ -152,21 +152,18 @@ const DetailDocument = () => {
       const response = await DeleteReport(report_id);
       console.log("Report deleted successfully:", response);
       setDeleteEventModalOPen(false);
+      navigate('/approval');
     } catch (error) {
       console.log("Failed to delete report:", error);
     }
   };
 
-  const DeleteOpen = () => {
-    setDeleteEventModalOPen(true);
-  };
-
   return (
     <div className="content">
       <div className='oper_header_right'>
-        <button className='primary_button'>확인</button>
+        <button className='primary_button' onClick={() => navigate(-1)}>확인</button>
         <button className='white_button' onClick={exportToPDF}>다운로드</button>
-        <button className='red_button' onClick={DeleteOpen}>삭제</button>
+        <button className='red_button' onClick={() => setDeleteEventModalOPen(true)}>삭제</button>
       </div>
 
       <div className="content_container">

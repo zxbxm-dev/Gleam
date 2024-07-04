@@ -351,7 +351,7 @@ const DetailApproval = () => {
                     {signatories.map((signatory, index) => (
                       <div className='Pay' key={index}>
                         <input className='Top' type="text" placeholder={signatory} disabled />
-                        {signatory === user.position ? 
+                        {signatory === user.position || approveLine[index] === user.username ? 
                           (
                             <div className='Bottom' onClick={() => handleSignModal(index)}>
                               {checksignup[index] ?
@@ -373,7 +373,7 @@ const DetailApproval = () => {
                           )
                         }
                         
-                        <div className='BtmDate'>{approveDates[index] || ''}</div>
+                        <div className='BtmDate'>{approveDates[index] || signDates[index]}</div>
                       </div>
                     ))}
                   </div>

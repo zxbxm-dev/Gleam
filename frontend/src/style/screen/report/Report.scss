@@ -212,7 +212,7 @@
 
 // 결재라인 선택 모달
 .approval_popover_content {
-  width: 440px !important;
+  width: 460px !important;
   height: 700px;
   border: 0;
   border-radius: 5px;
@@ -238,7 +238,7 @@
 
     .approval_popover_memberside {
       @include custom-scrollbar;
-      width: 200px;
+      width: 220px;
       height: 650px;
       overflow-y: scroll;
     }
