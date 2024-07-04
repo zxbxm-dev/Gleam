@@ -4,7 +4,7 @@ import { Login_Logo, DeleteIcon, ArrowDown, ArrowUp, FileUploadIcon } from "../.
 import { RegisterEditServices } from "../../services/login/RegisterServices";
 import CustomModal from "../../components/modal/CustomModal";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
 
 interface SelectedOptions {
@@ -50,7 +50,7 @@ const EditRegis = () => {
         phoneNumber: '',
         password: ''
     });
-    const user = useRecoilValue(userState);
+    const [user, setUser] = useRecoilState(userState);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -244,15 +244,29 @@ const EditRegis = () => {
 
         // API 호출
         RegisterEditServices(formDataToSend)
-            .then(response => {
-                setAddModalOpen(true);
+            .then((res) => {
+                if (res) {
+                    updateUserStateAndLocalStorage({
+                        ...user,
+                        ...modifiedData,
+                        Sign: Sign ? Sign.name : user.Sign
+                    });
+
+                    setAddModalOpen(true);
+
+                } else {
+                    console.log('회원정보 수정 실패')
+                }
             })
-            .catch(error => {
-                // 오류 발생 시
-                console.error("오류:", error);
+            .catch((err) => {
+                console.error(err);
             });
     };
 
+    const updateUserStateAndLocalStorage = (updatedUser: any) => {
+        setUser(updatedUser);
+        localStorage.setItem('userState', JSON.stringify(updatedUser));
+    };
 
     return (
         <div className="Register">

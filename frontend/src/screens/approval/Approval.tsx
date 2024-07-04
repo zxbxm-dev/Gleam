@@ -783,7 +783,7 @@ const Approval = () => {
         return null;
     }
   };
-  console.log('저장된 결재 완료된 문서',compleDocuments)
+  
   return (
     <div className="content">
       <div className="approval_top">
@@ -803,14 +803,14 @@ const Approval = () => {
           <div className={`${selectedTab === "completed" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("completed")}>
             <span>결재 완료 문서</span> <span className="document_count">{compleDocuments.length}</span>
           </div>
-          {user.username === '우현지' ? (
+          {/* {user.username === '우현지' ? (
             <div className={`${selectedTab === "vacation" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("vacation")}>
               <span>휴가문서관리</span> <span className="document_count">{vacations.length}</span>
             </div>
           )
             :
             <></>
-          }
+          } */}
         </div>
       </div>
 

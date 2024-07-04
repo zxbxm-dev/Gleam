@@ -17,6 +17,7 @@ import CustomModal from '../../components/modal/CustomModal';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
 import { WriteApproval, HandleApproval, CheckReport } from '../../services/approval/ApprovalServices';
+import { PersonData } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -25,6 +26,19 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 type PDFFile = string | File | null;
+
+interface Person {
+  userId: string;
+  username: string;
+  position: string;
+  department: string;
+  team: string;
+  phoneNumber?: string;
+  usermail?: string;
+  entering: Date;
+  attachment: string;
+  Sign: string;
+}
 
 const DetailApproval = () => {
   let navigate = useNavigate();
@@ -39,6 +53,7 @@ const DetailApproval = () => {
   const [signDates, setSignDates] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const user = useRecoilValue(userState);
+  const [personData, setPersonData] = useState<Person[] | null>(null);
   const [opinion, setOpinion] = useState('');
   const [rejection, setRejection] = useState('');
 
@@ -51,6 +66,19 @@ const DetailApproval = () => {
   const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
   const approveDates = documentInfo[0]?.approveDate?.split(',').map((item:any) => item.trim()) ?? [];
   
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await PersonData();
+        setPersonData(response.data);
+      } catch (err) {
+        console.error("Error fetching person data:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   useEffect(() => {
     // setFile(testPDF);
     const initialChecks = new Array(signatories.length).fill(false);
@@ -266,6 +294,11 @@ const DetailApproval = () => {
     })
   }
 
+  const getSignUrl = (username: string) => {
+    const user = personData?.find(person => person.username === username);
+    return user ? user.Sign : null;
+  };
+
   return (
     <div className="content">
       <div className="content_container">
@@ -355,7 +388,7 @@ const DetailApproval = () => {
                           (
                             <div className='Bottom' onClick={() => handleSignModal(index)}>
                               {checksignup[index] ?
-                                <img className='SignImg' src={`http://localhost:3000/uploads/${user.username}_서명.png`} alt="sign" />
+                                <img className='SignImg' src={`${getSignUrl(user.username)}` || ''} alt="sign" />
                                 :
                                 <></>
                               }
@@ -365,7 +398,7 @@ const DetailApproval = () => {
                           (
                           <div className='Bottom_notHover'>
                             {checksignup[index] ?
-                              <img className='SignImg' src={`http://localhost:3000/uploads/${approveLine[index]}_서명.png`} alt="sign" />
+                              <img className='SignImg' src={`${getSignUrl(approveLine[index])}` || ''} alt="sign" />
                               :
                               <></>
                             }

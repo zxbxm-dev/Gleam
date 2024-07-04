@@ -7,8 +7,6 @@ import { ReactComponent as FirstLeftIcon } from "../../../assets/images/Common/F
 import { useNavigate, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import { CheckAnnounce, incrementViewCount, PinnedAnnouncement } from "../../../services/announcement/Announce";
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../../recoil/atoms';
 
 import { useQueryClient, useQuery } from "react-query";
 
@@ -18,12 +16,10 @@ const Announcement = () => {
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [announcements, setAnnouncements] = useState<any[]>([]);
-  const userName = useRecoilValue(userState).name;
   const [postPerPage, setPostPerPage] = useState<number>(10);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
   const [clickIdx, setClickIdx] = useState<number | null>(null);
-  console.log(userName);
   
   useEffect(() => {
     const handleResize = () => {
