@@ -72,7 +72,79 @@ const deleteReportById = async (req, res) => {
 };
 
 // 보고서 반려 --------------------------------------------------------------------------------
-const cancelReportById = async (res, req) => {
+const cancelReportById = async (req, res) => {
+  const { report_id } = req.params;
+  const { rejection, userID, username, position } = req.body;
+
+  try {
+    // 보고서 조회
+    const report = await Report.findByPk(report_id);
+
+    if (!report) {
+      return res.status(404).json({ error: "해당 보고서를 찾을 수 없습니다." });
+    }
+
+    console.log('현재 보고서:', report);
+
+    // 현재 결재자가 아닌 경우 오류 반환
+    if (!report.personSigning.includes(username)) {
+      return res.status(403).json({ error: "현재 결재자가 아닙니다." });
+    }
+
+    // 현재 pending 리스트 조회
+    let pendingSigners = report.pending ? report.pending.split(",") : [];
+    let rejectedSigners = report.rejected ? report.rejected.split(",") : [];
+
+    console.log('현재 pendingSigners:', pendingSigners);
+    console.log('현재 rejectedSigners:', rejectedSigners);
+
+    // 반려한 사람도 personSigning에서 rejected로 옮기기
+    if (!rejectedSigners.includes(username)) {
+      rejectedSigners.push(username);
+    }
+
+    // pending에서 반려한 사람 제거
+    const index = pendingSigners.indexOf(username);
+    if (index !== -1) {
+      pendingSigners.splice(index, 1);
+    }
+
+    // 모든 pendingSigners도 rejected로 이동
+    pendingSigners.forEach((signer) => {
+      if (!rejectedSigners.includes(signer)) {
+        rejectedSigners.push(signer);
+      }
+    });
+
+    // 반려 내용을 저장
+    report.rejectName = username; // 반려한 사람의 이름
+    report.rejectContent = rejection; // 반려 내용
+
+    // 변경 사항 저장
+    report.pending = ""; // pending 비우기
+    report.rejected = rejectedSigners.join(",");
+
+    // personSigning에서 반려한 사람 제거
+    const personSigningList = report.personSigning ? report.personSigning.split(",") : [];
+    const personSigningIndex = personSigningList.indexOf(username);
+    if (personSigningIndex !== -1) {
+      personSigningList.splice(personSigningIndex, 1);
+      report.personSigning = personSigningList.join(",");
+    }
+
+    // 상태 업데이트 저장
+    await report.save();
+
+    res.status(200).json({ message: "보고서가 반려되었습니다." });
+  } catch (error) {
+    console.error("보고서 반려 처리 중 오류 발생:", error);
+    res.status(500).json({ error: "내부 서버 오류입니다." });
+  }
+};
+
+
+// 보고서 의견 --------------------------------------------------------------------------------
+const opinionReportById = async (res, req) => {
   
 }
 
@@ -153,5 +225,7 @@ const SignProgress = async (req, res) => {
 module.exports = {
   getReportById,
   deleteReportById,
+  cancelReportById,
+  opinionReportById,
   SignProgress
 };
