@@ -84,6 +84,8 @@ const SignProgress = async (req, res) => {
       return res.status(404).json({ error: "해당 보고서를 찾을 수 없습니다." });
     }
 
+    console.log('현재 보고서:', report);
+
     // 현재 결재자가 아닌 경우 오류 반환
     if (!report.personSigning.includes(username)) {
       return res.status(403).json({ error: "현재 결재자가 아닙니다." });
@@ -97,17 +99,28 @@ const SignProgress = async (req, res) => {
       return res.status(403).json({ error: "이미 결재를 완료한 사용자입니다." });
     }
 
+    console.log('현재 pendingSigners:', pendingSigners);
+    console.log('현재 completedSigners:', completedSigners);
+
     // 결재자가 결재를 진행한 경우만 approval 증가
     if (!pendingSigners.includes(username)) {
       pendingSigners.push(username);
       report.approveDate = report.approveDate ? `${report.approveDate},${approveDate}` : approveDate;
-      // 결재 완료한 인원수 증가
       report.approval = (report.approval || 0) + 1;
     }
 
+    console.log('결재 후 pendingSigners:', pendingSigners);
+
+    // personSigning에서 username 제거
+    const personSigningList = report.personSigning.split(",");
+    const updatedPersonSigningList = personSigningList.filter(signer => signer.trim() !== username.trim());
+    report.personSigning = updatedPersonSigningList.join(",");
+
+    console.log('업데이트된 personSigningList:', updatedPersonSigningList);
+
     // 모든 결재 진행자가 결재를 완료했는지 확인
-    if (report.personSigning.split(",").length === pendingSigners.length) {
-      // completed 배열에 모든 결재자 추가
+    if (updatedPersonSigningList.length === 0) {
+      // 모든 결재자가 결재를 완료한 경우 completed 배열에 모든 결재자 추가
       completedSigners = completedSigners.concat(pendingSigners);
 
       // pending 배열 초기화
@@ -116,6 +129,8 @@ const SignProgress = async (req, res) => {
       // 변경 사항 저장
       report.completed = completedSigners.join(",");
     }
+
+    console.log('최종 completedSigners:', completedSigners);
 
     // 변경 사항 저장
     report.pending = pendingSigners.join(",");
@@ -128,6 +143,7 @@ const SignProgress = async (req, res) => {
     res.status(500).json({ error: "내부 서버 오류입니다." });
   }
 };
+
 
 module.exports = {
   getReportById,

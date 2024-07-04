@@ -89,35 +89,44 @@ const getDocumentsToApprove = async (req, res) => {
   const { username } = req.query;
 
   try {
-    const reports = await Report.findAll({
+    // 먼저 personSigning에서 이름이 끝부분에 있는 문서들을 조회합니다.
+    const documents = await Report.findAll({
       where: {
-        [Op.or]: [
-          { personSigning: { [Op.like]: `%${username}%` } }, // 결제 진행자
-        ],
+        personSigning: {
+          [Op.like]: `%${username}`, // 이름이 personSigning의 끝부분에 있는 경우
+        },
       },
     });
 
-    const reportsToSend = reports.map((report) => report.toJSON());
+    // 필터링: pending에 이름이 있는 문서는 다음 결재자의 이름을 가져오도록 합니다.
+    const filteredDocuments = documents.map(document => {
+      const personSigningList = document.personSigning.split(",");
+      const pendingList = document.pending ? document.pending.split(",") : [];
 
-    console.log("클라이언트에게 결제할 문서 목록:");
-    console.log(reportsToSend);
+      // personSigning의 마지막 이름이 현재 username이고 pending에 같은 이름이 있다면
+      if (personSigningList[personSigningList.length - 1] === username && pendingList.includes(username)) {
+        // 다음 사람의 이름을 가져옵니다.
+        const nextSigner = personSigningList[personSigningList.indexOf(username) + 1];
+        return {
+          ...document.toJSON(),
+          nextSigner,
+        };
+      }
+      return document;
+    });
 
-    res.status(200).json(reportsToSend);
+    // 조회된 문서 목록을 클라이언트에게 반환
+    res.json(filteredDocuments);
   } catch (error) {
-    console.error(
-      "결제할 문서 목록을 가져오는 중에 오류가 발생했습니다.:",
-      error
-    );
-    res
-      .status(500)
-      .json({ error: "보결제할 문서 목록 불러오기에 실패했습니다." });
+    console.error('Error retrieving documents:', error);
+    res.status(500).json({ error: 'Error retrieving documents' });
   }
 };
 
-// 결재 진행 중인 문서 목록 조회
+// 결재 진행 중인 문서 목록 조회 -------------------------------------------------------------------------------- 여기서 부터 수정해야 함!!!!!!!!!!!!!!!!!!!
 const getDocumentsInProgress = async (req, res) => {
   const { username } = req.query;
-
+console.log(req.query);
   try {
     const reports = await Report.findAll({
       where: {
@@ -144,7 +153,7 @@ const getDocumentsInProgress = async (req, res) => {
   }
 };
 
-// 반려된 문서 목록 조회
+// 반려된 문서 목록 조회 --------------------------------------------------------------------------------
 const getRejectedDocuments = async (req, res) => {
   const { username } = req.query;
 
@@ -174,7 +183,7 @@ const getRejectedDocuments = async (req, res) => {
   }
 };
 
-// 결재 완료된 문서 목록 조회
+// 결재 완료된 문서 목록 조회 --------------------------------------------------------------------------------
 const getApprovedDocuments = async (req, res) => {
   const { username } = req.query;
 
