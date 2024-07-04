@@ -165,7 +165,7 @@ const WriteReport = () => {
 
 
   const teamLeader = (user.team === '개발 1팀')
-    ? null
+    ? members.find(member => member[0] === '장현지') || null
     : (user.team === '개발 2팀')
       ? members.find(member => member[0] === '변도일') || null
       : (user.team === '블록체인 1팀')
@@ -620,7 +620,7 @@ const WriteReport = () => {
                 <Portal>
                   <PopoverContent className="approval_popover_content">
                     <PopoverHeader className="approval_popover_header">결재라인 선택</PopoverHeader>
-                    <PopoverCloseButton className="approval_popover_header_close"/>
+                    <PopoverCloseButton className="approval_popover_header_close" />
                     <PopoverBody className="approval_popover_body">
                       <div className="approval_popover_memberside">
                         <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
@@ -775,11 +775,11 @@ const WriteReport = () => {
       </div>
       <CustomModal
         isOpen={isSubmitModalOpen}
-        onClose={() => {setSubmitModalOpen(false); navigate('/approval');}}
+        onClose={() => { setSubmitModalOpen(false); navigate('/approval'); }}
         header={'알림'}
         footer1={'확인'}
         footer1Class="green-btn"
-        onFooter1Click={() => {setSubmitModalOpen(false); navigate('/approval');}}
+        onFooter1Click={() => { setSubmitModalOpen(false); navigate('/approval'); }}
       >
         <div>
           제출이 완료되었습니다.

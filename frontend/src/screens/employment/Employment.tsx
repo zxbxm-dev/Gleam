@@ -337,7 +337,7 @@ const handleSubmit = () => {
         footer2Class="gray-btn"
         onFooter2Click={() => setAddModalOpen(false)}
         width="400px"
-        height="250px"
+        height="270px"
       >
         <div className="body-container">
           <div className="AddTitle">
