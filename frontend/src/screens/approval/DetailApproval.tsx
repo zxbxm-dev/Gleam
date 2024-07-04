@@ -49,7 +49,7 @@ const DetailApproval = () => {
 
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
-  const approveDates = documentInfo[0].approveDate.split(',').map((item:any) => item.trim());
+  const approveDates = documentInfo[0]?.approveDate?.split(',').map((item:any) => item.trim()) ?? [];
   
   useEffect(() => {
     // setFile(testPDF);
