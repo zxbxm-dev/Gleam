@@ -6,6 +6,7 @@ import CustomModal from "../../components/modal/CustomModal";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { CheckReport, DeleteReport } from '../../services/approval/ApprovalServices';
+import { PersonData } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
@@ -15,6 +16,19 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 type PDFFile = string | File | null;
+
+interface Person {
+  userId: string;
+  username: string;
+  position: string;
+  department: string;
+  team: string;
+  phoneNumber?: string;
+  usermail?: string;
+  entering: Date;
+  attachment: string;
+  Sign: string;
+}
 
 const DetailDocument = () => {
   let navigate = useNavigate();
@@ -28,10 +42,24 @@ const DetailDocument = () => {
   const report_id = pathnameParts[pathnameParts.length - 1];
   const documentInfo = useState(location.state?.documentInfo);
   const [checksignup, setCheckSignUp] = useState<boolean[]>([]);
+  const [personData, setPersonData] = useState<Person[] | null>(null);
 
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine = documentInfo[0].personSigning.split(',').map((item:any) => item.trim()).reverse();
   const approveDates = documentInfo[0]?.approveDate?.split(',').map((item:any) => item.trim()) ?? [];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await PersonData();
+        setPersonData(response.data);
+      } catch (err) {
+        console.error("Error fetching person data:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const initialChecks = new Array(signatories.length).fill(false);
@@ -158,6 +186,12 @@ const DetailDocument = () => {
     }
   };
 
+  const getSignUrl = (username: string) => {
+    const user = personData?.find(person => person.username === username);
+    return user ? user.Sign : null;
+  };
+
+
   return (
     <div className="content">
       <div className='oper_header_right'>
@@ -206,7 +240,7 @@ const DetailDocument = () => {
                       <input className='Top' type="text" placeholder={signatory} disabled />
                       <div className='Bottoms'>
                         {checksignup[index] &&
-                          <img className='SignImg' src={`http://localhost:3000/uploads/${approveLine[index]}_서명.png`} alt="sign" />
+                          <img className='SignImg' src={`${getSignUrl(approveLine[index])}` || ''} alt="sign" />
                         }
                       </div>
                       <div className='BtmDate'>{approveDates[index] || ''}</div>
