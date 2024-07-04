@@ -25,12 +25,8 @@
   .btn_content {
     display: flex;
     position: relative;
-    top: -10px;
     gap: 10px;
-
-    .resize_button {
-      margin-top: 5px;
-    }
+    height: 35px;
   }
 }
 
