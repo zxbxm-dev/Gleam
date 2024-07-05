@@ -1,8 +1,9 @@
 import api from "../../api/auth";
 
 // 인사평가 조회
-const CheckPerform = () => {
-  return api.get("/checkPerform");
+const CheckPerform = (params) => {
+  const queryString = `?username=${params.username}&userID=${params.userID}`;
+  return api.get("/checkPerform" + queryString);
 }
 
 // 인사평가 제출

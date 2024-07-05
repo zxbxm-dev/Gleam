@@ -32,9 +32,9 @@ const Sidebar = () => {
   const [activeTab, setActiveTab] = useState<string>("");
   const user = useRecoilValue(userState);
 
-  const handleMemberClick = (name: string, dept: string, team: string, position: string) => {
+  const handleMemberClick = (userID: string, name: string, dept: string, team: string, position: string) => {
     // 선택된 멤버 정보를 새로운 Member 배열로 생성
-    const newMember = [name, dept, team, position];
+    const newMember = [userID, name, dept, team, position];
     setIsSelectMember(newMember);
     console.log(isSelectMember)
   };
@@ -205,7 +205,7 @@ const Sidebar = () => {
             </div>
             <div>
               {isHrSidebarVisible && 
-                <MemberSidebar onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position)} />
+                <MemberSidebar onClickMember={(userID, name, dept, team, position) => handleMemberClick(userID, name, dept, team, position)} />
               }
             </div>
           </div>

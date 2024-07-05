@@ -17,7 +17,7 @@ interface Person {
 }
 
 interface Props {
-  onClickMember: (name: string, dept: string, team: string, position: string) => void;
+  onClickMember: (userID: string, name: string, dept: string, team: string, position: string) => void;
 }
 
 type CurrentPageType =
@@ -58,7 +58,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
   };
 
   const handleMemberClick = (person: Person) => {
-    onClickMember(person.username, person.department, person.team, person.position);
+    onClickMember(person.userId ,person.username, person.department, person.team, person.position);
   };
 
   const renderMembers = () => {
