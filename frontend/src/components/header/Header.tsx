@@ -2,7 +2,6 @@ import "./Header.scss";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Logo,
-  UserIcon,
   UserIcon_dark,
   SettingIcon,
 } from "../../assets/images/index";
@@ -54,11 +53,11 @@ const Header = () => {
               </div>
               </PopoverTrigger>
             <Portal>
-              <PopoverContent className="header_popover">
+              <PopoverContent className="header_popover" _focus={{ boxShadow: "none" }}>
                 <PopoverBody>
                   <span className="Img_content">
                     <img src={SettingIcon} alt="SettingIcon" className="setting_icon" onClick={() => navigate('/editres')}/>
-                    <img src={user.attachment?user.attachment:UserIcon_dark} alt="UserIcon_dark" className="user_icon" />
+                    <img src={user.attachment ? user.attachment : UserIcon_dark} alt="UserIcon_dark" className="user_icon" />
                   </span>
                   <span className="user_information">
                     <span>{user.username} | {user.position}</span>
