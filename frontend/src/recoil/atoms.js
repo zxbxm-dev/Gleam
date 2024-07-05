@@ -40,5 +40,5 @@ export const userState = atom({
 
 export const isSelectMemberState = atom({
   key: 'isSelectMember',
-  default: ['', '', '', ''],
+  default: ['', '', '', '', ''],
 });

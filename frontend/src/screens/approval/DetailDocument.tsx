@@ -127,40 +127,58 @@ const DetailDocument = () => {
       console.error('Element not found');
       return;
     }
-
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    element.style.height = element.scrollHeight + 'px';
-
-    await html2canvas(element).then((canvas) => {
-      const imgData = canvas.toDataURL('image/jpg');
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, 'JPG', 0, 0, imgWidth, imgHeight);
-      if (numPages > 1) {
-        pdf.addPage();
-      }
-    });
-
-    for (let i = 2; i <= numPages; i++) {
-      const pageElement = document.querySelector(`[data-page-number="${i}"]`) as HTMLElement;
-      if (pageElement) {
-        await html2canvas(pageElement).then((canvas) => {
-          const imgData = canvas.toDataURL('image/jpg');
-          const imgWidth = 210;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-          if (i > 2) {
-            pdf.addPage();
-          }
-
-          pdf.addImage(imgData, 'JPG', 0, 0, imgWidth, imgHeight);
+  
+    const images = Array.from(element.getElementsByTagName('img'));
+    const loadPromises = images.map(img => {
+      if (!img.complete) {
+        return new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject();
         });
       }
+      return Promise.resolve();
+    });
+  
+    try {
+      await Promise.all(loadPromises);
+  
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      element.style.height = element.scrollHeight + 'px';
+  
+      await html2canvas(element, {logging: true ,allowTaint: true, useCORS: true}).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+        pdf.addImage(imgData, 'png', 0, 0, imgWidth, imgHeight);
+        if (numPages > 1) {
+          pdf.addPage();
+        }
+      });
+  
+      for (let i = 2; i <= numPages; i++) {
+        const pageElement = document.querySelector(`[data-page-number="${i}"]`) as HTMLElement;
+        if (pageElement) {
+          await html2canvas(pageElement, {allowTaint: true, useCORS: true}).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 210;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+            if (i > 2) {
+              pdf.addPage();
+            }
+  
+            pdf.addImage(imgData, 'png', 0, 0, imgWidth, imgHeight);
+          });
+        }
+      }
+  
+      pdf.save(`${documentInfo[0].pdffile}`);
+    } catch (error) {
+      console.error('Failed to load images', error);
     }
-
-    pdf.save(`${documentInfo[0].pdffile}`);
   };
+  
 
   const renderPages = () => {
     const pages = [];

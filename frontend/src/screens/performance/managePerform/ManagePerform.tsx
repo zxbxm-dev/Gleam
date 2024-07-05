@@ -22,7 +22,7 @@ const ManagePerform = () => {
   const [managePerform, setManagePerform] = useState<any[]>([]);
   const [userManagePerform, setUserManagePerform] = useState<any[]>([]);
   const [clickIdx, setClickIdx] = useState<number>(0);
-
+  
   const handlePageChange = (page: number) => {
     setPage(page);
   };
@@ -58,21 +58,28 @@ const ManagePerform = () => {
   }, []);
 
   useEffect(() => {
-    const filteredPerform = managePerform.filter(doc => doc.writer === isSelectMember[0]);
-    const initializedPerform = filteredPerform.map((doc, index) => ({
+    const filteredPerform = managePerform?.filter(doc => doc.writer === isSelectMember[0]);
+    const initializedPerform = filteredPerform?.map((doc, index) => ({
       ...doc,
       id: filteredPerform.length - index
     }));
     setUserManagePerform(initializedPerform);
+    fetchmanagePerform();
   }, [isSelectMember, managePerform]);
   
-  // 인사평가 목록 불러오기 (전체)
+  // 인사평가 목록 불러오기 (회원 마다)
   const fetchmanagePerform = async () => {
+    const params = {
+      userID: isSelectMember[0],
+      username: isSelectMember[1],
+    };
+
     try {
-      const response = await CheckPerform();
+      const response = await CheckPerform(params);
       return response.data;
+
     } catch (error) {
-      throw new Error("Failed to fetch data");
+      console.log("Failed to fetch data");
     }
   }
 
@@ -110,7 +117,7 @@ const ManagePerform = () => {
                   </tr>
                 </thead>
                 <tbody className="board_container">
-                  {userManagePerform
+                  {(userManagePerform || [])
                     .slice((page - 1) * postPerPage, page * postPerPage)
                     .map((userPerform) => (
                       <tr key={userPerform.id} className="board_content">
@@ -129,8 +136,8 @@ const ManagePerform = () => {
                   <Pagination
                     activePage={page}
                     itemsCountPerPage={postPerPage}
-                    totalItemsCount={userManagePerform.length}
-                    pageRangeDisplayed={Math.ceil(userManagePerform.length / postPerPage)}
+                    totalItemsCount={userManagePerform?.length}
+                    pageRangeDisplayed={Math.ceil(userManagePerform?.length / postPerPage)}
                     prevPageText={<LeftIcon />}
                     nextPageText={<RightIcon />}
                     firstPageText={<FirstLeftIcon />}
