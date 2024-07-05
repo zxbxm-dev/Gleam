@@ -47,6 +47,7 @@ const DetailDocument = () => {
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine = documentInfo[0].pending?.split(',').map((item:any) => item.trim()) ?? []; // 아직 결재가 진행중일때
   const completedapproveLine = documentInfo[0].completed?.split(',').map((item:any) => item.trim()) ?? []; // 결재가 모두 완료 됐을 시 결재라인
+  const rejectapproveLine = documentInfo[0].rejected?.split(',').map((item:any) => item.trim()) ?? []; // 반려됐을 때 결재라인
   const approveDates = documentInfo[0]?.approveDate?.split(',').map((item:any) => item.trim()) ?? [];
 
   useEffect(() => {
@@ -240,10 +241,14 @@ const DetailDocument = () => {
                       <input className='Top' type="text" placeholder={signatory} disabled />
                       <div className='Bottoms'>
                         {checksignup[index] &&
-                          (documentInfo[0].approval < documentInfo[0].currentSigner ? (
-                            <img className='SignImg' src={`${getSignUrl(approveLine[index])}` || ''} alt="sign" />
+                          (rejectapproveLine[index] ? (
+                            <img className='SignImg' src={`${getSignUrl(rejectapproveLine[index])}`} alt="sign" />
                           ) : (
-                            <img className='SignImg' src={`${getSignUrl(completedapproveLine[index])}` || ''} alt="sign" />
+                            documentInfo[0].approval < documentInfo[0].currentSigner ? (
+                              <img className='SignImg' src={`${getSignUrl(approveLine[index])}` || ''} alt="sign" />
+                            ) : (
+                              <img className='SignImg' src={`${getSignUrl(completedapproveLine[index])}` || ''} alt="sign" />
+                            )
                           ))
                         }
                       </div>

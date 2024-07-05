@@ -98,11 +98,6 @@ const cancelReportById = async (req, res) => {
     console.log('현재 pendingSigners:', pendingSigners);
     console.log('현재 rejectedSigners:', rejectedSigners);
 
-    // 반려한 사람도 personSigning에서 rejected로 옮기기
-    if (!rejectedSigners.includes(username)) {
-      rejectedSigners.push(username);
-    }
-
     // pending에서 반려한 사람 제거
     const index = pendingSigners.indexOf(username);
     if (index !== -1) {
@@ -115,6 +110,11 @@ const cancelReportById = async (req, res) => {
         rejectedSigners.push(signer);
       }
     });
+
+    // 반려한 사람도 personSigning에서 rejected로 옮기기
+    if (!rejectedSigners.includes(username)) {
+      rejectedSigners.push(username);
+    }
 
     // 반려 내용을 저장
     report.rejectName = username; // 반려한 사람의 이름

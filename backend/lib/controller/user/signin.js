@@ -190,15 +190,22 @@ const editRegistration = async (req, res) => {
     // 데이터 업데이트
     const updateData = {
       password: hashedPassword,
-      phoneNumber: phoneNumber,
-      company: company,
-      department: department,
-      team: team,
-      spot: spot,
-      position: position,
-      attachment: attachmentFile ? Buffer.from(attachmentFile.originalname, 'latin1').toString('utf8') : null,
-      Sign: signFile ? Buffer.from(signFile.originalname, 'latin1').toString('utf8') : null,
+      phoneNumber,
+      company,
+      department,
+      team,
+      spot,
+      position,
     };
+
+    // 바뀐 파일 변경
+    if (attachmentFile) {
+      updateData.attachment = Buffer.from(attachmentFile.originalname, 'latin1').toString('utf8');
+    }
+
+    if (signFile) {
+      updateData.Sign = Buffer.from(signFile.originalname, 'latin1').toString('utf8');
+    }
 
     // 사용자 정보 업데이트
     const [updatedRows] = await User.update(updateData, {

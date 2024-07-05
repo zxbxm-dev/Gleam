@@ -273,7 +273,7 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                {approvalings
+                {(approvalings || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((approvalings, index) => (
                     <tr key={approvalings.id} className="board_content">
@@ -363,7 +363,7 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                {inProgress
+                {(inProgress || [] )
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((inProgres, index) => (
                     <tr key={inProgres.id} className="board_content">
@@ -454,7 +454,7 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                {rejecteds
+                {(rejecteds || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((rejected, index) => (
                     <tr key={rejected.id} className="board_content">
@@ -545,7 +545,7 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                {compleDocuments
+                {(compleDocuments || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((compledocument, index) => (
                     <tr key={compledocument.id} className="board_content">
@@ -645,7 +645,7 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                {mydocuments
+                {(mydocuments || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((mydocument, index) => (
                     <tr key={mydocument.id} className="board_content">
