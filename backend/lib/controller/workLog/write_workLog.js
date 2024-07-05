@@ -153,7 +153,6 @@ const opinionReportById = async (req, res) => {
   const { opinion, userID, username, position } = req.body;
 
   try {
-    // 보고서 조회
     const report = await Report.findByPk(report_id);
 
     if (!report) {
@@ -161,14 +160,14 @@ const opinionReportById = async (req, res) => {
     }
 
     // 기존 의견이 있다면 추가하는 형태로 업데이트
-    const existingOpinions = report.opinionContent ? report.opinionContent.split(";") : [];
+    const existingOpinions = report.opinionContent ? report.opinionContent.split(",") : [];
 
     // 새 의견 추가
     const newOpinion = `${username} (${position}): ${opinion}`;
     existingOpinions.push(newOpinion);
 
     // 의견 내용 업데이트
-    report.opinionContent = existingOpinions.join("; ");
+    report.opinionContent = existingOpinions.join(", ");
 
     // 의견 작성자 정보 업데이트
     report.opinionName = username;
