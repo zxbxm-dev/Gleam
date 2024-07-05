@@ -249,7 +249,8 @@ const EditRegis = () => {
                     updateUserStateAndLocalStorage({
                         ...user,
                         ...modifiedData,
-                        Sign: Sign ? Sign.name : user.Sign
+                        Sign: Sign ? Sign.name : user.Sign,
+                        attachment: attachment ? attachment.name : user.attachment
                     });
 
                     setAddModalOpen(true);
