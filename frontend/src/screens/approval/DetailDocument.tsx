@@ -141,7 +141,7 @@ const DetailDocument = () => {
   
     try {
       await Promise.all(loadPromises);
-  
+      console.log(loadPromises)
       const pdf = new jsPDF('p', 'mm', 'a4');
       element.style.height = element.scrollHeight + 'px';
   

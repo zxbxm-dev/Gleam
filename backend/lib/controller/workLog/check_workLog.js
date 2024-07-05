@@ -28,36 +28,36 @@ const getMyReports = async (req, res) => {
 
     // 문서 상태 설정
     const documentsWithStatus = myDocuments.map((doc) => {
-      let status = "결제 진행 중";
+      let status = "결재 진행 중";
 
-      // 결제 완료 확인
+      // 결재 완료 확인
       if (doc.completed && doc.completed.includes(username)) {
-        status = "결제 완료";
+        status = "결재 완료";
       } else if (doc.rejected && doc.rejected.includes(username)) {
         status = "반려됨";
       } else if (doc.pending && doc.pending.includes(username)) {
-        status = "결제 진행 중";
+        status = "결재 진행 중";
       }
 
-      // 결제 진행중 문서 확인
+      // 결재 진행중 문서 확인
       if (doc.personSigning && doc.personSigning.includes(username)) {
         if (doc.pending && doc.pending.includes(username)) {
-          status = "결제 진행 중";
+          status = "결재 진행 중";
         } else {
-          // 결제 싸인을 한명이라도 완료한 사람
+          // 결재 싸인을 한명이라도 완료한 사람
           const signers = doc.personSigning.split(",");
           const pendingSigners = doc.pending ? doc.pending.split(",") : [];
           const intersection = signers.filter((signer) =>
             pendingSigners.includes(signer)
           );
           if (intersection.length > 0) {
-            status = "결제 진행 중";
+            status = "결재 진행 중";
           }
         }
       }
-      // currentSigner와 approval이 같은 경우, 결제 완료 상태로 설정
+      // currentSigner와 approval이 같은 경우, 결재 완료 상태로 설정
       if (doc.currentSigner === doc.approval) {
-        status = "결제 완료";
+        status = "결재 완료";
       }
       console.log(`문서 ${doc.id}의 상태: ${status}`); // ❌로그 나중에 삭제할것❌
       return {
@@ -84,7 +84,7 @@ const getMyReports = async (req, res) => {
   }
 };
 
-// 결제할 문서 목록 조회 --------------------------------------------------------------------------------
+// 결재할 문서 목록 조회 --------------------------------------------------------------------------------
 const getDocumentsToApprove = async (req, res) => {
   const { username } = req.query;
 
@@ -138,18 +138,18 @@ console.log(req.query);
 
     const reportsToSend = reports.map((report) => report.toJSON());
 
-    console.log("클라이언트에게 결제할 문서 목록:");
+    console.log("클라이언트에게 결재할 문서 목록:");
     console.log(reportsToSend);
 
     res.status(200).json(reportsToSend);
   } catch (error) {
     console.error(
-      "결제할 문서 목록을 가져오는 중에 오류가 발생했습니다.:",
+      "결재할 문서 목록을 가져오는 중에 오류가 발생했습니다.:",
       error
     );
     res
       .status(500)
-      .json({ error: "보결제할 문서 목록 불러오기에 실패했습니다." });
+      .json({ error: "결재할 문서 목록 불러오기에 실패했습니다." });
   }
 };
 
@@ -194,18 +194,18 @@ const getApprovedDocuments = async (req, res) => {
 
     const reportsToSend = reports.map((report) => report.toJSON());
 
-    console.log("클라이언트에게 결제할 문서 목록:");
+    console.log("클라이언트에게 결재할 문서 목록:");
     console.log(reportsToSend);
 
     res.status(200).json(reportsToSend);
   } catch (error) {
     console.error(
-      "결제할 문서 목록을 가져오는 중에 오류가 발생했습니다.:",
+      "결재할 문서 목록을 가져오는 중에 오류가 발생했습니다.:",
       error
     );
     res
       .status(500)
-      .json({ error: "보결제할 문서 목록 불러오기에 실패했습니다." });
+      .json({ error: "결재할 문서 목록 불러오기에 실패했습니다." });
   }
 };
 

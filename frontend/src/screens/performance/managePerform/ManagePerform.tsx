@@ -20,7 +20,6 @@ const ManagePerform = () => {
   const [page, setPage] = useState<number>(1);
   const postPerPage: number = 10;
   const [managePerform, setManagePerform] = useState<any[]>([]);
-  const [userManagePerform, setUserManagePerform] = useState<any[]>([]);
   const [clickIdx, setClickIdx] = useState<number>(0);
   
   const handlePageChange = (page: number) => {
@@ -40,30 +39,6 @@ const ManagePerform = () => {
   };
 
   useEffect(() => {
-    const initialManagePerform = [
-      { id: 1, title: "구민석1", writer: "구민석", date: "2024-05-01" },
-      { id: 2, title: "구민석2", writer: "구민석", date: "2024-05-02" },
-      { id: 3, title: "구민석3", writer: "구민석", date: "2024-05-03" },
-      { id: 4, title: "구민석4", writer: "구민석", date: "2024-05-01" },
-      { id: 5, title: "장현지1", writer: "장현지", date: "2024-05-02" },
-      { id: 6, title: "장현지2", writer: "장현지", date: "2024-05-03" },
-      { id: 7, title: "장현지3", writer: "장현지", date: "2024-05-01" },
-      { id: 8, title: "장현지4", writer: "장현지", date: "2024-05-02" },
-      { id: 9, title: "진유빈1", writer: "진유빈", date: "2024-05-01" },
-      { id: 10, title: "진유빈2", writer: "진유빈", date: "2024-05-02" },
-      { id: 11, title: "진유빈3", writer: "진유빈", date: "2024-05-01" },
-      { id: 12, title: "진유빈4", writer: "진유빈", date: "2024-05-02" },
-    ];
-    setManagePerform(initialManagePerform);
-  }, []);
-
-  useEffect(() => {
-    const filteredPerform = managePerform?.filter(doc => doc.writer === isSelectMember[0]);
-    const initializedPerform = filteredPerform?.map((doc, index) => ({
-      ...doc,
-      id: filteredPerform.length - index
-    }));
-    setUserManagePerform(initializedPerform);
     fetchmanagePerform();
   }, [isSelectMember, managePerform]);
   
@@ -95,8 +70,8 @@ const ManagePerform = () => {
   return (
     <div className="content">
       <div className="content_container">
-      <div className="sub_header">{isSelectMember[0]}</div>
-          {isSelectMember[0] === '' ? (
+      <div className="sub_header">{isSelectMember[1]}</div>
+          {isSelectMember[1] === '' ? (
             <>
             </>
           ) : (
@@ -117,7 +92,7 @@ const ManagePerform = () => {
                   </tr>
                 </thead>
                 <tbody className="board_container">
-                  {(userManagePerform || [])
+                  {(managePerform || [])
                     .slice((page - 1) * postPerPage, page * postPerPage)
                     .map((userPerform) => (
                       <tr key={userPerform.id} className="board_content">
@@ -136,8 +111,8 @@ const ManagePerform = () => {
                   <Pagination
                     activePage={page}
                     itemsCountPerPage={postPerPage}
-                    totalItemsCount={userManagePerform?.length}
-                    pageRangeDisplayed={Math.ceil(userManagePerform?.length / postPerPage)}
+                    totalItemsCount={managePerform?.length}
+                    pageRangeDisplayed={Math.ceil(managePerform?.length / postPerPage)}
                     prevPageText={<LeftIcon />}
                     nextPageText={<RightIcon />}
                     firstPageText={<FirstLeftIcon />}
