@@ -3,7 +3,6 @@ import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIco
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
 import { ReactComponent as FirstLeftIcon } from "../../assets/images/Common/FirstLeftIcon.svg";
-import { Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import CustomModal from "../../components/modal/CustomModal";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';

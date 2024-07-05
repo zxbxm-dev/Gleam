@@ -31,6 +31,14 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
+  })
+);
+
 // 라우터 불러오기
 require("./lib/router/user")(app);
 require("./lib/router/expense")(app);
@@ -43,14 +51,6 @@ require("./lib/router/personal")(app);
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "OPTIONS"],
-    credentials: true,
-  })
-);
 
 // 404에러 핸들러
 app.use(function (req, res, next) {
