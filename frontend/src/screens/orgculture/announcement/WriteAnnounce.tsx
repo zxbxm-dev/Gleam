@@ -30,7 +30,6 @@ const WriteAnnouncement = () => {
     pdffile: ""
   });
 
-  const [value, setValue] = useState("");
   const [isfileUpload, setIsFileUpload] = useState(false);
   const [views, setView] = useState(0);
   const user = useRecoilValue(userState);
@@ -46,10 +45,9 @@ const WriteAnnouncement = () => {
   };
 
   useEffect(() => {
-    console.log(editData);
     
     if (editData) {
-      const { title, attachment, pdffile, view } = editData;
+      const { title, attachment, pdffile } = editData;
 
       const content = editData.content;
       setForm({
