@@ -40,6 +40,7 @@ module.exports = (app) => {
     writeReportController.deleteReportById
   );
   router.post("/writeApproval/:report_id", writeReportController.cancelReportById);
+  router.post("/writeApprovalOp/:report_id", writeReportController.opinionReportById);
 
   // ⚠️⚠️ 문서 결제 router ----------------------------------------------------------------------- ⚠️⚠️
   router.post("/handleApproval/:report_id", writeReportController.SignProgress);

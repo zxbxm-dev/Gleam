@@ -148,7 +148,43 @@ const cancelReportById = async (req, res) => {
 };
 
 // 보고서 의견 --------------------------------------------------------------------------------
-const opinionReportById = async (res, req) => {};
+const opinionReportById = async (req, res) => {
+  const { report_id } = req.params;
+  const { opinion, userID, username, position } = req.body;
+
+  try {
+    // 보고서 조회
+    const report = await Report.findByPk(report_id);
+
+    if (!report) {
+      return res.status(404).json({ error: "해당 보고서를 찾을 수 없습니다." });
+    }
+
+    // 기존 의견이 있다면 추가하는 형태로 업데이트
+    const existingOpinions = report.opinionContent ? report.opinionContent.split(";") : [];
+
+    // 새 의견 추가
+    const newOpinion = `${username} (${position}): ${opinion}`;
+    existingOpinions.push(newOpinion);
+
+    // 의견 내용 업데이트
+    report.opinionContent = existingOpinions.join("; ");
+
+    // 의견 작성자 정보 업데이트
+    report.opinionName = username;
+
+    // 상태 업데이트 저장
+    await report.save();
+
+    res.status(200).json({ message: "의견이 성공적으로 저장되었습니다." });
+  } catch (error) {
+    console.error("의견 저장 중 오류 발생:", error);
+    res.status(500).json({ error: "내부 서버 오류입니다." });
+  }
+};
+
+module.exports = { opinionReportById };
+
 
 // 보고서 결재 진행 --------------------------------------------------------------------------------
 const SignProgress = async (req, res) => {
