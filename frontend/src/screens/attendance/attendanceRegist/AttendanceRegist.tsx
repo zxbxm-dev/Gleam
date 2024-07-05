@@ -36,7 +36,7 @@ type ProcessedAttendance = [string, string, [string, string, string]];
 
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState((new Date().getMonth() + 1) % 3);
   const [tabHeights, setTabHeights] = useState<Record<number, string>>({0: '41px', 1: '35px', 2: '35px'});
   const [tabMargins, setTabMargins] = useState<Record<number, string>>({0: '6px', 1: '6px', 2: '6px'});
   const [isLoading, setIsLoading] = useState(true);
@@ -65,6 +65,7 @@ const AttendanceRegist = () => {
     }
   }, [activeTab]);
 
+  
   const initialMembers: Member[] = useMemo(() => [
     ['권상원', '블록체인 사업부', ''],
     ['김도환', '블록체인 사업부', '블록체인 1팀'],
@@ -1000,7 +1001,7 @@ const AttendanceRegist = () => {
         </div>
 
         {selectedScreen === 'R&D' ? (
-          <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
+          <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (
                 <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[index]} marginTop={tabMargins[index]}>{months[monthData.month - 1].name}</Tab>

@@ -129,8 +129,6 @@ const Announcement = () => {
     };
   }, [dropdownOpen]);
 
-  console.log(announcements)
-
   return (
     <div className="content">
       <div className="content_container">
@@ -188,7 +186,7 @@ const Announcement = () => {
                         </Link>
                       </td>
                       <td>{announcement.views}</td>
-                      <td>{new Date(announcement.date).toISOString().substring(0, 10)}</td>
+                      <td>{new Date(announcement.createdAt).toISOString().substring(0, 10)}</td>
                     </tr>
                   ))}
               </tbody>

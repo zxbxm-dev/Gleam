@@ -20,7 +20,6 @@ const WriteRegulation = () => {
   let navigate = useNavigate();
   const { state: editData } = useLocation();
   const editorRef = useRef<any>(null);
-  const [value, setValue] = useState("");
   const [isFileUpload, setIsFileUpload] = useState(false);
 
   const [form, setForm] = useState<{
@@ -124,9 +123,6 @@ const WriteRegulation = () => {
     const data = editorRef.current.getInstance().getHTML();
     setForm({ ...form, content: data });
   };
-  console.log(form.attachment?.fileName);
-  console.log(form.content);
-
 
   return (
     <div className="content">
