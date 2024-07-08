@@ -36,7 +36,6 @@ const Sidebar = () => {
     // 선택된 멤버 정보를 새로운 Member 배열로 생성
     const newMember = [userID, name, dept, team, position];
     setIsSelectMember(newMember);
-    console.log(isSelectMember)
   };
 
   const handleMenuClick = (menu: string) => {
@@ -72,7 +71,6 @@ const Sidebar = () => {
 
   const handleHrSideClick = () => {
     setIsHrSidebarVisible(true);
-    console.log(isHrSidebarVisible);
   };
 
   const renderSubMenu = (menuType: boolean | undefined, menuItems: SubMenu[] | undefined) => (

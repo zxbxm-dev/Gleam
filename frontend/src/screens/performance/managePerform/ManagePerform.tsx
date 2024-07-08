@@ -20,16 +20,19 @@ const ManagePerform = () => {
   const [page, setPage] = useState<number>(1);
   const postPerPage: number = 10;
   const [managePerform, setManagePerform] = useState<any[]>([]);
-  const [clickIdx, setClickIdx] = useState<number>(0);
+  const [clickIdx, setClickIdx] = useState<string>('');
   
   const handlePageChange = (page: number) => {
     setPage(page);
   };
 
-  const handleDeleteDocument = (index: number) => {
+  const handleDeleteDocument = (name: string) => {
     setDeleteModalOpen(false);
-    console.log('클릭된 게시글 인덱스',index)
-    DeletePerform(index)
+    console.log('클릭된 게시글 인덱스',name)
+    const params = {
+      filename: name
+    }
+    DeletePerform(params)
     .then((response) => {
       console.log("인사평가 문서가 삭제되었습니다.", response);
     })
@@ -40,7 +43,7 @@ const ManagePerform = () => {
 
   useEffect(() => {
     fetchmanagePerform();
-  }, [isSelectMember, managePerform]);
+  }, [isSelectMember]);
   
   // 인사평가 목록 불러오기 (회원 마다)
   const fetchmanagePerform = async () => {
@@ -54,18 +57,21 @@ const ManagePerform = () => {
       return response.data;
 
     } catch (error) {
-      console.log("Failed to fetch data");
+      setManagePerform([]);
+      return [];
+
     }
   }
 
   useQuery("managePerform", fetchmanagePerform, {
-    onSuccess: (data) => setManagePerform(data),
+    onSuccess: (data) => setManagePerform(Array.isArray(data.files) ? data.files : []),
     onError: (error) => {
-      console.log(error)
+      console.log(error);
+      setManagePerform([]);
     }
   });
 
-
+  console.log("가져온 데이터", managePerform)
   
   return (
     <div className="content">
@@ -94,14 +100,14 @@ const ManagePerform = () => {
                 <tbody className="board_container">
                   {(managePerform || [])
                     .slice((page - 1) * postPerPage, page * postPerPage)
-                    .map((userPerform) => (
+                    .map((userPerform, index) => (
                       <tr key={userPerform.id} className="board_content">
-                        <td>{userPerform.id}</td>
-                        <td style={{textAlign: 'center'}}>{userPerform.title}</td>
+                        <td>{index + 1}</td>
+                        <td style={{textAlign: 'center'}}>{userPerform.filename}</td>
                         <td>{userPerform.date}</td>
                         <td style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', height:'53px'}}>
-                          <button className="primary_button" onClick={() => navigate(`/detail-manage-perform/${userPerform.id}`, {state: {username: isSelectMember[0], perform_id: userPerform.id}})}>문서확인</button>
-                          <button className="red_button" onClick={() => {setDeleteModalOpen(true); setClickIdx(Number(userPerform.id));}}>삭제</button>
+                          <button className="primary_button" onClick={() => navigate(`/detail-manage-perform`, {state: {username: isSelectMember[0], filename: userPerform.filename}})}>문서확인</button>
+                          <button className="red_button" onClick={() => {setDeleteModalOpen(true); setClickIdx(userPerform.filename);}}>삭제</button>
                         </td>
                       </tr>
                     ))
