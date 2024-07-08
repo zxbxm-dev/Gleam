@@ -17,7 +17,6 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import CustomModal from "../../components/modal/CustomModal";
-import { Input } from '@chakra-ui/react';
 
 import { useQueryClient, useQuery } from "react-query";
 import { CheckEmploy, WriteEmploy, EditEmploy, DeleteEmploy } from "../../services/employment/EmploymentService";
