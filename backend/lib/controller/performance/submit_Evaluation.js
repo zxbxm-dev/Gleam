@@ -3,7 +3,7 @@ const evaluation = models.Evaluation;
 const sanitizeFilename = require("sanitize-filename");
 
 // 인사평가서 제출
-const submitReport = async (req, res) => {
+const submitEvaluation = async (req, res) => {
   try {
     const { userID, username, team, department, company } = req.body;
 
@@ -50,5 +50,5 @@ const submitReport = async (req, res) => {
 };
 
 module.exports = {
-  submitReport,
+  submitEvaluation,
 };
