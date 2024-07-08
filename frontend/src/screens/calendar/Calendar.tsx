@@ -131,7 +131,7 @@ const Calendar = () => {
     setuserDropdown(false);
   };
 
-  const filteredName = persondata.filter(person =>
+  const filteredName = persondata.filter(person => 
     person.username.toLowerCase().includes(title.toLowerCase())
   );
 
@@ -151,15 +151,16 @@ const Calendar = () => {
       return adjustedDate.toISOString().substring(0, 10);
     };
     
+    const finduser = persondata.find(person => person.username === title.split(' ')[0])
     const isoStartDate = getLocalISODateString(startDate);
     const isoEndDate = getLocalISODateString(endDate);
 
     const eventData = {
-      userID: addEventUser?.userId,
-      name: addEventUser?.username,
-      company: addEventUser?.company,
-      department: addEventUser?.department,
-      team: addEventUser?.team,
+      userID: addEventUser?.userId || finduser?.userId,
+      name: addEventUser?.username || finduser?.username,
+      company: addEventUser?.company || finduser?.company,
+      department: addEventUser?.department || finduser?.department,
+      team: addEventUser?.team || finduser?.team,
       title: title,
       startDate: isoStartDate,
       endDate: isoEndDate,
@@ -178,6 +179,7 @@ const Calendar = () => {
         setTitle('');
         setStartDate(null);
         setEndDate(null);
+        setAddEventUser(null);
       })
       .catch(error => {
         console.error('Error adding event:', error);
