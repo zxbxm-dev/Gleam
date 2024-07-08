@@ -44,7 +44,7 @@ const getMyEvaluation = async (req, res) => {
   }
 };
 
-// 특정 파일 상세 조회 ---------------------------------------------------------------------------
+// 인사평가 파일 상세 조회 ---------------------------------------------------------------------------
 const getFileDetails = async (req, res) => {
   try {
     const { filename } = req.params;
@@ -77,7 +77,45 @@ const getFileDetails = async (req, res) => {
   }
 };
 
+// 인사평가 특정 파일 삭제 --------------------------------------------------------------------------------
+const deleteFile = async (req, res) => {
+  try {
+    const { filename } = req.params;
+    if (!filename) {
+      return res.status(400).json({ error: "filename은 필수입니다." });
+    }
+
+    const filePath = path.join(__dirname, '../../../uploads/performanceFile', filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "파일을 찾을 수 없습니다." });
+    }
+
+    // 데이터베이스에서 파일 정보 삭제
+    const evaluation = await Evaluation.findOne({
+      where: { files: { [Op.like]: `%${filename}%` } }
+    });
+
+    if (!evaluation) {
+      return res.status(404).json({ error: "파일 정보를 데이터베이스에서 찾을 수 없습니다." });
+    }
+
+    const updatedFiles = evaluation.files.filter(file => file.filename !== filename);
+
+    await evaluation.update({ files: JSON.stringify(updatedFiles) });
+
+    // 파일 삭제
+    fs.unlinkSync(filePath);
+
+    res.status(200).json({ message: "파일이 성공적으로 삭제되었습니다." });
+  } catch (error) {
+    console.error("파일 삭제 중 오류 발생:", error);
+    res.status(500).json({ error: "내부 서버 오류입니다." });
+  }
+};
+
 module.exports = {
   getMyEvaluation,
   getFileDetails,
+  deleteFile
 };

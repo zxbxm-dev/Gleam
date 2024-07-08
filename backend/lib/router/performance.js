@@ -12,6 +12,8 @@ module.exports = (app) => {
   router.get("/checkPerform", checkEvaluation.getMyEvaluation);
   // 특정 파일 상세 조회
   router.get("/fileDetails/:filename", checkEvaluation.getFileDetails);
+  // 인사평가 삭제
+  router.delete("/deleteFile/:filename", checkEvaluation.deleteFile);
 
   // 정적 파일 서빙 설정
   app.use(
