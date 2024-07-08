@@ -16,6 +16,8 @@ const attendance = require("./attendance/officeHour");
 const report = require("./workLog/workLog");
 // 인사평가
 const evaluation = require("./performance/performance");
+// 인사 정보 관리
+const management = require("./management/management");
 // 채용공고
 const jobPosting = require("./employment/JobPosting");
 
@@ -35,6 +37,7 @@ db.Attendance = attendance(sequelize, Sequelize);
 db.Report = report(sequelize, Sequelize);
 db.JobPosting = jobPosting(sequelize, Sequelize);
 db.Evaluation = evaluation(sequelize, Sequelize);
+db.Management = management(sequelize, Sequelize);
 
 
 module.exports = db;
