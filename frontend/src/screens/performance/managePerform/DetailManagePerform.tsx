@@ -16,14 +16,17 @@ const DetailManagePerform = () => {
   let location = useLocation();
   let navigate = useNavigate();
   const [selectedMember] = useState(location.state?.username);
-  const [perform_id] = useState(location.state?.perform_id);
+  const [perform_filename] = useState(location.state?.filename);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [isDeleteDocuModalOpen, setDeleteDocuModalOPen] = useState(false);
 
-  const fetchDetailPerform = async (perform_id: string) => {
+  const fetchDetailPerform = async (perform_filename: string) => {
+    const params = {
+      filename: perform_filename
+    }
     try {
-      const response = await DetailPerform(perform_id);
+      const response = await DetailPerform(params);
 
       if(response.status === 200) {
         const url = URL.createObjectURL(response.data);
@@ -38,8 +41,8 @@ const DetailManagePerform = () => {
   }
 
   useEffect(() => {
-    fetchDetailPerform(perform_id);
-  }, [perform_id])
+    fetchDetailPerform(perform_filename);
+  }, [perform_filename])
 
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
@@ -68,9 +71,12 @@ const DetailManagePerform = () => {
     document.body.removeChild(link);
   };
 
-  const handleDeleteDocument = (perform_id: number) => {
+  const handleDeleteDocument = (perform_filename: string) => {
+    const params = {
+      filename: perform_filename
+    }
     setDeleteDocuModalOPen(false);
-    DeletePerform(perform_id)
+    DeletePerform(params)
     .then((response) => {
       console.log("인사평가 문서가 삭제되었습니다.", response);
     })
@@ -107,7 +113,7 @@ const DetailManagePerform = () => {
         onClose={() => setDeleteDocuModalOPen(false)}
         header={'알림'}
         footer1={'삭제'}
-        onFooter1Click={() => handleDeleteDocument(perform_id)}
+        onFooter1Click={() => handleDeleteDocument(perform_filename)}
         footer1Class="red-btn"
         footer2={'취소'}
         footer2Class="gray-btn"
