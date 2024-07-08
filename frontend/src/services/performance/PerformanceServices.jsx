@@ -16,8 +16,9 @@ const WritePerform = (formData) => {
 };
 
 // 인사평가 상세조회
-const DetailPerform = (perform_id) => {
-  return api.get(`/detailPerform/${perform_id}`, {
+const DetailPerform = (params) => {
+  const queryString = `?filename=${params.filename}`;
+  return api.get("/detailPerform" + queryString , {
     responseType: 'blob',
     headers: {
       'Content-Type': 'application/pdf',
@@ -26,8 +27,9 @@ const DetailPerform = (perform_id) => {
 }
 
 // 인사평가 삭제
-const DeletePerform = async (perform_id) => {
-  return api.delete(`/deletePerform/${perform_id}`)
+const DeletePerform = async (params) => {
+  const queryString = `?filename=${params.filename}`;
+  return api.delete("/deletePerform" + queryString)
 }
 
 export { CheckPerform, WritePerform, DetailPerform, DeletePerform };
