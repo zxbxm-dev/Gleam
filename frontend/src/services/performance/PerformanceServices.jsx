@@ -18,18 +18,18 @@ const WritePerform = (formData) => {
 // 인사평가 상세조회
 const DetailPerform = (params) => {
   const queryString = `?filename=${params.filename}`;
-  return api.get("/detailPerform" + queryString , {
+  return api.get("/fileDetails" + queryString, {
     responseType: 'blob',
     headers: {
       'Content-Type': 'application/pdf',
     }
-  })
-}
+  });
+};
 
 // 인사평가 삭제
 const DeletePerform = async (params) => {
   const queryString = `?filename=${params.filename}`;
-  return api.delete("/deletePerform" + queryString)
-}
+  return api.delete("/deleteFile" + queryString);
+};
 
 export { CheckPerform, WritePerform, DetailPerform, DeletePerform };

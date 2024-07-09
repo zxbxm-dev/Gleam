@@ -6,10 +6,10 @@ const fs = require('fs');
 // 인사평가 조회 --------------------------------------------------------------------------------
 const getMyEvaluation = async (req, res) => {
   try {
-    const { username, userID } = req.query;
+    const { username, userID } = req.query; // 가정: 사용자 정보는 req.user에 있음
 
     if (!username || !userID) {
-      return res.status(400).json({ error: "username과 userID는 필수입니다." });
+      return res.status(400).json({ error: "사용자 정보가 올바르지 않습니다." });
     }
 
     const evaluation = await Evaluation.findOne({ where: { userId: userID } });
@@ -29,6 +29,7 @@ const getMyEvaluation = async (req, res) => {
       };
     });
 
+    // 클라이언트에게 전달할 데이터 구성
     const response = { evaluation, files: fileStatuses };
     res.status(200).json(response);
   } catch (error) {
@@ -41,6 +42,8 @@ const getMyEvaluation = async (req, res) => {
 const getFileDetails = async (req, res) => {
   try {
     const { filename } = req.params;
+
+    console.log("파일 이름:",req.params)
 
     if (!filename) {
       return res.status(400).json({ error: "filename은 필수입니다." });

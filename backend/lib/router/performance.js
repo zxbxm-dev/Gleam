@@ -1,5 +1,4 @@
 module.exports = (app) => {
-
   const express = require("express");
   const router = express.Router();
   const path = require("path");
@@ -19,9 +18,9 @@ module.exports = (app) => {
   // 인사평가 목록 조회
   router.get("/checkPerform", checkEvaluation.getMyEvaluation);
   // 특정 파일 상세 조회
-  router.get("/fileDetails/:filename", checkEvaluation.getFileDetails);
+  router.get("/fileDetails", checkEvaluation.getFileDetails);
   // 인사평가 삭제
-  router.delete("/deleteFile/:filename", checkEvaluation.deleteFile);
+  router.delete("/deleteFile", checkEvaluation.deleteFile);
 
   app.use("/api", router);
 };
