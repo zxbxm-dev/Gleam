@@ -12,8 +12,8 @@ module.exports = (app) => {
   router.post("/writeHrInfo", multerMiddleware.single("attachment"), managementController.savedGreeting_card);
   // 인사 정보 관리 파일 등록
   router.put("/editHrInfo/:hrinfo_id", multerMiddleware.single("attachment"), management_retouch.updateGreetingCard);
-  // 인사 이동 조회
-  router.get('/checkAppointment', management_retouch.checkAppointment);
+  // // 인사 이동 조회
+  // router.get('/checkAppointment', management_retouch.checkAppointment);
 
   app.use(
     "/uploads",
