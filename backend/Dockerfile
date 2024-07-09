@@ -8,11 +8,6 @@ RUN npm install
 
 COPY . .
 
-ENV DB_USERNAME=root
-ENV DB_PASSWORD=1209
-ENV DB_DATABASE=chainlinker
-ENV SECRET_JWT=hyeonji
-
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["npm", "run", "start"]
