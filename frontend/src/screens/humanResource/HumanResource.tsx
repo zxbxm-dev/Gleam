@@ -123,9 +123,11 @@ const HumanResource = () => {
   }
 
   useQuery("Appointment", fetchAppointment, {
-    onSuccess: (data) => setAppointments(data),
+    onSuccess: (data) => { 
+      console.log(data)
+    },
     onError: (error) => {
-      console.log(error)
+      console.log(error);
     }
   });
 
@@ -136,7 +138,7 @@ const HumanResource = () => {
     const DateType = `${date.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(6, 8)}`;
 
     const formData = new FormData();
-    formData.append('username', isSelectMember[0]);
+    formData.append('username', isSelectMember[1]);
     formData.append('Newdept', dept);
     formData.append('Newteam', team);
     formData.append('Newposition', position);
@@ -260,9 +262,9 @@ const HumanResource = () => {
     const formData = new FormData();
     formData.append('attachment', attachment);
     formData.append('pdffile', attachment.name);
-    formData.append('username', isSelectMember[0]);
-    formData.append('team', isSelectMember[2]);
-    formData.append('dept', isSelectMember[1]);
+    formData.append('username', isSelectMember[1]);
+    formData.append('team', isSelectMember[3]);
+    formData.append('dept', isSelectMember[2]);
     formData.append('TabData', TabName);
 
     try {
