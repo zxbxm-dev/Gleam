@@ -6,20 +6,20 @@ const fs = require('fs');
 // 인사평가 조회 --------------------------------------------------------------------------------
 const getMyEvaluation = async (req, res) => {
   try {
-    const { username, userID } = req.query; // 가정: 사용자 정보는 req.user에 있음
+    const { username, userID } = req.query;
 
     if (!username || !userID) {
       return res.status(400).json({ error: "사용자 정보가 올바르지 않습니다." });
     }
 
-    const evaluation = await Evaluation.findOne({ where: { userId: userID } });
+    const evaluations = await Evaluation.findAll({ where: { userId: userID } });
 
-    if (!evaluation) {
+    if (!evaluations || evaluations.length === 0) {
       return res.status(404).json({ error: "해당 사용자의 인사평가 데이터를 찾을 수 없습니다." });
     }
 
-    const files = JSON.parse(evaluation.files);
-    const fileStatuses = files.map(file => {
+    const allFiles = evaluations.flatMap(evaluation => JSON.parse(evaluation.files));
+    const fileStatuses = allFiles.map(file => {
       const filePath = path.join(__dirname, '../../../uploads/performanceFile', file.filename);
       console.log(`Checking file path: ${filePath}`);
       return {
@@ -30,7 +30,7 @@ const getMyEvaluation = async (req, res) => {
     });
 
     // 클라이언트에게 전달할 데이터 구성
-    const response = { evaluation, files: fileStatuses };
+    const response = { evaluations, files: fileStatuses };
     res.status(200).json(response);
   } catch (error) {
     console.error("인사평가 데이터 조회 중 오류 발생:", error);
