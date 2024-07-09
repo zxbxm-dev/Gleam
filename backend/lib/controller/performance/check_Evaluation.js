@@ -48,41 +48,57 @@ const getMyEvaluation = async (req, res) => {
 };
 
 
-// 인사평가 파일 상세 조회 ---------------------------------------------------------------------------
+// 파일 상세 조회 ---------------------------------------------------------------------------
 const getFileDetails = async (req, res) => {
+  const { filename } = req.query;
+
+  console.log("파일 이름:", req.query);
+
   try {
-    const { filename } = req.query;
+    const evaluation = await Evaluation.findOne({
+      where: {
+        files: {
+          [Op.like]: `%${filename}%`
+        }
+      }
+    });
 
-    console.log("파일 이름:",req.query)
+    if (!evaluation) {
+      return res.status(404).json({ error: "해당 보고서를 찾을 수 없습니다." });
+    }
 
-    if (!filename) {
-      return res.status(400).json({ error: "filename은 필수입니다." });
+    const files = JSON.parse(evaluation.files);
+    const fileDetails = files.find(file => file.filename === filename);
+
+    if (!fileDetails) {
+      return res.status(404).json({ error: "보고서 파일을 찾을 수 없습니다." });
     }
 
     const filePath = path.join(__dirname, '../../../uploads/performanceFile', filename);
-    console.log(`Checking file path: ${filePath}`);
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: "파일을 찾을 수 없습니다." });
     }
 
-    const fileStat = fs.statSync(filePath);
-    const fileDetails = {
-      filename: path.basename(filePath),
-      size: fileStat.size,
-      createdAt: fileStat.birthtime,
-      updatedAt: fileStat.mtime,
-      path: filePath
-    };
+    // MIME 타입 설정
+    res.setHeader("Content-Type", "application/pdf");
 
-    res.status(200).json(fileDetails);
+    // 로그에 파일 경로 출력
+    console.log(`경로: ${filePath}`);
+
+    // 파일 스트림을 통해 전송
+    const fileStream = fs.createReadStream(filePath);
+
+    // 파일 스트림을 HTTP 응답 스트림으로 파이핑
+    fileStream.pipe(res);
   } catch (error) {
-    console.error("파일 상세 조회 중 오류 발생:", error);
+    console.error("보고서 조회 중 오류 발생:", error);
     res.status(500).json({ error: "내부 서버 오류입니다." });
   }
 };
 
-// 인사평가 특정 파일 삭제 --------------------------------------------------------------------------------
+
+// 파일 삭제 --------------------------------------------------------------------------------
 const deleteFile = async (req, res) => {
   try {
     const { filename } = req.query;
