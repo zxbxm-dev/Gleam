@@ -2,6 +2,7 @@ const models = require("../../models");
 const Evaluation = models.Evaluation;
 const path = require('path');
 const fs = require('fs');
+const { Op } = require('sequelize'); 
 
 // 인사평가 조회 --------------------------------------------------------------------------------
 const getMyEvaluation = async (req, res) => {
@@ -29,8 +30,16 @@ const getMyEvaluation = async (req, res) => {
       };
     });
 
+    // 평가 데이터에 날짜 포함
+    const evaluationsWithDate = evaluations.map(evaluation => {
+      return {
+        ...evaluation.dataValues,
+        date: evaluation.createdAt.toISOString().split('T')[0] // YYYY-MM-DD 형식으로 날짜 변환
+      };
+    });
+
     // 클라이언트에게 전달할 데이터 구성
-    const response = { evaluations, files: fileStatuses };
+    const response = { evaluations: evaluationsWithDate, files: fileStatuses };
     res.status(200).json(response);
   } catch (error) {
     console.error("인사평가 데이터 조회 중 오류 발생:", error);
@@ -38,12 +47,13 @@ const getMyEvaluation = async (req, res) => {
   }
 };
 
+
 // 인사평가 파일 상세 조회 ---------------------------------------------------------------------------
 const getFileDetails = async (req, res) => {
   try {
-    const { filename } = req.params;
+    const { filename } = req.query;
 
-    console.log("파일 이름:",req.params)
+    console.log("파일 이름:",req.query)
 
     if (!filename) {
       return res.status(400).json({ error: "filename은 필수입니다." });
@@ -62,7 +72,7 @@ const getFileDetails = async (req, res) => {
       size: fileStat.size,
       createdAt: fileStat.birthtime,
       updatedAt: fileStat.mtime,
-      url: `/uploads/performanceFile/${filename}`
+      path: filePath
     };
 
     res.status(200).json(fileDetails);
@@ -75,7 +85,7 @@ const getFileDetails = async (req, res) => {
 // 인사평가 특정 파일 삭제 --------------------------------------------------------------------------------
 const deleteFile = async (req, res) => {
   try {
-    const { filename } = req.params;
+    const { filename } = req.query;
 
     if (!filename) {
       return res.status(400).json({ error: "filename은 필수입니다." });
