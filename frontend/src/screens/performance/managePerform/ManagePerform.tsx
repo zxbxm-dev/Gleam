@@ -35,18 +35,14 @@ const ManagePerform = () => {
     DeletePerform(params)
     .then((response) => {
       console.log("인사평가 문서가 삭제되었습니다.", response);
+      refetch();
     })
     .catch((error) => {
       console.error("인사평가 문서 삭제에 실패했습니다.", error);
     });
   };
 
-  useEffect(() => {
-    fetchmanagePerform();
-  }, [isSelectMember]);
-  
-  // 인사평가 목록 불러오기 (회원 마다)
-  const fetchmanagePerform = async () => {
+  const fetchManagePerform = async () => {
     const params = {
       userID: isSelectMember[0],
       username: isSelectMember[1],
@@ -54,29 +50,36 @@ const ManagePerform = () => {
 
     try {
       const response = await CheckPerform(params);
-      return response.data;
-
+      return response.data.files;
     } catch (error) {
-      setManagePerform([]);
+      console.error("Error fetching performance data:", error);
       return [];
-
     }
-  }
+  };
 
-  useQuery("managePerform", fetchmanagePerform, {
-    onSuccess: (data) => setManagePerform(Array.isArray(data.files) ? data.files : []),
+  const { data, refetch } = useQuery("managePerform", fetchManagePerform, {
+    enabled: !!isSelectMember[0],
+    onSuccess: (data) => {
+      setManagePerform(Array.isArray(data) ? data : []);
+    },
     onError: (error) => {
       console.log(error);
       setManagePerform([]);
     }
   });
 
+  useEffect(() => {
+    if (isSelectMember[0]) {
+      refetch();
+    }
+  }, [isSelectMember, refetch]);
+
   console.log("가져온 데이터", managePerform)
   
   return (
     <div className="content">
       <div className="content_container">
-      <div className="sub_header">{isSelectMember[1]}</div>
+        <div className="sub_header">{isSelectMember[1]}</div>
           {isSelectMember[1] === '' ? (
             <>
             </>
@@ -102,7 +105,7 @@ const ManagePerform = () => {
                     .slice((page - 1) * postPerPage, page * postPerPage)
                     .map((userPerform, index) => (
                       <tr key={userPerform.id} className="board_content">
-                        <td>{index + 1}</td>
+                        <td>{(page - 1) * postPerPage + index + 1}</td>
                         <td style={{textAlign: 'center'}}>{userPerform.filename}</td>
                         <td>{userPerform.date}</td>
                         <td style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', height:'53px'}}>
@@ -113,20 +116,20 @@ const ManagePerform = () => {
                     ))
                   }
                 </tbody>
-                <div className="manage_main_bottom">
-                  <Pagination
-                    activePage={page}
-                    itemsCountPerPage={postPerPage}
-                    totalItemsCount={managePerform?.length}
-                    pageRangeDisplayed={Math.ceil(managePerform?.length / postPerPage)}
-                    prevPageText={<LeftIcon />}
-                    nextPageText={<RightIcon />}
-                    firstPageText={<FirstLeftIcon />}
-                    lastPageText={<LastRightIcon />}
-                    onChange={handlePageChange}
-                  />
-                </div>
               </table>
+              <div className="manage_main_bottom">
+                <Pagination
+                  activePage={page}
+                  itemsCountPerPage={postPerPage}
+                  totalItemsCount={managePerform?.length}
+                  pageRangeDisplayed={5}
+                  prevPageText={<LeftIcon />}
+                  nextPageText={<RightIcon />}
+                  firstPageText={<FirstLeftIcon />}
+                  lastPageText={<LastRightIcon />}
+                  onChange={handlePageChange}
+                />
+              </div>
             </div>
           )}
       </div>  
