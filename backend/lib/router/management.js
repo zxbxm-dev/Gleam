@@ -1,6 +1,7 @@
 module.exports = (app) => {
   const managementController = require("../controller/management/submit_Management");
   const management_retouch = require("../controller/management/check_management");
+  const PersonnelTransfer = require("../controller/management/personnel_transfer");
   const multerMiddleware = require("../controller/management/multerMiddleware");
 
   const express = require("express");
@@ -14,6 +15,15 @@ module.exports = (app) => {
   router.put("/editHrInfo/:hrinfo_id", multerMiddleware.single("attachment"), management_retouch.updateGreetingCard);
   // 인사 정보 조회
   router.get('/checkHrInfo', management_retouch.checkAppointment);
+  // 인사이동 등록
+  router.post('/writeAppointment', PersonnelTransfer.PersonnelTransfer);
+  // 인사이동 조회
+  router.get('/checkAppointment', PersonnelTransfer.checkTransfer);
+  // 인사이동 수정
+  router.put('/editAppointment/:appoint_id', PersonnelTransfer.updateTransfer);  
+  // 인사이동 삭제
+  router.put('/deleteAppointment/:appoint_id', PersonnelTransfer.deleteTransfer);  
+
 
   app.use(
     "/uploads",

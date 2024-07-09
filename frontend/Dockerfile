@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14.21.2
 # 경로 설정
 WORKDIR /app
 # package.json 워킹 디렉토리에 복사
