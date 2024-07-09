@@ -17,9 +17,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import testPDF_구민석 from '../../assets/pdf/[서식-P502] 인사기록카드_구민석.pdf';
-import test2PDF_구민석 from '../../assets/pdf/[서식-P501] 근로자명부_구민석.pdf';
 
-import { useQuery } from "react-query";
+import { useQueryClient, useQuery } from 'react-query';
 import { CheckHrInfo, WriteHrInfo, CheckAppointment, writeAppointment, EditAppointment, DeleteAppointment } from "../../services/humanresource/HumanResourceServices";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -29,6 +28,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 
 const HumanResource = () => {
+  const queryClient = useQueryClient();
   const { isOpen: isAdd, onOpen: AddOpen, onClose: AddClose } = useDisclosure();
   const { isOpen: isEdit, onOpen: EditOpen, onClose: EditClose } = useDisclosure();
   const [activeTab, setActiveTab] = useState(0);
@@ -40,6 +40,7 @@ const HumanResource = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [appointments, setAppointments] = useState<any[]>([]);
+  const [clickIdx, setClickIdx] = useState<number>(0);
 
   const [form, setForm] = useState<{
     dept: string;
@@ -93,7 +94,6 @@ const HumanResource = () => {
     setForm({ ...form, classify: event.target.value })
   }
 
-
   // 인사정보관리 목록 조회
   const fetchHrInfo = async () => {
     try {
@@ -122,14 +122,22 @@ const HumanResource = () => {
     }
   }
 
-  useQuery("Appointment", fetchAppointment, {
+  const { refetch } = useQuery("Appointment", fetchAppointment, {
     onSuccess: (data) => { 
-      console.log(data)
+      const userAppoint = data.data
+        .filter((item:any) => item.username === isSelectMember[1])
+      setAppointments(userAppoint);
     },
     onError: (error) => {
       console.log(error);
     }
   });
+
+  useEffect(() => {
+    if (isSelectMember[0]) {
+      refetch();
+    }
+  }, [isSelectMember, refetch]);
 
   // 인사이동 등록
   const handleAppointSubmit = () => {
@@ -149,6 +157,16 @@ const HumanResource = () => {
     writeAppointment(formData)
       .then(response => {
         console.log("인사이동 등록 성공")
+        queryClient.invalidateQueries("Appointment");
+        setForm({
+          dept: '',
+          position: '',
+          spot: '',
+          team: '',
+          date: '',
+          classify: '',
+        });
+        AddClose();
       })
       .catch(error => {
         console.log("인사이동 등록 실패")
@@ -170,6 +188,7 @@ const HumanResource = () => {
     EditAppointment(index, formData)
       .then(response => {
         console.log("인사이동 등록 성공")
+        queryClient.invalidateQueries("Appointment");
       })
       .catch(error => {
         console.log("인사이동 등록 실패")
@@ -181,6 +200,8 @@ const HumanResource = () => {
     DeleteAppointment(index)
       .then((response) => {
         console.log("인사이동이 성공적으로 삭제되었습니다.", response);
+        setDeleteModalOpen(false);
+        queryClient.invalidateQueries("Appointment");
       })
       .catch((error) => {
         console.error("인사이동 삭제에 실패했습니다.", error);
@@ -279,7 +300,7 @@ const HumanResource = () => {
   return (
     <div className="content">
       <div className="content_container">
-        <div className="sub_header">{isSelectMember[0]}</div>
+        <div className="sub_header">{isSelectMember[1]}</div>
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>인사기록카드</Tab>
@@ -481,9 +502,9 @@ const HumanResource = () => {
                     {appointments
                       .map((appointment, index) => (
                         <tr key={appointment.id} className="board_content">
-                          <td>{appointment.department}</td>
-                          <td>{appointment.spot}</td>
-                          <td>{appointment.position}</td>
+                          <td>{appointment.Newdept}</td>
+                          <td>{appointment.Newposition}</td>
+                          <td>{appointment.Newspot}</td>
                           <td>{appointment.date}</td>
                           <td>{appointment.classify}</td>
                           <td className="flex_center">
@@ -523,14 +544,14 @@ const HumanResource = () => {
                                       </div>
                                     </div>
                                     <div className='button-wrap'>
-                                      <button className="white_button" onClick={() => { handleAppointmentEdit(index) }}>수정</button>
+                                      <button className="white_button" onClick={() => { handleAppointmentEdit(appointment.id) }}>수정</button>
                                       <button className="white_button" onClick={EditClose}>취소</button>
                                     </div>
                                   </PopoverBody>
                                 </PopoverContent>
                               </Portal>
                             </Popover>
-                            <button className="red_button" onClick={() => { setDeleteModalOpen(true); handleAppointmentDelete(index) }}>삭제</button>
+                            <button className="red_button" onClick={() => { setDeleteModalOpen(true); setClickIdx(appointment.id) }}>삭제</button>
                           </td>
                         </tr>
                       ))
@@ -549,7 +570,7 @@ const HumanResource = () => {
         header={'알림'}
         footer1={'삭제'}
         footer1Class="red-btn"
-        onFooter1Click={handleHumanInfoDelete}
+        onFooter1Click={() => {handleAppointmentDelete(clickIdx)}}
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setDeleteModalOpen(false)}

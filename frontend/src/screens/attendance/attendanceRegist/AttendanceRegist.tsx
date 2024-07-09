@@ -390,31 +390,34 @@ const AttendanceRegist = () => {
       const filteredData = data.filter(
         (item: any) => item.mode === '출근' || item.mode === '퇴근'
       );
-
+  
       const result: ProcessedAttendance[] = [];
-
+  
       filteredData.forEach((item: any) => {
-        // 이름 중복 체크
-        let person = result.find((p) => p[0] === item.name);
+        // 이름과 날짜 중복 체크
+        let person = result.find((p) => p[0] === item.name && p[1] === formatDate(item.occurrenceDate));
         if (!person) {
           // 없으면 추가
           person = [item.name, formatDate(item.occurrenceDate), ['', '', '']];
           result.push(person);
         }
-
+  
+        // 출근/퇴근 시간 업데이트
         if (item.mode === '출근') {
-            person[2][0] = formatTime(item.occurrenceTime);
-          } else if (item.mode === '퇴근') {
-            person[2][1] = formatTime(item.occurrenceTime);
-          }
+          person[2][0] = formatTime(item.occurrenceTime);
+        } else if (item.mode === '퇴근') {
+          person[2][1] = formatTime(item.occurrenceTime);
+        }
       });
-
+  
       setHO_Data(result);
     },
     onError: (error) => {
-      console.log(error)
+      console.log(error);
     }
   });
+  
+  
 
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
     const tableRows = [];
@@ -966,6 +969,8 @@ const AttendanceRegist = () => {
     return () => clearTimeout(timer);
   }, []);
 
+
+  console.log(HO_Data)
   return (
     <div className="content">
       <div className="content_container">

@@ -79,6 +79,7 @@ const DetailManagePerform = () => {
     DeletePerform(params)
     .then((response) => {
       console.log("인사평가 문서가 삭제되었습니다.", response);
+      navigate('/manage-perform');
     })
     .catch((error) => {
       console.error("인사평가 문서 삭제에 실패했습니다.", error);
