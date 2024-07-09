@@ -22,7 +22,7 @@ module.exports = (app) => {
   // 인사이동 수정
   router.put('/editAppointment/:appoint_id', PersonnelTransfer.updateTransfer);  
   // 인사이동 삭제
-  router.put('/deleteAppointment/:appoint_id', PersonnelTransfer.deleteTransfer);  
+  router.delete('/deleteAppointment/:appoint_id', PersonnelTransfer.deleteTransfer);  
 
 
   app.use(
