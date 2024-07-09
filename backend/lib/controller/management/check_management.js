@@ -3,7 +3,7 @@ const Management = models.Management;
 const fs = require("fs").promises;
 const path = require("path");
 
-// 인사정보 수정
+// 인사정보 수정 --------------------------------------------------------------------------------------------
 const updateGreetingCard = async (req, res) => {
   const { hrinfo_id } = req.params;
   const { team, dept, TabData } = req.body;
@@ -49,19 +49,19 @@ const updateGreetingCard = async (req, res) => {
   }
 };
 
-// // 인사정보 조회
-// const checkAppointment = async (req, res) => {
-//   try {
-//     const movements = await Management.findAll(); // 모든 인사이동 정보를 조회
+// 인사정보관리 조회 --------------------------------------------------------------------------------------------
+const checkAppointment = async (req, res) => {
+  try {
+    const movements = await Management.findAll(); // 모든 인사정보관리 조회
 
-//     res.status(200).json({ movements }); // 조회된 정보를 클라이언트에게 전달
-//   } catch (error) {
-//     console.error('인사이동 정보 조회 에러:', error);
-//     res.status(500).json({ error: '인사이동 정보 조회 중 오류가 발생했습니다.' });
-//   }
-// };
+    res.status(200).json({ movements }); // 조회된 정보를 클라이언트에게 전달
+  } catch (error) {
+    console.error('인사이동 정보 조회 에러:', error);
+    res.status(500).json({ error: '인사이동 정보 조회 중 오류가 발생했습니다.' });
+  }
+};
 
 module.exports = {
   updateGreetingCard,
-  // checkAppointment
+  checkAppointment
 };
