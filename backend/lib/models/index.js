@@ -18,6 +18,8 @@ const report = require("./workLog/workLog");
 const evaluation = require("./performance/performance");
 // 인사 정보 관리
 const management = require("./management/management");
+// 인사 이동
+const Transfer = require("./management/personnel_transfer");
 // 채용공고
 const jobPosting = require("./employment/JobPosting");
 
@@ -37,6 +39,7 @@ db.Attendance = attendance(sequelize, Sequelize);
 db.Report = report(sequelize, Sequelize);
 db.JobPosting = jobPosting(sequelize, Sequelize);
 db.Evaluation = evaluation(sequelize, Sequelize);
+db.TransferPosition = Transfer(sequelize, Sequelize);
 db.Management = management(sequelize, Sequelize);
 
 
