@@ -74,8 +74,6 @@ const ManagePerform = () => {
     }
   }, [isSelectMember, refetch]);
 
-  console.log("가져온 데이터", managePerform)
-  
   return (
     <div className="content">
       <div className="content_container">
