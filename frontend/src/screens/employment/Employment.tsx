@@ -287,7 +287,6 @@ const handleSubmit = () => {
                                     </div>
                                     <div className="button_wrap">
                                       <button className="white_button" onClick={handleEdit}>수정</button>
-                                      <button className="cancle_button">취소</button>
                                     </div>
                                   </PopoverBody>
                                 </PopoverContent>
