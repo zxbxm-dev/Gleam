@@ -33,7 +33,7 @@ const WriteAttendance = (formData) => {
 
 // 출근부 데이터 수정
 const EditAttendance = (attend_id, formData) => {
-  return api.put(`/editAttendance/${attend_id}`, formData)
+  return api.put(`/editAttendance/${attend_id}`, formData);
 }
 
 

@@ -7,7 +7,8 @@ const Attendance = models.Attendance;
 const path = require('path');
 const fs = require('fs');
 const xlsx = require('xlsx');
-
+const csv = require('csv-parser');
+const iconv = require('iconv-lite');
 // 출근부 조회 -----------------------------------------------------------------------------------------------------------
 const getAllAttendance = async (req, res) => {
   try {
@@ -23,24 +24,27 @@ const getAllAttendance = async (req, res) => {
 const updateAttendance = async (req, res) => {
   try {
     const { attend_id } = req.params;
-    const { updateData } = req.body;
+    const updateData = req.body; // req.body 자체가 배열 형태로 전송됨
+
+    console.log('클라이언트에서 전송된 req.body:', req.body);
 
     if (!attend_id) {
       return res.status(400).json({ error: "ID가 제공되지 않았습니다" });
     }
 
-    const attendanceRecord = await Attendance.findByPk(id);
+    const attendanceRecord = await Attendance.findByPk(attend_id);
     if (!attendanceRecord) {
       return res.status(404).json({ error: "출근부 데이터를 찾을 수 없습니다" });
     }
 
-    const existingDataList = attendanceRecord.DataList || [];
+    // 기존 데이터와 새로운 데이터 합치기
     const updatedDataList = [
-      existingDataList[0], // 출근시간
-      existingDataList[1], // 퇴근시간
-      updateData || '' // '목록' 항목
+      attendanceRecord.DataList[0], // 출근시간 유지
+      attendanceRecord.DataList[1], // 퇴근시간 유지
+      updateData[2] || attendanceRecord.DataList[2] // 클라이언트에서 전송된 데이터 사용
     ];
 
+    // 데이터베이스 업데이트
     attendanceRecord.DataList = updatedDataList;
     await attendanceRecord.save();
 
@@ -171,56 +175,93 @@ const writeAttendance = async (req, res) => {
     const filePath = path.join(uploadDir, originalFileName);
     fs.writeFileSync(filePath, req.file.buffer);
 
-    // 엑셀 파일 읽기
-    const workbook = xlsx.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
+    const fileExtension = path.extname(originalFileName).toLowerCase();
+    let jsonArray = [];
 
-    const jsonArray = xlsx.utils.sheet_to_json(worksheet, {
-      raw: true,
-      defval: null,
-      header: 1
-    });
+    if (fileExtension === '.csv') {
+      // CSV 파일 처리
+      jsonArray = await new Promise((resolve, reject) => {
+        const results = [];
+        fs.createReadStream(filePath)
+          .pipe(iconv.decodeStream('euc-kr'))
+          .pipe(csv({
+            // CSV 파일의 헤더를 매핑하여 올바르게 인식하도록 설정
+            mapHeaders: ({ header }) => {
+              switch (header) {
+                case "이름":
+                  return "username";
+                case "발생일자":
+                  return "Date";
+                case "발생시각":
+                  return "Time";
+                case "모드":
+                  return "Mode";
+                default:
+                  return header;
+              }
+            },
+          }))
+          .on('data', (data) => results.push(data))
+          .on('end', () => resolve(results))
+          .on('error', (error) => reject(error));
+      });
+    } else if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+      // 엑셀 파일 처리
+      const workbook = xlsx.readFile(filePath);
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+
+      jsonArray = xlsx.utils.sheet_to_json(worksheet, {
+        raw: true,
+        defval: null,
+        header: 1
+      });
+
+      const headers = jsonArray[0];
+      const dataRows = jsonArray.slice(1);
+
+      jsonArray = dataRows.map(row => {
+        const rowData = {};
+        headers.forEach((header, index) => {
+          switch (header) {
+            case "이름":
+              rowData.username = row[index] ? row[index].trim() : null;
+              break;
+            case "발생일자":
+              rowData.Date = row[index] ? row[index].trim() : null;
+              break;
+            case "발생시각":
+              rowData.Time = row[index] ? row[index].trim() : null;
+              break;
+            case "모드":
+              rowData.Mode = row[index] ? row[index].trim() : null;
+              break;
+          }
+        });
+        return rowData;
+      });
+    } else {
+      return res.status(400).json({ error: "지원되지 않는 파일 형식입니다" });
+    }
 
     // 데이터 가공
-    const headers = jsonArray[0];
-    const dataRows = jsonArray.slice(1);
-
-    const formattedData = dataRows.reduce((acc, row) => {
-      const rowData = {};
-      headers.forEach((header, index) => {
-        switch (header) {
-          case "이름":
-            rowData.username = row[index] ? row[index].trim() : null;
-            break;
-          case "발생일자":
-            rowData.Date = row[index] ? row[index].trim() : null;
-            break;
-          case "발생시각":
-            rowData.Time = row[index] ? row[index].trim() : null;
-            break;
-          case "모드":
-            rowData.Mode = row[index] ? row[index].trim() : null;
-            break;
-        }
-      });
-      
-      if (rowData.username && rowData.Date && rowData.Time && rowData.Mode) {
-        const key = `${rowData.username}-${rowData.Date}`;
+    const formattedData = jsonArray.reduce((acc, row) => {
+      if (row.username && row.Date && row.Time && row.Mode) {
+        const key = `${row.username}-${row.Date}`;
         if (!acc[key]) {
           acc[key] = {
-            username: rowData.username,
-            Date: rowData.Date,
-            DataList: { 출근시간: null, 퇴근시간: null,  구분: null}
+            username: row.username,
+            Date: row.Date,
+            DataList: { 출근시간: null, 퇴근시간: null, 구분: null }
           };
         }
-        
-        if (rowData.Mode === "출근") {
-          acc[key].DataList.출근시간 = rowData.Time;
-        } else if (rowData.Mode === "퇴근") {
-          acc[key].DataList.퇴근시간 = rowData.Time;
-        }else if (rowData.Mode === "구분") {
-          acc[key].DataList.구분 = rowData.Time;
+
+        if (row.Mode === "출근") {
+          acc[key].DataList.출근시간 = row.Time;
+        } else if (row.Mode === "퇴근") {
+          acc[key].DataList.퇴근시간 = row.Time;
+        } else if (row.Mode === "구분") {
+          acc[key].DataList.구분 = row.Time;
         }
       }
       return acc;
