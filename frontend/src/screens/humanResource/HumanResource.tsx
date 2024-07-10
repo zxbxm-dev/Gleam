@@ -30,7 +30,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const HumanResource = () => {
   const queryClient = useQueryClient();
   const { isOpen: isAdd, onOpen: AddOpen, onClose: AddClose } = useDisclosure();
-  const { isOpen: isEdit, onOpen: EditOpen, onClose: EditClose } = useDisclosure();
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({ 0: '41px', 1: '35px', 2: '35px' });
   const [tabMargins, setTabMargins] = useState({ 0: '6px', 1: '6px', 2: '6px' });
@@ -258,10 +257,6 @@ const HumanResource = () => {
   const handleToggleEdit = () => {
     setIsEditing(!isEditing);
   };
-
-  const handleHumanInfoDelete = () => {
-    setDeleteModalOpen(false);
-  }
 
   // 인사기록카드, 근로자명부 제출
   const handleSubmitHrInfo = async () => {
@@ -508,9 +503,13 @@ const HumanResource = () => {
                           <td>{appointment.date}</td>
                           <td>{appointment.classify}</td>
                           <td className="flex_center">
-                            <Popover placement="left-start" isOpen={isEdit} onClose={EditClose}>
+                            <Popover placement="left-start">
                               <PopoverTrigger>
-                                <button className="white_button" onClick={EditOpen}>수정</button>
+                                <button className="white_button" 
+                                  onClick={() => {
+                                    setForm({ dept: appointment.Newdept, position: appointment.Newposition, spot: appointment.Newspot, team: appointment.team, date: appointment.date, classify: appointment.classify,});}}>
+                                      수정
+                                </button>
                               </PopoverTrigger>
                               <Portal>
                                 <PopoverContent className="hr_popover_content">
@@ -520,32 +519,31 @@ const HumanResource = () => {
                                     <div className="hr_popover_body_wrap">
                                       <div className="hr_popover_body_content">
                                         <div>부서</div>
-                                        <input placeholder='ex) 개발부' onChange={handleDeptChange} />
+                                        <input value={form.dept} onChange={handleDeptChange} />
                                       </div>
                                       <div className="hr_popover_body_content">
                                         <div>팀</div>
-                                        <input placeholder='ex) 개발 1팀' onChange={handleTeamChange} />
+                                        <input value={form.team} onChange={handleTeamChange} />
                                       </div>
                                       <div className="hr_popover_body_content">
                                         <div>직위</div>
-                                        <input placeholder='내용을 입력해주세요.' onChange={handlePositionChange} />
+                                        <input value={form.position} onChange={handlePositionChange} />
                                       </div>
                                       <div className="hr_popover_body_content">
                                         <div>직책</div>
-                                        <input placeholder='내용을 입력해주세요.' onChange={handleSpotChange} />
+                                        <input value={form.spot} onChange={handleSpotChange} />
                                       </div>
                                       <div className="hr_popover_body_content">
                                         <div>날짜</div>
-                                        <input placeholder='20240627' onChange={handleDateChange} />
+                                        <input value={form.date} onChange={handleDateChange} />
                                       </div>
                                       <div className="hr_popover_body_content">
                                         <div>구분</div>
-                                        <input placeholder='승진 / 부서이동 / 강등' onChange={handleClassifyChange} />
+                                        <input value={form.classify} onChange={handleClassifyChange} />
                                       </div>
                                     </div>
                                     <div className='button-wrap'>
                                       <button className="white_button" onClick={() => { handleAppointmentEdit(appointment.id) }}>수정</button>
-                                      <button className="white_button" onClick={EditClose}>취소</button>
                                     </div>
                                   </PopoverBody>
                                 </PopoverContent>
