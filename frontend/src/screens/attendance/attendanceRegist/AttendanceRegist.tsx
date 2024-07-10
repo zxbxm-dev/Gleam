@@ -11,7 +11,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
 
 import { useQuery } from "react-query";
-import { CheckAttendance, WriteAttendance } from "../../../services/attendance/AttendanceServices";
+import { CheckAttendance, WriteAttendance, EditAttendance } from "../../../services/attendance/AttendanceServices";
 
 const months = [
   { name: '1월', key: 'january' },
@@ -49,6 +49,7 @@ const AttendanceRegist = () => {
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
   const [HO_Data, setHO_Data] = useState<ProcessedAttendance[]>([]);
   const [RnD_Data, setRnD_Data] = useState([]);
+  const [clickIdx, setClickIdx] = useState<number | null>(null);
   // 모달 창 입력값
   const { register, handleSubmit, reset } = useForm();
 
@@ -378,45 +379,25 @@ const AttendanceRegist = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const formatTime = (timeString: string): string => {
-    const time = new Date(`1970-01-01T${timeString}`);
-    const hours = time.getHours().toString().padStart(2, '0');
-    const minutes = time.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+  // 데이터를 원하는 형식으로 변환하는 함수
+  const transformData = (data: any) => {
+    return data.map((item: any) => [
+      item.username,
+      formatDate(item.Date),
+      item.DataList,
+      item.id
+    ]);
   };
 
   useQuery("attendregist", fetchAttentRegist, {
     onSuccess: (data) => {
-      const filteredData = data.filter(
-        (item: any) => item.mode === '출근' || item.mode === '퇴근'
-      );
-  
-      const result: ProcessedAttendance[] = [];
-  
-      filteredData.forEach((item: any) => {
-        // 이름과 날짜 중복 체크
-        let person = result.find((p) => p[0] === item.name && p[1] === formatDate(item.occurrenceDate));
-        if (!person) {
-          // 없으면 추가
-          person = [item.name, formatDate(item.occurrenceDate), ['', '', '']];
-          result.push(person);
-        }
-  
-        // 출근/퇴근 시간 업데이트
-        if (item.mode === '출근') {
-          person[2][0] = formatTime(item.occurrenceTime);
-        } else if (item.mode === '퇴근') {
-          person[2][1] = formatTime(item.occurrenceTime);
-        }
-      });
-  
+      const result = transformData(data);
       setHO_Data(result);
     },
     onError: (error) => {
       console.log(error);
     }
   });
-  
   
 
   const generateDivs = (numberOfDaysInMonth: number, year: number, month: number, attendanceData: any[]) => {
@@ -440,7 +421,7 @@ const AttendanceRegist = () => {
         const pointerEvents = dayOfWeekIndex === 0 || dayOfWeekIndex === 6 ? 'none' : 'auto';
 
         let personData = ['', '', ['', '', '']];
-
+        
         for (const data of attendanceData) {
           if (data[1] === `${year}-${month}-${date}` && data[0] === members[personIndex][0]) {
             personData = data;
@@ -536,11 +517,11 @@ const AttendanceRegist = () => {
             <Tooltip label={`${month}월 ${date}일`}>
               <tr
                 className="conta_three"
-                onClick={() => handleDivClick(date, year, month, personIndex)}
+                onClick={() => handleDivClick(date, year, month, personIndex, personData[3])}
                 key={`${i}-${j}`}
               >
-                <td className='conta'>{personData[2][0]} </td>
-                <td className='conta_border'>{personData[2][1]} </td>
+                <td className='conta'>{personData[2][0].slice(0,5)} </td>
+                <td className='conta_border'>{personData[2][1].slice(0,5)} </td>
                 <td className='conta' style={{ color: itemBackgroundColor }}>{personData[2][2]} </td>
               </tr>
             </Tooltip>
@@ -919,8 +900,9 @@ const AttendanceRegist = () => {
     );
   };
 
-  const handleDivClick = (date: number, year: number, month: number, personIndex: number) => {
+  const handleDivClick = (date: number, year: number, month: number, personIndex: number, dbindex: any) => {
     setAddAttend(true);
+    setClickIdx(dbindex);
     const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
     const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
     const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
@@ -959,6 +941,14 @@ const AttendanceRegist = () => {
       date: `${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`,
       data: [data.startTime, data.endTime, data.otherValue],
     }
+
+    EditAttendance(clickIdx, formData.data[2])
+      .then(response => {
+        console.log("출근부 데이터 수정 성공", response)
+      })
+      .catch(error => {
+        console.log("출근부 데이터 수정 실패", error)
+      })
   }
 
   useEffect(() => {
@@ -971,6 +961,7 @@ const AttendanceRegist = () => {
 
 
   console.log(HO_Data)
+
   return (
     <div className="content">
       <div className="content_container">
