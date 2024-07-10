@@ -22,16 +22,18 @@ module.exports = (app) => {
     annualLeaveController.deleteCalendarEvent
   );
 
-  // 관리자 연차 관리 라우터
+  // 관리자 관리 관리 조회
   router.get("/checkAnnual", annualLeaveController.administratorCalendar);
-  // 관리자 연차 관리 라우터
+  // 관리자 연차 관리 수정
   router.put("/editAnnual", annualLeaveController.updateUserAnnualLeave);
 
   // ⚠️⚠️출근부 router ----------------------------------------------------------------------- ⚠️⚠️
-  // 출근부 관리 라우터
+  // 출근부 조회
   router.get("/checkAttendance", officeHourController.getAllAttendance);
-  // 출근부 작성 라우터
-  router.post("/writeAttendance", upload.single("handleFileSubmit"), // 클라이언트의 필드명과 동일하도록
+  // 출근부 수정
+  router.get("/editAttendance/:attend_id", officeHourController.updateAttendance);
+  // 출근부 파일 업로드
+  router.post("/writeAttendance", upload.single("handleFileSubmit"),
   officeHourController.writeAttendance
   );
 
