@@ -937,12 +937,10 @@ const AttendanceRegist = () => {
     setAddAttend(false);
 
     const formData = {
-      name: selectedDateInfo.name,
-      date: `${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`,
       data: [data.startTime, data.endTime, data.otherValue],
     }
 
-    EditAttendance(clickIdx, formData.data[2])
+    EditAttendance(clickIdx, formData.data)
       .then(response => {
         console.log("출근부 데이터 수정 성공", response)
       })
