@@ -15,13 +15,6 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
 
-
-interface Event {
-  title: string;
-  startDate: string;
-  endDate: string;
-}
-
 interface ProjectInter {
   id: string;
   state: string;
@@ -39,7 +32,6 @@ const Project = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({ 0: '41px', 1: '35px' });
   const [tabMargins, setTabMargins] = useState({ 0: '6px', 1: '6px' });
-  const [key, setKey] = useState(0);
   const calendarRef = useRef<FullCalendar>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -54,16 +46,11 @@ const Project = () => {
   const [stateIsOpen, setStateIsOpen] = useState(false);
   const [selectedstateOption, setSelectedStateOption] = useState('전체');
 
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [projects, setProjects] = useState<any[]>([]);
   const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
-  const [clickIdx, setClickIdx] = useState<number | null>(null);
-
-  console.log(selectedEvent);
-  console.log(clickIdx);
 
   const stateOptions = [
     '전체',
@@ -143,11 +130,6 @@ const Project = () => {
   ];
 
   const handleEventClick = (info: any) => {
-    setSelectedEvent({
-      title: info.event.title,
-      startDate: info.event.start.toISOString().substring(0, 10),
-      endDate: info.event.end ? info.event.end.toISOString().substring(0, 10) : info.event.start.toISOString().substring(0, 10),
-    });
     setEventModalOPen(true);
   };
 
@@ -251,7 +233,6 @@ const Project = () => {
     event.preventDefault();
     setDropdownOpen(true);
     setDropdownPosition({ x: event.pageX, y: event.pageY });
-    setClickIdx(index);
   };
 
   useEffect(() => {
@@ -393,7 +374,6 @@ const Project = () => {
             <TabPanel>
               <div className="project_container">
                 <FullCalendar
-                  key={key}
                   ref={calendarRef}
                   plugins={[dayGridPlugin]}
                   initialView="dayGridMonth"

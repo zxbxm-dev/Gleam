@@ -7,8 +7,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { writeCalen } from "../../services/calender/calender";
 import { SelectArrow } from "../../assets/images/index";
-import { useRecoilState } from 'recoil';
-import { isSidebarVisibleState } from '../../recoil/atoms';
 import { CheckCalen, DeleteCalen, EditCalen } from "../../services/calender/calender";
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
@@ -58,7 +56,6 @@ const Calendar = () => {
   const [key, setKey] = useState(0);
   const [selectedColor, setSelectedColor] = useState("#ABF0FF");
   const [selectOpen, setSelectOpen] = useState(false);
-  const [isSidebarVisible, setIsSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [calendar, setCalendar] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
@@ -92,7 +89,7 @@ const Calendar = () => {
 
   useEffect(() => {
     setKey(prevKey => prevKey + 1);
-  }, [activeTab, isSidebarVisible]);
+  }, [activeTab]);
 
   const handleTitleChange = (event: any) => {
     setuserDropdown(true);

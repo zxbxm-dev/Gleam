@@ -31,7 +31,6 @@ const WriteAnnouncement = () => {
   });
 
   const [isfileUpload, setIsFileUpload] = useState(false);
-  const [views, setView] = useState(0);
   const user = useRecoilValue(userState);
 
   console.log(isfileUpload);
@@ -101,6 +100,8 @@ const WriteAnnouncement = () => {
       formData.append("attachmentName", form.attachment.fileName);
     }
 
+    const views = 0;
+    
     try {
       if (editData) {
 
