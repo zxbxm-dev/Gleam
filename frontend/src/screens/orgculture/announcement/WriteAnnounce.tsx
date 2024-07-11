@@ -34,6 +34,8 @@ const WriteAnnouncement = () => {
   const [views, setView] = useState(0);
   const user = useRecoilValue(userState);
 
+  console.log(isfileUpload);
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
