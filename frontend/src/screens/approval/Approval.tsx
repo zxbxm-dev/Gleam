@@ -15,22 +15,6 @@ import { userState } from '../../recoil/atoms';
 import { useQuery } from "react-query";
 import { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments } from "../../services/approval/ApprovalServices";
 
-interface Document {
-  id: number;
-  title: string;
-  sendDate: string;
-  updatedAt: string;
-  approval: number;
-  currentSigner: number;
-  username: string;
-  dept: string;
-  referName: string;
-  pending: string;
-  rejected: string;
-  completed: string;
-  Payment: [];
-}
-
 const Approval = () => {
   let navigate = useNavigate();
   const user = useRecoilValue(userState);
@@ -42,7 +26,6 @@ const Approval = () => {
   const [inProgress, setInProgress] = useState<any[]>([]); // 결재 진행중 문서
   const [rejecteds, setRejected] = useState<any[]>([]); // 반려된 문서
   const [compleDocuments, setCompleDocument] = useState<any[]>([]); // 완료된 문서
-  const [vacations, setVacation] = useState<any[]>([]);
   const [idSortOrder, setIdSortOrder] = useState<"asc" | "desc">("asc");
   const [titleSortOrder, setTitleSortOrder] = useState<"asc" | "desc">("asc");
   const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");

@@ -48,7 +48,6 @@ const AttendanceRegist = () => {
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
   const [HO_Data, setHO_Data] = useState<ProcessedAttendance[]>([]);
-  const [RnD_Data, setRnD_Data] = useState([]);
   const [clickIdx, setClickIdx] = useState<number | null>(null);
   // 모달 창 입력값
   const { register, handleSubmit, reset } = useForm();

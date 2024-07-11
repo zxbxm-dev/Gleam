@@ -57,7 +57,7 @@ const ManagePerform = () => {
     }
   };
 
-  const { data, refetch } = useQuery("managePerform", fetchManagePerform, {
+  const { refetch } = useQuery("managePerform", fetchManagePerform, {
     enabled: !!isSelectMember[0],
     onSuccess: (data) => {
       setManagePerform(Array.isArray(data) ? data : []);
