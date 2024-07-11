@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { DeleteIcon } from "../../../assets/images/index";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
@@ -31,9 +31,10 @@ const WriteAnnouncement = () => {
   });
 
   const [isfileUpload, setIsFileUpload] = useState(false);
-  const [views, setView] = useState(0);
   const user = useRecoilValue(userState);
 
+  console.log(isfileUpload);
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
@@ -99,6 +100,8 @@ const WriteAnnouncement = () => {
       formData.append("attachmentName", form.attachment.fileName);
     }
 
+    const views = 0;
+    
     try {
       if (editData) {
 

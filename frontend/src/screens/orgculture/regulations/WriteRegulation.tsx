@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   DeleteIcon,
 } from "../../../assets/images/index";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
@@ -22,6 +22,8 @@ const WriteRegulation = () => {
   const editorRef = useRef<any>(null);
   const [isFileUpload, setIsFileUpload] = useState(false);
 
+  console.log(isFileUpload);
+  
   const [form, setForm] = useState<{
     content: string;
     title: string;

@@ -15,21 +15,14 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
 
-
-interface Event {
-  title: string;
-  startDate: string;
-  endDate: string;
-}
-
-interface Project {
+interface ProjectInter {
   id: string;
   state: string;
   title: string;
   teamLeader: string;
   startDate: string;
   endDate: string;
-  subProjects?: Project[];
+  subProjects?: ProjectInter[];
 }
 
 const Project = () => {
@@ -37,9 +30,8 @@ const Project = () => {
   const [isAddEventModalOpen, setAddEventModalOPen] = useState(false);
   const [persondata, setPersonData] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState(0);
-  const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px'});
-  const [tabMargins, setTabMargins] = useState({0: '6px', 1: '6px'});
-  const [key, setKey] = useState(0);
+  const [tabHeights, setTabHeights] = useState({ 0: '41px', 1: '35px' });
+  const [tabMargins, setTabMargins] = useState({ 0: '6px', 1: '6px' });
   const calendarRef = useRef<FullCalendar>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -50,17 +42,15 @@ const Project = () => {
   const [inputAllMember, setInputAllmember] = useState('');
 
   const [slideVisible, setSlideVisible] = useState(false);
-  const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: true, 1: true, 2: true});
+  const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: true, 1: true, 2: true });
   const [stateIsOpen, setStateIsOpen] = useState(false);
   const [selectedstateOption, setSelectedStateOption] = useState('전체');
 
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [projects, setProjects] = useState<any[]>([]);
   const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
-  const [clickIdx, setClickIdx] = useState<number | null>(null);
 
   const stateOptions = [
     '전체',
@@ -69,16 +59,20 @@ const Project = () => {
   ];
 
   useEffect(() => {
-    const initialProjects: Project[] = [
-      { id: '1', state: '진행 중', title: 'FCTS', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30', subProjects: [
-        { id: '1-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
-        { id: '1-2', state: '진행 중', title: 'FCTS 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
-        { id: '1-3', state: '진행 중', title: 'FCTS 리뉴얼 기획', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
-      ]},
-      { id: '2', state: '진행 중', title: 'DRChat', teamLeader: '개발부 진유빈', startDate: '2023.10.28', endDate: '2024.04.04', subProjects: [
-        { id: '2-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
-        { id: '2-2', state: '진행 중', title: 'DRChat 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
-      ]},
+    const initialProjects: ProjectInter[] = [
+      {
+        id: '1', state: '진행 중', title: 'FCTS', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30', subProjects: [
+          { id: '1-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
+          { id: '1-2', state: '진행 중', title: 'FCTS 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
+          { id: '1-3', state: '진행 중', title: 'FCTS 리뉴얼 기획', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
+        ]
+      },
+      {
+        id: '2', state: '진행 중', title: 'DRChat', teamLeader: '개발부 진유빈', startDate: '2023.10.28', endDate: '2024.04.04', subProjects: [
+          { id: '2-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
+          { id: '2-2', state: '진행 중', title: 'DRChat 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
+        ]
+      },
     ];
 
     setProjects(initialProjects);
@@ -118,11 +112,11 @@ const Project = () => {
 
   useEffect(() => {
     if (activeTab === 0) {
-      setTabHeights({0: '41px', 1: '35px'});
-      setTabMargins({0: '0px', 1: '6px'});
+      setTabHeights({ 0: '41px', 1: '35px' });
+      setTabMargins({ 0: '0px', 1: '6px' });
     } else {
-      setTabHeights({0: '35px', 1: '41px'});
-      setTabMargins({0: '6px', 1: '0px'});
+      setTabHeights({ 0: '35px', 1: '41px' });
+      setTabMargins({ 0: '6px', 1: '0px' });
     }
   }, [activeTab]);
 
@@ -134,13 +128,8 @@ const Project = () => {
     { title: 'FCTS | 2 만기일', start: new Date('2024-06-21'), end: new Date('2024-06-21'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
     { title: 'DRChat | 5 만기일', start: new Date('2024-06-28'), end: new Date('2024-06-28'), backgroundColor: '#FCF5D7', borderColor: '#FCF5D7', textColor: '#000' },
   ];
-  
-  const handleEventClick = (info:any) => {
-    setSelectedEvent({
-      title: info.event.title,
-      startDate: info.event.start.toISOString().substring(0, 10),
-      endDate: info.event.end ? info.event.end.toISOString().substring(0, 10) : info.event.start.toISOString().substring(0, 10),
-    });
+
+  const handleEventClick = (info: any) => {
     setEventModalOPen(true);
   };
 
@@ -169,7 +158,7 @@ const Project = () => {
 
   const handleAutoCompleteClick = (username: string, department: string, team: string) => {
     if (team) {
-      setTeamLeader(team+ ' ' + username);
+      setTeamLeader(team + ' ' + username);
     } else {
       setTeamLeader(department + ' ' + username);
     }
@@ -190,17 +179,13 @@ const Project = () => {
     }
   };
 
-  const handleRecipientRemove = (username: string) => {
-    setAllMembers(allMembers.filter(allMember => allMember !== username));
-  };
-
   const handleAutoAllMembersCompleteClick = (username: string, department: string, team: string) => {
     if (team) {
       setAllMembers([...allMembers, team + ' ' + username]);
     } else {
       setAllMembers([...allMembers, department + ' ' + username]);
     }
-      
+
     setInputAllmember('');
   };
 
@@ -218,7 +203,7 @@ const Project = () => {
       );
     }
   });
-  
+
   const filteredAllmembersNames = persondata.filter(person => {
     const inputLowerCase = inputAllMember.toLowerCase();
     if (person.team) {
@@ -248,7 +233,6 @@ const Project = () => {
     event.preventDefault();
     setDropdownOpen(true);
     setDropdownPosition({ x: event.pageX, y: event.pageY });
-    setClickIdx(index);
   };
 
   useEffect(() => {
@@ -268,7 +252,7 @@ const Project = () => {
   return (
     <div className="content">
       <div className="content_container">
-        { activeTab === 0 &&
+        {activeTab === 0 &&
           <div className="project_header_right">
             <button className="primary_button" onClick={() => setAddEventModalOPen(true)}>새업무 +</button>
           </div>
@@ -297,14 +281,14 @@ const Project = () => {
                     <img src={White_Arrow} alt="White_Arrow" />
                   </div>
                   {stateIsOpen && (
-                  <ul className="dropdown_menu">
-                    {stateOptions.map((option) => (
-                      <li key={option} onClick={() => handleStateSelect(option)}>
-                        {option} 
-                        <div className={option === '진행 중' ? 'blue_circle' : option === '진행 완료' ? 'brown_circle' : ''}></div>
-                      </li>
-                    ))}
-                  </ul>
+                    <ul className="dropdown_menu">
+                      {stateOptions.map((option) => (
+                        <li key={option} onClick={() => handleStateSelect(option)}>
+                          {option}
+                          <div className={option === '진행 중' ? 'blue_circle' : option === '진행 완료' ? 'brown_circle' : ''}></div>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
 
@@ -342,8 +326,8 @@ const Project = () => {
                             </td>
                             <td>{project.id}</td>
                             <td>{project.state}</td>
-                            <td 
-                              className="text_left text_cursor" 
+                            <td
+                              className="text_left text_cursor"
                               onClick={() => toggleSubProjects(project.id)}
                               onContextMenu={(e) => handleRightClick(project.id, e)}
                             >
@@ -390,7 +374,6 @@ const Project = () => {
             <TabPanel>
               <div className="project_container">
                 <FullCalendar
-                  key={key}
                   ref={calendarRef}
                   plugins={[dayGridPlugin]}
                   initialView="dayGridMonth"
@@ -421,14 +404,14 @@ const Project = () => {
                   moreLinkText='개 일정 더보기'
                 />
               </div>
-              
+
               <div className="project_slide_container">
                 <div className={`project_slide ${slideVisible ? 'visible' : ''}`} onClick={toggleSlide}>
                   <span>전체 프로젝트 일정</span>
                   {slideVisible ? (
-                    <img src={White_Arrow} alt="White_Arrow" className="img_rotate"/>
+                    <img src={White_Arrow} alt="White_Arrow" className="img_rotate" />
                   ) : (
-                    <img src={White_Arrow} alt="White_Arrow"/>
+                    <img src={White_Arrow} alt="White_Arrow" />
                   )}
                 </div>
 
@@ -437,9 +420,9 @@ const Project = () => {
                     <div className="project_name_container">
                       <div className="name_left" onClick={() => toggleProjectVisibility(0)}>
                         {projectVisible[0] ? (
-                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate" />
                         ) : (
-                          <img src={Right_Arrow} alt="Right_Arrow"/>
+                          <img src={Right_Arrow} alt="Right_Arrow" />
                         )}
                         <span className="project_name">Chain-Linker</span>
                       </div>
@@ -461,9 +444,9 @@ const Project = () => {
                     <div className="project_name_container">
                       <div className="name_left" onClick={() => toggleProjectVisibility(1)}>
                         {projectVisible[1] ? (
-                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate" />
                         ) : (
-                          <img src={Right_Arrow} alt="Right_Arrow"/>
+                          <img src={Right_Arrow} alt="Right_Arrow" />
                         )}
                         <span className="project_name">FCTS</span>
                       </div>
@@ -485,9 +468,9 @@ const Project = () => {
                     <div className="project_name_container">
                       <div className="name_left" onClick={() => toggleProjectVisibility(2)}>
                         {projectVisible[2] ? (
-                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate"/>
+                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate" />
                         ) : (
-                          <img src={Right_Arrow} alt="Right_Arrow"/>
+                          <img src={Right_Arrow} alt="Right_Arrow" />
                         )}
                         <span className="project_name">DRChat</span>
                       </div>
@@ -510,7 +493,7 @@ const Project = () => {
           </TabPanels>
         </Tabs>
       </div>
-      
+
       <CustomModal
         isOpen={isAddEventModalOpen}
         onClose={() => setAddEventModalOPen(false)}
@@ -530,7 +513,7 @@ const Project = () => {
           <div className="body_container_content">
             <div className="body_container_content_title">팀리더</div>
             <input
-              type="text" 
+              type="text"
               value={teamLeader}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
@@ -550,7 +533,7 @@ const Project = () => {
 
           <div className="body_container_content">
             <div className="body_container_content_title">전체 팀원</div>
-            <input 
+            <input
               type="text"
               value={inputAllMember}
               onChange={handleInputAllMemberChange}
@@ -570,7 +553,7 @@ const Project = () => {
           </div>
           <div className="body_container_content">
             <div className="body_container_content_listbox">
-              {allMembers.map((item:string) => item + ', ')}
+              {allMembers.map((item: string) => item + ', ')}
             </div>
           </div>
 
@@ -580,12 +563,12 @@ const Project = () => {
           </div>
           <div className="body_container_content">
             <div className="body_container_content_listbox">
-              
+
             </div>
           </div>
 
           <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트<br/>기간</div>
+            <div className="body_container_content_title">프로젝트<br />기간</div>
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}

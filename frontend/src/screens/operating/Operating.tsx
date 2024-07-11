@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
 import { evaluate } from "mathjs";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
