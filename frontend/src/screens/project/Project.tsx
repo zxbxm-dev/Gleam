@@ -22,14 +22,14 @@ interface Event {
   endDate: string;
 }
 
-interface Project {
+interface ProjectInter {
   id: string;
   state: string;
   title: string;
   teamLeader: string;
   startDate: string;
   endDate: string;
-  subProjects?: Project[];
+  subProjects?: ProjectInter[];
 }
 
 const Project = () => {
@@ -69,7 +69,7 @@ const Project = () => {
   ];
 
   useEffect(() => {
-    const initialProjects: Project[] = [
+    const initialProjects: ProjectInter[] = [
       { id: '1', state: '진행 중', title: 'FCTS', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30', subProjects: [
         { id: '1-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
         { id: '1-2', state: '진행 중', title: 'FCTS 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30'},
@@ -188,10 +188,6 @@ const Project = () => {
         setInputAllmember('');
       }
     }
-  };
-
-  const handleRecipientRemove = (username: string) => {
-    setAllMembers(allMembers.filter(allMember => allMember !== username));
   };
 
   const handleAutoAllMembersCompleteClick = (username: string, department: string, team: string) => {

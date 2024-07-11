@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -40,7 +39,6 @@ type User = {
 
 
 const Calendar = () => {
-  const user = useRecoilValue(userState);
   const [persondata, setPersonData] = useState<any[]>([]);
   const [isAddeventModalOpen, setAddEventModalOPen] = useState(false);
   const [iseventModalOpen, setEventModalOPen] = useState(false);
