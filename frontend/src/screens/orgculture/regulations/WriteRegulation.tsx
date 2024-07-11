@@ -22,6 +22,8 @@ const WriteRegulation = () => {
   const editorRef = useRef<any>(null);
   const [isFileUpload, setIsFileUpload] = useState(false);
 
+  console.log(isFileUpload);
+  
   const [form, setForm] = useState<{
     content: string;
     title: string;

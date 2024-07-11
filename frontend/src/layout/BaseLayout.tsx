@@ -1,12 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { Header, Sidebar } from "../components";
 import { useRecoilState } from 'recoil';
-import { isSidebarVisibleState, isHrSidebarVisibleState, isSelectMemberState } from '../recoil/atoms';
+import { isSidebarVisibleState, isHrSidebarVisibleState } from '../recoil/atoms';
 
 const BaseLayout = () => {
   const [isSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [isHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
-  const [isSelectMember, setIsSelectMember] = useRecoilState(isSelectMemberState);
 
 
   let marginLeft = 0;
