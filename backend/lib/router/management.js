@@ -9,10 +9,16 @@ module.exports = (app) => {
 
   const path = require("path");
 
+  // 정적 파일 서빙 설정
+  app.use(
+    "/uploads",
+    express.static(path.join(__dirname, "../../../uploads/management"))
+  );
+
   // 인사 정보 관리 파일 등록
   router.post("/writeHrInfo", multerMiddleware.single("attachment"), managementController.savedGreeting_card);
   // 인사 정보 관리 파일 등록
-  router.put("/editHrInfo/:hrinfo_id", multerMiddleware.single("attachment"), management_retouch.updateGreetingCard);
+  router.put("/editHrInfo", multerMiddleware.single("attachment"), management_retouch.updateGreetingCard);
   // 인사 정보 조회
   router.get('/checkHrInfo', management_retouch.checkAppointment);
   // 인사이동 등록
