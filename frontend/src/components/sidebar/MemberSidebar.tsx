@@ -115,7 +115,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
           .map((person, index) => (
             <div key={index} className="member" onClick={() => handleMemberClick(person)}>
               <div className="MemberFlex">
-                <img src={person.attachment ? person.attachment : UserIcon_dark} />
+                <img src={person.attachment ? person.attachment : UserIcon_dark} alt={`${person.username}'s avatar`} />
                 <div className="Font">{person.username} | {person.position}</div>
               </div>
             </div>
