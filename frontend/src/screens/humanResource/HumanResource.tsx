@@ -19,13 +19,14 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import testPDF_구민석 from '../../assets/pdf/[서식-P502] 인사기록카드_구민석.pdf';
 
 import { useQueryClient, useQuery } from 'react-query';
-import { CheckHrInfo, WriteHrInfo, CheckAppointment, writeAppointment, EditAppointment, DeleteAppointment } from "../../services/humanresource/HumanResourceServices";
+import { CheckHrInfo, WriteHrInfo, EditHrInfo, CheckAppointment, writeAppointment, EditAppointment, DeleteAppointment } from "../../services/humanresource/HumanResourceServices";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
 ).toString();
 
+type PDFFile = string | File | null;
 
 const HumanResource = () => {
   const queryClient = useQueryClient();
@@ -35,6 +36,7 @@ const HumanResource = () => {
   const [tabMargins, setTabMargins] = useState({ 0: '6px', 1: '6px', 2: '6px' });
   const [numPages, setNumPages] = useState<number>(0);
   const [attachment, setAttachment] = useState<File | null>(null);
+  const [file, setFile] = useState<PDFFile>('');
   const [isSelectMember] = useRecoilState(isSelectMemberState);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -58,6 +60,7 @@ const HumanResource = () => {
   })
 
   useEffect(() => {
+    fetchHrInfo();
     if (activeTab === 0) {
       setTabHeights({ 0: '41px', 1: '35px', 2: '35px' });
       setTabMargins({ 0: '0px', 1: '6px', 2: '6px' });
@@ -95,20 +98,75 @@ const HumanResource = () => {
 
   // 인사정보관리 목록 조회
   const fetchHrInfo = async () => {
+
+    let TabName;
+    if (activeTab === 0) {
+      TabName = "인사기록카드";
+    } else if (activeTab === 1) {
+      TabName = "근로자 명부";
+    } else {
+      return;
+    }
+
+    const params = {
+      username: isSelectMember[1],
+      TabData: TabName,
+    }
     try {
-      const response = await CheckHrInfo();
-      return response.data;
+      const response = await CheckHrInfo(params);
+      
+      if (response.status === 200) {
+        const url = URL.createObjectURL(response.data);
+        setFile(url);
+      } else {
+        console.error("Failed to fetch data");
+      }
     } catch (error) {
-      throw new Error("Failed to fetch data");
+      console.error("Failed to fetch data");
+      setFile('')
     }
   }
 
   useQuery("HrInfo", fetchHrInfo, {
-    onSuccess: (data) => console.log(data),
+    onSuccess: (data) => {
+      console.log(data);
+    },
     onError: (error) => {
       console.log(error)
     }
   });
+
+  // 인사정보관리 수정
+  const handleHrInfoEdit = async() => {
+    if (!attachment) {
+      alert('선택된 파일이 없습니다.');
+      return;
+    }
+
+    let TabName;
+    if (activeTab === 0) {
+      TabName = "인사기록카드";
+    } else if (activeTab === 1) {
+      TabName = "근로자 명부";
+    } else {
+      alert('유효하지 않은 탭입니다.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('username', isSelectMember[1]);
+    formData.append('attachment', attachment);
+    formData.append('team', isSelectMember[3]);
+    formData.append('dept', isSelectMember[2]);
+    formData.append('TabData', TabName);
+
+    try {
+      const response = await EditHrInfo(formData);
+      console.log('인사정보관리 수정 성공', response.data)
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   // 인사이동 목록 조회
@@ -121,7 +179,7 @@ const HumanResource = () => {
     }
   }
 
-  const { refetch } = useQuery("Appointment", fetchAppointment, {
+  useQuery("Appointment", fetchAppointment, {
     onSuccess: (data) => { 
       const userAppoint = data.data
         .filter((item:any) => item.username === isSelectMember[1])
@@ -134,9 +192,10 @@ const HumanResource = () => {
 
   useEffect(() => {
     if (isSelectMember[0]) {
-      refetch();
+      fetchHrInfo();
+      queryClient.invalidateQueries("Appointment");
     }
-  }, [isSelectMember, refetch]);
+  }, [isSelectMember, queryClient]);
 
   // 인사이동 등록
   const handleAppointSubmit = () => {
@@ -256,6 +315,7 @@ const HumanResource = () => {
 
   const handleToggleEdit = () => {
     setIsEditing(!isEditing);
+    setFile('');
   };
 
   // 인사기록카드, 근로자명부 제출
@@ -286,6 +346,7 @@ const HumanResource = () => {
     try {
       const response = await WriteHrInfo(formData);
       console.log('Data successfully sent:', response.data);
+      queryClient.invalidateQueries("HrInfo");
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch data");
@@ -310,31 +371,61 @@ const HumanResource = () => {
               ) : (
                 <>
                   <div className="hr_button_wrap">
-                    {attachment ? (
-                      <>
-                        <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
-                        <button className="red_button" onClick={handleToggleEdit}>취소</button>
-                      </>
+                    {!file ? (
+                      attachment ? (
+                        <>
+                          <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
+                          <button className="red_button" onClick={handleToggleEdit}>취소</button>
+                        </>
+                      ) : (
+                        <>
+                          <button className="white_button">
+                            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                              업로드
+                              <input
+                                id="fileInput"
+                                type="file"
+                                name="handleFileSubmit"
+                                style={{ display: "none" }}
+                                onChange={handleFileChange}
+                              />
+                            </label>
+                          </button>
+                        </>
+                      )
                     ) : (
-                      <>
-                        <button className="white_button">
-                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                            업로드
-                            <input
-                              id="fileInput"
-                              type="file"
-                              name="handleFileSubmit"
-                              style={{ display: "none" }}
-                              onChange={handleFileChange}
-                            />
-                          </label>
-                        </button>
-                        <button className="white_button" onClick={downloadPDF}>다운로드</button>
-                      </>
+                      isEditing ? (
+                        attachment ? (
+                          <>
+                            <button className="primary_button" onClick={handleHrInfoEdit}>등록</button>
+                            <button className="red_button" onClick={handleToggleEdit}>취소</button>
+                          </>
+                        ) : (
+                          <>
+                            <button className="white_button">
+                              <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                                업로드
+                                <input
+                                  id="fileInput"
+                                  type="file"
+                                  name="handleFileSubmit"
+                                  style={{ display: "none" }}
+                                  onChange={handleFileChange}
+                                />
+                              </label>
+                            </button>
+                          </>
+                        )
+                      ) : (
+                        <>
+                          <button className="white_button" onClick={downloadPDF}>다운로드</button>
+                          <button className="primary_button" onClick={handleToggleEdit}>수정</button>
+                        </>
+                      )
                     )}
                   </div>
                   <div className="hr_pdf_container">
-                    {!attachment ? (
+                    {!file ? (
                       <div
                         className="upload-area"
                         onDrop={handleFileDrop}
@@ -355,7 +446,7 @@ const HumanResource = () => {
                         <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                       </div>
                     ) : (
-                      <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
+                      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                         {renderPages()}
                       </Document>
                     )}
@@ -371,31 +462,44 @@ const HumanResource = () => {
               ) : (
                 <>
                   <div className="hr_button_wrap">
-                    {attachment ? (
-                      <>
-                        <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
-                        <button className="red_button" onClick={handleToggleEdit}>취소</button>
-                      </>
+                    {!file ? (
+                      attachment ? (
+                        <>
+                          <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
+                          <button className="red_button" onClick={handleToggleEdit}>취소</button>
+                        </>
+                      ) : (
+                        <>
+                          <button className="white_button">
+                            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                              업로드
+                              <input
+                                id="fileInput"
+                                type="file"
+                                name="handleFileSubmit"
+                                style={{ display: "none" }}
+                                onChange={handleFileChange}
+                              />
+                            </label>
+                          </button>
+                        </>
+                      )
                     ) : (
-                      <>
-                        <button className="white_button">
-                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                            업로드
-                            <input
-                              id="fileInput"
-                              type="file"
-                              name="handleFileSubmit"
-                              style={{ display: "none" }}
-                              onChange={handleFileChange}
-                            />
-                          </label>
-                        </button>
-                        <button className="white_button" onClick={downloadPDF}>다운로드</button>
-                      </>
+                      isEditing ? (
+                        <>
+                          <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
+                          <button className="red_button" onClick={handleToggleEdit}>취소</button>
+                        </>
+                      ) : (
+                        <>
+                          <button className="white_button" onClick={downloadPDF}>다운로드</button>
+                          <button className="primary_button" onClick={handleToggleEdit}>수정</button>
+                        </>
+                      )
                     )}
                   </div>
                   <div className="hr_pdf_container">
-                    {!attachment ? (
+                    {!file ? (
                       <div
                         className="upload-area"
                         onDrop={handleFileDrop}
@@ -416,7 +520,7 @@ const HumanResource = () => {
                         <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                       </div>
                     ) : (
-                      <Document file={attachment} onLoadSuccess={onDocumentLoadSuccess}>
+                      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                         {renderPages()}
                       </Document>
                     )}
