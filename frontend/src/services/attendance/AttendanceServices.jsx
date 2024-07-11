@@ -31,10 +31,14 @@ const WriteAttendance = (formData) => {
   });
 }
 
-// 출근부 데이터 수정
+// 출근부 데이터 수정 (attend_id 값이 있을때는 /editAttendance/${attend_id} 라우터로, attend_id 값이 없을때는 /editAttendance)
 const EditAttendance = (attend_id, formData) => {
-  return api.put(`/editAttendance/${attend_id}`, formData)
-}
+  if (attend_id && attend_id !== 'undefined') {
+    return api.put(`/editAttendance/${attend_id}`, formData);
+  } else {
+    return api.post(`/editAttendance`, formData);
+  }
+};
 
 
 export { CheckAnnual, EditAnnual, CheckAttendance, WriteAttendance, EditAttendance };
