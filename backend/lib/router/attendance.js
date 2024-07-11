@@ -32,6 +32,8 @@ module.exports = (app) => {
   router.get("/checkAttendance", officeHourController.getAllAttendance);
   // 출근부 수정
   router.put("/editAttendance/:attend_id", officeHourController.updateAttendance);
+  // 새로운 출근부 수정 데이터 생성
+  router.post("/editAttendance", officeHourController.createAttendance);
   // 출근부 파일 업로드
   router.post("/writeAttendance", upload.single("handleFileSubmit"),
   officeHourController.writeAttendance
