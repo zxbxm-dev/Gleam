@@ -1,8 +1,14 @@
 import api from "../../api/auth";
 
 // 인사정보관리 조회
-const CheckHrInfo = () => {
-  return api.get(`/checkHrInfo`);
+const CheckHrInfo = (params) => {
+  const queryString = `?username=${params.username}&TabData=${params.TabData}`;
+  return api.get(`/checkHrInfo` + queryString, {
+    responseType: 'blob',
+    headers: {
+      'Content-Type': 'application/pdf',
+    }
+  });
 }
 
 // 인사정보관리 제출
@@ -15,8 +21,8 @@ const WriteHrInfo = (formData) => {
 }
 
 // 인사정보관리 수정
-const EditHrInfo = (hrinfo_id, formData) => {
-  return api.put(`/editHrInfo/${hrinfo_id}`, formData, {
+const EditHrInfo = (formData) => {
+  return api.put(`/editHrInfo/`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
