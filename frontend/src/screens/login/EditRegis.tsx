@@ -4,7 +4,7 @@ import { Login_Logo, DeleteIcon, ArrowDown, ArrowUp, FileUploadIcon } from "../.
 import { RegisterEditServices } from "../../services/login/RegisterServices";
 import CustomModal from "../../components/modal/CustomModal";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
 
 interface SelectedOptions {
@@ -51,6 +51,8 @@ const EditRegis = () => {
         password: ''
     });
     const [user, setUser] = useRecoilState(userState);
+
+    const setUserState = useSetRecoilState(userState);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -99,10 +101,10 @@ const EditRegis = () => {
         }
     };
 
-	const validatePhoneNumber = (phone: any) => {
-		const phoneRegex = /^\d{8,12}$/;
-		return phoneRegex.test(phone);
-	};
+    const validatePhoneNumber = (phone: any) => {
+        const phoneRegex = /^\d{8,12}$/;
+        return phoneRegex.test(phone);
+    };
 
     const validatePassword = (password: any) => {
         const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -246,17 +248,19 @@ const EditRegis = () => {
         RegisterEditServices(formDataToSend)
             .then((res) => {
                 if (res) {
-                    updateUserStateAndLocalStorage({
+                    const updatedUser = {
                         ...user,
                         ...modifiedData,
-                        Sign: Sign ? Sign.name : user.Sign,
-                        attachment: attachment ? attachment.name : user.attachment
-                    });
+                        Sign: Sign ? `http://localhost:3001/uploads/${Sign.name}` : user.Sign,
+                        attachment: attachment ? `http://localhost:3001/uploads/${attachment.name}` : user.attachment,
+                    };
+
+                    updateUserStateAndLocalStorage(updatedUser);
+                    setUserState(updatedUser);
 
                     setAddModalOpen(true);
-
                 } else {
-                    console.log('회원정보 수정 실패')
+                    console.log('회원정보 수정 실패');
                 }
             })
             .catch((err) => {
@@ -540,8 +544,11 @@ const EditRegis = () => {
 
             <CustomModal
                 isOpen={isAddModalOpen}
-                onClose={() => {setAddModalOpen(false); navigate('/')}}
+                onClose={() => { setAddModalOpen(false); }}
                 header={'알림'}
+                footer1={'확인'}
+                footer1Class="gray-btn"
+                onFooter1Click={() => navigate("/")}
             >
                 <div>
                     회원 수정이 완료되었습니다.
