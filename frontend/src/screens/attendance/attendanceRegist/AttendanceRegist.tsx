@@ -936,11 +936,22 @@ const AttendanceRegist = () => {
   const onSubmit = (data: any) => {
     setAddAttend(false);
 
+    const formatDateString = (dateString: any) => {
+      const [year, month, day] = dateString.split('-').map(Number);
+      
+      const formattedMonth = month.toString().padStart(2, '0');
+      const formattedDay = day.toString().padStart(2, '0');
+    
+      return `${year}-${formattedMonth}-${formattedDay}`;
+    };
+    const originalDate = formatDateString(`${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`);
     const formData = {
+      username: selectedDateInfo.name,
+      Date: originalDate,
       data: [data.startTime, data.endTime, data.otherValue],
     }
 
-    EditAttendance(clickIdx, formData.data)
+    EditAttendance(clickIdx, formData)
       .then(response => {
         console.log("출근부 데이터 수정 성공", response)
       })
