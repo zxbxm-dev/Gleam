@@ -1,4 +1,4 @@
-# ChainLinker
+# Gleam
 HR 사내 시스템
 
 
