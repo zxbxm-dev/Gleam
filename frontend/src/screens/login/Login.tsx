@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Login_Logo,
 } from "../../assets/images/index";
-import { Input } from '@chakra-ui/react';
 import { LoginServices } from "../../services/login/LoginService";
 import CustomModal from '../../components/modal/CustomModal';
 import { Link } from "react-router-dom";
