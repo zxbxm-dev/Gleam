@@ -97,7 +97,6 @@ const HumanResource = () => {
 
   // 인사정보관리 목록 조회
   const fetchHrInfo = async () => {
-
     let TabName;
     if (activeTab === 0) {
       TabName = "인사기록카드";
@@ -119,14 +118,16 @@ const HumanResource = () => {
         setFile(url);
       } else {
         console.error("Failed to fetch data");
+        setFile('');
       }
     } catch (error) {
       console.error("Failed to fetch data");
-      setFile('')
+      setFile('');
     }
   }
 
-  useQuery("HrInfo", fetchHrInfo, {
+  const { refetch } = useQuery("HrInfo", fetchHrInfo, {
+    enabled: false, // 자동 실행을 막고 필요할 때만 실행하도록 설정
     onSuccess: (data) => {
       console.log(data);
     },
@@ -160,7 +161,11 @@ const HumanResource = () => {
 
     try {
       const response = await EditHrInfo(formData);
-      console.log('인사정보관리 수정 성공', response.data)
+      console.log('인사정보관리 수정 성공', response.data);
+      setAttachment(null);
+      setIsEditing(!isEditing);
+      setIsEditing(false);
+      refetch();
       return response.data;
     } catch (error) {
       console.log(error);
@@ -191,10 +196,9 @@ const HumanResource = () => {
 
   useEffect(() => {
     if (isSelectMember[0]) {
-      fetchHrInfo();
-      queryClient.invalidateQueries("Appointment");
+      refetch(); // 처음에만 데이터를 가져오도록 설정
     }
-  }, [isSelectMember, queryClient]);
+  }, [isSelectMember, refetch]);
 
   // 인사이동 등록
   const handleAppointSubmit = () => {
@@ -341,7 +345,6 @@ const HumanResource = () => {
 
   const handleToggleEdit = () => {
     setIsEditing(!isEditing);
-    setFile('');
   };
 
   // 인사기록카드, 근로자명부 제출
@@ -372,13 +375,17 @@ const HumanResource = () => {
     try {
       const response = await WriteHrInfo(formData);
       console.log('Data successfully sent:', response.data);
-      queryClient.invalidateQueries("HrInfo");
+      setAttachment(null);
+      setIsEditing(false);
+      refetch();
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch data");
     }
   }
 
+  console.log('첨부된 파일', attachment)
+  console.log('백엔드 파일', file)
   return (
     <div className="content">
       <div className="content_container">
@@ -397,52 +404,33 @@ const HumanResource = () => {
               ) : (
                 <>
                   <div className="hr_button_wrap">
-                    {!file ? (
-                      attachment ? (
+                    {!file && !attachment ? (
+                      // 백엔드에 파일이 없고, 첨부된 파일이 없을 때
+                      <>
+                        <button className="white_button">
+                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                            업로드
+                            <input
+                              id="fileInput"
+                              type="file"
+                              name="handleFileSubmit"
+                              style={{ display: "none" }}
+                              onChange={handleFileChange}
+                            />
+                          </label>
+                        </button>
+                      </>
+                    ) : (
+                      isEditing ? (
+                        // 수정 모드일 때
                         <>
-                          <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
+                          <button className="primary_button" onClick={isEditing ? handleHrInfoEdit : handleSubmitHrInfo}>
+                            {isEditing && attachment ? '수정하기' : '등록하기'}
+                          </button>
                           <button className="red_button" onClick={handleToggleEdit}>취소</button>
                         </>
                       ) : (
-                        <>
-                          <button className="white_button">
-                            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                              업로드
-                              <input
-                                id="fileInput"
-                                type="file"
-                                name="handleFileSubmit"
-                                style={{ display: "none" }}
-                                onChange={handleFileChange}
-                              />
-                            </label>
-                          </button>
-                        </>
-                      )
-                    ) : (
-                      isEditing ? (
-                        attachment ? (
-                          <>
-                            <button className="primary_button" onClick={handleHrInfoEdit}>등록</button>
-                            <button className="red_button" onClick={handleToggleEdit}>취소</button>
-                          </>
-                        ) : (
-                          <>
-                            <button className="white_button">
-                              <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                                업로드
-                                <input
-                                  id="fileInput"
-                                  type="file"
-                                  name="handleFileSubmit"
-                                  style={{ display: "none" }}
-                                  onChange={handleFileChange}
-                                />
-                              </label>
-                            </button>
-                          </>
-                        )
-                      ) : (
+                        // 일반 모드일 때
                         <>
                           <button className="white_button" onClick={downloadPDF}>다운로드</button>
                           <button className="primary_button" onClick={handleToggleEdit}>수정</button>
@@ -450,8 +438,10 @@ const HumanResource = () => {
                       )
                     )}
                   </div>
+
                   <div className="hr_pdf_container">
-                    {!file ? (
+                    {!attachment && !file ? (
+                      // 파일이 없을 때 파일 첨부하기 영역 표시
                       <div
                         className="upload-area"
                         onDrop={handleFileDrop}
@@ -472,15 +462,17 @@ const HumanResource = () => {
                         <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                       </div>
                     ) : (
-                      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                      // 파일이 있을 때 PDF 뷰어 표시
+                      <Document file={attachment || file} onLoadSuccess={onDocumentLoadSuccess}>
                         {renderPages()}
                       </Document>
                     )}
                   </div>
                 </>
               )}
-
             </TabPanel>
+
+
 
             <TabPanel className="hr_tab_container_select">
               {isSelectMember[0] === '' ? (
@@ -488,35 +480,34 @@ const HumanResource = () => {
               ) : (
                 <>
                   <div className="hr_button_wrap">
-                    {!file ? (
-                      attachment ? (
-                        <>
-                          <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
-                          <button className="red_button" onClick={handleToggleEdit}>취소</button>
-                        </>
-                      ) : (
-                        <>
-                          <button className="white_button">
-                            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                              업로드
-                              <input
-                                id="fileInput"
-                                type="file"
-                                name="handleFileSubmit"
-                                style={{ display: "none" }}
-                                onChange={handleFileChange}
-                              />
-                            </label>
-                          </button>
-                        </>
-                      )
+                    {!file && !attachment ? (
+                      // 백엔드에 파일이 없고, 첨부된 파일이 없을 때
+                      <>
+                        <button className="white_button">
+                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                            업로드
+                            <input
+                              id="fileInput"
+                              type="file"
+                              name="handleFileSubmit"
+                              style={{ display: "none" }}
+                              onChange={handleFileChange}
+                            />
+                          </label>
+                        </button>
+                      </>
                     ) : (
-                      isEditing ? (
+                      // 파일이 있거나, 첨부된 파일이 있을 때
+                      isEditing || !file ? (
+                        // 수정 모드일 때
                         <>
-                          <button className="primary_button" onClick={handleSubmitHrInfo}>등록</button>
+                          <button className="primary_button" onClick={attachment && !file ? handleSubmitHrInfo : handleHrInfoEdit}>
+                            {attachment && !file ? '등록하기' : '수정하기'}
+                          </button>
                           <button className="red_button" onClick={handleToggleEdit}>취소</button>
                         </>
                       ) : (
+                        // 일반 모드일 때
                         <>
                           <button className="white_button" onClick={downloadPDF}>다운로드</button>
                           <button className="primary_button" onClick={handleToggleEdit}>수정</button>
@@ -524,8 +515,10 @@ const HumanResource = () => {
                       )
                     )}
                   </div>
+
                   <div className="hr_pdf_container">
-                    {!file ? (
+                    {!attachment && !file ? (
+                      // 파일이 없을 때 파일 첨부하기 영역 표시
                       <div
                         className="upload-area"
                         onDrop={handleFileDrop}
@@ -546,15 +539,16 @@ const HumanResource = () => {
                         <div className='upload-text-btm'>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</div>
                       </div>
                     ) : (
-                      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                      // 파일이 있을 때 PDF 뷰어 표시
+                      <Document file={attachment || file} onLoadSuccess={onDocumentLoadSuccess}>
                         {renderPages()}
                       </Document>
                     )}
                   </div>
                 </>
               )}
-
             </TabPanel>
+
 
             <TabPanel className="hr_tab_container_select">
               <div className="appoint_button_wrap">

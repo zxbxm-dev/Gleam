@@ -81,7 +81,8 @@ const OrgChart = () => {
     const fetchData = async () => {
       try {
         const response = await PersonData();
-        setPersonData(response.data);
+        const approveduser = response.data.filter((item: any) => item.status === 'approved');
+        setPersonData(approveduser);
       } catch (err) {
       }
     };

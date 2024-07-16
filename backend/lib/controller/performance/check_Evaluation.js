@@ -26,7 +26,7 @@ const getMyEvaluation = async (req, res) => {
       return {
         filename: file.filename,
         exists: fs.existsSync(filePath),
-        path: filePath
+        path: filePath,
       };
     });
 

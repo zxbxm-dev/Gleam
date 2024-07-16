@@ -10,6 +10,8 @@ import { SelectArrow } from "../../assets/images/index";
 import { CheckCalen, DeleteCalen, EditCalen } from "../../services/calender/calender";
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 
 type Event = {
   id: string;
@@ -23,6 +25,7 @@ type Event = {
   dateType: string;
   memo: string;
   year: string;
+  userID: string;
 };
 
 type User = {
@@ -36,8 +39,10 @@ type User = {
 
 
 const Calendar = () => {
+  const user = useRecoilValue(userState);
   const [persondata, setPersonData] = useState<any[]>([]);
   const [isAddeventModalOpen, setAddEventModalOPen] = useState(false);
+  const [isControleventModalOpen, setControlEventModalOPen] = useState(false);
   const [iseventModalOpen, setEventModalOPen] = useState(false);
   const [isEditeventModalOpen, setEditEventModalOPen] = useState(false);
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
@@ -158,7 +163,7 @@ const Calendar = () => {
       title: title,
       startDate: isoStartDate,
       endDate: isoEndDate,
-      dateType: title.split(' ')[1],
+      dateType: title.split(' ').pop() || "",
       memo: memo,
       year: isoEndDate.substring(0, 4),
       backgroundColor: selectedColor,
@@ -209,10 +214,14 @@ const Calendar = () => {
       dateType: info.event.extendedProps.dateType || "",
       memo: info.event.extendedProps.memo || "",
       year: info.event.start.toISOString().substring(0, 4),
+      userID: info.event.extendedProps.userID || "",
     });
 
-    console.log("Selected Event ID:", info.event.id);
-    setEventModalOPen(true);
+    if (user.username === info.event.title.split(' ')[0] || user.department === '관리부') {
+      setControlEventModalOPen(true);
+    } else {
+      setEventModalOPen(true);
+    }
   };
 
   const handleDeleteEvent = () => {
@@ -254,7 +263,7 @@ const Calendar = () => {
       });
 
     setDeleteEventModalOPen(false);
-    setEventModalOPen(false);
+    setControlEventModalOPen(false);
   };
 
   const handleEditEvent = () => {
@@ -267,7 +276,7 @@ const Calendar = () => {
     setTitle(selectedEvent.title);
     setMemo(selectedEvent.memo);
 
-    setEventModalOPen(false);
+    setControlEventModalOPen(false);
     setEditEventModalOPen(true);
   };
 
@@ -285,7 +294,7 @@ const Calendar = () => {
       startDate: startDate,
       endDate: endDate,
       backgroundColor:selectedColor,
-      dateType:title.split(' ')[1],
+      dateType: title.split(' ').pop() || "",
       title,
       memo
     };
@@ -545,8 +554,8 @@ const Calendar = () => {
       </CustomModal>
 
       <CustomModal
-        isOpen={iseventModalOpen}
-        onClose={() => setEventModalOPen(false)}
+        isOpen={isControleventModalOpen}
+        onClose={() => setControlEventModalOPen(false)}
         header={'일정 확인'}
         footer1={'삭제'}
         footer1Class="red_button"
@@ -554,7 +563,53 @@ const Calendar = () => {
         footer2={'수정'}
         footer2Class="white_button"
         onFooter2Click={handleEditEvent}
-        footer3={'취소'}
+        footer3={'확인'}
+        footer3Class="cancle_button"
+        onFooter3Click={() => setControlEventModalOPen(false)}
+        width="360px"
+        height="300px"
+      >
+        <div className="body-container">
+          <div className="body-content">
+            <div className="content-left">
+              타입
+            </div>
+            <div className="content-right">
+              <div className="content-type">
+                {selectedEvent?.title}
+              </div>
+            </div>
+          </div>
+          <div className="body-content">
+            <div className="content-left content-center">
+              기간
+            </div>
+            <div className="content-right">
+              <div className="content-date">
+                <span> {selectedEvent?.startDate}</span>
+                <span>-</span>
+                <span> {selectedEvent?.endDate}</span>
+              </div>
+            </div>
+          </div>
+          <div className="body-content">
+            <div className="content-left">
+              메모
+            </div>
+            <div className="content-right">
+              <div className="content-memo">
+                {selectedEvent?.memo}
+              </div>
+            </div>
+          </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={iseventModalOpen}
+        onClose={() => setEventModalOPen(false)}
+        header={'일정 확인'}
+        footer3={'확인'}
         footer3Class="cancle_button"
         onFooter3Click={() => setEventModalOPen(false)}
         width="360px"

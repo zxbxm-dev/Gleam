@@ -21,7 +21,7 @@ const PageNotAuth = () => {
             개발팀에 문의해 주세요.
           </div>
           <div className="content_box_manage">
-            관리자 - 개발 1팀 장현지 사원
+            관리자 - 개발 1팀 장현지 팀장
           </div>
           <div className="content_box_btn">
             <button className="main_button" onClick={() => navigate('/')}>메인으로</button>
