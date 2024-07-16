@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(
   cors({
-    origin: "http://119.193.90.123:3000",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "OPTIONS"],
     credentials: true,
   })
