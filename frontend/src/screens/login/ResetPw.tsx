@@ -20,6 +20,8 @@ const ResetPw = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [resetpassword, setResetPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [confirmPasswordError, setConfirmPasswordError] = useState("");
     const [id, setUserID] = useState("");
     const [question1, setQuestion1] = useState("");
     const [question2, setQuestion2] = useState("");
@@ -49,12 +51,24 @@ const ResetPw = () => {
     const handlePhoneChange = (event: any) => {
         setPhoneNumber(event.target.value);
     };
+
     const handlePwChange = (event: any) => {
-        setResetPassword(event.target.value);
+        const value = event.target.value;
+        setResetPassword(value);
+        setPasswordError(!validatePassword(value) ? "비밀번호는 영어, 숫자, 특수문자를 포함한 8자리 이상이여야 합니다." : "");
     };
+
     const handlerePwChange = (event: any) => {
-        setConfirmPassword(event.target.value);
+        const value = event.target.value;
+        setConfirmPassword(value);
+        setConfirmPasswordError(value !== resetpassword ? "비밀번호가 일치하지 않습니다." : "");
     };
+
+    const validatePassword = (password: any) => {
+        const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return PasswordRegex.test(password);
+    };
+
 
     const toggleSelect = () => {
         setIsSpot(!isSpot);
@@ -180,52 +194,54 @@ const ResetPw = () => {
                 <div className="MiniphoneBox">
                     <div className="Phone">
                         <span>패스워드 설정</span>
-                        {/* {passwordError ?
+                        {passwordError ?
                             <input
                                 type="password"
                                 className={`TextInput ${passwordError && "Error"}`}
                                 placeholder="비밀번호를 입력해 주세요."
-                                value={password}
+                                value={resetpassword}
+                                onChange={handlePwChange}
                                 style={{ border: "1px solid #D56D6D" }}
                             />
-                            : */}
-                        <input
-                            type="password"
-                            className="TextInput"
-                            placeholder="비밀번호를 입력해 주세요."
-                            value={resetpassword}
-                            onChange={handlePwChange}
-                        />
-                        {/* } */}
+                            :
+                            <input
+                                type="password"
+                                className={`TextInput ${passwordError && "Error"}`}
+                                placeholder="비밀번호를 입력해 주세요."
+                                value={resetpassword}
+                                onChange={handlePwChange}
+                            />
+                        }
                     </div>
-                    {/* <div className="ErrorMessageBox">
+                    <div className="ErrorMessageBox">
                         {passwordError && <div className="ErrorMessage">{passwordError}</div>}
-                    </div> */}
+                    </div>
                 </div>
                 <div className="MiniphoneBox">
                     <div className="Phone">
                         <span>패스워드 재입력</span>
-                        {/* {confirmPasswordError ?
+                        {confirmPasswordError ?
                             <input
                                 type="password"
                                 className={`TextInput ${confirmPasswordError && "Error"}`}
                                 placeholder="비밀번호를 재입력해 주세요."
                                 value={confirmPassword}
+                                onChange={handlerePwChange}
                                 style={{ border: "1px solid #D56D6D" }}
                             />
-                            : */}
-                        <input
-                            type="password"
-                            className="TextInput"
-                            placeholder="비밀번호를 재입력해 주세요."
-                            value={confirmPassword}
-                            onChange={handlerePwChange}
-                        />
-                        {/* } */}
+                            :
+                            <input
+                                type="password"
+                                className={`TextInput ${confirmPasswordError && "Error"}`}
+                                placeholder="비밀번호를 재입력해 주세요."
+                                value={confirmPassword}
+                                onChange={handlerePwChange}
+                            />
+                        }
                     </div>
-                    {/* <div className="ErrorMessageBox">
+                    <div className="ErrorMessageBox">
                         {confirmPasswordError && <div className="ErrorMessage">{confirmPasswordError}</div>}
-                    </div> */}
+                    </div>
                 </div>
             </div>
 
