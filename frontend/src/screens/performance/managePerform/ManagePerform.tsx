@@ -28,7 +28,6 @@ const ManagePerform = () => {
 
   const handleDeleteDocument = (name: string) => {
     setDeleteModalOpen(false);
-    console.log('클릭된 게시글 인덱스',name)
     const params = {
       filename: name
     }

@@ -63,12 +63,24 @@ const DetailManagePerform = () => {
     return pages;
   };
 
-  const downloadPDF = () => {
-    const link = document.createElement('a');
-    link.download = '인사기록카드_구민석.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const downloadPDF = async () => {
+    try {
+      const params = {
+        filename: perform_filename
+      }
+      const response = await DetailPerform(params);
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = perform_filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to download file", error);
+    }
   };
 
   const handleDeleteDocument = (perform_filename: string) => {

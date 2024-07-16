@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
 
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { CheckAttendance, WriteAttendance, EditAttendance } from "../../../services/attendance/AttendanceServices";
 
 const months = [
@@ -36,6 +36,7 @@ type ProcessedAttendance = [string, string, [string, string, string]];
 
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState((new Date().getMonth() + 1) % 3);
   const [tabHeights, setTabHeights] = useState<Record<number, string>>({0: '41px', 1: '35px', 2: '35px'});
   const [tabMargins, setTabMargins] = useState<Record<number, string>>({0: '6px', 1: '6px', 2: '6px'});
@@ -50,7 +51,7 @@ const AttendanceRegist = () => {
   const [HO_Data, setHO_Data] = useState<ProcessedAttendance[]>([]);
   const [clickIdx, setClickIdx] = useState<number | null>(null);
   // 모달 창 입력값
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -74,6 +75,7 @@ const AttendanceRegist = () => {
     ['장현지', '개발부', '개발 1팀'],
     ['구민석', '개발부', '개발 1팀'],
     ['박세준', '개발부', '개발 1팀'],
+    ['윤재원', '개발부', '개발 1팀'],
     ['변도일', '개발부', '개발 2팀'],
     ['이로운', '개발부', '개발 2팀'],
     ['김현지', '마케팅부', ''],
@@ -233,6 +235,7 @@ const AttendanceRegist = () => {
     try {
       const response = await WriteAttendance(formData);
       setAttachment(null);
+      queryClient.invalidateQueries("attendregist");
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch data");
@@ -906,6 +909,16 @@ const AttendanceRegist = () => {
     const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
     const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
     const name = members[personIndex][0];
+    const personData = HO_Data.find(data => data[0] === name && data[1] === `${year}-${month}-${date}`);
+    
+    if (personData) {
+      setValue('startTime', personData[2][0]);
+      setValue('endTime', personData[2][1]);
+      setValue('otherValue', personData[2][2]);
+    } else {
+      reset(); // 새로운 데이터를 입력할 때는 초기화
+    }
+  
     setSelectedDateInfo({
       name: name,
       year: year,
@@ -914,6 +927,7 @@ const AttendanceRegist = () => {
       dayOfWeek: dayOfWeek
     });
   };
+  
 
   const handleDivClickRD = (date: number, year: number, month: number, personIndex: number) => {
     setAddAttend(true);
@@ -932,32 +946,34 @@ const AttendanceRegist = () => {
 
 
   // 출근부 데이터 수정
-  const onSubmit = (data: any) => {
-    setAddAttend(false);
+const onSubmit = (data: any) => {
+  setAddAttend(false);
 
-    const formatDateString = (dateString: any) => {
-      const [year, month, day] = dateString.split('-').map(Number);
-      
-      const formattedMonth = month.toString().padStart(2, '0');
-      const formattedDay = day.toString().padStart(2, '0');
+  const formatDateString = (dateString: any) => {
+    const [year, month, day] = dateString.split('-').map(Number);
     
-      return `${year}-${formattedMonth}-${formattedDay}`;
-    };
-    const originalDate = formatDateString(`${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`);
-    const formData = {
-      username: selectedDateInfo.name,
-      Date: originalDate,
-      data: [data.startTime, data.endTime, data.otherValue],
-    }
+    const formattedMonth = month.toString().padStart(2, '0');
+    const formattedDay = day.toString().padStart(2, '0');
+  
+    return `${year}-${formattedMonth}-${formattedDay}`;
+  };
 
-    EditAttendance(clickIdx, formData)
-      .then(response => {
-        console.log("출근부 데이터 수정 성공", response)
-      })
-      .catch(error => {
-        console.log("출근부 데이터 수정 실패", error)
-      })
-  }
+  const originalDate = formatDateString(`${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`);
+  const formData = {
+    username: selectedDateInfo.name,
+    Date: originalDate,
+    data: [data.startTime, data.endTime, data.otherValue],
+  };
+
+  EditAttendance(clickIdx, formData)
+    .then(response => {
+      console.log("출근부 데이터 수정 성공", response);
+      queryClient.invalidateQueries("attendregist");
+    })
+    .catch(error => {
+      console.log("출근부 데이터 수정 실패", error);
+    });
+};
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -966,9 +982,6 @@ const AttendanceRegist = () => {
 
     return () => clearTimeout(timer);
   }, []);
-
-
-  console.log(HO_Data)
 
   return (
     <div className="content">
