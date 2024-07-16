@@ -42,78 +42,64 @@ const Register = () => {
 
 
 	const handleInputChange = (event: any, field: any) => {
-		const value = event.target.value;
-		const restrictedCharsRegex = /[{}[\]()]/;
-		const alphanumericRegex = /^[a-zA-Z0-9]+$/;
-		const numericRegex = /^[0-9]+$/;
+    const value = event.target.value;
+    const restrictedCharsRegex = /[{}[\]()]/;
 
-		// 입력값이 제한된 문자를 포함하는지 확인
-		if (restrictedCharsRegex.test(value)) {
-			// 제한된 문자를 포함하고 있으면 처리하지 않음
-			return;
-		}
+    // 입력값이 제한된 문자를 포함하는지 확인
+    if (restrictedCharsRegex.test(value)) {
+        return;
+    }
 
-		if (field === 'Mail' && !alphanumericRegex.test(value)) {
-			// 영어와 숫자만 포함하지 않으면 처리하지 않음
-			return;
-		}
-
-		if ((field === 'enterDate' || field === 'phoneNumber') && !numericRegex.test(value)) {
-			// 영어와 숫자만 포함하지 않으면 처리하지 않음
-			return;
-		}
-
-		switch (field) {
-			case 'userID':
-				setUserID(value);
-				break;
-			case 'password':
-				setPassword(value);
-				setPasswordError(!validatePassword(value) ? "비밀번호는 영어, 숫자, 특수문자를 포함한 8자리 이상이여야 합니다." : "");
-				break;
-			case 'confirmPassword':
-				setConfirmPassword(value);
-				setConfirmPasswordError(value !== password ? "비밀번호가 일치하지 않습니다." : "");
-				break;
-			case 'phoneNumber':
-				setPhoneNumber(value);
-				setPhoneNumberError(!validatePhoneNumber(value) ? "유효한 휴대폰 번호를 입력하세요." : "");
-				break;
-			case 'enterDate':
-				setEnterDate(value);
-				setEnterDateError(!validateEnterDate(value) ? "유효한 날짜 형식(예: 20990101)이어야 합니다." : "");
-				break;
-			case 'ques1':
-				setQuestion1(value);
-				break;
-			case 'ques2':
-				setQuestion2(value);
-				break;
-			case 'name':
-				setName(value);
-				break;
-			case 'Mail':
-				setMail(value);
-				break;
-
-			default:
-				break;
-		}
+    switch (field) {
+        case 'userID':
+            setUserID(value);
+            break;
+        case 'password':
+            setPassword(value);
+            setPasswordError(!validatePassword(value) ? "비밀번호는 영어, 숫자, 특수문자를 포함한 8자리 이상이여야 합니다." : "");
+            break;
+        case 'confirmPassword':
+            setConfirmPassword(value);
+            setConfirmPasswordError(value !== password ? "비밀번호가 일치하지 않습니다." : "");
+            break;
+        case 'phoneNumber':
+            setPhoneNumber(value);
+            setPhoneNumberError(!validatePhoneNumber(value) ? "유효한 휴대폰 번호를 입력하세요.(예: 01012345678)" : "");
+            break;
+        case 'enterDate':
+            setEnterDate(value);
+            setEnterDateError(!validateEnterDate(value) ? "유효한 날짜 형식(예: 20990101)이어야 합니다." : "");
+            break;
+        case 'ques1':
+            setQuestion1(value);
+            break;
+        case 'ques2':
+            setQuestion2(value);
+            break;
+        case 'name':
+            setName(value);
+            break;
+        case 'Mail':
+            setMail(value);
+            break;
+        default:
+            break;
+    }
 	};
 
 	const validatePhoneNumber = (phone: any) => {
-		const phoneRegex = /^\d{8,12}$/;
-		return phoneRegex.test(phone);
+			const phoneRegex = /^\d{8,12}$/;
+			return phoneRegex.test(phone);
 	};
 
 	const validatePassword = (password: any) => {
-		const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-		return PasswordRegex.test(password);
+			const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+			return PasswordRegex.test(password);
 	};
 
 	const validateEnterDate = (date: any) => {
-		const dateRegex = /^20\d{6}$/;
-		return dateRegex.test(date);
+			const dateRegex = /^20\d{6}$/;
+			return dateRegex.test(date);
 	};
 
 	const handleOptionClick = (optionName: any, optionValue: any) => {
@@ -306,6 +292,7 @@ const Register = () => {
 			})
 	};
 
+	console.log("입력된 메일", mail)
 	return (
 		<div className="Register">
 			<Link to="/login">
