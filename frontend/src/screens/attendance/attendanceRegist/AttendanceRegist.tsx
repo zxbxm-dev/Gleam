@@ -1139,7 +1139,11 @@ const onSubmit = (data: any) => {
               <option value='재택' style={{ color: '#7000C9' }}>재택</option>
               <option value='서울출근' style={{ color: '#3DC6C6' }}>서울출근</option>
               <option value='입사' style={{ color: '#FF4747' }}>입사</option>
+              <option value='경조사' style={{ color: '#FF4747' }}>경조사</option>
+              <option value='워크숍' style={{ color: '#FF4747' }}>워크숍</option>
+              <option value='출장' style={{ color: '#FF4747' }}>출장</option>
               <option value='지문X' style={{ color: '#EF0AD8' }}>지문X</option>
+              <option value='기타' style={{ color: '#EF0AD8' }}>기타</option>
             </select>
           </div>
         </div>
