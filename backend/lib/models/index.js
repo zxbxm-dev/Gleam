@@ -45,5 +45,4 @@ db.TransferPosition = Transfer(sequelize, Sequelize);
 db.Management = management(sequelize, Sequelize);
 db.Meeting = meetingRoom(sequelize, Sequelize);
 
-
 module.exports = db;
