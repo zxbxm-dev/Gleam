@@ -48,6 +48,7 @@ require("./lib/router/workLog")(app);
 require("./lib/router/employment")(app);
 require("./lib/router/performance")(app);
 require("./lib/router/management")(app);
+require("./lib/router/meetingRoom")(app);
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
