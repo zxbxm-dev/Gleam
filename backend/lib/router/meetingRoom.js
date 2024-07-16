@@ -1,5 +1,5 @@
 module.exports = (app) => {
-    const meetingRoomController = require("../controller/meetingRoom/MeetingRoom");
+    const meetingRoomController = require("../controller/meetingRoom/meetingRoom");
     
     const express = require("express");
     const router = express.Router();
@@ -18,6 +18,6 @@ module.exports = (app) => {
         meetingRoomController.deleteMeetingRoom
     );
 
-    
+
     app.use("/api", router);
 };
