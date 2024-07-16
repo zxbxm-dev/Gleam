@@ -373,7 +373,7 @@ const DetailApproval = () => {
               </div>
 
               <div className="top_right_content">
-                <button className="primary_button" onClick={() => handleApproval(report_id)}>결재하기</button>
+                <button className="primary_button" onClick={() => handleApproval(report_id)}>확인</button>
                 <button className="white_button" onClick={exportToPDF}>다운로드</button>
                 <Popover placement="right-start" isOpen={isRejectionModalOpen} onOpen={onRejectionModalOpen} onClose={onRejectionModalClose}>
                   <PopoverTrigger>

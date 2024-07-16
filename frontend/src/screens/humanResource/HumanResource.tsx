@@ -112,7 +112,7 @@ const HumanResource = () => {
     }
     try {
       const response = await CheckHrInfo(params);
-      
+
       if (response.status === 200) {
         const url = URL.createObjectURL(response.data);
         setFile(url);
@@ -137,7 +137,7 @@ const HumanResource = () => {
   });
 
   // 인사정보관리 수정
-  const handleHrInfoEdit = async() => {
+  const handleHrInfoEdit = async () => {
     if (!attachment) {
       alert('선택된 파일이 없습니다.');
       return;
@@ -184,9 +184,9 @@ const HumanResource = () => {
   }
 
   useQuery("Appointment", fetchAppointment, {
-    onSuccess: (data) => { 
+    onSuccess: (data) => {
       const userAppoint = data.data
-        .filter((item:any) => item.username === isSelectMember[1])
+        .filter((item: any) => item.username === isSelectMember[1])
       setAppointments(userAppoint);
     },
     onError: (error) => {
@@ -287,7 +287,7 @@ const HumanResource = () => {
 
     try {
       const response = await CheckHrInfo(params);
-      
+
       if (response.status === 200) {
         const blob = new Blob([response.data], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
@@ -384,6 +384,11 @@ const HumanResource = () => {
     }
   }
 
+  const blankk = () => {
+    console.log("l");
+
+  }
+
   console.log('첨부된 파일', attachment)
   console.log('백엔드 파일', file)
   return (
@@ -404,41 +409,53 @@ const HumanResource = () => {
               ) : (
                 <>
                   <div className="hr_button_wrap">
-                    {!file && !attachment ? (
-                      // 백엔드에 파일이 없고, 첨부된 파일이 없을 때
-                      <>
+                    <div className="hr_button_wrap">
+                      {!file && !attachment ? (
                         <button className="white_button">
-                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                          <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
                             업로드
                             <input
                               id="fileInput"
                               type="file"
                               name="handleFileSubmit"
-                              style={{ display: "none" }}
+                              style={{ display: 'none' }}
                               onChange={handleFileChange}
                             />
                           </label>
                         </button>
-                      </>
-                    ) : (
-                      isEditing ? (
-                        // 수정 모드일 때
+                      ) : isEditing ? (
                         <>
-                          <button className="primary_button" onClick={isEditing ? handleHrInfoEdit : handleSubmitHrInfo}>
-                            {isEditing && attachment ? '수정하기' : '등록하기'}
+                          <button className="white_button">
+                            <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
+                              업로드
+                              <input
+                                id="fileInput"
+                                type="file"
+                                name="handleFileSubmit"
+                                style={{ display: 'none' }}
+                                onChange={handleFileChange}
+                              />
+                            </label>
                           </button>
-                          <button className="red_button" onClick={handleToggleEdit}>취소</button>
+                          <button className="primary_button" onClick={handleHrInfoEdit}>
+                            수정하기
+                          </button>
+                          <button className="red_button" onClick={handleToggleEdit}>
+                            취소
+                          </button>
                         </>
                       ) : (
-                        // 일반 모드일 때
                         <>
-                          <button className="white_button" onClick={downloadPDF}>다운로드</button>
-                          <button className="primary_button" onClick={handleToggleEdit}>수정</button>
+                          <button className="white_button" onClick={downloadPDF}>
+                            다운로드
+                          </button>
+                          <button className="primary_button" onClick={!(attachment && !file) ? handleToggleEdit : handleSubmitHrInfo}>
+                            {!(attachment && !file) ? '수정하기' : '등록하기'}
+                          </button>
                         </>
-                      )
-                    )}
+                      )}
+                    </div>
                   </div>
-
                   <div className="hr_pdf_container">
                     {!attachment && !file ? (
                       // 파일이 없을 때 파일 첨부하기 영역 표시
@@ -480,40 +497,50 @@ const HumanResource = () => {
               ) : (
                 <>
                   <div className="hr_button_wrap">
-                    {!file && !attachment ? (
-                      // 백엔드에 파일이 없고, 첨부된 파일이 없을 때
-                      <>
+                  {!file && !attachment ? (
                         <button className="white_button">
-                          <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                          <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
                             업로드
                             <input
                               id="fileInput"
                               type="file"
                               name="handleFileSubmit"
-                              style={{ display: "none" }}
+                              style={{ display: 'none' }}
                               onChange={handleFileChange}
                             />
                           </label>
                         </button>
-                      </>
-                    ) : (
-                      // 파일이 있거나, 첨부된 파일이 있을 때
-                      isEditing || !file ? (
-                        // 수정 모드일 때
+                      ) : isEditing ? (
                         <>
-                          <button className="primary_button" onClick={attachment && !file ? handleSubmitHrInfo : handleHrInfoEdit}>
-                            {attachment && !file ? '등록하기' : '수정하기'}
+                          <button className="white_button">
+                            <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
+                              업로드
+                              <input
+                                id="fileInput"
+                                type="file"
+                                name="handleFileSubmit"
+                                style={{ display: 'none' }}
+                                onChange={handleFileChange}
+                              />
+                            </label>
                           </button>
-                          <button className="red_button" onClick={handleToggleEdit}>취소</button>
+                          <button className="primary_button" onClick={handleHrInfoEdit}>
+                            수정하기
+                          </button>
+                          <button className="red_button" onClick={handleToggleEdit}>
+                            취소
+                          </button>
                         </>
                       ) : (
-                        // 일반 모드일 때
                         <>
-                          <button className="white_button" onClick={downloadPDF}>다운로드</button>
-                          <button className="primary_button" onClick={handleToggleEdit}>수정</button>
+                          <button className="white_button" onClick={downloadPDF}>
+                            다운로드
+                          </button>
+                          <button className="primary_button" onClick={!(attachment && !file) ? handleToggleEdit : handleSubmitHrInfo}>
+                            {!(attachment && !file) ? '수정하기' : '등록하기'}
+                          </button>
                         </>
-                      )
-                    )}
+                      )}
                   </div>
 
                   <div className="hr_pdf_container">
@@ -629,10 +656,11 @@ const HumanResource = () => {
                           <td className="flex_center">
                             <Popover placement="left-start">
                               <PopoverTrigger>
-                                <button className="white_button" 
+                                <button className="white_button"
                                   onClick={() => {
-                                    setForm({ dept: appointment.Newdept, position: appointment.Newposition, spot: appointment.Newspot, team: appointment.team, date: appointment.date, classify: appointment.classify,});}}>
-                                      수정
+                                    setForm({ dept: appointment.Newdept, position: appointment.Newposition, spot: appointment.Newspot, team: appointment.team, date: appointment.date, classify: appointment.classify, });
+                                  }}>
+                                  수정
                                 </button>
                               </PopoverTrigger>
                               <Portal>
@@ -692,7 +720,7 @@ const HumanResource = () => {
         header={'알림'}
         footer1={'삭제'}
         footer1Class="red-btn"
-        onFooter1Click={() => {handleAppointmentDelete(clickIdx)}}
+        onFooter1Click={() => { handleAppointmentDelete(clickIdx) }}
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setDeleteModalOpen(false)}
