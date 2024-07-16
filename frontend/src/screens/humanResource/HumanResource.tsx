@@ -16,7 +16,6 @@ import { isSelectMemberState } from '../../recoil/atoms';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import testPDF_구민석 from '../../assets/pdf/[서식-P502] 인사기록카드_구민석.pdf';
 
 import { useQueryClient, useQuery } from 'react-query';
 import { CheckHrInfo, WriteHrInfo, EditHrInfo, CheckAppointment, writeAppointment, EditAppointment, DeleteAppointment } from "../../services/humanresource/HumanResourceServices";
@@ -267,13 +266,40 @@ const HumanResource = () => {
   }
 
 
-  const downloadPDF = () => {
-    const link = document.createElement('a');
-    link.href = testPDF_구민석;
-    link.download = '인사기록카드_구민석.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const downloadPDF = async () => {
+    let TabName;
+    if (activeTab === 0) {
+      TabName = "인사기록카드";
+    } else if (activeTab === 1) {
+      TabName = "근로자 명부";
+    } else {
+      return;
+    }
+
+    const params = {
+      username: isSelectMember[1],
+      TabData: TabName,
+    };
+
+    try {
+      const response = await CheckHrInfo(params);
+      
+      if (response.status === 200) {
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${TabName}_${isSelectMember[1]}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
   };
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {

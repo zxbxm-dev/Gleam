@@ -126,20 +126,35 @@ const WriteReport = () => {
     ['염승희', '관리부', '관리팀', '사원'],
     ['김태희', '관리부', '지원팀', '팀장'],
     ['진유빈', '개발부', '', '부서장'],
-    ['장현지', '개발부', '개발 1팀', '사원'],
+    ['장현지', '개발부', '개발 1팀', '팀장'],
     ['구민석', '개발부', '개발 1팀', '사원'],
     ['박세준', '개발부', '개발 1팀', '사원'],
+    ['윤재원', '개발부', '개발 1팀', '사원'],
     ['변도일', '개발부', '개발 2팀', '팀장'],
     ['이로운', '개발부', '개발 2팀', '사원'],
     ['권상원', '블록체인 사업부', '', '부서장'],
     ['권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
-    ['김도환', '블록체인 사업부', '블록체인 1팀', '사원'],
+    ['김도환', '블록체인 사업부', '블록체인 1팀', '팀장'],
     ['김현지', '마케팅부', '', '부서장'],
     ['전아름', '마케팅부', '기획팀', '팀장'],
     ['함다슬', '마케팅부', '기획팀', '사원'],
     ['전규미', '마케팅부', '기획팀', '사원'],
     ['서주희', '마케팅부', '디자인팀', '사원'],
   ];
+
+  const membersRD: Member[] = [
+    ['이정훈', '포체인스 주식회사', '', '대표이사'],
+    ['안후상', '포체인스 주식회사', '', '이사'],
+    ['이유정', '연구 총괄', '', '센터장'],
+    ['심민지', '알고리즘 연구실', '', '연구실장'],
+    ['임지현', '알고리즘 연구실', 'AI 연구팀', '연구원'],
+    ['김희진', '알고리즘 연구실', 'AI 연구팀', '연구원'],
+    ['윤민지', '동형분석 연구실', '', '연구실장'],
+    ['이채영', '동형분석 연구실', '동형분석 연구팀', '연구원'],
+    ['', '블록체인 연구실', '', ''],
+    ['박소연', '블록체인 연구실', 'AI 개발팀', '연구원'],
+    ['김경현', '블록체인 연구실', 'AI 개발팀', '연구원'],
+  ]
 
   const SelectOptions = (report: string) => {
     setSelectedReport(report);
@@ -185,14 +200,15 @@ const WriteReport = () => {
 
 
   const writer = members.find(member => member[0] === user.username) || null
+  const writerRD = membersRD.find(member => member[0] === user.username) || null
 
-  const RDLead = members.find(member => member[0] === '이유정') || null;
+  const RDLead = membersRD.find(member => member[0] === '이유정') || null;
   const RDTeamLead = (user.department === '동형분석 연구실')
-    ? members.find(member => member[0] === '윤민지') || null
+    ? membersRD.find(member => member[0] === '윤민지') || null
     : (user.department === '알고리즘 연구실')
-      ? members.find(member => member[0] === '심민지') || null
+      ? membersRD.find(member => member[0] === '심민지') || null
       : (user.department === '블록체인 연구실')
-        ? members.find(member => member[0] === '심민지') || null
+        ? membersRD.find(member => member[0] === '심민지') || null
         : null;
 
   const updateApprovalLines = (report: string) => {
@@ -213,7 +229,7 @@ const WriteReport = () => {
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
         { name: '센터장', checked: true, selectedMember: RDLead },
         { name: '연구실장', checked: true, selectedMember: RDTeamLead },
-        { name: '작성자', checked: true, selectedMember: writer },
+        { name: '작성자', checked: true, selectedMember: writerRD },
       ];
     }
 
