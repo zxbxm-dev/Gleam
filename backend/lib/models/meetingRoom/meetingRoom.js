@@ -65,5 +65,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
+
     return Meeting;
 }
