@@ -62,15 +62,20 @@ const ManagePerform = () => {
   const { refetch } = useQuery("managePerform", fetchManagePerform, {
     enabled: !!isSelectMember[0],
     onSuccess: (data) => {
-      if (
-        (user.username === '김효은' && data.evaluations[0].company !== '본사') ||
-        (user.username === '이유정' && data.evaluations[0].company !== 'R&D')
-      ) {
+      if (data && data.evaluations && data.evaluations.length > 0) {
+        if (
+          (user.username === '김효은' && data.evaluations[0].company !== '본사') ||
+          (user.username === '이유정' && data.evaluations[0].company !== 'R&D')
+        ) {
+          setManagePerformDate('');
+          setManagePerform([]);
+        } else {
+          setManagePerformDate(data.evaluations ? data.evaluations[0].date : '');
+          setManagePerform(Array.isArray(data.files) ? data.files : []);
+        }
+      } else {
         setManagePerformDate('');
         setManagePerform([]);
-      } else {
-        setManagePerformDate(data.evaluations ? data.evaluations[0].date : '');
-        setManagePerform(Array.isArray(data.files) ? data.files : []);
       }
     },
     onError: (error) => {
@@ -80,7 +85,7 @@ const ManagePerform = () => {
   });
 
   useEffect(() => {
-    if (isSelectMember[0]) {
+    if (isSelectMember && isSelectMember.length > 0 && isSelectMember[0]) {
       refetch();
     }
   }, [isSelectMember, refetch]);
