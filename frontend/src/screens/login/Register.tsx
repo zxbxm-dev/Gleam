@@ -303,13 +303,13 @@ const Register = () => {
 			<div className="RegistorBox">
 				<div className="LeftFlex">
 					<div className="MinimBox">
-						<span>아이디 입력</span>
+						<span>* 아이디 입력</span>
 						<input type="text" className="ShortTextInput" value={id} placeholder="아이디를 입력해 주세요." onChange={(event) => handleInputChange(event, 'userID')} />
 						<button className="CheckID" onClick={handleCheckID}>중복 확인</button>
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
-							<span>패스워드 설정</span>
+							<span>* 패스워드 설정</span>
 							{passwordError ?
 								<input
 									type="password"
@@ -335,7 +335,7 @@ const Register = () => {
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
-							<span>패스워드 재입력</span>
+							<span>* 패스워드 재입력</span>
 							{confirmPasswordError ?
 								<input
 									type="password"
@@ -360,7 +360,7 @@ const Register = () => {
 					</div>
 					<div className="MinisBox">
 						<span>
-							패스워드 재설정<br />
+							* 패스워드 재설정<br />
 							본인 확인용 질문<br />
 							(2개 다 입력)
 						</span>
@@ -388,7 +388,7 @@ const Register = () => {
 						</div>
 					</div>
 					<div className="MiniBox">
-						<span>성명 입력</span>
+						<span>* 성명 입력</span>
 						<input
 							type="text"
 							value={name}
@@ -399,7 +399,7 @@ const Register = () => {
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
-							<span>휴대폰 번호 입력</span>
+							<span>* 휴대폰 번호 입력</span>
 							{phoneNumberError ?
 								<input
 									type="text"
@@ -424,7 +424,7 @@ const Register = () => {
 						</div>
 					</div>
 					<div className="MinimBox">
-						<span>메일 입력</span>
+						<span>* 메일 입력</span>
 						<input
 							type="text"
 							value={mail}
@@ -436,7 +436,7 @@ const Register = () => {
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
-							<span>입사일자</span>
+							<span>* 입사일자</span>
 							{enterDateError ?
 								<input
 									type="text"

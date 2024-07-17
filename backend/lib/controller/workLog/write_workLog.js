@@ -209,20 +209,20 @@ const SignProgress = async (req, res) => {
     let pendingSigners = report.pending ? report.pending.split(",") : [];
     let completedSigners = report.completed ? report.completed.split(",") : [];
 
-    if (
-      pendingSigners.includes(username) ||
-      completedSigners.includes(username)
-    ) {
-      return res
-        .status(403)
-        .json({ error: "이미 결재를 완료한 사용자입니다." });
-    }
+    // if (
+    //   pendingSigners.includes(username) ||
+    //   completedSigners.includes(username)
+    // ) {
+    //   return res
+    //     .status(403)
+    //     .json({ error: "이미 결재를 완료한 사용자입니다." });
+    // }
 
-    console.log("현재 pendingSigners:", pendingSigners);
-    console.log("현재 completedSigners:", completedSigners);
+    // console.log("현재 pendingSigners:", pendingSigners);
+    // console.log("현재 completedSigners:", completedSigners);
 
     // 결재자가 결재를 진행한 경우만 approval 증가
-    if (!pendingSigners.includes(username)) {
+    if (pendingSigners.includes(username)) {
       pendingSigners.push(username);
       report.approveDate = report.approveDate
         ? `${report.approveDate},${approveDate}`

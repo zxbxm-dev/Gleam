@@ -46,6 +46,7 @@ const DetailApproval = () => {
   const [isSignModalOpen, setSignModalOpen] = useState(false);
   const [isEmptySignModalOpen, setEmptySignModalOpen] = useState(false);
   const [isApproveModalOpen, setApproveModalOpen] = useState(false);
+  const [isCheckSignModalOpen, setCheckSignModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<string>('');
   const { onOpen: onOpinionModalOpen, onClose: onOpinionModalClose, isOpen: isOpinionModalOpen } = useDisclosure();
   const { onOpen: onRejectionModalOpen, onClose: onRejectionModalClose, isOpen: isRejectionModalOpen } = useDisclosure();
@@ -125,7 +126,6 @@ const DetailApproval = () => {
   
     try {
       await Promise.all(loadPromises);
-      console.log(loadPromises)
       const pdf = new jsPDF('p', 'mm', 'a4');
       element.style.height = element.scrollHeight + 'px';
   
@@ -163,14 +163,27 @@ const DetailApproval = () => {
     }
   };
 
+  const canUserSignAtIndex = (index: number) => {
+    for (let i = 0; i < index; i++) {
+      if ((signatories[i] === user.position || combinedLine[i] === user.username) && !checksignup[i]) {
+        return false;
+      }
+    }
+  
+    return (signatories[index] === user.position || combinedLine[index] === user.username) && !checksignup[index];
+  };
+  
+
   const handleSignModal = (index: number) => {
-    if(!user.Sign) {
+  if (canUserSignAtIndex(index)) {
+    if (!user.Sign) {
       setEmptySignModalOpen(true);
     } else {
       setSignModalOpen(true);
       setSignUpIndex(index);
     }
   }
+};
 
   const handleSign = (index: number) => {
     const newCheckSignUp = [...checksignup];
@@ -303,6 +316,11 @@ const DetailApproval = () => {
     formData.append("username", user.username);
     formData.append("approveDate",formattedDate);
 
+    if (signupindex !== documentInfo[0]?.approval) {
+      setCheckSignModalOpen(true);
+      return;
+    }
+
     HandleApproval(report_id, formData)
     .then(() => {
       console.log('보고서 결재에 성공했습니다.')
@@ -328,9 +346,6 @@ const DetailApproval = () => {
     return user ? user.Sign : null;
   };
 
-
-  console.log('결재해야할사람',approveLine)
-  console.log('결재 끝난 사람',approvedLine)
   return (
     <div className="content">
       <div className="content_container">
@@ -377,7 +392,11 @@ const DetailApproval = () => {
                 <button className="white_button" onClick={exportToPDF}>다운로드</button>
                 <Popover placement="right-start" isOpen={isRejectionModalOpen} onOpen={onRejectionModalOpen} onClose={onRejectionModalClose}>
                   <PopoverTrigger>
-                    <button className="red_button">반려하기</button>
+                    {user.username === documentInfo[0].username ? (
+                      <></>
+                    ) : (
+                      <button className="red_button">반려하기</button>
+                    )}
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent width='410px' height='274px' border='0' borderRadius='5px' boxShadow='0px 0px 5px #444'>
@@ -416,7 +435,7 @@ const DetailApproval = () => {
                     {signatories.map((signatory, index) => (
                       <div className='Pay' key={index}>
                         <input className='Top' type="text" placeholder={signatory} disabled />
-                        {signatory === user.position || combinedLine[index] === user.username ? 
+                        {canUserSignAtIndex(index) ? 
                           (
                             <div className='Bottom' onClick={() => handleSignModal(index)}>
                               {checksignup[index] ?
@@ -437,7 +456,6 @@ const DetailApproval = () => {
                           </div>
                           )
                         }
-                        
                         <div className='BtmDate'>{approveDates[index] || signDates[index]}</div>
                       </div>
                     ))}
@@ -484,11 +502,25 @@ const DetailApproval = () => {
         isOpen={isApproveModalOpen}
         onClose={() => {setApproveModalOpen(false); navigate('/approval')}}
         header={'알림'}
-    >
+      >
         <div>
           {modalContent}
         </div>
-    </CustomModal>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isCheckSignModalOpen}
+        onClose={() => setCheckSignModalOpen(false)}
+        header={'알림'}
+        footer1={'확인'}
+        footer1Class="green-btn"
+        onFooter1Click={() => setCheckSignModalOpen(false)}
+      >
+        <div>
+          본인 서명란을 클릭 후 <br/>
+          서명을 완료해주세요.
+        </div>
+      </CustomModal>
     </div>
   );
 };

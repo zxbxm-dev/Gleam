@@ -17,7 +17,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-import { useQueryClient, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { CheckHrInfo, WriteHrInfo, EditHrInfo, CheckAppointment, writeAppointment, EditAppointment, DeleteAppointment } from "../../services/humanresource/HumanResourceServices";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -28,7 +28,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 type PDFFile = string | File | null;
 
 const HumanResource = () => {
-  const queryClient = useQueryClient();
   const { isOpen: isAdd, onOpen: AddOpen, onClose: AddClose } = useDisclosure();
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({ 0: '41px', 1: '35px', 2: '35px' });
@@ -183,7 +182,8 @@ const HumanResource = () => {
     }
   }
 
-  useQuery("Appointment", fetchAppointment, {
+  const { refetch: refetchAppointment } = useQuery("Appointment", fetchAppointment, {
+    enabled: false,
     onSuccess: (data) => {
       const userAppoint = data.data
         .filter((item: any) => item.username === isSelectMember[1])
@@ -197,8 +197,9 @@ const HumanResource = () => {
   useEffect(() => {
     if (isSelectMember[0]) {
       refetch(); // 처음에만 데이터를 가져오도록 설정
+      refetchAppointment()
     }
-  }, [isSelectMember, refetch]);
+  }, [isSelectMember, refetch, refetchAppointment]);
 
   // 인사이동 등록
   const handleAppointSubmit = () => {
@@ -218,7 +219,7 @@ const HumanResource = () => {
     writeAppointment(formData)
       .then(response => {
         console.log("인사이동 등록 성공")
-        queryClient.invalidateQueries("Appointment");
+        refetchAppointment();
         setForm({
           dept: '',
           position: '',
@@ -237,19 +238,20 @@ const HumanResource = () => {
 
   // 인사이동 수정
   const handleAppointmentEdit = (index: number) => {
-    const { dept, position, spot, date, classify } = form;
+    const { dept, team, position, spot, date, classify } = form;
 
     const formData = new FormData();
-    formData.append('dept', dept);
-    formData.append('position', position);
-    formData.append('spot', spot);
+    formData.append('Newdept', dept);
+    formData.append('Newteam', team);
+    formData.append('Newposition', position);
+    formData.append('Newspot', spot);
     formData.append('date', date);
     formData.append('classify', classify);
 
     EditAppointment(index, formData)
       .then(response => {
         console.log("인사이동 등록 성공")
-        queryClient.invalidateQueries("Appointment");
+        refetchAppointment();
       })
       .catch(error => {
         console.log("인사이동 등록 실패")
@@ -262,7 +264,7 @@ const HumanResource = () => {
       .then((response) => {
         console.log("인사이동이 성공적으로 삭제되었습니다.", response);
         setDeleteModalOpen(false);
-        queryClient.invalidateQueries("Appointment");
+        refetchAppointment();
       })
       .catch((error) => {
         console.error("인사이동 삭제에 실패했습니다.", error);
@@ -384,13 +386,6 @@ const HumanResource = () => {
     }
   }
 
-  const blankk = () => {
-    console.log("l");
-
-  }
-
-  console.log('첨부된 파일', attachment)
-  console.log('백엔드 파일', file)
   return (
     <div className="content">
       <div className="content_container">
@@ -625,16 +620,18 @@ const HumanResource = () => {
               <div>
                 <table className="hr_board_list">
                   <colgroup>
-                    <col width="20%" />
+                    <col width="15%" />
+                    <col width="15%" />
                     <col width="10%" />
                     <col width="10%" />
-                    <col width="20%" />
-                    <col width="20%" />
+                    <col width="16%" />
+                    <col width="14%" />
                     <col width="20%" />
                   </colgroup>
                   <thead>
                     <tr className="board_header">
                       <th>부서</th>
+                      <th>팀</th>
                       <th>직책</th>
                       <th>직위</th>
                       <th>날짜</th>
@@ -647,6 +644,7 @@ const HumanResource = () => {
                       .map((appointment, index) => (
                         <tr key={appointment.id} className="board_content">
                           <td>{appointment.Newdept}</td>
+                          <td>{appointment.Newteam}</td>
                           <td>{appointment.Newposition}</td>
                           <td>{appointment.Newspot}</td>
                           <td>{appointment.date}</td>
@@ -656,7 +654,7 @@ const HumanResource = () => {
                               <PopoverTrigger>
                                 <button className="white_button"
                                   onClick={() => {
-                                    setForm({ dept: appointment.Newdept, position: appointment.Newposition, spot: appointment.Newspot, team: appointment.team, date: appointment.date, classify: appointment.classify, });
+                                    setForm({ dept: appointment.Newdept, position: appointment.Newposition, spot: appointment.Newspot, team: appointment.Newteam, date: appointment.date, classify: appointment.classify, });
                                   }}>
                                   수정
                                 </button>
