@@ -252,19 +252,18 @@
   }
   
   .conta_name_annual {
-    width: 99.5px;
+    width: 100px;
     height: 40px;
   }
   
   .conta_date_annual {
-    width: 119.5px;
+    width: 120px;
     height: 40px;
   }
   
   
   .countTotal_annual {
     width: 70px;
-    height: 40px;
   
     .total_annual {
       width: 100%;
@@ -274,7 +273,6 @@
   
   .countTotal_annual_last {
     width: 69.6px;
-    height: 40px;
   
     .total_annual {
       width: 100%;
@@ -283,47 +281,27 @@
   }
   
   .countName_annual {
-    width: 102px;
-    height: 40px;
-  
+    width: 101.6px;
+    
     .total_annual {
-      width: 100%;
-      height: 100%;
+      height: 37px;
     }
   }
   
   .countDate_annual {
-    width: 121.5px;
-    height: 40px;
-
-    .total_annual {
-      width: 100%;
-      height: 100%;
-    }
+    width: 121.6px;
   }
   
   .CountTable {
-    height: 40px;
+    height: 43px;
     tbody {
-      height: 40px;
+      height: 43px;
     }
-  }
-  .conta_name_annual {
-    height: 40px;
   }
 
   .conta_annual {
-    width: 68px;
+    width: 68.4px;
     height: 40px;
-  }
-
-  .CountTable {
-    height: 40px;
-  
-    tbody {
-      display: flex;
-      height: 40px;
-    }
   }
 
   .Excel_annual {
@@ -331,15 +309,15 @@
       div {
         tr {
           .TopS_no {
-            height: 37px;
+            height: 41px;
             font-size: 14px;
           }
           .TopS_annual {
-            height: 37px;
+            height: 41px;
             font-size: 14px;
           }
           td {  
-            height: 40x;
+            height: 41.4px;
             font-size: 14px;
           }
         }
@@ -354,15 +332,15 @@
       div {
         tr {
           .TopS_no {
-            height: 37.5px;
+            height: 41px;
             font-size: 14px;
           }
           .TopS_annual {
-            height: 37.5px;
+            height: 41px;
             font-size: 14px;
           }
           td {  
-            height: 41.6px;
+            height: 41.4px;
             font-size: 14px;
           }
         }

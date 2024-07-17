@@ -83,14 +83,20 @@ const Operating = () => {
     }
   }
 
-  useQuery("operating", fetchOperating, {
+  const { refetch } = useQuery("operating", fetchOperating, {
+    enabled: false,
     onSuccess: (data) => {
+      console.log('호출')
       distributeExpenses(data);
     },
     onError: (error) => {
       console.log(error);
     }
   });
+
+  useEffect(() => {
+    refetch();
+  }, [])
 
   const exportToPDF = () => {
     const element = document.getElementById('table-to-xls');
@@ -178,7 +184,6 @@ const Operating = () => {
     82001 : '임차료-장소대관료',
     890 : '잡비',
   }
-
 
   const [common811Team, setCommon811Team] = useState<string[][]>([['', '', '', '']]);
   const [common812Team, setCommon812Team] = useState<string[][]>([['', '', '', '']]);
