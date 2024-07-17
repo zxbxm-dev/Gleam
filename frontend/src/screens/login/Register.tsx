@@ -518,7 +518,7 @@ const Register = () => {
 						</div>
 					</div>
 					<div className="flexbox">
-						<span className="FlexSpan">직위</span>
+						<span className="FlexSpan">* 직위</span>
 						<div className="custom-select">
 							<div className="select-header" onClick={() => toggleSelect(3)}>
 								<span>{selectedOptions.spot ? selectedOptions.spot : '직위를 선택해주세요'}</span>
@@ -537,7 +537,7 @@ const Register = () => {
 						</div>
 					</div>
 					<div className="flexbox">
-						<span className="FlexSpan">직책</span>
+						<span className="FlexSpan">* 직책</span>
 						<div className="custom-select">
 							<div className="select-header" onClick={() => toggleSelect(4)}>
 								<span>{selectedOptions.position ? selectedOptions.position : '직책을 선택해주세요'}</span>
