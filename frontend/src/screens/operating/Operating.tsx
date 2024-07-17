@@ -667,8 +667,12 @@ const handleSubmit = () => {
   // 예비비 금액 계산
   useEffect(() => {
     const totalCost = common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost;
-    const reserveFund = totalCost * (parseFloat(percentage) / 100);
-    setReserveFund(reserveFund);
+    if (percentage) {
+      const reserveFund = totalCost * (parseFloat(percentage) / 100);
+      setReserveFund(reserveFund);
+    } else {
+      setReserveFund(0);
+    }
   }, [percentage, common811Cost, common812Cost, common813Cost, common814Cost, common815Cost, common818Cost, common819Cost, managementCost, supportCost, devOneCost, devTwoCost, blockchainCost, designCost, planningCost]);
 
   console.log('가져온 예비비 비율',percentage)
