@@ -409,8 +409,21 @@ const HumanResource = () => {
               ) : (
                 <>
                   <div className="hr_button_wrap">
-                    <div className="hr_button_wrap">
-                      {!file && !attachment ? (
+                    {!file && !attachment ? (
+                      <button className="white_button">
+                        <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
+                          업로드
+                          <input
+                            id="fileInput"
+                            type="file"
+                            name="handleFileSubmit"
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                          />
+                        </label>
+                      </button>
+                    ) : isEditing ? (
+                      <>
                         <button className="white_button">
                           <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
                             업로드
@@ -423,38 +436,23 @@ const HumanResource = () => {
                             />
                           </label>
                         </button>
-                      ) : isEditing ? (
-                        <>
-                          <button className="white_button">
-                            <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
-                              업로드
-                              <input
-                                id="fileInput"
-                                type="file"
-                                name="handleFileSubmit"
-                                style={{ display: 'none' }}
-                                onChange={handleFileChange}
-                              />
-                            </label>
-                          </button>
-                          <button className="primary_button" onClick={handleHrInfoEdit}>
-                            수정하기
-                          </button>
-                          <button className="red_button" onClick={handleToggleEdit}>
-                            취소
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button className="white_button" onClick={downloadPDF}>
-                            다운로드
-                          </button>
-                          <button className="primary_button" onClick={!(attachment && !file) ? handleToggleEdit : handleSubmitHrInfo}>
-                            {!(attachment && !file) ? '수정하기' : '등록하기'}
-                          </button>
-                        </>
-                      )}
-                    </div>
+                        <button className="primary_button" onClick={handleHrInfoEdit}>
+                          수정하기
+                        </button>
+                        <button className="red_button" onClick={handleToggleEdit}>
+                          취소
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="white_button" onClick={downloadPDF}>
+                          다운로드
+                        </button>
+                        <button className="primary_button" onClick={!(attachment && !file) ? handleToggleEdit : handleSubmitHrInfo}>
+                          {!(attachment && !file) ? '수정하기' : '등록하기'}
+                        </button>
+                      </>
+                    )}
                   </div>
                   <div className="hr_pdf_container">
                     {!attachment && !file ? (

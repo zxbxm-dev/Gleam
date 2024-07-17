@@ -168,6 +168,13 @@ const WriteRegulation = () => {
                 hideModeSwitch={true}
                 plugins={[colorSyntax]}
                 language="ko-KR"
+                toolbarItems={[
+                  ['heading', 'bold', 'italic', 'strike'],
+                  ['hr', 'quote'],
+                  ['ul', 'ol', 'task', 'indent', 'outdent'],
+                  ['image', 'link'],
+                  ['scrollSync'],                    
+                ]}
               />
             </div>
             {editData && editData.pdffile ? (
