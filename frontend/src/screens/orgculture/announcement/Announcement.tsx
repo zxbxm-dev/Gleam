@@ -71,7 +71,6 @@ const Announcement = () => {
     event.stopPropagation();
     setDropdownOpen(true);
     setDropdownPosition({ x: event.pageX+50, y: event.pageY });
-    console.log('선택된 게시글 idx', clickIdx)
     setClickIdx(index);
   };
 
@@ -166,7 +165,10 @@ const Announcement = () => {
                 {filteredAnnouncements
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((announcement) => (
-                    <tr key={announcement.id} className={`board_content ${announcement.isPinned ? "pinned" : ""}`}>
+                    <tr
+                      key={announcement.id}
+                      className="board_content"
+                    >
                       <td style={{ color: "#D56D6D" }}>공지</td>
                       <td style={{ textAlign: "left", paddingLeft: "20px" }} onContextMenu={(e) => handleRightClick(announcement.id, e)}>
                         <Link to={`/detailAnnounce/${announcement.id}`} style={{ display: 'flex', gap: '10px', alignItems: 'center'}} onClick={() => {incrementViewCount(announcement.id)}}>
