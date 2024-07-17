@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { SideUp, SideDown, UserIcon_dark } from "../../assets/images/index";
 import { PersonData } from "../../services/person/PersonServices";
 
-// Define interfaces for types
 interface Person {
   userId: string;
   username: string;
@@ -21,9 +20,9 @@ interface Props {
 }
 
 type CurrentPageType =
-  '포체인스주식회사' | '개발부' | '개발1팀' | '개발2팀' | '블록체인사업부' | '블록체인1팀' |
-  '마케팅부' | '기획팀' | '디자인팀' | '관리부' | '관리팀' | '지원팀' |
-  '시설팀' | 'R&D센터' | '알고리즘연구실' | '동형분석연구실' | '블록체인연구실';
+  | '포체인스주식회사' | '개발부' | '개발1팀' | '개발2팀' | '블록체인사업부' | '블록체인1팀'
+  | '마케팅부' | '기획팀' | '디자인팀' | '관리부' | '관리팀' | '지원팀'
+  | '시설팀' | 'R&D센터' | '알고리즘연구실' | '동형분석연구실' | '블록체인연구실';
 
 const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
   const [personData, setPersonData] = useState<Person[] | null>(null);
@@ -31,12 +30,13 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
     isExpanded: true,
     currentPage: '포체인스주식회사',
   });
+  const [history, setHistory] = useState<CurrentPageType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await PersonData();
-        const sortedData = response.data.sort((a: any, b: any) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
+        const sortedData = response.data.sort((a: Person, b: Person) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
         setPersonData(sortedData);
       } catch (err) {
         console.error("Error fetching person data:", err);
@@ -54,11 +54,26 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
   };
 
   const handleClick = (page: CurrentPageType) => {
+    setHistory((prevHistory) => [...prevHistory, sidebarState.currentPage]);
     setSidebarState({ ...sidebarState, currentPage: page });
   };
 
+  const handleBackClick = () => {
+    setHistory((prevHistory) => {
+      const newHistory = [...prevHistory];
+      const previousPage = newHistory.pop();
+      if (previousPage) {
+        setSidebarState((prevState) => ({
+          ...prevState,
+          currentPage: previousPage,
+        }));
+      }
+      return newHistory;
+    });
+  };
+
   const handleMemberClick = (person: Person) => {
-    onClickMember(person.userId ,person.username, person.department, person.team, person.position);
+    onClickMember(person.userId, person.username, person.department, person.team, person.position);
   };
 
   const renderMembers = () => {
@@ -67,7 +82,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
     return (
       <div className="MemberTab">
         <div className="Fourchains">
-          <span onClick={() => handleClick('포체인스주식회사')}>&lt; &nbsp;</span>
+          <span onClick={handleBackClick}>&lt; &nbsp;</span>
           <div>{sidebarState.currentPage}</div>
         </div>
 

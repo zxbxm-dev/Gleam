@@ -23,7 +23,7 @@ const login = async (req, res) => {
       const match = await bcrypt.compare(password, user.password);
       if (match) {
         if (user.status === "pending") {
-          return res.status(401).json({
+          return res.status(403).json({
             error: "승인 대기 중입니다. 승인 완료 후 로그인하세요.",
           });
         }

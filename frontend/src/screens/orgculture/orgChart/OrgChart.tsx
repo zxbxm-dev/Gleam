@@ -30,10 +30,15 @@ interface Person {
   attachment: string;
 }
 
-const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
-  <Popover placement={'top'}>
+const MemberPopover: React.FC<{ member: Person, isOpen: boolean, onOpen: () => void, onClose: () => void }> = ({ member, isOpen, onOpen, onClose }) => (
+  <Popover
+    isOpen={isOpen}
+    onClose={onClose}
+    onOpen={onOpen}
+    placement={'top'}
+  >
     <PopoverTrigger>
-      <div style={{ cursor: 'pointer' }}>{member.username} | {member.position}</div>
+      <div style={{ cursor: 'pointer' }} onClick={isOpen ? onClose : onOpen}>{member.username} | {member.position}</div>
     </PopoverTrigger>
     <Portal>
       <PopoverContent className='custom_popover'>
@@ -41,7 +46,7 @@ const MemberPopover: React.FC<{ member: Person }> = ({ member }) => (
         <PopoverCloseButton />
         <PopoverBody className='custom_popover_body'>
           <div className='custom_popover_body_left'>
-            <img src={member.attachment ? member.attachment : UserIcon} alt="UserIcon" className="user_icon"/>
+            <img src={member.attachment ? member.attachment : UserIcon} alt="UserIcon" className="user_icon" />
             <div>{member.username}</div>
             <div>{member.position}</div>
           </div>
@@ -66,6 +71,7 @@ const OrgChart = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({ 0: '41px', 1: '35px' });
   const [tabMargins, setTabMargins] = useState({ 0: '6px', 1: '6px' });
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -81,7 +87,8 @@ const OrgChart = () => {
     const fetchData = async () => {
       try {
         const response = await PersonData();
-        setPersonData(response.data);
+        const approveduser = response.data.filter((item: any) => item.status === 'approved');
+        setPersonData(approveduser);
       } catch (err) {
       }
     };
@@ -177,7 +184,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('개발 1팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -186,7 +198,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('개발 2팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -210,7 +227,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('블록체인 1팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -235,7 +257,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('관리팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -244,7 +271,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('지원팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -269,7 +301,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('디자인팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -278,7 +315,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('기획팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -324,7 +366,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('AI 연구팀').map(member => (
                         <div key={member.userId} className="nodeicon7">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -348,8 +395,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('동형분석 연구팀').map(member => (
                         <div key={member.userId} className="nodeicon7">
-                          <MemberPopover member={member} />
-                        </div>
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />       </div>
                       ))}
                     </div>
                   </TreeNode>
@@ -368,7 +419,12 @@ const OrgChart = () => {
                     <div className="TeamColumn">
                       {getSortedTeamMembers('AI 개발팀').map(member => (
                         <div key={member.userId} className="nodeicon7">
-                          <MemberPopover member={member} />
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
                         </div>
                       ))}
                     </div>

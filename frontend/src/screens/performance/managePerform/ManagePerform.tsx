@@ -8,7 +8,8 @@ import { ReactComponent as LastRightIcon } from "../../../assets/images/Common/L
 import { ReactComponent as FirstLeftIcon } from "../../../assets/images/Common/FirstLeftIcon.svg";
 import Pagination from "react-js-pagination";
 import CustomModal from "../../../components/modal/CustomModal";
-
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/atoms';
 import { useQuery } from "react-query";
 import { CheckPerform, DeletePerform } from "../../../services/performance/PerformanceServices";
 
@@ -20,7 +21,9 @@ const ManagePerform = () => {
   const [page, setPage] = useState<number>(1);
   const postPerPage: number = 10;
   const [managePerform, setManagePerform] = useState<any[]>([]);
+  const [managePerformdate, setManagePerformDate] = useState('');
   const [clickIdx, setClickIdx] = useState<string>('');
+  const user = useRecoilValue(userState);
   
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -49,7 +52,7 @@ const ManagePerform = () => {
 
     try {
       const response = await CheckPerform(params);
-      return response.data.files;
+      return response.data;
     } catch (error) {
       console.error("Error fetching performance data:", error);
       return [];
@@ -59,7 +62,21 @@ const ManagePerform = () => {
   const { refetch } = useQuery("managePerform", fetchManagePerform, {
     enabled: !!isSelectMember[0],
     onSuccess: (data) => {
-      setManagePerform(Array.isArray(data) ? data : []);
+      if (data && data.evaluations && data.evaluations.length > 0) {
+        if (
+          (user.username === '김효은' && data.evaluations[0].company !== '본사') ||
+          (user.username === '이유정' && data.evaluations[0].company !== 'R&D')
+        ) {
+          setManagePerformDate('');
+          setManagePerform([]);
+        } else {
+          setManagePerformDate(data.evaluations ? data.evaluations[0].date : '');
+          setManagePerform(Array.isArray(data.files) ? data.files : []);
+        }
+      } else {
+        setManagePerformDate('');
+        setManagePerform([]);
+      }
     },
     onError: (error) => {
       console.log(error);
@@ -68,11 +85,11 @@ const ManagePerform = () => {
   });
 
   useEffect(() => {
-    if (isSelectMember[0]) {
+    if (isSelectMember && isSelectMember.length > 0 && isSelectMember[0]) {
       refetch();
     }
   }, [isSelectMember, refetch]);
-
+  
   return (
     <div className="content">
       <div className="content_container">
@@ -104,7 +121,7 @@ const ManagePerform = () => {
                       <tr key={userPerform.id} className="board_content">
                         <td>{(page - 1) * postPerPage + index + 1}</td>
                         <td style={{textAlign: 'center'}}>{userPerform.filename}</td>
-                        <td>{userPerform.date}</td>
+                        <td>{managePerformdate}</td>
                         <td style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', height:'53px'}}>
                           <button className="primary_button" onClick={() => navigate(`/detail-manage-perform`, {state: {username: isSelectMember[1], filename: userPerform.filename}})}>문서확인</button>
                           <button className="red_button" onClick={() => {setDeleteModalOpen(true); setClickIdx(userPerform.filename);}}>삭제</button>

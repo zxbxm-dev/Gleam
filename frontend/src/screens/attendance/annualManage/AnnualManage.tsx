@@ -63,6 +63,15 @@ const formatEnteringDate = (date: string) => {
   return `${year}-${month}-${day}`;
 };
 
+const sortDates = (dates: string[]) => {
+  return dates.sort((a, b) => {
+    const dateA = new Date(a.slice(0, -1)); 
+    const dateB = new Date(b.slice(0, -1)); 
+    return dateA.getTime() - dateB.getTime(); 
+  });
+};
+
+
 const useAnnualData = () => {
   const [annualData, setAnnualData] = useState([]);
   const [HO_Data, setHO_Data] = useState([]);
@@ -103,13 +112,14 @@ const useAnnualData = () => {
       const formattedStartDates = userAnnualData.map((annual: any) => 
         annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
       ).filter(date => date !== ''); // 빈 문자열 제거
+      const sortedDates = sortDates(formattedStartDates);
 
       return [
         user.username || '',
         userAnnualData[0]?.availableDate || 0,
         userAnnualData[0]?.usedDate || 0,
         userAnnualData[0]?.extraDate || 0,
-        formattedStartDates.length ? formattedStartDates : [''],
+        sortedDates.length ? sortedDates : [''],
         user.entering ? formatEnteringDate(user.entering) : '',
         user.leavedate ? formatEnteringDate(user.leavedate) : '',
         user.department || '',
@@ -125,13 +135,14 @@ const useAnnualData = () => {
       const formattedStartDates = userAnnualData.map((annual: any) => 
         annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
       ).filter(date => date !== ''); // 빈 문자열 제거
+      const sortedDates = sortDates(formattedStartDates);
 
       return [
         user.username || '',
         userAnnualData[0]?.availableDate || 0,
         userAnnualData[0]?.usedDate || 0,
         userAnnualData[0]?.extraDate || 0,
-        formattedStartDates.length ? formattedStartDates : [''],
+        sortedDates.length ? sortedDates : [''],
         user.entering ? formatEnteringDate(user.entering) : '',
         user.leavedate ? formatEnteringDate(user.leavedate) : '',
         user.department || '',
