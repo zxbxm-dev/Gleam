@@ -24,6 +24,7 @@ const Transfer = require("./management/personnel_transfer");
 const jobPosting = require("./employment/JobPosting");
 //회의실
 const meetingRoom = require('./meetingRoom/meetingRoom');
+const pjschedule = require('./pjschedule/pjschedule');
 
 const db = {};
 
@@ -44,5 +45,6 @@ db.Evaluation = evaluation(sequelize, Sequelize);
 db.TransferPosition = Transfer(sequelize, Sequelize);
 db.Management = management(sequelize, Sequelize);
 db.Meeting = meetingRoom(sequelize, Sequelize);
+db.Project = pjschedule(sequelize, Sequelize);
 
 module.exports = db;
