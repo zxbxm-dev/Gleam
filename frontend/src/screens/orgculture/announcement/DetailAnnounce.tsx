@@ -9,6 +9,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { DetailTableAnnounce, DeleteAnno } from "../../../services/announcement/Announce";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/atoms';
 import { useLocation } from 'react-router-dom';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -28,6 +30,7 @@ interface Announcement {
 
 const DetailAnnounce = () => {
   let navigate = useNavigate();
+  const user = useRecoilValue(userState);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [detailAnno, setDetailAnno] = useState<Announcement | null>(null);
   const [file, setFile] = useState<PDFFile>();
@@ -116,7 +119,8 @@ const DetailAnnounce = () => {
     }
   };
 
-  console.log(detailAnno)
+  const canEditOrDelete = detailAnno && (user.team === '관리팀' || user.username === detailAnno.username);
+
   return (
     <div className="content">
       <div className="content_container">
@@ -143,9 +147,13 @@ const DetailAnnounce = () => {
               <div className="btn_content">
                 <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn"/></button>
                 <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn"/></button>
+                {canEditOrDelete && (
+  <>
                 <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
-                <button className="white_button" onClick={downloadPDF}>다운로드</button>
                 <Link to="/writeAnnounce" className="white_button" state={detailAnno} ><button >수정</button></Link>
+  </>
+)}
+                <button className="white_button" onClick={downloadPDF}>다운로드</button>
                 <button className="primary_button" onClick={() => navigate("/")}>목록</button>
               </div>
             </div>
