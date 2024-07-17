@@ -657,7 +657,7 @@ const WriteReport = () => {
                               {line.checked ? (
                                 line.selectedMember ? (
                                   <div className='approval_name' onClick={() => handleCheckboxChange(index + 1)}>
-                                    <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                    {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                     <div className='name_text'>{line.selectedMember[0]}</div>
                                     <div className='name_border'></div>
                                     <div className='name_text'>{line.selectedMember[3]}</div>
@@ -704,7 +704,7 @@ const WriteReport = () => {
                             {line.checked ? (
                               line.selectedMember ? (
                                 <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
-                                  <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                  {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                   <div className='name_text'>{line.selectedMember[0]}</div>
                                   <div className='name_border'></div>
                                   <div className='name_text'>{line.selectedMember[3]}</div>
