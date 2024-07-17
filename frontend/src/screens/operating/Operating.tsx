@@ -15,6 +15,7 @@ type Expense = {
   accountName: string;
   cost: number;
   note: string;
+  Percent: string;
   createdAt: string;
   updatedAt: string;
   year: number;
@@ -49,7 +50,8 @@ const Operating = () => {
     };
 
     expenses.forEach((expense) => {
-      const { team, accountCode, accountName, cost, note } = expense;
+      const { team, accountCode, accountName, cost, note, Percent } = expense;
+      setPercentage(Percent);
       if (teams[team]) {
         if (teams[team][0][0] === '' && teams[team][0][1] === '' && teams[team][0][2] === '' && teams[team][0][3] === '') {
           teams[team] = [];
@@ -87,7 +89,6 @@ const Operating = () => {
   const { refetch } = useQuery("operating", fetchOperating, {
     enabled: false,
     onSuccess: (data) => {
-      console.log('호출')
       distributeExpenses(data);
     },
     onError: (error) => {
@@ -99,6 +100,7 @@ const Operating = () => {
     refetch();
   }, [])
 
+  
   const exportToPDF = () => {
     const element = document.getElementById('table-to-xls');
     if (element) {
@@ -660,8 +662,16 @@ const handleSubmit = () => {
     .catch(error => {
       console.log("운영비 데이터 전송 오류", error);
     })
-}
+  }
 
+  // 예비비 금액 계산
+  useEffect(() => {
+    const totalCost = common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost;
+    const reserveFund = totalCost * (parseFloat(percentage) / 100);
+    setReserveFund(reserveFund);
+  }, [percentage, common811Cost, common812Cost, common813Cost, common814Cost, common815Cost, common818Cost, common819Cost, managementCost, supportCost, devOneCost, devTwoCost, blockchainCost, designCost, planningCost]);
+
+  console.log('가져온 예비비 비율',percentage)
 
   return (
     <div className="content">
