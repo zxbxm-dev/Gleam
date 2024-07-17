@@ -133,8 +133,8 @@ const WriteReport = () => {
     ['변도일', '개발부', '개발 2팀', '팀장'],
     ['이로운', '개발부', '개발 2팀', '사원'],
     ['권상원', '블록체인 사업부', '', '부서장'],
-    ['권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
     ['김도환', '블록체인 사업부', '블록체인 1팀', '팀장'],
+    ['권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
     ['김현지', '마케팅부', '', '부서장'],
     ['전아름', '마케팅부', '기획팀', '팀장'],
     ['함다슬', '마케팅부', '기획팀', '사원'],
@@ -657,7 +657,7 @@ const WriteReport = () => {
                               {line.checked ? (
                                 line.selectedMember ? (
                                   <div className='approval_name' onClick={() => handleCheckboxChange(index + 1)}>
-                                    <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                    {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                     <div className='name_text'>{line.selectedMember[0]}</div>
                                     <div className='name_border'></div>
                                     <div className='name_text'>{line.selectedMember[3]}</div>
@@ -704,7 +704,7 @@ const WriteReport = () => {
                             {line.checked ? (
                               line.selectedMember ? (
                                 <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
-                                  <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                  {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                   <div className='name_text'>{line.selectedMember[0]}</div>
                                   <div className='name_border'></div>
                                   <div className='name_text'>{line.selectedMember[3]}</div>
