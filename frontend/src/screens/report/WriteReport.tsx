@@ -170,7 +170,7 @@ const WriteReport = () => {
   const departmentDirector = (user.department === '개발부')
     ? members.find(member => member[0] === '진유빈') || null
     : (user.department === '관리부')
-      ? members.find(member => member[0] === '이정열') || null
+      ? null
       : (user.department === '블록체인사업부')
         ? members.find(member => member[0] === '권상원') || null
         : (user.department === '마케팅부')
