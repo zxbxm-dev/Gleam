@@ -57,20 +57,20 @@ const getAllMeetingRoom = async (req, res) => {
 
 //회의실 예약 수정하기 
 const editMeetingRoom = async (req, res) => {
-    const { userID, startDate, endDate, title, memo } = req.body.data;
-    const { meetingId: Meeting_id } = req.params;
+    const { userID, startDate, endDate, title, memo, Meetpeople, place } = req.body.data;
+    const { Meeting_id: meetingId } = req.params;
 
     console.log("요청 파라미터:", req.params);
     console.log("요청 본문:", req.body);
 
-    if(!Meeting_id) {
+    if(!meetingId) {
         return res
         .status(400)
         .json({ message: "회의실 예약 ID가 제공되지 않았습니다." });
     }
    try{
     const meetingRoom = await meeting.findOne({
-        where: { meetingId: Meeting_id },
+        where: { meetingId: meetingId },
     });
     if (!meetingRoom) {
         return res

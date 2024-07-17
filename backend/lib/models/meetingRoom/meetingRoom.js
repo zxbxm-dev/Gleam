@@ -37,10 +37,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.JSON, //배열 형태로 저장
             allowNull: false,
           },
-          //null값 허용
           startDate: {
             type: DataTypes.DATE,
-            allowNull: true,
+            allowNull: false,
           },
           endDate: {
             type: DataTypes.DATE,
@@ -55,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
           },
+          //null값 허용
           year: {
             type: DataTypes.STRING,
             allowNull: true,
