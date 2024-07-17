@@ -170,7 +170,7 @@ const WriteReport = () => {
   const departmentDirector = (user.department === '개발부')
     ? members.find(member => member[0] === '진유빈') || null
     : (user.department === '관리부')
-      ? members.find(member => member[0] === '이정열') || null
+      ? null
       : (user.department === '블록체인사업부')
         ? members.find(member => member[0] === '권상원') || null
         : (user.department === '마케팅부')
@@ -657,7 +657,7 @@ const WriteReport = () => {
                               {line.checked ? (
                                 line.selectedMember ? (
                                   <div className='approval_name' onClick={() => handleCheckboxChange(index + 1)}>
-                                    <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                    {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                     <div className='name_text'>{line.selectedMember[0]}</div>
                                     <div className='name_border'></div>
                                     <div className='name_text'>{line.selectedMember[3]}</div>
@@ -704,7 +704,7 @@ const WriteReport = () => {
                             {line.checked ? (
                               line.selectedMember ? (
                                 <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
-                                  <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                  {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                   <div className='name_text'>{line.selectedMember[0]}</div>
                                   <div className='name_border'></div>
                                   <div className='name_text'>{line.selectedMember[3]}</div>

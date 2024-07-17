@@ -28,6 +28,7 @@ const Operating = () => {
   const [reserveFund, setReserveFund] = useState<number>(0);
   const [customInputValue, setCustomInputValue] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [percentage, setPercentage] = useState('');
 
   const distributeExpenses = (expenses: Expense[]) => {
     const teams: { [key: string]: string[][] } = {
@@ -640,6 +641,7 @@ const handleSubmit = () => {
     blockchain: blockchainTeam,
     design: designTeam,
     planning: planningTeam,
+    percent:percentage
   }
   
 
@@ -1332,8 +1334,10 @@ const handleSubmit = () => {
                             const ratio = parseFloat(e.target.value) || 0;
                             const reserveFund = (common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) * ratio / 100;
                             setReserveFund(reserveFund);
+                            setPercentage(e.target.value); 
                           }}
                           disabled={!editMode}
+                          value={percentage}
                         >
                           <option value=""></option>
                           <option value="5">5%</option>
