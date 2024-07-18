@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
@@ -37,6 +37,7 @@ type ProcessedAttendance = [string, string, [string, string, string]];
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
   const queryClient = useQueryClient();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState((new Date().getMonth() + 1) % 3);
   const [tabHeights, setTabHeights] = useState<Record<number, string>>({0: '41px', 1: '35px', 2: '35px'});
   const [tabMargins, setTabMargins] = useState<Record<number, string>>({0: '6px', 1: '6px', 2: '6px'});
@@ -250,22 +251,41 @@ const AttendanceRegist = () => {
   const exportToPDF = () => {
     const element = document.getElementById('table-to-xls');
     if (element) {
-      element.style.height = element.scrollHeight + 'px';
-      element.style.width = element.scrollWidth + 'px';
-      html2canvas(element).then(canvas => {
+      const images = element.querySelectorAll('img');
+      images.forEach(img => {
+        img.crossOrigin = "anonymous";
+        img.onerror = () => {
+          console.warn(`Failed to load image: ${img.src}`);
+          img.remove();
+        };
+      });
+  
+      const width = element.scrollWidth;
+      const height = element.scrollHeight;
+      
+      html2canvas(element, {
+        allowTaint: true,
+        useCORS: true,
+        width: width,
+        height: height,
+        scale: 2
+      }).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('l', 'mm', 'a4');
-        const imgWidth = 297; // A4 크기에서 이미지 너비
-        const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
+        const imgWidth = 297; // A4 width in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // maintain aspect ratio
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
         pdf.save('출근부.pdf');
-        window.location.reload();
+      }).catch(error => {
+        console.error('Error generating PDF:', error);
       });
     } else {
       console.error('Element not found');
     }
   };
-
+  
+  
+  
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
     name: string | null;
     year: number | null;
@@ -1032,7 +1052,7 @@ const onSubmit = (data: any) => {
             <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="attend_tab_container">
               {yearData.map(monthData => (
                 <TabPanel key={monthData.month} className="container_attendance">
-                  <div className="Excel" id="table-to-xls">
+                  <div className="Excel" ref={containerRef} id="table-to-xls">
                     {isLoading ? (
                       <>
                         <AttendSkeleton />
