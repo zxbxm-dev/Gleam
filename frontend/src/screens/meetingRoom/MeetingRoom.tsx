@@ -28,8 +28,8 @@ const MeetingRoom = () => {
     const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
     const [ischeckPeopleModalOpen, setcheckPeopleModalOPen] = useState(false);
     const [isMeetingModalOpen, setMeetingModalOPen] = useState(false);
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [endDate, setEndDate] = useState<Date | null>(null);
+    const [startDate, setStartDate] = useState<Date | null>(new Date());
+    const [endDate, setEndDate] = useState<Date | null>(new Date());
     const [memo, setMemo] = useState("");
     const [activeTab, setActiveTab] = useState(0);
     const calendarRef1 = useRef<FullCalendar>(null);
@@ -76,15 +76,18 @@ const MeetingRoom = () => {
     const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
-            if (inputValue.trim()) {
-                setRecipients([...recipients, inputValue.trim()]);
+            const trimmedValue = inputValue.trim();
+            if (trimmedValue && !recipients.includes(trimmedValue)) {
+                setRecipients([...recipients, trimmedValue]);
                 setInputValue('');
             }
         }
     };
 
     const handleAutoCompleteClick = (userData: string) => {
-        setRecipients([...recipients, userData]);
+        if (!recipients.includes(userData)) {
+            setRecipients([...recipients, userData]);
+        }
         setInputValue('');
     };
 
@@ -102,6 +105,44 @@ const MeetingRoom = () => {
             )
         }
     });
+
+    const getClosestTime = () => {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        
+        const times: string[] = [];
+        
+        for (let index = 0; index < 16; index++) {
+            const hour = 10 + Math.floor(index / 2);
+            const minute = (index % 2) * 30;
+            if (hour === 17 && minute > 0) continue; // 17:30 제외
+            times.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
+        }
+        
+        // 현재 시간에 가장 가까운 시간을 찾기
+        let closestTime = times[0];
+        let closestDiff = Infinity;
+
+        times.forEach(time => {
+            const [hour, minute] = time.split(':').map(Number);
+            const timeDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute);
+            const diff = Math.abs(now.getTime() - timeDate.getTime());
+
+            if (diff < closestDiff) {
+                closestDiff = diff;
+                closestTime = time;
+            }
+        });
+
+        return closestTime;
+    };
+
+
+   useEffect(() => {
+        const closestTime = getClosestTime();
+        setSelectedTime(closestTime);
+    }, []);
 
     const toggleSelect = () => {
         setIsOpen(!isOpen);
@@ -252,7 +293,7 @@ const MeetingRoom = () => {
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setAddEventModalOPen(false)}
-                height="520px"
+                height="540px"
                 width="513px"
             >
                 <div className="body-container">
@@ -310,25 +351,25 @@ const MeetingRoom = () => {
                                 className="datepicker"
                                 popperPlacement="top"
                             />
-                            <div className="timeoption" onClick={toggleSelect}>
-                                {selectedTime || '00:00'}
+                           <div className="timeoption" onClick={toggleSelect}>
+            {selectedTime}
 
-                                {isOpen && (
-                                    <div className="options">
-                                        {[...Array(16)].map((_, index) => {
-                                            const hour = 10 + Math.floor(index / 2);
-                                            const minute = (index % 2) * 30;
-                                            if (hour === 17 && minute > 0) return null;
-                                            const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                                            return (
-                                                <div key={index} className="optionselect" onClick={() => handleTimeSelect(time)}>
-                                                    {time}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
+            {isOpen && (
+                <div className="options">
+                    {[...Array(16)].map((_, index) => {
+                        const hour = 10 + Math.floor(index / 2);
+                        const minute = (index % 2) * 30;
+                        if (hour === 17 && minute > 0) return null;
+                        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        return (
+                            <div key={index} className="optionselect" onClick={() => handleTimeSelect(time)}>
+                                {time}
                             </div>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
 
                         </div>
                         <span className="timespan">~</span>
