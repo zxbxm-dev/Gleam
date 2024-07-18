@@ -7,6 +7,11 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useRecoilState } from 'recoil';
 import { isSidebarVisibleState } from '../../recoil/atoms';
+import { writeMeeting } from "../../services/meeting/MeetingRoom";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
+import { PersonData } from '../../services/person/PersonServices';
+import { useQuery } from 'react-query';
 
 interface Event {
     title: string;
@@ -15,6 +20,8 @@ interface Event {
 }
 
 const MeetingRoom = () => {
+    const user = useRecoilValue(userState);
+    const [persondata, setPersonData] = useState<any[]>([]);
     const [isAddeventModalOpen, setAddEventModalOPen] = useState(false);
     const [iseventModalOpen, setEventModalOPen] = useState(false);
     const [isEditeventModalOpen, setEditEventModalOPen] = useState(false);
@@ -35,6 +42,66 @@ const MeetingRoom = () => {
     const [selectedTime, setSelectedTime] = useState("");
     const [isTwoOpen, setIsTwoOpen] = useState(false);
     const [selectedTwoTime, setSelectedTwoTime] = useState("");
+    const [title, setTitle] = useState("");
+    const [inputValue, setInputValue] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [recipients, setRecipients] = useState<string[]>([]);
+
+    const fetchUser = async () => {
+        try {
+            const response = await PersonData();
+            return response.data;
+        } catch (error) {
+            throw new Error("Failed to fetch data");
+        }
+    };
+
+    const handleRecipientRemove = (userData: string) => {
+        setRecipients(recipients.filter(recipient => recipient !== userData));
+    };
+
+    useQuery("person", fetchUser, {
+        onSuccess: (data) => {
+            setPersonData(data);
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    })
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+    };
+
+    const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            if (inputValue.trim()) {
+                setRecipients([...recipients, inputValue.trim()]);
+                setInputValue('');
+            }
+        }
+    };
+
+    const handleAutoCompleteClick = (userData: string) => {
+        setRecipients([...recipients, userData]);
+        setInputValue('');
+    };
+
+    const filteredEmails = persondata.filter(person => {
+        const inputLowerCase = inputValue.toLowerCase();
+        if (person.team) {
+            return (
+                person.username.toLowerCase().includes(inputLowerCase) ||
+                person.team.toLowerCase().includes(inputLowerCase)
+            )
+        } else {
+            return (
+                person.username.toLowerCase().includes(inputLowerCase) ||
+                person.department.toLowerCase().includes(inputLowerCase)
+            )
+        }
+    });
 
     const toggleSelect = () => {
         setIsOpen(!isOpen);
@@ -103,6 +170,31 @@ const MeetingRoom = () => {
         setKey(prevKey => prevKey + 1);
     }, [activeTab]);
 
+    const handleAddEvent = async () => {
+        try {
+            const eventDetails = {
+                username: user.username,
+                userID: user.userId,
+                company,
+                department: user.department,
+                team: user.team,
+                title,
+                meetPeople: recipients,
+                startDate: startDate?.toISOString(),
+                endDate: endDate?.toISOString(),
+                place: location,
+                startTime: selectedTime,
+                endTime: selectedTwoTime,
+                memo
+            };
+
+            const response = await writeMeeting(eventDetails);
+            console.log("회의 일정 추가 성공:", response.data);
+
+        } catch (error) {
+            console.error("회의 일정 추가 실패:", error);
+        }
+    };
 
     return (
         <div className="content">
@@ -149,14 +241,14 @@ const MeetingRoom = () => {
                     />
                 </div>
             </div>
-            
+
             <CustomModal
                 isOpen={isAddeventModalOpen}
                 onClose={() => setAddEventModalOPen(false)}
                 header={'회의실 예약'}
                 footer1={'등록'}
                 footer1Class="back-green-btn"
-                // onFooter1Click={handleAddEvent}
+                onFooter1Click={handleAddEvent}
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setAddEventModalOPen(false)}
@@ -165,15 +257,44 @@ const MeetingRoom = () => {
             >
                 <div className="body-container">
                     <div className="AddTitle">
-                        <div className="div">제목</div>        
-                        <input className="TextInputCon" type="text" placeholder="제목을 입력해 주세요." />
+                        <div className="div">제목</div>
+                        <input className="TextInputCon" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목을 입력해 주세요." />
                     </div>
                     <div className="AddPeople">
                         <div className="div">참여인원</div>
                         <div className="InputContainer">
-                            <input className="AddInputCon" type="text" placeholder="인원을 입력해 주세요." />
-                            <input className="AddsInputCon" type="text" />
+                            <input
+                                id="recipient_input_element"
+                                placeholder="인원을 입력해 주세요."
+                                className="AddInputCon"
+                                type="text"
+                                value={inputValue}
+                                onChange={handleInputChange}
+                                onKeyDown={handleInputKeyDown}
+                                ref={inputRef}
+                            />
+                            {inputValue && (
+                                <ul className="autocomplete_dropdown">
+                                    {filteredEmails.map(person => (
+                                        <li
+                                            key={person.username}
+                                            onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                                        >
+                                            {person.team ? person.team : person.department} {person.username}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            <div className="AddsInputCon">
+                                {recipients.map((userData, index) => (
+                                    <div className="recipient" key={index}>
+                                        {userData}
+                                        <span className="remove" onClick={() => handleRecipientRemove(userData)}>×</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
+
                     </div>
                     <div className="AddPeople">
                         <div className="div">시간</div>
@@ -272,7 +393,7 @@ const MeetingRoom = () => {
                         </div>
                     </div>
                     <div className="AddTitle">
-                        <div className="div">메모</div>        
+                        <div className="div">메모</div>
                         <textarea className="TextInputCon2" />
                     </div>
                 </div>
@@ -343,7 +464,7 @@ const MeetingRoom = () => {
             >
                 <div className="body-container">
                     <div className="AddTitle">
-                        <div className="div">제목</div>        
+                        <div className="div">제목</div>
                         <input className="TextInputCon" type="text" placeholder="제목을 입력해 주세요." />
                     </div>
                     <div className="AddPeople">
@@ -450,7 +571,7 @@ const MeetingRoom = () => {
                         </div>
                     </div>
                     <div className="AddTitle">
-                        <div className="div">메모</div>        
+                        <div className="div">메모</div>
                         <textarea className="TextInputCon2" />
                     </div>
                 </div>
