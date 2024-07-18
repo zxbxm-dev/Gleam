@@ -28,8 +28,8 @@ const MeetingRoom = () => {
     const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
     const [ischeckPeopleModalOpen, setcheckPeopleModalOPen] = useState(false);
     const [isMeetingModalOpen, setMeetingModalOPen] = useState(false);
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [endDate, setEndDate] = useState<Date | null>(null);
+    const [startDate, setStartDate] = useState<Date | null>(new Date());
+    const [endDate, setEndDate] = useState<Date | null>(new Date());
     const [memo, setMemo] = useState("");
     const [activeTab, setActiveTab] = useState(0);
     const calendarRef1 = useRef<FullCalendar>(null);
@@ -76,15 +76,18 @@ const MeetingRoom = () => {
     const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
-            if (inputValue.trim()) {
-                setRecipients([...recipients, inputValue.trim()]);
+            const trimmedValue = inputValue.trim();
+            if (trimmedValue && !recipients.includes(trimmedValue)) {
+                setRecipients([...recipients, trimmedValue]);
                 setInputValue('');
             }
         }
     };
 
     const handleAutoCompleteClick = (userData: string) => {
-        setRecipients([...recipients, userData]);
+        if (!recipients.includes(userData)) {
+            setRecipients([...recipients, userData]);
+        }
         setInputValue('');
     };
 
@@ -252,7 +255,7 @@ const MeetingRoom = () => {
                 footer2={'취소'}
                 footer2Class="gray-btn"
                 onFooter2Click={() => setAddEventModalOPen(false)}
-                height="520px"
+                height="540px"
                 width="513px"
             >
                 <div className="body-container">

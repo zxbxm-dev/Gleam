@@ -77,7 +77,7 @@
         .AddTitle {
           display: flex;
 
-          .div{
+          .div {
             display: flex;
             align-items: center;
             flex-direction: row-reverse;
@@ -101,7 +101,7 @@
             margin-right: 10px;
           }
 
-          .TextInputCon{
+          .TextInputCon {
             width: 360px;
             height: 33px;
             border: 1px solid #DCDCDC;
@@ -109,34 +109,38 @@
             font-size: 14px;
             padding: 10px;
           }
-          .TextInputCon::placeholder{
+
+          .TextInputCon::placeholder {
             font-size: 14px;
             font-weight: 400;
             color: #d9d9d9;
           }
-          .TextInputCon:focus{
+
+          .TextInputCon:focus {
             outline: none;
           }
 
-          .TextInputCon2{
+          .TextInputCon2 {
             width: 360px;
             height: 84px;
             border: 1px solid #DCDCDC;
             border-radius: 5px;
             font-size: 14px;
             padding: 10px;
+            resize: none;
           }
-          .TextInputCon2:focus{
+
+          .TextInputCon2:focus {
             outline: none;
           }
         }
 
-        .AddPeoples{
+        .AddPeoples {
           margin-bottom: 10px;
           display: flex;
           align-items: center;
 
-          .div{
+          .div {
             display: flex;
             align-items: center;
             flex-direction: row-reverse;
@@ -148,32 +152,33 @@
             margin-right: 10px;
           }
 
-          .MeetingRoom{
+          .MeetingRoom {
             display: flex;
             width: 80%;
             gap: 20px;
 
-            .SelectRoom{
+            .SelectRoom {
               font-size: 14px;
               width: 196px;
               height: 32px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
             }
-            .SelectRoom:focus{
+
+            .SelectRoom:focus {
               outline: none;
             }
 
-            .Field{
+            .Field {
               gap: 20px;
               display: flex;
 
-              label{
+              label {
                 display: flex;
                 align-items: center;
                 gap: 5px;
 
-                span{
+                span {
                   font-size: 14px;
                   margin-left: 5px;
                 }
@@ -182,12 +187,12 @@
           }
         }
 
-        .AddPeople{
+        .AddPeople {
           margin-bottom: 10px;
           display: flex;
           width: 100%;
 
-          .div{
+          .div {
             display: flex;
             flex-direction: row-reverse;
             width: 60px;
@@ -198,85 +203,148 @@
             margin-right: 10px;
             padding-top: 5px;
           }
-          
+
           .InputContainer {
             display: flex;
             flex-direction: column;
             gap: 8px;
             position: relative;
-            
-            .AddInputCon{
+
+            .AddInputCon {
               width: 360px;
               height: 33px;
               border-bottom: 1px solid #DCDCDC;
               font-size: 14px;
               padding: 10px;
             }
-            .AddInputCon::placeholder{
+
+            .AddInputCon::placeholder {
               font-size: 14px;
               font-weight: 400;
               color: #d9d9d9;
             }
-            .AddInputCon:focus{
+
+            .AddInputCon:focus {
               outline: none;
             }
 
-            .autocomplete_dropdown{
+            .autocomplete_dropdown {
               position: absolute;
+              border-radius: 5px;
               top: 30%;
               left: 0;
               z-index: 1000;
-              border: 1px solid gray;
+              border: 1px solid #C7C7C7;
               background-color: #fff;
               width: 100%;
               max-height: 200px;
               overflow-y: auto;
+              gap: 5px;
+              display: flex;
+              flex-direction: column;
+
+              li {
+                font-size: 14px;
+                padding: 5px 10px;
+              }
+
+              li:hover {
+                cursor: pointer;
+                background-color: #e2e2e2;
+              }
             }
-  
+
             .AddsInputCon {
               width: 360px;
               height: 77px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
               font-size: 14px;
-              padding: 10px;
+              padding: 6px 10px;
+              overflow-y: scroll;
+              flex-wrap: wrap;
+              display: flex;
+              gap: 10px;
+
+              .recipient {
+                flex: 1 0 calc(50% - 10px);
+                max-width: calc(50% - 5px);
+                box-sizing: border-box;
+                background-color: #f0f0f0;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0px 10px;
+                border: 1px solid #ccc;
+
+                .remove {
+                  margin-left: 5px;
+                }
+              }
             }
-            .AddsInputCon::placeholder{
+
+            .AddsInputCon::-webkit-scrollbar {
+              width: 6px;
+              height: 6px;
+            }
+
+            .AddsInputCon::-webkit-scrollbar-thumb {
+              background-color: #929292;
+              border-radius: 10px;
+              background-clip: padding-box;
+              border: 2px solid transparent;
+            }
+
+            .AddsInputCon::-webkit-scrollbar-corner {
+              background-color: none;
+            }
+
+            .AddsInputCon::-webkit-scrollbar-track {
+              box-shadow: none;
+              background-color: #fff;
+
+            }
+
+            .AddsInputCon::placeholder {
               font-size: 14px;
               font-weight: 400;
               color: #d9d9d9;
             }
-            .AddsInputCon:focus{
+
+            .AddsInputCon:focus {
               outline: none;
             }
           }
 
-          .timespan{
+          .timespan {
             margin-left: 20px;
             margin-right: 20px;
           }
 
-          .Date{
+          .Date {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 20px;
             padding: 0 5px;
 
-            .datepicker{
+            .datepicker {
               font-size: 14px;
               font-family: var(--font-family-Noto-M);
               width: 80px;
               height: 27px;
             }
-            .datepicker:focus{
+
+            .datepicker:focus {
               outline: none;
             }
-            .react-datepicker-wrapper{
+
+            .react-datepicker-wrapper {
               width: 80px;
             }
-  
-            .timeoption{
+
+            .timeoption {
               font-size: 14px;
               font-family: var(--font-family-Noto-M);
               position: relative;
@@ -289,7 +357,7 @@
         .body-content {
           display: flex;
           gap: 10px;
-  
+
           .content-left {
             padding-left: 9px;
             display: flex;
@@ -301,14 +369,14 @@
             font-family: var(--font-family-Noto-M);
 
             .div {
-             margin-left: 25px; 
+              margin-left: 25px;
             }
           }
-  
+
           .content-center {
             align-items: center;
           }
-  
+
           .content-right {
             display: flex;
             align-items: center;
@@ -326,14 +394,16 @@
                 border-radius: 5px;
                 padding-left: 7px;
               }
+
               .textinput:focus {
                 outline: 2px solid #76CB7E;
               }
+
               .textinput::placeholder {
                 font-size: 12px;
                 color: #C7C7C7;
               }
-  
+
               .userlist_dropdown {
                 position: absolute;
                 top: 100%;
@@ -352,13 +422,13 @@
                 font-family: var(--font-family-Noto-M);
                 max-height: 150px;
                 overflow-y: auto;
-      
+
                 li {
                   padding: 8px;
                   cursor: pointer;
                   transition: background-color 0.3s ease;
                 }
-      
+
                 li:hover {
                   background-color: #f0f0f0;
                 }
@@ -372,9 +442,11 @@
               border-radius: 5px;
               padding-left: 7px;
             }
+
             .textinput:focus {
               outline: 2px solid #76CB7E;
             }
+
             .textinput::placeholder {
               font-size: 12px;
               color: #C7C7C7;
@@ -388,7 +460,7 @@
             }
 
             .datepicker:focus {
-             outline: none;
+              outline: none;
             }
 
             .textareainput {
@@ -399,9 +471,11 @@
               padding: 7px;
               resize: none;
             }
+
             .textareainput:focus {
               outline: none;
             }
+
             .textareainput::placeholder {
               font-size: 12px;
               color: #C7C7C7;
@@ -422,6 +496,7 @@
               align-items: center;
               width: 100%;
             }
+
             .content-date {
               display: flex;
               align-items: center;
@@ -429,6 +504,7 @@
               width: 300px;
               height: 28px;
             }
+
             .content-memo {
               width: 300px;
             }
@@ -463,16 +539,19 @@
           border: 1px solid #76CB7E;
           color: #76CB7E;
         }
+
         &.back-green-btn {
           background-color: #76CB7E;
           border: 1px solid #76CB7E;
           color: #fff;
         }
+
         &.red-btn {
           background-color: #fff;
           border: 1px solid #D56D6D;
           color: #D56D6D;
         }
+
         &.gray-btn {
           background-color: #fff;
           border: 1px solid #929292;
@@ -483,12 +562,18 @@
     }
   }
 }
-.options{
+
+.options {
   position: absolute;
   height: 150px;
   overflow-y: scroll;
+  left: -10px;
   background-color: #fff;
   border: 1px solid #d9d9d9;
+
+  .optionselect{
+    padding: 5px;
+  }
 }
 
 .options::-webkit-scrollbar {
@@ -512,14 +597,14 @@
   background-color: #fff;
 }
 
-.optionselect{
+.optionselect {
   padding-top: 3px;
   padding-bottom: 3px;
 }
 
-.optionselect:hover{
-background-color: #d9d9d9;
-font-size: 14px;
-cursor: pointer;
+.optionselect:hover {
+  background-color: #d9d9d9;
+  font-size: 14px;
+  cursor: pointer;
 
 }
