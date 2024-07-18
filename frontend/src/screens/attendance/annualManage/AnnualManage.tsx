@@ -106,13 +106,36 @@ const useAnnualData = () => {
     }
   });
 
+  const getDateRange = (startDate: string, endDate: string, dateType: string) => {
+    const dates = [];
+    let currentDate = new Date(startDate);
+    const finalDate = new Date(endDate);
+  
+    while (currentDate <= finalDate) {
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      const day = currentDate.getDate().toString().padStart(2, '0');
+      const suffix = dateType === '연차' ? 'A' : 'H';
+      dates.push(`${month}.${day}${suffix}`);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  
+    return dates;
+  };
+
   const processedHOData = useMemo(() => {
     const result = HO_Data.map((user: any) => {
       const userAnnualData: AnnualData[] = annualData.filter((annual: any) => annual.username === user.username);
-      const formattedStartDates = userAnnualData.map((annual: any) => 
-        annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
-      ).filter(date => date !== ''); // 빈 문자열 제거
-      const sortedDates = sortDates(formattedStartDates);
+      let formattedDates: string[] = [];
+      
+      userAnnualData.forEach((annual: any) => {
+        if (annual.startDate && annual.endDate) {
+          formattedDates = formattedDates.concat(getDateRange(annual.startDate, annual.endDate, annual.dateType));
+        } else if (annual.startDate) {
+          formattedDates.push(formatDate(annual.startDate, annual.dateType));
+        }
+      });
+      
+      const sortedDates = sortDates(formattedDates);
 
       return [
         user.username || '',
@@ -132,10 +155,17 @@ const useAnnualData = () => {
   const processedRndData = useMemo(() => {
     const result = RnD_Data.map((user: any) => {
       const userAnnualData: AnnualData[] = annualData.filter((annual: any) => annual.username === user.username);
-      const formattedStartDates = userAnnualData.map((annual: any) => 
-        annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
-      ).filter(date => date !== ''); // 빈 문자열 제거
-      const sortedDates = sortDates(formattedStartDates);
+      let formattedDates: string[] = [];
+
+      userAnnualData.forEach((annual: any) => {
+        if (annual.startDate && annual.endDate) {
+          formattedDates = formattedDates.concat(getDateRange(annual.startDate, annual.endDate, annual.dateType));
+        } else if (annual.startDate) {
+          formattedDates.push(formatDate(annual.startDate, annual.dateType));
+        }
+      });
+
+      const sortedDates = sortDates(formattedDates);
 
       return [
         user.username || '',
