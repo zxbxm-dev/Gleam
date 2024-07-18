@@ -515,6 +515,8 @@ const AttendanceRegist = () => {
 
         // 토요일 또는 일요일이 아닌 경우
         if (dayOfWeekIndex !== 0 && dayOfWeekIndex !== 6) {
+          const startTime = personData[2][0] || '';
+          const endTime = personData[2][1] || '';
           rowCells.push(
             <Tooltip label={`${month}월 ${date}일`}>
               <tr
@@ -522,8 +524,8 @@ const AttendanceRegist = () => {
                 onClick={() => handleDivClick(date, year, month, personIndex, personData[3])}
                 key={`${i}-${j}`}
               >
-                <td className='conta'>{personData[2][0].slice(0,5)} </td>
-                <td className='conta_border'>{personData[2][1].slice(0,5)} </td>
+                <td className='conta'>{startTime.slice(0, 5)} </td>
+                <td className='conta_border'>{endTime.slice(0, 5)} </td>
                 <td className='conta' style={{ color: itemBackgroundColor }}>{personData[2][2]} </td>
               </tr>
             </Tooltip>
@@ -765,6 +767,8 @@ const AttendanceRegist = () => {
 
         // 토요일 또는 일요일이 아닌 경우
         if (dayOfWeekIndex !== 0 && dayOfWeekIndex !== 6) {
+          const startTime = personData[2][0] || '';
+          const endTime = personData[2][1] || '';
           rowCells.push(
             <Tooltip label={`${month}월 ${date}일`}>
               <tr

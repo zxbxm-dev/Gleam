@@ -217,7 +217,7 @@ const Calendar = () => {
       userID: info.event.extendedProps.userID || "",
     });
 
-    if (user.username === info.event.title.split(' ')[0] || user.department === '관리부') {
+    if (user.username === info.event.title.split(' ')[0] || user.team === '관리팀') {
       setControlEventModalOPen(true);
     } else {
       setEventModalOPen(true);
