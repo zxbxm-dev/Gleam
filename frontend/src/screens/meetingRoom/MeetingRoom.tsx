@@ -106,6 +106,44 @@ const MeetingRoom = () => {
         }
     });
 
+    const getClosestTime = () => {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        
+        const times: string[] = [];
+        
+        for (let index = 0; index < 16; index++) {
+            const hour = 10 + Math.floor(index / 2);
+            const minute = (index % 2) * 30;
+            if (hour === 17 && minute > 0) continue; // 17:30 제외
+            times.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
+        }
+        
+        // 현재 시간에 가장 가까운 시간을 찾기
+        let closestTime = times[0];
+        let closestDiff = Infinity;
+
+        times.forEach(time => {
+            const [hour, minute] = time.split(':').map(Number);
+            const timeDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute);
+            const diff = Math.abs(now.getTime() - timeDate.getTime());
+
+            if (diff < closestDiff) {
+                closestDiff = diff;
+                closestTime = time;
+            }
+        });
+
+        return closestTime;
+    };
+
+
+   useEffect(() => {
+        const closestTime = getClosestTime();
+        setSelectedTime(closestTime);
+    }, []);
+
     const toggleSelect = () => {
         setIsOpen(!isOpen);
     };
@@ -313,25 +351,25 @@ const MeetingRoom = () => {
                                 className="datepicker"
                                 popperPlacement="top"
                             />
-                            <div className="timeoption" onClick={toggleSelect}>
-                                {selectedTime || '00:00'}
+                           <div className="timeoption" onClick={toggleSelect}>
+            {selectedTime}
 
-                                {isOpen && (
-                                    <div className="options">
-                                        {[...Array(16)].map((_, index) => {
-                                            const hour = 10 + Math.floor(index / 2);
-                                            const minute = (index % 2) * 30;
-                                            if (hour === 17 && minute > 0) return null;
-                                            const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                                            return (
-                                                <div key={index} className="optionselect" onClick={() => handleTimeSelect(time)}>
-                                                    {time}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
+            {isOpen && (
+                <div className="options">
+                    {[...Array(16)].map((_, index) => {
+                        const hour = 10 + Math.floor(index / 2);
+                        const minute = (index % 2) * 30;
+                        if (hour === 17 && minute > 0) return null;
+                        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        return (
+                            <div key={index} className="optionselect" onClick={() => handleTimeSelect(time)}>
+                                {time}
                             </div>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
 
                         </div>
                         <span className="timespan">~</span>
