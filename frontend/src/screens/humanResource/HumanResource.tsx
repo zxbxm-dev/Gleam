@@ -490,7 +490,21 @@ const HumanResource = () => {
               ) : (
                 <>
                   <div className="hr_button_wrap">
-                  {!file && !attachment ? (
+                    {!file && !attachment ? (
+                      <button className="white_button">
+                        <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
+                          업로드
+                          <input
+                            id="fileInput"
+                            type="file"
+                            name="handleFileSubmit"
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                          />
+                        </label>
+                      </button>
+                    ) : isEditing ? (
+                      <>
                         <button className="white_button">
                           <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
                             업로드
@@ -503,37 +517,23 @@ const HumanResource = () => {
                             />
                           </label>
                         </button>
-                      ) : isEditing ? (
-                        <>
-                          <button className="white_button">
-                            <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
-                              업로드
-                              <input
-                                id="fileInput"
-                                type="file"
-                                name="handleFileSubmit"
-                                style={{ display: 'none' }}
-                                onChange={handleFileChange}
-                              />
-                            </label>
-                          </button>
-                          <button className="primary_button" onClick={handleHrInfoEdit}>
-                            수정하기
-                          </button>
-                          <button className="red_button" onClick={handleToggleEdit}>
-                            취소
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button className="white_button" onClick={downloadPDF}>
-                            다운로드
-                          </button>
-                          <button className="primary_button" onClick={!(attachment && !file) ? handleToggleEdit : handleSubmitHrInfo}>
-                            {!(attachment && !file) ? '수정하기' : '등록하기'}
-                          </button>
-                        </>
-                      )}
+                        <button className="primary_button" onClick={handleHrInfoEdit}>
+                          수정하기
+                        </button>
+                        <button className="red_button" onClick={handleToggleEdit}>
+                          취소
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="white_button" onClick={downloadPDF}>
+                          다운로드
+                        </button>
+                        <button className="primary_button" onClick={!(attachment && !file) ? handleToggleEdit : handleSubmitHrInfo}>
+                          {!(attachment && !file) ? '수정하기' : '등록하기'}
+                        </button>
+                      </>
+                    )}
                   </div>
 
                   <div className="hr_pdf_container">
@@ -641,7 +641,12 @@ const HumanResource = () => {
                   </thead>
                   <tbody className="board_container">
                     {appointments
-                      .map((appointment, index) => (
+                      .sort((a, b) => {
+                        const dateA = new Date(a.date);
+                        const dateB = new Date(b.date);
+                        return dateB.getTime() - dateA.getTime();
+                      })
+                      .map((appointment) => (
                         <tr key={appointment.id} className="board_content">
                           <td>{appointment.Newdept}</td>
                           <td>{appointment.Newteam}</td>
@@ -654,7 +659,14 @@ const HumanResource = () => {
                               <PopoverTrigger>
                                 <button className="white_button"
                                   onClick={() => {
-                                    setForm({ dept: appointment.Newdept, position: appointment.Newposition, spot: appointment.Newspot, team: appointment.Newteam, date: appointment.date, classify: appointment.classify, });
+                                    setForm({
+                                      dept: appointment.Newdept,
+                                      position: appointment.Newposition,
+                                      spot: appointment.Newspot,
+                                      team: appointment.Newteam,
+                                      date: appointment.date,
+                                      classify: appointment.classify
+                                    });
                                   }}>
                                   수정
                                 </button>
