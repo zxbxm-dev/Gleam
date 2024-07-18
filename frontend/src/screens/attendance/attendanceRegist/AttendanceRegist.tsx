@@ -52,6 +52,7 @@ const AttendanceRegist = () => {
   const [HO_Data, setHO_Data] = useState<ProcessedAttendance[]>([]);
   const [clickIdx, setClickIdx] = useState<number | null>(null);
   const [explanHeight, setExplanHeight] = useState<number>(0);
+  const [explanRDHeight, setExplanRDHeight] = useState<number>(0);
   // 모달 창 입력값
   const { register, handleSubmit, reset, setValue } = useForm();
 
@@ -96,9 +97,11 @@ const AttendanceRegist = () => {
 
       setMembers(HO_Data);
       setMembersRD(RnD_Data);
+      setIsLoading(false); // 로딩 상태 false로 설정
     },
     onError: (error) => {
       console.error(error);
+      setIsLoading(false); // 오류 발생 시에도 로딩 상태 false로 설정
     }
   });
   
@@ -229,9 +232,11 @@ const AttendanceRegist = () => {
   }, [membersRD]);
 
   useEffect(() => {
-    const height = 40 + 92.3 * membersRD.length;
+    const height = 40 + 92.2 * members.length;
+    const heightRD = 40 + 92.3 * membersRD.length;
     setExplanHeight(height);
-  }, [membersRD]);
+    setExplanRDHeight(heightRD);
+  }, [members, membersRD]);
  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -1058,7 +1063,7 @@ const onSubmit = (data: any) => {
                     </>
                     ) : (
                       <>
-                        <table className="Explan">
+                        <table className="Explan" style={{ height: `${explanHeight}px` }}>
                           <thead>
                             <tr>
                               <td className="TopS" colSpan={2}>부서</td>
@@ -1100,7 +1105,7 @@ const onSubmit = (data: any) => {
               {yearData.map((monthData, index) => (
                 <TabPanel id={`panel-${index}`} key={monthData.month} className="container_attendance">
                   <div className="Excel_RD" id={`panel-${index}`}>
-                    <table className="Explan_RD" style={{ height: `${explanHeight}px` }}>
+                    <table className="Explan_RD" style={{ height: `${explanRDHeight}px` }}>
                       <thead>
                         <tr>
                           <td className="TopS" colSpan={2}>부서</td>
