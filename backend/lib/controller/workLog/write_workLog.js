@@ -222,7 +222,7 @@ const SignProgress = async (req, res) => {
     // console.log("현재 completedSigners:", completedSigners);
 
     // 결재자가 결재를 진행한 경우만 approval 증가
-    if (pendingSigners.includes(username)) {
+    if (!pendingSigners.includes(username)) {
       pendingSigners.push(username);
       report.approveDate = report.approveDate
         ? `${report.approveDate},${approveDate}`
