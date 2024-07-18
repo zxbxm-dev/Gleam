@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
@@ -12,6 +12,7 @@ import { userState } from '../../../recoil/atoms';
 
 import { useQuery, useQueryClient } from "react-query";
 import { CheckAttendance, WriteAttendance, EditAttendance } from "../../../services/attendance/AttendanceServices";
+import { PersonData } from '../../../services/person/PersonServices';
 
 const months = [
   { name: '1월', key: 'january' },
@@ -28,7 +29,7 @@ const months = [
   { name: '12월', key: 'december' },
 ];
 
-type Member = [string, string, string];
+type Member = [string, string, string, string];
 type TeamOrderType = {
   [key: string]: string[];
 };
@@ -37,7 +38,6 @@ type ProcessedAttendance = [string, string, [string, string, string]];
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
   const queryClient = useQueryClient();
-  const containerRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState((new Date().getMonth() + 1) % 3);
   const [tabHeights, setTabHeights] = useState<Record<number, string>>({0: '41px', 1: '35px', 2: '35px'});
   const [tabMargins, setTabMargins] = useState<Record<number, string>>({0: '6px', 1: '6px', 2: '6px'});
@@ -51,6 +51,7 @@ const AttendanceRegist = () => {
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
   const [HO_Data, setHO_Data] = useState<ProcessedAttendance[]>([]);
   const [clickIdx, setClickIdx] = useState<number | null>(null);
+  const [explanHeight, setExplanHeight] = useState<number>(0);
   // 모달 창 입력값
   const { register, handleSubmit, reset, setValue } = useForm();
 
@@ -67,38 +68,39 @@ const AttendanceRegist = () => {
     }
   }, [activeTab]);
 
-  
-  const initialMembers: Member[] = useMemo(() => [
-    ['권상원', '블록체인 사업부', ''],
-    ['김도환', '블록체인 사업부', '블록체인 1팀'],
-    ['권준우', '블록체인 사업부', '블록체인 1팀'],
-    ['진유빈', '개발부', ''],
-    ['장현지', '개발부', '개발 1팀'],
-    ['구민석', '개발부', '개발 1팀'],
-    ['박세준', '개발부', '개발 1팀'],
-    ['윤재원', '개발부', '개발 1팀'],
-    ['변도일', '개발부', '개발 2팀'],
-    ['이로운', '개발부', '개발 2팀'],
-    ['김현지', '마케팅부', ''],
-    ['서주희', '마케팅부', '디자인팀'],
-    ['전아름', '마케팅부', '기획팀'],
-    ['함다슬', '마케팅부', '기획팀'],
-    ['전규미', '마케팅부', '기획팀'],
-    ['김효은', '관리부', '관리팀'],
-    ['우현지', '관리부', '관리팀'],
-    ['염승희', '관리부', '관리팀'],
-    ['김태희', '관리부', '지원팀'],
-  ], []);
+  const fetchUser = async () => {
+    try {
+      const response = await PersonData();
+      const userMap = new Map();
+      response.data.forEach((user: any) => {
+        userMap.set(user.username, user.userId);
+      });
+      return {
+        users: response.data,
+        userMap
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
 
-  const initialMembersRD: Member[] = useMemo(() => [
-    ['심민지', '알고리즘 연구실', 'AI 연구팀'],
-    ['임지현', '알고리즘 연구실', 'AI 연구팀'],
-    ['김희진', '알고리즘 연구실', 'AI 연구팀'],
-    ['윤민지', '동형분석 연구실', '동형분석 연구팀'],
-    ['이채영', '동형분석 연구실', '동형분석 연구팀'],
-    ['박소연', '블록체인 연구실', 'AI 개발팀'],
-    ['김경현', '블록체인 연구실', 'AI 개발팀'],
-  ], []);
+  useQuery("Users", fetchUser, {
+    onSuccess: (data) => {
+      const HO_Data = data.users.filter((item: any) => item.company === "본사").map((user: any) => [
+        user.username, user.department, user.team || '', user.entering
+      ]);
+
+      const RnD_Data = data.users.filter((item: any) => item.company === "R&D").map((user: any) => [
+        user.username, user.department, user.team || '', user.entering
+      ]);
+
+      setMembers(HO_Data);
+      setMembersRD(RnD_Data);
+    },
+    onError: (error) => {
+      console.error(error);
+    }
+  });
   
   useEffect(() => {
     const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
@@ -109,7 +111,7 @@ const AttendanceRegist = () => {
       '관리부': ['관리팀', '지원팀'],
     };
 
-    const sortedMembers = [...initialMembers].sort((a, b) => {
+    const sortedMembers = [...members].sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[1]);
       const deptBIndex = departmentOrder.indexOf(b[1]);
 
@@ -117,10 +119,16 @@ const AttendanceRegist = () => {
       if (deptAIndex > deptBIndex) return 1;
 
       const teamAIndex = teamOrder[a[1]].indexOf(a[2]);
-      const teamBIndex = teamOrder[b[1]].indexOf(b[2]);
+      const teamBIndex = teamOrder[a[1]].indexOf(b[2]);
 
       if (teamAIndex < teamBIndex) return -1;
       if (teamAIndex > teamBIndex) return 1;
+
+      const enteringDateA = new Date(a[3]);
+      const enteringDateB = new Date(b[3]);
+
+      if (enteringDateA < enteringDateB) return -1;
+      if (enteringDateA > enteringDateB) return 1;
 
       const nameA = a[0];
       const nameB = b[0];
@@ -128,7 +136,7 @@ const AttendanceRegist = () => {
     });
 
     setMembers(sortedMembers);
-  }, [initialMembers]);
+  }, [members]);
 
   useEffect(() => {
     const groupedData = members.reduce((acc, member) => {
@@ -166,20 +174,26 @@ const AttendanceRegist = () => {
   useEffect(() => {
     const departmentOrder = ['알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
 
-    const sortedMembers = [...initialMembersRD].sort((a, b) => {
+    const sortedMembers = [...membersRD].sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[1]);
       const deptBIndex = departmentOrder.indexOf(b[1]);
 
       if (deptAIndex < deptBIndex) return -1;
       if (deptAIndex > deptBIndex) return 1;
 
-      const nameA = a[2];
-      const nameB = b[2];
+      const enteringDateA = new Date(a[3]);
+      const enteringDateB = new Date(b[3]);
+
+      if (enteringDateA < enteringDateB) return -1;
+      if (enteringDateA > enteringDateB) return 1;
+
+      const nameA = a[0];
+      const nameB = b[0];
       return nameA.localeCompare(nameB);
     });
 
     setMembersRD(sortedMembers);
-  }, [initialMembersRD]);
+  }, [membersRD]);
 
   useEffect(() => {
     const groupedData = membersRD.reduce((acc, member) => {
@@ -212,6 +226,11 @@ const AttendanceRegist = () => {
       });
     });
     setRowsDataRD(rows);
+  }, [membersRD]);
+
+  useEffect(() => {
+    const height = 40 + 92.3 * membersRD.length;
+    setExplanHeight(height);
   }, [membersRD]);
  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,42 +268,22 @@ const AttendanceRegist = () => {
   };
 
   const exportToPDF = () => {
-    const element = document.getElementById('table-to-xls');
-    if (element) {
-      const images = element.querySelectorAll('img');
-      images.forEach(img => {
-        img.crossOrigin = "anonymous";
-        img.onerror = () => {
-          console.warn(`Failed to load image: ${img.src}`);
-          img.remove();
-        };
-      });
-  
-      const width = element.scrollWidth;
-      const height = element.scrollHeight;
-      
-      html2canvas(element, {
-        allowTaint: true,
-        useCORS: true,
-        width: width,
-        height: height,
-        scale: 2
-      }).then(canvas => {
+    const activePanel = document.querySelector(`#panel-${activeTab}`) as HTMLElement | null;
+    if (activePanel) {
+      activePanel.style.height = activePanel.scrollHeight + 'px';
+      activePanel.style.width = activePanel.scrollWidth + 'px';
+      html2canvas(activePanel).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('l', 'mm', 'a4');
-        const imgWidth = 297; // A4 width in mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width; // maintain aspect ratio
+        const imgWidth = 297; // A4 크기에서 이미지 너비
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
         pdf.save('출근부.pdf');
-      }).catch(error => {
-        console.error('Error generating PDF:', error);
       });
     } else {
-      console.error('Element not found');
+      console.error('Active panel not found');
     }
   };
-  
-  
   
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
     name: string | null;
@@ -796,8 +795,8 @@ const AttendanceRegist = () => {
                 onClick={() => handleDivClickRD(date, year, month, personIndex)}
                 key={`${i}-${j}`}
               >
-                <td className='conta'>{personData[2][0]} </td>
-                <td className='conta_border'>{personData[2][1]} </td>
+                <td className='conta'>{startTime.slice(0, 5)} </td>
+                <td className='conta_border'>{endTime.slice(0, 5)} </td>
                 <td className='conta' style={{ color: itemBackgroundColor }}>{personData[2][2]} </td>
               </tr>
             </Tooltip>
@@ -1050,9 +1049,9 @@ const onSubmit = (data: any) => {
             </TabList>
 
             <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="attend_tab_container">
-              {yearData.map(monthData => (
-                <TabPanel key={monthData.month} className="container_attendance">
-                  <div className="Excel" ref={containerRef} id="table-to-xls">
+              {yearData.map((monthData, index) => (
+                <TabPanel id={`panel-${index}`} key={monthData.month} className="container_attendance">
+                  <div className="Excel" id={`panel-${index}`}>
                     {isLoading ? (
                       <>
                         <AttendSkeleton />
@@ -1090,7 +1089,7 @@ const onSubmit = (data: any) => {
             </TabPanels>
           </Tabs>
         ) : (
-          <Tabs variant='enclosed'>
+          <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (
                 <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[index]} marginTop={tabMargins[index]}>{months[monthData.month - 1].name}</Tab>
@@ -1098,10 +1097,10 @@ const onSubmit = (data: any) => {
             </TabList>
 
             <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="attend_tab_container">
-              {yearData.map(monthData => (
-                <TabPanel key={monthData.month} className="container_attendance">
-                  <div className="Excel_RD" id="table-to-xls">
-                    <table className="Explan_RD">
+              {yearData.map((monthData, index) => (
+                <TabPanel id={`panel-${index}`} key={monthData.month} className="container_attendance">
+                  <div className="Excel_RD" id={`panel-${index}`}>
+                    <table className="Explan_RD" style={{ height: `${explanHeight}px` }}>
                       <thead>
                         <tr>
                           <td className="TopS" colSpan={2}>부서</td>
