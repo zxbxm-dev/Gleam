@@ -35,6 +35,7 @@ const MeetingRoom = () => {
   const calendarRef1 = useRef<FullCalendar>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [location, setLocation] = useState(""); // 선택된 장소 상태
+  const [otherLocation, setOtherLocation] = useState("");
   const [company, setCompany] = useState(""); // 선택된 회사 상태
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState("");
@@ -44,6 +45,9 @@ const MeetingRoom = () => {
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [recipients, setRecipients] = useState<string[]>([]);
+
+  const [isOn, setIsOn] = useState(false);
+  const [isOtherLocation, setIsOtherLocation] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -144,6 +148,17 @@ const MeetingRoom = () => {
     setIsOpen(!isOpen);
   };
 
+  const toggleSwitch = () => {
+    setIsOn(!isOn);
+    if (!isOn) {
+      setSelectedTime("10:00");
+      setSelectedTwoTime("17:00");
+    } else {
+      setSelectedTime(getClosestTime());
+      setSelectedTwoTime("");
+    }
+  };
+
   const handleTimeSelect = (time: any) => {
     setSelectedTime(time);
     setIsOpen(false);
@@ -168,6 +183,12 @@ const MeetingRoom = () => {
   const handleLocationChange = (e: any) => {
     const selectedLocation = e.target.value;
     setLocation(selectedLocation);
+    setIsOtherLocation(selectedLocation === "기타");
+    setOtherLocation('');
+  };
+
+  const handleOtherLocationChange = (e: any) => {
+    setOtherLocation(e.target.value);
   };
 
   const events1 = [
@@ -199,7 +220,8 @@ const MeetingRoom = () => {
     setDeleteEventModalOPen(true)
   }
 
-  // 회의실 일전 전체 목록 조회
+  
+  // 회의실 일정 전체 목록 조회
   const fetchMeeting = async () => {
     try {
       const response = await CheckMeeting();
@@ -218,7 +240,7 @@ const MeetingRoom = () => {
       console.log(error);
     }
   });
-  console.log(user)
+
   // 회의실 예약 추가
   const handleAddEvent = async () => { 
     try {
@@ -232,10 +254,10 @@ const MeetingRoom = () => {
         meetpeople: recipients,
         startDate: startDate?.toISOString(),
         endDate: endDate?.toISOString(),
-        place: location,
+        place: location === '기타' ? otherLocation : location,
         memo,
-        startTime: selectedTime,
-        endTime: selectedTwoTime,
+        startTime: isOn ? "10:00" : selectedTime,
+        endTime: isOn ? "17:00" : selectedTwoTime,
       };
 
       const response = await writeMeeting(eventDetails);
@@ -250,9 +272,10 @@ const MeetingRoom = () => {
     setStartDate(new Date());
     setEndDate(new Date());
     setLocation('');
+    setOtherLocation('');
     setMemo('');
-    setSelectedTime('');
     setSelectedTwoTime('');
+    setIsOn(false);
     setAddEventModalOPen(false);
   };
 
@@ -308,7 +331,7 @@ const MeetingRoom = () => {
 
   useEffect(() => {
     refetchMeeting(); // 첫 렌더링 시 목록 조회 호출
-  }, []);
+  }, [refetchMeeting]);
 
   return (
     <div className="content">
@@ -364,9 +387,20 @@ const MeetingRoom = () => {
         onFooter1Click={handleAddEvent}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => setAddEventModalOPen(false)}
-        height="540px"
-        width="513px"
+        onFooter2Click={() => 
+          { setAddEventModalOPen(false); 
+            setTitle(''); 
+            setRecipients([]); 
+            setStartDate(new Date()); 
+            setEndDate(new Date());
+            setLocation('');
+            setOtherLocation('');
+            setIsOn(false);
+            setMemo('');
+            setSelectedTwoTime('');
+          }}
+        height="570px"
+        width="625px"
       >
         <div className="body-container">
           <div className="AddTitle">
@@ -409,7 +443,7 @@ const MeetingRoom = () => {
             </div>
           </div>
           <div className="AddPeople">
-            <div className="div">시간</div>
+            <div className="div2">시간</div>
             <div className="Date">
               <DatePicker
                 selected={startDate}
@@ -473,32 +507,56 @@ const MeetingRoom = () => {
                 </div>
               )}
             </div>
+            <div className="All_day_button">
+              <span>종일</span>
+              <div className={`switch ${isOn ? 'on' : 'off'}`} onClick={toggleSwitch}>
+                <div className="slider"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="AddPeoples">
           <div className="div">장소</div>
             <div className="MeetingRoom">
-              <select className="SelectRoom" value={location} onChange={handleLocationChange}>
-                <option value="">회의실 선택</option>
-                {company === "본사" && (
-                  <>
-                    <option value="미팅룸">미팅룸</option>
-                    <option value="라운지">라운지</option>
-                  </>
-                )}
-                {company === "R&D" && <option value="연구총괄실">연구총괄실</option>}
-              </select>
-
               <fieldset className="Field" onChange={handleCompanyChange}>
-                <label>
+                <label className="custom-radio">
                   <input type="radio" name="company" value="본사" />
                   <span>본사</span>
+                  <span className="checkmark"></span>
                 </label>
-                <label>
+                <label className="custom-radio">
                   <input type="radio" name="company" value="R&D" />
                   <span>R&D</span>
+                  <span className="checkmark"></span>
                 </label>
               </fieldset>
+              <div className="SelectRoom_wrap">
+                <select className="SelectRoom" value={location} onChange={handleLocationChange}>
+                  <option value="">회의실 선택</option>
+                  {company === "본사" && (
+                    <>
+                      <option value="미팅룸">미팅룸</option>
+                      <option value="라운지">라운지</option>
+                      <option value="기타">기타</option>
+                    </>
+                  )}
+                  {company === "R&D" && (
+                    <>
+                      <option value="연구총괄실">연구총괄실</option>
+                      <option value="기타">기타</option>
+                    </>
+                  )}
+                </select>
+
+                {isOtherLocation && (
+                  <input 
+                    className="write_selectRoom"
+                    placeholder="장소를 입력해주세요."
+                    value={otherLocation}
+                    onChange={handleOtherLocationChange}
+                  />
+                )}
+              </div>
             </div>
           </div>
           <div className="AddTitle">
@@ -567,9 +625,21 @@ const MeetingRoom = () => {
         onFooter1Click={handleEidtMeeting}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => setEditEventModalOPen(false)}
-        height="520px"
-        width="513px"
+        onFooter2Click={() => 
+          {
+            setEditEventModalOPen(false);
+            setTitle(''); 
+            setRecipients([]); 
+            setStartDate(new Date()); 
+            setEndDate(new Date());
+            setLocation('');
+            setOtherLocation('');
+            setIsOn(false);
+            setMemo('');
+            setSelectedTwoTime('');
+          }}
+        height="570px"
+        width="625px"
       >
         <div className="body-container">
           <div className="AddTitle">
@@ -612,7 +682,7 @@ const MeetingRoom = () => {
             </div>
           </div>
           <div className="AddPeople">
-            <div className="div">시간</div>
+            <div className="div2">시간</div>
             <div className="Date">
               <DatePicker
                 selected={startDate}
@@ -626,83 +696,106 @@ const MeetingRoom = () => {
                 popperPlacement="top"
               />
               <div className="timeoption" onClick={toggleSelect}>
-                {selectedTime}
-                {isOpen && (
-                  <div className="options">
-                    {[...Array(16)].map((_, index) => {
-                      const hour = 10 + Math.floor(index / 2);
-                      const minute = (index % 2) * 30;
-                      if (hour === 17 && minute > 0) return null;
-                      const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                      return (
-                        <div key={index} className="optionselect" onClick={() => handleTimeSelect(time)}>
-                          {time}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+              {selectedTime}
+              {isOpen && (
+                <div className="options">
+                  {[...Array(16)].map((_, index) => {
+                    const hour = 10 + Math.floor(index / 2);
+                    const minute = (index % 2) * 30;
+                    if (hour === 17 && minute > 0) return null;
+                    const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    return (
+                      <div key={index} className="optionselect" onClick={() => handleTimeSelect(time)}>
+                        {time}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-            <span className="timespan">~</span>
-            <div className="Date">
-              <DatePicker
-                selected={endDate}
-                onChange={date => setEndDate(date)}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
-                dateFormat="yyyy-MM-dd"
-                className="datepicker"
-                popperPlacement="top"
-              />
-              <div className="timeoption" onClick={toggleTwoSelect}>
-                {selectedTwoTime || '00:00'}
-
-                {isTwoOpen && (
-                  <div className="options">
-                    {[...Array(16)].map((_, index) => {
-                      const hour = 10 + Math.floor(index / 2);
-                      const minute = (index % 2) * 30;
-                      if (hour === 17 && minute > 0) return null;
-                      const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                      return (
-                        <div key={index} className="optionselect" onClick={() => handleTwoTimeSelect(time)}>
-                          {time}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+          </div>
+          <span className="timespan">~</span>
+          <div className="Date">
+            <DatePicker
+              selected={endDate}
+              onChange={date => setEndDate(date)}
+              selectsEnd
+              startDate={startDate}
+              endDate={endDate}
+              minDate={startDate}
+              placeholderText={new Date().toLocaleDateString('ko-KR')}
+              dateFormat="yyyy-MM-dd"
+              className="datepicker"
+              popperPlacement="top"
+            />
+            <div className="timeoption" onClick={toggleTwoSelect}>
+              {selectedTwoTime || '00:00'}
+              {isTwoOpen && (
+                <div className="options">
+                  {[...Array(16)].map((_, index) => {
+                    const hour = 10 + Math.floor(index / 2);
+                    const minute = (index % 2) * 30;
+                    if (hour === 17 && minute > 0) return null;
+                    const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    return (
+                      <div key={index} className="optionselect" onClick={() => handleTwoTimeSelect(time)}>
+                        {time}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+            <div className="All_day_button">
+              <span>종일</span>
+              <div className={`switch ${isOn ? 'on' : 'off'}`} onClick={toggleSwitch}>
+                <div className="slider"></div>
               </div>
             </div>
           </div>
-            <div className="AddPeoples">
-              <div className="div">장소</div>
-              <div className="MeetingRoom">
+        </div>
+        <div className="AddPeoples">
+          <div className="div">장소</div>
+            <div className="MeetingRoom">
+              <fieldset className="Field" onChange={handleCompanyChange}>
+                <label className="custom-radio">
+                  <input type="radio" name="company" value="본사" />
+                  <span>본사</span>
+                  <span className="checkmark"></span>
+                </label>
+                <label className="custom-radio">
+                  <input type="radio" name="company" value="R&D" />
+                  <span>R&D</span>
+                  <span className="checkmark"></span>
+                </label>
+              </fieldset>
+              <div className="SelectRoom_wrap">
                 <select className="SelectRoom" value={location} onChange={handleLocationChange}>
                   <option value="">회의실 선택</option>
                   {company === "본사" && (
-                      <>
-                        <option value="미팅룸">미팅룸</option>
-                        <option value="라운지">라운지</option>
-                      </>
+                    <>
+                      <option value="미팅룸">미팅룸</option>
+                      <option value="라운지">라운지</option>
+                      <option value="기타">기타</option>
+                    </>
                   )}
-                  {company === "R&D" && <option value="연구총괄실">연구총괄실</option>}
-              </select>
+                  {company === "R&D" && (
+                    <>
+                      <option value="연구총괄실">연구총괄실</option>
+                      <option value="기타">기타</option>
+                    </>
+                  )}
+                </select>
 
-              <fieldset className="Field" onChange={handleCompanyChange}>
-                <label>
-                  <input type="radio" name="company" value="본사" />
-                  <span>본사</span>
-                </label>
-                <label>
-                  <input type="radio" name="company" value="R&D" />
-                  <span>R&D</span>
-                </label>
-              </fieldset>
+                {isOtherLocation && (
+                  <input 
+                    className="write_selectRoom"
+                    placeholder="장소를 입력해주세요."
+                    value={otherLocation}
+                    onChange={handleOtherLocationChange}
+                  />
+                )}
+              </div>
             </div>
           </div>
           <div className="AddTitle">
