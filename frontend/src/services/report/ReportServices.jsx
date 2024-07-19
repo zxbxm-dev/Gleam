@@ -16,4 +16,13 @@ const uploadOutline = (formData) => {
     });
 };
 
-export { submitReport, uploadOutline };
+const getOutline = () => {
+    return api.get("/getOutline", {
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/pdf',
+        }
+    });
+};
+
+export { submitReport, uploadOutline, getOutline };
