@@ -1,5 +1,6 @@
 const models = require("../../models");
 const meeting = models.Meeting;
+const { Op } = require("sequelize");
 
 //회의 예약 추가
 const addMeetingRoom = async (req, res) => {
@@ -23,24 +24,6 @@ const addMeetingRoom = async (req, res) => {
 console.log("요청 본문 받음:", req.body);
 
 try{
-    //회의실 장소 중복 확인
-    const overlappedPlace = await meeting.findOne({
-        where:{
-            place : place,
-        }
-    });
-
-    if (overlappedPlace) {
-        res.status(409).json({message: "예약된 장소입니다."})
-    };
-    //회의실 예약 시간 중복 확인
-    const overlappedTime = await meeting.findeOne({
-        where:{
-            startTime: startTime,
-            
-        }
-    })
-
     const newMeetingRoom = await meeting.create({
         userId: userID,
         username,
