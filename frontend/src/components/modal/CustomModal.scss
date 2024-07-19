@@ -87,7 +87,8 @@
             color: #929292;
             font-weight: 300;
             font-family: var(--font-family-Noto-M);
-            margin-right: 10px;
+            margin-right: 5px;
+            padding-right: 5px;
           }
 
           .employ_div {
@@ -102,7 +103,7 @@
           }
 
           .TextInputCon {
-            width: 360px;
+            width: 90%;
             height: 33px;
             border: 1px solid #DCDCDC;
             border-radius: 5px;
@@ -121,7 +122,7 @@
           }
 
           .TextInputCon2 {
-            width: 360px;
+            width: 90%;
             height: 84px;
             border: 1px solid #DCDCDC;
             border-radius: 5px;
@@ -136,61 +137,68 @@
         }
 
         .AddPeoples {
-          margin-bottom: 10px;
           display: flex;
-          align-items: center;
+          width: 100%;
 
           .div {
             display: flex;
-            align-items: center;
             flex-direction: row-reverse;
             width: 60px;
             font-size: 14px;
             color: #929292;
             font-weight: 300;
             font-family: var(--font-family-Noto-M);
-            margin-right: 10px;
+            margin-left: 5px;
+            margin-right: 5px;
+            padding-right: 5px;
           }
 
           .MeetingRoom {
             display: flex;
-            width: 80%;
-            gap: 20px;
-
-            .SelectRoom {
-              padding: 0px 10px;
-              font-size: 14px;
-              width: 196px;
-              height: 32px;
-              cursor: pointer;
-              border: 1px solid #DCDCDC;
-              border-radius: 5px;
-            }
-
-            .SelectRoom:focus {
-              outline: none;
-            }
-
-            .Field {
-              gap: 20px;
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
+            
+            .SelectRoom_wrap {
               display: flex;
+              gap: 10px;
 
-              label {
-                display: flex;
-                align-items: center;
-                gap: 5px;
+              .SelectRoom {
+                padding: 0px 10px;
+                font-size: 14px;
+                width: 250px;
+                height: 32px;
+                cursor: pointer;
+                border: 1px solid #DCDCDC;
+                border-radius: 5px;
+              }
+  
+              .SelectRoom:focus {
+                outline: none;
+              }
 
-                span {
-                  font-size: 14px;
-                  margin-left: 5px;
-                }
+              .write_selectRoom {
+                padding: 0px 10px;
+                font-size: 14px;
+                width: 235px;
+                border: 1px solid #DCDCDC;
+                border-radius: 5px;
+              }
+
+              .write_selectRoom:focus {
+                outline: none;
+              }
+
+              .write_selectRoom::placeholder {
+                font-size: 14px;
+                font-weight: 400;
+                color: #d9d9d9;
               }
             }
           }
         }
 
         .AddPeople {
-          margin-bottom: 10px;
           display: flex;
           width: 100%;
 
@@ -206,14 +214,28 @@
             padding-top: 5px;
           }
 
+          .div2 {
+            display: flex;
+            flex-direction: row-reverse;
+            width: 60px;
+            font-size: 14px;
+            color: #929292;
+            font-weight: 300;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 5px;
+            padding-right: 5px;
+            padding-top: 5px;
+          }
+
           .InputContainer {
             display: flex;
             flex-direction: column;
+            width: 100%;
             gap: 8px;
             position: relative;
 
             .AddInputCon {
-              width: 360px;
+              width: 100%;
               height: 33px;
               border-bottom: 1px solid #DCDCDC;
               font-size: 14px;
@@ -233,7 +255,7 @@
             .autocomplete_dropdown {
               position: absolute;
               border-radius: 5px;
-              top: 30%;
+              top: 33px;
               left: 0;
               z-index: 1000;
               border: 1px solid #C7C7C7;
@@ -257,7 +279,7 @@
             }
 
             .AddsInputCon {
-              width: 360px;
+              width: 100%;
               height: 77px;
               border: 1px solid #DCDCDC;
               border-radius: 5px;
@@ -282,6 +304,7 @@
 
                 .remove {
                   margin-left: 5px;
+                  cursor: pointer;
                 }
               }
             }
@@ -320,21 +343,21 @@
           }
 
           .timespan {
-            margin-left: 20px;
-            margin-right: 20px;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
           }
 
           .Date {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 20px;
+            width: 155px;
             padding: 0 5px;
 
             .datepicker {
               font-size: 14px;
               font-family: var(--font-family-Noto-M);
-              width: 80px;
+              width: 100px;
               height: 27px;
             }
 
@@ -343,11 +366,12 @@
             }
 
             .react-datepicker-wrapper {
-              width: 80px;
+              width: 100px;
               padding-bottom: 2px;
             }
 
             .timeoption {
+              width: 55px;
               font-size: 14px;
               font-family: var(--font-family-Noto-M);
               position: relative;
@@ -355,6 +379,50 @@
               cursor: pointer;
             }
           }
+
+          .All_day_button {
+            display: flex;
+            
+            span {
+              color: #45C552;
+              font-family: var(--font-family-Noto-M);
+              font-size: 14px;
+              width: 40px;
+              margin-left: 30px;
+            }
+  
+            .switch {
+              position: relative;
+              width: 51px;
+              height: 22px;
+              background-color: #fff;
+              border: 1px solid #45C552;
+              border-radius: 34px;
+              cursor: pointer;
+              transition: background-color 0.3s;
+            }
+            
+            .switch.on {
+              background-color: #45C552;
+            }
+            
+            .slider {
+              position: absolute;
+              top: 3px;
+              left: 5px;
+              width: 14px;
+              height: 14px;
+              background-color: #45C552;
+              border-radius: 50%;
+              transition: transform 0.3s;
+            }
+            
+            .switch.on .slider {
+              transform: translateX(26px);
+              background-color: #fff;
+            }
+          }
+          
         }
 
         .body-content {
@@ -568,11 +636,13 @@
 
 .options {
   position: absolute;
+  z-index: 999;
   height: 150px;
   overflow-y: scroll;
   left: -10px;
   background-color: #fff;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #45C552;
+  border-radius: 5px;
 
   .optionselect{
     padding: 5px;
@@ -609,5 +679,71 @@
   background-color: #d9d9d9;
   font-size: 14px;
   cursor: pointer;
+}
 
+.Field {
+  gap: 50px;
+  display: flex;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+  padding-left: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    height: 15px;
+    width: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 1px solid #45C552;
+    transition: background-color 0.3s, border-color 0.3s;
+
+    &:after {
+      content: "";
+      position: absolute;
+      display: none;
+      top: 55%;
+      left: 55%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #45C552;
+      transform: translate(-55%, -55%);
+    }
+  }
+
+  &:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+
+  input:checked ~ .checkmark {
+    background-color: #eee;
+    border: 2px solid #45C552;
+
+    &:after {
+      display: block;
+    }
+  }
+
+  span {
+    margin-left: 10px;
+    padding-left: 10px;
+  }
 }
