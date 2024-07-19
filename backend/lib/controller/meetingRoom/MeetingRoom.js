@@ -4,16 +4,17 @@ const meeting = models.Meeting;
 //회의 예약 추가
 const addMeetingRoom = async (req, res) => {
   const{
-    Meeting_id,
     userID,
     username,
     company,
     department,
     team,
     title,
-    Meetpeople,
+    meetpeople,
     startDate,
     endDate,
+    startTime,
+    endTime,
     place,
     memo,
     year,
@@ -22,17 +23,36 @@ const addMeetingRoom = async (req, res) => {
 console.log("요청 본문 받음:", req.body);
 
 try{
+    //회의실 장소 중복 확인
+    const overlappedPlace = await meeting.findOne({
+        where:{
+            place : place,
+        }
+    });
+
+    if (overlappedPlace) {
+        res.status(409).json({message: "예약된 장소입니다."})
+    };
+    //회의실 예약 시간 중복 확인
+    const overlappedTime = await meeting.findeOne({
+        where:{
+            startTime: startTime,
+            
+        }
+    })
+
     const newMeetingRoom = await meeting.create({
-        meetingId: Meeting_id,
         userId: userID,
         username,
         company,
         department,
         team,
         title,
-        Meetpeople,
+        meetpeople,
         startDate,
         endDate,
+        startTime,
+        endTime,
         place,
         memo,
         year,
@@ -57,7 +77,7 @@ const getAllMeetingRoom = async (req, res) => {
 
 //회의실 예약 수정하기 
 const editMeetingRoom = async (req, res) => {
-    const { userID, startDate, endDate, title, memo, Meetpeople, place } = req.body.data;
+    const { userID, startDate, endDate, title, memo, meetpeople, place } = req.body.data;
     const { Meeting_id: meetingId } = req.params;
 
     console.log("요청 파라미터:", req.params);
@@ -81,7 +101,7 @@ const editMeetingRoom = async (req, res) => {
     meetingRoom.memo = memo;
     meetingRoom.startDate = startDate;
     meetingRoom.endDate = endDate;
-    meetingRoom.Meetpeople = Meetpeople;
+    meetingRoom.meetpeople = meetpeople;
     meetingRoom.place = place;
 
     await meetingRoom.save();

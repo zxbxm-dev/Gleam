@@ -12,59 +12,70 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
          },
+         //user 테이블 userId 외래키 설정
           userId: {
             type: DataTypes.STRING,
             allowNull: false,
+            references:{
+              model: 'user',
+              key: 'userId'
+            }
           },
           company: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
           },
           department: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
           },
           team: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
           },
           title: {
             type: DataTypes.STRING,
             allowNull: false,
           },
           //회의 참가자
-          Meetpeople: {
+          meetpeople: {
             type: DataTypes.JSON, //배열 형태로 저장
             allowNull: false,
           },
           startDate: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
           },
           endDate: {
             type: DataTypes.DATE,
+            allowNull: true,
+          },
+          startTime:{
+            type: DataTypes.TIME,
+            allowNull: false,
+          },
+          endTime:{
+            type: DataTypes.TIME,
             allowNull: false,
           },
           place: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
           },
           //null값 허용
           memo: {
             type: DataTypes.STRING,
             allowNull: true,
           },
-          //null값 허용
-          year: {
-            type: DataTypes.STRING,
-            allowNull: true,
-          }
         },
         {
          tableName: "meeting"
         }
     );
 
+    Meeting.associate = (models) => {
+      Meeting.belongsTo(models.user, { foreignKey: 'userId' });
+    };
 
     return Meeting;
 }
