@@ -30,20 +30,60 @@ try{
     
     where:{
         // startTime < meeting.endTime && endTime > meeting.startTime
-        [Op.and]: [
-            { startDate: startDate },
-            { place: place },
-            { startTime: { [Op.lt]: endTime } }, // 새로운 예약의 시작 시간이 기존 예약의 종료 시간보다 이전
-            { endTime: { [Op.gt]: startTime } },  // 새로운 예약의 종료 시간이 기존 예약의 시작 시간보다 이후
-          ]
+        [Op.and]:[
+            {startDate: startDate},
+            {place: place},
+        ],       
+        [Op.or]:[
+            {[Op.and]:[
+                { startTime: { [Op.lt]: endTime } }, // 새로운 예약의 시작 시간이 기존 예약의 종료 시간보다 이전
+                { endTime: { [Op.gt]: startTime } }, // 새로운 예약의 종료 시간이 기존 예약의 시작 시간보다 이후
+            ]},
+            {[Op.and]:[
+                { startTime: { [Op.lte]: startTime } },//새로운 예약의 시작 시간이 기존 예약의 시작 시간보다 같거나 이전
+                { endTime: { [Op.gte]: endTime } }, //새로운 예약의 종료 시간이 기존 예약의 종료 시간보다 같거나 이후
+            ]}
+         ],
     }
 });
+
 if (overlappedMeeting.length > 0) {
     return res.status(409).json({message: "이미 예약된 회의가 존재합니다."})
 }
 }catch(error){
     console.error("회의실 예약 중복 확인 중 오류 발생:", error);
     res.status(500).json({ message: "회의실 예약 중복 확인 중 오류가 발생했습니다." });
+};
+
+try{
+//회의 참가자 중복 확인 
+const overlappedMeeting = await meeting.findAll({
+    where:{
+         startDate: startDate,
+        [Op.or]:[
+        {[Op.and]:[
+            { startTime: { [Op.lt]: endTime } }, // 새로운 예약의 시작 시간이 기존 예약의 종료 시간보다 이전
+            { endTime: { [Op.gt]: startTime } }, // 새로운 예약의 종료 시간이 기존 예약의 시작 시간보다 이후
+        ]},
+        {[Op.and]:[
+            { startTime: { [Op.lte]: startTime } },//새로운 예약의 시작 시간이 기존 예약의 시작 시간보다 같거나 이전
+            { endTime: { [Op.gte]: endTime } }, //새로운 예약의 종료 시간이 기존 예약의 종료 시간보다 같거나 이후
+        ]}
+     ],
+    }
+});
+
+// 중복 참가자 필터링
+const filteredMeeting = overlappedMeeting.filter(meeting => {
+    return meeting.meetpeople.some(attendee => meetpeople.includes(attendee));
+});
+
+if(filteredMeeting.length > 0){
+    return res.status(409).json({message: "선택한 회의 참여자가 이미 회의 참여 중입니다. "})
+}
+}catch(error){
+    console.error("회의 참여자 중복 확인 중 오류 발생:", error);
+    res.status(500).json({ message: "회의 참여자 중복 확인 중 오류가 발생했습니다." });
 };
 
 try{
@@ -63,7 +103,7 @@ try{
         memo,
         year,
     });
-    res.status(201).json(newMeetingRoom);
+    res.status(201).json({message: "회의실 예약이 완료되었습니다", newMeetingRoom});
  }catch(error){
         console.error("회의실 예약 일정을 추가하는 중에 오류가 발생했습니다.:", error);
         res.status(500).json({ message: "회의실 예약 일정 추가에 실패했습니다." });
@@ -83,7 +123,7 @@ const getAllMeetingRoom = async (req, res) => {
 
 //회의실 예약 수정하기 
 const editMeetingRoom = async (req, res) => {
-    const { userID, startDate, endDate, title, memo, meetpeople, place } = req.body.data;
+    const { userID, startDate, endDate, title, memo, meetpeople, place, startTime, endTime } = req.body.data;
     const { Meeting_id: meetingId } = req.params;
 
     console.log("요청 파라미터:", req.params);
@@ -107,12 +147,14 @@ const editMeetingRoom = async (req, res) => {
     meetingRoom.memo = memo;
     meetingRoom.startDate = startDate;
     meetingRoom.endDate = endDate;
+    meetingRoom.startTime = startTime;
+    meetingRoom.endTime = endTime;
     meetingRoom.meetpeople = meetpeople;
     meetingRoom.place = place;
 
     await meetingRoom.save();
 
-    res.status(200).json(meetingRoom);
+    res.status(200).json({message: "예약 수정이 완료되었습니다.",meetingRoom});
    }catch(error){
     console.error("회의실 예약 일정을 수정하는 중에 오류가 발생했습니다.:", error);
     res.status(500).json({ message: "회의실 예약 일정 수정에 실패했습니다." });
