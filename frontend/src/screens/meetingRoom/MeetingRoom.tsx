@@ -232,11 +232,10 @@ const MeetingRoom = () => {
   };
 
     const startDate = info.event.start;
-    const endDate = info.event.end;
+    const endDate = info.event.end || info.event.start;
 
     let mergeDate = '';
-
-     // 날짜가 같은 경우
+    //  날짜가 같은 경우
      if (
       startDate.getFullYear() === endDate.getFullYear() &&
       startDate.getMonth() === endDate.getMonth() &&
@@ -249,9 +248,13 @@ const MeetingRoom = () => {
             mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ${formatTime(startDate)} ~ ${formatTime(endDate)}`;
         }
     } else {
-        // 날짜가 다른 경우
+      if (isAllDay(startDate, endDate)) {
+        mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ~ ${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')} (${days[endDate.getDay()]}) (종일)`;
+    } else {
         mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ~ ${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')} (${days[endDate.getDay()]}) ${formatTime(startDate)} ~ ${formatTime(endDate)}`;
     }
+    }
+
     setSelectedEvent({
         id: info.event.extendedProps.meetingId,
         username: info.event.extendedProps.username,
@@ -315,8 +318,8 @@ const MeetingRoom = () => {
   const transformMeetingData = (data: any) => {
     return data.map((event: any) => {
       const { id, title, startDate, endDate, startTime, endTime, backgroundColor, borderColor, textColor, ...rest } = event;
-      const start = `${startDate.split('T')[0]}T${startTime}`;
-      const end = `${endDate.split('T')[0]}T${endTime}`;
+      const start = new Date(`20${startDate}T${startTime}`);
+        const end = new Date(`20${endDate}T${endTime}`);
 
       return {
         id: event.meetingId,
@@ -377,8 +380,15 @@ const MeetingRoom = () => {
       const response = await writeMeeting(eventDetails);
       console.log("회의 일정 추가 성공:", response.data);
       refetchMeeting();
-    } catch (error) {
+    } catch (error: any) {
       console.error("회의 일정 추가 실패:", error);
+      if (error.response) {
+        const { status } = error.response;
+        switch (status) {
+          case 409:
+            setMeetingModalOPen(true);
+        }
+      }
     }
     setTitle('');
     setRecipients([]);
@@ -394,6 +404,9 @@ const MeetingRoom = () => {
 
   // 회의실 예약 수정
   const handleEidtMeeting = () => {
+    const formattedStartDate = startDate ? formatDate(startDate) : '';
+    const formattedEndDate = endDate ? formatDate(endDate) : '';
+
     const eventData = {
       username: user.username,
       userID: user.userID,
@@ -402,8 +415,8 @@ const MeetingRoom = () => {
       team: user.team,
       title,
       meetpeople: recipients,
-      startDate: startDate?.toISOString(),
-      endDate: endDate?.toISOString(),
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
       place: location,
       memo,
       startTime: selectedTime,
@@ -416,6 +429,17 @@ const MeetingRoom = () => {
     .then(() => {
       console.log('수정할때 보낸 데이터',eventData)
       setEditEventModalOPen(false);
+      setTitle('');
+      setRecipients([]);
+      setStartDate(new Date());
+      setEndDate(new Date());
+      setCompany('');
+      setLocation('');
+      setOtherLocation('');
+      setMemo('');
+      setSelectedTwoTime('');
+      setIsOn(false);
+      setAddEventModalOPen(false);
       refetchMeeting();
     })
     .catch((error) => {
@@ -507,6 +531,7 @@ const MeetingRoom = () => {
             setRecipients([]); 
             setStartDate(new Date()); 
             setEndDate(new Date());
+            setCompany('');
             setLocation('');
             setOtherLocation('');
             setIsOn(false);
@@ -756,6 +781,7 @@ const MeetingRoom = () => {
             setRecipients([]); 
             setStartDate(new Date()); 
             setEndDate(new Date());
+            setCompany('');
             setLocation('');
             setOtherLocation('');
             setIsOn(false);
@@ -970,7 +996,7 @@ const MeetingRoom = () => {
         footer1Class="gray-btn"
         onFooter1Click={() => setMeetingModalOPen(false)}
         width="400px"
-        height="327px"
+        height="250px"
       >
         <div className="text-center">
           <span>선택하신 시간대의 해당 장소는</span>
