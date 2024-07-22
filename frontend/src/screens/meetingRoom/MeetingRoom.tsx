@@ -380,7 +380,7 @@ const MeetingRoom = () => {
       const eventDetails = {
         username: user.username,
         userID: user.userID,
-        company,
+        company: company,
         department: user.department,
         team: user.team,
         title,
@@ -434,7 +434,7 @@ const MeetingRoom = () => {
       meetpeople: recipients,
       startDate: formattedStartDate,
       endDate: formattedEndDate,
-      place: location,
+      place: location === '기타' ? otherLocation : location,
       memo,
       startTime: selectedTime,
       endTime: selectedTwoTime,
