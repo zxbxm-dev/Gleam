@@ -83,32 +83,32 @@ const updateAttendance = async (req, res) => {
     const [startTime, endTime, mode] = data;
 
     // 출석 데이터가 모두 빈 문자열인 경우, 기존 데이터 유지
-    if (startTime === "" && endTime === "" && mode === "") {
-      const existingAttendance = await Attendance.findByPk(attend_id);
+    // if (startTime === "" && endTime === "" && mode === "") {
+    //   const existingAttendance = await Attendance.findByPk(attend_id);
 
-      if (!existingAttendance) {
-        return res
-          .status(404)
-          .json({ error: "해당 ID의 출석 데이터를 찾을 수 없습니다" });
-      }
+    //   if (!existingAttendance) {
+    //     return res
+    //       .status(404)
+    //       .json({ error: "해당 ID의 출석 데이터를 찾을 수 없습니다" });
+    //   }
 
-      res
-        .status(200)
-        .json({
-          message: "출석 데이터가 성공적으로 업데이트되었습니다",
-          attendance: existingAttendance,
-        });
-      return; // 함수 종료
-    }
+    //   res
+    //     .status(200)
+    //     .json({
+    //       message: "출석 데이터가 성공적으로 업데이트되었습니다",
+    //       attendance: existingAttendance,
+    //     });
+    //   return; // 함수 종료
+    // }
 
     // data 배열 각 요소의 유효성 검사
-    if (!startTime && !endTime && !mode) {
-      return res
-        .status(400)
-        .json({
-          error: "출근 시간, 퇴근 시간, 구분 값 중 적어도 하나는 필요합니다",
-        });
-    }
+    // if (!startTime && !endTime && !mode) {
+    //   return res
+    //     .status(400)
+    //     .json({
+    //       error: "출근 시간, 퇴근 시간, 구분 값 중 적어도 하나는 필요합니다",
+    //     });
+    // }
 
     // 출석 데이터가 존재하는지 확인
     const existingAttendance = await Attendance.findByPk(attend_id);
@@ -124,9 +124,9 @@ const updateAttendance = async (req, res) => {
       username: username,
       Date: Date,
       DataList: [
-        startTime !== "" ? startTime : existingAttendance.DataList[0],
-        endTime !== "" ? endTime : existingAttendance.DataList[1],
-        mode !== "" ? mode : existingAttendance.DataList[2],
+        startTime !== "" ? startTime : "",
+        endTime !== "" ? endTime : "",
+        mode !== "" ? mode : "",
       ],
     });
 
