@@ -8,7 +8,7 @@
   right: 15px;
 
   button {
-    z-index: 999;
+    z-index: 9;
   }
 }
 
@@ -377,6 +377,46 @@
       border-radius: 5px;
       margin-left: 25%;
       padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      .listbox_content {
+        box-sizing: border-box;
+        background-color: #f0f0f0;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0px 10px;
+        border: 1px solid #ccc;
+
+        .remove {
+          margin-left: 5px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .body_container_content_listbox::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    .body_container_content_listbox::-webkit-scrollbar-thumb {
+      background-color: #A8A8A8;
+      border-radius: 10px;
+      background-clip: padding-box;
+      border: 2px solid transparent;
+    }
+    
+    .body_container_content_listbox::-webkit-scrollbar-corner {
+      background-color: none;
+    }
+    
+    .body_container_content_listbox::-webkit-scrollbar-track {
+      box-shadow: none;
+      background-color: #fff;
     }
 
     .body_container_content_datepicker {

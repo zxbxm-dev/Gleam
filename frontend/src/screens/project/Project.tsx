@@ -47,11 +47,14 @@ const Project = () => {
   const [selectedstateOption, setSelectedStateOption] = useState('전체');
 
   const [projects, setProjects] = useState<any[]>([]);
+  const [clickedProjects, setClickedProjects] = useState<{ [key: number]: boolean }>({});
+  const [allSelected, setAllSelected] = useState(false);
+  const [selectedProjects, setSelectedProjects] = useState<{ [key: number]: boolean }>({});
   const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
-
+  
   const stateOptions = [
     '전체',
     '진행 중',
@@ -89,6 +92,26 @@ const Project = () => {
     setSubProjectVisible(prev => ({
       ...prev,
       [projectId]: !prev[projectId]
+    }));
+  };
+
+  const toggleAllCheckboxes = () => {
+    if (allSelected) {
+      setSelectedProjects({});
+    } else {
+      const newSelectedProjects = projects.reduce((acc, project) => {
+        acc[project.id] = true;
+        return acc;
+      }, {});
+      setSelectedProjects(newSelectedProjects);
+    }
+    setAllSelected(!allSelected);
+  };
+
+  const toggleProjectSelection = (projectId: number) => {
+    setSelectedProjects((prevSelectedProjects) => ({
+      ...prevSelectedProjects,
+      [projectId]: !prevSelectedProjects[projectId],
     }));
   };
 
@@ -178,7 +201,7 @@ const Project = () => {
       }
     }
   };
-
+  
   const handleAutoAllMembersCompleteClick = (username: string, department: string, team: string) => {
     if (team) {
       setAllMembers([...allMembers, team + ' ' + username]);
@@ -187,6 +210,10 @@ const Project = () => {
     }
 
     setInputAllmember('');
+  };
+
+  const handleRecipientRemove = (user: string) => {
+    setAllMembers(allMembers.filter(member => member !== user));
   };
 
   const filteredNames = persondata.filter(person => {
@@ -269,7 +296,7 @@ const Project = () => {
                 <div className="project_container_header">
                   <div className="project_container_header_left">
                     <label className="custom-checkbox">
-                      <input type="checkbox" id="check1" />
+                      <input type="checkbox" id="check1" checked={allSelected} onChange={toggleAllCheckboxes}/>
                       <span></span>
                     </label>
                     <img src={mail_delete} alt="mail_delete" />
@@ -320,7 +347,11 @@ const Project = () => {
                           <tr className="board_content">
                             <td>
                               <label className="custom-checkbox">
-                                <input type="checkbox" id="check1" />
+                                <input 
+                                  type="checkbox"
+                                  checked={allSelected ? allSelected : selectedProjects[project.id] || false}
+                                  onChange={() => toggleProjectSelection(project.id)}   
+                                />
                                 <span></span>
                               </label>
                             </td>
@@ -553,7 +584,12 @@ const Project = () => {
           </div>
           <div className="body_container_content">
             <div className="body_container_content_listbox">
-              {allMembers.map((item: string) => item + ', ')}
+              {allMembers.map((item: string) => (
+                <div className="listbox_content">
+                  {item}
+                  <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
+                </div>
+              ))}
             </div>
           </div>
 

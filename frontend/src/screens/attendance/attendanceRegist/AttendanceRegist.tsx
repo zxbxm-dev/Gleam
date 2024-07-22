@@ -9,6 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { useForm } from 'react-hook-form';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
+import { useLocation } from 'react-router-dom';
 
 import { useQuery, useQueryClient } from "react-query";
 import { CheckAttendance, WriteAttendance, EditAttendance } from "../../../services/attendance/AttendanceServices";
@@ -37,6 +38,7 @@ type ProcessedAttendance = [string, string, [string, string, string]];
 
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
+  const location = useLocation();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState((new Date().getMonth() + 1) % 3);
   const [tabHeights, setTabHeights] = useState<Record<number, string>>({0: '41px', 1: '35px', 2: '35px'});
@@ -97,11 +99,9 @@ const AttendanceRegist = () => {
 
       setMembers(HO_Data);
       setMembersRD(RnD_Data);
-      setIsLoading(false); // 로딩 상태 false로 설정
     },
     onError: (error) => {
       console.error(error);
-      setIsLoading(false); // 오류 발생 시에도 로딩 상태 false로 설정
     }
   });
   
@@ -519,7 +519,19 @@ const AttendanceRegist = () => {
           case '입사':
             itemBackgroundColor = '#FF4747';
             break;
+          case '경조사':
+            itemBackgroundColor = '#FF4747';
+            break;
+          case '워크숍':
+            itemBackgroundColor = '#FF4747';
+            break;
+          case '출장':
+            itemBackgroundColor = '#FF4747';
+            break;
           case '지문X':
+            itemBackgroundColor = '#EF0AD8';
+            break;
+          case '기타':
             itemBackgroundColor = '#EF0AD8';
             break;
           default:
@@ -1001,15 +1013,15 @@ const onSubmit = (data: any) => {
     .catch(error => {
       console.log("출근부 데이터 수정 실패", error);
     });
-};
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 10);
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => {clearTimeout(timer); setIsLoading(true)};
+  }, [location.pathname]);
 
   return (
     <div className="content">
