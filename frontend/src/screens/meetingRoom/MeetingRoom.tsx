@@ -13,14 +13,31 @@ import { useQuery } from 'react-query';
 
 interface Event {
   id: string;
+  username: string;
+  userId: string;
+  company: string;
+  department: string;
+  team: string;
   title: string;
   startDate: string;
   endDate: string;
+  mergeDate: string;
+  place: string;
+  meetpeople: Array<string>;
+  memo: string;
 }
+
+const formatDate = (date: Date): string => {
+  const year = date.getFullYear().toString().slice(-2); // 연도의 마지막 2자리
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 월
+  const day = String(date.getDate()).padStart(2, '0'); // 일
+  return `${year}-${month}-${day}`;
+};
 
 const MeetingRoom = () => {
   const user = useRecoilValue(userState);
   const [persondata, setPersonData] = useState<any[]>([]);
+  const [meetingEvent, setMeetingEvent] = useState<any[]>([]);
 
   const [isAddeventModalOpen, setAddEventModalOPen] = useState(false);
   const [iseventModalOpen, setEventModalOPen] = useState(false);
@@ -41,7 +58,7 @@ const MeetingRoom = () => {
   const [selectedTime, setSelectedTime] = useState("");
   const [isTwoOpen, setIsTwoOpen] = useState(false);
   const [selectedTwoTime, setSelectedTwoTime] = useState("");
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState<string>("");
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [recipients, setRecipients] = useState<string[]>([]);
@@ -191,27 +208,101 @@ const MeetingRoom = () => {
     setOtherLocation(e.target.value);
   };
 
-  const events1 = [
-    { id: '1', title: '개발1팀 회의', start: new Date('2024-07-12'), end: new Date('2024-07-12'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { id: '2', title: '본사 출장', start: new Date('2024-07-17'), end: new Date('2024-07-17'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
-    { id: '3', title: '본사 외근', start: new Date('2024-07-17'), end: new Date('2024-07-17'), backgroundColor: '#D6CDC2', borderColor: '#D6CDC2', textColor: '#000' },
-  ];
-
   const handleMemoChange = (event: any) => {
     setMemo(event.target.value);
   };
 
   const handleEventClick = (info: any) => {
+    // 요일 배열
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+
+    const formatTime = (date: Date) => {
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    };
+
+    const isAllDay = (start: Date, end: Date) => {
+      // (시작시간이 10:00이고 종료시간이 17:00이면 종일)
+      const startHours = start.getHours();
+      const startMinutes = start.getMinutes();
+      const endHours = end.getHours();
+      const endMinutes = end.getMinutes();
+      return (startHours === 10 && startMinutes === 0 && endHours === 17 && endMinutes === 0);
+  };
+
+    const startDate = info.event.start;
+    const endDate = info.event.end;
+
+    let mergeDate = '';
+
+     // 날짜가 같은 경우
+     if (
+      startDate.getFullYear() === endDate.getFullYear() &&
+      startDate.getMonth() === endDate.getMonth() &&
+      startDate.getDate() === endDate.getDate()
+    ) {
+        // 하루 종일 이벤트인지 확인
+        if (isAllDay(startDate, endDate)) {
+            mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) (종일)`;
+        } else {
+            mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ${formatTime(startDate)} ~ ${formatTime(endDate)}`;
+        }
+    } else {
+        // 날짜가 다른 경우
+        mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ~ ${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')} (${days[endDate.getDay()]}) ${formatTime(startDate)} ~ ${formatTime(endDate)}`;
+    }
     setSelectedEvent({
-      id: info.event.id,
-      title: info.event.title,
-      startDate: info.event.start.toISOString().substring(0, 10),
-      endDate: info.event.end ? info.event.end.toISOString().substring(0, 10) : info.event.start.toISOString().substring(0, 10),
+        id: info.event.extendedProps.meetingId,
+        username: info.event.extendedProps.username,
+        userId: info.event.extendedProps.userId,
+        company: info.event.extendedProps.company,
+        department: info.event.extendedProps.department,
+        team: info.event.extendedProps.team,
+        title: info.event.title,
+        startDate: info.event.start,
+        endDate: info.event.end,
+        mergeDate: mergeDate,
+        place: info.event.extendedProps.place,
+        meetpeople: info.event.extendedProps.meetpeople,
+        memo: info.event.extendedProps.memo,
     });
     setEventModalOPen(true);
   };
 
   const handleEditEvent = () => {
+    const savedStartDate = selectedEvent?.startDate;
+    const savedendDate = selectedEvent?.endDate;
+    if (savedStartDate) {
+      const savedDate = new Date(savedStartDate);
+
+      setStartDate(new Date(savedDate.getFullYear(), savedDate.getMonth(), savedDate.getDate()));
+      setSelectedTime(
+        `${String(savedDate.getHours()).padStart(2, '0')}:${String(savedDate.getMinutes()).padStart(2, '0')}`
+      );
+    } else {
+      setStartDate(null);
+      setSelectedTime("");
+    }
+
+    if (savedendDate) {
+      const savedDate = new Date(savedendDate);
+
+      setEndDate(new Date(savedDate.getFullYear(), savedDate.getMonth(), savedDate.getDate()));
+      setSelectedTwoTime(
+        `${String(savedDate.getHours()).padStart(2, '0')}:${String(savedDate.getMinutes()).padStart(2, '0')}`
+      );
+    } else {
+      setEndDate(null);
+      setSelectedTwoTime("");
+    }
+
+
+    setTitle(selectedEvent?.title || '');
+    setRecipients(selectedEvent?.meetpeople || []);
+    setCompany(selectedEvent?.company || '');
+    setLocation(selectedEvent?.place || '');
+    setMemo(selectedEvent?.memo || '');
     setEventModalOPen(false);
     setEditEventModalOPen(true);
   }
@@ -220,8 +311,27 @@ const MeetingRoom = () => {
     setDeleteEventModalOPen(true)
   }
 
-  
   // 회의실 일정 전체 목록 조회
+  const transformMeetingData = (data: any) => {
+    return data.map((event: any) => {
+      const { id, title, startDate, endDate, startTime, endTime, backgroundColor, borderColor, textColor, ...rest } = event;
+      const start = `${startDate.split('T')[0]}T${startTime}`;
+      const end = `${endDate.split('T')[0]}T${endTime}`;
+
+      return {
+        id: event.meetingId,
+        title,
+        start,
+        end,
+        backgroundColor: backgroundColor || "#ABF0FF",  
+        borderColor: borderColor || "#ABF0FF", 
+        textColor: textColor || "#000",       
+        ...rest
+      };
+    });
+  };
+  
+
   const fetchMeeting = async () => {
     try {
       const response = await CheckMeeting();
@@ -234,7 +344,8 @@ const MeetingRoom = () => {
   const { refetch : refetchMeeting } = useQuery("Meeting", fetchMeeting, {
     enabled: false,
     onSuccess: (data) => {
-      console.log('가져온 회의실 데이터', data);
+      const transformedData = transformMeetingData(data);
+      setMeetingEvent(transformedData);
     },
     onError: (error) => {
       console.log(error);
@@ -244,6 +355,9 @@ const MeetingRoom = () => {
   // 회의실 예약 추가
   const handleAddEvent = async () => { 
     try {
+      const formattedStartDate = startDate ? formatDate(startDate) : '';
+      const formattedEndDate = endDate ? formatDate(endDate) : '';
+
       const eventDetails = {
         username: user.username,
         userID: user.userID,
@@ -252,8 +366,8 @@ const MeetingRoom = () => {
         team: user.team,
         title,
         meetpeople: recipients,
-        startDate: startDate?.toISOString(),
-        endDate: endDate?.toISOString(),
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
         place: location === '기타' ? otherLocation : location,
         memo,
         startTime: isOn ? "10:00" : selectedTime,
@@ -262,10 +376,9 @@ const MeetingRoom = () => {
 
       const response = await writeMeeting(eventDetails);
       console.log("회의 일정 추가 성공:", response.data);
-      window.alert('등록성공');
+      refetchMeeting();
     } catch (error) {
       console.error("회의 일정 추가 실패:", error);
-      window.alert('등록실패');
     }
     setTitle('');
     setRecipients([]);
@@ -301,6 +414,7 @@ const MeetingRoom = () => {
 
     EditMeeting(eventData, Meeting_id)
     .then(() => {
+      console.log('수정할때 보낸 데이터',eventData)
       setEditEventModalOPen(false);
       refetchMeeting();
     })
@@ -312,7 +426,7 @@ const MeetingRoom = () => {
   // 회의실 예약 삭제
   const handleDeleteMeeting = () => {
     const eventData = {
-      userID: user.userID,
+      userID: selectedEvent?.userId,
     }
     const Meeting_id = selectedEvent?.id;
 
@@ -368,7 +482,7 @@ const MeetingRoom = () => {
             }}
             locale='kr'
             fixedWeekCount={false}
-            events={events1}
+            events={meetingEvent}
             eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
             dayMaxEventRows={true}
             eventDisplay="block"
@@ -520,12 +634,12 @@ const MeetingRoom = () => {
             <div className="MeetingRoom">
               <fieldset className="Field" onChange={handleCompanyChange}>
                 <label className="custom-radio">
-                  <input type="radio" name="company" value="본사" />
+                  <input type="radio" name="company" value="본사" checked={company === '본사'}/>
                   <span>본사</span>
                   <span className="checkmark"></span>
                 </label>
                 <label className="custom-radio">
-                  <input type="radio" name="company" value="R&D" />
+                  <input type="radio" name="company" value="R&D" checked={company === 'R&D'}/>
                   <span>R&D</span>
                   <span className="checkmark"></span>
                 </label>
@@ -569,7 +683,7 @@ const MeetingRoom = () => {
       <CustomModal
         isOpen={iseventModalOpen}
         onClose={() => setEventModalOPen(false)}
-        header={'업무 회의'}
+        header={selectedEvent?.title}
         footer1={'편집'}
         footer1Class="gray-btn"
         onFooter1Click={handleEditEvent}
@@ -580,7 +694,7 @@ const MeetingRoom = () => {
         footer3Class="red-btn"
         onFooter3Click={handleDeleteEventModal}
         width="400px"
-        height="260px"
+        height="auto"
       >
         <div className="body-container">
           <div className="body-content">
@@ -589,7 +703,7 @@ const MeetingRoom = () => {
             </div>
             <div className="content-right">
               <div className="content-date">
-                <span>2024.04.11 (목) 오후 13:30 ~ 14 : 30</span>
+                <span>{selectedEvent?.mergeDate}</span>
               </div>
             </div>
           </div>
@@ -599,17 +713,27 @@ const MeetingRoom = () => {
             </div>
             <div className="content-right">
               <div className="content-date">
-                <span>라운지룸</span>
+                <span>{selectedEvent?.place}</span>
               </div>
             </div>
           </div>
           <div className="body-content">
             <div className="content-left content-center">
-              참여
+              인원
             </div>
             <div className="content-right">
               <div className="content-memo">
-                개발팀 장현지, 개발팀 구민석
+                {selectedEvent?.meetpeople.join(", ")}
+              </div>
+            </div>
+          </div>
+          <div className="body-content">
+            <div className="content-left content-center">
+              메모
+            </div>
+            <div className="content-right">
+              <div className="content-memo">
+                {selectedEvent?.memo}
               </div>
             </div>
           </div>
@@ -759,12 +883,12 @@ const MeetingRoom = () => {
             <div className="MeetingRoom">
               <fieldset className="Field" onChange={handleCompanyChange}>
                 <label className="custom-radio">
-                  <input type="radio" name="company" value="본사" />
+                  <input type="radio" name="company" value="본사" checked={company === '본사'}/>
                   <span>본사</span>
                   <span className="checkmark"></span>
                 </label>
                 <label className="custom-radio">
-                  <input type="radio" name="company" value="R&D" />
+                  <input type="radio" name="company" value="R&D" checked={company === 'R&D'}/>
                   <span>R&D</span>
                   <span className="checkmark"></span>
                 </label>

@@ -8,4 +8,12 @@ const submitReport = (formData) => {
     });
 };
 
-export { submitReport };
+const uploadOutline = (formData) => {
+    return api.post("/uploadOutline", formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+};
+
+export { submitReport, uploadOutline };
