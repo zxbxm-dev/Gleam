@@ -49,8 +49,8 @@ const MeetingRoom = () => {
   const [iseventModalOpen, setEventModalOPen] = useState(false);
   const [isEditeventModalOpen, setEditEventModalOPen] = useState(false);
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
-  const [ischeckPeopleModalOpen, setcheckPeopleModalOPen] = useState(false);
   const [isMeetingModalOpen, setMeetingModalOPen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
@@ -400,9 +400,11 @@ const MeetingRoom = () => {
       console.error("회의 일정 추가 실패:", error);
       if (error.response) {
         const { status } = error.response;
+        const { message } = error.response.data;
         switch (status) {
           case 409:
             setMeetingModalOPen(true);
+            setErrorMessage(message);
         }
       }
     }
@@ -460,7 +462,16 @@ const MeetingRoom = () => {
       refetchMeeting();
     })
     .catch((error) => {
-      console.log("회의실 수정에 실패했습니다.", error)
+      console.log("회의실 수정에 실패했습니다.", error);
+      if (error.response) {
+        const { status } = error.response;
+        const { message } = error.response.data;
+        switch (status) {
+          case 409:
+            setMeetingModalOPen(true);
+            setErrorMessage(message);
+        }
+      }
     })
   };
 
@@ -1013,24 +1024,6 @@ const MeetingRoom = () => {
         </div>
       </CustomModal>
       <CustomModal
-        isOpen={ischeckPeopleModalOpen}
-        onClose={() => setcheckPeopleModalOPen(false)}
-        header={'알림'}
-        footer1={'진행'}
-        footer1Class="red-btn"
-        footer2={'취소'}
-        footer2Class="gray-btn"
-        onFooter2Click={() => setcheckPeopleModalOPen(false)}
-        width="400px"
-        height="327px"
-      >
-        <div className="text-center">
-          <span>OOO님이 선택하신 시간에 다른 일정이</span>
-          <span>예약되어 있습니다.</span>
-          <span>그래도 등록을 진행하시겠습니까?</span>
-        </div>
-      </CustomModal>
-      <CustomModal
         isOpen={isMeetingModalOpen}
         onClose={() => setMeetingModalOPen(false)}
         header={'알림'}
@@ -1041,8 +1034,7 @@ const MeetingRoom = () => {
         height="250px"
       >
         <div className="text-center">
-          <span>선택하신 시간대의 해당 장소는</span>
-          <span>이미 예약되어 있습니다.</span>
+          <span>{errorMessage}</span>
         </div>
       </CustomModal>
     </div>
