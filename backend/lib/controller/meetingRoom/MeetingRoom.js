@@ -201,6 +201,7 @@ const editMeetingRoom = async (req, res) => {
             console.error("회의 참여자 중복 확인 중 오류 발생:", error);
             res.status(500).json({ message: "회의 참여자 중복 확인 중 오류가 발생했습니다." });
         };
+
    try{
     const meetingRoom = await meeting.findOne({
         where: { meetingId: meetingId },
@@ -210,6 +211,13 @@ const editMeetingRoom = async (req, res) => {
         .status(404)
         .json({ message: "해당 회의실 예약 정보를 찾을 수 없습니다." });
     }
+
+    const editPermission = meetingRoom.userId === userID || meetingRoom.meetpeople.includes(userID);
+    if (!editPermission) {
+        return res.status(403).json({ message: "수정 권한이 없습니다." });
+    }
+
+   
     meetingRoom.title = title;
     meetingRoom.memo = memo;
     meetingRoom.startDate = startDate;
@@ -241,6 +249,12 @@ const deleteMeetingRoom = async (req, res) => {
         if(!deletedMeeting) {
             return res.status(404).json({ error: "회의실 예약 정보를 찾을 수 없습니다." });
         }
+
+        const deletePermission = meetingRoom.userId === userID || meetingRoom.meetpeople.includes(userID);
+        if (!deletePermission) {
+        return res.status(403).json({ message: "삭제 권한이 없습니다." });
+    }
+
         await deletedMeeting.destroy();
 
         res.status(200).json({ message: "회의실 예약 일정이 성공적으로 삭제되었습니다." });
