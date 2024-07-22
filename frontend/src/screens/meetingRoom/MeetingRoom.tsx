@@ -19,12 +19,18 @@ interface Event {
   department: string;
   team: string;
   title: string;
+  origintitle: string;
   startDate: string;
   endDate: string;
   mergeDate: string;
   place: string;
   meetpeople: Array<string>;
   memo: string;
+}
+
+interface ColorScheme {
+  backgroundColor: string;
+  borderColor: string;
 }
 
 const formatDate = (date: Date): string => {
@@ -254,7 +260,7 @@ const MeetingRoom = () => {
         mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ~ ${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')} (${days[endDate.getDay()]}) ${formatTime(startDate)} ~ ${formatTime(endDate)}`;
     }
     }
-
+    console.log(info.event.extendedProps)
     setSelectedEvent({
         id: info.event.extendedProps.meetingId,
         username: info.event.extendedProps.username,
@@ -263,6 +269,7 @@ const MeetingRoom = () => {
         department: info.event.extendedProps.department,
         team: info.event.extendedProps.team,
         title: info.event.title,
+        origintitle: info.event.extendedProps.origintitle,
         startDate: info.event.start,
         endDate: info.event.end,
         mergeDate: mergeDate,
@@ -301,7 +308,7 @@ const MeetingRoom = () => {
     }
 
 
-    setTitle(selectedEvent?.title || '');
+    setTitle(selectedEvent?.origintitle || '');
     setRecipients(selectedEvent?.meetpeople || []);
     setCompany(selectedEvent?.company || '');
     setLocation(selectedEvent?.place || '');
@@ -316,18 +323,27 @@ const MeetingRoom = () => {
 
   // 회의실 일정 전체 목록 조회
   const transformMeetingData = (data: any) => {
+    const colorMapping: Record<string, ColorScheme> = {
+      '라운지': { backgroundColor: '#B1C3FF', borderColor: '#B1C3FF' },
+      '미팅룸': { backgroundColor: '#FFE897', borderColor: '#FFE897' },
+      '연구총괄실': { backgroundColor: '#A3D3FF', borderColor: '#A3D3FF' },
+  };
+
     return data.map((event: any) => {
       const { id, title, startDate, endDate, startTime, endTime, backgroundColor, borderColor, textColor, ...rest } = event;
       const start = new Date(`20${startDate}T${startTime}`);
-        const end = new Date(`20${endDate}T${endTime}`);
+      const end = new Date(`20${endDate}T${endTime}`);
+
+      const colors = colorMapping[event.place] || { backgroundColor: '#D6CDC2', borderColor: '#D6CDC2' };
 
       return {
         id: event.meetingId,
-        title,
+        title : startTime?.slice(0,5) + ' ' + event.title + ' | ' + event.place,
+        origintitle: title,
         start,
         end,
-        backgroundColor: backgroundColor || "#ABF0FF",  
-        borderColor: borderColor || "#ABF0FF", 
+        backgroundColor: colors.backgroundColor,
+        borderColor: colors.borderColor,
         textColor: textColor || "#000",       
         ...rest
       };
@@ -394,6 +410,7 @@ const MeetingRoom = () => {
     setRecipients([]);
     setStartDate(new Date());
     setEndDate(new Date());
+    setCompany('');
     setLocation('');
     setOtherLocation('');
     setMemo('');
@@ -518,7 +535,19 @@ const MeetingRoom = () => {
 
       <CustomModal
         isOpen={isAddeventModalOpen}
-        onClose={() => setAddEventModalOPen(false)}
+        onClose={() => {
+          setAddEventModalOPen(false);
+          setTitle(''); 
+          setRecipients([]); 
+          setStartDate(new Date()); 
+          setEndDate(new Date());
+          setCompany('');
+          setLocation('');
+          setOtherLocation('');
+          setIsOn(false);
+          setMemo('');
+          setSelectedTwoTime('');
+        }}
         header={'회의실 예약'}
         footer1={'등록'}
         footer1Class="back-green-btn"
@@ -708,7 +737,7 @@ const MeetingRoom = () => {
       <CustomModal
         isOpen={iseventModalOpen}
         onClose={() => setEventModalOPen(false)}
-        header={selectedEvent?.title}
+        header={selectedEvent?.origintitle}
         footer1={'편집'}
         footer1Class="gray-btn"
         onFooter1Click={handleEditEvent}
@@ -767,7 +796,20 @@ const MeetingRoom = () => {
 
       <CustomModal
         isOpen={isEditeventModalOpen}
-        onClose={() => setEditEventModalOPen(false)}
+        onClose={() => 
+          {
+            setEditEventModalOPen(false);
+            setTitle(''); 
+            setRecipients([]); 
+            setStartDate(new Date()); 
+            setEndDate(new Date());
+            setCompany('');
+            setLocation('');
+            setOtherLocation('');
+            setIsOn(false);
+            setMemo('');
+            setSelectedTwoTime('');
+          }}
         header={'일정 수정하기'}
         footer1={'수정'}
         footer1Class="back-green-btn"
