@@ -24,6 +24,29 @@ const addMeetingRoom = async (req, res) => {
 console.log("요청 본문 받음:", req.body);
 
 try{
+
+ //회의실 예약 시간 중복 확인
+ const overlappedMeeting = await meeting.findAll({
+    
+    where:{
+        // startTime < meeting.endTime && endTime > meeting.startTime
+        [Op.and]: [
+            { startDate: startDate },
+            { place: place },
+            { startTime: { [Op.lt]: endTime } }, // 새로운 예약의 시작 시간이 기존 예약의 종료 시간보다 이전
+            { endTime: { [Op.gt]: startTime } },  // 새로운 예약의 종료 시간이 기존 예약의 시작 시간보다 이후
+          ]
+    }
+});
+if (overlappedMeeting.length > 0) {
+    return res.status(409).json({message: "이미 예약된 회의가 존재합니다."})
+}
+}catch(error){
+    console.error("회의실 예약 중복 확인 중 오류 발생:", error);
+    res.status(500).json({ message: "회의실 예약 중복 확인 중 오류가 발생했습니다." });
+};
+
+try{
     const newMeetingRoom = await meeting.create({
         userId: userID,
         username,
