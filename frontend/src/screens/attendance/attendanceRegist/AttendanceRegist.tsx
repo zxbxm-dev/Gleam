@@ -138,7 +138,9 @@ const AttendanceRegist = () => {
       return nameA.localeCompare(nameB);
     });
 
-    setMembers(sortedMembers);
+    if (JSON.stringify(members) !== JSON.stringify(sortedMembers)) {
+      setMembers(sortedMembers);
+    }
   }, [members]);
 
   useEffect(() => {
@@ -195,7 +197,9 @@ const AttendanceRegist = () => {
       return nameA.localeCompare(nameB);
     });
 
-    setMembersRD(sortedMembers);
+    if (JSON.stringify(membersRD) !== JSON.stringify(sortedMembers)) {
+      setMembersRD(sortedMembers);
+    }
   }, [membersRD]);
 
   useEffect(() => {
