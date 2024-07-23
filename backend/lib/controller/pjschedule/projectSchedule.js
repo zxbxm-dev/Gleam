@@ -4,7 +4,7 @@ const project = models.Project;
 //프로젝트 일정 추가 
 const addProject = async (req, res) => {
     const{
-        userID,
+        userId: userID,
         projectName,
         Leader,
         members,
@@ -12,6 +12,7 @@ const addProject = async (req, res) => {
         startDate,
         endDate,
         memo,
+        status,
     } = req.body;
 
     console.log("요청 본문 받음:", req.body);
@@ -19,7 +20,7 @@ const addProject = async (req, res) => {
     try{
         const newProject = await project.create({
             userId: userID,
-            projectIndex,
+            mainprojectIndex,
             projectName,
             Leader,
             members,
@@ -30,7 +31,7 @@ const addProject = async (req, res) => {
             status,
             pinned: false,
         })
-        req.status(201).json(newProject);
+        req.status(201).json({message: "프로젝트 일정 추가를 완료했습니다.", newProject});
     }catch(error) {
         console.log("프로젝트 일정 추가 중 오류가 발생했습니다.:", error);
         req.status(500).json({message: "프로젝트 일정 추가에 실패했습니다." });

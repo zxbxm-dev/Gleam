@@ -5,7 +5,7 @@ module.exports = (app) => {
     const router = express.Router();
 
     // ⚠️⚠️프로젝트 일정 router ----------------------------------------------------------------------- ⚠️⚠️
-    router.post("/addProject/:mainprojectIndex?", pjscheduleController.addProject);
+    router.post("/addProject", pjscheduleController.addProject);
     router.get("/checkProject", pjscheduleController.getAllProject);
     //프로젝트 수정 라우트
     router.put(

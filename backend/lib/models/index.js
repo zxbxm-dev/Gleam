@@ -51,11 +51,11 @@ db.mainProject =  mainProject(sequelize, Sequelize);
 db.subProject = subProject(sequelize, Sequelize);
 
 //프로젝트 부모 - 자식 cascade 설정
-db.mainProject.hasMany(subProject,{
+db.mainProject.hasMany(db.subProject,{
     foreginKey: 'mainprojectIndex',
     onDelete: 'cascade',
 });
-db.subProject.belongsTo(mainProject,{
+db.subProject.belongsTo(db.mainProject,{
     foreignKey: 'mainprojectIndex',
     onDelete: 'cascade',
 });
