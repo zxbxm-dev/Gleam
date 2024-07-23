@@ -68,6 +68,7 @@ const MeetingRoom = () => {
   const [isMeetingModalOpen, setMeetingModalOPen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [isEditConfirmationModalOpen, setIsEditConfirmationModalOpen] = useState(false);
   const [tempEventDetails, setTempEventDetails] = useState<EventDetails | null>(null);
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
@@ -498,7 +499,7 @@ const MeetingRoom = () => {
 
           case 418:
             setTempEventDetails(eventData);
-            setIsConfirmationModalOpen(true);
+            setIsEditConfirmationModalOpen(true);
             break;
         }
       }
@@ -1082,6 +1083,7 @@ const MeetingRoom = () => {
           <span>{errorMessage}</span>
         </div>
       </CustomModal>
+
       <CustomModal
         isOpen={isConfirmationModalOpen}
         onClose={() => setIsConfirmationModalOpen(false)}
@@ -1115,7 +1117,47 @@ const MeetingRoom = () => {
         height="250px"
       >
         <div className="text-center">
-          {user.username}님이 선택하신 시간에 다른 일정이 <br/>
+          참여인원이 선택하신 시간에 다른 일정이 <br/>
+          예약되어 있습니다. <br/>
+          그래도 등록을 진행하시겠습니까?
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isEditConfirmationModalOpen}
+        onClose={() => setIsEditConfirmationModalOpen(false)}
+        header="회의 일정 중복"
+        footer1="확인"
+        footer1Class="green-btn"
+        onFooter1Click={async () => {
+          try {
+            const response = await EditMeeting({ ...tempEventDetails, force: true, }, selectedEvent?.id);
+            console.log("회의 일정 수정 성공:", response.data);
+            setEditEventModalOPen(false);
+            refetchMeeting();
+          } catch (error) {
+            console.error("회의 일정 수정 실패:", error);
+          }
+          setIsEditConfirmationModalOpen(false);
+          setTitle('');
+          setRecipients([]);
+          setStartDate(new Date());
+          setEndDate(new Date());
+          setCompany('');
+          setLocation('');
+          setOtherLocation('');
+          setMemo('');
+          setSelectedTwoTime('');
+          setIsOn(false);
+        }}
+        footer2="취소"
+        footer2Class="gray-btn"
+        onFooter2Click={() => setIsConfirmationModalOpen(false)}
+        width="400px"
+        height="250px"
+      >
+        <div className="text-center">
+          참여인원이 선택하신 시간에 다른 일정이 <br/>
           예약되어 있습니다. <br/>
           그래도 등록을 진행하시겠습니까?
         </div>

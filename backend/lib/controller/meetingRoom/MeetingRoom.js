@@ -197,7 +197,7 @@ const editMeetingRoom = async (req, res) => {
         });
         
         if(filteredMeeting.length > 0 && force !== true){
-            return res.status(409).json({message: "선택한 회의 참여자가 이미 회의 참여 중입니다. "})
+            return res.status(418).json({message: "선택한 회의 참여자가 이미 회의 참여 중입니다. "})
         }
         }catch(error){
             console.error("회의 참여자 중복 확인 중 오류 발생:", error);
