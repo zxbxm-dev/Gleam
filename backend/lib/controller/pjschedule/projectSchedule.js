@@ -5,16 +5,13 @@ const project = models.Project;
 const addProject = async (req, res) => {
     const{
         userID,
-        projectindex,
         projectName,
-        subprojectName,
         Leader,
         members,
         referrer,
         startDate,
         endDate,
         memo,
-        state,
     } = req.body;
 
     console.log("요청 본문 받음:", req.body);
@@ -22,16 +19,16 @@ const addProject = async (req, res) => {
     try{
         const newProject = await project.create({
             userId: userID,
-            projectIndex: projectindex,
+            projectIndex,
             projectName,
-            subprojectName,
             Leader,
             members,
             referrer,
             startDate,
             endDate,
             memo,
-            state,
+            status,
+            pinned: false,
         })
         req.status(201).json(newProject);
     }catch(error) {

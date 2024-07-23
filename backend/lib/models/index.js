@@ -24,7 +24,9 @@ const Transfer = require("./management/personnel_transfer");
 const jobPosting = require("./employment/JobPosting");
 //회의실
 const meetingRoom = require('./meetingRoom/meetingRoom');
-const pjschedule = require('./pjschedule/pjschedule');
+//프로젝트
+const mainProject = require('./pjschedule/mainProject');
+const subProject = require('./pjschedule/subProject');
 
 const db = {};
 
@@ -45,6 +47,18 @@ db.Evaluation = evaluation(sequelize, Sequelize);
 db.TransferPosition = Transfer(sequelize, Sequelize);
 db.Management = management(sequelize, Sequelize);
 db.Meeting = meetingRoom(sequelize, Sequelize);
-db.Project = pjschedule(sequelize, Sequelize);
+db.mainProject =  mainProject(sequelize, Sequelize);
+db.subProject = subProject(sequelize, Sequelize);
+
+//프로젝트 부모 - 자식 cascade 설정
+db.mainProject.hasMany(subProject,{
+    foreginKey: 'mainprojectIndex',
+    onDelete: 'cascade',
+});
+db.subProject.belongsTo(mainProject,{
+    foreignKey: 'mainprojectIndex',
+    onDelete: 'cascade',
+});
+
 
 module.exports = db;
