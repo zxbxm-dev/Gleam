@@ -635,6 +635,7 @@ const AnnualManage = () => {
     );
   };
 
+  console.log(user.company)
   return (
     <div className="content">
       <div className='anuual_header_right'>
@@ -679,7 +680,7 @@ const AnnualManage = () => {
       
       <div className="content_container">
           <div className="container_anuual" id="table-to-xls">
-            {selectedScreen === '본사' ? (
+            {selectedScreen === '본사' || user.company === 'R&D' ? (
               <div className="Excel_annual_RD">
                 <table className="Explan_annual_RD">
                   <div>
