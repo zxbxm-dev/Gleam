@@ -12,8 +12,11 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CustomModal from "../../components/modal/CustomModal";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
+import { addMainProject, addSubProject } from "../../services/project/ProjectServices";
 
 interface ProjectInter {
   id: string;
@@ -26,20 +29,29 @@ interface ProjectInter {
 }
 
 const Project = () => {
-  const [iseventModalOpen, setEventModalOPen] = useState(false);
-  const [isAddEventModalOpen, setAddEventModalOPen] = useState(false);
+  const user = useRecoilValue(userState);
+  const [ispjtModalOpen, setPjtModalOPen] = useState(false);
+  const [isAddSubPjtModalOpen, setAddSubPjtModalOPen] = useState(false);
+  const [isAddPjtModalOpen, setAddPjtModalOPen] = useState(false);
+  const [isDeletePjtModalOpen, setDeletePjtModalOpen] = useState(false);
+
   const [persondata, setPersonData] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({ 0: '41px', 1: '35px' });
   const [tabMargins, setTabMargins] = useState({ 0: '6px', 1: '6px' });
   const calendarRef = useRef<FullCalendar>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [pjtTitle, setPjtTitle] = useState<string>('');
+  const [pjtMemo, setPjtMemo] = useState<string>('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const [teamLeader, setTeamLeader] = useState('');
   const [inputteamLeader, setInputteamLeader] = useState('');
   const [allMembers, setAllMembers] = useState<string[]>([]);
   const [inputAllMember, setInputAllmember] = useState('');
+  const [allReferrers, setAllReferrers] = useState<string[]>([]);
+  const [inputAllReferrer, setInputAllReferrer] = useState('');
 
   const [slideVisible, setSlideVisible] = useState(false);
   const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: true, 1: true, 2: true });
@@ -60,6 +72,16 @@ const Project = () => {
     '진행 중',
     '진행 완료',
   ];
+
+  const resetForm = () => {
+    setPjtTitle('');
+    setPjtMemo('');
+    setTeamLeader('');
+    setAllMembers([]);
+    setAllReferrers([]);
+    setStartDate(null);
+    setEndDate(null);
+  }
 
   useEffect(() => {
     const initialProjects: ProjectInter[] = [
@@ -153,7 +175,7 @@ const Project = () => {
   ];
 
   const handleEventClick = (info: any) => {
-    setEventModalOPen(true);
+    setPjtModalOPen(true);
   };
 
   const toggleSlide = () => {
@@ -163,6 +185,7 @@ const Project = () => {
   const toggleProjectVisibility = (index: number) => {
     setProjectVisible(prevState => ({ ...prevState, [index]: !prevState[index] }));
   };
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputteamLeader(e.target.value);
@@ -192,12 +215,26 @@ const Project = () => {
     setInputAllmember(e.target.value);
   };
 
+  const handleInputAllReferrerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputAllReferrer(e.target.value);
+  };
+
   const handleInputAllMemberKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       if (inputAllMember.trim()) {
         setAllMembers([...allMembers, inputAllMember.trim()]);
         setInputAllmember('');
+      }
+    }
+  };
+
+  const handleInputAllReferrerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      if (inputAllReferrer.trim()) {
+        setAllReferrers([...allReferrers, inputAllReferrer.trim()]);
+        setInputAllReferrer('');
       }
     }
   };
@@ -212,8 +249,22 @@ const Project = () => {
     setInputAllmember('');
   };
 
+  const handleAutoAllReferrersCompleteClick = (username: string, department: string, team: string) => {
+    if (team) {
+      setAllReferrers([...allReferrers, team + ' ' + username]);
+    } else {
+      setAllReferrers([...allReferrers, department + ' ' + username]);
+    }
+
+    setInputAllReferrer('');
+  };
+
   const handleRecipientRemove = (user: string) => {
     setAllMembers(allMembers.filter(member => member !== user));
+  };
+
+  const handleReferrersRemove = (user: string) => {
+    setAllReferrers(allReferrers.filter(member => member !== user));
   };
 
   const filteredNames = persondata.filter(person => {
@@ -244,7 +295,21 @@ const Project = () => {
         person.department.toLowerCase().includes(inputLowerCase)
       )
     }
+  });
 
+  const filteredAllReferrersNames = persondata.filter(person => {
+    const inputLowerCase = inputAllReferrer.toLowerCase();
+    if (person.team) {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.team.toLowerCase().includes(inputLowerCase)
+      )
+    } else {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.department.toLowerCase().includes(inputLowerCase)
+      )
+    }
   });
 
   const togglestate = () => {
@@ -276,12 +341,62 @@ const Project = () => {
     };
   }, [dropdownOpen]);
 
+  // 메인 프로젝트 추가
+  const handleAddMainProject = async () => {
+    const pjtDetails = {
+      userID: user.userID,
+      projectName: pjtTitle,
+      Leader: teamLeader,
+      members: allMembers,
+      referrer: allReferrers,
+      startDate: startDate,
+      endDate: endDate,
+      memo: pjtMemo,
+    };
+
+    try {
+      const response = await addMainProject(pjtDetails);
+      console.log('메인 프로젝트 추가 성공', response.data);
+      window.alert('성공')
+    } catch (error: any) {
+      console.log('메인 프로젝트 추가 실패', error);
+      window.alert('실패')
+    }
+
+    resetForm();
+  };
+
+  // 서브 프로젝트 추가
+  const handleAddSubProject = async (mainprojectindex: any) => {
+    const pjtDetails = {
+      userID: user.userID,
+      projectName: pjtTitle,
+      Leader: teamLeader,
+      members: allMembers,
+      referrer: allReferrers,
+      startDate: startDate,
+      endDate: endDate,
+      memo: pjtMemo,
+    };
+
+    try {
+      const response = await addSubProject(mainprojectindex, pjtDetails);
+      console.log('서브 프로젝트 추가 성공', response.data);
+      window.alert('성공')
+    } catch (error: any) {
+      console.log('서브 프로젝트 추가 실패', error);
+      window.alert('실패')
+    }
+
+    resetForm();
+  };
+
   return (
     <div className="content">
       <div className="content_container">
         {activeTab === 0 &&
           <div className="project_header_right">
-            <button className="primary_button" onClick={() => setAddEventModalOPen(true)}>새업무 +</button>
+            <button className="primary_button" onClick={() => setAddPjtModalOPen(true)}>새업무 +</button>
           </div>
         }
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
@@ -299,7 +414,7 @@ const Project = () => {
                       <input type="checkbox" id="check1" checked={allSelected} onChange={toggleAllCheckboxes}/>
                       <span></span>
                     </label>
-                    <img src={mail_delete} alt="mail_delete" />
+                    <img src={mail_delete} alt="mail_delete" onClick={() => setDeletePjtModalOpen(true)}/>
                     <img src={mail_important} alt="mail_important" />
                   </div>
 
@@ -359,7 +474,7 @@ const Project = () => {
                             <td>{project.state}</td>
                             <td
                               className="text_left text_cursor"
-                              onClick={() => toggleSubProjects(project.id)}
+                              
                               onContextMenu={(e) => handleRightClick(project.id, e)}
                             >
                               <div className="dropdown">
@@ -367,7 +482,7 @@ const Project = () => {
                                 {dropdownOpen && (
                                   <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
                                     <div className="dropdown_pin">편집</div>
-                                    <div className="dropdown_pin">추가</div>
+                                    <div className="dropdown_pin" onClick={() => setAddSubPjtModalOPen(true)}>추가</div>
                                   </div>
                                 )}
                               </div>
@@ -526,19 +641,19 @@ const Project = () => {
       </div>
 
       <CustomModal
-        isOpen={isAddEventModalOpen}
-        onClose={() => setAddEventModalOPen(false)}
+        isOpen={isAddPjtModalOpen}
+        onClose={() => { setAddPjtModalOPen(false); resetForm(); }}
         header={'프로젝트 - 새 업무'}
         footer1={'저장'}
         footer1Class="green-btn"
-        onFooter1Click={() => setAddEventModalOPen(false)}
+        onFooter1Click={() => { setAddPjtModalOPen(false); resetForm(); handleAddMainProject(); }}
         width="500px"
         height="550px"
       >
         <div className="body-container">
           <div className="body_container_content">
             <div className="body_container_content_title">프로젝트 명</div>
-            <input type="text" />
+            <input type="text" value={pjtTitle} onChange={(e) => setPjtTitle(e.target.value)}/>
           </div>
 
           <div className="body_container_content">
@@ -595,11 +710,32 @@ const Project = () => {
 
           <div className="body_container_content">
             <div className="body_container_content_title">참조자</div>
-            <input type="text" />
+            <input
+              type="text"
+              value={inputAllReferrer}
+              onChange={handleInputAllReferrerChange}
+              onKeyDown={handleInputAllReferrerKeyDown}
+              ref={inputRef}
+            />
+            {inputAllReferrer && (
+              <ul className="autocomplete_dropdown">
+                {filteredAllReferrersNames.map(person => (
+                  <li key={person.username} onClick={() => handleAutoAllReferrersCompleteClick(person.username, person.department, person.team)}>
+                    {person.team ? person.team : person.department} &nbsp;
+                    {person.username}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="body_container_content">
             <div className="body_container_content_listbox">
-
+              {allReferrers.map((item: string) => (
+                <div className="listbox_content">
+                  {item}
+                  <span className="remove" onClick={() => handleReferrersRemove(item)}>×</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -636,14 +772,134 @@ const Project = () => {
       </CustomModal>
 
       <CustomModal
-        isOpen={iseventModalOpen}
-        onClose={() => setEventModalOPen(false)}
+        isOpen={isAddSubPjtModalOpen}
+        onClose={() => { setAddSubPjtModalOPen(false); resetForm(); }}
+        header={'메인프로젝트이름'}
+        footer1={'저장'}
+        footer1Class="green-btn"
+        onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(1); }}
+        width="500px"
+        height="550px"
+      >
+        <div className="body-container">
+          <div className="body_container_content">
+            <div className="body_container_content_title">프로젝트 명</div>
+            <input type="text" value={pjtTitle} onChange={(e) => setPjtTitle(e.target.value)}/>
+          </div>
+          
+          <div className="body_container_content">
+            <div className="body_container_content_title">팀리더</div>
+            <input
+              type="text"
+              value={teamLeader}
+              onChange={handleInputChange}
+              onKeyDown={handleInputKeyDown}
+              ref={inputRef}
+            />
+            {inputteamLeader && (
+              <ul className="autocomplete_dropdown">
+                {filteredNames.map(person => (
+                  <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
+                    {person.team ? person.team : person.department} &nbsp;
+                    {person.username}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">담당 팀원</div>
+            <input
+              type="text"
+              value={inputAllMember}
+              onChange={handleInputAllMemberChange}
+              onKeyDown={handleInputAllMemberKeyDown}
+              ref={inputRef}
+            />
+            {inputAllMember && (
+              <ul className="autocomplete_dropdown">
+                {filteredAllmembersNames.map(person => (
+                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
+                    {person.team ? person.team : person.department} &nbsp;
+                    {person.username}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="body_container_content">
+            <div className="body_container_content_listbox">
+              {allMembers.map((item: string) => (
+                <div className="listbox_content">
+                  {item}
+                  <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">업무기간</div>
+            <div className="body_container_content_datepicker">
+              <DatePicker
+                selected={startDate}
+                onChange={date => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                dateFormat="yyyy-MM-dd"
+                className="datepicker"
+                popperPlacement="top"
+              />
+              <span className="timespan">~</span>
+              <DatePicker
+                selected={endDate}
+                onChange={date => setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                dateFormat="yyyy-MM-dd"
+                className="datepicker"
+                popperPlacement="top"
+              />
+            </div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">프로젝트<br />내용</div>
+            <textarea value={pjtMemo} onChange={(e) => setPjtMemo(e.target.value)}/>
+          </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isDeletePjtModalOpen}
+        onClose={() => setDeletePjtModalOpen(false)}
+        header={'알림'}
+        footer1={'삭제'}
+        footer1Class="red-btn"
+        footer2={'취소'}
+        footer2Class="gray-btn"
+        onFooter2Click={() => {setDeletePjtModalOpen(false)}}
+      >
+        <div>
+          삭제하시겠습니까?
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={ispjtModalOpen}
+        onClose={() => setPjtModalOPen(false)}
         header={'이벤트 제목'}
         footer1={'확인'}
         footer1Class="red-btn"
-        onFooter1Click={() => setEventModalOPen(false)}
+        onFooter1Click={() => setPjtModalOPen(false)}
         width="496px"
-        height="300px"
+        height="auto"
       >
         <div className="body-container">
           <div className="body-content">
@@ -672,7 +928,7 @@ const Project = () => {
             </div>
             <div className="content-right">
               <div className="content-memo">
-                개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석
+                개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석
               </div>
             </div>
           </div>
