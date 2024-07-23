@@ -16,7 +16,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
-import { addMainProject, addSubProject } from "../../services/project/ProjectServices";
+import { CheckProject, addMainProject, addSubProject } from "../../services/project/ProjectServices";
 
 interface ProjectInter {
   id: string;
@@ -341,6 +341,26 @@ const Project = () => {
     };
   }, [dropdownOpen]);
 
+  // 프로젝트 일정 조회
+  const fetchProject = async () => {
+    try {
+      const response = await CheckProject();
+      return response.data;
+    } catch (error) {
+      console.log("Failed to fetch Project data");
+    }
+  };
+
+  const { refetch : refetchProject } = useQuery("Project", fetchProject, {
+    enabled: false,
+    onSuccess: (data) => {
+      console.log('불러온 프로젝트', data);
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  });
+
   // 메인 프로젝트 추가
   const handleAddMainProject = async () => {
     const pjtDetails = {
@@ -390,6 +410,10 @@ const Project = () => {
 
     resetForm();
   };
+
+  useEffect(() => {
+    refetchProject();
+  }, [refetchProject]);
 
   return (
     <div className="content">
@@ -474,15 +498,15 @@ const Project = () => {
                             <td>{project.state}</td>
                             <td
                               className="text_left text_cursor"
-                              
+                              onClick={() => toggleSubProjects(project.id)}
                               onContextMenu={(e) => handleRightClick(project.id, e)}
                             >
                               <div className="dropdown">
                                 {project.title}
                                 {dropdownOpen && (
                                   <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                                    <div className="dropdown_pin">편집</div>
-                                    <div className="dropdown_pin" onClick={() => setAddSubPjtModalOPen(true)}>추가</div>
+                                    <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); }}>편집</div>
+                                    <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>추가</div>
                                   </div>
                                 )}
                               </div>
