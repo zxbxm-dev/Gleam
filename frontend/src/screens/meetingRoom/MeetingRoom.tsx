@@ -28,6 +28,22 @@ interface Event {
   memo: string;
 }
 
+type EventDetails = {
+  username: string;
+  userID: string;
+  company: string;
+  department: string;
+  team: string;
+  title: string;
+  meetpeople: string[];
+  startDate: string;
+  endDate: string;
+  place: string;
+  memo: string;
+  startTime: string;
+  endTime: string;
+};
+
 interface ColorScheme {
   backgroundColor: string;
   borderColor: string;
@@ -51,6 +67,8 @@ const MeetingRoom = () => {
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
   const [isMeetingModalOpen, setMeetingModalOPen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [tempEventDetails, setTempEventDetails] = useState<EventDetails | null>(null);
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
@@ -329,7 +347,7 @@ const MeetingRoom = () => {
       '연구총괄실': { backgroundColor: '#A3D3FF', borderColor: '#A3D3FF' },
   };
 
-    return data.map((event: any) => {
+    return data?.map((event: any) => {
       const { id, title, startDate, endDate, startTime, endTime, backgroundColor, borderColor, textColor, ...rest } = event;
       const start = new Date(`20${startDate}T${startTime}`);
       const end = new Date(`20${endDate}T${endTime}`);
@@ -373,26 +391,26 @@ const MeetingRoom = () => {
 
   // 회의실 예약 추가
   const handleAddEvent = async () => { 
+    const formattedStartDate = startDate ? formatDate(startDate) : '';
+    const formattedEndDate = endDate ? formatDate(endDate) : '';
+
+    const eventDetails = {
+      username: user.username,
+      userID: user.userID,
+      company: company,
+      department: user.department,
+      team: user.team,
+      title,
+      meetpeople: recipients,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+      place: location === '기타' ? otherLocation : location,
+      memo,
+      startTime: isOn ? "10:00" : selectedTime,
+      endTime: isOn ? "17:00" : selectedTwoTime,
+    };
+
     try {
-      const formattedStartDate = startDate ? formatDate(startDate) : '';
-      const formattedEndDate = endDate ? formatDate(endDate) : '';
-
-      const eventDetails = {
-        username: user.username,
-        userID: user.userID,
-        company: company,
-        department: user.department,
-        team: user.team,
-        title,
-        meetpeople: recipients,
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
-        place: location === '기타' ? otherLocation : location,
-        memo,
-        startTime: isOn ? "10:00" : selectedTime,
-        endTime: isOn ? "17:00" : selectedTwoTime,
-      };
-
       const response = await writeMeeting(eventDetails);
       console.log("회의 일정 추가 성공:", response.data);
       refetchMeeting();
@@ -405,6 +423,12 @@ const MeetingRoom = () => {
           case 409:
             setMeetingModalOPen(true);
             setErrorMessage(message);
+            break;
+
+          case 418:
+            setTempEventDetails(eventDetails);
+            setIsConfirmationModalOpen(true);
+            break;
         }
       }
     }
@@ -467,13 +491,14 @@ const MeetingRoom = () => {
         const { status } = error.response;
         const { message } = error.response.data;
         switch (status) {
-          case 403:
-            setMeetingModalOPen(true);
-            setErrorMessage(message);
-            break;
           case 409:
             setMeetingModalOPen(true);
             setErrorMessage(message);
+            break;
+
+          case 418:
+            setTempEventDetails(eventData);
+            setIsConfirmationModalOpen(true);
             break;
         }
       }
@@ -510,10 +535,15 @@ const MeetingRoom = () => {
     setEventModalOPen(false);
   }
 
+  const userIsAuthorized = () => {  // 수정, 삭제 권한
+    const meetpeopleNames = selectedEvent?.meetpeople.map(person => person.split(' ').pop());
+    return user.username === selectedEvent?.username || meetpeopleNames?.includes(user.username);
+  };
+
   useEffect(() => {
     refetchMeeting(); // 첫 렌더링 시 목록 조회 호출
   }, [refetchMeeting]);
-
+  
   return (
     <div className="content">
       <div className="content_container">
@@ -764,13 +794,13 @@ const MeetingRoom = () => {
         isOpen={iseventModalOpen}
         onClose={() => setEventModalOPen(false)}
         header={selectedEvent?.origintitle}
-        footer1={'편집'}
+        footer1={userIsAuthorized() ? '편집' : null}
         footer1Class="gray-btn"
         onFooter1Click={handleEditEvent}
         footer2={'확인'}
         footer2Class="green-btn"
         onFooter2Click={() => setEventModalOPen(false)}
-        footer3={'삭제'}
+        footer3={userIsAuthorized() ? '삭제' : null}
         footer3Class="red-btn"
         onFooter3Click={handleDeleteEventModal}
         width="400px"
@@ -1050,6 +1080,44 @@ const MeetingRoom = () => {
       >
         <div className="text-center">
           <span>{errorMessage}</span>
+        </div>
+      </CustomModal>
+      <CustomModal
+        isOpen={isConfirmationModalOpen}
+        onClose={() => setIsConfirmationModalOpen(false)}
+        header="회의 일정 중복"
+        footer1="확인"
+        footer1Class="green-btn"
+        onFooter1Click={async () => {
+          try {
+            const response = await writeMeeting({ ...tempEventDetails, force: true});
+            console.log("회의 일정 추가 성공:", response.data);
+            refetchMeeting();
+          } catch (error) {
+            console.error("회의 일정 추가 실패:", error);
+          }
+          setIsConfirmationModalOpen(false);
+          setTitle('');
+          setRecipients([]);
+          setStartDate(new Date());
+          setEndDate(new Date());
+          setCompany('');
+          setLocation('');
+          setOtherLocation('');
+          setMemo('');
+          setSelectedTwoTime('');
+          setIsOn(false);
+        }}
+        footer2="취소"
+        footer2Class="gray-btn"
+        onFooter2Click={() => setIsConfirmationModalOpen(false)}
+        width="400px"
+        height="250px"
+      >
+        <div className="text-center">
+          {user.username}님이 선택하신 시간에 다른 일정이 <br/>
+          예약되어 있습니다. <br/>
+          그래도 등록을 진행하시겠습니까?
         </div>
       </CustomModal>
     </div>
