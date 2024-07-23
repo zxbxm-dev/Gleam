@@ -467,9 +467,14 @@ const MeetingRoom = () => {
         const { status } = error.response;
         const { message } = error.response.data;
         switch (status) {
+          case 403:
+            setMeetingModalOPen(true);
+            setErrorMessage(message);
+            break;
           case 409:
             setMeetingModalOPen(true);
             setErrorMessage(message);
+            break;
         }
       }
     })
@@ -489,6 +494,16 @@ const MeetingRoom = () => {
     })
     .catch(error => {
       console.error("회의실 데이터 삭제 실패", error);
+      if (error.response) {
+        const { status } = error.response;
+        const { message } = error.response.data;
+        switch (status) {
+          case 403:
+            setMeetingModalOPen(true);
+            setErrorMessage(message);
+            break;
+        }
+      }
     });
 
     setDeleteEventModalOPen(false);
