@@ -1,5 +1,5 @@
 .meetingroom_container {
-  height: 85vh;
+  height: 90vh;
   background-color: #FBFBFB;
   padding: 0 20px;
 
@@ -99,7 +99,7 @@
     .fc-daygrid-body-balanced .fc-daygrid-day-events {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      gap: 1.5px;
     }
   }
 
@@ -139,7 +139,14 @@
     cursor: pointer;
 
     .fc-event-main {
-      padding-left: 9px;
+      padding-left: 5px;
+
+      div{
+        font-family: var(--font-family-Noto-M);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }  
 
