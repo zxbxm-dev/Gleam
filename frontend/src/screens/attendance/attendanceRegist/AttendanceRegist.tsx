@@ -469,12 +469,12 @@ const AttendanceRegist = () => {
         switch (personData[2][2]) {
           case '오전반차':
             countHalfDayOff[j]++;
-            if (personData[2][0] > '14:00') {
+            if (personData[2][0] > '14:01') {
               countLateWork[j]++
     
               const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
     
-              const standardTime = new Date(`2000-01-01T14:00`);
+              const standardTime = new Date(`2000-01-01T14:01`);
               const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 14) * 60 + attendTime.getMinutes() : 0;
     
               TotalLateWork[j] += lateMinutes;
@@ -483,12 +483,12 @@ const AttendanceRegist = () => {
             break;
           case '오후반차':
             countHalfDayOff[j]++;
-            if (personData[2][0] > '10:00') {
+            if (personData[2][0] > '10:01') {
               countLateWork[j]++
     
               const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
     
-              const standardTime = new Date(`2000-01-01T10:00`);
+              const standardTime = new Date(`2000-01-01T10:01`);
               const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
     
               TotalLateWork[j] += lateMinutes;
@@ -505,12 +505,12 @@ const AttendanceRegist = () => {
             break;
           case '재택':
             countRemoteWork[j]++;
-            if (personData[2][0] > '10:00') {
+            if (personData[2][0] > '10:01') {
               countLateWork[j]++
     
               const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
     
-              const standardTime = new Date(`2000-01-01T10:00`);
+              const standardTime = new Date(`2000-01-01T10:01`);
               const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
     
               TotalLateWork[j] += lateMinutes;
@@ -539,12 +539,12 @@ const AttendanceRegist = () => {
             itemBackgroundColor = '#EF0AD8';
             break;
           default:
-            if (personData[2][0] > '10:00') {
+            if (personData[2][0] > '10:01') {
               countLateWork[j]++
     
               const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
     
-              const standardTime = new Date(`2000-01-01T10:00`);
+              const standardTime = new Date(`2000-01-01T10:01`);
               const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
     
               TotalLateWork[j] += lateMinutes;
