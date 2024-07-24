@@ -64,3 +64,5 @@ export { default as mail_cancle } from "./mail/mail_cancle.svg";
 //message
 export { default as MessageMe } from "./Message/MessageMe.svg";
 export { default as MessageMenu } from "./Message/MessageMenu.svg";
+export { default as ChatTab } from "./Message/ChatTab.svg";
+export { default as PersonTab } from "./Message/PersonTab.svg";

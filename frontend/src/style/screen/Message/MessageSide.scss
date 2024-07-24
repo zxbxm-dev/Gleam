@@ -2,6 +2,19 @@
     width: 280px;
     height: 100vh;
 
+    .tab-container{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 80px;
+        margin-bottom: 15px;
+        
+        .tab-button{
+cursor: pointer;
+        }
+    }
+
     .Sidebar-Ms {
         .My-bar {
             display: flex;
@@ -85,6 +98,60 @@
             }
 
             .DeptDown{
+            }
+        }
+    }
+
+    .chat-data-tab{
+        .My-bar {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #e2e2e2;
+            border-bottom: 1px solid #e2e2e2;
+            padding: 15px 0px 15px 31px;
+            font-family: var(--font-family-Noto-M);
+            font-size: 15px;
+
+            .My-attach {
+                margin-right: 10px;
+                width: 35px;
+                height: 35px;
+                border-radius: 50px;
+            }
+
+            .Message-Me {
+                margin-left: 5px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .ChatLog{
+            .LogBox{
+                font-size: 15px;
+                display: flex;
+                font-family: var(--font-family-Noto-M);
+                justify-content: space-between;
+                padding: 15px 17px 15px 31px;
+
+                .Left{
+                    display: flex;
+                    align-items: center;
+
+                    .My-attach {
+                        margin-right: 10px;
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 50px;
+                    }
+        
+                    .Message-Me {
+                        margin-left: 5px;
+                        width: 16px;
+                        height: 16px;
+                        cursor: pointer;
+                    }
+                }
             }
         }
     }
