@@ -20,9 +20,8 @@ module.exports = (sequelize, DataTypes) => {
             }
           },
           subprojectIndex: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
-            autoIncrement: true,
             primaryKey : true,            
           },
           projectName: {
@@ -66,11 +65,5 @@ module.exports = (sequelize, DataTypes) => {
           tableName: "subProject"
         }
     );
-
-    subProject.associate = (models) => {
-      subProject.belongsTo(models.user, { foreignKey: 'userId'});
-      subProject.belongsTo(models.mainProject, { foreignKey: 'mainprojectIndex'});
-    };
-    
      return subProject;
     }
