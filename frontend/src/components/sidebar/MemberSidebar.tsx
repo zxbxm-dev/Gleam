@@ -20,7 +20,7 @@ interface Props {
 }
 
 type CurrentPageType =
-  | '포체인스주식회사' | '개발부' | '개발1팀' | '개발2팀' | '블록체인사업부' | '블록체인1팀'
+  | '포체인스주식회사' | '개발부' | '개발1팀' | '개발2팀' 
   | '마케팅부' | '기획팀' | '디자인팀' | '관리부' | '관리팀' | '지원팀'
   | '시설팀' | 'R&D센터' | '알고리즘연구실' | '동형분석연구실' | '블록체인연구실';
 
@@ -97,10 +97,6 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
                 return person.department === '개발부' && person.team === '개발 1팀';
               case '개발2팀':
                 return person.department === '개발부' && person.team === '개발 2팀';
-              case '블록체인사업부':
-                return person.department === '블록체인사업부' && person.team === '';
-              case '블록체인1팀':
-                return person.department === '블록체인사업부' && person.team === '블록체인 1팀';
               case '마케팅부':
                 return person.department === '마케팅부' && person.team === '';
               case '기획팀':
@@ -122,7 +118,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
               case '동형분석연구실':
                 return person.department === '동형분석 연구실' && (person.team === '' || person.team === '동형분석 연구팀');
               case '블록체인연구실':
-                return person.department === '블록체인 연구실' && (person.team === '' || person.team === 'AI 개발팀' || person.team === '크립토 블록체인 연구팀');
+                return person.department === '블록체인 연구실' && (person.team === '' || person.team === 'API 개발팀' || person.team === '크립토 블록체인 연구팀');
               default:
                 return false;
             }
@@ -145,7 +141,6 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
         {sidebarState.currentPage === '포체인스주식회사' && (
           <>
             <div onClick={() => handleClick('개발부')}>개발부</div>
-            <div onClick={() => handleClick('블록체인사업부')}>블록체인사업부</div>
             <div onClick={() => handleClick('마케팅부')}>마케팅부</div>
             <div onClick={() => handleClick('관리부')}>관리부</div>
             <div onClick={() => handleClick('R&D센터')}>R&D</div>
@@ -155,11 +150,6 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
           <>
             <div onClick={() => handleClick('개발1팀')}>개발 1팀</div>
             <div onClick={() => handleClick('개발2팀')}>개발 2팀</div>
-          </>
-        )}
-        {sidebarState.currentPage === '블록체인사업부' && (
-          <>
-            <div onClick={() => handleClick('블록체인1팀')}>블록체인 1팀</div>
           </>
         )}
         {sidebarState.currentPage === '마케팅부' && (

@@ -132,9 +132,6 @@ const WriteReport = () => {
     ['윤재원', '개발부', '개발 1팀', '사원'],
     ['변도일', '개발부', '개발 2팀', '팀장'],
     ['이로운', '개발부', '개발 2팀', '사원'],
-    ['권상원', '블록체인 사업부', '', '부서장'],
-    ['김도환', '블록체인 사업부', '블록체인 1팀', '팀장'],
-    ['권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
     ['김현지', '마케팅부', '', '부서장'],
     ['전아름', '마케팅부', '기획팀', '팀장'],
     ['함다슬', '마케팅부', '기획팀', '사원'],
@@ -152,8 +149,8 @@ const WriteReport = () => {
     ['윤민지', '동형분석 연구실', '', '연구실장'],
     ['이채영', '동형분석 연구실', '동형분석 연구팀', '연구원'],
     ['', '블록체인 연구실', '', ''],
-    ['박소연', '블록체인 연구실', 'AI 개발팀', '연구원'],
-    ['김경현', '블록체인 연구실', 'AI 개발팀', '연구원'],
+    ['박소연', '블록체인 연구실', 'API 개발팀', '연구원'],
+    ['김경현', '블록체인 연구실', 'API 개발팀', '연구원'],
   ]
 
   const SelectOptions = (report: string) => {
@@ -171,8 +168,6 @@ const WriteReport = () => {
     ? members.find(member => member[0] === '진유빈') || null
     : (user.department === '관리부')
       ? null
-      : (user.department === '블록체인사업부')
-        ? members.find(member => member[0] === '권상원') || null
         : (user.department === '마케팅부')
           ? members.find(member => member[0] === '김현지') || null
           : (user.department === '')
@@ -184,8 +179,6 @@ const WriteReport = () => {
     ? members.find(member => member[0] === '장현지') || null
     : (user.team === '개발 2팀')
       ? members.find(member => member[0] === '변도일') || null
-      : (user.team === '블록체인 1팀')
-        ? members.find(member => member[0] === '김도환') || null
         : (user.team === '기획팀')
           ? members.find(member => member[0] === '전아름') || null
           : (user.team === '관리팀')
