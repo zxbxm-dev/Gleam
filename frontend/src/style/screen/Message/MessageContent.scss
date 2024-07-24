@@ -1,0 +1,73 @@
+.Message-contents {
+    background-color: #fff;
+    width: 100vw;
+    height: 100vh;
+
+    .Message-header {
+        padding-left: 23px;
+        height: 56px;
+        border-top: 1px solid #E2E2E2;
+        border-bottom: 1px solid #E2E2E2;
+        display: flex;
+        align-items: center;
+        font-family: var(--font-family-Noto-M);
+        gap: 14px;
+    }
+
+    .Message-container {
+        padding: 24px 30px 20px 30px;
+        position: relative;
+        height: calc(100vh - 150px);
+
+        .Message {
+            display: flex;
+            align-items: flex-start;
+            font-family: var(--font-family-Noto-M);
+
+            .RightBox {
+                margin-left: 9px;
+                margin-top: 5px;
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+
+                .MsgTimeBox {
+                    display: flex;
+                    align-items: flex-end;
+
+                    .MsgBox {
+                        background-color: rgba(69, 197, 82, 0.75);
+                        padding: 12px 36px 13px 17px;
+                        border-radius: 0px 5px 5px 5px;
+                    }
+
+                    .MsgTime {
+                        margin-left: 11px;
+                        font-size: 14px;
+                        color: #929292;
+                    }
+                }
+            }
+        }
+
+        .Message-Input {
+            position: absolute;
+            bottom: 0px;
+            width: calc(100% - 60px);
+
+            input {
+                border: 1px solid #cecece;
+                border-radius: 5px;
+                height: 51px;
+                width: 100%;
+                padding-left: 15px;
+                font-size: 14px;
+                font-family: var(--font-family-Noto-M);
+            }
+
+            input:focus {
+                outline: none;
+            }
+        }
+    }
+}

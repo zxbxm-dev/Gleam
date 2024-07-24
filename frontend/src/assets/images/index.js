@@ -66,3 +66,4 @@ export { default as MessageMe } from "./Message/MessageMe.svg";
 export { default as MessageMenu } from "./Message/MessageMenu.svg";
 export { default as ChatTab } from "./Message/ChatTab.svg";
 export { default as PersonTab } from "./Message/PersonTab.svg";
+export { default as HrLine } from "./Message/HrLine.svg";
