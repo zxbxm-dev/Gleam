@@ -192,12 +192,6 @@ const Register = () => {
 						<div className="op" onClick={() => handleOptionClick('team', '시설팀')}>시설팀</div>
 					</>
 				);
-			case '블록체인 사업부':
-				return (
-					<>
-						<div className="op" onClick={() => handleOptionClick('team', '블록체인 1팀')}>블록체인 1팀</div>
-					</>
-				);
 			case '마케팅부':
 				return (
 					<>
@@ -495,7 +489,6 @@ const Register = () => {
 										<>
 											<div className="op" onClick={() => handleOptionClick('department', '개발부')}>개발부</div>
 											<div className="op" onClick={() => handleOptionClick('department', '관리부')}>관리부</div>
-											<div className="op" onClick={() => handleOptionClick('department', '블록체인 사업부')}>블록체인 사업부</div>
 											<div className="op" onClick={() => handleOptionClick('department', '마케팅부')}>마케팅부</div>
 										</>
 									)}
