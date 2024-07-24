@@ -34,6 +34,8 @@ const Project = () => {
   const [isAddSubPjtModalOpen, setAddSubPjtModalOPen] = useState(false);
   const [isAddPjtModalOpen, setAddPjtModalOPen] = useState(false);
   const [isDeletePjtModalOpen, setDeletePjtModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
 
   const [persondata, setPersonData] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState(0);
@@ -59,7 +61,7 @@ const Project = () => {
   const [selectedstateOption, setSelectedStateOption] = useState('전체');
 
   const [projects, setProjects] = useState<any[]>([]);
-  const [clickedProjects, setClickedProjects] = useState<{ [key: number]: boolean }>({});
+  const [clickedProjects, setClickedProjects] = useState<any[]>([]);
   const [allSelected, setAllSelected] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<{ [key: number]: boolean }>({});
   const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
@@ -84,24 +86,7 @@ const Project = () => {
   }
 
   useEffect(() => {
-    const initialProjects: ProjectInter[] = [
-      {
-        id: '1', state: '진행 중', title: 'FCTS', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30', subProjects: [
-          { id: '1-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
-          { id: '1-2', state: '진행 중', title: 'FCTS 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
-          { id: '1-3', state: '진행 중', title: 'FCTS 리뉴얼 기획', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
-        ]
-      },
-      {
-        id: '2', state: '진행 중', title: 'DRChat', teamLeader: '개발부 진유빈', startDate: '2023.10.28', endDate: '2024.04.04', subProjects: [
-          { id: '2-1', state: '진행 중', title: '프론트엔드 개발', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
-          { id: '2-2', state: '진행 중', title: 'DRChat 디자인', teamLeader: '개발부 진유빈', startDate: '2024.04.11', endDate: '2024.12.30' },
-        ]
-      },
-    ];
-
-    setProjects(initialProjects);
-    setSubProjectVisible(initialProjects.reduce((acc: any, project: any) => {
+    setSubProjectVisible(projects.reduce((acc: any, project: any) => {
       acc[project.id] = false;
       project.subProjects?.forEach((subProject: any) => {
         acc[subProject.id] = false;
@@ -321,7 +306,8 @@ const Project = () => {
     setStateIsOpen(false);
   }
 
-  const handleRightClick = (index: number, event: React.MouseEvent<HTMLTableCellElement>) => {
+  const handleRightClick = (index: number, projectName: string, event: React.MouseEvent<HTMLTableCellElement>) => {
+    setClickedProjects([index, projectName]);
     event.preventDefault();
     setDropdownOpen(true);
     setDropdownPosition({ x: event.pageX, y: event.pageY });
@@ -355,6 +341,15 @@ const Project = () => {
     enabled: false,
     onSuccess: (data) => {
       console.log('불러온 프로젝트', data);
+      if (selectedstateOption === '전체') {
+        setProjects(data);
+      } else if (selectedstateOption === '진행 중') {
+        const filteredProjects = data.filter((project: any) => project.status === 'inprogress');
+        setProjects(filteredProjects)
+      } else {
+        const filteredProjects = data.filter((project: any) => project.status === 'done');
+        setProjects(filteredProjects)
+      }
     },
     onError: (error) => {
       console.log(error);
@@ -377,12 +372,14 @@ const Project = () => {
     try {
       const response = await addMainProject(pjtDetails);
       console.log('메인 프로젝트 추가 성공', response.data);
-      window.alert('성공')
+      setStatusMessage('프로젝트 일정을 추가하였습니다.')
+      setIsStatusModalOpen(true);
     } catch (error: any) {
       console.log('메인 프로젝트 추가 실패', error);
-      window.alert('실패')
+      setStatusMessage('프로젝트 일정 추가에 실패하였습니다.')
+      setIsStatusModalOpen(true);
     }
-
+    refetchProject();
     resetForm();
   };
 
@@ -402,19 +399,23 @@ const Project = () => {
     try {
       const response = await addSubProject(mainprojectindex, pjtDetails);
       console.log('서브 프로젝트 추가 성공', response.data);
-      window.alert('성공')
+      setStatusMessage('프로젝트 일정을 추가하였습니다.')
+      setIsStatusModalOpen(true);
     } catch (error: any) {
       console.log('서브 프로젝트 추가 실패', error);
-      window.alert('실패')
+      setStatusMessage('프로젝트 일정 추가에 실패하였습니다.')
+      setIsStatusModalOpen(true);
     }
 
+    refetchProject();
     resetForm();
   };
 
   useEffect(() => {
     refetchProject();
-  }, [refetchProject]);
+  }, [refetchProject, selectedstateOption]);
 
+  console.log(clickedProjects)
   return (
     <div className="content">
       <div className="content_container">
@@ -481,28 +482,28 @@ const Project = () => {
                       </tr>
                     </thead>
                     <tbody className="board_container">
-                      {projects.map((project) => (
-                        <React.Fragment key={project.id}>
+                      {projects.map((project, index) => (
+                        <React.Fragment key={project.mainprojectIndex}>
                           <tr className="board_content">
                             <td>
                               <label className="custom-checkbox">
                                 <input 
                                   type="checkbox"
-                                  checked={allSelected ? allSelected : selectedProjects[project.id] || false}
-                                  onChange={() => toggleProjectSelection(project.id)}   
+                                  checked={allSelected ? allSelected : selectedProjects[project.mainprojectIndex] || false}
+                                  onChange={() => toggleProjectSelection(project.mainprojectIndex)}   
                                 />
                                 <span></span>
                               </label>
                             </td>
-                            <td>{project.id}</td>
-                            <td>{project.state}</td>
+                            <td>{index + 1}</td>
+                            <td className={project.status === 'notstarted' ? 'text_medium' : project.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{project.status === 'notstarted' ? '대기 중' : project.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
                             <td
-                              className="text_left text_cursor"
-                              onClick={() => toggleSubProjects(project.id)}
-                              onContextMenu={(e) => handleRightClick(project.id, e)}
+                              className="text_left_half text_cursor"
+                              onClick={() => toggleSubProjects(project.mainprojectIndex)}
+                              onContextMenu={(e) => handleRightClick(project.mainprojectIndex, project.projectName, e)}
                             >
                               <div className="dropdown">
-                                {project.title}
+                                {project.projectName}
                                 {dropdownOpen && (
                                   <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
                                     <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); }}>편집</div>
@@ -511,13 +512,13 @@ const Project = () => {
                                 )}
                               </div>
                             </td>
-                            <td>{project.teamLeader}</td>
-                            <td>{project.startDate}</td>
-                            <td>{project.endDate}</td>
+                            <td>{project.Leader}</td>
+                            <td>{new Date(project.startDate).toISOString().substring(0, 10)}</td>
+                            <td>{new Date(project.endDate).toISOString().substring(0, 10)}</td>
                           </tr>
-                          {subprojectVisible[project.id] && project.subProjects && (
+                          {subprojectVisible[project.mainprojectIndex] && project.subProjects && (
                             project.subProjects.map((subProject: any) => (
-                              <tr key={subProject.id} className="board_content subproject">
+                              <tr key={subProject.mainprojectIndex} className="board_content subproject">
                                 <td>
                                   <label className="custom-checkbox">
                                     <input type="checkbox" id="check1" />
@@ -798,10 +799,10 @@ const Project = () => {
       <CustomModal
         isOpen={isAddSubPjtModalOpen}
         onClose={() => { setAddSubPjtModalOPen(false); resetForm(); }}
-        header={'메인프로젝트이름'}
+        header={clickedProjects[1]}
         footer1={'저장'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(1); }}
+        onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(clickedProjects[0]); }}
         width="500px"
         height="550px"
       >
@@ -966,6 +967,21 @@ const Project = () => {
               </div>
             </div>
           </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isStatusModalOpen}
+        onClose={() => setIsStatusModalOpen(false)}
+        header={'알림'}
+        footer1={'확인'}
+        footer1Class="gray-btn"
+        onFooter1Click={() => setIsStatusModalOpen(false)}
+        width="400px"
+        height="200px"
+      >
+        <div className="text-center">
+          <span>{statusMessage}</span>
         </div>
       </CustomModal>
     </div>
