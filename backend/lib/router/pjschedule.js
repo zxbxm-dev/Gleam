@@ -8,13 +8,13 @@ module.exports = (app) => {
     router.post("/addProject/:mainprojectIndex?", pjscheduleController.addProject);
     router.get("/checkProject", pjscheduleController.getAllProject);
     //프로젝트 수정 라우트
-    router.put(
-        "/editProject/:projectindex/:subprojectIndex?",
+    router.patch(
+        "/editProject/:mainprojectIndex/:subprojectIndex?",
         pjscheduleController.editProject
     );
     //프로젝트 삭제 라우트
     router.delete(
-        "/deleteProject/:projectindex/:subprojectIndex?",
+        "/deleteProject/:mainprojectIndex/:subprojectIndex?",
         pjscheduleController.deleteProject
     );
 

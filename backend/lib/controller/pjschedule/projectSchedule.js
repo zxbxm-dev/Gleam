@@ -95,7 +95,8 @@ const addProject = async (req, res) => {
             startDate,
             endDate,
             memo,
-            status
+            status,
+            pinned
         } = req.body.data;
         const { 
             mainprojectIndex,
@@ -108,33 +109,62 @@ const addProject = async (req, res) => {
         if(!mainprojectIndex) {
             return res.status(400).json({ message: "메인프로젝트 식별번호가 제공되지 않았습니다. "});
         }
-        if(!subprojectIndex) {
-            return res.status(400).json({ message: "서브프로젝트 식별번호가 제공되지 않았습니다. "});
-        }
+
+        //서브프로젝트 수정
+        if(subprojectIndex){
         try{
-            const pj = await project.findOne({
+            const subPj = await project.findOne({
                 where: { mainprojectIndex, subprojectIndex }, 
         });
-        if(!pj) {
-            return res.status(404).json({ message: "프로젝트 정보를 찾을 수 없습니다." });
+        if(!subPj) {
+            return res.status(404).json({ message: "서브프로젝트 정보를 찾을 수 없습니다." });
         }
 
-        pj.projectName = projectName;
-        pj.Leader = Leader;
-        pj.members = members;                   
-        pj.referrer = referrer;
-        pj.startDate = startDate;
-        pj.endDate = endDate;
-        pj.memo = memo;
-        pj.status = status;
+        subPj.projectName = projectName;
+        subPj.Leader = Leader;
+        subPj.members = members;                   
+        subPj.referrer = referrer;
+        subPj.startDate = startDate;
+        subPj.endDate = endDate;
+        subPj.memo = memo;
+        subPj.status = status;
 
-        await pj.save();
+        await subPj.save();
         
-        res.status(200).json(pj);   
+        res.status(200).json("서브프로젝트 일정 수정을 완료했습니다.", subPj);   
         }catch(error){
-        console.error("프로젝트 일정을 수정하는 중에 오류가 발생했습니다.:", error);
-        res.status(500).json({ message: "프로젝트 일정 수정에 실패했습니다." });
+        console.error("서브프로젝트 일정을 수정하는 중에 오류가 발생했습니다.:", error);
+        res.status(500).json({ message: "서브프로젝트 일정 수정에 실패했습니다." });
         }
+      }
+      //메인프로젝트 수정
+      if(!subprojectIndex){
+        try{
+            const mainPj = await project.findOne({
+                where: { mainprojectIndex }, 
+        });
+        if(!mainPj) {
+            return res.status(404).json({ message: "메인프로젝트 정보를 찾을 수 없습니다." });
+        }
+
+        mainPj.projectName = projectName;
+        mainPj.Leader = Leader;
+        mainPj.members = members;                   
+        mainPj.referrer = referrer;
+        mainPj.startDate = startDate;
+        mainPj.endDate = endDate;
+        mainPj.memo = memo;
+        mainPj.status = status;
+        mainPj.pinned = pinned;
+
+        await mainPj.save();
+        
+        res.status(200).json("메인프로젝트 일정 수정을 완료했습니다.", mainPj);   
+        }catch(error){
+        console.error("메인프로젝트 일정을 수정하는 중에 오류가 발생했습니다.:", error);
+        res.status(500).json({ message: "메인프로젝트 일정 수정에 실패했습니다." });
+        }
+      }
     };
 
         //프로젝트 일정 삭제하기
