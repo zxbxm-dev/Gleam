@@ -1,0 +1,91 @@
+.message-sidebar {
+    width: 280px;
+    height: 100vh;
+
+    .Sidebar-Ms {
+        .My-bar {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #e2e2e2;
+            border-bottom: 1px solid #e2e2e2;
+            padding: 15px 0px 15px 31px;
+            font-family: var(--font-family-Noto-M);
+            font-size: 15px;
+
+            .My-attach {
+                margin-right: 10px;
+                width: 35px;
+                height: 35px;
+                border-radius: 50px;
+            }
+
+            .Message-Me {
+                margin-left: 5px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .No-dept {
+            display: flex;
+            align-items: center;
+            padding: 15px 17px 15px 31px;
+            justify-content: space-between;
+            font-family: var(--font-family-Noto-M);
+            font-size: 15px;
+
+            .Message-Menu {
+                cursor: pointer;
+            }
+
+            .No-Left {
+                display: flex;
+                align-items: center;
+
+                img {
+                    margin-right: 10px;
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 50px;
+                }
+            }
+        }
+
+        .DeptTeams {
+            display: flex;
+            flex-direction: column;
+
+            .downBtn {
+                display: flex;
+                align-items: center;
+                padding: 5px 0px 5px 31px;
+                background-color: #eee;
+                font-family: var(--font-family-Noto-M);
+
+                img {
+                    margin-right: 10px;
+                }
+            }
+
+            .downTeamBtn{
+                display: flex;
+                align-items: center;
+                padding: 5px 0px 5px 31px;
+                background-color: #F3F3F3;
+                font-family: var(--font-family-Noto-M);
+                width: 100%;
+
+                img {
+                    margin-right: 10px;
+                }
+            }
+
+            .downBtn:hover{
+                background-color: #eee;
+            }
+
+            .DeptDown{
+            }
+        }
+    }
+}

@@ -78,7 +78,7 @@ function App() {
               <Route path="/writeMail" element={<WriteMail />} />
 
               {/* 메신저 */}
-              <Route path="/massage" element={<Message />} />
+              <Route path="/message" element={<Message />} />
 
               {/* 조직문화 */}
               <Route path="/writeAnnounce" element={<WriteAnnounce />} />

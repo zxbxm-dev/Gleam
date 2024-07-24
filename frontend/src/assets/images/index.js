@@ -60,3 +60,7 @@ export { default as mail_write } from "./mail/mail_write.svg";
 export { default as mail_attachment } from "./mail/mail_attachment.svg";
 export { default as mail_triangle } from "./mail/mail_triangle.svg";
 export { default as mail_cancle } from "./mail/mail_cancle.svg";
+
+//message
+export { default as MessageMe } from "./Message/MessageMe.svg";
+export { default as MessageMenu } from "./Message/MessageMenu.svg";
