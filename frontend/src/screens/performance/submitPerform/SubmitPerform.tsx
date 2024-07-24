@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
-import { uploadOutline } from '../../../services/report/ReportServices';
+import { useQuery } from 'react-query';
+import { uploadOutline, getOutline } from '../../../services/report/ReportServices';
 
 import testPDF from '../../../assets/pdf/인사평가개요(안내).pdf'
 
@@ -20,6 +21,15 @@ const SubmitPerform = () => {
   const [numPages, setNumPages] = useState<number>(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null); 
+
+  const { data: outlineData } = useQuery('outline', getOutline);
+
+  useEffect(() => {
+    if (outlineData) {
+      setPdfBlob(outlineData.data);
+    }
+  }, [outlineData]);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
@@ -28,13 +38,7 @@ const SubmitPerform = () => {
   const renderPages = () => {
     const pages = [];
     for (let i = 1; i <= numPages; i++) {
-      pages.push(
-        <Page
-          key={`page_${i}`}
-          pageNumber={i}
-          width={1200}
-        />
-      );
+      pages.push(<Page key={`page_${i}`} pageNumber={i} width={1200} />);
     }
     return pages;
   };
@@ -57,7 +61,6 @@ const SubmitPerform = () => {
       formData.append('filename', selectedFile.name);
 
       await uploadOutline(formData);
-
     } catch (error) {
       console.error('Error uploading file:', error);
     } finally {
@@ -65,13 +68,12 @@ const SubmitPerform = () => {
     }
   };
 
-
   return (
     <div className="content">
       <div className="content_container">
         <div className="perform_content">
           <div className="pdf-container">
-            <Document file={testPDF} onLoadSuccess={onDocumentLoadSuccess}>
+          <Document file={pdfBlob} onLoadSuccess={onDocumentLoadSuccess}>
               {(user.team === '관리팀' || user.position === '센터장') && (
                 <div className='Upload'>
                   {!selectedFile &&

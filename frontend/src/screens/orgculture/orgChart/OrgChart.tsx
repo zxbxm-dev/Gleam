@@ -399,20 +399,6 @@ const OrgChart = () => {
                   </div>}>
                   <TreeNode label={<div className="nodeicon3">크립토 블록체인 연구팀</div>}>
                     <div className="TeamColumn">
-                      {getSortedTeamMembers('크립토 블록체인 연구팀').map(member => (
-                        <div key={member.userId} className="nodeicon7">
-                          <MemberPopover
-                            member={member}
-                            isOpen={openPopoverId === member.userId}
-                            onOpen={() => setOpenPopoverId(member.userId)}
-                            onClose={() => setOpenPopoverId(null)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TreeNode>
-                  <TreeNode label={<div className="nodeicon3">API 개발팀</div>} >
-                    <div className="TeamColumn">
                       {getSortedTeamMembers('API 개발팀').map(member => (
                         <div key={member.userId} className="nodeicon7">
                           <MemberPopover
