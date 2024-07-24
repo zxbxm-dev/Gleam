@@ -65,8 +65,9 @@ const addProject = async (req, res) => {
     //프로젝트 일정 조회
     const getAllProject = async (req, res) => {
         try{
-            const projects  = await project.findAll();
-            res.status(200).json(projects);
+            const mainprojects  = await project.findAll();
+            const subprojects = await subproject.findAll();
+            res.status(200).json({mainprojects,subprojects});
         }catch(error) {
             console.error("프로젝트 일정을 가져오는 중에 오류가 발생했습니다.:", error);
             res.status(500).json({message: "프로젝트 일정 불러오기에 실패했습니다." });
@@ -77,10 +78,9 @@ const addProject = async (req, res) => {
     //프로젝트 일정 수정하기 ( 작성자 , 팀리더만 가능 )
     const editProject = async (req, res) => {
         const {
-            userID,
+            userId: userID,
             Leader,
             projectName,
-            subprojectName,
             members,
             referrer,
             startDate,
@@ -95,29 +95,24 @@ const addProject = async (req, res) => {
 
         console.log("요청 파라미터:", req.params);
         console.log("요청 본문:", req.body);
-
-        if(!projectIndex) {
-            return res
-            .status(400)
-            .json({ message: "프로젝트 식별번호가 제공되지 않았습니다. "});
+ 
+        if(!mainprojectIndex) {
+            return res.status(400).json({ message: "메인프로젝트 식별번호가 제공되지 않았습니다. "});
         }
+        if(!subprojectIndex) {
+            return res.status(400).json({ message: "서브프로젝트 식별번호가 제공되지 않았습니다. "});
+        }
+
         try{
             const pj = await project.findOne({
-                where: { projectIndex: projectIndex }, 
+                where: { mainprojectIndex: mainprojectIndex }, 
         });
         if(!pj) {
-            return res
-            .status(404)
-            .json({ message: "프로젝트 정보를 찾을 수 없습니다." });
-        }
-        if(pj.Leader !== Leader && pj.userID !== userID) {
-            return res
-            .status(403)
-            .json({ message: "해당 프로젝트 수정 권한이 없습니다." });
+            return res.status(404).json({ message: "프로젝트 정보를 찾을 수 없습니다." });
         }
         pj.projectName = projectName;
-        pj.subprojectName = subprojectName;
-        pj.members = members;
+        pj.Leader = Leader;
+        pj.members = members;                   
         pj.referrer = referrer;
         pj.startDate = startDate;
         pj.endDate = endDate;
