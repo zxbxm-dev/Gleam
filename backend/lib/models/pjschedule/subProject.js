@@ -65,5 +65,11 @@ module.exports = (sequelize, DataTypes) => {
           tableName: "subProject"
         }
     );
+
+    subProject.associate = (models) => {
+      subProject.belongsTo(models.user, { foreignKey: 'userId'});
+      subProject.belongsTo(models.mainProject, { foreignKey: 'mainprojectIndex'});
+    };
+    
      return subProject;
     }
