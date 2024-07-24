@@ -18,7 +18,7 @@ import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
 import { CheckProject, addMainProject, addSubProject, EditMainProject, DeleteMainProject } from "../../services/project/ProjectServices";
 
-interface Project {
+interface ProjectData {
   mainprojectIndex: number;
   userId: string;
   status: string;
@@ -66,7 +66,7 @@ const Project = () => {
   const [selectedstateOption, setSelectedStateOption] = useState('전체');
 
   const [projects, setProjects] = useState<any[]>([]);
-  const [clickedProjects, setClickedProjects] = useState<Project | null>(null);
+  const [clickedProjects, setClickedProjects] = useState<ProjectData | null>(null);
   const [allSelected, setAllSelected] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<{ [key: number]: boolean }>({});
   const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
@@ -91,14 +91,22 @@ const Project = () => {
   }
 
   useEffect(() => {
-    setSubProjectVisible(projects.reduce((acc: any, project: any) => {
-      acc[project.id] = false;
-      project.subProjects?.forEach((subProject: any) => {
-        acc[subProject.id] = false;
-      });
-      return acc;
-    }, {}));
-  }, []);
+    if (Array.isArray(projects)) {
+      setSubProjectVisible(
+        projects.reduce((acc: any, project: any) => {
+          acc[project.id] = false;
+          if (Array.isArray(project.subProjects)) {
+            project.subProjects.forEach((subProject: any) => {
+              acc[subProject.id] = false;
+            });
+          }
+          return acc;
+        }, {})
+      );
+    } else {
+      setSubProjectVisible({});
+    }
+  }, [projects]);
 
   const toggleSubProjects = (projectId: string) => {
     setSubProjectVisible(prev => ({
@@ -311,7 +319,7 @@ const Project = () => {
     setStateIsOpen(false);
   }
 
-  const handleRightClick = (project: Project, event: React.MouseEvent<HTMLTableCellElement>) => {
+  const handleRightClick = (project: ProjectData, event: React.MouseEvent<HTMLTableCellElement>) => {
     setClickedProjects(project);
     event.preventDefault();
     setDropdownOpen(true);
@@ -347,12 +355,12 @@ const Project = () => {
     onSuccess: (data) => {
       console.log('불러온 프로젝트', data);
       if (selectedstateOption === '전체') {
-        setProjects(data);
+        setProjects(data.mainprojects);
       } else if (selectedstateOption === '진행 중') {
-        const filteredProjects = data.filter((project: any) => project.status === 'inprogress');
+        const filteredProjects = data.mainprojects.filter((project: any) => project.status === 'inprogress');
         setProjects(filteredProjects)
       } else {
-        const filteredProjects = data.filter((project: any) => project.status === 'done');
+        const filteredProjects = data.mainprojects.filter((project: any) => project.status === 'done');
         setProjects(filteredProjects)
       }
     },
@@ -448,7 +456,6 @@ const Project = () => {
     refetchProject();
   }, [refetchProject, selectedstateOption]);
 
-  console.log(clickedProjects)
   return (
     <div className="content">
       <div className="content_container">
@@ -515,7 +522,7 @@ const Project = () => {
                       </tr>
                     </thead>
                     <tbody className="board_container">
-                      {(projects || []).map((project, index) => (
+                      {(Array.isArray(projects) ? projects : []).map((project, index) => (
                         <React.Fragment key={project.mainprojectIndex}>
                           <tr className="board_content">
                             <td>
