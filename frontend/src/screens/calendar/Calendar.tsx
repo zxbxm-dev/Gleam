@@ -96,6 +96,14 @@ const Calendar = () => {
     setKey(prevKey => prevKey + 1);
   }, [activeTab]);
 
+  const resetForm = () => {
+    setTitle('');
+    setMemo('');
+    setStartDate(null);
+    setEndDate(null);
+    setAddEventUser(null);
+  }
+
   const handleTitleChange = (event: any) => {
     setuserDropdown(true);
     setTitle(event.target.value);
@@ -175,15 +183,12 @@ const Calendar = () => {
       .then(response => {
         console.log("Event added successfully:", response);
         fetchCalendar();
-        setTitle('');
-        setStartDate(null);
-        setEndDate(null);
-        setAddEventUser(null);
       })
       .catch(error => {
         console.error('Error adding event:', error);
       });
-
+      
+    resetForm();
     setAddEventModalOPen(false);
   };
 
@@ -275,6 +280,7 @@ const Calendar = () => {
     setEndDate(new Date(selectedEvent.endDate));
     setTitle(selectedEvent.title);
     setMemo(selectedEvent.memo);
+    setSelectedColor(selectedEvent.backgroundColor);
 
     setControlEventModalOPen(false);
     setEditEventModalOPen(true);
@@ -309,6 +315,8 @@ const Calendar = () => {
       .catch((error) => {
         console.error("이벤트 수정에 실패했습니다:", error);
       });
+
+    resetForm();
   };
 
 
@@ -446,14 +454,14 @@ const Calendar = () => {
 
       <CustomModal
         isOpen={isAddeventModalOpen}
-        onClose={() => setAddEventModalOPen(false)}
+        onClose={() => { setAddEventModalOPen(false); resetForm();}}
         header={'일정 등록하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
         onFooter1Click={handleAddEvent}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => setAddEventModalOPen(false)}
+        onFooter2Click={() => { setAddEventModalOPen(false); resetForm();}}
         height="320px"
       >
         <div className="body-container">
@@ -657,14 +665,14 @@ const Calendar = () => {
 
       <CustomModal
         isOpen={isEditeventModalOpen}
-        onClose={() => setEditEventModalOPen(false)}
+        onClose={() => { setEditEventModalOPen(false); resetForm();}}
         header={'일정 수정하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
         onFooter1Click={handleCalenEdit}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => setEditEventModalOPen(false)}
+        onFooter2Click={() => { setEditEventModalOPen(false); resetForm();}}
         height="320px"
       >
         <div className="body-container">
