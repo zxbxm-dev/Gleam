@@ -100,6 +100,32 @@
             color: #fff;
           }
         }
+
+        .sub-dropdown-menu {
+          font-family: var(--font-family-Noto-B);
+          font-size: 16px;
+          cursor: pointer;
+          width: 92px;
+          height: 70px;
+          z-index: 999;
+          
+          .dropdown_pin {
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 92px;
+            height: 35px;
+            border: 1px solid #76CB7E;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #ffffff;
+          }
+          .dropdown_pin:hover{
+            background-color: #76CB7E;
+            color: #fff;
+          }
+        }
       }
     }
 
