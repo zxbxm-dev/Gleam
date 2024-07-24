@@ -235,10 +235,19 @@ const AttendanceRegist = () => {
   }, [membersRD]);
 
   useEffect(() => {
-    const height = 40 + 92.2 * members.length;
-    const heightRD = 40 + 92.3 * membersRD.length;
-    setExplanHeight(height);
-    setExplanRDHeight(heightRD);
+    if(window.innerWidth >= 1600) {
+      const height = 40 + 92.2 * members.length;
+      const heightRD = 40 + 92.3 * membersRD.length;
+
+      setExplanHeight(height);
+      setExplanRDHeight(heightRD);
+    } else {
+      const height = 40 + 92 * members.length;
+      const heightRD = 40 + 92.3 * membersRD.length;
+
+      setExplanHeight(height);
+      setExplanRDHeight(heightRD);
+    }
   }, [members, membersRD]);
  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1060,7 +1069,7 @@ const onSubmit = (data: any) => {
           ) : null}
         </div>
 
-        {user.company === '본사' || selectedScreen !== 'R&D' ? (
+        {user.company === 'R&D' || selectedScreen !== 'R&D' ? (
           <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (
