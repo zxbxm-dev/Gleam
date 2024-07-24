@@ -387,6 +387,27 @@
       }
     }
 
+    .autocomplete_dropdown::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    .autocomplete_dropdown::-webkit-scrollbar-thumb {
+      background-color: #A8A8A8;
+      border-radius: 10px;
+      background-clip: padding-box;
+      border: 2px solid transparent;
+    }
+    
+    .autocomplete_dropdown::-webkit-scrollbar-corner {
+      background-color: none;
+    }
+    
+    .autocomplete_dropdown::-webkit-scrollbar-track {
+      box-shadow: none;
+      background-color: #fff;
+    }
+
     .body_container_content_listbox {
       overflow-y: auto;
       width: 75%;
