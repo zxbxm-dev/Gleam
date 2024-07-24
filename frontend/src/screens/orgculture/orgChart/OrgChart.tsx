@@ -117,7 +117,6 @@ const OrgChart = () => {
   const ceo = getPersonByPosition('', '대표이사');
   const exec = getPersonByPosition('', '이사');
   const devHead = getPersonByPosition('개발부', '부서장');
-  const blockchainHead = getPersonByPosition('블록체인 사업부', '부서장');
   const adminHead = getPersonByPosition('관리부', '부서장');
   const marketingHead = getPersonByPosition('마케팅부', '부서장');
   const rndHead = getPersonByPosition('', '센터장');
@@ -197,35 +196,6 @@ const OrgChart = () => {
                   <TreeNode label={<div className="nodeicon5">개발 2팀</div>} >
                     <div className="TeamColumn">
                       {getSortedTeamMembers('개발 2팀').map(member => (
-                        <div key={member.userId} className="nodeicon6">
-                          <MemberPopover
-                            member={member}
-                            isOpen={openPopoverId === member.userId}
-                            onOpen={() => setOpenPopoverId(member.userId)}
-                            onClose={() => setOpenPopoverId(null)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TreeNode>
-                </TreeNode>
-
-                <TreeNode label={
-                  blockchainHead && (
-                    <CustomPopover
-                      direction={'right'}
-                      position={blockchainHead.position}
-                      dept={blockchainHead.department}
-                      name={blockchainHead.username}
-                      attachment={blockchainHead?.attachment}
-                      phone={personData.find(person => (person.position === '부서장') && (person.department === '블록체인사업부'))?.phoneNumber || 'N/A'}
-                      mail={personData.find(person => (person.position === '부서장') && (person.department === '블록체인사업부'))?.usermail || 'N/A'}
-                    />
-                  )
-                }>
-                  <TreeNode label={<div className="nodeicon5" style={{ marginTop: '20px' }}>블록체인 1팀</div>} >
-                    <div className="TeamColumn">
-                      {getSortedTeamMembers('블록체인 1팀').map(member => (
                         <div key={member.userId} className="nodeicon6">
                           <MemberPopover
                             member={member}
@@ -361,7 +331,20 @@ const OrgChart = () => {
                     />
                   )
                 }>
-                  <TreeNode label={<div className="nodeicon3">암호 연구팀</div>} />
+                  <TreeNode label={<div className="nodeicon3">암호 연구팀</div>}>
+                    <div className="TeamColumn">
+                      {getSortedTeamMembers('암호 연구팀').map(member => (
+                        <div key={member.userId} className="nodeicon7">
+                          <MemberPopover
+                            member={member}
+                            isOpen={openPopoverId === member.userId}
+                            onOpen={() => setOpenPopoverId(member.userId)}
+                            onClose={() => setOpenPopoverId(null)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </TreeNode>
                   <TreeNode label={<div className="nodeicon3">AI 연구팀</div>} >
                     <div className="TeamColumn">
                       {getSortedTeamMembers('AI 연구팀').map(member => (
@@ -414,8 +397,7 @@ const OrgChart = () => {
                       <div>공석</div>
                     </div>
                   </div>}>
-                  <TreeNode label={<div className="nodeicon3">크립토 블록체인 연구팀</div>} />
-                  <TreeNode label={<div className="nodeicon3">AI 개발팀</div>} >
+                  <TreeNode label={<div className="nodeicon3">크립토 블록체인 연구팀</div>}>
                     <div className="TeamColumn">
                       {getSortedTeamMembers('API 개발팀').map(member => (
                         <div key={member.userId} className="nodeicon7">

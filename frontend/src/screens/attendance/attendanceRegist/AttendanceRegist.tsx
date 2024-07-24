@@ -106,9 +106,8 @@ const AttendanceRegist = () => {
   });
   
   useEffect(() => {
-    const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
+    const departmentOrder = ['개발부', '마케팅부', '관리부'];
     const teamOrder: TeamOrderType = {
-      '블록체인 사업부': ['블록체인 1팀'],
       '개발부': ['개발 1팀', '개발 2팀'],
       '마케팅부': ['디자인팀', '기획팀'],
       '관리부': ['관리팀', '지원팀'],
@@ -236,10 +235,19 @@ const AttendanceRegist = () => {
   }, [membersRD]);
 
   useEffect(() => {
-    const height = 40 + 92.2 * members.length;
-    const heightRD = 40 + 92.3 * membersRD.length;
-    setExplanHeight(height);
-    setExplanRDHeight(heightRD);
+    if(window.innerWidth >= 1600) {
+      const height = 40 + 92.2 * members.length;
+      const heightRD = 40 + 92.3 * membersRD.length;
+
+      setExplanHeight(height);
+      setExplanRDHeight(heightRD);
+    } else {
+      const height = 40 + 92 * members.length;
+      const heightRD = 40 + 92.3 * membersRD.length;
+
+      setExplanHeight(height);
+      setExplanRDHeight(heightRD);
+    }
   }, [members, membersRD]);
  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1061,7 +1069,7 @@ const onSubmit = (data: any) => {
           ) : null}
         </div>
 
-        {user.company === '본사' || selectedScreen !== 'R&D' ? (
+        {user.company === 'R&D' || selectedScreen !== 'R&D' ? (
           <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (

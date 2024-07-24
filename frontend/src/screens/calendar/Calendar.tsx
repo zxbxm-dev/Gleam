@@ -111,7 +111,7 @@ const Calendar = () => {
     } else if (value.includes('출장')) {
       setSelectedColor('#B1C2FF');
     } else {
-      setSelectedColor('#ABF0FF');
+      setSelectedColor('#B5B5B5');
     }
   };
 
@@ -484,6 +484,10 @@ const Calendar = () => {
                   <div className="Option" onClick={() => SelectOptions('#B1C2FF')}>
                     <span>출장</span>
                     <div style={{ backgroundColor: '#B1C2FF' }}>&nbsp;</div>
+                  </div>
+                  <div className="Option" onClick={() => SelectOptions('#B5B5B5')}>
+                    <span>기타</span>
+                    <div style={{ backgroundColor: '#B5B5B5' }}>&nbsp;</div>
                   </div>
                 </div>
               ) : (
