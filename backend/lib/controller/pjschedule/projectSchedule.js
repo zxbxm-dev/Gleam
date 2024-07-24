@@ -117,7 +117,7 @@ const addProject = async (req, res) => {
                 where: { mainprojectIndex, subprojectIndex }, 
         });
         if(!subPj) {
-            return res.status(404).json({ message: "서브프로젝트 정보를 찾을 수 없습니다." });
+            return res.status(400).json({ message: "서브프로젝트 정보를 찾을 수 없습니다." });
         }
 
         subPj.projectName = projectName;
@@ -131,7 +131,7 @@ const addProject = async (req, res) => {
 
         await subPj.save();
         
-        res.status(200).json("서브프로젝트 일정 수정을 완료했습니다.", subPj);   
+        res.status(200).json({message:"서브프로젝트 일정 수정을 완료했습니다.", subPj});   
         }catch(error){
         console.error("서브프로젝트 일정을 수정하는 중에 오류가 발생했습니다.:", error);
         res.status(500).json({ message: "서브프로젝트 일정 수정에 실패했습니다." });
@@ -159,7 +159,7 @@ const addProject = async (req, res) => {
 
         await mainPj.save();
         
-        res.status(200).json("메인프로젝트 일정 수정을 완료했습니다.", mainPj);   
+        res.status(200).json({message:"메인프로젝트 일정 수정을 완료했습니다.", mainPj});   
         }catch(error){
         console.error("메인프로젝트 일정을 수정하는 중에 오류가 발생했습니다.:", error);
         res.status(500).json({ message: "메인프로젝트 일정 수정에 실패했습니다." });
