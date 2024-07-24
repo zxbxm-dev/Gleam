@@ -42,6 +42,7 @@ import {
   Project,
   Mail,
   WriteMail,
+  Message
 } from "./screens";
 
 function App() {
@@ -75,7 +76,9 @@ function App() {
               {/* 메일 */}
               <Route path="/mail" element={<Mail />} />
               <Route path="/writeMail" element={<WriteMail />} />
-              
+
+              {/* 메신저 */}
+              <Route path="/massage" element={<Message />} />
 
               {/* 조직문화 */}
               <Route path="/writeAnnounce" element={<WriteAnnounce />} />

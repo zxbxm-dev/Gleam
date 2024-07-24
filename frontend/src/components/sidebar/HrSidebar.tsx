@@ -13,6 +13,7 @@ interface Props {
 }
 
 
+
 const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
   const [expandedTeams, setExpandedTeams] = useState<string[]>([]); // 확장된 팀의 배열
 

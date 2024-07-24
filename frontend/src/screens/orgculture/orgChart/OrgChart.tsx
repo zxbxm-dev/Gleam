@@ -417,7 +417,7 @@ const OrgChart = () => {
                   <TreeNode label={<div className="nodeicon3">크립토 블록체인 연구팀</div>} />
                   <TreeNode label={<div className="nodeicon3">AI 개발팀</div>} >
                     <div className="TeamColumn">
-                      {getSortedTeamMembers('AI 개발팀').map(member => (
+                      {getSortedTeamMembers('API 개발팀').map(member => (
                         <div key={member.userId} className="nodeicon7">
                           <MemberPopover
                             member={member}

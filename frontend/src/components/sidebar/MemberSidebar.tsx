@@ -122,7 +122,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
               case '동형분석연구실':
                 return person.department === '동형분석 연구실' && (person.team === '' || person.team === '동형분석 연구팀');
               case '블록체인연구실':
-                return person.department === '블록체인 연구실' && (person.team === '' || person.team === 'AI 개발팀' || person.team === '크립토 블록체인 연구팀');
+                return person.department === '블록체인 연구실' && (person.team === '' || person.team === 'API 개발팀' || person.team === '크립토 블록체인 연구팀');
               default:
                 return false;
             }
