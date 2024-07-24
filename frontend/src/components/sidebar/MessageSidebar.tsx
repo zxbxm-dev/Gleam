@@ -2,6 +2,13 @@ import React, { useState, useEffect } from "react";
 import { PersonData } from "../../services/person/PersonServices";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
+import {
+    MessageMe,
+    MessageMenu,
+    UserIcon_dark,
+    MenuArrow_down,
+    MenuArrow_right
+} from "../../assets/images/index";
 
 interface Person {
     userId: string;
@@ -49,9 +56,6 @@ const MessageSidebar: React.FC = () => {
         }));
     };
 
-    const departments = Array.from(new Set(personData?.map(person => person.department) || []));
-    const teams = Array.from(new Set(personData?.map(person => person.team) || []));
-
     const departmentTeams: {
         [key: string]: string[];
     } = {
@@ -62,36 +66,61 @@ const MessageSidebar: React.FC = () => {
         "동형분석 연구실": ["동형분석 연구팀"],
         "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"]
     };
-    
 
     return (
         <div className="message-sidebar">
             {personData ? (
-                <ul>
-                    <li>
-                        {user.team ? `${user.team}` : `${user.department}`} {user.username} | {user.position}
+                <ul className="Sidebar-Ms">
+                    <li className="My-bar">
+                        <img className="My-attach" src={user.attachment} />
+                        <div>
+                            {user.team ? `${user.team}` : `${user.department}`} {user.username}
+                        </div>
+                        <img className="Message-Me" src={MessageMe} />
                     </li>
-                    {departments.map((department) => (
-                        <li key={department}>
-                            <button onClick={() => toggleDepartmentExpansion(department)}>
-                                {expandedDepartments[department] ? '-' : '+'} {department}
+                    {personData.filter(person => !person.department).map((person) => (
+                        <li className="No-dept" key={person.userId}>
+                            <div className="No-Left">
+                                <img src={person.attachment ? person.attachment : UserIcon_dark} alt={`${person.username}`} />
+                                {person.username}
+                            </div>
+                            <img className="Message-Menu" src={MessageMenu} />
+                        </li>
+                    ))}
+                    {Object.keys(departmentTeams).map((department) => (
+                        <li className="DeptTeams" key={department}>
+                            <button className="downBtn" onClick={() => toggleDepartmentExpansion(department)}>
+                                {expandedDepartments[department] ? <img src={MenuArrow_down} /> : <img src={MenuArrow_right} />} {department}
                             </button>
                             {expandedDepartments[department] && (
-                                <ul>
+                                <ul className="DeptDown">
+                                    {personData.map((person) => (
+                                        person.department === department && person.team === "" && (
+                                            <li className="No-dept" key={person.userId}>
+                                                <div className="No-Left">
+                                                    <img src={person.attachment ? person.attachment : UserIcon_dark} alt={`${person.username}`} />
+                                                    {person.team ? `${person.team}` : `${person.department}`} {person.username}
+                                                </div>
+
+                                                <img className="Message-Menu" src={MessageMenu} />
+                                            </li>
+                                        )
+                                    ))}
                                     {departmentTeams[department].map((team) => (
                                         <li key={team}>
-                                            <button onClick={() => toggleTeamExpansion(team)}>
-                                                {expandedTeams[team] ? '-' : '+'} {team}
+                                            <button className="downTeamBtn" onClick={() => toggleTeamExpansion(team)}>
+                                                {expandedTeams[team] ? <img src={MenuArrow_down} /> : <img src={MenuArrow_right} />} {team}
                                             </button>
                                             {expandedTeams[team] && (
                                                 <ul>
                                                     {personData.map((person) => (
                                                         person.department === department && person.team === team && (
-                                                            <li key={person.userId}>
-                                                                <div>
-                                                                    <img src={person.attachment} alt={`${person.username}'s profile`} />
-                                                                    {person.team} <strong>{person.username}</strong> | {person.position}
+                                                            <li className="No-dept" key={person.userId}>
+                                                                <div className="No-Left">
+                                                                    <img src={person.attachment ? person.attachment : UserIcon_dark} alt={`${person.username}`} />
+                                                                    {person.team ? `${person.team}` : `${person.department}`} {person.username}
                                                                 </div>
+                                                                <img className="Message-Menu" src={MessageMenu} />
                                                             </li>
                                                         )
                                                     ))}
@@ -109,6 +138,6 @@ const MessageSidebar: React.FC = () => {
             )}
         </div>
     );
-};
+}
 
 export default MessageSidebar;
