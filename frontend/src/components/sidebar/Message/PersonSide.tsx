@@ -18,6 +18,8 @@ interface PersonDataTabProps {
     userTeam: string | null;
     userDepartment: string | null;
     userName: string | null;
+    userPosition: string | null;
+    onPersonClick: (username: string, team: string, department:string, position:string) => void;
 }
 
 const PersonDataTab: React.FC<PersonDataTabProps> = ({
@@ -29,7 +31,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     userAttachment,
     userTeam,
     userDepartment,
-    userName
+    userName,
+    onPersonClick,
+    userPosition
 }) => {
     if (!personData) {
         return <p>Loading...</p>;
@@ -48,7 +52,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
 
     return (
         <ul className="Sidebar-Ms">
-            <li className="My-bar">
+        <li className="My-bar" onClick={() => onPersonClick(userName || '', userTeam || '', userDepartment || '', userPosition || '')}>
                 <img className="My-attach" src={userAttachment} />
                 <div>
                     {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
@@ -56,7 +60,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 <img className="Message-Me" src={MessageMe} />
             </li>
             {personData.filter(person => !person.department).map((person) => (
-                <li className="No-dept" key={person.userId}>
+                <li className="No-dept" key={person.userId} onClick={() => onPersonClick(person.username, person.team,person.department,person.position)}>
                     <div className="No-Left">
                         <img src={person.attachment ? person.attachment : UserIcon_dark} alt={`${person.username}`} />
                         {person.username}
@@ -73,12 +77,11 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         <ul className="DeptDown">
                             {personData.map((person) => (
                                 person.department === department && person.team === "" && (
-                                    <li className="No-dept" key={person.userId}>
+                                    <li className="No-dept" key={person.userId} onClick={() => onPersonClick(person.username, person.team,person.department,person.position)}>
                                         <div className="No-Left">
                                             <img src={person.attachment ? person.attachment : UserIcon_dark} alt={`${person.username}`} />
                                             {person.team ? `${person.team}` : `${person.department}`} {person.username}
                                         </div>
-
                                         <img className="Message-Menu" src={MessageMenu} />
                                     </li>
                                 )
@@ -92,7 +95,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                         <ul>
                                             {personData.map((person) => (
                                                 person.department === department && person.team === team && (
-                                                    <li className="No-dept" key={person.userId}>
+                                                    <li className="No-dept" key={person.userId} onClick={() => onPersonClick(person.username, person.team,person.department,person.position)}>
                                                         <div className="No-Left">
                                                             <img src={person.attachment ? person.attachment : UserIcon_dark} alt={`${person.username}`} />
                                                             {person.team ? `${person.team}` : `${person.department}`} {person.username}

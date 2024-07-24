@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { PersonData } from "../../../services/person/PersonServices";
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../../recoil/atoms';
-import {
-    ChatTab,
-    PersonTab
-} from "../../../assets/images/index";
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { userState, selectedPersonState } from '../../../recoil/atoms';
+import { ChatTab, PersonTab } from "../../../assets/images/index";
 import PersonDataTab from './PersonSide';
 import ChatDataTab from './ChatTab';
 
@@ -41,6 +38,7 @@ const MessageSidebar: React.FC = () => {
     const [dummyData, setDummyData] = useState<any[]>([]);
 
     const user: User = useRecoilValue(userState) as User;
+    const setSelectedPerson = useSetRecoilState(selectedPersonState);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -75,8 +73,8 @@ const MessageSidebar: React.FC = () => {
 
         if (tab === 'ChatData') {
             setDummyData([
-                { userId: 'dummy1', username: '진유빈', department: '개발부', team: '', entering: new Date(), attachment: '', isGroupChat: false },
-                { userId: 'dummy2', username: '구민석', department: '개발부', team: '개발 1팀', entering: new Date(), attachment: '', isGroupChat: false },
+                { userId: 'dummy1', username: '진유빈', department: '개발부', team: '',position:'팀장', entering: new Date(), attachment: '', isGroupChat: false },
+                { userId: 'dummy2', username: '구민석', department: '개발부', team: '개발 1팀',position:'팀장', entering: new Date(), attachment: '', isGroupChat: false },
                 {
                     userId: 'dummy3',
                     username: '글림',
@@ -86,15 +84,19 @@ const MessageSidebar: React.FC = () => {
                     attachment: '',
                     isGroupChat: true,
                     participants: [
-                        { userId: 'dummy4', username: '김효은', department: '관리부', team: '관리팀', entering: new Date(), attachment: '' },
-                        { userId: 'dummy5', username: '장현지', department: '개발부', team: '개발 1팀', entering: new Date(), attachment: '' }
+                        { userId: 'dummy4', username: '김효은', department: '관리부', team: '관리팀',position:'팀장', entering: new Date(), attachment: '' },
+                        { userId: 'dummy5', username: '장현지', department: '개발부', team: '개발 1팀',position:'팀장', entering: new Date(), attachment: '' }
                     ]
                 },
-                { userId: 'dummy4', username: '전아름', department: '마케팅부', team: '기획팀', entering: new Date(), attachment: '', isGroupChat: false },
+                { userId: 'dummy4', username: '전아름', department: '마케팅부', team: '기획팀',position:'팀장', entering: new Date(), attachment: '', isGroupChat: false },
             ]);
         } else {
             setDummyData([]);
         }
+    };
+
+    const handlePersonClick = (username: string, team: string, department: string, position: string) => {
+        setSelectedPerson({ username, team, department, position });
     };
 
     return (
@@ -114,6 +116,8 @@ const MessageSidebar: React.FC = () => {
                     userTeam={user.team}
                     userDepartment={user.department}
                     userName={user.username}
+                    userPosition={user.position}
+                    onPersonClick={handlePersonClick}
                 />
             ) : activeTab === 'ChatData' ? (
                 <ChatDataTab
@@ -122,6 +126,8 @@ const MessageSidebar: React.FC = () => {
                     userTeam={user.team}
                     userDepartment={user.department}
                     userName={user.username}
+                    userPosition={user.position}
+                    onPersonClick={handlePersonClick}
                 />
             ) : (
                 <p>Loading...</p>
