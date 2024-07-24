@@ -2,7 +2,7 @@ const models = require("../../models");
 const project = models.mainProject;
 const subproject = models.subProject;
 
-//프로젝트 일정 추가 
+//프로젝트 일정 추가 (main,sub)
 const addProject = async (req, res) => {
     const {  mainprojectIndex:  mainprojectIndex } = req.params;
     const{
@@ -19,12 +19,21 @@ const addProject = async (req, res) => {
     console.log("요청 본문 받음:", req.body);
     console.log("요청 파라미터:", req.params);
 
+
+
     //서브 프로젝트 생성 
         if(mainprojectIndex){
+            //서브 프로젝트 인덱스 생성 
+            const subprojectCount = await subproject.count({ 
+                where: { mainprojectIndex } 
+            });
+            const newSubprojectIndex = `${mainprojectIndex}-${subprojectCount + 1}`;
+            
             try{
             const newSubProject = await subproject.create({
                 userId: userID,
                 mainprojectIndex,
+                subprojectIndex : newSubprojectIndex,
                 projectName,
                 Leader,
                 members,
@@ -54,10 +63,10 @@ const addProject = async (req, res) => {
                 memo,
                 pinned: false,  
             })
-            res.status(201).json({message: "프로젝트 일정 추가를 완료했습니다.", newProject});
+            res.status(201).json({message: "메인프로젝트 일정 추가를 완료했습니다.", newProject});
           }catch(error) {
-            console.log("프로젝트 일정 추가 중 오류가 발생했습니다.:", error);
-            res.status(500).json({message: "프로젝트 일정 추가에 실패했습니다." });
+            console.log("메인프로젝트 일정 추가 중 오류가 발생했습니다.:", error);
+            res.status(500).json({message: "메인프로젝트 일정 추가에 실패했습니다." });
         }
     };
 }
@@ -102,14 +111,14 @@ const addProject = async (req, res) => {
         if(!subprojectIndex) {
             return res.status(400).json({ message: "서브프로젝트 식별번호가 제공되지 않았습니다. "});
         }
-
         try{
             const pj = await project.findOne({
-                where: { mainprojectIndex: mainprojectIndex }, 
+                where: { mainprojectIndex, subprojectIndex }, 
         });
         if(!pj) {
             return res.status(404).json({ message: "프로젝트 정보를 찾을 수 없습니다." });
         }
+
         pj.projectName = projectName;
         pj.Leader = Leader;
         pj.members = members;                   

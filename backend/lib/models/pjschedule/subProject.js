@@ -20,9 +20,8 @@ module.exports = (sequelize, DataTypes) => {
             }
           },
           subprojectIndex: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
-            autoIncrement: true,
             primaryKey : true,            
           },
           projectName: {
