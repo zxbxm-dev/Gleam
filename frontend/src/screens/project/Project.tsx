@@ -4,6 +4,7 @@ import {
   White_Arrow,
   mail_delete,
   mail_important,
+  mail_important_active,
 } from "../../assets/images/index";
 import React, { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
@@ -11,7 +12,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CustomModal from "../../components/modal/CustomModal";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Img } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { PersonData } from '../../services/person/PersonServices';
@@ -30,7 +31,7 @@ interface ProjectData {
   members: [string];
   referrer: [string];
   memo: string;
-  pinned: boolean;
+  pinned: number;
   subProject?: ProjectData[];
 }
 
@@ -65,7 +66,7 @@ const Project = () => {
   const [inputAllReferrer, setInputAllReferrer] = useState('');
 
   const [slideVisible, setSlideVisible] = useState(false);
-  const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({ 0: true, 1: true, 2: true });
+  const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({});
   const [stateIsOpen, setStateIsOpen] = useState(false);
   const [pjtstateIsOpen, setPjtStateIsOpen] = useState(false);
   const [selectedstateOption, setSelectedStateOption] = useState('전체');
@@ -74,6 +75,7 @@ const Project = () => {
   const [clickedProjects, setClickedProjects] = useState<ProjectData | null>(null);
   const [allSelected, setAllSelected] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<{ [key: number]: boolean }>({});
+  const [pinnedProjects, setPinnedProjects] = useState<{ [key: number]: boolean }>({});
   const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -405,14 +407,26 @@ const Project = () => {
         );
         return { ...mainproject, subProjects };
       });
+      // pinnedProjects 상태를 업데이트
+      const newPinnedProjects = mainprojects.reduce((acc: { [key: number]: number }, mainproject: ProjectData) => {
+        acc[mainproject.mainprojectIndex] = mainproject.pinned;
+        return acc;
+      }, {});
+
+      setPinnedProjects(newPinnedProjects);
+      
+      // pinned 값을 기준으로 정렬 (pinned가 true인 항목을 앞으로)
+      const sortedMainProjects = mainprojects.sort((a: ProjectData, b: ProjectData) => {
+        return b.pinned - a.pinned;
+      });
 
       if (selectedstateOption === '전체') {
-        setProjects(mainprojects);
+        setProjects(sortedMainProjects);
       } else if (selectedstateOption === '진행 중') {
-        const filteredProjects = mainprojects.filter((project: ProjectData) => project.status === 'inprogress');
+        const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'inprogress');
         setProjects(filteredProjects);
       } else {
-        const filteredProjects = mainprojects.filter((project: ProjectData) => project.status === 'done');
+        const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'done');
         setProjects(filteredProjects);
       }
     },
@@ -587,7 +601,7 @@ const Project = () => {
           console.log(`메인 프로젝트 ${mainprojectIndex} 삭제 실패`, error);
         });
       }
-    })
+    });
     setDeletePjtModalOpen(false);
     setSelectedProjects({});
     refetchProject();
@@ -598,18 +612,19 @@ const Project = () => {
     Object.keys(selectedProjects).forEach(mainprojectIndex => {
       if (selectedProjects[mainprojectIndex]) {
         const pjtData = {
-          pinned: true,
+          pinned: !pinnedProjects[Number(mainprojectIndex)],
         }
 
         EditMainProject(mainprojectIndex, pjtData)
         .then(() => {
           console.log('메인 프로젝트 수정 성공');
+          refetchProject();
+          resetForm();
+          setSelectedProjects({});
         })
         .catch((error) => {
-          console.log('메인 프로젝트 수정 실패', error)
+          console.log('메인 프로젝트 수정 실패', error);
         })
-        refetchProject();
-        resetForm();
       }
     })
   }
@@ -618,9 +633,6 @@ const Project = () => {
     refetchProject();
   }, [refetchProject, selectedstateOption]);
 
-
-  console.log(projects)
-  console.log('선택한 거',selectedProjects)
   return (
     <div className="content">
       <div className="content_container">
@@ -707,6 +719,7 @@ const Project = () => {
                               onClick={() => toggleSubProjects(project.mainprojectIndex)}
                             >
                               <div className="dropdown">
+                                {project.pinned ? <img src={mail_important_active} alt="mail_important_active"/> : <></>}
                                 {project.projectName}
                                 {dropdownOpen && (
                                   <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
@@ -743,7 +756,7 @@ const Project = () => {
                                     <span></span>
                                   </label>
                                 </td>
-                                <td>{subProject.mainprojectIndex} - {subProject.subprojectIndex}</td>
+                                <td>{index+1 + '-' + subProject.subprojectIndex.split('-')[1]}</td>
                                 <td className={subProject.status === 'notstarted' ? 'text_medium' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{subProject.status === 'notstarted' ? '대기 중' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
                                 <td className="text_left_half text_cursor">
                                   <div className="dropdown">
