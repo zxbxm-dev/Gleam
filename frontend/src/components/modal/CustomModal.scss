@@ -566,6 +566,21 @@
               display: flex;
               align-items: center;
               width: 100%;
+              gap: 10px;
+
+              .blue_circle {
+                width: 7px;
+                height: 7px;
+                background-color: #000AFF;
+                border-radius: 50%;
+              }
+        
+              .brown_circle {
+                width: 7px;
+                height: 7px;
+                background-color: #0C6605;
+                border-radius: 50%;
+              }
             }
 
             .content-date {
