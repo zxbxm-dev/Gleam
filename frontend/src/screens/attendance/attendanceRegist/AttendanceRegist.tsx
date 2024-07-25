@@ -1069,7 +1069,7 @@ const onSubmit = (data: any) => {
           ) : null}
         </div>
 
-        {user.company === 'R&D' || selectedScreen !== 'R&D' ? (
+        {user.company === '본사' || selectedScreen !== 'R&D' ? (
           <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (
