@@ -75,7 +75,7 @@ const SubmitPerform = () => {
           <div className="pdf-container">
             <Document file={testPDF} onLoadSuccess={onDocumentLoadSuccess}>
               {/* <Document file={pdfBlob} onLoadSuccess={onDocumentLoadSuccess}> */}
-              {(user.team === '관리팀' || user.position === '센터장') && (
+              {/* {(user.team === '관리팀' || user.position === '센터장') && (
                 <div className='Upload'>
                   {!selectedFile &&
                     <>
@@ -96,7 +96,7 @@ const SubmitPerform = () => {
                     </div>
                   }
                 </div>
-              )}
+              )} */}
               {renderPages()}
               <div className='pdf-button'>
                 <div>* 위 내용을 읽고 확인했습니다.</div>
