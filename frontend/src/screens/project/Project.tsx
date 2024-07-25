@@ -16,7 +16,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
-import { CheckProject, addMainProject, addSubProject, EditMainProject, EditSubProject, DeleteMainProject } from "../../services/project/ProjectServices";
+import { CheckProject, addMainProject, addSubProject, EditMainProject, EditSubProject, DeleteMainProject, DeleteSubProject } from "../../services/project/ProjectServices";
 
 interface ProjectData {
   mainprojectIndex: number;
@@ -500,18 +500,17 @@ const Project = () => {
       endDate: endDate,
       memo: pjtMemo,
       status: projectStatus,
-      pinned: false,
     }
 
     EditMainProject(mainprojectIndex, pjtData)
     .then(() => {
       console.log('메인 프로젝트 수정 성공');
+      refetchProject();
+      resetForm();
     })
     .catch((error) => {
       console.log('메인 프로젝트 수정 실패', error)
     })
-    refetchProject();
-    resetForm();
   }
 
   // 서브 프로젝트 수정
@@ -542,16 +541,78 @@ const Project = () => {
     EditSubProject(mainprojectIndex, subprojectIndex, pjtData)
     .then(() => {
       console.log('서브 프로젝트 수정 성공');
+      refetchProject();
+      resetForm();
     })
     .catch((error) => {
       console.log('서브 프로젝트 수정 실패', error)
     })
-    refetchProject();
-    resetForm();
   }
 
   // 메인 프로젝트 삭제
+  const hanelDeleteMainPjt = (mainprojectIndex: any) => {
+    DeleteMainProject(mainprojectIndex)
+    .then(response => {
+      console.log('메인 프로젝트 삭제 성공', response);
+      refetchProject();
+    })
+    .catch(error => {
+      console.log('메인 프로젝트 삭제 실패', error);
+    })
 
+  }
+
+  // 서브 프로젝트 삭제
+  const handleDeleteSubPjt = (mainprojectIndex: any, subprojectIndex: any) => {
+    DeleteSubProject(mainprojectIndex, subprojectIndex)
+    .then(response => {
+      console.log('서브 프로젝트 삭제 성공', response);
+      refetchProject();
+    })
+    .catch(error => {
+      console.log('서브 프로젝트 삭제 실패', error);
+    })
+
+  }
+
+  // 체크박스로 선택한 프로젝트 삭제
+  const handleDeleteCheckboxPjt = (selectedProjects: any) => {
+    Object.keys(selectedProjects).forEach(mainprojectIndex => {
+      if (selectedProjects[mainprojectIndex]) {
+        DeleteMainProject(mainprojectIndex)
+        .then(response => {
+          console.log(`메인 프로젝트 ${mainprojectIndex} 삭제 성공`, response);
+        })
+        .catch(error => {
+          console.log(`메인 프로젝트 ${mainprojectIndex} 삭제 실패`, error);
+        });
+      }
+    })
+    setDeletePjtModalOpen(false);
+    setSelectedProjects({});
+    refetchProject();
+  };
+
+  // 체크박스로 선택한 프로젝트 고정
+  const handlePinnedCheckboxPjt = (selectedProjects: any) => {
+    Object.keys(selectedProjects).forEach(mainprojectIndex => {
+      if (selectedProjects[mainprojectIndex]) {
+        const pjtData = {
+          pinned: true,
+        }
+
+        EditMainProject(mainprojectIndex, pjtData)
+        .then(() => {
+          console.log('메인 프로젝트 수정 성공');
+        })
+        .catch((error) => {
+          console.log('메인 프로젝트 수정 실패', error)
+        })
+        refetchProject();
+        resetForm();
+      }
+    })
+  }
 
   useEffect(() => {
     refetchProject();
@@ -559,7 +620,7 @@ const Project = () => {
 
 
   console.log(projects)
-
+  console.log('선택한 거',selectedProjects)
   return (
     <div className="content">
       <div className="content_container">
@@ -584,7 +645,7 @@ const Project = () => {
                       <span></span>
                     </label>
                     <img src={mail_delete} alt="mail_delete" onClick={() => setDeletePjtModalOpen(true)}/>
-                    <img src={mail_important} alt="mail_important" />
+                    <img src={mail_important} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(selectedProjects)}/>
                   </div>
 
                   <div className="project_container_header_right" onClick={togglestate}>
@@ -670,8 +731,8 @@ const Project = () => {
                               </div>
                             </td>
                             <td>{project.Leader}</td>
-                            <td>{new Date(project.startDate).toISOString().substring(0, 10)}</td>
-                            <td>{new Date(project.endDate).toISOString().substring(0, 10)}</td>
+                            <td>{new Date(project.startDate).getFullYear() + '-' + String(new Date(project.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.startDate).getDate()).padStart(2, '0')}</td>
+                            <td>{new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0')}</td>
                           </tr>
                           {subprojectVisible[project.mainprojectIndex] && project.subProjects && (
                             project.subProjects.map((subProject: any) => (
@@ -709,8 +770,8 @@ const Project = () => {
                                   </div>
                                 </td>
                                 <td>{subProject.Leader}</td>
-                                <td>{new Date(subProject.startDate).toISOString().substring(0, 10)}</td>
-                                <td>{new Date(subProject.endDate).toISOString().substring(0, 10)}</td>
+                                <td>{new Date(subProject.startDate).getFullYear() + '-' + String(new Date(subProject.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subProject.startDate).getDate()).padStart(2, '0')}</td>
+                                <td>{new Date(subProject.endDate).getFullYear() + '-' + String(new Date(subProject.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subProject.endDate).getDate()).padStart(2, '0')}</td>
                               </tr>
                             ))
                           )}
@@ -1090,7 +1151,7 @@ const Project = () => {
         onFooter1Click={() => { setEditPjtModalOpen(false); resetForm(); handleEditProject(clickedProjects?.mainprojectIndex || 0)}}
         footer2={'삭제'}
         footer2Class="red-btn"
-        onFooter2Click={() => { setEditPjtModalOpen(false); resetForm();}}
+        onFooter2Click={() => { setEditPjtModalOpen(false); resetForm(); hanelDeleteMainPjt(clickedProjects?.mainprojectIndex || 0)}}
         width="500px"
         height="600px"
       >
@@ -1242,7 +1303,7 @@ const Project = () => {
         onFooter1Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleEditSubProject(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
         footer2={'삭제'}
         footer2Class="red-btn"
-        onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm();}}
+        onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
         width="500px"
         height="600px"
       >
@@ -1365,6 +1426,7 @@ const Project = () => {
         header={'알림'}
         footer1={'삭제'}
         footer1Class="red-btn"
+        onFooter1Click={() => {handleDeleteCheckboxPjt(selectedProjects)}}
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => {setDeletePjtModalOpen(false)}}

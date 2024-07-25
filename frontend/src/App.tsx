@@ -68,10 +68,12 @@ function App() {
             <Route path="/findId" element={<FindID />} />
             <Route path="/resetpw" element={<ResetPw />} />
           </Route>
-<Route element={<ChatLayout />} >
-                {/* 메신저 */}
-                <Route path="/message" element={<Message />} />
-</Route>
+
+          <Route element={<ChatLayout />} >
+            {/* 메신저 */}
+            <Route path="/message" element={<Message />} />
+          </Route>
+          
           <Route element={<PrivateRoute isAllowed={isLogin} />}>
             <Route path="/editres" element={<EditRegis />} />
             <Route element={<BaseLayout />}>

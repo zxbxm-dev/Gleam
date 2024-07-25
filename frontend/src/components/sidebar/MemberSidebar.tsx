@@ -112,7 +112,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
               case '시설팀':
                 return person.department === '관리부' && person.team === '시설팀';
               case 'R&D센터':
-                return person.department === '알고리즘 연구실' && person.position === '연구실장';
+                return person.position === '센터장';
               case '알고리즘연구실':
                 return person.department === '알고리즘 연구실' && (person.team === '' || person.team.includes('연구팀'));
               case '동형분석연구실':
