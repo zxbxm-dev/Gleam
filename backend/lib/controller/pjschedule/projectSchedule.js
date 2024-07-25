@@ -113,7 +113,7 @@ const addProject = async (req, res) => {
         //서브프로젝트 수정
         if(subprojectIndex){
         try{
-            const subPj = await project.findOne({
+            const subPj = await subproject.findOne({
                 where: { mainprojectIndex, subprojectIndex }, 
         });
         if(!subPj) {
