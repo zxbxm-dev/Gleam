@@ -4,7 +4,7 @@ const subproject = models.subProject;
 
 //프로젝트 일정 추가 (main,sub)
 const addProject = async (req, res) => {
-    const {  mainprojectIndex:  mainprojectIndex } = req.params;
+    const {mainprojectIndex } = req.params;
     const{
         userID,
         projectName,
@@ -169,22 +169,42 @@ const addProject = async (req, res) => {
 
         //프로젝트 일정 삭제하기
         const deleteProject = async (req, res) =>{
-            const projectIndex = req.params.projectindex;
-            try{
-                const deletedProject = await project.findByPk(projectIndex);
+            const { mainprojectIndex, subprojectIndex}  = req.params
 
-                if(!deletedProject) {
-                return res.status(404).json({ error: "프로젝트 정보를 찾을 수 없습니다." });
+            console.log("요청 파라미터(main):", req.params.mainprojectIndex);
+            console.log("요청 파라미터(sub):", req.params.mainprojectIndex);
+
+            //메인프로젝트 삭제 
+            if(!subprojectIndex){
+            try{
+                const deletedMainProject = await project.findByPk(mainprojectIndex);
+
+                if(!deletedMainProject) {
+                return res.status(404).json({ error: "메인 프로젝트 정보를 찾을 수 없습니다." });
                 }
-                if(deletedProject.Leader !== Leader && deletedProject.userID !== userID) {
-                    return res
-                    .status(403)
-                    .json({ message: "해당 프로젝트 삭제 권한이 없습니다." });
-                }
+                await deletedMainProject.destroy();
+                res.status(200).json({ message: "메인 프로젝트 일정이 성공적으로 삭제되었습니다." });
             }catch(error){
-            console.error("프로젝트 삭제 중 오류 발생:", error);
-            res.status(500).json({ error: "프로젝트 삭제에 실패했습니다." });
+            console.error("메인 프로젝트 삭제 중 오류 발생:", error);
+            res.status(500).json({ error: "메인 프로젝트 삭제에 실패했습니다." });
             }
+          }
+
+          //서브프로젝트 삭제 
+          if(subprojectIndex){
+            try{
+                const deletedSubProject = await subproject.findByPk(subprojectIndex);
+
+                if(!deletedSubProject) {
+                return res.status(404).json({ error: "서브 프로젝트 정보를 찾을 수 없습니다." });
+                }
+                await deletedSubProject.destroy();
+                res.status(200).json({ message: "서브 프로젝트 일정이 성공적으로 삭제되었습니다." });
+            }catch(error){
+            console.error("서브 프로젝트 삭제 중 오류 발생:", error);
+            res.status(500).json({ error: "서브 프로젝트 삭제에 실패했습니다." });
+            }
+          }
         };
 
         module.exports = {
