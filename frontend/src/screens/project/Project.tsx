@@ -179,7 +179,7 @@ const Project = () => {
     } else {
       setTabHeights({ 0: '35px', 1: '41px' });
       setTabMargins({ 0: '6px', 1: '0px' });
-    }
+    };
   }, [activeTab]);
 
   const handleEventClick = (info: any) => {
@@ -429,7 +429,7 @@ const Project = () => {
   
         // 시작일 이벤트 추가
         result.push({
-          id: `${subprojectIndex}`,
+          id: `${subprojectIndex}-start`,
           title: `${projectName} | ${subprojectIndex?.split('-')[1]} 시작일`,
           origintitle: subProjectName,
           start: new Date(subStartDate).toISOString(),
@@ -444,7 +444,7 @@ const Project = () => {
   
         // 종료일 이벤트 추가
         result.push({
-          id: `${subprojectIndex}`,
+          id: `${subprojectIndex}-end`,
           title: `${projectName} | ${subprojectIndex?.split('-')[1]} 종료일`,
           origintitle: subProjectName,
           start: new Date(subEndDate).toISOString(),
