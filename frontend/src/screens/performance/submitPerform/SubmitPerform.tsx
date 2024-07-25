@@ -21,7 +21,7 @@ const SubmitPerform = () => {
   const [numPages, setNumPages] = useState<number>(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null); 
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
   const { data: outlineData } = useQuery('outline', getOutline);
 
@@ -73,7 +73,8 @@ const SubmitPerform = () => {
       <div className="content_container">
         <div className="perform_content">
           <div className="pdf-container">
-          <Document file={pdfBlob} onLoadSuccess={onDocumentLoadSuccess}>
+            <Document file={testPDF} onLoadSuccess={onDocumentLoadSuccess}>
+              {/* <Document file={pdfBlob} onLoadSuccess={onDocumentLoadSuccess}> */}
               {(user.team === '관리팀' || user.position === '센터장') && (
                 <div className='Upload'>
                   {!selectedFile &&
