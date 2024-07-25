@@ -42,3 +42,13 @@ export const isSelectMemberState = atom({
   key: 'isSelectMember',
   default: ['', '', '', '', ''],
 });
+
+export const selectedPersonState = atom({
+  key: 'selectedPersonState',
+  default: {
+    username: '',
+    team: '',
+    department: '',
+    position: ''
+  }
+});

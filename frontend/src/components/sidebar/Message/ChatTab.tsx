@@ -11,6 +11,8 @@ interface ChatDataTabProps {
     userTeam: string | null;
     userDepartment: string | null;
     userName: string | null;
+    userPosition: string | null;
+    onPersonClick: (username: string, team: string, department:string, position:string) => void;
 }
 
 const ChatDataTab: React.FC<ChatDataTabProps> = ({
@@ -18,11 +20,13 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     userAttachment,
     userTeam,
     userDepartment,
-    userName
+    userName,
+    onPersonClick,
+    userPosition
 }) => {
     return (
         <div className="chat-data-tab">
-            <li className="My-bar">
+          <li className="My-bar" onClick={() => onPersonClick(userName || '', userTeam || '', userDepartment || '', userPosition || '')}>
                 <img className="My-attach" src={userAttachment} />
                 <div>
                     {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
@@ -33,7 +37,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             {dummyData
                 .sort((a, b) => b.isUpdateat - a.isUpdateat)
                 .map((dummy) => (
-                    <div className="ChatLog" key={dummy.userId}>
+                    <div className="ChatLog" key={dummy.userId} onClick={() => onPersonClick(dummy.username, dummy.team,dummy.department,dummy.position)}>
                         {dummy.isGroupChat ? (
                             <div className="LogBox">
                                 <div className="Left">
@@ -42,10 +46,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                                 </div>
                                 <ul>
                                     {/* {dummy.participants.map((participant:any) => (
-                <li key={participant.userId}>
-                    {participant.team ? `${participant.team}` : `${participant.department}`} {participant.username}
-                </li>
-            ))} */}
+                                        <li key={participant.userId}>
+                                            {participant.team ? `${participant.team}` : `${participant.department}`} {participant.username}
+                                        </li>
+                                    ))} */}
                                 </ul>
                                 <img className="Message-Menu" src={MessageMenu} alt="Message Menu" />
                             </div>

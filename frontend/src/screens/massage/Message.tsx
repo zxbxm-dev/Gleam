@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { HrLine, UserIcon_dark } from "../../assets/images/index";
 import { useRecoilValue } from 'recoil';
-import { userState } from '../../recoil/atoms';
+import { userState, selectedPersonState } from '../../recoil/atoms';
 
 const Message = () => {
     const [messageInput, setMessageInput] = useState<string>("");
     const [messages, setMessages] = useState<string[]>([]);
     const user = useRecoilValue(userState);
+    const selectedPerson = useRecoilValue(selectedPersonState);
 
     const handleInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
@@ -21,9 +22,9 @@ const Message = () => {
     return (
         <div className="Message-contents">
             <div className="Message-header">
-                <span>기획팀 전아름</span>
+                <span>{selectedPerson.team ? selectedPerson.team : selectedPerson.department} {selectedPerson.username}</span>
                 <img src={HrLine} alt="Horizontal Line" />
-                <span>팀장</span>
+                <span>{selectedPerson.position}</span>
             </div>
             <div className="Message-container">
                 {messages.map((message, index) => (
@@ -41,9 +42,7 @@ const Message = () => {
                                     오후 4:30
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                 ))}
                 <div className="Message-Input">
