@@ -146,17 +146,15 @@ const addProject = async (req, res) => {
         if(!mainPj) {
             return res.status(404).json({ message: "메인프로젝트 정보를 찾을 수 없습니다." });
         }
-
-        mainPj.projectName = projectName;
-        mainPj.Leader = Leader;
-        mainPj.members = members;                   
-        mainPj.referrer = referrer;
-        mainPj.startDate = startDate;
-        mainPj.endDate = endDate;
-        mainPj.memo = memo;
-        mainPj.status = status;
+        if (projectName !== undefined) mainPj.projectName = projectName;
+        if (Leader !== undefined) mainPj.Leader = Leader;
+        if (members !== undefined) mainPj.members = members;                   
+        if (referrer !== undefined) mainPj.referrer = referrer;
+        if (startDate !== undefined) mainPj.startDate = startDate;
+        if (endDate !== undefined) mainPj.endDate = endDate;
+        if (memo !== undefined) mainPj.memo = memo;
+        if (status !== undefined) mainPj.status = status;
         mainPj.pinned = pinned;
-
         await mainPj.save();
         
         res.status(200).json({message:"메인프로젝트 일정 수정을 완료했습니다.", mainPj});   
