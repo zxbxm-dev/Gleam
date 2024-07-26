@@ -16,6 +16,7 @@ const attendance = require("./attendance/officeHour");
 const report = require("./workLog/workLog");
 // 인사평가
 const evaluation = require("./performance/performance");
+const evalOutline = require("./performance/performanceOutline");
 // 인사 정보 관리
 const management = require("./management/management");
 // 인사 이동
@@ -44,6 +45,7 @@ db.Attendance = attendance(sequelize, Sequelize);
 db.Report = report(sequelize, Sequelize);
 db.JobPosting = jobPosting(sequelize, Sequelize);
 db.Evaluation = evaluation(sequelize, Sequelize);
+db.evalOutline = evalOutline(sequelize, Sequelize);
 db.TransferPosition = Transfer(sequelize, Sequelize);
 db.Management = management(sequelize, Sequelize);
 db.Meeting = meetingRoom(sequelize, Sequelize);
