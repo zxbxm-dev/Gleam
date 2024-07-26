@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  mail_calendar,
   mail_delete,
   mail_download,
   mail_important,
@@ -84,7 +83,7 @@ const Mail = () => {
     const initialMails = [
       { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정1.pdf", mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "2024-05-01" },
       { id: 2, title: "홈페이지 조직도 관련 안내", content: "메일입니다.2", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정2.pdf", mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "2024-05-01" },
-      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정3.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
+      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
       { id: 4, title: "개발 1팀 업무 설정 보고", content: "메일입니다.4", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정4.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
       { id: 5, title: "개발 1팀 업무 설정 보고", content: "메일입니다.5", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정5.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
       { id: 6, title: "개발 1팀 업무 설정 보고", content: "메일입니다.6", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정6.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
@@ -406,12 +405,12 @@ const Mail = () => {
 
                             {mail.mailType === '받은 메일함' ? (
                               <div className="mail_detail_content_bottom">
-                                <button className="white_button">전달</button>
-                                <button className="primary_button">답장</button>
+                                <button className="white_button" onClick={() => navigate('/writeMail')}>전달</button>
+                                <button className="primary_button" onClick={() => navigate('/writeMail')}>답장</button>
                               </div>
                             ) : (
                               <div className="mail_detail_content_bottom">
-                                <button className="white_button">전달</button>
+                                <button className="white_button" onClick={() => navigate('/writeMail')}>전달</button>
                               </div>
                             )}
                           </div>

@@ -148,7 +148,38 @@ const WriteReport = () => {
     ['김희진', '알고리즘 연구실', 'AI 연구팀', '연구원'],
     ['윤민지', '동형분석 연구실', '', '연구실장'],
     ['이채영', '동형분석 연구실', '동형분석 연구팀', '연구원'],
-    ['', '블록체인 연구실', '', ''],
+    ['공석', '블록체인 연구실', '', ''],
+    ['박소연', '블록체인 연구실', 'API 개발팀', '연구원'],
+    ['김경현', '블록체인 연구실', 'API 개발팀', '연구원'],
+  ]
+
+  const allmembers : Member[] = [
+    ['이정훈', '포체인스 주식회사', '', '대표이사'],
+    ['안후상', '포체인스 주식회사', '', '이사'],
+    ['이정열', '관리부', '', '부서장'],
+    ['김효은', '관리부', '관리팀', '팀장'],
+    ['우현지', '관리부', '관리팀', '사원'],
+    ['염승희', '관리부', '관리팀', '사원'],
+    ['김태희', '관리부', '지원팀', '팀장'],
+    ['진유빈', '개발부', '', '부서장'],
+    ['장현지', '개발부', '개발 1팀', '팀장'],
+    ['구민석', '개발부', '개발 1팀', '사원'],
+    ['박세준', '개발부', '개발 1팀', '사원'],
+    ['윤재원', '개발부', '개발 1팀', '사원'],
+    ['변도일', '개발부', '개발 2팀', '팀장'],
+    ['이로운', '개발부', '개발 2팀', '사원'],
+    ['김현지', '마케팅부', '', '부서장'],
+    ['전아름', '마케팅부', '기획팀', '팀장'],
+    ['함다슬', '마케팅부', '기획팀', '사원'],
+    ['전규미', '마케팅부', '기획팀', '사원'],
+    ['서주희', '마케팅부', '디자인팀', '사원'],
+    ['이유정', '연구 총괄', '', '센터장'],
+    ['심민지', '알고리즘 연구실', '', '연구실장'],
+    ['임지현', '알고리즘 연구실', 'AI 연구팀', '연구원'],
+    ['김희진', '알고리즘 연구실', 'AI 연구팀', '연구원'],
+    ['윤민지', '동형분석 연구실', '', '연구실장'],
+    ['이채영', '동형분석 연구실', '동형분석 연구팀', '연구원'],
+    ['공석', '블록체인 연구실', '', ''],
     ['박소연', '블록체인 연구실', 'API 개발팀', '연구원'],
     ['김경현', '블록체인 연구실', 'API 개발팀', '연구원'],
   ]
@@ -633,7 +664,14 @@ const WriteReport = () => {
                     <PopoverCloseButton className="approval_popover_header_close" />
                     <PopoverBody className="approval_popover_body">
                       <div className="approval_popover_memberside">
-                        <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        {user.company === '본사' ? (
+                          <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        ) : user.company === 'R&D' ? (
+                          <HrSidebar members={membersRD} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        ) : (
+                          <HrSidebar members={allmembers} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        )
+                        }
                       </div>
                       <div className='FlexContentBox'>
                         <div className='ContentBox'>
