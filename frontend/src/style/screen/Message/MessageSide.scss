@@ -17,6 +17,7 @@
       width: 50%;
       height: 100%;
       padding: 15px 0 15px 0;
+
       &.active {
         background-color: #e2e2e2;
       }
@@ -24,7 +25,8 @@
   }
 
   .Sidebar-Ms {
-    .My-bar {
+    .My-bar,
+    .Noti-bar {
       display: flex;
       align-items: center;
       border-top: 1px solid #e2e2e2;
@@ -45,6 +47,11 @@
         width: 16px;
         height: 16px;
       }
+    }
+
+    .Noti-bar {
+      cursor: pointer;
+      border-bottom: none;
     }
 
     .No-dept {
