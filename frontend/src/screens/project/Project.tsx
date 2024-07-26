@@ -54,7 +54,7 @@ const Project = () => {
   const calendarRef = useRef<FullCalendar>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [pjtStatus, setpjtStatus] = useState('대기 중');
+  const [pjtStatus, setpjtStatus] = useState('진행 예정');
   const [pjtTitle, setPjtTitle] = useState<string>('');
   const [pjtMemo, setPjtMemo] = useState<string>('');
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -88,12 +88,13 @@ const Project = () => {
   
   const stateOptions = [
     '전체',
+    '진행 예정',
     '진행 중',
     '진행 완료',
   ];
 
   const pjtstateOptions = [
-    '대기 중',
+    '진행 예정',
     '진행 중',
     '진행 완료',
   ];
@@ -202,6 +203,13 @@ const Project = () => {
 
   const toggleSlide = () => {
     setSlideVisible(!slideVisible);
+  };
+
+  const ProjectVisibilityInitial = (projectId: number) => {
+    setProjectVisible(prevState => ({
+      ...prevState,
+      [projectId]: true,
+    }));
   };
 
   const toggleProjectVisibility = (index: number) => {
@@ -468,6 +476,7 @@ const Project = () => {
 
        // 각 mainproject에 subprojects를 추가
       const mainprojects = data.mainprojects.map((mainproject: ProjectData) => {
+        ProjectVisibilityInitial(mainproject?.mainprojectIndex);
         const subProjects = data.subprojects.filter(
           (subproject: ProjectData) => subproject.mainprojectIndex === mainproject.mainprojectIndex
         );
@@ -488,7 +497,10 @@ const Project = () => {
 
       if (selectedstateOption === '전체') {
         setProjects(sortedMainProjects);
-      } else if (selectedstateOption === '진행 중') {
+      } else if (selectedstateOption === '진행 예정') {
+        const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'notstarted');
+        setProjects(filteredProjects);
+      } else if (selectedstateOption === '진행 중'){
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'inprogress');
         setProjects(filteredProjects);
       } else {
@@ -563,7 +575,7 @@ const Project = () => {
   const handleEditProject = (mainprojectIndex: any) => {
     let projectStatus;
 
-    if (pjtStatus === '대기 중') {
+    if (pjtStatus === '진행 예정') {
       projectStatus = 'notstarted';
     } else if (pjtStatus === '진행 중') {
       projectStatus = 'inprogress';
@@ -600,7 +612,7 @@ const Project = () => {
   const handleEditSubProject = (mainprojectIndex: any, subprojectIndex: any) => {
     let projectStatus;
 
-    if (pjtStatus === '대기 중') {
+    if (pjtStatus === '진행 예정') {
       projectStatus = 'notstarted';
     } else if (pjtStatus === '진행 중') {
       projectStatus = 'inprogress';
@@ -770,7 +782,8 @@ const Project = () => {
                     <tbody className="board_container">
                       {(Array.isArray(projects) ? projects : []).map((project, index) => (
                         <React.Fragment key={project.mainprojectIndex}>
-                          <tr className="board_content" onContextMenu={(e) => handleRightClick(project, e)}>
+                          <tr className="board_content" onContextMenu={(e) => handleRightClick(project, e)}
+                          >
                             <td>
                               <label className="custom-checkbox">
                                 <input 
@@ -782,7 +795,7 @@ const Project = () => {
                               </label>
                             </td>
                             <td>{index + 1}</td>
-                            <td className={project.status === 'notstarted' ? 'text_medium' : project.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{project.status === 'notstarted' ? '대기 중' : project.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
+                            <td className={project.status === 'notstarted' ? 'text_medium' : project.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{project.status === 'notstarted' ? '진행 예정' : project.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
                             <td
                               className="text_left_half text_cursor"
                               onClick={() => toggleSubProjects(project.mainprojectIndex)}
@@ -796,7 +809,7 @@ const Project = () => {
                                           onClick={(e) => {
                                             e.stopPropagation(); 
                                             setEditPjtModalOpen(true);
-                                            setpjtStatus(clickedProjects?.status === 'notstarted' ? '대기 중' : clickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '대기 중')
+                                            setpjtStatus(clickedProjects?.status === 'notstarted' ? '진행 예정' : clickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
                                             setPjtTitle(clickedProjects?.projectName || ''); 
                                             setTeamLeader(clickedProjects?.Leader || '');
                                             setAllMembers(clickedProjects?.members || []);
@@ -826,7 +839,7 @@ const Project = () => {
                                   </label>
                                 </td>
                                 <td>{index+1 + '-' + subProject.subprojectIndex.split('-')[1]}</td>
-                                <td className={subProject.status === 'notstarted' ? 'text_medium' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{subProject.status === 'notstarted' ? '대기 중' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
+                                <td className={subProject.status === 'notstarted' ? 'text_medium' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{subProject.status === 'notstarted' ? '진행 예정' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
                                 <td className="text_left_half text_cursor">
                                   <div className="dropdown">
                                     {subProject.projectName}
@@ -836,7 +849,7 @@ const Project = () => {
                                               onClick={(e) => {
                                                 e.stopPropagation(); 
                                                 setEditSubPjtModalOpen(true);
-                                                setpjtStatus(clickedProjects?.status === 'notstarted' ? '대기 중' : clickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '대기 중')
+                                                setpjtStatus(clickedProjects?.status === 'notstarted' ? '진행 예정' : clickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
                                                 setPjtTitle(clickedProjects?.projectName || ''); 
                                                 setTeamLeader(clickedProjects?.Leader || '');
                                                 setAllMembers(clickedProjects?.members || []);
@@ -926,7 +939,7 @@ const Project = () => {
                             </div>
                             <div className="name_right">
                               <span className="project_state">
-                                {projectData.status === 'notstarted' ? '대기 중' :
+                                {projectData.status === 'notstarted' ? '진행 예정' :
                                 projectData.status === 'inprogress' ? '진행 중' : '진행 완료'}
                               </span>
                               <div className={
@@ -1504,7 +1517,7 @@ const Project = () => {
             </div>
             <div className="content-right">
               <div className="content-type">
-                {selectedEvent?.status === 'notstarted' ? '대기 중' : selectedEvent?.status === 'inprogress' ? '진행 중' : '진행 완료'}
+                {selectedEvent?.status === 'notstarted' ? '진행 예정' : selectedEvent?.status === 'inprogress' ? '진행 중' : '진행 완료'}
                 <div className={selectedEvent?.status === 'notstarted' ? '' : selectedEvent?.status === 'inprogress' ? 'blue_circle' : 'brown_circle'}></div>
               </div>
             </div>

@@ -357,7 +357,7 @@ const MeetingRoom = () => {
 
       return {
         id: event.meetingId,
-        title : startTime?.slice(0,5) + ' ' + event.title + ' | ' + event.place,
+        title : startTime?.slice(0,5) + '　' + event.title + ' | ' + event.place,
         origintitle: title,
         start,
         end,
