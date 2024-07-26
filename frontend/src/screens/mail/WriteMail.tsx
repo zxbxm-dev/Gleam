@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   White_Arrow,
 } from "../../assets/images/index";
@@ -8,14 +9,19 @@ import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
+import { isNull } from "mathjs";
 
 
 const WriteMail = () => {
+  let navigate = useNavigate();
   const [persondata, setPersonData] = useState<any[]>([]);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('메일 작성');
   const [recipients, setRecipients] = useState<string[]>([]);
+  const [referrers, setReferrers] = useState<string[]>([]);
+  const [mailTitle, setMailTitle] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
+  const [inputReferrerValue, setInputReferrerValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -44,6 +50,17 @@ const WriteMail = () => {
   const handleOptionSelect = (option: string) => {
     setSelectedMenuOption(option);
     setMenuIsOpen(false);
+
+    if (option === '전체 메일') {
+      if (isNull(recipients) || isNull(referrers) || isNull(mailTitle)) {
+        console.log('뭐가 있음')
+        window.alert('작성된 사항은 저장되지 않습니다.');
+        navigate('/mail');
+      } else {
+        console.log('아무거도없음')
+        navigate('/mail');
+      }
+    }
   };
 
   const menuOptions = [
@@ -61,6 +78,10 @@ const WriteMail = () => {
     setInputValue(e.target.value);
   };
 
+  const handleInputReferrerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputReferrerValue(e.target.value);
+  };
+
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
@@ -71,13 +92,32 @@ const WriteMail = () => {
     }
   };
 
+  const handleReferrerInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      if (inputValue.trim()) {
+        setReferrers([...referrers, inputValue.trim()]);
+        setInputReferrerValue('');
+      }
+    }
+  };
+
   const handleRecipientRemove = (email: string) => {
     setRecipients(recipients.filter(recipient => recipient !== email));
+  };
+
+  const handleReferrerRemove = (email: string) => {
+    setReferrers(referrers.filter(referrer => referrer !== email));
   };
 
   const handleAutoCompleteClick = (email: string) => {
     setRecipients([...recipients, email]);
     setInputValue('');
+  };
+
+  const handleReferrerAutoCompleteClick = (email: string) => {
+    setReferrers([...referrers, email]);
+    setInputReferrerValue('');
   };
 
   const filteredEmails = persondata.filter(person => {
@@ -97,12 +137,26 @@ const WriteMail = () => {
     }
   });
 
+  const filteredReferrerEmails = persondata.filter(person => {
+    const inputLowerCase = inputReferrerValue.toLowerCase();
+    if (person.team) {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.usermail.toLowerCase().includes(inputLowerCase) ||
+        person.team.toLowerCase().includes(inputLowerCase)
+      )
+    } else {
+      return (
+        person.username.toLowerCase().includes(inputLowerCase) ||
+        person.usermail.toLowerCase().includes(inputLowerCase) ||
+        person.department.toLowerCase().includes(inputLowerCase)
+      )
+    }
+  });
+
   const handleClick = () => {
     setIsClicked(!isClicked);
   };
-
-
-  console.log('전체 유저 데이터',persondata);
 
   return(
     <div className="content">
@@ -165,11 +219,35 @@ const WriteMail = () => {
             </div>
             <div className="write_form">
               <div>참조</div>
-              <input type="text"/>
+              <div className={`input_recipients ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
+                {referrers.map((email, index) => (
+                  <div className="recipient" key={index}>
+                    {email}
+                    <span className="remove" onClick={() => handleReferrerRemove(email)}>×</span>
+                  </div>
+                ))}
+                <input
+                  id="recipient_input_element"
+                  type="text"
+                  value={inputReferrerValue}
+                  onChange={handleInputReferrerChange}
+                  onKeyDown={handleReferrerInputKeyDown}
+                  ref={inputRef}
+                />
+                {inputReferrerValue && (
+                  <ul className="autocomplete_dropdown">
+                    {filteredReferrerEmails.map(person => (
+                      <li key={person.usermail} onClick={() => handleReferrerAutoCompleteClick(person.usermail)}>
+                        {person.usermail} - {person.team ? person.team : person.department} {person.username}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
             <div className="write_form">
               <div>제목</div>
-              <input type="text"/>
+              <input type="text" value={mailTitle} onChange={(e) => setMailTitle(e.target.value)}/>
             </div>
             <div className="attach_form">
               <div>파일 첨부</div>
@@ -187,13 +265,20 @@ const WriteMail = () => {
 
           <div className="write_mail_content_bottom">
             <Editor
-              initialValue={"내용을 입력해주세요."}
+              initialValue={" "}
               height={window.innerWidth >= 1600 ? '45vh' : '35vh'}
               initialEditType="wysiwyg"
               useCommandShortcut={false}
               hideModeSwitch={true}
               plugins={[colorSyntax]}
               language="ko-KR"
+              toolbarItems={[
+                ['heading', 'bold', 'italic', 'strike'],
+                ['hr', 'quote'],
+                ['ul', 'ol', 'task', 'indent', 'outdent'],
+                ['image', 'link'],
+                ['scrollSync'],                    
+              ]}
             />
           </div>
         </div>
