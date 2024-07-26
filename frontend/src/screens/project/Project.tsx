@@ -12,7 +12,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CustomModal from "../../components/modal/CustomModal";
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Img } from '@chakra-ui/react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { PersonData } from '../../services/person/PersonServices';
@@ -21,19 +21,20 @@ import { CheckProject, addMainProject, addSubProject, EditMainProject, EditSubPr
 
 interface ProjectData {
   mainprojectIndex: number;
-  subprojectIndex: number;
+  subprojectIndex: string;
   userId: string;
   status: string;
   projectName: string;
   Leader: string;
   startDate: Date;
-  endDate: Date;
-  members: [string];
-  referrer: [string];
+  endDate: Date
+  members: string[];
+  referrer: string[];
   memo: string;
   pinned: number;
   subProject?: ProjectData[];
-}
+};
+
 
 const Project = () => {
   const user = useRecoilValue(userState);
@@ -72,6 +73,9 @@ const Project = () => {
   const [selectedstateOption, setSelectedStateOption] = useState('전체');
 
   const [projects, setProjects] = useState<any[]>([]);
+  const [subprojects, setSubProjects] = useState<any[]>([]);
+  const [projectEvent, setProjectEvent] = useState<any[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<ProjectData | null>(null);
   const [clickedProjects, setClickedProjects] = useState<ProjectData | null>(null);
   const [allSelected, setAllSelected] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<{ [key: number]: boolean }>({});
@@ -175,19 +179,24 @@ const Project = () => {
     } else {
       setTabHeights({ 0: '35px', 1: '41px' });
       setTabMargins({ 0: '6px', 1: '0px' });
-    }
+    };
   }, [activeTab]);
 
-  const events = [
-    { title: 'ChainLinker | 1 시작일', start: new Date('2024-06-03'), end: new Date('2024-06-03'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: 'FCTS | 2 시작일', start: new Date('2024-06-07'), end: new Date('2024-06-07'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
-    { title: 'DRChat | 5 시작일', start: new Date('2024-06-10'), end: new Date('2024-06-10'), backgroundColor: '#FCF5D7', borderColor: '#FCF5D7', textColor: '#000' },
-    { title: 'ChainLinker | 1 만기일', start: new Date('2024-06-14'), end: new Date('2024-06-14'), backgroundColor: '#ABF0FF', borderColor: '#ABF0FF', textColor: '#000' },
-    { title: 'FCTS | 2 만기일', start: new Date('2024-06-21'), end: new Date('2024-06-21'), backgroundColor: '#B1C3FF', borderColor: '#B1C3FF', textColor: '#000' },
-    { title: 'DRChat | 5 만기일', start: new Date('2024-06-28'), end: new Date('2024-06-28'), backgroundColor: '#FCF5D7', borderColor: '#FCF5D7', textColor: '#000' },
-  ];
-
   const handleEventClick = (info: any) => {
+    setSelectedEvent({
+      mainprojectIndex: info.event.id?.split('-')[0],
+      subprojectIndex: info.event.id?.split('-')[1],
+      userId: info.event.extendedProps.userId,
+      status: info.event.extendedProps.status,
+      projectName: `${info.event.title?.split('|')[0]} | ${info.event.id?.split('-')[1]} - ${info.event.extendedProps.origintitle}`,
+      Leader: info.event.extendedProps.Leader,
+      startDate: info.event.extendedProps.originstart ,
+      endDate: info.event.extendedProps.originend ,
+      members: info.event.extendedProps.members,
+      referrer: info.event.extendedProps.referrer,
+      memo: info.event.extendedProps.memo,
+      pinned: 0,
+    })
     setPjtModalOPen(true);
   };
 
@@ -395,10 +404,67 @@ const Project = () => {
     }
   };
 
+  const colors = [
+    { backgroundColor: '#FCF5D7', borderColor: '#FCF5D7' },
+    { backgroundColor: '#D6CDC2', borderColor: '#D6CDC2' },
+    { backgroundColor: '#B1C3FF', borderColor: '#B1C3FF' },
+    { backgroundColor: '#C1FFC1', borderColor: '#C1FFC1' },
+    { backgroundColor: '#FFE897', borderColor: '#FFE897' },
+  ];
+
+  const transformProjectData = (data: any) => {
+    const result: any[] = [];
+    let colorIndex = 0;
+  
+    data?.forEach((event: any) => {
+      const { projectName, textColor, subProjects } = event;
+  
+      // 서브 프로젝트 배열을 순회
+      subProjects?.forEach((subProject: any) => {
+        const { subprojectIndex, projectName: subProjectName, startDate: subStartDate, endDate: subEndDate, ...rest } = subProject;
+  
+        // 순차적으로 색상 선택
+        const { backgroundColor, borderColor } = colors[colorIndex];
+        colorIndex = (colorIndex + 1) % colors.length; // 다음 색상으로 인덱스 업데이트
+  
+        // 시작일 이벤트 추가
+        result.push({
+          id: `${subprojectIndex}-start`,
+          title: `${projectName} | ${subprojectIndex?.split('-')[1]} 시작일`,
+          origintitle: subProjectName,
+          start: new Date(subStartDate).toISOString(),
+          end: new Date(subStartDate).toISOString(),
+          originstart: subStartDate,
+          originend: subEndDate,
+          backgroundColor: backgroundColor,
+          borderColor: borderColor,
+          textColor: textColor || "#000",
+          ...rest
+        });
+  
+        // 종료일 이벤트 추가
+        result.push({
+          id: `${subprojectIndex}-end`,
+          title: `${projectName} | ${subprojectIndex?.split('-')[1]} 종료일`,
+          origintitle: subProjectName,
+          start: new Date(subEndDate).toISOString(),
+          end: new Date(subEndDate).toISOString(),
+          originstart: subStartDate,
+          originend: subEndDate,
+          backgroundColor: backgroundColor,
+          borderColor: borderColor,
+          textColor: textColor || "#000",
+          ...rest
+        });
+      });
+    });
+  
+    return result;
+  };
+
   const { refetch : refetchProject } = useQuery("Project", fetchProject, {
     enabled: false,
     onSuccess: (data) => {
-      console.log('불러온 프로젝트', data);
 
        // 각 mainproject에 subprojects를 추가
       const mainprojects = data.mainprojects.map((mainproject: ProjectData) => {
@@ -429,12 +495,15 @@ const Project = () => {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'done');
         setProjects(filteredProjects);
       }
+
+      setSubProjects(mainprojects);
+      setProjectEvent(transformProjectData(mainprojects));
     },
     onError: (error) => {
       console.log(error);
     }
   });
-
+  
   // 메인 프로젝트 추가
   const handleAddMainProject = async () => {
     const pjtDetails = {
@@ -821,7 +890,7 @@ const Project = () => {
                   }}
                   locale='kr'
                   fixedWeekCount={false}
-                  events={events}
+                  events={projectEvent}
                   eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
                   dayMaxEventRows={true}
                   eventDisplay="block"
@@ -832,86 +901,55 @@ const Project = () => {
 
               <div className="project_slide_container">
                 <div className={`project_slide ${slideVisible ? 'visible' : ''}`} onClick={toggleSlide}>
-                  <span>전체 프로젝트 일정</span>
+                  <span>진행 중인 프로젝트 일정</span>
                   {slideVisible ? (
                     <img src={White_Arrow} alt="White_Arrow" className="img_rotate" />
                   ) : (
                     <img src={White_Arrow} alt="White_Arrow" />
                   )}
                 </div>
-
                 <div className={`additional_content ${slideVisible ? 'visible' : ''}`}>
-                  <div className="project_content">
-                    <div className="project_name_container">
-                      <div className="name_left" onClick={() => toggleProjectVisibility(0)}>
-                        {projectVisible[0] ? (
-                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate" />
-                        ) : (
-                          <img src={Right_Arrow} alt="Right_Arrow" />
-                        )}
-                        <span className="project_name">Chain-Linker</span>
-                      </div>
-                      <div className="name_right">
-                        <span className="project_state">진행 중</span>
-                        <div></div>
-                      </div>
-                    </div>
-                    {projectVisible[0] && (
-                      <div className="project_content_container">
-                        <div>3 | 프론트엔드 개발</div>
-                        <div>팀리더 : 개발1팀 장현지</div>
-                        <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="project_content">
-                    <div className="project_name_container">
-                      <div className="name_left" onClick={() => toggleProjectVisibility(1)}>
-                        {projectVisible[1] ? (
-                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate" />
-                        ) : (
-                          <img src={Right_Arrow} alt="Right_Arrow" />
-                        )}
-                        <span className="project_name">FCTS</span>
-                      </div>
-                      <div className="name_right">
-                        <span className="project_state">진행 중</span>
-                        <div></div>
-                      </div>
-                    </div>
-                    {projectVisible[1] && (
-                      <div className="project_content_container">
-                        <div>3 | 프론트엔드 개발</div>
-                        <div>팀리더 : 개발1팀 장현지</div>
-                        <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="project_content">
-                    <div className="project_name_container">
-                      <div className="name_left" onClick={() => toggleProjectVisibility(2)}>
-                        {projectVisible[2] ? (
-                          <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate" />
-                        ) : (
-                          <img src={Right_Arrow} alt="Right_Arrow" />
-                        )}
-                        <span className="project_name">DRChat</span>
-                      </div>
-                      <div className="name_right">
-                        <span className="project_state">진행 중</span>
-                        <div></div>
-                      </div>
-                    </div>
-                    {projectVisible[2] && (
-                      <div className="project_content_container">
-                        <div>3 | 프론트엔드 개발</div>
-                        <div>팀리더 : 개발1팀 장현지</div>
-                        <div>프로젝트 기간 : 2024.06.12 ~ 2024.08.16</div>
-                      </div>
-                    )}
-                  </div>
+                  {
+                    (Array.isArray(subprojects) ? subprojects : [])
+                      .filter((projectData: any) => projectData.status === 'inprogress')
+                      .map((projectData: any, index: number) => (
+                      <React.Fragment key={projectData.mainprojectIndex}>
+                        <div className="project_content">
+                          <div className="project_name_container">
+                            <div className="name_left" onClick={() => toggleProjectVisibility(projectData.mainprojectIndex)}>
+                              {projectVisible[projectData.mainprojectIndex] ? (
+                                <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate" />
+                              ) : (
+                                <img src={Right_Arrow} alt="Right_Arrow" />
+                              )}
+                              <span className="project_name">{projectData.projectName}</span>
+                            </div>
+                            <div className="name_right">
+                              <span className="project_state">
+                                {projectData.status === 'notstarted' ? '대기 중' :
+                                projectData.status === 'inprogress' ? '진행 중' : '진행 완료'}
+                              </span>
+                              <div className={
+                                projectData.status === 'notstarted' ? '' :
+                                projectData.status === 'inprogress' ? 'blue_circle' : 'brown_circle'}
+                              ></div>
+                            </div>
+                          </div>
+                          {projectVisible[projectData.mainprojectIndex] && (
+                            (Array.isArray(projectData.subProjects) ? projectData.subProjects : []).map((subprojectData: any, subIndex: number) => (
+                              <React.Fragment key={subprojectData.subprojectIndex}>
+                                <div className="project_content_container">
+                                  <div>{subprojectData.subprojectIndex?.split('-')[1] + ' | ' + subprojectData?.projectName}</div>
+                                  <div>팀리더 : {subprojectData.Leader}</div>
+                                  <div>프로젝트 기간 : {new Date(subprojectData.startDate).getFullYear() + '-' + String(new Date(subprojectData.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subprojectData.startDate).getDate()).padStart(2, '0')} ~ {new Date(subprojectData.endDate).getFullYear() + '-' + String(new Date(subprojectData.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subprojectData.endDate).getDate()).padStart(2, '0')}</div>
+                                </div>
+                              </React.Fragment>
+                            ))
+                          )}
+                        </div>
+                      </React.Fragment>
+                    ))
+                  }
                 </div>
               </div>
             </TabPanel>
@@ -1452,7 +1490,7 @@ const Project = () => {
       <CustomModal
         isOpen={ispjtModalOpen}
         onClose={() => setPjtModalOPen(false)}
-        header={'이벤트 제목'}
+        header={selectedEvent?.projectName}
         footer1={'확인'}
         footer1Class="red-btn"
         onFooter1Click={() => setPjtModalOPen(false)}
@@ -1466,7 +1504,8 @@ const Project = () => {
             </div>
             <div className="content-right">
               <div className="content-type">
-                진행 중
+                {selectedEvent?.status === 'notstarted' ? '대기 중' : selectedEvent?.status === 'inprogress' ? '진행 중' : '진행 완료'}
+                <div className={selectedEvent?.status === 'notstarted' ? '' : selectedEvent?.status === 'inprogress' ? 'blue_circle' : 'brown_circle'}></div>
               </div>
             </div>
           </div>
@@ -1476,7 +1515,7 @@ const Project = () => {
             </div>
             <div className="content-right">
               <div className="content-date">
-                개발1팀 장현지
+                {selectedEvent?.Leader}
               </div>
             </div>
           </div>
@@ -1486,7 +1525,7 @@ const Project = () => {
             </div>
             <div className="content-right">
               <div className="content-memo">
-                개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석, 개발1팀 구민석
+                {selectedEvent?.members.join(", ")}
               </div>
             </div>
           </div>
@@ -1496,7 +1535,7 @@ const Project = () => {
             </div>
             <div className="content-right">
               <div className="content-memo">
-                2024-06-13 ~ 2024-06-13
+                {selectedEvent?.startDate ? new Date(selectedEvent.startDate).getFullYear() + '-' +  String(new Date(selectedEvent.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(selectedEvent.startDate).getDate()).padStart(2, '0') + ' ~ ' + new Date(selectedEvent.endDate).getFullYear() + '-' +  String(new Date(selectedEvent.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(selectedEvent.endDate).getDate()).padStart(2, '0') : 'No start date available'}
               </div>
             </div>
           </div>

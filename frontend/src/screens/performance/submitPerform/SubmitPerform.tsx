@@ -47,6 +47,7 @@ const SubmitPerform = () => {
     const file = event.target.files && event.target.files[0];
     if (file) {
       setSelectedFile(file);
+      setPdfBlob(null);
     }
   };
 
@@ -65,6 +66,7 @@ const SubmitPerform = () => {
       console.error('Error uploading file:', error);
     } finally {
       setUploading(false);
+      setSelectedFile(null);
     }
   };
 
@@ -73,9 +75,9 @@ const SubmitPerform = () => {
       <div className="content_container">
         <div className="perform_content">
           <div className="pdf-container">
-            <Document file={testPDF} onLoadSuccess={onDocumentLoadSuccess}>
-              {/* <Document file={pdfBlob} onLoadSuccess={onDocumentLoadSuccess}> */}
-              {/* {(user.team === '관리팀' || user.position === '센터장') && (
+            {/* <Document file={testPDF} onLoadS/uccess={onDocumentLoadSuccess}> */}
+              <Document file={pdfBlob ? pdfBlob : selectedFile ? selectedFile : testPDF} onLoadSuccess={onDocumentLoadSuccess}>
+              {(user.team === '관리팀' || user.position === '센터장') && (
                 <div className='Upload'>
                   {!selectedFile &&
                     <>
@@ -96,7 +98,7 @@ const SubmitPerform = () => {
                     </div>
                   }
                 </div>
-              )} */}
+              )}
               {renderPages()}
               <div className='pdf-button'>
                 <div>* 위 내용을 읽고 확인했습니다.</div>
