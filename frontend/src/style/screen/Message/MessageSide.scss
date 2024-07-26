@@ -1,183 +1,189 @@
 .message-sidebar {
-    width: 320px;
-    height: 100vh;
-    overflow-y: scroll;
-    margin-top: 15px;
-    padding-bottom: 100px;
+  width: 320px;
+  height: 100vh;
+  overflow-y: scroll;
 
-    .tab-container {
-        width: 100%;
+  .tab-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .tab-button {
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50%;
+      height: 100%;
+      padding: 15px 0 15px 0;
+      &.active {
+        background-color: #e2e2e2;
+      }
+    }
+  }
+
+  .Sidebar-Ms {
+    .My-bar {
+      display: flex;
+      align-items: center;
+      border-top: 1px solid #e2e2e2;
+      border-bottom: 1px solid #e2e2e2;
+      padding: 15px 0px 15px 31px;
+      font-family: var(--font-family-Noto-M);
+      font-size: 15px;
+
+      .My-attach {
+        margin-right: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50px;
+      }
+
+      .Message-Me {
+        margin-left: 5px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .No-dept {
+      display: flex;
+      align-items: center;
+      padding: 15px 17px 15px 31px;
+      justify-content: space-between;
+      font-family: var(--font-family-Noto-M);
+      font-size: 15px;
+
+      .Message-Menu {
+        cursor: pointer;
+      }
+
+      .No-Left {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 80px;
-        margin-bottom: 15px;
 
-        .tab-button {
+        img {
+          margin-right: 10px;
+          width: 35px;
+          height: 35px;
+          border-radius: 50px;
+        }
+      }
+    }
+
+    .DeptTeams {
+      display: flex;
+      flex-direction: column;
+
+      .downBtn {
+        display: flex;
+        align-items: center;
+        padding: 5px 0px 5px 31px;
+        background-color: #eee;
+        font-size: 14px;
+        font-family: var(--font-family-Noto-M);
+
+        img {
+          margin-right: 10px;
+        }
+      }
+
+      .downTeamBtn {
+        display: flex;
+        align-items: center;
+        padding: 5px 0px 5px 31px;
+        background-color: #f3f3f3;
+        font-family: var(--font-family-Noto-M);
+        width: 100%;
+        font-size: 14px;
+
+        img {
+          margin-right: 10px;
+        }
+      }
+
+      .downBtn:hover {
+        background-color: #eee;
+      }
+
+      .DeptDown {
+      }
+    }
+  }
+
+  .chat-data-tab {
+    .My-bar {
+      display: flex;
+      align-items: center;
+      border-top: 1px solid #e2e2e2;
+      border-bottom: 1px solid #e2e2e2;
+      padding: 15px 0px 15px 31px;
+      font-family: var(--font-family-Noto-M);
+      font-size: 15px;
+
+      .My-attach {
+        margin-right: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50px;
+      }
+
+      .Message-Me {
+        margin-left: 5px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .ChatLog {
+      .LogBox {
+        font-size: 15px;
+        display: flex;
+        font-family: var(--font-family-Noto-M);
+        justify-content: space-between;
+        padding: 15px 17px 15px 31px;
+
+        .Left {
+          display: flex;
+          align-items: center;
+
+          .My-attach {
+            margin-right: 10px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50px;
+          }
+
+          .Message-Me {
+            margin-left: 5px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
+          }
         }
+      }
     }
-
-    .Sidebar-Ms {
-        .My-bar {
-            display: flex;
-            align-items: center;
-            border-top: 1px solid #e2e2e2;
-            border-bottom: 1px solid #e2e2e2;
-            padding: 15px 0px 15px 31px;
-            font-family: var(--font-family-Noto-M);
-            font-size: 15px;
-
-            .My-attach {
-                margin-right: 10px;
-                width: 35px;
-                height: 35px;
-                border-radius: 50px;
-            }
-
-            .Message-Me {
-                margin-left: 5px;
-                width: 16px;
-                height: 16px;
-            }
-        }
-
-        .No-dept {
-            display: flex;
-            align-items: center;
-            padding: 15px 17px 15px 31px;
-            justify-content: space-between;
-            font-family: var(--font-family-Noto-M);
-            font-size: 15px;
-
-            .Message-Menu {
-                cursor: pointer;
-            }
-
-            .No-Left {
-                display: flex;
-                align-items: center;
-
-                img {
-                    margin-right: 10px;
-                    width: 35px;
-                    height: 35px;
-                    border-radius: 50px;
-                }
-            }
-        }
-
-        .DeptTeams {
-            display: flex;
-            flex-direction: column;
-
-            .downBtn {
-                display: flex;
-                align-items: center;
-                padding: 5px 0px 5px 31px;
-                background-color: #eee;
-                font-size: 14px;
-                font-family: var(--font-family-Noto-M);
-
-                img {
-                    margin-right: 10px;
-                }
-            }
-
-            .downTeamBtn {
-                display: flex;
-                align-items: center;
-                padding: 5px 0px 5px 31px;
-                background-color: #F3F3F3;
-                font-family: var(--font-family-Noto-M);
-                width: 100%;
-                font-size: 14px;
-
-                img {
-                    margin-right: 10px;
-                }
-            }
-
-            .downBtn:hover {
-                background-color: #eee;
-            }
-
-            .DeptDown {}
-        }
-    }
-
-    .chat-data-tab {
-        .My-bar {
-            display: flex;
-            align-items: center;
-            border-top: 1px solid #e2e2e2;
-            border-bottom: 1px solid #e2e2e2;
-            padding: 15px 0px 15px 31px;
-            font-family: var(--font-family-Noto-M);
-            font-size: 15px;
-
-            .My-attach {
-                margin-right: 10px;
-                width: 35px;
-                height: 35px;
-                border-radius: 50px;
-            }
-
-            .Message-Me {
-                margin-left: 5px;
-                width: 16px;
-                height: 16px;
-            }
-        }
-
-        .ChatLog {
-            .LogBox {
-                font-size: 15px;
-                display: flex;
-                font-family: var(--font-family-Noto-M);
-                justify-content: space-between;
-                padding: 15px 17px 15px 31px;
-
-                .Left {
-                    display: flex;
-                    align-items: center;
-
-                    .My-attach {
-                        margin-right: 10px;
-                        width: 35px;
-                        height: 35px;
-                        border-radius: 50px;
-                    }
-
-                    .Message-Me {
-                        margin-left: 5px;
-                        width: 16px;
-                        height: 16px;
-                        cursor: pointer;
-                    }
-                }
-            }
-        }
-    }
+  }
 }
 
 .message-sidebar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 6px;
+  height: 6px;
 }
 
 .message-sidebar::-webkit-scrollbar-thumb {
-    background-color: #A8A8A8;
-    border-radius: 10px;
-    background-clip: padding-box;
-    border: 2px solid transparent;
+  background-color: #a8a8a8;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
 }
 
 .message-sidebar::-webkit-scrollbar-corner {
-    background-color: none;
+  background-color: none;
 }
 
 .message-sidebar::-webkit-scrollbar-track {
-    box-shadow: none;
-    background-color: #fbfbfb;
+  box-shadow: none;
+  background-color: #fbfbfb;
 }
