@@ -15,6 +15,7 @@
     max-height: 80vh;
     overflow-y: scroll;
     display: flex;
+    flex-direction: column;
     justify-content: center;
 
     .Upload {
@@ -37,6 +38,16 @@
           cursor: pointer;
         }
       }
+    }
+
+    .pdf_view {
+      @include custom-scrollbar;
+      width: auto;
+      height: auto;
+      max-height: 80vh;
+      overflow-y: scroll;
+      display: flex;
+      justify-content: center;
     }
   }
 
