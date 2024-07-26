@@ -19,8 +19,8 @@ const addProject = async (req, res) => {
     console.log("요청 본문 받음:", req.body);
     console.log("요청 파라미터:", req.params);
 
-
-
+    const currentDate = new Date();
+    const today = currentDate.toISOString().split('T')[0];
     //서브 프로젝트 생성 
         if(mainprojectIndex){
             //서브 프로젝트 인덱스 생성 
@@ -29,7 +29,20 @@ const addProject = async (req, res) => {
             });
             const newSubprojectIndex = `${mainprojectIndex}-${subprojectCount + 1}`;
             
+            //메인프로젝트 마감일 초과 여부 확인
+            const mainProject = await project.findOne({where: {mainprojectIndex}});
+            const mainEndDate = mainProject.endDate.toISOString().split('T')[0];
+            const mainStartDate = mainProject.startDate.toISOString().split('T')[0];
+           
             try{
+                if(startDate<=today){
+                    status = "inprogress";
+                }else{
+                    status = "notstarted";
+                };
+                if(endDate> mainEndDate) { res.status(419).json({message:"메인프로젝트 마감일정을 초과하여 등록 할 수 없습니다." });}
+                if(startDate< mainStartDate) { res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });}
+                
             const newSubProject = await subproject.create({
                 userId: userID,
                 mainprojectIndex,
@@ -41,6 +54,7 @@ const addProject = async (req, res) => {
                 startDate,
                 endDate,
                 memo,
+                status,
             })
             res.status(201).json({message: `${mainprojectIndex}번 메인프로젝트의 서브프로젝트 일정 추가를 완료했습니다.`,newSubProject});
            }catch(error){
@@ -52,6 +66,11 @@ const addProject = async (req, res) => {
         //메인프로젝트 생성
         if(!mainprojectIndex){
             try{
+                if(startDate<=today){
+                    status = "inprogress";
+                }else{
+                    status = "notstarted";
+                }
             const newProject = await project.create({
                 userId: userID,
                 projectName,
@@ -61,6 +80,7 @@ const addProject = async (req, res) => {
                 startDate,
                 endDate,
                 memo,
+                status,
                 pinned: false,  
             })
             res.status(201).json({message: "메인프로젝트 일정 추가를 완료했습니다.", newProject});
