@@ -23,6 +23,7 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
@@ -47,6 +48,7 @@ const WriteReport = () => {
   const { state } = location;
   const reportName = state?.reportName || '';
 
+  const { onOpen: onApprovalModalOpen, onClose: onApprovalModalClose, isOpen: isApprovalModalOpen } = useDisclosure();
   const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
@@ -654,14 +656,14 @@ const WriteReport = () => {
             </div>
 
             <div className="top_right_content">
-              <Popover placement="left-start">
+              <Popover placement="left-start" isOpen={isApprovalModalOpen} onOpen={onApprovalModalOpen}>
                 <PopoverTrigger>
                   <button className="primary_button">결재라인 선택</button>
                 </PopoverTrigger>
                 <Portal>
                   <PopoverContent className="approval_popover_content">
                     <PopoverHeader className="approval_popover_header">결재라인 선택</PopoverHeader>
-                    <PopoverCloseButton className="approval_popover_header_close" />
+                    <PopoverCloseButton className="approval_popover_header_close" onClick={onApprovalModalClose}/>
                     <PopoverBody className="approval_popover_body">
                       <div className="approval_popover_memberside">
                         {user.company === '본사' ? (
@@ -769,7 +771,7 @@ const WriteReport = () => {
 
                         <div className='button-wrap'>
                           <button className="second_button" onClick={() => handleSubmit()}>제출</button>
-                          <button className="white_button">취소</button>
+                          <button className="white_button" onClick={onApprovalModalClose}>취소</button>
                         </div>
                       </div>
                     </PopoverBody>
