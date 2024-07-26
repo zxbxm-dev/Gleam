@@ -50,6 +50,7 @@ require("./lib/router/performance")(app);
 require("./lib/router/management")(app);
 require("./lib/router/meetingRoom")(app);
 require("./lib/router/pjschedule")(app);
+require("./lib/router/performanceOutline")(app);
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
