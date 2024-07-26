@@ -13,7 +13,7 @@ const Message = () => {
         if (event.key === 'Enter') {
             event.preventDefault();
             if (messageInput.trim() !== '') {
-                setMessages([...messages, messageInput.trim()]);
+                setMessages([...messages, messageInput.trim()]);     
                 setMessageInput('');
             }
         }
