@@ -142,7 +142,7 @@ const Sidebar = () => {
       link: '/human-resources',
       requiresHrSideClick: true,
     },
-    (user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장' || user.spot === '연구실장') && {
+    (user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장' || user.position === '연구실장') && {
       menu: 'attendance',
       label: '근태 관리',
       menuType: isAttendanceMenuOpen,
