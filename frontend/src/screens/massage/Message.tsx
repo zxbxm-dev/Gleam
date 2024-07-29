@@ -57,14 +57,6 @@ const Message = () => {
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
 
-  useEffect(() => {
-    console.log("선택>>", selectedPerson);
-  }, [selectedPerson]);
-
-  useEffect(() => {
-    console.log("메시지>>", messages);
-  }, [messages]);
-
   const handleSendMessage = () => {
     if (messageInput.trim() !== "") {
       setMessages([...messages, messageInput.trim()]);
