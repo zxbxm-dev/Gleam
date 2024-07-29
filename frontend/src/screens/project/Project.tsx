@@ -42,6 +42,7 @@ const Project = () => {
   const [isAddSubPjtModalOpen, setAddSubPjtModalOPen] = useState(false);
   const [isAddPjtModalOpen, setAddPjtModalOPen] = useState(false);
   const [isEditPjtModalOpen, setEditPjtModalOpen] = useState(false);
+  const [isViewSubPjtModalOpen, setViewSubPjtModalOpen] = useState(false);
   const [isEditSubPjtModalOpen, setEditSubPjtModalOpen] = useState(false);
   const [isDeletePjtModalOpen, setDeletePjtModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -76,6 +77,7 @@ const Project = () => {
   const [subprojects, setSubProjects] = useState<any[]>([]);
   const [projectEvent, setProjectEvent] = useState<any[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<ProjectData | null>(null);
+  const [rightclickedProjects, setRightClickedProjects] = useState<ProjectData | null>(null);
   const [clickedProjects, setClickedProjects] = useState<ProjectData | null>(null);
   const [allSelected, setAllSelected] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<{ [key: number]: boolean }>({});
@@ -129,11 +131,20 @@ const Project = () => {
   }, [projects]);
 
   const toggleSubProjects = (projectId: string) => {
-    setSubProjectVisible(prev => ({
-      ...prev,
-      [projectId]: !prev[projectId]
-    }));
+    setSubProjectVisible(prev => {
+      // 모든 프로젝트를 false로 설정한 새 객체 생성
+      const newState = Object.keys(prev).reduce((acc: any, key) => {
+        acc[key] = false;
+        return acc;
+      }, {});
+
+      // 클릭한 프로젝트의 서브 프로젝트만 true로 설정
+      newState[projectId] = !prev[projectId];
+
+      return newState;
+    });
   };
+
 
   const toggleAllCheckboxes = () => {
     if (allSelected) {
@@ -361,18 +372,32 @@ const Project = () => {
   }
 
   const handleRightClick = (project: ProjectData, event: any) => {
-    setClickedProjects(project);
+    setRightClickedProjects(project);
     event.preventDefault();
     setDropdownOpen(true);
     setDropdownPosition({ x: event.pageX, y: event.pageY });
   };
 
   const handleSubRightClick = (project: ProjectData, event: any) => {
-    setClickedProjects(project);
     event.preventDefault();
-    setSubDropdownOpen(true);
-    setDropdownPosition({ x: event.pageX, y: event.pageY });
   };
+
+  const handleOpenSubProject = (subProject: any) => {
+    setClickedProjects(subProject);
+  };
+
+  useEffect(() => {
+    if (clickedProjects) {
+      setViewSubPjtModalOpen(true);
+      setpjtStatus(clickedProjects.status === 'notstarted' ? '진행 예정' : clickedProjects.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정');
+      setPjtTitle(clickedProjects.projectName || '');
+      setTeamLeader(clickedProjects.Leader || '');
+      setAllMembers(clickedProjects.members || []);
+      setStartDate(clickedProjects.startDate || null);
+      setEndDate(clickedProjects.endDate || null);
+      setPjtMemo(clickedProjects.memo || '');
+    }
+  }, [clickedProjects]);
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -496,16 +521,16 @@ const Project = () => {
       });
 
       if (selectedstateOption === '전체') {
-        setProjects(sortedMainProjects);
+        setProjects(sortedMainProjects.reverse());
       } else if (selectedstateOption === '진행 예정') {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'notstarted');
-        setProjects(filteredProjects);
+        setProjects(filteredProjects.reverse());
       } else if (selectedstateOption === '진행 중'){
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'inprogress');
-        setProjects(filteredProjects);
+        setProjects(filteredProjects.reverse());
       } else {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'done');
-        setProjects(filteredProjects);
+        setProjects(filteredProjects.reverse());
       }
 
       setSubProjects(mainprojects);
@@ -794,11 +819,11 @@ const Project = () => {
                                 <span></span>
                               </label>
                             </td>
-                            <td>{index + 1}</td>
+                            <td>{projects.length - (index)}</td>
                             <td className={project.status === 'notstarted' ? 'text_medium' : project.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{project.status === 'notstarted' ? '진행 예정' : project.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
                             <td
                               className="text_left_half text_cursor"
-                              onClick={() => toggleSubProjects(project.mainprojectIndex)}
+                              onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}
                             >
                               <div className="dropdown">
                                 {project.pinned ? <img src={mail_important_active} alt="mail_important_active"/> : <></>}
@@ -806,17 +831,17 @@ const Project = () => {
                                 {dropdownOpen && (
                                   <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
                                     <div className="dropdown_pin" 
-                                          onClick={(e) => {
-                                            e.stopPropagation(); 
-                                            setEditPjtModalOpen(true);
-                                            setpjtStatus(clickedProjects?.status === 'notstarted' ? '진행 예정' : clickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
-                                            setPjtTitle(clickedProjects?.projectName || ''); 
-                                            setTeamLeader(clickedProjects?.Leader || '');
-                                            setAllMembers(clickedProjects?.members || []);
-                                            setAllReferrers(clickedProjects?.referrer || []);
-                                            setStartDate(clickedProjects?.startDate || null);
-                                            setEndDate(clickedProjects?.endDate || null);
-                                      }
+                                        onClick={(e) => {
+                                          e.stopPropagation(); 
+                                          setEditPjtModalOpen(true);
+                                          setpjtStatus(rightclickedProjects?.status === 'notstarted' ? '진행 예정' : rightclickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
+                                          setPjtTitle(rightclickedProjects?.projectName || ''); 
+                                          setTeamLeader(rightclickedProjects?.Leader || '');
+                                          setAllMembers(rightclickedProjects?.members || []);
+                                          setAllReferrers(rightclickedProjects?.referrer || []);
+                                          setStartDate(rightclickedProjects?.startDate || null);
+                                          setEndDate(rightclickedProjects?.endDate || null);
+                                    }
                                     }>
                                       편집
                                     </div>
@@ -830,38 +855,19 @@ const Project = () => {
                             <td>{new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0')}</td>
                           </tr>
                           {subprojectVisible[project.mainprojectIndex] && project.subProjects && (
-                            project.subProjects.map((subProject: any) => (
+                            project.subProjects?.slice().reverse().map((subProject: any, subindex: any) => (
                               <tr key={subProject.mainprojectIndex} className="board_content subproject" onContextMenu={(e) => handleSubRightClick(subProject, e)}>
                                 <td>
                                   <label className="custom-checkbox">
-                                    <input type="checkbox" id="check1" />
+                                    <input type="checkbox" id="check1"/>
                                     <span></span>
                                   </label>
                                 </td>
-                                <td>{index+1 + '-' + subProject.subprojectIndex.split('-')[1]}</td>
+                                <td>{projects.length - (index) + '-' + (project.subProjects.length - subindex)}</td>
                                 <td className={subProject.status === 'notstarted' ? 'text_medium' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{subProject.status === 'notstarted' ? '진행 예정' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
-                                <td className="text_left_half text_cursor">
+                                <td className="text_left_half text_cursor" onClick={() => { handleOpenSubProject(subProject);}}>
                                   <div className="dropdown">
                                     {subProject.projectName}
-                                    {subdropdownOpen && (
-                                      <div className="sub-dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                                        <div className="dropdown_pin" 
-                                              onClick={(e) => {
-                                                e.stopPropagation(); 
-                                                setEditSubPjtModalOpen(true);
-                                                setpjtStatus(clickedProjects?.status === 'notstarted' ? '진행 예정' : clickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
-                                                setPjtTitle(clickedProjects?.projectName || ''); 
-                                                setTeamLeader(clickedProjects?.Leader || '');
-                                                setAllMembers(clickedProjects?.members || []);
-                                                setStartDate(clickedProjects?.startDate || null);
-                                                setEndDate(clickedProjects?.endDate || null);
-                                                setPjtMemo(clickedProjects?.memo || '');
-                                          }
-                                        }>
-                                          편집
-                                        </div>
-                                      </div>
-                                    )}
                                   </div>
                                 </td>
                                 <td>{subProject.Leader}</td>
@@ -1104,10 +1110,10 @@ const Project = () => {
       <CustomModal
         isOpen={isAddSubPjtModalOpen}
         onClose={() => { setAddSubPjtModalOPen(false); resetForm(); }}
-        header={clickedProjects?.projectName}
+        header={rightclickedProjects?.projectName}
         footer1={'저장'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(clickedProjects?.mainprojectIndex); }}
+        onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(rightclickedProjects?.mainprojectIndex); }}
         width="500px"
         height="550px"
       >
@@ -1209,13 +1215,13 @@ const Project = () => {
       <CustomModal
         isOpen={isEditPjtModalOpen}
         onClose={() => { setEditPjtModalOpen(false); resetForm(); }}
-        header={'메인 프로젝트 수정'}
+        header={rightclickedProjects?.projectName}
         footer1={'편집'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditPjtModalOpen(false); resetForm(); handleEditProject(clickedProjects?.mainprojectIndex || 0)}}
+        onFooter1Click={() => { setEditPjtModalOpen(false); resetForm(); handleEditProject(rightclickedProjects?.mainprojectIndex || 0)}}
         footer2={'삭제'}
         footer2Class="red-btn"
-        onFooter2Click={() => { setEditPjtModalOpen(false); resetForm(); hanelDeleteMainPjt(clickedProjects?.mainprojectIndex || 0)}}
+        onFooter2Click={() => { setEditPjtModalOpen(false); resetForm(); hanelDeleteMainPjt(rightclickedProjects?.mainprojectIndex || 0)}}
         width="500px"
         height="600px"
       >
@@ -1357,17 +1363,99 @@ const Project = () => {
           </div>
         </div>
       </CustomModal>
+      
+      <CustomModal
+        isOpen={isViewSubPjtModalOpen}
+        onClose={() => { setViewSubPjtModalOpen(false); resetForm(); }}
+        header={rightclickedProjects?.projectName}
+        footer1={'편집'}
+        footer1Class="green-btn"
+        onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false);}}
+        footer2={'삭제'}
+        footer2Class="red-btn"
+        onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
+        width="500px"
+        height="auto"
+      >
+        <div className="body-container">
+          <div className="body_container_content">
+            <div className="body_container_content_title">상태</div>
+            <div className="view_div">
+              {pjtStatus}
+              <div className={pjtStatus === '진행 중' ? 'blue_circle' : pjtStatus === '진행 완료' ? 'brown_circle' : ''}></div>
+            </div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">프로젝트 명</div>
+            <div className="view_div">{pjtTitle}</div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">팀리더</div>
+            <div className="view_div">{teamLeader}</div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">전체 팀원</div>
+            <div className="view_div">
+              {allMembers.map((item: string, index: number) => (
+                <div className="listbox_content" key={index}>
+                  {item}{index < allMembers.length - 1 && ','}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">프로젝트<br />기간</div>
+            <div className="body_container_content_datepicker">
+              <DatePicker
+                selected={startDate}
+                onChange={() => {}}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                dateFormat="yyyy-MM-dd"
+                className="datepicker"
+                popperPlacement="top"
+                disabled={true}
+              />
+              <span className="timespan">~</span>
+              <DatePicker
+                selected={endDate}
+                onChange={() => {}}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                dateFormat="yyyy-MM-dd"
+                className="datepicker"
+                popperPlacement="top"
+                disabled={true}
+              />
+            </div>
+          </div>
+
+          <div className="body_container_content">
+            <div className="body_container_content_title">프로젝트<br />내용</div>
+            <div className="view_div">{pjtMemo}</div>
+          </div>
+        </div>
+      </CustomModal>
 
       <CustomModal
         isOpen={isEditSubPjtModalOpen}
         onClose={() => { setEditSubPjtModalOpen(false); resetForm(); }}
-        header={'서브 프로젝트 수정'}
-        footer1={'편집'}
+        header={rightclickedProjects?.projectName}
+        footer1={'수정'}
         footer1Class="green-btn"
         onFooter1Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleEditSubProject(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
-        footer2={'삭제'}
+        footer2={'취소'}
         footer2Class="red-btn"
-        onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
+        onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm(); }}
         width="500px"
         height="600px"
       >

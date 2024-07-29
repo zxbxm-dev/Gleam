@@ -68,3 +68,7 @@ export { default as ChatTab } from "./Message/ChatTab.svg";
 export { default as PersonTab } from "./Message/PersonTab.svg";
 export { default as HrLine } from "./Message/HrLine.svg";
 export { default as NotiIcon } from "./Message/NotiIcon.svg";
+export { default as NewChatIcon } from "./Message/NewChatIcon.svg";
+export { default as MailIcon } from "./Message/MailIcon.svg";
+export { default as WorkReportIcon } from "./Message/Work ReportIcon.svg";
+export { default as ScheduleIcon } from "./Message/ScheduleIcon.svg";

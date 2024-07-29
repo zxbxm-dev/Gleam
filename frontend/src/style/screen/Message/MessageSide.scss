@@ -1,7 +1,9 @@
 .message-sidebar {
   width: 320px;
+  max-width: 320px;
   height: 100vh;
   overflow-y: scroll;
+  position: relative;
 
   .tab-container {
     width: 100%;
@@ -25,6 +27,8 @@
   }
 
   .Sidebar-Ms {
+    position: relative;
+
     .My-bar,
     .Noti-bar {
       display: flex;
@@ -46,21 +50,31 @@
         margin-left: 5px;
         width: 16px;
         height: 16px;
+        border-image-width: 2px;
       }
     }
 
     .Noti-bar {
       cursor: pointer;
       border-bottom: none;
+
+      &.active {
+        background-color: #efefef;
+      }
     }
 
     .No-dept {
       display: flex;
+      position: relative;
       align-items: center;
       padding: 15px 17px 15px 31px;
       justify-content: space-between;
       font-family: var(--font-family-Noto-M);
       font-size: 15px;
+
+      &.selected {
+        background-color: #efefef;
+      }
 
       .Message-Menu {
         cursor: pointer;
@@ -75,6 +89,26 @@
           width: 35px;
           height: 35px;
           border-radius: 50px;
+        }
+      }
+
+      .Message-OnClick-Menu {
+        display: none;
+
+        &.active {
+          cursor: pointer;
+          position: absolute;
+          display: flex;
+          padding-left: 15px;
+          align-items: center;
+          right: -135px;
+          bottom: -20px;
+          width: 150px;
+          height: 42px;
+          background-color: #fff;
+          border-radius: 5px;
+          z-index: 99999;
+          box-shadow: 0 0 3px 2px #e2e2e2;
         }
       }
     }
@@ -171,6 +205,15 @@
         }
       }
     }
+  }
+
+  .new-chat-button {
+    position: absolute;
+    bottom: 80px;
+    right: 25px;
+    cursor: pointer;
+    width: 58px;
+    height: 58px;
   }
 }
 
