@@ -588,8 +588,21 @@ const Project = () => {
       setIsStatusModalOpen(true);
     } catch (error: any) {
       console.log('서브 프로젝트 추가 실패', error);
-      setStatusMessage('프로젝트 일정 추가에 실패하였습니다.')
-      setIsStatusModalOpen(true);
+      if (error.response) {
+        const { status } = error.response;
+        const { message } = error.response.data;
+        switch (status ) {
+          case 418:
+            setStatusMessage(message);
+            setIsStatusModalOpen(true);
+            break;
+
+          case 419:
+            setStatusMessage(message);
+            setIsStatusModalOpen(true);
+            break;
+        }
+      }
     }
 
     refetchProject();
@@ -702,15 +715,15 @@ const Project = () => {
         DeleteMainProject(mainprojectIndex)
         .then(response => {
           console.log(`메인 프로젝트 ${mainprojectIndex} 삭제 성공`, response);
+          setDeletePjtModalOpen(false);
+          setSelectedProjects({});
+          refetchProject();
         })
         .catch(error => {
           console.log(`메인 프로젝트 ${mainprojectIndex} 삭제 실패`, error);
         });
       }
     });
-    setDeletePjtModalOpen(false);
-    setSelectedProjects({});
-    refetchProject();
   };
 
   // 체크박스로 선택한 프로젝트 고정
@@ -808,6 +821,7 @@ const Project = () => {
                       {(Array.isArray(projects) ? projects : []).map((project, index) => (
                         <React.Fragment key={project.mainprojectIndex}>
                           <tr className="board_content" onContextMenu={(e) => handleRightClick(project, e)}
+                            style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? 'gray' : ''}}
                           >
                             <td>
                               <label className="custom-checkbox">
@@ -1650,7 +1664,7 @@ const Project = () => {
         footer1={'확인'}
         footer1Class="gray-btn"
         onFooter1Click={() => setIsStatusModalOpen(false)}
-        width="400px"
+        width="350px"
         height="200px"
       >
         <div className="text-center">
