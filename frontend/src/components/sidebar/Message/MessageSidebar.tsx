@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { PersonData } from "../../../services/person/PersonServices";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState, selectedPersonState } from "../../../recoil/atoms";
-import { ChatTab, PersonTab } from "../../../assets/images/index";
+import { ChatTab, PersonTab, NewChatIcon } from "../../../assets/images/index";
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
 
@@ -198,6 +198,7 @@ const MessageSidebar: React.FC = () => {
       ) : (
         <p>Loading...</p>
       )}
+      <img src={NewChatIcon} className="new-chat-button" />
     </div>
   );
 };
