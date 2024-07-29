@@ -82,7 +82,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
           setIsNotibarActive(true);
         }}
       >
-        <img className="My-attach" src={NotiIcon} />
+        <img className="My-attach" src={NotiIcon} alt="my-attach" />
         <div>통합 알림</div>
       </li>
       <li
@@ -96,11 +96,11 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
           )
         }
       >
-        <img className="My-attach" src={userAttachment} />
+        <img className="My-attach" src={userAttachment} alt="my-attach" />
         <div>
           {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
         </div>
-        <img className="Message-Me" src={MessageMe} />
+        <img className="Message-Me" src={MessageMe} alt="message-me" />
       </li>
       {personData
         .filter((person) => !person.department)
@@ -131,6 +131,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
             <img
               className="Message-Menu"
               src={MessageMenu}
+              alt="message-menu"
               onClick={(e) => {
                 e.stopPropagation();
                 setActiveMenuUserId((prev) =>
@@ -155,9 +156,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
             onClick={() => toggleDepartmentExpansion(department)}
           >
             {expandedDepartments[department] ? (
-              <img src={MenuArrow_down} />
+              <img src={MenuArrow_down} alt="down" />
             ) : (
-              <img src={MenuArrow_right} />
+              <img src={MenuArrow_right} alt="up" />
             )}{" "}
             {department}
           </button>
@@ -170,9 +171,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                     onClick={() => toggleTeamExpansion(team)}
                   >
                     {expandedTeams[team] ? (
-                      <img src={MenuArrow_down} />
+                      <img src={MenuArrow_down} alt="down" />
                     ) : (
-                      <img src={MenuArrow_right} />
+                      <img src={MenuArrow_right} alt="right" />
                     )}{" "}
                     {team}
                   </button>
@@ -217,6 +218,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                               <img
                                 className="Message-Menu"
                                 src={MessageMenu}
+                                alt="message-menu"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setActiveMenuUserId((prev) =>
