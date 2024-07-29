@@ -521,16 +521,16 @@ const Project = () => {
       });
 
       if (selectedstateOption === '전체') {
-        setProjects(sortedMainProjects);
+        setProjects(sortedMainProjects.reverse());
       } else if (selectedstateOption === '진행 예정') {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'notstarted');
-        setProjects(filteredProjects);
+        setProjects(filteredProjects.reverse());
       } else if (selectedstateOption === '진행 중'){
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'inprogress');
-        setProjects(filteredProjects);
+        setProjects(filteredProjects.reverse());
       } else {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'done');
-        setProjects(filteredProjects);
+        setProjects(filteredProjects.reverse());
       }
 
       setSubProjects(mainprojects);
@@ -738,8 +738,7 @@ const Project = () => {
   useEffect(() => {
     refetchProject();
   }, [refetchProject, selectedstateOption]);
-  console.log(clickedProjects)
-  console.log(rightclickedProjects)
+
   return (
     <div className="content">
       <div className="content_container">
@@ -832,17 +831,17 @@ const Project = () => {
                                 {dropdownOpen && (
                                   <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
                                     <div className="dropdown_pin" 
-                                          onClick={(e) => {
-                                            e.stopPropagation(); 
-                                            setEditPjtModalOpen(true);
-                                            setpjtStatus(rightclickedProjects?.status === 'notstarted' ? '진행 예정' : rightclickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
-                                            setPjtTitle(rightclickedProjects?.projectName || ''); 
-                                            setTeamLeader(rightclickedProjects?.Leader || '');
-                                            setAllMembers(rightclickedProjects?.members || []);
-                                            setAllReferrers(rightclickedProjects?.referrer || []);
-                                            setStartDate(rightclickedProjects?.startDate || null);
-                                            setEndDate(rightclickedProjects?.endDate || null);
-                                      }
+                                        onClick={(e) => {
+                                          e.stopPropagation(); 
+                                          setEditPjtModalOpen(true);
+                                          setpjtStatus(rightclickedProjects?.status === 'notstarted' ? '진행 예정' : rightclickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
+                                          setPjtTitle(rightclickedProjects?.projectName || ''); 
+                                          setTeamLeader(rightclickedProjects?.Leader || '');
+                                          setAllMembers(rightclickedProjects?.members || []);
+                                          setAllReferrers(rightclickedProjects?.referrer || []);
+                                          setStartDate(rightclickedProjects?.startDate || null);
+                                          setEndDate(rightclickedProjects?.endDate || null);
+                                    }
                                     }>
                                       편집
                                     </div>
@@ -856,17 +855,17 @@ const Project = () => {
                             <td>{new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0')}</td>
                           </tr>
                           {subprojectVisible[project.mainprojectIndex] && project.subProjects && (
-                            project.subProjects.map((subProject: any, subindex: any) => (
-                              <tr key={subProject.mainprojectIndex} className="board_content subproject" onContextMenu={(e) => handleSubRightClick(subProject, e)} onClick={() => { handleOpenSubProject(subProject);}}>
+                            project.subProjects?.slice().reverse().map((subProject: any, subindex: any) => (
+                              <tr key={subProject.mainprojectIndex} className="board_content subproject" onContextMenu={(e) => handleSubRightClick(subProject, e)}>
                                 <td>
                                   <label className="custom-checkbox">
-                                    <input type="checkbox" id="check1" />
+                                    <input type="checkbox" id="check1"/>
                                     <span></span>
                                   </label>
                                 </td>
                                 <td>{projects.length - (index) + '-' + (project.subProjects.length - subindex)}</td>
                                 <td className={subProject.status === 'notstarted' ? 'text_medium' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{subProject.status === 'notstarted' ? '진행 예정' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
-                                <td className="text_left_half text_cursor">
+                                <td className="text_left_half text_cursor" onClick={() => { handleOpenSubProject(subProject);}}>
                                   <div className="dropdown">
                                     {subProject.projectName}
                                   </div>
@@ -1111,10 +1110,10 @@ const Project = () => {
       <CustomModal
         isOpen={isAddSubPjtModalOpen}
         onClose={() => { setAddSubPjtModalOPen(false); resetForm(); }}
-        header={clickedProjects?.projectName}
+        header={rightclickedProjects?.projectName}
         footer1={'저장'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(clickedProjects?.mainprojectIndex); }}
+        onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(rightclickedProjects?.mainprojectIndex); }}
         width="500px"
         height="550px"
       >
@@ -1413,7 +1412,7 @@ const Project = () => {
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
-                onChange={date => setStartDate(date)}
+                onChange={() => {}}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
@@ -1421,11 +1420,12 @@ const Project = () => {
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
+                disabled={true}
               />
               <span className="timespan">~</span>
               <DatePicker
                 selected={endDate}
-                onChange={date => setEndDate(date)}
+                onChange={() => {}}
                 selectsEnd
                 startDate={startDate}
                 endDate={endDate}
@@ -1434,6 +1434,7 @@ const Project = () => {
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
+                disabled={true}
               />
             </div>
           </div>
