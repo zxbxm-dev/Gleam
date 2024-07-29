@@ -1,3 +1,4 @@
+@import "../../style/mixin";
 .header {
   position: fixed;
   left: 0;
@@ -74,6 +75,10 @@
         box-shadow: 0 0 0 1px rgba(69,197,82,0.75) inset;
       }
     }
+
+    .HeaderMenu{
+      display: none;
+    }
   }
 }
 
@@ -131,6 +136,18 @@
       text-decoration: underline;
       cursor: pointer;
       color: #929292;
+    }
+  }
+}
+
+@include tablet {
+  .header{
+    display: flex;
+    align-items: center;
+    .header-right{
+      .HeaderMenu{
+        display: flex;
+      }
     }
   }
 }

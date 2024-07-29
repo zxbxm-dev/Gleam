@@ -1,3 +1,5 @@
+@import "../../style/mixin";
+
 .login_container {
   width: 100vw;
   height: 100vh;
@@ -20,7 +22,7 @@
     height: 60px;
   }
 
-  .InputClass:focus{
+  .InputClass:focus {
     outline: 2px solid #76CB7E;
     border-radius: 5px;
   }
@@ -46,28 +48,60 @@
     color: #fff;
   }
 
-  .GoRegis{
+  .GoRegis {
     margin-top: 15px;
     color: #929292;
     font-family: var(--font-family-Noto-R);
 
-    .span:hover{
+    .span:hover {
       text-decoration: underline;
       cursor: pointer;
     }
   }
 }
 
-.ModalHeader{
+.ModalHeader {
   display: flex;
   align-items: center;
 }
 
-.ModalBody{
+.ModalBody {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
   color: #3B3B3B;
   font-family: var(--font-family-Noto-B);
+}
+
+@include mobile {
+  .login_container {
+
+    .Linker {
+      margin-bottom: 60px;
+      width: 60%;
+    }
+
+    .InputClass {
+      width: 80%;
+      padding-left: 10px;
+      margin-bottom: 10px;
+      height: 50px;
+      font-size: 14px;
+    }
+
+    .InputClass:focus {
+      outline: 1px solid #76CB7E;
+    }
+
+    .login_btn {
+      margin-top: 10px;
+      padding: 7px 45px 8px 45px;
+      font-size: 1.0rem;
+    }
+
+    .GoRegis {
+      font-size: 12px;
+    }
+  }
 }
