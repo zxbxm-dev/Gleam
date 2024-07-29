@@ -11,9 +11,12 @@ import {
   mail_attachment,
   mail_triangle,
   mail_cancle,
+  mail_calendar,
   White_Arrow,
   SearchIcon,
 } from "../../assets/images/index";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import BlockMail from "./BlockMail";
 import MobileCard from "./MobileCard";
 import Pagenation from "./Pagenation";
@@ -31,6 +34,8 @@ const Mail = () => {
   const [selectdMenuOption, setSelectedMenuOption] = useState('전체 메일');
   const [dueDateIsOpen, setDuedDateIsOpen] = useState(false);
   const [selectdDueDateOption, setSelectedDueDateOption] = useState('전체');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
 
   const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
@@ -52,6 +57,24 @@ const Mail = () => {
     '임시 보관함',
     '스팸 메일함',
   ];
+
+  const handleDateChange = (date: Date, isStart: boolean) => {
+    if (isStart) {
+      setStartDate(date);
+      if (date && endDate) {
+        setSelectedDueDateOption(`${date.toLocaleDateString('ko-KR')} ~ ${endDate.toLocaleDateString('ko-KR')}`);
+      } else {
+        setSelectedDueDateOption(date ? date.toLocaleDateString('ko-KR') : '전체');
+      }
+    } else {
+      setEndDate(date);
+      if (startDate && date) {
+        setSelectedDueDateOption(`${startDate.toLocaleDateString('ko-KR')} ~ ${date.toLocaleDateString('ko-KR')}`);
+      } else {
+        setSelectedDueDateOption(date ? date.toLocaleDateString('ko-KR') : '전체');
+      }
+    }
+  };
 
   const dueDateOptions = [
     '전체',
@@ -275,11 +298,41 @@ const Mail = () => {
                 </div>
                 {dueDateIsOpen && (
                   <ul className="dropdown_menu">
-                    {dueDateOptions.map((option: string) => (
+                    {dueDateOptions.map((option: any) => (
                       <li key={option} onClick={() => handleDueDateSelect(option)}>
                         {option}
                       </li>
                     ))}
+                    <li onClick={(e) => e.stopPropagation()}>
+                      <div className="due_Date" onClick={(e) => e.stopPropagation()}>
+                        <img src={mail_calendar} alt="mail_calendar" />
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date: Date) => handleDateChange(date, true)}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText={new Date().toLocaleDateString('ko-KR')}
+                          dateFormat="yyyy-MM-dd"
+                          className="datepicker"
+                          popperPlacement="top"
+                        />
+                        <span>~</span>
+                        <img src={mail_calendar} alt="mail_calendar" />
+                        <DatePicker
+                          selected={endDate}
+                          onChange={(date: Date) => handleDateChange(date, false)}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          minDate={startDate}
+                          placeholderText={new Date().toLocaleDateString('ko-KR')}
+                          dateFormat="yyyy-MM-dd"
+                          className="datepicker"
+                          popperPlacement="top"
+                        />
+                      </div>
+                    </li>
                   </ul>
                 )}
               </div>
