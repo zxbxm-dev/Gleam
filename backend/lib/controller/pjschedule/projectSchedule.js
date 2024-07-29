@@ -39,15 +39,17 @@ const addProject = async (req, res) => {
             const subEndDate = new Date(endDate).toISOString().split('T')[0];
             const subStartDate = new Date(startDate).toISOString().split('T')[0];
 
+            if(subEndDate> mainEndDate) { return res.status(419).json({message:"메인프로젝트 마감일정을 초과하여 등록 할 수 없습니다." });}
+            if(subStartDate<mainStartDate) { return res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });}    
+           
+            // 프로젝트 등록 날짜와 시작날짜 비교 
             if(startDate<=today){
                 status = "inprogress";
             }else{
                 status = "notstarted";
-            };
-        
-            if(subEndDate> mainEndDate) { return res.status(419).json({message:"메인프로젝트 마감일정을 초과하여 등록 할 수 없습니다." });}
-            if(subStartDate<mainStartDate) { return res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });}        
-                
+            };         
+            
+            //신규 서브프로젝트 DB에 저장
             const newSubProject = await subproject.create({
                 userId: userID,
                 mainprojectIndex,
@@ -66,12 +68,14 @@ const addProject = async (req, res) => {
        
         //메인프로젝트 생성
         if(!mainprojectIndex){
+            // 프로젝트 등록 날짜와 시작날짜 비교 
                 if(startDate<=today){
                     status = "inprogress";
                 }else{
                     status = "notstarted";
                 }
-
+ 
+            //신규 메인프로젝트 DB에 저장
             const newProject = await project.create({
                 userId: userID,
                 projectName,
@@ -88,8 +92,8 @@ const addProject = async (req, res) => {
            };
 
        }catch(error) {
-        console.error("프로젝트 일정을 가져오는 중에 오류가 발생했습니다.:", error);
-        res.status(500).json({message: "프로젝트 일정 불러오기에 실패했습니다." });
+        console.error("프로젝트 일정 추가에 오류가 발생했습니다.:", error);
+        res.status(500).json({message: "프로젝트 일정 추가에 실패했습니다." });
     }
 };
 
@@ -126,6 +130,10 @@ const addProject = async (req, res) => {
 
         console.log("요청 파라미터:", req.params);
         console.log("요청 본문:", req.body);
+
+        const currentDate = new Date();
+        const today = currentDate.toISOString().split('T')[0];
+
  
         if(!mainprojectIndex) {
             return res.status(400).json({ message: "메인프로젝트 식별번호가 제공되지 않았습니다. "});
@@ -141,6 +149,25 @@ const addProject = async (req, res) => {
             return res.status(400).json({ message: "서브프로젝트 정보를 찾을 수 없습니다." });
         }
 
+        //메인프로젝트 마감일 초과 여부 확인
+        const mainProject = await project.findOne({where: {mainprojectIndex}});
+        const mainEndDate = mainProject.endDate.toISOString().split('T')[0];
+        const mainStartDate = mainProject.startDate.toISOString().split('T')[0];
+       
+        const subEndDate = subPj.endDate.toISOString().split('T')[0];
+        const subStartDate = subPj.startDate.toISOString().split('T')[0];
+
+        if(subEndDate> mainEndDate) { return res.status(419).json({message:"메인프로젝트 마감일정을 초과하여 등록 할 수 없습니다." });}
+        if(subStartDate<mainStartDate) { return res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });}    
+       
+        // 프로젝트 등록 날짜와 시작날짜 비교 
+        if(subStartDate<=today){
+            subPj.status = "inprogress";
+        }else{
+            subPj.status = "notstarted";
+        };    
+
+        //수정된 서브프로젝트 DB에 저장
         subPj.projectName = projectName;
         subPj.Leader = Leader;
         subPj.members = members;                   
@@ -148,7 +175,7 @@ const addProject = async (req, res) => {
         subPj.startDate = startDate;
         subPj.endDate = endDate;
         subPj.memo = memo;
-        subPj.status = status;
+        //subPj.status = subPj.status;
 
         await subPj.save();
         
@@ -168,6 +195,10 @@ const addProject = async (req, res) => {
         if(!mainPj) {
             return res.status(404).json({ message: "메인프로젝트 정보를 찾을 수 없습니다." });
         }
+
+        const mainStartDate = mainPj.startDate.toISOString().split('T')[0];    
+     
+        //수정된 메인프로젝트 DB에 저장
         if (projectName !== undefined) mainPj.projectName = projectName;
         if (Leader !== undefined) mainPj.Leader = Leader;
         if (members !== undefined) mainPj.members = members;                   
@@ -175,8 +206,16 @@ const addProject = async (req, res) => {
         if (startDate !== undefined) mainPj.startDate = startDate;
         if (endDate !== undefined) mainPj.endDate = endDate;
         if (memo !== undefined) mainPj.memo = memo;
-        if (status !== undefined) mainPj.status = status;
+        if (status !== undefined) mainPj.status =  mainPj.status;
         mainPj.pinned = pinned;
+
+          // 프로젝트 등록 날짜와 시작날짜 비교 
+          if(mainStartDate<=today){
+            mainPj.status = "inprogress";
+        }else{
+             mainPj.status = "notstarted";
+        }     
+
         await mainPj.save();
         
         res.status(200).json({message:"메인프로젝트 일정 수정을 완료했습니다.", mainPj});   
