@@ -31,6 +31,9 @@ export { default as Desc_Icon } from "./Approval/Desc_Icon.svg";
 // Modal
 export { default as ModalCheck } from "./Modal/ModalCheck.svg";
 export { default as ModalCloseBtn } from "./Modal/ModalCloseBtn.svg";
+export { default as CheckBox } from "./Modal/CheckBox.svg";
+export { default as CheckBox_Active } from "./Modal/CheckBox_Active.svg";
+export { default as DepartmentTabIcon } from "./Modal/DepartmentTabIcon.svg";
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";

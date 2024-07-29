@@ -2,9 +2,19 @@ import React, { useState, useEffect } from "react";
 import { PersonData } from "../../../services/person/PersonServices";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState, selectedPersonState } from "../../../recoil/atoms";
-import { ChatTab, PersonTab, NewChatIcon } from "../../../assets/images/index";
+import {
+  ChatTab,
+  PersonTab,
+  NewChatIcon,
+  SearchIcon,
+  CheckBox,
+  CheckBox_Active,
+  DepartmentTabIcon,
+  UserIcon_dark,
+} from "../../../assets/images/index";
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
+import CustomModal from "../../modal/CustomModal";
 
 export interface Person {
   userId: string;
@@ -32,6 +42,7 @@ interface User {
 
 const MessageSidebar: React.FC = () => {
   const [personData, setPersonData] = useState<Person[] | null>(null);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [expandedDepartments, setExpandedDepartments] = useState<{
     [key: string]: boolean;
   }>({});
@@ -40,6 +51,8 @@ const MessageSidebar: React.FC = () => {
   }>({});
   const [activeTab, setActiveTab] = useState("personData");
   const [dummyData, setDummyData] = useState<any[]>([]);
+  const [isWholeMemberChecked, setIsWholeMemeberChecked] =
+    useState<boolean>(false);
 
   const user: User = useRecoilValue(userState) as User;
   const setSelectedPerson = useSetRecoilState(selectedPersonState);
@@ -53,6 +66,7 @@ const MessageSidebar: React.FC = () => {
             new Date(a.entering).getTime() - new Date(b.entering).getTime()
         );
         setPersonData(sortedData);
+        console.log("사람>>", sortedData);
       } catch (err) {
         console.error("Error fetching person data:", err);
       }
@@ -198,7 +212,90 @@ const MessageSidebar: React.FC = () => {
       ) : (
         <p>Loading...</p>
       )}
-      <img src={NewChatIcon} className="new-chat-button" />
+      <img
+        src={NewChatIcon}
+        className="new-chat-button"
+        alt="new-chat-button"
+        onClick={() => {
+          setOpenModal(true);
+        }}
+      />
+
+      <CustomModal
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        header={"새 대화방 생성"}
+        footer1={"확인"}
+        footer1Class="back-green-btn"
+        //onFooter1Click={handleSubmit}
+        footer2={"취소"}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setOpenModal(false)}
+        width="400px"
+        height="465px"
+      >
+        <div className="body-container">
+          <div className="New-Chat-Room">
+            <input
+              placeholder="(필수) 대화방 이름을 입력해주세요."
+              className="TextInputCon"
+              //onChange={handleTitleChange}
+            />
+          </div>
+          <div className="New-Chat-Room">
+            <div className="Right-Button-Con">
+              <img src={SearchIcon} className="SearchIcon" alt="searchIcon" />
+              <input
+                placeholder="대화상대 검색"
+                className="LeftTextInput"
+                //\ onChange={handleUrlChange}
+              />
+            </div>
+            <div className="WholeMemberCheckBoxCon">
+              <img
+                className="CheckBox"
+                src={isWholeMemberChecked ? CheckBox_Active : CheckBox}
+                alt="checkBoxIcon"
+                onClick={() => setIsWholeMemeberChecked(!isWholeMemberChecked)}
+              />
+              전체 멤버
+            </div>
+          </div>
+          <div className="PeopleSearchCon">
+            <div className="LeftEmployCon">
+              <div className="Department-Tab">
+                <img src={DepartmentTabIcon} alt="DepartmentTabIcon" />
+                마케팅부
+                <div className="VerticalLine"></div>
+              </div>
+
+              <div className="PersonCon">
+                <img
+                  src={CheckBox}
+                  className="PersonCheckBox"
+                  alt="PersonCheckBox"
+                />
+                <img
+                  src={UserIcon_dark}
+                  className="ProfileIcon"
+                  alt="usericondark"
+                />
+                <div className="PersonName">개발 1팀 테스트</div>
+              </div>
+
+              <div className="Team-Tab">
+                <img
+                  src={CheckBox}
+                  className="TeamCheckBox"
+                  alt="TeamCheckBox"
+                />
+                <div className="TeamName">기획팀</div>
+              </div>
+            </div>
+            <div className="RightSelectedCon">사이트명</div>
+          </div>
+        </div>
+      </CustomModal>
     </div>
   );
 };
