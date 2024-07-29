@@ -44,6 +44,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
   const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
+
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
