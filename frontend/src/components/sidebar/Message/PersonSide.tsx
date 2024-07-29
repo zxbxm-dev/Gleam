@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Person } from "./MessageSidebar";
 import {
   MessageMe,
@@ -41,6 +41,24 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   onPersonClick,
   userPosition,
 }) => {
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
+  const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setActiveMenuUserId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
+
   if (!personData) {
     return <p>Loading...</p>;
   }
@@ -51,26 +69,21 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     개발부: ["개발 1팀", "개발 2팀"],
     마케팅부: ["디자인팀", "기획팀"],
     관리부: ["관리팀", "지원팀", "시설팀"],
-    "알고리즘 연구실": ["암호 연구팀", "AI 연구팀"],
-    "동형분석 연구실": ["동형분석 연구팀"],
-    "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
+    "R&D 센터": ["암호 연구팀", "동형분석 연구팀", "크립토 블록체인 연구팀"],
   };
 
   return (
     <ul className="Sidebar-Ms">
       <li
-        className="Noti-bar"
-        // onClick={() =>
-        //   onPersonClick(
-        //     userName || "",
-        //     userTeam || "",
-        //     userDepartment || "",
-        //     userPosition || ""
-        //   )
-        // }
+        className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
+        onClick={() => {
+          onPersonClick("통합 알림", "", "", "");
+          setSelectedUserId(null);
+          setIsNotibarActive(true);
+        }}
       >
         <img className="My-attach" src={NotiIcon} />
-        <div>Notification</div>
+        <div>통합 알림</div>
       </li>
       <li
         className="My-bar"
@@ -93,16 +106,20 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
         .filter((person) => !person.department)
         .map((person) => (
           <li
-            className="No-dept"
+            className={`No-dept ${
+              selectedUserId === person.userId ? "selected" : ""
+            }`}
             key={person.userId}
-            onClick={() =>
+            onClick={() => {
               onPersonClick(
                 person.username,
                 person.team,
                 person.department,
                 person.position
-              )
-            }
+              );
+              setSelectedUserId(person.userId);
+              setIsNotibarActive(false);
+            }}
           >
             <div className="No-Left">
               <img
@@ -111,7 +128,24 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
               />
               {person.username}
             </div>
-            <img className="Message-Menu" src={MessageMenu} />
+            <img
+              className="Message-Menu"
+              src={MessageMenu}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveMenuUserId((prev) =>
+                  prev === person.userId ? null : person.userId
+                );
+              }}
+            />
+            <div
+              ref={menuRef}
+              className={`Message-OnClick-Menu ${
+                activeMenuUserId === person.userId ? "active" : ""
+              }`}
+            >
+              대화 나가기
+            </div>
           </li>
         ))}
       {Object.keys(departmentTeams).map((department) => (
@@ -129,40 +163,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
           </button>
           {expandedDepartments[department] && (
             <ul className="DeptDown">
-              {personData.map(
-                (person) =>
-                  person.department === department &&
-                  person.team === "" && (
-                    <li
-                      className="No-dept"
-                      key={person.userId}
-                      onClick={() =>
-                        onPersonClick(
-                          person.username,
-                          person.team,
-                          person.department,
-                          person.position
-                        )
-                      }
-                    >
-                      <div className="No-Left">
-                        <img
-                          src={
-                            person.attachment
-                              ? person.attachment
-                              : UserIcon_dark
-                          }
-                          alt={`${person.username}`}
-                        />
-                        {person.team
-                          ? `${person.team}`
-                          : `${person.department}`}{" "}
-                        {person.username}
-                      </div>
-                      <img className="Message-Menu" src={MessageMenu} />
-                    </li>
-                  )
-              )}
               {departmentTeams[department].map((team) => (
                 <li key={team}>
                   <button
@@ -183,16 +183,22 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                           person.department === department &&
                           person.team === team && (
                             <li
-                              className="No-dept"
+                              className={`No-dept ${
+                                selectedUserId === person.userId
+                                  ? "selected"
+                                  : ""
+                              }`}
                               key={person.userId}
-                              onClick={() =>
+                              onClick={() => {
                                 onPersonClick(
                                   person.username,
                                   person.team,
                                   person.department,
                                   person.position
-                                )
-                              }
+                                );
+                                setSelectedUserId(person.userId);
+                                setIsNotibarActive(false);
+                              }}
                             >
                               <div className="No-Left">
                                 <img
@@ -208,7 +214,28 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                   : `${person.department}`}{" "}
                                 {person.username}
                               </div>
-                              <img className="Message-Menu" src={MessageMenu} />
+                              <img
+                                className="Message-Menu"
+                                src={MessageMenu}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveMenuUserId((prev) =>
+                                    prev === person.userId
+                                      ? null
+                                      : person.userId
+                                  );
+                                }}
+                              />
+                              <div
+                                ref={menuRef}
+                                className={`Message-OnClick-Menu ${
+                                  activeMenuUserId === person.userId
+                                    ? "active"
+                                    : ""
+                                }`}
+                              >
+                                대화 나가기
+                              </div>
                             </li>
                           )
                       )}
