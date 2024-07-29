@@ -21,7 +21,9 @@ const addProject = async (req, res) => {
 
     const currentDate = new Date();
     const today = currentDate.toISOString().split('T')[0];
+
     //서브 프로젝트 생성 
+    try{
         if(mainprojectIndex){
             //서브 프로젝트 인덱스 생성 
             const subprojectCount = await subproject.count({ 
@@ -34,14 +36,17 @@ const addProject = async (req, res) => {
             const mainEndDate = mainProject.endDate.toISOString().split('T')[0];
             const mainStartDate = mainProject.startDate.toISOString().split('T')[0];
            
-            try{
-                if(startDate<=today){
-                    status = "inprogress";
-                }else{
-                    status = "notstarted";
-                };
-                if(endDate> mainEndDate) { res.status(419).json({message:"메인프로젝트 마감일정을 초과하여 등록 할 수 없습니다." });}
-                if(startDate< mainStartDate) { res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });}
+            const subEndDate = new Date(endDate).toISOString().split('T')[0];
+            const subStartDate = new Date(startDate).toISOString().split('T')[0];
+
+            if(startDate<=today){
+                status = "inprogress";
+            }else{
+                status = "notstarted";
+            };
+        
+            if(subEndDate> mainEndDate) { return res.status(419).json({message:"메인프로젝트 마감일정을 초과하여 등록 할 수 없습니다." });}
+            if(subStartDate<mainStartDate) { return res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });}        
                 
             const newSubProject = await subproject.create({
                 userId: userID,
@@ -51,26 +56,22 @@ const addProject = async (req, res) => {
                 Leader,
                 members,
                 referrer,
-                startDate,
                 endDate,
+                startDate,
                 memo,
                 status,
             })
-            res.status(201).json({message: `${mainprojectIndex}번 메인프로젝트의 서브프로젝트 일정 추가를 완료했습니다.`,newSubProject});
-           }catch(error){
-            console.log("서브프로젝트 일정 추가 중 오류가 발생했습니다.:", error);
-            res.status(500).json({message: "서브프로젝트 일정 추가에 실패했습니다." });  
-         }
+            return res.status(201).json({message: `${mainprojectIndex}번 메인프로젝트의 서브프로젝트 일정 추가를 완료했습니다.`,newSubProject});
         };
-
+       
         //메인프로젝트 생성
         if(!mainprojectIndex){
-            try{
                 if(startDate<=today){
                     status = "inprogress";
                 }else{
                     status = "notstarted";
                 }
+
             const newProject = await project.create({
                 userId: userID,
                 projectName,
@@ -83,13 +84,14 @@ const addProject = async (req, res) => {
                 status,
                 pinned: false,  
             })
-            res.status(201).json({message: "메인프로젝트 일정 추가를 완료했습니다.", newProject});
-          }catch(error) {
-            console.log("메인프로젝트 일정 추가 중 오류가 발생했습니다.:", error);
-            res.status(500).json({message: "메인프로젝트 일정 추가에 실패했습니다." });
-        }
-    };
-}
+            return res.status(201).json({message: "메인프로젝트 일정 추가를 완료했습니다.", newProject});
+           };
+
+       }catch(error) {
+        console.error("프로젝트 일정을 가져오는 중에 오류가 발생했습니다.:", error);
+        res.status(500).json({message: "프로젝트 일정 불러오기에 실패했습니다." });
+    }
+};
 
     //프로젝트 일정 조회
     const getAllProject = async (req, res) => {
@@ -102,7 +104,6 @@ const addProject = async (req, res) => {
             res.status(500).json({message: "프로젝트 일정 불러오기에 실패했습니다." });
         }
     };
-
 
     //프로젝트 일정 수정하기 ( 작성자 , 팀리더만 가능 )
     const editProject = async (req, res) => {
@@ -157,6 +158,7 @@ const addProject = async (req, res) => {
         res.status(500).json({ message: "서브프로젝트 일정 수정에 실패했습니다." });
         }
       }
+
       //메인프로젝트 수정
       if(!subprojectIndex){
         try{
