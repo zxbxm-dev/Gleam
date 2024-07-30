@@ -443,6 +443,10 @@
             &::placeholder {
               color: #c7c7c7;
             }
+
+            &:focus {
+              outline: none;
+            }
           }
 
           .Right-Button-Con {
@@ -467,6 +471,9 @@
               height: 100%;
               &::placeholder {
                 color: #c7c7c7;
+              }
+              &:focus {
+                outline: none;
               }
             }
           }
