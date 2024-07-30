@@ -204,6 +204,29 @@
 
           .dropdown_menu li:hover {
             background-color: #f0f0f0;
+
+            .datepicker {
+              background-color: #f0f0f0;
+            }
+          }
+
+          .due_Date {
+            display: flex;
+
+            img {
+              width: 15px;
+              height: 15px;
+            }
+
+            span {
+              padding: 0 10px 0 5px;
+            }
+
+            .react-datepicker-wrapper{
+              .datepicker {
+                width: 85px;
+              }
+            }
           }
         }
       }
@@ -638,4 +661,49 @@
   height: 100%;
   border: 1px solid #D9D9D9;
   border-radius: 5px;
+}
+
+.mobile_card_wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.mobile_card_content {
+  display: flex;
+  flex-direction: column;
+  width: 345px;
+  height: 255px;
+  border: 1px solid #C9C9C9;
+  border-radius: 5px;
+  padding: 20px;
+  gap: 10px;
+
+  div {
+    font-size: 12px;
+  }
+
+  .mobile_user_info {
+    display: flex;
+    flex-direction: column; 
+
+    div {
+      font-size: 8px;
+      font-family: var(--font-family-Noto-R);
+
+      .mobile_user_info_bold {
+        font-size: 9px;
+        font-family: var(--font-family-Noto-B);
+      }
+
+      .mobile_user_info_mid {
+        font-size: 8px;
+        font-family: var(--font-family-Noto-M);
+      }
+
+      .mobile_user_info_Reg {
+        font-size: 7px;
+        font-family: var(--font-family-Noto-R);
+      }
+    }
+  }
 }

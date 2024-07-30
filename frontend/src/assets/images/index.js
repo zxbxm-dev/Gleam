@@ -75,3 +75,4 @@ export { default as NewChatIcon } from "./Message/NewChatIcon.svg";
 export { default as MailIcon } from "./Message/MailIcon.svg";
 export { default as WorkReportIcon } from "./Message/Work ReportIcon.svg";
 export { default as ScheduleIcon } from "./Message/ScheduleIcon.svg";
+export { default as XIcon } from "./Message/XIcon.svg";

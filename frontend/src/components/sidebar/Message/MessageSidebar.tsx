@@ -11,6 +11,7 @@ import {
   CheckBox_Active,
   DepartmentTabIcon,
   UserIcon_dark,
+  XIcon,
 } from "../../../assets/images/index";
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
@@ -53,6 +54,7 @@ const MessageSidebar: React.FC = () => {
   const [dummyData, setDummyData] = useState<any[]>([]);
   const [isWholeMemberChecked, setIsWholeMemeberChecked] =
     useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const user: User = useRecoilValue(userState) as User;
   const setSelectedPerson = useSetRecoilState(selectedPersonState);
@@ -168,6 +170,52 @@ const MessageSidebar: React.FC = () => {
     setSelectedPerson({ username, team, department, position });
   };
 
+  const groupByDepartmentAndTeam = (data: Person[]) => {
+    const grouped: { [department: string]: { [team: string]: Person[] } } = {};
+
+    data.forEach((person) => {
+      if (!grouped[person.department]) {
+        grouped[person.department] = {};
+      }
+      if (!grouped[person.department][person.team]) {
+        grouped[person.department][person.team] = [];
+      }
+      grouped[person.department][person.team].push(person);
+    });
+
+    return grouped;
+  };
+
+  const groupedData = personData ? groupByDepartmentAndTeam(personData) : {};
+
+  const filterDataBySearchQuery = (data: {
+    [department: string]: { [team: string]: Person[] };
+  }) => {
+    if (!searchQuery) return data;
+    const filtered: { [department: string]: { [team: string]: Person[] } } = {};
+
+    Object.keys(data).forEach((departmentName) => {
+      Object.keys(data[departmentName]).forEach((teamName) => {
+        const filteredPersons = data[departmentName][teamName].filter(
+          (person) =>
+            person.username.includes(searchQuery) ||
+            person.department.includes(searchQuery) ||
+            person.team.includes(searchQuery)
+        );
+        if (filteredPersons.length > 0) {
+          if (!filtered[departmentName]) {
+            filtered[departmentName] = {};
+          }
+          filtered[departmentName][teamName] = filteredPersons;
+        }
+      });
+    });
+
+    return filtered;
+  };
+
+  const filteredData = filterDataBySearchQuery(groupedData);
+
   return (
     <div className="message-sidebar">
       <div className="tab-container">
@@ -225,6 +273,7 @@ const MessageSidebar: React.FC = () => {
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
         header={"새 대화방 생성"}
+        headerTextColor="white"
         footer1={"확인"}
         footer1Class="back-green-btn"
         //onFooter1Click={handleSubmit}
@@ -248,7 +297,8 @@ const MessageSidebar: React.FC = () => {
               <input
                 placeholder="대화상대 검색"
                 className="LeftTextInput"
-                //\ onChange={handleUrlChange}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="WholeMemberCheckBoxCon">
@@ -263,36 +313,65 @@ const MessageSidebar: React.FC = () => {
           </div>
           <div className="PeopleSearchCon">
             <div className="LeftEmployCon">
-              <div className="Department-Tab">
-                <img src={DepartmentTabIcon} alt="DepartmentTabIcon" />
-                마케팅부
-                <div className="VerticalLine"></div>
-              </div>
+              {Object.keys(filteredData).map((departmentName) => (
+                <div key={departmentName}>
+                  {departmentName.trim() !== "" && (
+                    <div className="Department-Tab">
+                      <img src={DepartmentTabIcon} alt="DepartmentTabIcon" />
+                      {departmentName}
+                      <div className="VerticalLine"></div>
+                    </div>
+                  )}
+                  {Object.keys(filteredData[departmentName]).map((teamName) => (
+                    <div key={teamName}>
+                      {teamName.trim() !== "" && (
+                        <div className="Team-Tab">
+                          <img
+                            src={CheckBox}
+                            className="TeamCheckBox"
+                            alt="TeamCheckBox"
+                          />
+                          <div className="TeamName">{teamName}</div>
+                        </div>
+                      )}
+                      {filteredData[departmentName][teamName].map((person) => (
+                        <div className="PersonCon" key={person.userId}>
+                          <img
+                            src={CheckBox}
+                            className="PersonCheckBox"
+                            alt="PersonCheckBox"
+                          />
+                          <img
+                            src={UserIcon_dark}
+                            className="ProfileIcon"
+                            alt="usericondark"
+                          />
+                          <div className="PersonName">{person.username}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div className="RightSelectedCon">
+              <div className="RightTopText">선택인원 (9명)</div>
 
-              <div className="PersonCon">
-                <img
-                  src={CheckBox}
-                  className="PersonCheckBox"
-                  alt="PersonCheckBox"
-                />
-                <img
-                  src={UserIcon_dark}
-                  className="ProfileIcon"
-                  alt="usericondark"
-                />
-                <div className="PersonName">개발 1팀 테스트</div>
-              </div>
-
-              <div className="Team-Tab">
-                <img
-                  src={CheckBox}
-                  className="TeamCheckBox"
-                  alt="TeamCheckBox"
-                />
-                <div className="TeamName">기획팀</div>
+              <div className="ChosenPeople">
+                <div className="ChosenOne">
+                  <img src={XIcon} />
+                  <div>마케팅부 김현지</div>
+                </div>
+                <div className="ChosenOne">
+                  <img src={XIcon} />
+                  <div>마케팅부 김현지</div>
+                </div>
+                <div className="ChosenOne">
+                  <img src={XIcon} />
+                  <div>마케팅부 김현지</div>
+                </div>
               </div>
             </div>
-            <div className="RightSelectedCon">사이트명</div>
           </div>
         </div>
       </CustomModal>
