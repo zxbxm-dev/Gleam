@@ -1421,10 +1421,10 @@ const Project = () => {
         header={rightclickedProjects?.projectName}
         footer1={'편집'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false);}}
+        onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false); setClickedProjects(null);}}
         footer2={'삭제'}
         footer2Class="red-btn"
-        onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
+        onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
         width="500px"
         height="auto"
       >
