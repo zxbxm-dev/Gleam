@@ -3,6 +3,7 @@
   max-width: 320px;
   height: 100vh;
   overflow-y: auto;
+  overflow-x: visible;
   position: relative;
 
   .tab-container {
@@ -40,11 +41,18 @@
       font-family: var(--font-family-Noto-M);
       font-size: 15px;
 
-      .My-attach {
+      .My-attach,
+      .Noti-Icon {
         margin-right: 10px;
         width: 35px;
         height: 35px;
         border-radius: 50px;
+      }
+
+      .My-attach {
+        border: 2px solid #42e452;
+        box-sizing: border-box;
+        padding: 0;
       }
 
       .Message-Me {

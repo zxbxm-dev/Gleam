@@ -83,7 +83,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
           setIsNotibarActive(true);
         }}
       >
-        <img className="My-attach" src={NotiIcon} alt="my-attach" />
+        <img className="Noti-Icon" src={NotiIcon} alt="my-attach" />
         <div>통합 알림</div>
       </li>
       <li
