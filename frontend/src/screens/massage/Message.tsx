@@ -5,6 +5,7 @@ import {
   MailIcon,
   WorkReportIcon,
   ScheduleIcon,
+  UserManagementIcon,
 } from "../../assets/images/index";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
@@ -84,6 +85,8 @@ const Message = () => {
         </span>
         {selectedPerson.position && <img src={HrLine} alt="Horizontal Line" />}
         <span>{selectedPerson.position}</span>
+
+        <img src={UserManagementIcon} />
       </div>
       <div className="Message-container">
         {selectedPerson.username !== "통합 알림" &&
