@@ -22,7 +22,7 @@
       width: inherit;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
-      background-color: #76CB7E;
+      background-color: #76cb7e;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -105,7 +105,7 @@
           .TextInputCon {
             width: 90%;
             height: 33px;
-            border: 1px solid #DCDCDC;
+            border: 1px solid #dcdcdc;
             border-radius: 5px;
             font-size: 14px;
             padding: 10px;
@@ -124,7 +124,7 @@
           .TextInputCon2 {
             width: 90%;
             height: 84px;
-            border: 1px solid #DCDCDC;
+            border: 1px solid #dcdcdc;
             border-radius: 5px;
             font-size: 14px;
             padding: 10px;
@@ -158,7 +158,7 @@
             flex-direction: column;
             width: 100%;
             gap: 10px;
-            
+
             .SelectRoom_wrap {
               display: flex;
               gap: 10px;
@@ -169,10 +169,10 @@
                 width: 250px;
                 height: 32px;
                 cursor: pointer;
-                border: 1px solid #DCDCDC;
+                border: 1px solid #dcdcdc;
                 border-radius: 5px;
               }
-  
+
               .SelectRoom:focus {
                 outline: none;
               }
@@ -181,7 +181,7 @@
                 padding: 0px 10px;
                 font-size: 14px;
                 width: 235px;
-                border: 1px solid #DCDCDC;
+                border: 1px solid #dcdcdc;
                 border-radius: 5px;
               }
 
@@ -237,7 +237,7 @@
             .AddInputCon {
               width: 100%;
               height: 33px;
-              border-bottom: 1px solid #DCDCDC;
+              border-bottom: 1px solid #dcdcdc;
               font-size: 14px;
               padding: 10px;
             }
@@ -258,7 +258,7 @@
               top: 33px;
               left: 0;
               z-index: 1000;
-              border: 1px solid #C7C7C7;
+              border: 1px solid #c7c7c7;
               background-color: #fff;
               width: 100%;
               max-height: 200px;
@@ -281,7 +281,7 @@
             .AddsInputCon {
               width: 100%;
               height: 77px;
-              border: 1px solid #DCDCDC;
+              border: 1px solid #dcdcdc;
               border-radius: 5px;
               font-size: 14px;
               padding: 6px 10px;
@@ -328,7 +328,6 @@
             .AddsInputCon::-webkit-scrollbar-track {
               box-shadow: none;
               background-color: #fff;
-
             }
 
             .AddsInputCon::placeholder {
@@ -382,47 +381,187 @@
 
           .All_day_button {
             display: flex;
-            
+
             span {
-              color: #45C552;
+              color: #45c552;
               font-family: var(--font-family-Noto-M);
               font-size: 14px;
               width: 40px;
               margin-left: 30px;
             }
-  
+
             .switch {
               position: relative;
               width: 51px;
               height: 22px;
               background-color: #fff;
-              border: 1px solid #45C552;
+              border: 1px solid #45c552;
               border-radius: 34px;
               cursor: pointer;
               transition: background-color 0.3s;
             }
-            
+
             .switch.on {
-              background-color: #45C552;
+              background-color: #45c552;
             }
-            
+
             .slider {
               position: absolute;
               top: 3px;
               left: 5px;
               width: 14px;
               height: 14px;
-              background-color: #45C552;
+              background-color: #45c552;
               border-radius: 50%;
               transition: transform 0.3s;
             }
-            
+
             .switch.on .slider {
               transform: translateX(26px);
               background-color: #fff;
             }
           }
-          
+        }
+
+        .New-Chat-Room {
+          display: flex;
+          flex-direction: row;
+          width: 100%;
+          font-family: var(--font-family-Noto-M);
+
+          .TextInputCon {
+            width: 100%;
+            height: 33px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 10px;
+
+            &::placeholder {
+              color: #c7c7c7;
+            }
+          }
+
+          .Right-Button-Con {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 75%;
+            height: 33px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 0 10px;
+
+            .SearchIcon {
+              height: 13px;
+              width: 13px;
+              margin-right: 7px;
+            }
+
+            .LeftTextInput {
+              width: 100%;
+              height: 100%;
+              &::placeholder {
+                color: #c7c7c7;
+              }
+            }
+          }
+
+          .WholeMemberCheckBoxCon {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-size: 12px;
+            color: #555555;
+
+            .CheckBox {
+              cursor: pointer;
+              width: 16px;
+              height: 16px;
+              margin: 0 5px 0 7px;
+            }
+          }
+        }
+
+        .PeopleSearchCon {
+          font-family: var(--font-family-Noto-M);
+          display: flex;
+          flex-direction: row;
+
+          .LeftEmployCon {
+            width: 160px;
+            height: auto;
+            overflow-y: scroll;
+
+            .Department-Tab {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              font-size: 12px;
+              color: #8f8f8f;
+              white-space: nowrap;
+              margin: 10px 0;
+              img {
+                margin-right: 5px;
+              }
+              .VerticalLine {
+                height: 1px;
+                width: 100%;
+                background-color: #dcdcdc;
+                margin-left: 6px;
+              }
+            }
+            .PersonCon {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              margin: 10px 8px;
+
+              .PersonCheckBox {
+                width: 12px;
+                height: 12px;
+                margin-right: 10px;
+              }
+
+              .ProfileIcon {
+                width: 24px;
+                height: 24px;
+                margin-right: 7px;
+              }
+
+              .PersonName {
+                font-size: 10px;
+                font-weight: 400;
+              }
+            }
+
+            .Team-Tab {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+
+              background-color: #e1e1e1;
+              border-radius: 23px;
+              padding-left: 9px;
+              height: 20px;
+
+              .TeamCheckBox {
+                width: 12px;
+                height: 12px;
+                margin-right: 11px;
+              }
+
+              .TeamName {
+                font-size: 8px;
+              }
+            }
+          }
+          .RightSelectedCon {
+            width: 210px;
+            height: auto;
+            overflow-y: scroll;
+          }
         }
 
         .body-content {
@@ -461,18 +600,18 @@
               .textinput {
                 width: 100%;
                 height: 28px;
-                border: 1px solid #DCDCDC;
+                border: 1px solid #dcdcdc;
                 border-radius: 5px;
                 padding-left: 7px;
               }
 
               .textinput:focus {
-                outline: 2px solid #76CB7E;
+                outline: 2px solid #76cb7e;
               }
 
               .textinput::placeholder {
                 font-size: 12px;
-                color: #C7C7C7;
+                color: #c7c7c7;
               }
 
               .userlist_dropdown {
@@ -509,18 +648,18 @@
             .textinput {
               width: 100%;
               height: 28px;
-              border: 1px solid #DCDCDC;
+              border: 1px solid #dcdcdc;
               border-radius: 5px;
               padding-left: 7px;
             }
 
             .textinput:focus {
-              outline: 2px solid #76CB7E;
+              outline: 2px solid #76cb7e;
             }
 
             .textinput::placeholder {
               font-size: 12px;
-              color: #C7C7C7;
+              color: #c7c7c7;
             }
 
             .datepicker {
@@ -537,7 +676,7 @@
             .textareainput {
               width: 100%;
               height: 84px;
-              border: 1px solid #DCDCDC;
+              border: 1px solid #dcdcdc;
               border-radius: 5px;
               padding: 7px;
               resize: none;
@@ -549,7 +688,7 @@
 
             .textareainput::placeholder {
               font-size: 12px;
-              color: #C7C7C7;
+              color: #c7c7c7;
             }
 
             .content-title {
@@ -571,14 +710,14 @@
               .blue_circle {
                 width: 7px;
                 height: 7px;
-                background-color: #000AFF;
+                background-color: #000aff;
                 border-radius: 50%;
               }
-        
+
               .brown_circle {
                 width: 7px;
                 height: 7px;
-                background-color: #0C6605;
+                background-color: #0c6605;
                 border-radius: 50%;
               }
             }
@@ -622,20 +761,20 @@
 
         &.green-btn {
           background-color: #fff;
-          border: 1px solid #76CB7E;
-          color: #76CB7E;
+          border: 1px solid #76cb7e;
+          color: #76cb7e;
         }
 
         &.back-green-btn {
-          background-color: #76CB7E;
-          border: 1px solid #76CB7E;
+          background-color: #76cb7e;
+          border: 1px solid #76cb7e;
           color: #fff;
         }
 
         &.red-btn {
           background-color: #fff;
-          border: 1px solid #D56D6D;
-          color: #D56D6D;
+          border: 1px solid #d56d6d;
+          color: #d56d6d;
         }
 
         &.gray-btn {
@@ -644,7 +783,6 @@
           color: #929292;
         }
       }
-
     }
   }
 }
@@ -656,10 +794,10 @@
   overflow-y: scroll;
   left: -10px;
   background-color: #fff;
-  border: 1px solid #45C552;
+  border: 1px solid #45c552;
   border-radius: 5px;
 
-  .optionselect{
+  .optionselect {
     padding: 5px;
   }
 }
@@ -670,7 +808,7 @@
 }
 
 .options::-webkit-scrollbar-thumb {
-  background-color: #A8A8A8;
+  background-color: #a8a8a8;
   border-radius: 10px;
   background-clip: padding-box;
   border: 2px solid transparent;
@@ -727,7 +865,7 @@
     width: 15px;
     background-color: #fff;
     border-radius: 50%;
-    border: 1px solid #45C552;
+    border: 1px solid #45c552;
     transition: background-color 0.3s, border-color 0.3s;
 
     &:after {
@@ -739,7 +877,7 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #45C552;
+      background: #45c552;
       transform: translate(-55%, -55%);
     }
   }
@@ -750,7 +888,7 @@
 
   input:checked ~ .checkmark {
     background-color: #eee;
-    border: 2px solid #45C552;
+    border: 2px solid #45c552;
 
     &:after {
       display: block;
