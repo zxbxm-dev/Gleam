@@ -663,7 +663,7 @@ const WriteReport = () => {
                 <Portal>
                   <PopoverContent className="approval_popover_content">
                     <PopoverHeader className="approval_popover_header">결재라인 선택</PopoverHeader>
-                    <PopoverCloseButton className="approval_popover_header_close" onClick={onApprovalModalClose}/>
+                    {/* <PopoverCloseButton className="approval_popover_header_close" onClick={onApprovalModalClose}/> */}
                     <PopoverBody className="approval_popover_body">
                       <div className="approval_popover_memberside">
                         {user.company === '본사' ? (
@@ -692,8 +692,8 @@ const WriteReport = () => {
                                   <div className='approval_name' onClick={() => handleCheckboxChange(index + 1)}>
                                     {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                     <div className='name_text'>{line.selectedMember[0]}</div>
-                                    <div className='name_border'></div>
-                                    <div className='name_text'>{line.selectedMember[3]}</div>
+                                    {/* <div className='name_border'></div> */}
+                                    <div className='position_text'>{line.selectedMember[3]}</div>
                                   </div>
                                 ) : (
                                   <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index + 1)}>
@@ -739,8 +739,8 @@ const WriteReport = () => {
                                 <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
                                   {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                   <div className='name_text'>{line.selectedMember[0]}</div>
-                                  <div className='name_border'></div>
-                                  <div className='name_text'>{line.selectedMember[3]}</div>
+                                  {/* <div className='name_border'></div> */}
+                                  <div className='position_text'>{line.selectedMember[3]}</div>
                                 </div>
                               ) : (
                                 line.name === '참조' && line.selectedMembers ? (
@@ -748,8 +748,8 @@ const WriteReport = () => {
                                     {line.selectedMembers.map((member, index) => (
                                       <div key={index} className='approval_small_name'>
                                         <div className='name_text'>{member[0]}</div>
-                                        <div className='name_border'></div>
-                                        <div className='name_text'>{member[3]}</div>
+                                        {/* <div className='name_border'></div> */}
+                                        <div className='position_text'>{member[3]}</div>
                                         <img src={CloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
                                       </div>
                                     ))}

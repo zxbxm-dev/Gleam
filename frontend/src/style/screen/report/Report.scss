@@ -212,16 +212,17 @@
 
 // 결재라인 선택 모달
 .approval_popover_content {
-  width: 440px !important;
+  width: 312px !important;
   height: 700px;
   border: 0;
   border-radius: 5px;
   box-shadow: 0px 0px 5px #D9D9D9;
 
   .approval_popover_header {
-    color: #272727;
+    color: #fff;
     background-color: #76CB7E;
     border: 0;
+    font-size: 13px;
     font-family: var(--font-family-Noto-M);
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -238,7 +239,7 @@
 
     .approval_popover_memberside {
       @include custom-scrollbar;
-      width: 200px;
+      width: 140px;
       height: 650px;
       overflow-y: scroll;
     }
@@ -250,24 +251,25 @@
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
+  padding: 10px 20px;
+  width: 175px;
 
   .ContentBox {
     @include custom-scrollbar;
     overflow-y: scroll;
-    width: 240px;
+
     height: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 0;
+
     position: relative;
 
     .approval_content {
       align-items: center;
       font-family: var(--font-family-Noto-M);
       color: #929292;
-      width: 200px;
-      height: 80px;
+      width: 134px;
       gap: 5px;
       display: flex;
       flex-direction: column;
@@ -275,13 +277,13 @@
 
       .approval_line {
         width: 100%;
-        font-size: 14px;
+        font-size: 8px;
         display: flex;
         align-items: center;
-        gap: 10px;
 
         input {
           width: 170px;
+          margin-bottom: 5px;
         }
 
         .approval_checkbox {
@@ -299,25 +301,26 @@
       .approval_name {
         display: flex;
         align-items: center;
-        padding-left: 45px;
-        width: 200px;
-        height: 50px;
-        border: 1px solid #ECECEC;
+        width: 134px;
+        padding: 3px 10px 4px 20px;
+        height: 27px;
+        border: 1px solid #eee;
         font-family: var(--font-family-Noto-M);
         color: #000;
-        gap: 8px;
+        border-radius: 6px;
+       justify-content: space-between;
 
         .name_img {
           margin-right: 7px;
         }
 
         .name_text {
-          font-size: 14px;
+          font-size: 12px;
         }
 
-        .name_border {
-          height: 18px;
-          border-right: 1px solid black;
+        .position_text{
+          font-size: 8px;
+          color: #929292;
         }
       }
 
@@ -356,11 +359,11 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 200px;
-        height: 50px;
+        width: 134px;
+        height: 27px;
         border: 1px solid #ECECEC;
         font-family: var(--font-family-Noto-R);
-        font-size: 14px;
+        font-size: 7px;
         color: #929292;
 
         &:hover,
@@ -374,8 +377,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 200px;
-        height: 50px;
+        width: 134px;
+        height: 27px;
         border: 2px solid #76CB7E;
         font-family: var(--font-family-Noto-R);
         font-size: 14px;
