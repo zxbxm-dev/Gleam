@@ -81,6 +81,10 @@ const MessageSidebar: React.FC = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    console.log("현재 인원>>", newChatChosenUsers);
+  }, [newChatChosenUsers]);
+
   const toggleDepartmentExpansion = (departmentName: string) => {
     setExpandedDepartments((prevExpandedDepartments) => ({
       ...prevExpandedDepartments,
@@ -287,9 +291,9 @@ const MessageSidebar: React.FC = () => {
         footer2Class="gray-btn"
         onFooter2Click={() => setOpenModal(false)}
         width="400px"
-        height="465px"
+        height="431px"
       >
-        <div className="body-container">
+        <div className="body-container New-Chat-Room-Body">
           <div className="New-Chat-Room">
             <input
               placeholder="(필수) 대화방 이름을 입력해주세요."
@@ -404,11 +408,17 @@ const MessageSidebar: React.FC = () => {
                             }
                           />
                           <img
-                            src={UserIcon_dark}
+                            src={
+                              person.attachment
+                                ? person.attachment
+                                : UserIcon_dark
+                            }
                             className="ProfileIcon"
                             alt="usericondark"
                           />
-                          <div className="PersonName">{person.username}</div>
+                          <div className="PersonName">
+                            {person.team} {person.username}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -418,17 +428,29 @@ const MessageSidebar: React.FC = () => {
             </div>
             <div className="RightSelectedCon">
               <div className="RightTopText">
-                선택인원 (
-                {newChatChosenUsers === null ? 0 : newChatChosenUsers.length}명)
+                선택인원{" "}
+                <span>
+                  ({newChatChosenUsers === null ? 0 : newChatChosenUsers.length}
+                  명)
+                </span>
               </div>
 
               <div className="ChosenPeople">
                 {newChatChosenUsers?.map((person) => (
                   <div className="ChosenOne" key={person.userId}>
-                    <img src={XIcon} />
+                    <img
+                      src={XIcon}
+                      onClick={() =>
+                        setNewChatChosenUsers((prevUsers) =>
+                          prevUsers !== null
+                            ? prevUsers.filter((user) => user !== person)
+                            : []
+                        )
+                      }
+                    />
+
                     <div>
-                      {/* {person.team} */}
-                      {person.username}
+                      {person.team} {person.username}
                     </div>
                   </div>
                 ))}
