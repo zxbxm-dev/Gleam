@@ -378,10 +378,6 @@ const Project = () => {
     setDropdownPosition({ x: event.pageX, y: event.pageY });
   };
 
-  const handleSubRightClick = (project: ProjectData, event: any) => {
-    event.preventDefault();
-  };
-
   const handleOpenSubProject = (subProject: any) => {
     setClickedProjects(subProject);
   };
@@ -909,7 +905,7 @@ const Project = () => {
                           </tr>
                           {subprojectVisible[project.mainprojectIndex] && project.subProjects && (
                             project.subProjects?.slice().reverse().map((subProject: any, subindex: any) => (
-                              <tr key={subProject.mainprojectIndex} className="board_content subproject" onContextMenu={(e) => handleSubRightClick(subProject, e)}>
+                              <tr key={subProject.mainprojectIndex} className="board_content subproject">
                                 <td>
                                   <label className="custom-checkbox">
                                     <input type="checkbox" id="check1"/>
@@ -918,7 +914,7 @@ const Project = () => {
                                 </td>
                                 <td>{projects.length - (index) + '-' + (project.subProjects.length - subindex)}</td>
                                 <td className={subProject.status === 'notstarted' ? 'text_medium' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{subProject.status === 'notstarted' ? '진행 예정' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
-                                <td className="text_left_half text_cursor" onClick={() => { handleOpenSubProject(subProject);}}>
+                                <td className="text_left_half text_cursor" onClick={() => { handleOpenSubProject(subProject); }}>
                                   <div className="dropdown">
                                     {subProject.projectName}
                                   </div>
@@ -1421,7 +1417,7 @@ const Project = () => {
       
       <CustomModal
         isOpen={isViewSubPjtModalOpen}
-        onClose={() => { setViewSubPjtModalOpen(false); resetForm(); }}
+        onClose={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null);}}
         header={rightclickedProjects?.projectName}
         footer1={'편집'}
         footer1Class="green-btn"

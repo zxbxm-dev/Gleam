@@ -88,18 +88,26 @@
                 transform: rotate(180deg);
               }
               .time_dropdown {
+                @include custom-scrollbar;
                 z-index: 99;
                 position: absolute;
                 top: 36px;
                 width: 80px;
                 height: auto;
+                max-height: 200px;
                 overflow-y: auto;
                 border: 1px solid #D8D8D8;
                 background-color: #FFFFFF;
                 
 
                 li {
-                  height: 28px;
+                  padding: 5px 10px;
+                  text-align: left;
+                  font-size: 12px;
+
+                  &:hover {
+                    background-color: #F1F1F1;
+                  }
                 }
               }
             }
