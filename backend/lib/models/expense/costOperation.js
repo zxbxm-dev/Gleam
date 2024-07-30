@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    Percent: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   }, {
     tableName: "expenses",
     timestamps: true, // createdAt, updatedAt 자동 생성

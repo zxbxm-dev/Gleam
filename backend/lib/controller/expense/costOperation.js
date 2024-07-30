@@ -20,6 +20,7 @@ const writeOperating = async (req, res) => {
       blockchain, //블록체인1팀
       design, //디자인팀
       planning, //기획팀
+      percent,
     } = req.body;
 
     // 클라이언트로 부터 전달 받은 데이터를 팀별로 구분 및 배열로 처리
@@ -97,6 +98,7 @@ const writeOperating = async (req, res) => {
                 accountName: accountName || existingItem.accountName,
                 // 값이 없으면 0으로 처리, 쉽표 제거하고 정수로 변환
                 cost: parseInt(cost.replace(/,/g, "")) || existingItem.cost,
+                Percent: percent || existingItem.Percent,
                 note: note || existingItem.note, // 값이 없으면 빈 문자열
                 year: new Date().getFullYear(), // 현재 연도
               });
@@ -106,6 +108,7 @@ const writeOperating = async (req, res) => {
                 team: teamData.team,
                 accountCode: accountCode,
                 accountName: accountName,
+                Percent:percent,
                 cost: parseInt(cost.replace(/,/g, "")) || 0,
                 note: note || "",
                 year: new Date().getFullYear(), // 현재 연도

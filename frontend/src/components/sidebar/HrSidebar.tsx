@@ -13,6 +13,7 @@ interface Props {
 }
 
 
+
 const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
   const [expandedTeams, setExpandedTeams] = useState<string[]>([]); // 확장된 팀의 배열
 
@@ -57,10 +58,10 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                     <ul>
                       {members.map(({ name, position }, index) => (
                         <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
-                          <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/>
+                          {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/> */}
                           <span className="name_text">{name}</span>
-                          <div className="name_border"></div>
-                          <span className="name_text">{position}</span>
+                          {/* <div className="name_border"></div> */}
+                          <span className="position_text">{position}</span>
                         </li>
                       ))}
                     </ul>
@@ -70,10 +71,10 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                   <ul>
                     {members.map(({ name, position }, index) => (
                       <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
-                        <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/>
+                        {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/> */}
                         <span className="name_text">{name}</span>
-                        <div className="name_border"></div>
-                        <span className="name_text">{position}</span>
+                        {/* <div className="name_border"></div> */}
+                        <span className="position_text">{position}</span>
                       </li>
                     ))}
                   </ul>

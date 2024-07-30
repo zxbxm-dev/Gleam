@@ -8,10 +8,12 @@ import CustomModal from '../../../components/modal/CustomModal';
 import { WritePerform } from '../../../services/performance/PerformanceServices';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
+import { useNavigate } from 'react-router-dom';
 
 type PDFFile = string | File | null;
 
 const SubmitPerform = () => {
+  let navigate = useNavigate();
   const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
   const user = useRecoilValue(userState);
   const [files, setFiles] = useState<PDFFile[]>([]);
@@ -145,7 +147,7 @@ const SubmitPerform = () => {
         header={'알림'}
         footer1={'확인'}
         footer1Class="green-btn"
-        onFooter1Click={() => setSubmitModalOpen(false)}
+        onFooter1Click={() => {setSubmitModalOpen(false); navigate("/");}}
       >
         <div>
           제출이 완료되었습니다.

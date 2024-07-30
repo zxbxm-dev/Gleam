@@ -7,6 +7,8 @@ import {
 import CustomModal from "../../../components/modal/CustomModal";
 import { DetailTableRegul, DeleteRegul } from "../../../services/announcement/Regulation";
 import { useLocation } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/atoms';
 import { Document, Page, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -25,6 +27,7 @@ interface Announcement {
 
 const DetailRegulation = () => {
   let navigate = useNavigate();
+  const user = useRecoilValue(userState);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [detailRegul, setDetailRegul] = useState<Announcement | null>(null);
   const location = useLocation();
@@ -112,6 +115,8 @@ const DetailRegulation = () => {
     setDeleteModalOpen(false);
   }
 
+  const canEditOrDelete = detailRegul && (user.team === '관리팀' || user.username === detailRegul.username);
+
   return (
     <div className="content">
       <div className="content_container">
@@ -134,9 +139,13 @@ const DetailRegulation = () => {
             <div className="btn_content">
               <button onClick={handleWidthDecrease}><img src={Minus_btn} alt="Minus_btn" className="resize_button" /></button>
               <button onClick={handleWidthIncrease}><img src={Plus_btn} alt="Plus_btn" className="resize_button" /></button>
-              <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
+              {canEditOrDelete && (
+  <>
+    <button className="red_button" onClick={() => setDeleteModalOpen(true)}>삭제</button>
+    <Link to="/writeRegulation" className="white_button" state={detailRegul}>수정</Link>
+  </>
+)}
               <button className="white_button" onClick={downloadPDF}>다운로드</button>
-              <Link to="/writeRegulation" className="white_button" state={detailRegul} ><button>수정</button></Link>
               <button className="primary_button" onClick={() => navigate("/regulations")}>목록</button>
             </div>
           </div>

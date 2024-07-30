@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { SideUp, SideDown, UserIcon_dark } from "../../assets/images/index";
 import { PersonData } from "../../services/person/PersonServices";
 
-// Define interfaces for types
 interface Person {
   userId: string;
   username: string;
@@ -21,9 +20,9 @@ interface Props {
 }
 
 type CurrentPageType =
-  '포체인스주식회사' | '개발부' | '개발1팀' | '개발2팀' | '블록체인사업부' | '블록체인1팀' |
-  '마케팅부' | '기획팀' | '디자인팀' | '관리부' | '관리팀' | '지원팀' |
-  '시설팀' | 'R&D센터' | '알고리즘연구실' | '동형분석연구실' | '블록체인연구실';
+  | '포체인스주식회사' | '개발부' | '개발1팀' | '개발2팀' 
+  | '마케팅부' | '기획팀' | '디자인팀' | '관리부' | '관리팀' | '지원팀'
+  | '시설팀' | 'R&D센터' | '알고리즘연구실' | '동형분석연구실' | '블록체인연구실';
 
 const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
   const [personData, setPersonData] = useState<Person[] | null>(null);
@@ -31,12 +30,13 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
     isExpanded: true,
     currentPage: '포체인스주식회사',
   });
+  const [history, setHistory] = useState<CurrentPageType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await PersonData();
-        const sortedData = response.data.sort((a: any, b: any) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
+        const sortedData = response.data.sort((a: Person, b: Person) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
         setPersonData(sortedData);
       } catch (err) {
         console.error("Error fetching person data:", err);
@@ -54,11 +54,26 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
   };
 
   const handleClick = (page: CurrentPageType) => {
+    setHistory((prevHistory) => [...prevHistory, sidebarState.currentPage]);
     setSidebarState({ ...sidebarState, currentPage: page });
   };
 
+  const handleBackClick = () => {
+    setHistory((prevHistory) => {
+      const newHistory = [...prevHistory];
+      const previousPage = newHistory.pop();
+      if (previousPage) {
+        setSidebarState((prevState) => ({
+          ...prevState,
+          currentPage: previousPage,
+        }));
+      }
+      return newHistory;
+    });
+  };
+
   const handleMemberClick = (person: Person) => {
-    onClickMember(person.userId ,person.username, person.department, person.team, person.position);
+    onClickMember(person.userId, person.username, person.department, person.team, person.position);
   };
 
   const renderMembers = () => {
@@ -67,7 +82,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
     return (
       <div className="MemberTab">
         <div className="Fourchains">
-          <span onClick={() => handleClick('포체인스주식회사')}>&lt; &nbsp;</span>
+          <span onClick={handleBackClick}>&lt; &nbsp;</span>
           <div>{sidebarState.currentPage}</div>
         </div>
 
@@ -82,10 +97,6 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
                 return person.department === '개발부' && person.team === '개발 1팀';
               case '개발2팀':
                 return person.department === '개발부' && person.team === '개발 2팀';
-              case '블록체인사업부':
-                return person.department === '블록체인사업부' && person.team === '';
-              case '블록체인1팀':
-                return person.department === '블록체인사업부' && person.team === '블록체인 1팀';
               case '마케팅부':
                 return person.department === '마케팅부' && person.team === '';
               case '기획팀':
@@ -101,13 +112,13 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
               case '시설팀':
                 return person.department === '관리부' && person.team === '시설팀';
               case 'R&D센터':
-                return person.department === '알고리즘 연구실' && person.position === '연구실장';
+                return person.position === '센터장';
               case '알고리즘연구실':
                 return person.department === '알고리즘 연구실' && (person.team === '' || person.team.includes('연구팀'));
               case '동형분석연구실':
                 return person.department === '동형분석 연구실' && (person.team === '' || person.team === '동형분석 연구팀');
               case '블록체인연구실':
-                return person.department === '블록체인 연구실' && (person.team === '' || person.team === 'AI 개발팀' || person.team === '크립토 블록체인 연구팀');
+                return person.department === '블록체인 연구실' && (person.team === '' || person.team === 'API 개발팀' || person.team === '크립토 블록체인 연구팀');
               default:
                 return false;
             }
@@ -115,7 +126,7 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
           .map((person, index) => (
             <div key={index} className="member" onClick={() => handleMemberClick(person)}>
               <div className="MemberFlex">
-                <img src={person.attachment ? person.attachment : UserIcon_dark} />
+                <img src={person.attachment ? person.attachment : UserIcon_dark} alt={`${person.username}'s avatar`} />
                 <div className="Font">{person.username} | {person.position}</div>
               </div>
             </div>
@@ -130,7 +141,6 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
         {sidebarState.currentPage === '포체인스주식회사' && (
           <>
             <div onClick={() => handleClick('개발부')}>개발부</div>
-            <div onClick={() => handleClick('블록체인사업부')}>블록체인사업부</div>
             <div onClick={() => handleClick('마케팅부')}>마케팅부</div>
             <div onClick={() => handleClick('관리부')}>관리부</div>
             <div onClick={() => handleClick('R&D센터')}>R&D</div>
@@ -140,11 +150,6 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
           <>
             <div onClick={() => handleClick('개발1팀')}>개발 1팀</div>
             <div onClick={() => handleClick('개발2팀')}>개발 2팀</div>
-          </>
-        )}
-        {sidebarState.currentPage === '블록체인사업부' && (
-          <>
-            <div onClick={() => handleClick('블록체인1팀')}>블록체인 1팀</div>
           </>
         )}
         {sidebarState.currentPage === '마케팅부' && (

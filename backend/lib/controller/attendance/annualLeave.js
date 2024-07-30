@@ -165,7 +165,15 @@ const administratorCalendar = async (req, res) => {
       }
       
       if (userVac.dateType === '연차') {
-        usedDaysCount += 1;
+        if (userVac.startDate && userVac.endDate) {
+          const startDate = new Date(userVac.startDate);
+          const endDate = new Date(userVac.endDate);
+          const diffTime = Math.abs(endDate - startDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+          usedDaysCount += diffDays;
+        } else {
+          usedDaysCount += 1;
+        }
       } else if (userVac.dateType === '반차') {
         usedDaysCount += 0.5;
       }

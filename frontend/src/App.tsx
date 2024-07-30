@@ -42,7 +42,9 @@ import {
   Project,
   Mail,
   WriteMail,
+  Message
 } from "./screens";
+import ChatLayout from "./layout/ChatLayout";
 
 function App() {
   const user = useRecoilValue(userState);
@@ -67,6 +69,11 @@ function App() {
             <Route path="/resetpw" element={<ResetPw />} />
           </Route>
 
+          <Route element={<ChatLayout />} >
+            {/* 메신저 */}
+            <Route path="/message" element={<Message />} />
+          </Route>
+          
           <Route element={<PrivateRoute isAllowed={isLogin} />}>
             <Route path="/editres" element={<EditRegis />} />
             <Route element={<BaseLayout />}>
@@ -75,7 +82,6 @@ function App() {
               {/* 메일 */}
               <Route path="/mail" element={<Mail />} />
               <Route path="/writeMail" element={<WriteMail />} />
-              
 
               {/* 조직문화 */}
               <Route path="/writeAnnounce" element={<WriteAnnounce />} />

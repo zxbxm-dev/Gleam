@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  mail_calendar,
   mail_delete,
   mail_download,
   mail_important,
@@ -12,9 +11,13 @@ import {
   mail_attachment,
   mail_triangle,
   mail_cancle,
+  mail_calendar,
   White_Arrow,
   SearchIcon,
 } from "../../assets/images/index";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import CustomModal from "../../components/modal/CustomModal";
 import BlockMail from "./BlockMail";
 import MobileCard from "./MobileCard";
 import Pagenation from "./Pagenation";
@@ -26,13 +29,17 @@ const Mail = () => {
   const [settingVisible, setSettingVisible] = useState(true);
   const [hoverState, setHoverState] = useState<string>("");
 
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isSpamModalOpen, setSpamModalOpen] = useState(false);
   const [isMobileCardModal, setIsMobileCardModal] = useState(false);
+  const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('전체 메일');
   const [dueDateIsOpen, setDuedDateIsOpen] = useState(false);
   const [selectdDueDateOption, setSelectedDueDateOption] = useState('전체');
-  const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -53,6 +60,24 @@ const Mail = () => {
     '임시 보관함',
     '스팸 메일함',
   ];
+
+  const handleDateChange = (date: Date, isStart: boolean) => {
+    if (isStart) {
+      setStartDate(date);
+      if (date && endDate) {
+        setSelectedDueDateOption(`${date.toLocaleDateString('ko-KR')} ~ ${endDate.toLocaleDateString('ko-KR')}`);
+      } else {
+        setSelectedDueDateOption(date ? date.toLocaleDateString('ko-KR') : '전체');
+      }
+    } else {
+      setEndDate(date);
+      if (startDate && date) {
+        setSelectedDueDateOption(`${startDate.toLocaleDateString('ko-KR')} ~ ${date.toLocaleDateString('ko-KR')}`);
+      } else {
+        setSelectedDueDateOption(date ? date.toLocaleDateString('ko-KR') : '전체');
+      }
+    }
+  };
 
   const dueDateOptions = [
     '전체',
@@ -84,7 +109,7 @@ const Mail = () => {
     const initialMails = [
       { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정1.pdf", mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "2024-05-01" },
       { id: 2, title: "홈페이지 조직도 관련 안내", content: "메일입니다.2", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정2.pdf", mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "2024-05-01" },
-      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정3.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
+      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
       { id: 4, title: "개발 1팀 업무 설정 보고", content: "메일입니다.4", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정4.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
       { id: 5, title: "개발 1팀 업무 설정 보고", content: "메일입니다.5", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정5.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
       { id: 6, title: "개발 1팀 업무 설정 보고", content: "메일입니다.6", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정6.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
@@ -228,11 +253,11 @@ const Mail = () => {
               <input type="checkbox" id="check1" checked={allSelected} onChange={toggleAllCheckboxes} />
               <span></span>
             </label>
-            <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")}>
+            <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={() => setDeleteModalOpen(true)}>
               <img src={mail_delete} alt="mail_delete" />
               {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
             </div>
-            <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")}>
+            <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={() => setSpamModalOpen(true)}>
               <img src={mail_spam} alt="mail_spam" />
               {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
             </div>
@@ -276,11 +301,41 @@ const Mail = () => {
                 </div>
                 {dueDateIsOpen && (
                   <ul className="dropdown_menu">
-                    {dueDateOptions.map((option: string) => (
+                    {dueDateOptions.map((option: any) => (
                       <li key={option} onClick={() => handleDueDateSelect(option)}>
                         {option}
                       </li>
                     ))}
+                    <li onClick={(e) => e.stopPropagation()}>
+                      <div className="due_Date" onClick={(e) => e.stopPropagation()}>
+                        <img src={mail_calendar} alt="mail_calendar" />
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date: Date) => handleDateChange(date, true)}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText={new Date().toLocaleDateString('ko-KR')}
+                          dateFormat="yyyy-MM-dd"
+                          className="datepicker"
+                          popperPlacement="top"
+                        />
+                        <span>~</span>
+                        <img src={mail_calendar} alt="mail_calendar" />
+                        <DatePicker
+                          selected={endDate}
+                          onChange={(date: Date) => handleDateChange(date, false)}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          minDate={startDate}
+                          placeholderText={new Date().toLocaleDateString('ko-KR')}
+                          dateFormat="yyyy-MM-dd"
+                          className="datepicker"
+                          popperPlacement="top"
+                        />
+                      </div>
+                    </li>
                   </ul>
                 )}
               </div>
@@ -406,12 +461,12 @@ const Mail = () => {
 
                             {mail.mailType === '받은 메일함' ? (
                               <div className="mail_detail_content_bottom">
-                                <button className="white_button">전달</button>
-                                <button className="primary_button">답장</button>
+                                <button className="white_button" onClick={() => navigate('/writeMail')}>전달</button>
+                                <button className="primary_button" onClick={() => navigate('/writeMail')}>답장</button>
                               </div>
                             ) : (
                               <div className="mail_detail_content_bottom">
-                                <button className="white_button">전달</button>
+                                <button className="white_button" onClick={() => navigate('/writeMail')}>전달</button>
                               </div>
                             )}
                           </div>
@@ -424,6 +479,35 @@ const Mail = () => {
           </table>
         </div>
       </div>
+      <CustomModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        header={"알림"}
+        footer1={"삭제"}
+        footer1Class="red-btn"
+        footer2={"취소"}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setDeleteModalOpen(false)}
+      >
+        <div>삭제하시겠습니까?</div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isSpamModalOpen}
+        onClose={() => setSpamModalOpen(false)}
+        header={"알림"}
+        footer1={"예"}
+        onFooter1Click={() => setSpamModalOpen(false)}
+        footer1Class="green-btn"
+        footer2={"아니오"}
+        footer2Class="red-btn"
+        onFooter2Click={() => setSpamModalOpen(false)}
+      >
+        <div className="body-container">
+          선택한 메일이 스팸 메일함으로 이동하였습니다.<br/>
+          수신 차단 하시겠습니까?
+        </div>
+      </CustomModal>
 
       <Pagenation
         setPage={setPage}

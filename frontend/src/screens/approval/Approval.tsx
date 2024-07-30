@@ -258,18 +258,36 @@ const Approval = () => {
               <tbody className="board_container">
                 {(approvalings || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((approvalings, index) => (
-                    <tr key={approvalings.id} className="board_content">
-                      <td>{index + 1}</td>
-                      <td style={{ textAlign: 'center' }}>{approvalings.selectForm}</td>
-                      <td>{new Date(approvalings.sendDate).toISOString().substring(0, 10)}</td>
-                      <td>{approvalings.approval} / {approvalings.currentSigner}</td>
-                      <td>{approvalings.username} {approvalings.team ? ` / ${approvalings.team}` : (approvalings.dept ? ` / ${approvalings.dept}` : '')} </td>
-                      <td><button className="primary_button" onClick={() => { navigate(`/detailApproval/${approvalings.id}` , {state: {documentInfo: approvalings}}) }}>결재하기</button></td>
-                    </tr>
-                  ))
-                }
+                  .map((approvaling, index) => {
+                    const formatDate = (dateString: string) => {
+                      const date = new Date(dateString);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day} ${hours}:${minutes}`;
+                    };
+
+                    const formattedSendDate = formatDate(approvaling.sendDate);
+
+                    return (
+                      <tr key={approvaling.id} className="board_content">
+                        <td>{index + 1}</td>
+                        <td style={{ textAlign: 'center' }}>{approvaling.selectForm}</td>
+                        <td>{formattedSendDate}</td>
+                        <td>{approvaling.approval} / {approvaling.currentSigner}</td>
+                        <td>{approvaling.username} {approvaling.team ? ` / ${approvaling.team}` : (approvaling.dept ? ` / ${approvaling.dept}` : '')} </td>
+                        <td>
+                          <button className="primary_button" onClick={() => { navigate(`/detailApproval/${approvaling.id}`, { state: { documentInfo: approvaling } }) }}>
+                            결재하기
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
+
               <div className="approval_main_bottom">
                 <Pagination
                   activePage={page}
@@ -346,21 +364,40 @@ const Approval = () => {
                 </tr>
               </thead>
               <tbody className="board_container">
-                {(inProgress || [] )
+                {(inProgress || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((inProgres, index) => (
-                    <tr key={inProgres.id} className="board_content">
-                      <td>{index + 1}</td>
-                      <td style={{ textAlign: 'center' }}>{inProgres.selectForm}</td>
-                      <td>{new Date(inProgres.sendDate).toISOString().substring(0, 10)}</td>
-                      <td>{new Date(inProgres.updatedAt).toISOString().substring(0, 10)}</td>
-                      <td>{inProgres.approval} / {inProgres.currentSigner}</td>
-                      <td>{inProgres.username} {inProgres.team ? ` / ${inProgres.team}` : (inProgres.dept ? ` / ${inProgres.dept}` : '')} </td>
-                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${inProgres.id}`, {state: {documentInfo: inProgres}})}}>문서확인</button></td>
-                    </tr>
-                  ))
-                }
+                  .map((inProgres, index) => {
+                    const formatDate = (dateString: string) => {
+                      const date = new Date(dateString);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day} ${hours}:${minutes}`;
+                    };
+
+                    const formattedSendDate = formatDate(inProgres.sendDate);
+                    const formattedUpdatedAt = formatDate(inProgres.updatedAt);
+
+                    return (
+                      <tr key={inProgres.id} className="board_content">
+                        <td>{index + 1}</td>
+                        <td style={{ textAlign: 'center' }}>{inProgres.selectForm}</td>
+                        <td>{formattedSendDate}</td>
+                        <td>{formattedUpdatedAt}</td>
+                        <td>{inProgres.approval} / {inProgres.currentSigner}</td>
+                        <td>{inProgres.username} {inProgres.team ? ` / ${inProgres.team}` : (inProgres.dept ? ` / ${inProgres.dept}` : '')} </td>
+                        <td>
+                          <button className="primary_button" onClick={() => { navigate(`/detailDocument/${inProgres.id}`, { state: { documentInfo: inProgres } }) }}>
+                            문서확인
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
+
               <div className="approval_main_bottom">
                 <Pagination
                   activePage={page}
@@ -439,19 +476,38 @@ const Approval = () => {
               <tbody className="board_container">
                 {(rejecteds || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((rejected, index) => (
-                    <tr key={rejected.id} className="board_content">
-                      <td>{index + 1}</td>
-                      <td style={{ textAlign: 'center' }}>{rejected.selectForm}</td>
-                      <td>{new Date(rejected.sendDate).toISOString().substring(0, 10)}</td>
-                      <td>{new Date(rejected.updatedAt).toISOString().substring(0, 10)}</td>
-                      <td>{rejected.approval} / {rejected.currentSigner}</td>
-                      <td>{rejected.username} {rejected.team ? ` / ${rejected.team}` : (rejected.dept ? ` / ${rejected.dept}` : '')} </td>
-                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${rejected.id}`, {state: {documentInfo: rejected}})}}>문서확인</button></td>
-                    </tr>
-                  ))
-                }
+                  .map((rejected, index) => {
+                    const formatDate = (dateString: string) => {
+                      const date = new Date(dateString);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day} ${hours}:${minutes}`;
+                    };
+
+                    const formattedSendDate = formatDate(rejected.sendDate);
+                    const formattedUpdatedAt = formatDate(rejected.updatedAt);
+
+                    return (
+                      <tr key={rejected.id} className="board_content">
+                        <td>{index + 1}</td>
+                        <td style={{ textAlign: 'center' }}>{rejected.selectForm}</td>
+                        <td>{formattedSendDate}</td>
+                        <td>{formattedUpdatedAt}</td>
+                        <td>{rejected.approval} / {rejected.currentSigner}</td>
+                        <td>{rejected.username} {rejected.team ? ` / ${rejected.team}` : (rejected.dept ? ` / ${rejected.dept}` : '')} </td>
+                        <td>
+                          <button className="primary_button" onClick={() => { navigate(`/detailDocument/${rejected.id}`, { state: { documentInfo: rejected } }) }}>
+                            문서확인
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
+
               <div className="approval_main_bottom">
                 <Pagination
                   activePage={page}
@@ -530,19 +586,38 @@ const Approval = () => {
               <tbody className="board_container">
                 {(compleDocuments || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((compledocument, index) => (
-                    <tr key={compledocument.id} className="board_content">
-                      <td>{index + 1}</td>
-                      <td style={{ textAlign: 'center' }}>{compledocument.selectForm}</td>
-                      <td>{new Date(compledocument.sendDate).toISOString().substring(0, 10)}</td>
-                      <td>{new Date(compledocument.updatedAt).toISOString().substring(0, 10)}</td>
-                      <td>{compledocument.approval} / {compledocument.currentSigner}</td>
-                      <td>{compledocument.username} / {compledocument.dept}</td>
-                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${compledocument.id}`, {state: {documentInfo: compledocument}})}}>문서확인</button></td>
-                    </tr>
-                  ))
-                }
+                  .map((compledocument, index) => {
+                    const formatDate = (dateString: string) => {
+                      const date = new Date(dateString);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day} ${hours}:${minutes}`;
+                    };
+
+                    const formattedSendDate = formatDate(compledocument.sendDate);
+                    const formattedUpdatedAt = formatDate(compledocument.updatedAt);
+
+                    return (
+                      <tr key={compledocument.id} className="board_content">
+                        <td>{index + 1}</td>
+                        <td style={{ textAlign: 'center' }}>{compledocument.selectForm}</td>
+                        <td>{formattedSendDate}</td>
+                        <td>{formattedUpdatedAt}</td>
+                        <td>{compledocument.approval} / {compledocument.currentSigner}</td>
+                        <td>{compledocument.username} / {compledocument.dept}</td>
+                        <td>
+                          <button className="primary_button" onClick={() => { navigate(`/detailDocument/${compledocument.id}`, { state: { documentInfo: compledocument } }) }}>
+                            문서확인
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
+
               <div className="approval_main_bottom">
                 <Pagination
                   activePage={page}
@@ -630,20 +705,39 @@ const Approval = () => {
               <tbody className="board_container">
                 {(mydocuments || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
-                  .map((mydocument, index) => (
-                    <tr key={mydocument.id} className="board_content">
-                      <td>{index + 1}</td>
-                      <td style={{ textAlign: 'center' }}>{mydocument.selectForm}</td>
-                      <td>{new Date(mydocument.sendDate).toISOString().substring(0, 10)}</td>
-                      <td>{new Date(mydocument.updatedAt).toISOString().substring(0, 10)}</td>
-                      <td>{mydocument.approval} / {mydocument.currentSigner}</td>
-                      <td>{mydocument.status}</td>
-                      <td>{mydocument.username} {mydocument.team ? ` / ${mydocument.team}` : (mydocument.dept ? ` / ${mydocument.dept}` : '')} </td>
-                      <td><button className="primary_button" onClick={() => { navigate(`/detailDocument/${mydocument.id}`, {state: {documentInfo: mydocument}})}}>문서확인</button></td>
-                    </tr>
-                  ))
-                }
+                  .map((mydocument, index) => {
+                    const formatDate = (dateString: string) => {
+                      const date = new Date(dateString);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day} ${hours}:${minutes}`;
+                    };
+              
+                    const formattedSendDate = formatDate(mydocument.sendDate);
+                    const formattedUpdatedAt = formatDate(mydocument.updatedAt);
+
+                    return (
+                      <tr key={mydocument.id} className="board_content">
+                        <td>{index + 1}</td>
+                        <td style={{ textAlign: 'center' }}>{mydocument.selectForm}</td>
+                        <td>{formattedSendDate}</td>
+                        <td>{formattedUpdatedAt}</td>
+                        <td>{mydocument.approval} / {mydocument.currentSigner}</td>
+                        <td>{mydocument.status}</td>
+                        <td>{mydocument.username} {mydocument.team ? ` / ${mydocument.team}` : (mydocument.dept ? ` / ${mydocument.dept}` : '')} </td>
+                        <td>
+                          <button className="primary_button" onClick={() => { navigate(`/detailDocument/${mydocument.id}`, { state: { documentInfo: mydocument } }) }}>
+                            문서확인
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
+
               <div className="approval_main_bottom">
                 <Pagination
                   activePage={page}

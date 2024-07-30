@@ -1,0 +1,140 @@
+.Message-contents {
+  background-color: #fff;
+  width: 100vw;
+  height: 100vh;
+
+  .Message-header {
+    padding-left: 23px;
+    height: 56px;
+    border-top: 1px solid #e2e2e2;
+    border-bottom: 1px solid #e2e2e2;
+    display: flex;
+    align-items: center;
+    font-family: var(--font-family-Noto-M);
+    gap: 14px;
+  }
+
+  .Message-container {
+    padding: 24px 30px 20px 30px;
+    position: relative;
+    height: calc(100vh - 150px);
+
+    .Message {
+      display: flex;
+      align-items: flex-start;
+      font-family: var(--font-family-Noto-M);
+      margin-bottom: 30px;
+
+      .RightBox {
+        margin-left: 9px;
+        margin-top: 5px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+
+        .NoticeName {
+        }
+        .NoticeBox {
+          position: relative;
+          width: 621px;
+          background-color: #efefef;
+          color: #323232;
+          gap: 15px;
+
+          .NoticeTitle {
+            font-weight: 500;
+            line-height: 12px;
+            margin: 12px 17px 15px 12px;
+          }
+
+          .NoticeDescription {
+            font-size: 14px;
+            margin: 10px 17px 10px 12px;
+          }
+
+          &:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+          }
+
+          &.Mail:after {
+            background-color: #ff8181;
+          }
+
+          &.WorkReport:after {
+            background-color: #916aff;
+          }
+
+          &.Schedule:after {
+            background-color: #6ac9ff;
+          }
+        }
+
+        .MsgTimeBox {
+          display: flex;
+          align-items: flex-end;
+
+          .MsgBox {
+            background-color: rgba(69, 197, 82, 0.75);
+            padding: 12px 36px 13px 17px;
+            border-radius: 0px 5px 5px 5px;
+          }
+
+          .MsgTime {
+            margin-left: 11px;
+            font-size: 14px;
+            color: #929292;
+          }
+        }
+      }
+    }
+
+    .Message-Input {
+      position: absolute;
+      bottom: 0px;
+      width: calc(100% - 60px);
+
+      .Input-Outer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #cecece;
+        border-radius: 5px;
+        height: 51px;
+        width: 100%;
+        padding-left: 15px;
+
+        input {
+          font-size: 14px;
+          font-family: var(--font-family-Noto-M);
+          width: 95%;
+        }
+
+        input:focus {
+          outline: none;
+        }
+
+        .send-btn {
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 33px;
+          width: 62px;
+          background-color: #929292;
+          color: #fff;
+          font-size: 15px;
+          font-weight: 500;
+          font-family: var(--font-family-Noto-M);
+          margin-right: 12px;
+          border-radius: 5px;
+        }
+      }
+    }
+  }
+}

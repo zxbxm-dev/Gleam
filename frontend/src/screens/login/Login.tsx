@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Login_Logo,
 } from "../../assets/images/index";
-import { Input } from '@chakra-ui/react';
 import { LoginServices } from "../../services/login/LoginService";
 import CustomModal from '../../components/modal/CustomModal';
 import { Link } from "react-router-dom";
@@ -90,24 +89,20 @@ const handleLogin = async () => {
     <div className="login_container">
       <img className='Linker' src={Login_Logo} alt="Login_Logo" />
     
-      <Input
+      <input
         placeholder='아이디를 입력해 주세요. '
-        size='lg'
         value={userID}
         onChange={(e) => setuserID(e.target.value)}
         onKeyDown={handleKeyPress}
         className='InputClass'
-        focusBorderColor='#76CB7E.400'
       />
-      <Input
+      <input
         placeholder='패스워드를 입력해 주세요.'
-        size='lg'
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         onKeyDown={handleKeyPress}
         className='InputClass'
-        focusBorderColor='#76CB7E.400'
       />
       <button className="login_btn" onClick={handleLogin}>로그인</button>
 

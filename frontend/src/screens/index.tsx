@@ -61,3 +61,6 @@ export { default as Project } from "./project/Project";
 // 메일
 export { default as Mail } from "./mail/Mail";
 export { default as WriteMail } from "./mail/WriteMail";
+
+//메세지
+export { default as Message } from "./massage/Message";

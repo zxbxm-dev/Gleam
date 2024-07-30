@@ -15,6 +15,7 @@ type Expense = {
   accountName: string;
   cost: number;
   note: string;
+  Percent: string;
   createdAt: string;
   updatedAt: string;
   year: number;
@@ -28,6 +29,7 @@ const Operating = () => {
   const [reserveFund, setReserveFund] = useState<number>(0);
   const [customInputValue, setCustomInputValue] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [percentage, setPercentage] = useState('');
 
   const distributeExpenses = (expenses: Expense[]) => {
     const teams: { [key: string]: string[][] } = {
@@ -48,7 +50,8 @@ const Operating = () => {
     };
 
     expenses.forEach((expense) => {
-      const { team, accountCode, accountName, cost, note } = expense;
+      const { team, accountCode, accountName, cost, note, Percent } = expense;
+      setPercentage(Percent);
       if (teams[team]) {
         if (teams[team][0][0] === '' && teams[team][0][1] === '' && teams[team][0][2] === '' && teams[team][0][3] === '') {
           teams[team] = [];
@@ -83,7 +86,8 @@ const Operating = () => {
     }
   }
 
-  useQuery("operating", fetchOperating, {
+  const { refetch } = useQuery("operating", fetchOperating, {
+    enabled: false,
     onSuccess: (data) => {
       distributeExpenses(data);
     },
@@ -92,6 +96,11 @@ const Operating = () => {
     }
   });
 
+  useEffect(() => {
+    refetch();
+  }, [])
+
+  
   const exportToPDF = () => {
     const element = document.getElementById('table-to-xls');
     if (element) {
@@ -176,9 +185,8 @@ const Operating = () => {
     81902 : '지급수수료-도메인등록수수료',
     81990 : '지급수수료-기타',
     82001 : '임차료-장소대관료',
-    890 : '잡비',
+    89000 : '잡비',
   }
-
 
   const [common811Team, setCommon811Team] = useState<string[][]>([['', '', '', '']]);
   const [common812Team, setCommon812Team] = useState<string[][]>([['', '', '', '']]);
@@ -640,6 +648,7 @@ const handleSubmit = () => {
     blockchain: blockchainTeam,
     design: designTeam,
     planning: planningTeam,
+    percent:percentage
   }
   
 
@@ -653,8 +662,20 @@ const handleSubmit = () => {
     .catch(error => {
       console.log("운영비 데이터 전송 오류", error);
     })
-}
+  }
 
+  // 예비비 금액 계산
+  useEffect(() => {
+    const totalCost = common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost;
+    if (percentage) {
+      const reserveFund = totalCost * (parseFloat(percentage) / 100);
+      setReserveFund(reserveFund);
+    } else {
+      setReserveFund(0);
+    }
+  }, [percentage, common811Cost, common812Cost, common813Cost, common814Cost, common815Cost, common818Cost, common819Cost, managementCost, supportCost, devOneCost, devTwoCost, blockchainCost, designCost, planningCost]);
+
+  console.log('가져온 예비비 비율',percentage)
 
   return (
     <div className="content">
@@ -1332,8 +1353,10 @@ const handleSubmit = () => {
                             const ratio = parseFloat(e.target.value) || 0;
                             const reserveFund = (common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) * ratio / 100;
                             setReserveFund(reserveFund);
+                            setPercentage(e.target.value); 
                           }}
                           disabled={!editMode}
+                          value={percentage}
                         >
                           <option value=""></option>
                           <option value="5">5%</option>

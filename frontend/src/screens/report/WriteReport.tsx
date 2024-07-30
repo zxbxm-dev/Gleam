@@ -23,6 +23,7 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
@@ -47,6 +48,7 @@ const WriteReport = () => {
   const { state } = location;
   const reportName = state?.reportName || '';
 
+  const { onOpen: onApprovalModalOpen, onClose: onApprovalModalClose, isOpen: isApprovalModalOpen } = useDisclosure();
   const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
@@ -126,20 +128,63 @@ const WriteReport = () => {
     ['염승희', '관리부', '관리팀', '사원'],
     ['김태희', '관리부', '지원팀', '팀장'],
     ['진유빈', '개발부', '', '부서장'],
-    ['장현지', '개발부', '개발 1팀', '사원'],
+    ['장현지', '개발부', '개발 1팀', '팀장'],
     ['구민석', '개발부', '개발 1팀', '사원'],
     ['박세준', '개발부', '개발 1팀', '사원'],
+    ['윤재원', '개발부', '개발 1팀', '사원'],
     ['변도일', '개발부', '개발 2팀', '팀장'],
     ['이로운', '개발부', '개발 2팀', '사원'],
-    ['권상원', '블록체인 사업부', '', '부서장'],
-    ['권준우', '블록체인 사업부', '블록체인 1팀', '사원'],
-    ['김도환', '블록체인 사업부', '블록체인 1팀', '사원'],
     ['김현지', '마케팅부', '', '부서장'],
     ['전아름', '마케팅부', '기획팀', '팀장'],
     ['함다슬', '마케팅부', '기획팀', '사원'],
     ['전규미', '마케팅부', '기획팀', '사원'],
     ['서주희', '마케팅부', '디자인팀', '사원'],
   ];
+
+  const membersRD: Member[] = [
+    ['이정훈', '포체인스 주식회사', '', '대표이사'],
+    ['안후상', '포체인스 주식회사', '', '이사'],
+    ['이유정', '연구 총괄', '', '센터장'],
+    ['심민지', '알고리즘 연구실', '', '연구실장'],
+    ['임지현', '알고리즘 연구실', 'AI 연구팀', '연구원'],
+    ['김희진', '알고리즘 연구실', 'AI 연구팀', '연구원'],
+    ['윤민지', '동형분석 연구실', '', '연구실장'],
+    ['이채영', '동형분석 연구실', '동형분석 연구팀', '연구원'],
+    ['공석', '블록체인 연구실', '', ''],
+    ['박소연', '블록체인 연구실', 'API 개발팀', '연구원'],
+    ['김경현', '블록체인 연구실', 'API 개발팀', '연구원'],
+  ]
+
+  const allmembers : Member[] = [
+    ['이정훈', '포체인스 주식회사', '', '대표이사'],
+    ['안후상', '포체인스 주식회사', '', '이사'],
+    ['이정열', '관리부', '', '부서장'],
+    ['김효은', '관리부', '관리팀', '팀장'],
+    ['우현지', '관리부', '관리팀', '사원'],
+    ['염승희', '관리부', '관리팀', '사원'],
+    ['김태희', '관리부', '지원팀', '팀장'],
+    ['진유빈', '개발부', '', '부서장'],
+    ['장현지', '개발부', '개발 1팀', '팀장'],
+    ['구민석', '개발부', '개발 1팀', '사원'],
+    ['박세준', '개발부', '개발 1팀', '사원'],
+    ['윤재원', '개발부', '개발 1팀', '사원'],
+    ['변도일', '개발부', '개발 2팀', '팀장'],
+    ['이로운', '개발부', '개발 2팀', '사원'],
+    ['김현지', '마케팅부', '', '부서장'],
+    ['전아름', '마케팅부', '기획팀', '팀장'],
+    ['함다슬', '마케팅부', '기획팀', '사원'],
+    ['전규미', '마케팅부', '기획팀', '사원'],
+    ['서주희', '마케팅부', '디자인팀', '사원'],
+    ['이유정', '연구 총괄', '', '센터장'],
+    ['심민지', '알고리즘 연구실', '', '연구실장'],
+    ['임지현', '알고리즘 연구실', 'AI 연구팀', '연구원'],
+    ['김희진', '알고리즘 연구실', 'AI 연구팀', '연구원'],
+    ['윤민지', '동형분석 연구실', '', '연구실장'],
+    ['이채영', '동형분석 연구실', '동형분석 연구팀', '연구원'],
+    ['공석', '블록체인 연구실', '', ''],
+    ['박소연', '블록체인 연구실', 'API 개발팀', '연구원'],
+    ['김경현', '블록체인 연구실', 'API 개발팀', '연구원'],
+  ]
 
   const SelectOptions = (report: string) => {
     setSelectedReport(report);
@@ -155,9 +200,7 @@ const WriteReport = () => {
   const departmentDirector = (user.department === '개발부')
     ? members.find(member => member[0] === '진유빈') || null
     : (user.department === '관리부')
-      ? members.find(member => member[0] === '이정열') || null
-      : (user.department === '블록체인사업부')
-        ? members.find(member => member[0] === '권상원') || null
+      ? null
         : (user.department === '마케팅부')
           ? members.find(member => member[0] === '김현지') || null
           : (user.department === '')
@@ -169,8 +212,6 @@ const WriteReport = () => {
     ? members.find(member => member[0] === '장현지') || null
     : (user.team === '개발 2팀')
       ? members.find(member => member[0] === '변도일') || null
-      : (user.team === '블록체인 1팀')
-        ? members.find(member => member[0] === '김도환') || null
         : (user.team === '기획팀')
           ? members.find(member => member[0] === '전아름') || null
           : (user.team === '관리팀')
@@ -185,14 +226,15 @@ const WriteReport = () => {
 
 
   const writer = members.find(member => member[0] === user.username) || null
+  const writerRD = membersRD.find(member => member[0] === user.username) || null
 
-  const RDLead = members.find(member => member[0] === '이유정') || null;
+  const RDLead = membersRD.find(member => member[0] === '이유정') || null;
   const RDTeamLead = (user.department === '동형분석 연구실')
-    ? members.find(member => member[0] === '윤민지') || null
+    ? membersRD.find(member => member[0] === '윤민지') || null
     : (user.department === '알고리즘 연구실')
-      ? members.find(member => member[0] === '심민지') || null
+      ? membersRD.find(member => member[0] === '심민지') || null
       : (user.department === '블록체인 연구실')
-        ? members.find(member => member[0] === '심민지') || null
+        ? membersRD.find(member => member[0] === '심민지') || null
         : null;
 
   const updateApprovalLines = (report: string) => {
@@ -213,7 +255,7 @@ const WriteReport = () => {
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
         { name: '센터장', checked: true, selectedMember: RDLead },
         { name: '연구실장', checked: true, selectedMember: RDTeamLead },
-        { name: '작성자', checked: true, selectedMember: writer },
+        { name: '작성자', checked: true, selectedMember: writerRD },
       ];
     }
 
@@ -614,17 +656,24 @@ const WriteReport = () => {
             </div>
 
             <div className="top_right_content">
-              <Popover placement="left-start">
+              <Popover placement="left-start" isOpen={isApprovalModalOpen} onOpen={onApprovalModalOpen}>
                 <PopoverTrigger>
                   <button className="primary_button">결재라인 선택</button>
                 </PopoverTrigger>
                 <Portal>
                   <PopoverContent className="approval_popover_content">
                     <PopoverHeader className="approval_popover_header">결재라인 선택</PopoverHeader>
-                    <PopoverCloseButton className="approval_popover_header_close" />
+                    {/* <PopoverCloseButton className="approval_popover_header_close" onClick={onApprovalModalClose}/> */}
                     <PopoverBody className="approval_popover_body">
                       <div className="approval_popover_memberside">
-                        <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        {user.company === '본사' ? (
+                          <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        ) : user.company === 'R&D' ? (
+                          <HrSidebar members={membersRD} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        ) : (
+                          <HrSidebar members={allmembers} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                        )
+                        }
                       </div>
                       <div className='FlexContentBox'>
                         <div className='ContentBox'>
@@ -641,10 +690,10 @@ const WriteReport = () => {
                               {line.checked ? (
                                 line.selectedMember ? (
                                   <div className='approval_name' onClick={() => handleCheckboxChange(index + 1)}>
-                                    <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                    {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                     <div className='name_text'>{line.selectedMember[0]}</div>
-                                    <div className='name_border'></div>
-                                    <div className='name_text'>{line.selectedMember[3]}</div>
+                                    {/* <div className='name_border'></div> */}
+                                    <div className='position_text'>{line.selectedMember[3]}</div>
                                   </div>
                                 ) : (
                                   <div className={line.checked === true ? "approval_checked" : "approval_unchecked"} onClick={() => handleCheckboxChange(index + 1)}>
@@ -688,10 +737,10 @@ const WriteReport = () => {
                             {line.checked ? (
                               line.selectedMember ? (
                                 <div className='approval_name' onClick={() => handleCheckboxChange(index)}>
-                                  <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" />
+                                  {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img" /> */}
                                   <div className='name_text'>{line.selectedMember[0]}</div>
-                                  <div className='name_border'></div>
-                                  <div className='name_text'>{line.selectedMember[3]}</div>
+                                  {/* <div className='name_border'></div> */}
+                                  <div className='position_text'>{line.selectedMember[3]}</div>
                                 </div>
                               ) : (
                                 line.name === '참조' && line.selectedMembers ? (
@@ -699,8 +748,8 @@ const WriteReport = () => {
                                     {line.selectedMembers.map((member, index) => (
                                       <div key={index} className='approval_small_name'>
                                         <div className='name_text'>{member[0]}</div>
-                                        <div className='name_border'></div>
-                                        <div className='name_text'>{member[3]}</div>
+                                        {/* <div className='name_border'></div> */}
+                                        <div className='position_text'>{member[3]}</div>
                                         <img src={CloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
                                       </div>
                                     ))}
@@ -722,7 +771,7 @@ const WriteReport = () => {
 
                         <div className='button-wrap'>
                           <button className="second_button" onClick={() => handleSubmit()}>제출</button>
-                          <button className="white_button">취소</button>
+                          <button className="white_button" onClick={onApprovalModalClose}>취소</button>
                         </div>
                       </div>
                     </PopoverBody>

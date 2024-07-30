@@ -31,6 +31,9 @@ export { default as Desc_Icon } from "./Approval/Desc_Icon.svg";
 // Modal
 export { default as ModalCheck } from "./Modal/ModalCheck.svg";
 export { default as ModalCloseBtn } from "./Modal/ModalCloseBtn.svg";
+export { default as CheckBox } from "./Modal/CheckBox.svg";
+export { default as CheckBox_Active } from "./Modal/CheckBox_Active.svg";
+export { default as DepartmentTabIcon } from "./Modal/DepartmentTabIcon.svg";
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";
@@ -60,3 +63,17 @@ export { default as mail_write } from "./mail/mail_write.svg";
 export { default as mail_attachment } from "./mail/mail_attachment.svg";
 export { default as mail_triangle } from "./mail/mail_triangle.svg";
 export { default as mail_cancle } from "./mail/mail_cancle.svg";
+
+//message
+export { default as MessageMe } from "./Message/MessageMe.svg";
+export { default as MessageMenu } from "./Message/MessageMenu.svg";
+export { default as ChatTab } from "./Message/ChatTab.svg";
+export { default as PersonTab } from "./Message/PersonTab.svg";
+export { default as HrLine } from "./Message/HrLine.svg";
+export { default as NotiIcon } from "./Message/NotiIcon.svg";
+export { default as NewChatIcon } from "./Message/NewChatIcon.svg";
+export { default as MailIcon } from "./Message/MailIcon.svg";
+export { default as WorkReportIcon } from "./Message/Work ReportIcon.svg";
+export { default as ScheduleIcon } from "./Message/ScheduleIcon.svg";
+export { default as XIcon } from "./Message/XIcon.svg";
+export { default as UserManagementIcon } from "./Message/UserManagementIcon.svg";

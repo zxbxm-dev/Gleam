@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  SearchIcon
-} from "../../assets/images/index";
+import { SearchIcon } from "../../assets/images/index";
 import { ReactComponent as RightIcon } from "../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../assets/images/Common/LastRightIcon.svg";
@@ -15,12 +13,16 @@ import {
   PopoverBody,
   PopoverCloseButton,
   Portal,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 import CustomModal from "../../components/modal/CustomModal";
 
 import { useQueryClient, useQuery } from "react-query";
-import { CheckEmploy, WriteEmploy, EditEmploy, DeleteEmploy } from "../../services/employment/EmploymentService";
-
+import {
+  CheckEmploy,
+  WriteEmploy,
+  EditEmploy,
+  DeleteEmploy,
+} from "../../services/employment/EmploymentService";
 
 const Employment = () => {
   const [page, setPage] = useState<number>(1);
@@ -38,10 +40,10 @@ const Employment = () => {
     url: string;
     site: string;
   }>({
-    title: '',
-    url: '',
-    site: '',
-  })
+    title: "",
+    url: "",
+    site: "",
+  });
 
   useEffect(() => {
     const handleResize = () => {
@@ -55,23 +57,23 @@ const Employment = () => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   const handleTitleChange = (event: any) => {
-    setForm({ ...form, title: event.target.value })
+    setForm({ ...form, title: event.target.value });
   };
 
   const handleUrlChange = (event: any) => {
-    setForm({ ...form, url: event.target.value })
+    setForm({ ...form, url: event.target.value });
   };
 
   const handleSiteChange = (event: any) => {
-    setForm({ ...form, site: event.target.value })
+    setForm({ ...form, site: event.target.value });
   };
 
   // 채용공고 목록 불러오기
@@ -87,13 +89,13 @@ const Employment = () => {
   useQuery("employments", fetchEmployments, {
     onSuccess: (data) => setEmployments(data),
     onError: (error) => {
-      console.log(error)
-    }
+      console.log(error);
+    },
   });
 
   const handlePageChange = (page: number) => {
     setPage(page);
-  }
+  };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -103,27 +105,29 @@ const Employment = () => {
     employment.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleRightClick = (index: number, event: React.MouseEvent<HTMLTableCellElement>) => {
+  const handleRightClick = (
+    index: number,
+    event: React.MouseEvent<HTMLTableCellElement>
+  ) => {
     event.preventDefault();
     setDropdownOpen(true);
     setDropdownPosition({ x: event.pageX, y: event.pageY });
     setClickIdx(index);
-  
-    const employment = employments.find(e => e.id === index);
+
+    const employment = employments.find((e) => e.id === index);
     if (employment) {
       setForm({
         title: employment.title,
         url: employment.url,
-        site: employment.site
+        site: employment.site,
       });
     }
   };
-  
 
   const formatDate = (date: any) => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}/${month}/${day}`;
   };
   const currentDate = formatDate(new Date());
@@ -164,55 +168,53 @@ const Employment = () => {
     setDropdownOpen(false);
   };
 
-
   // 채용공고 게시물 작성
-const handleSubmit = () => {
-  const { title, url, site } = form;
+  const handleSubmit = () => {
+    const { title, url, site } = form;
 
-  if (title === "") {
-    alert("공고 제목을 입력해 주세요.")
-    return;
-  } else if (url === "") {
-    alert("링크를 입력해 주세요.")
-    return;
-  } else if (site === "") {
-    alert("사이트명을 입력해 주세요.")
-    return;
-  }
+    if (title === "") {
+      alert("공고 제목을 입력해 주세요.");
+      return;
+    } else if (url === "") {
+      alert("링크를 입력해 주세요.");
+      return;
+    } else if (site === "") {
+      alert("사이트명을 입력해 주세요.");
+      return;
+    }
 
-  const formData = {
-    title: title,
-    url: url,
-    site: site,
-    date: currentDate
+    const formData = {
+      title: title,
+      url: url,
+      site: site,
+      date: currentDate,
+    };
+
+    WriteEmploy(formData)
+      .then((response) => {
+        console.log("게시물 작성 성공", response);
+        queryClient.invalidateQueries("employments");
+        setAddModalOpen(false);
+      })
+      .catch((error) => {
+        console.log("게시물 작성 실패", error);
+        setAddModalOpen(false);
+      });
   };
-
-  WriteEmploy(formData)
-    .then(response => {
-      console.log('게시물 작성 성공', response);
-      queryClient.invalidateQueries("employments");
-      setAddModalOpen(false);
-    })
-    .catch(error => {
-      console.log('게시물 작성 실패', error);
-      setAddModalOpen(false);
-    })
-};
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (dropdownOpen && !event.target.closest('.dropdown-menu')) {
+      if (dropdownOpen && !event.target.closest(".dropdown-menu")) {
         setDropdownOpen(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [dropdownOpen]);
-
 
   return (
     <div className="content">
@@ -251,87 +253,148 @@ const handleSubmit = () => {
             </thead>
             <tbody className="board_container">
               {filteredEmployments
+                .slice()
+                .reverse()
                 .slice((page - 1) * postPerPage, page * postPerPage)
                 .map((employment, index) => (
                   <tr key={employment.id} className="board_content">
-                    <td>{index + 1}</td>
-                    <td className="text_left" onContextMenu={(e) => handleRightClick(employment.id, e)}>
-                      <div
-                        className="dropdown" // 드롭다운 클래스 추가
-                      >
+                    <td>
+                      {filteredEmployments.length -
+                        ((page - 1) * postPerPage + index)}
+                    </td>
+                    <td
+                      className="text_left"
+                      onContextMenu={(e) => handleRightClick(employment.id, e)}
+                    >
+                      <div className="dropdown">
                         {employment.title}
-                        {dropdownOpen && ( // 드롭다운 메뉴 열림 여부에 따라 메뉴 표시
-                          <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
+                        {dropdownOpen && (
+                          <div
+                            className="dropdown-menu"
+                            style={{
+                              position: "absolute",
+                              top: dropdownPosition.y - 70,
+                              left: dropdownPosition.x - 210,
+                            }}
+                          >
                             <Popover placement="right-start">
                               <PopoverTrigger>
-                                <button className="dropdown_pin">수정하기</button>
+                                <button className="dropdown_pin">
+                                  수정하기
+                                </button>
                               </PopoverTrigger>
                               <Portal>
-                                <PopoverContent onClick={(e) => e.stopPropagation()} className="employment_popover_content">
-                                  <PopoverHeader className="employment_popover_header">채용공고 수정하기</PopoverHeader>
+                                <PopoverContent
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="employment_popover_content"
+                                >
+                                  <PopoverHeader className="employment_popover_header">
+                                    채용공고 수정하기
+                                  </PopoverHeader>
                                   <PopoverCloseButton className="employment_popover_header_close" />
                                   <PopoverBody className="employment_popover_body">
                                     <div className="employment_popover_body_wrap">
                                       <div className="employment_popover_body_wrap_div">
-                                        <div className="div_title">공고제목</div>
-                                        <input value={form.title} color='#323232' onChange={handleTitleChange}/>
+                                        <div className="div_title">
+                                          공고제목
+                                        </div>
+                                        <input
+                                          value={form.title}
+                                          color="#323232"
+                                          onChange={handleTitleChange}
+                                        />
                                       </div>
                                       <div className="employment_popover_body_wrap_div">
                                         <div className="div_title">링크</div>
-                                        <input value={form.url} color='#323232' onChange={handleUrlChange}/>
+                                        <input
+                                          value={form.url}
+                                          color="#323232"
+                                          onChange={handleUrlChange}
+                                        />
                                       </div>
                                       <div className="employment_popover_body_wrap_div">
-                                        <div className="div_title">사이트명</div>
-                                        <input value={form.site} color='#323232' onChange={handleSiteChange}/>
+                                        <div className="div_title">
+                                          사이트명
+                                        </div>
+                                        <input
+                                          value={form.site}
+                                          color="#323232"
+                                          onChange={handleSiteChange}
+                                        />
                                       </div>
                                     </div>
                                     <div className="button_wrap">
-                                      <button className="white_button" onClick={handleEdit}>수정</button>
+                                      <button
+                                        className="white_button"
+                                        onClick={handleEdit}
+                                      >
+                                        수정
+                                      </button>
                                     </div>
                                   </PopoverBody>
                                 </PopoverContent>
                               </Portal>
                             </Popover>
-                            <div className="dropdown_pin" onClick={() => setDeleteModalOpen(true)} >삭제하기</div>
+                            <div
+                              className="dropdown_pin"
+                              onClick={() => setDeleteModalOpen(true)}
+                            >
+                              삭제하기
+                            </div>
                           </div>
                         )}
                       </div>
                     </td>
                     <td className="dropdown url_wrap">
-                      <a href={employment.url} target="_blank" rel="noopener noreferrer">{employment.url}</a>
+                      <a
+                        href={employment.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {employment.url}
+                      </a>
                     </td>
                     <td>{employment.site}</td>
-                    <td>{new Date(employment.createdAt).toISOString().substring(0, 10)}</td>
+                    <td>
+                      {new Date(employment.createdAt)
+                        .toISOString()
+                        .substring(0, 10)}
+                    </td>
                   </tr>
                 ))}
             </tbody>
           </table>
-
-
           <div className="main_bottom">
             <Pagination
               activePage={page}
               itemsCountPerPage={postPerPage}
               totalItemsCount={filteredEmployments.length}
-              pageRangeDisplayed={Math.ceil(filteredEmployments.length / postPerPage)}
+              pageRangeDisplayed={Math.ceil(
+                filteredEmployments.length / postPerPage
+              )}
               prevPageText={<LeftIcon />}
               nextPageText={<RightIcon />}
               firstPageText={<FirstLeftIcon />}
               lastPageText={<LastRightIcon />}
               onChange={handlePageChange}
             />
-            <button className="primary_button" onClick={() => setAddModalOpen(true)}>게시물 작성</button>
+            <button
+              className="primary_button"
+              onClick={() => setAddModalOpen(true)}
+            >
+              게시물 작성
+            </button>
           </div>
         </div>
       </div>
       <CustomModal
         isOpen={isAddModalOpen}
         onClose={() => setAddModalOpen(false)}
-        header={'채용공고 등록하기'}
-        footer1={'등록'}
+        header={"채용공고 등록하기"}
+        footer1={"등록"}
         footer1Class="red-btn"
         onFooter1Click={handleSubmit}
-        footer2={'취소'}
+        footer2={"취소"}
         footer2Class="gray-btn"
         onFooter2Click={() => setAddModalOpen(false)}
         width="400px"
@@ -340,15 +403,27 @@ const handleSubmit = () => {
         <div className="body-container">
           <div className="AddTitle">
             <div className="employ_div">공고제목</div>
-            <input placeholder='ex) 디자인 채용공고' className="TextInputCon" onChange={handleTitleChange} />
+            <input
+              placeholder="ex) 디자인 채용공고"
+              className="TextInputCon"
+              onChange={handleTitleChange}
+            />
           </div>
           <div className="AddTitle">
             <div className="employ_div">링크</div>
-            <input placeholder='내용을 입력해주세요.' className="TextInputCon" onChange={handleUrlChange} />
+            <input
+              placeholder="내용을 입력해주세요."
+              className="TextInputCon"
+              onChange={handleUrlChange}
+            />
           </div>
           <div className="AddTitle">
             <div className="employ_div">사이트명</div>
-            <input placeholder='내용을 입력해주세요.' className="TextInputCon" onChange={handleSiteChange} />
+            <input
+              placeholder="내용을 입력해주세요."
+              className="TextInputCon"
+              onChange={handleSiteChange}
+            />
           </div>
         </div>
       </CustomModal>
@@ -356,17 +431,15 @@ const handleSubmit = () => {
       <CustomModal
         isOpen={isDeleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
-        header={'알림'}
-        footer1={'삭제'}
+        header={"알림"}
+        footer1={"삭제"}
         footer1Class="red-btn"
         onFooter1Click={handleDelete}
-        footer2={'취소'}
+        footer2={"취소"}
         footer2Class="gray-btn"
         onFooter2Click={() => setDeleteModalOpen(false)}
       >
-        <div>
-          삭제하시겠습니까?
-        </div>
+        <div>삭제하시겠습니까?</div>
       </CustomModal>
     </div>
   );

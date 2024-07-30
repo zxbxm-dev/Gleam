@@ -63,6 +63,15 @@ const formatEnteringDate = (date: string) => {
   return `${year}-${month}-${day}`;
 };
 
+const sortDates = (dates: string[]) => {
+  return dates.sort((a, b) => {
+    const dateA = new Date(a.slice(0, -1)); 
+    const dateB = new Date(b.slice(0, -1)); 
+    return dateA.getTime() - dateB.getTime(); 
+  });
+};
+
+
 const useAnnualData = () => {
   const [annualData, setAnnualData] = useState([]);
   const [HO_Data, setHO_Data] = useState([]);
@@ -97,19 +106,43 @@ const useAnnualData = () => {
     }
   });
 
+  const getDateRange = (startDate: string, endDate: string, dateType: string) => {
+    const dates = [];
+    let currentDate = new Date(startDate);
+    const finalDate = new Date(endDate);
+  
+    while (currentDate <= finalDate) {
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      const day = currentDate.getDate().toString().padStart(2, '0');
+      const suffix = dateType === '연차' ? 'A' : 'H';
+      dates.push(`${month}.${day}${suffix}`);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  
+    return dates;
+  };
+
   const processedHOData = useMemo(() => {
     const result = HO_Data.map((user: any) => {
       const userAnnualData: AnnualData[] = annualData.filter((annual: any) => annual.username === user.username);
-      const formattedStartDates = userAnnualData.map((annual: any) => 
-        annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
-      ).filter(date => date !== ''); // 빈 문자열 제거
+      let formattedDates: string[] = [];
+      
+      userAnnualData.forEach((annual: any) => {
+        if (annual.startDate && annual.endDate) {
+          formattedDates = formattedDates.concat(getDateRange(annual.startDate, annual.endDate, annual.dateType));
+        } else if (annual.startDate) {
+          formattedDates.push(formatDate(annual.startDate, annual.dateType));
+        }
+      });
+      
+      const sortedDates = sortDates(formattedDates);
 
       return [
         user.username || '',
         userAnnualData[0]?.availableDate || 0,
         userAnnualData[0]?.usedDate || 0,
         userAnnualData[0]?.extraDate || 0,
-        formattedStartDates.length ? formattedStartDates : [''],
+        sortedDates.length ? sortedDates : [''],
         user.entering ? formatEnteringDate(user.entering) : '',
         user.leavedate ? formatEnteringDate(user.leavedate) : '',
         user.department || '',
@@ -122,16 +155,24 @@ const useAnnualData = () => {
   const processedRndData = useMemo(() => {
     const result = RnD_Data.map((user: any) => {
       const userAnnualData: AnnualData[] = annualData.filter((annual: any) => annual.username === user.username);
-      const formattedStartDates = userAnnualData.map((annual: any) => 
-        annual.startDate ? formatDate(annual.startDate, annual.dateType) : ''
-      ).filter(date => date !== ''); // 빈 문자열 제거
+      let formattedDates: string[] = [];
+
+      userAnnualData.forEach((annual: any) => {
+        if (annual.startDate && annual.endDate) {
+          formattedDates = formattedDates.concat(getDateRange(annual.startDate, annual.endDate, annual.dateType));
+        } else if (annual.startDate) {
+          formattedDates.push(formatDate(annual.startDate, annual.dateType));
+        }
+      });
+
+      const sortedDates = sortDates(formattedDates);
 
       return [
         user.username || '',
         userAnnualData[0]?.availableDate || 0,
         userAnnualData[0]?.usedDate || 0,
         userAnnualData[0]?.extraDate || 0,
-        formattedStartDates.length ? formattedStartDates : [''],
+        sortedDates.length ? sortedDates : [''],
         user.entering ? formatEnteringDate(user.entering) : '',
         user.leavedate ? formatEnteringDate(user.leavedate) : '',
         user.department || '',
@@ -230,9 +271,8 @@ const AnnualManage = () => {
   };
 
   useEffect(() => {
-    const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
+    const departmentOrder = ['개발부', '마케팅부', '관리부'];
     const teamOrder: TeamOrderType = {
-      '블록체인 사업부': ['블록체인 1팀'],
       '개발부': ['개발 1팀', '개발 2팀'],
       '마케팅부': ['디자인팀', '기획팀'],
       '관리부': ['관리팀', '지원팀'],
@@ -594,6 +634,7 @@ const AnnualManage = () => {
     );
   };
 
+  console.log(user.company)
   return (
     <div className="content">
       <div className='anuual_header_right'>
@@ -605,7 +646,7 @@ const AnnualManage = () => {
           onChange={handleYearChange}
         >
           <option value={2024}>2024</option>
-          <option value={2023}>2023</option>
+          {/* <option value={2023}>2023</option> */}
         </select>
         {editMode ? 
           <button
@@ -638,7 +679,7 @@ const AnnualManage = () => {
       
       <div className="content_container">
           <div className="container_anuual" id="table-to-xls">
-            {selectedScreen === '본사' ? (
+            {selectedScreen === '본사' || user.company === 'R&D' ? (
               <div className="Excel_annual_RD">
                 <table className="Explan_annual_RD">
                   <div>

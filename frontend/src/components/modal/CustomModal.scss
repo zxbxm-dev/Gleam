@@ -22,7 +22,7 @@
       width: inherit;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
-      background-color: #76CB7E;
+      background-color: #76cb7e;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -34,7 +34,6 @@
         left: 15px;
         font-size: 14px;
         font-family: var(--font-family-Noto-B);
-        color: black;
       }
 
       .modal-close-button {
@@ -74,10 +73,14 @@
         flex-direction: column;
         gap: 10px;
 
+        &.New-Chat-Room-Body {
+          gap: 5px !important;
+        }
+
         .AddTitle {
           display: flex;
 
-          .div{
+          .div {
             display: flex;
             align-items: center;
             flex-direction: row-reverse;
@@ -87,7 +90,8 @@
             color: #929292;
             font-weight: 300;
             font-family: var(--font-family-Noto-M);
-            margin-right: 10px;
+            margin-right: 5px;
+            padding-right: 5px;
           }
 
           .employ_div {
@@ -101,93 +105,107 @@
             margin-right: 10px;
           }
 
-          .TextInputCon{
-            width: 360px;
+          .TextInputCon {
+            width: 90%;
             height: 33px;
-            border: 1px solid #DCDCDC;
+            border: 1px solid #dcdcdc;
             border-radius: 5px;
             font-size: 14px;
             padding: 10px;
           }
-          .TextInputCon::placeholder{
+
+          .TextInputCon::placeholder {
             font-size: 14px;
             font-weight: 400;
             color: #d9d9d9;
           }
-          .TextInputCon:focus{
+
+          .TextInputCon:focus {
             outline: none;
           }
 
-          .TextInputCon2{
-            width: 360px;
+          .TextInputCon2 {
+            width: 90%;
             height: 84px;
-            border: 1px solid #DCDCDC;
+            border: 1px solid #dcdcdc;
             border-radius: 5px;
             font-size: 14px;
             padding: 10px;
+            resize: none;
           }
-          .TextInputCon2:focus{
+
+          .TextInputCon2:focus {
             outline: none;
           }
         }
 
-        .AddPeoples{
-          margin-bottom: 10px;
+        .AddPeoples {
           display: flex;
-          align-items: center;
+          width: 100%;
 
-          .div{
+          .div {
             display: flex;
-            align-items: center;
             flex-direction: row-reverse;
             width: 60px;
             font-size: 14px;
             color: #929292;
             font-weight: 300;
             font-family: var(--font-family-Noto-M);
-            margin-right: 10px;
+            margin-left: 5px;
+            margin-right: 5px;
+            padding-right: 5px;
           }
 
-          .MeetingRoom{
+          .MeetingRoom {
             display: flex;
-            width: 80%;
-            gap: 20px;
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
 
-            .SelectRoom{
-              font-size: 14px;
-              width: 196px;
-              height: 32px;
-              border: 1px solid #DCDCDC;
-              border-radius: 5px;
-            }
-            .SelectRoom:focus{
-              outline: none;
-            }
-
-            .Field{
-              gap: 20px;
+            .SelectRoom_wrap {
               display: flex;
+              gap: 10px;
 
-              label{
-                display: flex;
-                align-items: center;
-                gap: 5px;
+              .SelectRoom {
+                padding: 0px 10px;
+                font-size: 14px;
+                width: 250px;
+                height: 32px;
+                cursor: pointer;
+                border: 1px solid #dcdcdc;
+                border-radius: 5px;
+              }
 
-                span{
-                  font-size: 14px;
-                  margin-left: 5px;
-                }
+              .SelectRoom:focus {
+                outline: none;
+              }
+
+              .write_selectRoom {
+                padding: 0px 10px;
+                font-size: 14px;
+                width: 235px;
+                border: 1px solid #dcdcdc;
+                border-radius: 5px;
+              }
+
+              .write_selectRoom:focus {
+                outline: none;
+              }
+
+              .write_selectRoom::placeholder {
+                font-size: 14px;
+                font-weight: 400;
+                color: #d9d9d9;
               }
             }
           }
         }
 
-        .AddPeople{
-          margin-bottom: 10px;
+        .AddPeople {
           display: flex;
           width: 100%;
 
-          .div{
+          .div {
             display: flex;
             flex-direction: row-reverse;
             width: 60px;
@@ -198,72 +216,164 @@
             margin-right: 10px;
             padding-top: 5px;
           }
-          
+
+          .div2 {
+            display: flex;
+            flex-direction: row-reverse;
+            width: 60px;
+            font-size: 14px;
+            color: #929292;
+            font-weight: 300;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 5px;
+            padding-right: 5px;
+            padding-top: 5px;
+          }
+
           .InputContainer {
             display: flex;
             flex-direction: column;
+            width: 100%;
             gap: 8px;
-            
-            .AddInputCon{
-              width: 360px;
+            position: relative;
+
+            .AddInputCon {
+              width: 100%;
               height: 33px;
-              border-bottom: 1px solid #DCDCDC;
+              border-bottom: 1px solid #dcdcdc;
               font-size: 14px;
               padding: 10px;
             }
-            .AddInputCon::placeholder{
+
+            .AddInputCon::placeholder {
               font-size: 14px;
               font-weight: 400;
               color: #d9d9d9;
             }
-            .AddInputCon:focus{
+
+            .AddInputCon:focus {
               outline: none;
             }
-  
+
+            .autocomplete_dropdown {
+              position: absolute;
+              border-radius: 5px;
+              top: 33px;
+              left: 0;
+              z-index: 1000;
+              border: 1px solid #c7c7c7;
+              background-color: #fff;
+              width: 100%;
+              max-height: 200px;
+              overflow-y: auto;
+              gap: 5px;
+              display: flex;
+              flex-direction: column;
+
+              li {
+                font-size: 14px;
+                padding: 5px 10px;
+              }
+
+              li:hover {
+                cursor: pointer;
+                background-color: #e2e2e2;
+              }
+            }
+
             .AddsInputCon {
-              width: 360px;
+              width: 100%;
               height: 77px;
-              border: 1px solid #DCDCDC;
+              border: 1px solid #dcdcdc;
               border-radius: 5px;
               font-size: 14px;
-              padding: 10px;
+              padding: 6px 10px;
+              overflow-y: scroll;
+              flex-wrap: wrap;
+              display: flex;
+              gap: 10px;
+
+              .recipient {
+                flex: 1 0 calc(50% - 10px);
+                max-width: calc(50% - 5px);
+                box-sizing: border-box;
+                background-color: #f0f0f0;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0px 10px;
+                border: 1px solid #ccc;
+
+                .remove {
+                  margin-left: 5px;
+                  cursor: pointer;
+                }
+              }
             }
-            .AddsInputCon::placeholder{
+
+            .AddsInputCon::-webkit-scrollbar {
+              width: 6px;
+              height: 6px;
+            }
+
+            .AddsInputCon::-webkit-scrollbar-thumb {
+              background-color: #929292;
+              border-radius: 10px;
+              background-clip: padding-box;
+              border: 2px solid transparent;
+            }
+
+            .AddsInputCon::-webkit-scrollbar-corner {
+              background-color: none;
+            }
+
+            .AddsInputCon::-webkit-scrollbar-track {
+              box-shadow: none;
+              background-color: #fff;
+            }
+
+            .AddsInputCon::placeholder {
               font-size: 14px;
               font-weight: 400;
               color: #d9d9d9;
             }
-            .AddsInputCon:focus{
+
+            .AddsInputCon:focus {
               outline: none;
             }
           }
 
-          .timespan{
-            margin-left: 20px;
-            margin-right: 20px;
-          }
-
-          .Date{
+          .timespan {
+            margin: 0 10px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 20px;
+          }
+
+          .Date {
+            display: flex;
+            align-items: center;
+            width: 155px;
             padding: 0 5px;
 
-            .datepicker{
+            .datepicker {
               font-size: 14px;
               font-family: var(--font-family-Noto-M);
-              width: 80px;
+              width: 100px;
               height: 27px;
             }
-            .datepicker:focus{
+
+            .datepicker:focus {
               outline: none;
             }
-            .react-datepicker-wrapper{
-              width: 80px;
+
+            .react-datepicker-wrapper {
+              width: 100px;
+              padding-bottom: 2px;
             }
-  
-            .timeoption{
+
+            .timeoption {
+              width: 55px;
               font-size: 14px;
               font-family: var(--font-family-Noto-M);
               position: relative;
@@ -271,12 +381,268 @@
               cursor: pointer;
             }
           }
+
+          .All_day_button {
+            display: flex;
+
+            span {
+              color: #45c552;
+              font-family: var(--font-family-Noto-M);
+              font-size: 14px;
+              width: 40px;
+              margin-left: 30px;
+            }
+
+            .switch {
+              position: relative;
+              width: 51px;
+              height: 22px;
+              background-color: #fff;
+              border: 1px solid #45c552;
+              border-radius: 34px;
+              cursor: pointer;
+              transition: background-color 0.3s;
+            }
+
+            .switch.on {
+              background-color: #45c552;
+            }
+
+            .slider {
+              position: absolute;
+              top: 3px;
+              left: 5px;
+              width: 14px;
+              height: 14px;
+              background-color: #45c552;
+              border-radius: 50%;
+              transition: transform 0.3s;
+            }
+
+            .switch.on .slider {
+              transform: translateX(26px);
+              background-color: #fff;
+            }
+          }
+        }
+
+        .New-Chat-Room {
+          display: flex;
+          flex-direction: row;
+          width: 100%;
+          font-family: var(--font-family-Noto-M);
+
+          .TextInputCon {
+            width: 100%;
+            height: 33px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 10px;
+
+            &::placeholder {
+              color: #c7c7c7;
+            }
+
+            &:focus {
+              outline: none;
+            }
+          }
+
+          .Right-Button-Con {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 75%;
+            height: 33px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 0 10px;
+
+            .SearchIcon {
+              height: 13px;
+              width: 13px;
+              margin-right: 7px;
+            }
+
+            .LeftTextInput {
+              width: 100%;
+              height: 100%;
+              &::placeholder {
+                color: #c7c7c7;
+              }
+              &:focus {
+                outline: none;
+              }
+            }
+          }
+
+          .WholeMemberCheckBoxCon {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-size: 12px;
+            color: #555555;
+
+            .CheckBox {
+              cursor: pointer;
+              width: 16px;
+              height: 16px;
+              margin: 0 5px 0 7px;
+            }
+          }
+        }
+
+        .PeopleSearchCon {
+          font-family: var(--font-family-Noto-M);
+          display: flex;
+          flex-direction: row;
+          gap: 5px;
+          margin-top: 5px;
+
+          .LeftEmployCon {
+            width: 184px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 5px;
+
+            &::-webkit-scrollbar {
+              width: 3px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background-color: #8f8f8f;
+              border-radius: 10px;
+            }
+
+            &::-webkit-scrollbar-track {
+              background: transparent;
+            }
+
+            &::-webkit-scrollbar-button {
+              display: none;
+            }
+
+            .Department-Tab {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              font-size: 10px;
+              color: #8f8f8f;
+              white-space: nowrap;
+              margin: 10px 0;
+
+              img {
+                margin-right: 5px;
+              }
+
+              .VerticalLine {
+                height: 1px;
+                width: 100%;
+                background-color: #dcdcdc;
+                margin-left: 6px;
+              }
+            }
+
+            .PersonCon {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              margin: 10px 8px;
+
+              .PersonCheckBox {
+                width: 12px;
+                height: 12px;
+                margin-right: 10px;
+              }
+
+              .ProfileIcon {
+                width: 24px;
+                height: 24px;
+                margin-right: 7px;
+              }
+
+              .PersonName {
+                font-size: 12px;
+                font-weight: 400;
+              }
+            }
+
+            .Team-Tab {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              //background-color: #e1e1e1;
+              //border-radius: 23px;
+              padding-left: 9px;
+              height: 20px;
+
+              .TeamCheckBox {
+                width: 12px;
+                height: 12px;
+                margin-right: 11px;
+              }
+
+              .TeamName {
+                font-size: 10px;
+              }
+            }
+          }
+
+          .RightSelectedCon {
+            width: 210px;
+            max-height: 220px;
+            min-height: 220px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #a2a2a2;
+            padding: 10px 15px;
+
+            .RightTopText {
+              color: #8f8f8f;
+              font-size: 12px;
+              font-weight: bold;
+              width: 100%;
+              height: 14px;
+              margin-bottom: 7px;
+
+              span {
+                font-size: 10px;
+                font-weight: bold;
+              }
+            }
+
+            .ChosenPeople {
+              display: grid;
+              grid-template-columns: repeat(1, 1fr);
+
+              .ChosenOne {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                align-items: center;
+                margin: 3.5px 0;
+                img {
+                  width: 6px;
+                  height: 6px;
+                  margin-right: 5px;
+                }
+
+                div {
+                  font-size: 12px;
+                  color: #323232;
+                }
+              }
+            }
+          }
         }
 
         .body-content {
           display: flex;
           gap: 10px;
-  
+
           .content-left {
             padding-left: 9px;
             display: flex;
@@ -288,14 +654,14 @@
             font-family: var(--font-family-Noto-M);
 
             .div {
-             margin-left: 25px; 
+              margin-left: 25px;
             }
           }
-  
+
           .content-center {
             align-items: center;
           }
-  
+
           .content-right {
             display: flex;
             align-items: center;
@@ -309,18 +675,20 @@
               .textinput {
                 width: 100%;
                 height: 28px;
-                border: 1px solid #DCDCDC;
+                border: 1px solid #dcdcdc;
                 border-radius: 5px;
                 padding-left: 7px;
               }
+
               .textinput:focus {
-                outline: 2px solid #76CB7E;
+                outline: 2px solid #76cb7e;
               }
+
               .textinput::placeholder {
                 font-size: 12px;
-                color: #C7C7C7;
+                color: #c7c7c7;
               }
-  
+
               .userlist_dropdown {
                 position: absolute;
                 top: 100%;
@@ -339,13 +707,13 @@
                 font-family: var(--font-family-Noto-M);
                 max-height: 150px;
                 overflow-y: auto;
-      
+
                 li {
                   padding: 8px;
                   cursor: pointer;
                   transition: background-color 0.3s ease;
                 }
-      
+
                 li:hover {
                   background-color: #f0f0f0;
                 }
@@ -355,16 +723,18 @@
             .textinput {
               width: 100%;
               height: 28px;
-              border: 1px solid #DCDCDC;
+              border: 1px solid #dcdcdc;
               border-radius: 5px;
               padding-left: 7px;
             }
+
             .textinput:focus {
-              outline: 2px solid #76CB7E;
+              outline: 2px solid #76cb7e;
             }
+
             .textinput::placeholder {
               font-size: 12px;
-              color: #C7C7C7;
+              color: #c7c7c7;
             }
 
             .datepicker {
@@ -375,23 +745,25 @@
             }
 
             .datepicker:focus {
-             outline: none;
+              outline: none;
             }
 
             .textareainput {
               width: 100%;
               height: 84px;
-              border: 1px solid #DCDCDC;
+              border: 1px solid #dcdcdc;
               border-radius: 5px;
               padding: 7px;
               resize: none;
             }
+
             .textareainput:focus {
               outline: none;
             }
+
             .textareainput::placeholder {
               font-size: 12px;
-              color: #C7C7C7;
+              color: #c7c7c7;
             }
 
             .content-title {
@@ -408,7 +780,23 @@
               display: flex;
               align-items: center;
               width: 100%;
+              gap: 10px;
+
+              .blue_circle {
+                width: 7px;
+                height: 7px;
+                background-color: #000aff;
+                border-radius: 50%;
+              }
+
+              .brown_circle {
+                width: 7px;
+                height: 7px;
+                background-color: #0c6605;
+                border-radius: 50%;
+              }
             }
+
             .content-date {
               display: flex;
               align-items: center;
@@ -416,6 +804,7 @@
               width: 300px;
               height: 28px;
             }
+
             .content-memo {
               width: 300px;
             }
@@ -447,35 +836,45 @@
 
         &.green-btn {
           background-color: #fff;
-          border: 1px solid #76CB7E;
-          color: #76CB7E;
+          border: 1px solid #76cb7e;
+          color: #76cb7e;
         }
+
         &.back-green-btn {
-          background-color: #76CB7E;
-          border: 1px solid #76CB7E;
+          background-color: #76cb7e;
+          border: 1px solid #76cb7e;
           color: #fff;
         }
+
         &.red-btn {
           background-color: #fff;
-          border: 1px solid #D56D6D;
-          color: #D56D6D;
+          border: 1px solid #d56d6d;
+          color: #d56d6d;
         }
+
         &.gray-btn {
           background-color: #fff;
           border: 1px solid #929292;
           color: #929292;
         }
       }
-
     }
   }
 }
-.options{
+
+.options {
   position: absolute;
+  z-index: 999;
   height: 150px;
   overflow-y: scroll;
+  left: -10px;
   background-color: #fff;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #45c552;
+  border-radius: 5px;
+
+  .optionselect {
+    padding: 5px;
+  }
 }
 
 .options::-webkit-scrollbar {
@@ -484,7 +883,7 @@
 }
 
 .options::-webkit-scrollbar-thumb {
-  background-color: #A8A8A8;
+  background-color: #a8a8a8;
   border-radius: 10px;
   background-clip: padding-box;
   border: 2px solid transparent;
@@ -499,14 +898,80 @@
   background-color: #fff;
 }
 
-.optionselect{
+.optionselect {
   padding-top: 3px;
   padding-bottom: 3px;
 }
 
-.optionselect:hover{
-background-color: #d9d9d9;
-font-size: 14px;
-cursor: pointer;
+.optionselect:hover {
+  background-color: #d9d9d9;
+  font-size: 14px;
+  cursor: pointer;
+}
 
+.Field {
+  gap: 50px;
+  display: flex;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+  padding-left: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    height: 15px;
+    width: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 1px solid #45c552;
+    transition: background-color 0.3s, border-color 0.3s;
+
+    &:after {
+      content: "";
+      position: absolute;
+      display: none;
+      top: 55%;
+      left: 55%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #45c552;
+      transform: translate(-55%, -55%);
+    }
+  }
+
+  &:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+
+  input:checked ~ .checkmark {
+    background-color: #eee;
+    border: 2px solid #45c552;
+
+    &:after {
+      display: block;
+    }
+  }
+
+  span {
+    margin-left: 10px;
+    padding-left: 10px;
+  }
 }

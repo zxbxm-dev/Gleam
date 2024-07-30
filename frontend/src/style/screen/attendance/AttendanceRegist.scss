@@ -138,9 +138,8 @@
       td {
         border-right: 2px solid #858585;
         border-bottom: 2px solid #858585;
-
         text-align: center;
-        height: 91px;
+        height: 80px;
       }
     }
   }
@@ -152,7 +151,6 @@
   .Explan_RD {
     font-family: var(--font-family-Noto-M);
     width: 300px;
-    height: 686px;
     border: 2px solid #858585;
     overflow-x: auto;
     position: sticky;
@@ -253,10 +251,12 @@
 
   .Excel_RD {
     .Explan_RD {
-      height: 683px;
       tr {
         .TopS {
           height: 40.5px;
+        }
+        td {
+          font-size: 12px;
         }
       }
     }

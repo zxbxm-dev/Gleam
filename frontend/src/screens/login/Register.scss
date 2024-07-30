@@ -40,7 +40,7 @@
                 display: flex;
                 align-items: flex-start;
 
-                .localinput{
+                .localinput {
                     width: 300px;
                     height: 35px;
                     display: flex;
@@ -94,7 +94,7 @@
                 font-size: 14px;
                 color: #3b3b3b;
 
-                .CheckID{
+                .CheckID {
                     background-color: #fff;
                     color: #000;
                     box-shadow: 0 0 0 1px #76CB7E inset;
@@ -104,12 +104,12 @@
                     margin-left: 20px;
                 }
 
-                .CheckID:hover{
+                .CheckID:hover {
                     background-color: #76CB7E;
                     color: #fff;
                 }
 
-                .localinput{
+                .localinput {
                     width: 300px;
                     height: 35px;
                     display: flex;
@@ -199,7 +199,7 @@
                 display: flex;
                 align-items: center;
 
-                .localinput{
+                .localinput {
                     width: 300px;
                     height: 35px;
                     display: flex;
@@ -242,57 +242,58 @@
             .MinimBox {
                 display: flex;
                 align-items: center;
-                                .localinput{
-                                    width: 300px;
-                                    height: 35px;
-                                    display: flex;
-                                    align-items: center;
-                                    font-size: 14px;
-                                }
-                
-                                span {
-                                    margin-right: 20px;
-                                    font-size: 14px;
-                                    color: #3b3b3b;
-                                }
-                
-                                .ShortTextInput {
-                                    width: 173px;
-                                    height: 35px;
-                                    border: 1px solid #dcdcdc;
-                                    background-color: #fff;
-                                    border-radius: 5px;
-                                    padding-left: 15px;
-                                    font-size: 14px;
-                                }
-                
-                                .ShortTextInput:focus {
-                                    outline: 2px solid #76CB7E;
-                                }
-                
-                                .ShortTextInput::placeholder {
-                                    font-size: 14px;
-                                    color: #C7C7C7;
-                                }
-                            }
 
-            .UploadBox{
+                .localinput {
+                    width: 300px;
+                    height: 35px;
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                }
+
+                span {
+                    margin-right: 20px;
+                    font-size: 14px;
+                    color: #3b3b3b;
+                }
+
+                .ShortTextInput {
+                    width: 173px;
+                    height: 35px;
+                    border: 1px solid #dcdcdc;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    padding-left: 15px;
+                    font-size: 14px;
+                }
+
+                .ShortTextInput:focus {
+                    outline: 2px solid #76CB7E;
+                }
+
+                .ShortTextInput::placeholder {
+                    font-size: 14px;
+                    color: #C7C7C7;
+                }
+            }
+
+            .UploadBox {
                 display: flex;
                 align-items: center;
 
-                span{
+                span {
                     font-size: 14px;
                     color: #3B3B3B;
                 }
 
-                .attachment_content{
+                .attachment_content {
                     margin-left: 20px;
                     display: flex;
                     align-items: center;
 
-                    .primary_button{
+                    .primary_button {
                         margin-right: 10px;
-                      padding: 8px 20px 7px 20px;
+                        padding: 8px 20px 7px 20px;
                         border-radius: 5px;
                         border: 1px solid #76CB7E;
                         display: flex;
@@ -300,14 +301,14 @@
                         color: #76CB7E;
                         font-size: 14px;
                         font-family: var(--font-family-Noto-B);
-cursor: pointer;
+                        cursor: pointer;
 
-                        img{
+                        img {
                             margin-right: 10px;
                         }
                     }
 
-                    .attachmentBox{
+                    .attachmentBox {
                         display: flex;
                         width: 152px;
                         font-size: 14px;
@@ -407,6 +408,8 @@ cursor: pointer;
             }
 
             .custom-select {
+                position: relative;
+
                 .select-header {
                     width: 300px;
                     height: 35px;
@@ -417,7 +420,6 @@ cursor: pointer;
                     align-items: center;
                     justify-content: space-between;
                     padding-left: 10px;
-                    position: relative;
                     font-size: 14px;
                     padding-right: 15px;
                     color: #323232;
@@ -426,12 +428,14 @@ cursor: pointer;
 
                 .options {
                     position: absolute;
+                    width: inherit;
+                    left: 0;
                     z-index: 99;
                     border-radius: 5px;
                     border: 1px solid #dcdcdc;
 
                     .op {
-                        width: 298px;
+                        width: 292px;
                         height: 30px;
                         background-color: #fff;
                         padding-left: 10px;
@@ -456,6 +460,7 @@ cursor: pointer;
                         border-top-right-radius: 5px;
                     }
                 }
+
             }
         }
     }
@@ -485,6 +490,647 @@ cursor: pointer;
 
         .ResText {
             margin-bottom: 20px;
+        }
+    }
+}
+
+@include tablet {
+    .Register {
+        padding: 50px 15px;
+        height: auto;
+
+        .ResLogo {
+            width: 100%;
+        }
+
+        .ResText {
+            font-size: 5.0vw;
+            margin-bottom: 30px;
+        }
+
+        .RegistorBox {
+            gap: 15px;
+            flex-direction: column;
+
+            .LeftFlex {
+                gap: 15px;
+                width: 100%;
+
+                .MinisBox {
+                    gap: 15px;
+                    width: 100%;
+
+                    // .localinput{
+                    //     width: 80%;
+                    //     height: 35px;
+                    //     font-size: 12px;
+                    // }
+
+                    span {
+                        font-size: 0.9rem;
+                        color: #3b3b3b;
+                        width: 20%;
+                    }
+
+                    .TextInput {
+                        width: 100%;
+                        height: 35px;
+                        padding-left: 10px;
+                        font-size: 0.9rem;
+                    }
+
+                    .TextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .TextInput::placeholder {
+                        font-size: 0.9rem;
+                    }
+
+                    .Question {
+                        gap: 10px;
+                        width: 80%;
+
+                        .Ques {
+                            width: 100%;
+
+                            span {
+                                margin-bottom: 5px;
+                                width: 100%;
+                            }
+                        }
+                    }
+                }
+
+                .MinimBox {
+                    font-size: 0.9rem;
+                    width: 100%;
+
+                    .CheckID {
+                        height: 35px;
+                        width: 105px;
+                        margin-left: 15px;
+                    }
+
+                    .localinput {
+                        width: 300px;
+                        height: 35px;
+                        font-size: 0.9rem;
+                    }
+
+                    span {
+                        margin-right: 15px;
+                        font-size: 0.9rem;
+                        width: 20%;
+                    }
+
+                    .ShortTextInput {
+                        width: 80%;
+                        font-size: 0.9rem;
+                    }
+
+                    .ShortTextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .ShortTextInput::placeholder {
+                        font-size: 0.9rem;
+                    }
+                }
+
+                .MiniphoneBox {
+                    width: 100%;
+
+                    .ErrorMessageBox {
+
+                        .ErrorMessage {
+                            width: 100%;
+                        }
+                    }
+
+                    .Phone {
+                        width: 100%;
+                    }
+
+                    span {
+                        font-size: 0.9rem;
+                        width: 20%;
+                    }
+
+                    .TextInput {
+                        width: 80%;
+                        padding-left: 15px;
+                        font-size: 0.9rem;
+                        margin-left: 15px;
+                    }
+
+                    .TextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .TextInput::placeholder {
+                        font-size: 0.9rem;
+                    }
+                }
+
+                .MiniBox {
+                    gap: 15px;
+                    width: 100%;
+
+                    span {
+                        font-size: 0.9rem;
+                        width: 20%;
+                    }
+
+                    .TextInput {
+                        width: 80%;
+                        font-size: 0.9rem;
+                    }
+
+                    .TextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .TextInput::placeholder {
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+
+            .RightFlex {
+                gap: 15px;
+
+                .MinimBox {
+
+                    .localinput {
+                        width: 300px;
+                        height: 35px;
+                        display: flex;
+                        align-items: center;
+                        font-size: 14px;
+                    }
+
+                    span {
+                        margin-right: 15px;
+                        font-size: 0.9rem;
+                    }
+
+                    .ShortTextInput {
+                        width: 173px;
+                        font-size: 0.9rem;
+                    }
+
+                    .ShortTextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .ShortTextInput::placeholder {
+                        font-size: 0.9rem;
+                        color: #C7C7C7;
+                    }
+                }
+
+                .UploadBox {
+                    display: flex;
+                    align-items: center;
+
+                    span {
+                        font-size: 14px;
+                        color: #3B3B3B;
+                    }
+
+                    .attachment_content {
+                        margin-left: 20px;
+                        display: flex;
+                        align-items: center;
+
+                        .primary_button {
+                            margin-right: 10px;
+                            padding: 8px 20px 7px 20px;
+                            border-radius: 5px;
+                            border: 1px solid #76CB7E;
+                            display: flex;
+                            align-items: center;
+                            color: #76CB7E;
+                            font-size: 14px;
+                            font-family: var(--font-family-Noto-B);
+                            cursor: pointer;
+
+                            img {
+                                margin-right: 10px;
+                            }
+                        }
+
+                        .attachmentBox {
+                            display: flex;
+                            width: 152px;
+                            font-size: 14px;
+                        }
+                    }
+                }
+
+                .flexbox {
+                    width: 100%;
+
+                    fieldset {
+                        display: flex;
+                        gap: 20px;
+
+                        label {
+                            display: flex;
+                            align-items: center;
+
+                            span {
+                                font-size: 0.9rem;
+                                margin-left: 10px;
+                            }
+                        }
+                    }
+
+                    .FlexSpan {
+                        width: 20%;
+                        margin-right: 15px;
+                        font-size: 0.9rem;
+                        text-align: left;
+                    }
+                }
+
+                .flexsbox {
+                    width: 100%;
+
+                    .FlexSpan {
+                        margin-right: 15px;
+                        font-size: 0.9rem;
+                        width: 20%;
+                        text-align: left;
+
+                    }
+
+                    .Bo {
+                        width: 80%;
+
+                        .First {
+                            width: 100%;
+                        }
+
+                        .Radio {
+
+                            span {
+                                font-size: 0.9rem;
+                            }
+                        }
+                    }
+                }
+
+                .custom-select {
+                    width: 80%;
+
+                    .select-header {
+                        width: 100%;
+                        font-size: 0.9rem;
+                    }
+
+                    .options {
+                        width: 100%;
+                        height: auto;
+
+                        .op {
+                            width: 100%;
+                            font-size: 0.9rem;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        .ResBtnBox {
+            margin-top: 15px;
+
+            .ResBtn {
+                padding: 6px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    }
+}
+
+
+@include mobile {
+    .Register {
+        padding: 50px 15px;
+        height: auto;
+
+        .ResLogo {
+            width: 100%;
+        }
+
+        .ResText {
+            font-size: 7.0vw;
+            margin-bottom: 30px;
+        }
+
+        .RegistorBox {
+            gap: 15px;
+            flex-direction: column;
+
+            .LeftFlex {
+                gap: 15px;
+
+                .MinisBox {
+                    gap: 15px;
+                    width: 100%;
+
+                    // .localinput{
+                    //     width: 80%;
+                    //     height: 35px;
+                    //     font-size: 12px;
+                    // }
+
+                    span {
+                        font-size: 12px;
+                        color: #3b3b3b;
+                        width: 30%;
+                    }
+
+                    .TextInput {
+                        width: 100%;
+                        height: 35px;
+                        padding-left: 10px;
+                        font-size: 12px;
+                    }
+
+                    .TextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .TextInput::placeholder {
+                        font-size: 12px;
+                    }
+
+                    .Question {
+                        gap: 10px;
+                        width: 70%;
+
+                        .Ques {
+                            width: 100%;
+
+                            span {
+                                margin-bottom: 5px;
+                                width: 100%;
+                            }
+                        }
+                    }
+                }
+
+                .MinimBox {
+                    font-size: 12px;
+
+                    .CheckID {
+                        height: 35px;
+                        width: 105px;
+                        margin-left: 15px;
+                    }
+
+                    .localinput {
+                        width: 300px;
+                        height: 35px;
+                        font-size: 12px;
+                    }
+
+                    span {
+                        margin-right: 15px;
+                        font-size: 12px;
+                        width: 30%;
+                    }
+
+                    .ShortTextInput {
+                        width: 70%;
+                        font-size: 12px;
+                    }
+
+                    .ShortTextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .ShortTextInput::placeholder {
+                        font-size: 12px;
+                    }
+                }
+
+                .MiniphoneBox {
+                    width: 100%;
+
+                    .ErrorMessageBox {
+
+                        .ErrorMessage {
+                            width: 100%;
+                        }
+                    }
+
+                    .Phone {
+                        width: 100%;
+                    }
+
+                    span {
+                        font-size: 12px;
+                        width: 30%;
+                    }
+
+                    .TextInput {
+                        width: 70%;
+                        padding-left: 15px;
+                        font-size: 12px;
+                        margin-left: 15px;
+                    }
+
+                    .TextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .TextInput::placeholder {
+                        font-size: 12px;
+                    }
+                }
+
+                .MiniBox {
+                    gap: 15px;
+                    width: 100%;
+
+                    span {
+                        font-size: 12px;
+                        width: 30%;
+                    }
+
+                    .TextInput {
+                        width: 70%;
+                        font-size: 12px;
+                    }
+
+                    .TextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .TextInput::placeholder {
+                        font-size: 12px;
+                    }
+                }
+            }
+
+            .RightFlex {
+                gap: 15px;
+
+                .MinimBox {
+
+                    .localinput {
+                        width: 300px;
+                        height: 35px;
+                        display: flex;
+                        align-items: center;
+                        font-size: 14px;
+                    }
+
+                    span {
+                        margin-right: 15px;
+                        font-size: 12px;
+                    }
+
+                    .ShortTextInput {
+                        width: 173px;
+                        font-size: 12px;
+                    }
+
+                    .ShortTextInput:focus {
+                        outline: 1px solid #76CB7E;
+                    }
+
+                    .ShortTextInput::placeholder {
+                        font-size: 12px;
+                        color: #C7C7C7;
+                    }
+                }
+
+                .UploadBox {
+                    display: flex;
+                    align-items: center;
+
+                    span {
+                        font-size: 14px;
+                        color: #3B3B3B;
+                    }
+
+                    .attachment_content {
+                        margin-left: 20px;
+                        display: flex;
+                        align-items: center;
+
+                        .primary_button {
+                            margin-right: 10px;
+                            padding: 8px 20px 7px 20px;
+                            border-radius: 5px;
+                            border: 1px solid #76CB7E;
+                            display: flex;
+                            align-items: center;
+                            color: #76CB7E;
+                            font-size: 14px;
+                            font-family: var(--font-family-Noto-B);
+                            cursor: pointer;
+
+                            img {
+                                margin-right: 10px;
+                            }
+                        }
+
+                        .attachmentBox {
+                            display: flex;
+                            width: 152px;
+                            font-size: 14px;
+                        }
+                    }
+                }
+
+                .flexbox {
+                    width: 100%;
+
+                    fieldset {
+                        display: flex;
+                        gap: 20px;
+
+                        label {
+                            display: flex;
+                            align-items: center;
+
+                            span {
+                                font-size: 12px;
+                                margin-left: 10px;
+                            }
+                        }
+                    }
+
+                    .FlexSpan {
+                        width: 30%;
+                        margin-right: 15px;
+                        font-size: 12px;
+                        text-align: left;
+                    }
+                }
+
+                .flexsbox {
+                    width: 100%;
+
+                    .FlexSpan {
+                        margin-right: 15px;
+                        font-size: 12px;
+                        width: 30%;
+                        text-align: left;
+
+                    }
+
+                    .Bo {
+                        width: 70%;
+
+                        .First {
+                            width: 100%;
+                        }
+
+                        .Radio {
+
+                            span {
+                                font-size: 12px;
+                            }
+                        }
+                    }
+                }
+
+                .custom-select {
+                    width: 70%;
+
+                    .select-header {
+                        width: 100%;
+                        font-size: 12px;
+                    }
+
+                    .options {
+                        width: 100%;
+                        height: auto;
+
+                        .op {
+                            width: 100%;
+                            font-size: 12px;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        .ResBtnBox {
+            margin-top: 15px;
+
+            .ResBtn {
+                padding: 6px 15px;
+                font-size: 12px;
+            }
         }
     }
 }

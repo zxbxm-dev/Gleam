@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import CustomModal from "../../../components/modal/CustomModal";
 import { Tooltip } from '@chakra-ui/react';
@@ -9,9 +9,11 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { useForm } from 'react-hook-form';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
+import { useLocation } from 'react-router-dom';
 
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { CheckAttendance, WriteAttendance, EditAttendance } from "../../../services/attendance/AttendanceServices";
+import { PersonData } from '../../../services/person/PersonServices';
 
 const months = [
   { name: '1월', key: 'january' },
@@ -28,7 +30,7 @@ const months = [
   { name: '12월', key: 'december' },
 ];
 
-type Member = [string, string, string];
+type Member = [string, string, string, string];
 type TeamOrderType = {
   [key: string]: string[];
 };
@@ -36,6 +38,8 @@ type ProcessedAttendance = [string, string, [string, string, string]];
 
 const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
+  const location = useLocation();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState((new Date().getMonth() + 1) % 3);
   const [tabHeights, setTabHeights] = useState<Record<number, string>>({0: '41px', 1: '35px', 2: '35px'});
   const [tabMargins, setTabMargins] = useState<Record<number, string>>({0: '6px', 1: '6px', 2: '6px'});
@@ -49,8 +53,10 @@ const AttendanceRegist = () => {
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
   const [HO_Data, setHO_Data] = useState<ProcessedAttendance[]>([]);
   const [clickIdx, setClickIdx] = useState<number | null>(null);
+  const [explanHeight, setExplanHeight] = useState<number>(0);
+  const [explanRDHeight, setExplanRDHeight] = useState<number>(0);
   // 모달 창 입력값
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -65,48 +71,49 @@ const AttendanceRegist = () => {
     }
   }, [activeTab]);
 
-  
-  const initialMembers: Member[] = useMemo(() => [
-    ['권상원', '블록체인 사업부', ''],
-    ['김도환', '블록체인 사업부', '블록체인 1팀'],
-    ['권준우', '블록체인 사업부', '블록체인 1팀'],
-    ['진유빈', '개발부', ''],
-    ['장현지', '개발부', '개발 1팀'],
-    ['구민석', '개발부', '개발 1팀'],
-    ['박세준', '개발부', '개발 1팀'],
-    ['변도일', '개발부', '개발 2팀'],
-    ['이로운', '개발부', '개발 2팀'],
-    ['김현지', '마케팅부', ''],
-    ['서주희', '마케팅부', '디자인팀'],
-    ['전아름', '마케팅부', '기획팀'],
-    ['함다슬', '마케팅부', '기획팀'],
-    ['전규미', '마케팅부', '기획팀'],
-    ['김효은', '관리부', '관리팀'],
-    ['우현지', '관리부', '관리팀'],
-    ['염승희', '관리부', '관리팀'],
-    ['김태희', '관리부', '지원팀'],
-  ], []);
+  const fetchUser = async () => {
+    try {
+      const response = await PersonData();
+      const userMap = new Map();
+      response.data.forEach((user: any) => {
+        userMap.set(user.username, user.userId);
+      });
+      return {
+        users: response.data,
+        userMap
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
 
-  const initialMembersRD: Member[] = useMemo(() => [
-    ['심민지', '알고리즘 연구실', 'AI 연구팀'],
-    ['임지현', '알고리즘 연구실', 'AI 연구팀'],
-    ['김희진', '알고리즘 연구실', 'AI 연구팀'],
-    ['윤민지', '동형분석 연구실', '동형분석 연구팀'],
-    ['이채영', '동형분석 연구실', '동형분석 연구팀'],
-    ['박소연', '블록체인 연구실', 'AI 개발팀'],
-    ['김경현', '블록체인 연구실', 'AI 개발팀'],
-  ], []);
+  useQuery("Users", fetchUser, {
+    onSuccess: (data) => {
+      const HO_Data = data.users.filter((item: any) => item.company === "본사").map((user: any) => [
+        user.username, user.department, user.team || '', user.entering
+      ]);
+
+      const RnD_Data = data.users.filter((item: any) => item.company === "R&D").map((user: any) => [
+        user.username, user.department, user.team || '', user.entering
+      ]);
+
+      setMembers(HO_Data);
+      setMembersRD(RnD_Data);
+    },
+    onError: (error) => {
+      console.error(error);
+    }
+  });
   
   useEffect(() => {
-    const departmentOrder = ['블록체인 사업부', '개발부', '마케팅부', '관리부'];
+    const departmentOrder = ['개발부', '마케팅부', '관리부'];
     const teamOrder: TeamOrderType = {
-      '블록체인 사업부': ['블록체인 1팀'],
       '개발부': ['개발 1팀', '개발 2팀'],
       '마케팅부': ['디자인팀', '기획팀'],
       '관리부': ['관리팀', '지원팀'],
     };
 
-    const sortedMembers = [...initialMembers].sort((a, b) => {
+    const sortedMembers = [...members].sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[1]);
       const deptBIndex = departmentOrder.indexOf(b[1]);
 
@@ -114,18 +121,26 @@ const AttendanceRegist = () => {
       if (deptAIndex > deptBIndex) return 1;
 
       const teamAIndex = teamOrder[a[1]].indexOf(a[2]);
-      const teamBIndex = teamOrder[b[1]].indexOf(b[2]);
+      const teamBIndex = teamOrder[a[1]].indexOf(b[2]);
 
       if (teamAIndex < teamBIndex) return -1;
       if (teamAIndex > teamBIndex) return 1;
+
+      const enteringDateA = new Date(a[3]);
+      const enteringDateB = new Date(b[3]);
+
+      if (enteringDateA < enteringDateB) return -1;
+      if (enteringDateA > enteringDateB) return 1;
 
       const nameA = a[0];
       const nameB = b[0];
       return nameA.localeCompare(nameB);
     });
 
-    setMembers(sortedMembers);
-  }, [initialMembers]);
+    if (JSON.stringify(members) !== JSON.stringify(sortedMembers)) {
+      setMembers(sortedMembers);
+    }
+  }, [members]);
 
   useEffect(() => {
     const groupedData = members.reduce((acc, member) => {
@@ -163,20 +178,28 @@ const AttendanceRegist = () => {
   useEffect(() => {
     const departmentOrder = ['알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
 
-    const sortedMembers = [...initialMembersRD].sort((a, b) => {
+    const sortedMembers = [...membersRD].sort((a, b) => {
       const deptAIndex = departmentOrder.indexOf(a[1]);
       const deptBIndex = departmentOrder.indexOf(b[1]);
 
       if (deptAIndex < deptBIndex) return -1;
       if (deptAIndex > deptBIndex) return 1;
 
-      const nameA = a[2];
-      const nameB = b[2];
+      const enteringDateA = new Date(a[3]);
+      const enteringDateB = new Date(b[3]);
+
+      if (enteringDateA < enteringDateB) return -1;
+      if (enteringDateA > enteringDateB) return 1;
+
+      const nameA = a[0];
+      const nameB = b[0];
       return nameA.localeCompare(nameB);
     });
 
-    setMembersRD(sortedMembers);
-  }, [initialMembersRD]);
+    if (JSON.stringify(membersRD) !== JSON.stringify(sortedMembers)) {
+      setMembersRD(sortedMembers);
+    }
+  }, [membersRD]);
 
   useEffect(() => {
     const groupedData = membersRD.reduce((acc, member) => {
@@ -210,6 +233,22 @@ const AttendanceRegist = () => {
     });
     setRowsDataRD(rows);
   }, [membersRD]);
+
+  useEffect(() => {
+    if(window.innerWidth >= 1600) {
+      const height = 40 + 92.2 * members.length;
+      const heightRD = 40 + 92.3 * membersRD.length;
+
+      setExplanHeight(height);
+      setExplanRDHeight(heightRD);
+    } else {
+      const height = 40 + 92 * members.length;
+      const heightRD = 40 + 92.3 * membersRD.length;
+
+      setExplanHeight(height);
+      setExplanRDHeight(heightRD);
+    }
+  }, [members, membersRD]);
  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -233,6 +272,7 @@ const AttendanceRegist = () => {
     try {
       const response = await WriteAttendance(formData);
       setAttachment(null);
+      queryClient.invalidateQueries("attendregist");
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch data");
@@ -245,24 +285,23 @@ const AttendanceRegist = () => {
   };
 
   const exportToPDF = () => {
-    const element = document.getElementById('table-to-xls');
-    if (element) {
-      element.style.height = element.scrollHeight + 'px';
-      element.style.width = element.scrollWidth + 'px';
-      html2canvas(element).then(canvas => {
+    const activePanel = document.querySelector(`#panel-${activeTab}`) as HTMLElement | null;
+    if (activePanel) {
+      activePanel.style.height = activePanel.scrollHeight + 'px';
+      activePanel.style.width = activePanel.scrollWidth + 'px';
+      html2canvas(activePanel).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('l', 'mm', 'a4');
         const imgWidth = 297; // A4 크기에서 이미지 너비
         const imgHeight = (canvas.height * imgWidth) / canvas.width; // 이미지의 원래 높이에 따른 비율에 따라 조정
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
         pdf.save('출근부.pdf');
-        window.location.reload();
       });
     } else {
-      console.error('Element not found');
+      console.error('Active panel not found');
     }
   };
-
+  
   const [selectedDateInfo, setSelectedDateInfo] = useState<{
     name: string | null;
     year: number | null;
@@ -438,12 +477,12 @@ const AttendanceRegist = () => {
         switch (personData[2][2]) {
           case '오전반차':
             countHalfDayOff[j]++;
-            if (personData[2][0] > '14:00') {
+            if (personData[2][0] > '14:01') {
               countLateWork[j]++
     
               const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
     
-              const standardTime = new Date(`2000-01-01T14:00`);
+              const standardTime = new Date(`2000-01-01T14:01`);
               const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 14) * 60 + attendTime.getMinutes() : 0;
     
               TotalLateWork[j] += lateMinutes;
@@ -452,12 +491,12 @@ const AttendanceRegist = () => {
             break;
           case '오후반차':
             countHalfDayOff[j]++;
-            if (personData[2][0] > '10:00') {
+            if (personData[2][0] > '10:01') {
               countLateWork[j]++
     
               const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
     
-              const standardTime = new Date(`2000-01-01T10:00`);
+              const standardTime = new Date(`2000-01-01T10:01`);
               const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
     
               TotalLateWork[j] += lateMinutes;
@@ -474,12 +513,12 @@ const AttendanceRegist = () => {
             break;
           case '재택':
             countRemoteWork[j]++;
-            if (personData[2][0] > '10:00') {
+            if (personData[2][0] > '10:01') {
               countLateWork[j]++
     
               const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
     
-              const standardTime = new Date(`2000-01-01T10:00`);
+              const standardTime = new Date(`2000-01-01T10:01`);
               const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
     
               TotalLateWork[j] += lateMinutes;
@@ -492,16 +531,28 @@ const AttendanceRegist = () => {
           case '입사':
             itemBackgroundColor = '#FF4747';
             break;
+          case '경조사':
+            itemBackgroundColor = '#FF4747';
+            break;
+          case '워크숍':
+            itemBackgroundColor = '#FF4747';
+            break;
+          case '출장':
+            itemBackgroundColor = '#FF4747';
+            break;
           case '지문X':
             itemBackgroundColor = '#EF0AD8';
             break;
+          case '기타':
+            itemBackgroundColor = '#EF0AD8';
+            break;
           default:
-            if (personData[2][0] > '10:00') {
+            if (personData[2][0] > '10:01') {
               countLateWork[j]++
     
               const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
     
-              const standardTime = new Date(`2000-01-01T10:00`);
+              const standardTime = new Date(`2000-01-01T10:01`);
               const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
     
               TotalLateWork[j] += lateMinutes;
@@ -512,6 +563,8 @@ const AttendanceRegist = () => {
 
         // 토요일 또는 일요일이 아닌 경우
         if (dayOfWeekIndex !== 0 && dayOfWeekIndex !== 6) {
+          const startTime = personData[2][0] || '';
+          const endTime = personData[2][1] || '';
           rowCells.push(
             <Tooltip label={`${month}월 ${date}일`}>
               <tr
@@ -519,8 +572,8 @@ const AttendanceRegist = () => {
                 onClick={() => handleDivClick(date, year, month, personIndex, personData[3])}
                 key={`${i}-${j}`}
               >
-                <td className='conta'>{personData[2][0].slice(0,5)} </td>
-                <td className='conta_border'>{personData[2][1].slice(0,5)} </td>
+                <td className='conta'>{startTime.slice(0, 5)} </td>
+                <td className='conta_border'>{endTime.slice(0, 5)} </td>
                 <td className='conta' style={{ color: itemBackgroundColor }}>{personData[2][2]} </td>
               </tr>
             </Tooltip>
@@ -762,6 +815,8 @@ const AttendanceRegist = () => {
 
         // 토요일 또는 일요일이 아닌 경우
         if (dayOfWeekIndex !== 0 && dayOfWeekIndex !== 6) {
+          const startTime = personData[2][0] || '';
+          const endTime = personData[2][1] || '';
           rowCells.push(
             <Tooltip label={`${month}월 ${date}일`}>
               <tr
@@ -769,8 +824,8 @@ const AttendanceRegist = () => {
                 onClick={() => handleDivClickRD(date, year, month, personIndex)}
                 key={`${i}-${j}`}
               >
-                <td className='conta'>{personData[2][0]} </td>
-                <td className='conta_border'>{personData[2][1]} </td>
+                <td className='conta'>{startTime.slice(0, 5)} </td>
+                <td className='conta_border'>{endTime.slice(0, 5)} </td>
                 <td className='conta' style={{ color: itemBackgroundColor }}>{personData[2][2]} </td>
               </tr>
             </Tooltip>
@@ -906,6 +961,16 @@ const AttendanceRegist = () => {
     const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
     const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
     const name = members[personIndex][0];
+    const personData = HO_Data.find(data => data[0] === name && data[1] === `${year}-${month}-${date}`);
+    
+    if (personData) {
+      setValue('startTime', personData[2][0]);
+      setValue('endTime', personData[2][1]);
+      setValue('otherValue', personData[2][2]);
+    } else {
+      reset(); // 새로운 데이터를 입력할 때는 초기화
+    }
+  
     setSelectedDateInfo({
       name: name,
       year: year,
@@ -914,6 +979,7 @@ const AttendanceRegist = () => {
       dayOfWeek: dayOfWeek
     });
   };
+  
 
   const handleDivClickRD = (date: number, year: number, month: number, personIndex: number) => {
     setAddAttend(true);
@@ -932,43 +998,42 @@ const AttendanceRegist = () => {
 
 
   // 출근부 데이터 수정
-  const onSubmit = (data: any) => {
-    setAddAttend(false);
+const onSubmit = (data: any) => {
+  setAddAttend(false);
 
-    const formatDateString = (dateString: any) => {
-      const [year, month, day] = dateString.split('-').map(Number);
-      
-      const formattedMonth = month.toString().padStart(2, '0');
-      const formattedDay = day.toString().padStart(2, '0');
+  const formatDateString = (dateString: any) => {
+    const [year, month, day] = dateString.split('-').map(Number);
     
-      return `${year}-${formattedMonth}-${formattedDay}`;
-    };
-    const originalDate = formatDateString(`${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`);
-    const formData = {
-      username: selectedDateInfo.name,
-      Date: originalDate,
-      data: [data.startTime, data.endTime, data.otherValue],
-    }
+    const formattedMonth = month.toString().padStart(2, '0');
+    const formattedDay = day.toString().padStart(2, '0');
+  
+    return `${year}-${formattedMonth}-${formattedDay}`;
+  };
 
-    EditAttendance(clickIdx, formData)
-      .then(response => {
-        console.log("출근부 데이터 수정 성공", response)
-      })
-      .catch(error => {
-        console.log("출근부 데이터 수정 실패", error)
-      })
-  }
+  const originalDate = formatDateString(`${selectedDateInfo.year}-${selectedDateInfo.month}-${selectedDateInfo.date}`);
+  const formData = {
+    username: selectedDateInfo.name,
+    Date: originalDate,
+    data: [data.startTime, data.endTime, data.otherValue],
+  };
+
+  EditAttendance(clickIdx, formData)
+    .then(response => {
+      console.log("출근부 데이터 수정 성공", response);
+      queryClient.invalidateQueries("attendregist");
+    })
+    .catch(error => {
+      console.log("출근부 데이터 수정 실패", error);
+    });
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 10);
 
-    return () => clearTimeout(timer);
-  }, []);
-
-
-  console.log(HO_Data)
+    return () => {clearTimeout(timer); setIsLoading(true)};
+  }, [location.pathname]);
 
   return (
     <div className="content">
@@ -1004,7 +1069,7 @@ const AttendanceRegist = () => {
           ) : null}
         </div>
 
-        {selectedScreen === 'R&D' ? (
+        {user.company === '본사' || selectedScreen !== 'R&D' ? (
           <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (
@@ -1013,16 +1078,16 @@ const AttendanceRegist = () => {
             </TabList>
 
             <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="attend_tab_container">
-              {yearData.map(monthData => (
-                <TabPanel key={monthData.month} className="container_attendance">
-                  <div className="Excel" id="table-to-xls">
+              {yearData.map((monthData, index) => (
+                <TabPanel id={`panel-${index}`} key={monthData.month} className="container_attendance">
+                  <div className="Excel" id={`panel-${index}`}>
                     {isLoading ? (
                       <>
                         <AttendSkeleton />
                     </>
                     ) : (
                       <>
-                        <table className="Explan">
+                        <table className="Explan" style={{ height: `${explanHeight}px` }}>
                           <thead>
                             <tr>
                               <td className="TopS" colSpan={2}>부서</td>
@@ -1053,7 +1118,7 @@ const AttendanceRegist = () => {
             </TabPanels>
           </Tabs>
         ) : (
-          <Tabs variant='enclosed'>
+          <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (
                 <Tab className="TabKey" key={monthData.month} _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#EEEEEE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[index]} marginTop={tabMargins[index]}>{months[monthData.month - 1].name}</Tab>
@@ -1061,10 +1126,10 @@ const AttendanceRegist = () => {
             </TabList>
 
             <TabPanels bg='white' border='1px solid #DEDEDE' borderBottomRadius='10px' className="attend_tab_container">
-              {yearData.map(monthData => (
-                <TabPanel key={monthData.month} className="container_attendance">
-                  <div className="Excel_RD" id="table-to-xls">
-                    <table className="Explan_RD">
+              {yearData.map((monthData, index) => (
+                <TabPanel id={`panel-${index}`} key={monthData.month} className="container_attendance">
+                  <div className="Excel_RD" id={`panel-${index}`}>
+                    <table className="Explan_RD" style={{ height: `${explanRDHeight}px` }}>
                       <thead>
                         <tr>
                           <td className="TopS" colSpan={2}>부서</td>
@@ -1126,7 +1191,11 @@ const AttendanceRegist = () => {
               <option value='재택' style={{ color: '#7000C9' }}>재택</option>
               <option value='서울출근' style={{ color: '#3DC6C6' }}>서울출근</option>
               <option value='입사' style={{ color: '#FF4747' }}>입사</option>
+              <option value='경조사' style={{ color: '#FF4747' }}>경조사</option>
+              <option value='워크숍' style={{ color: '#FF4747' }}>워크숍</option>
+              <option value='출장' style={{ color: '#FF4747' }}>출장</option>
               <option value='지문X' style={{ color: '#EF0AD8' }}>지문X</option>
+              <option value='기타' style={{ color: '#EF0AD8' }}>기타</option>
             </select>
           </div>
         </div>

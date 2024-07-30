@@ -42,78 +42,64 @@ const Register = () => {
 
 
 	const handleInputChange = (event: any, field: any) => {
-		const value = event.target.value;
-		const restrictedCharsRegex = /[{}[\]()]/;
-		const alphanumericRegex = /^[a-zA-Z0-9]+$/;
-		const numericRegex = /^[0-9]+$/;
+    const value = event.target.value;
+    const restrictedCharsRegex = /[{}[\]()]/;
 
-		// 입력값이 제한된 문자를 포함하는지 확인
-		if (restrictedCharsRegex.test(value)) {
-			// 제한된 문자를 포함하고 있으면 처리하지 않음
-			return;
-		}
+    // 입력값이 제한된 문자를 포함하는지 확인
+    if (restrictedCharsRegex.test(value)) {
+        return;
+    }
 
-		if (field === 'Mail' && !alphanumericRegex.test(value)) {
-			// 영어와 숫자만 포함하지 않으면 처리하지 않음
-			return;
-		}
-
-		if ((field === 'enterDate' || field === 'phoneNumber') && !numericRegex.test(value)) {
-			// 영어와 숫자만 포함하지 않으면 처리하지 않음
-			return;
-		}
-
-		switch (field) {
-			case 'userID':
-				setUserID(value);
-				break;
-			case 'password':
-				setPassword(value);
-				setPasswordError(!validatePassword(value) ? "비밀번호는 영어, 숫자, 특수문자를 포함한 8자리 이상이여야 합니다." : "");
-				break;
-			case 'confirmPassword':
-				setConfirmPassword(value);
-				setConfirmPasswordError(value !== password ? "비밀번호가 일치하지 않습니다." : "");
-				break;
-			case 'phoneNumber':
-				setPhoneNumber(value);
-				setPhoneNumberError(!validatePhoneNumber(value) ? "유효한 휴대폰 번호를 입력하세요." : "");
-				break;
-			case 'enterDate':
-				setEnterDate(value);
-				setEnterDateError(!validateEnterDate(value) ? "유효한 날짜 형식(예: 20990101)이어야 합니다." : "");
-				break;
-			case 'ques1':
-				setQuestion1(value);
-				break;
-			case 'ques2':
-				setQuestion2(value);
-				break;
-			case 'name':
-				setName(value);
-				break;
-			case 'Mail':
-				setMail(value);
-				break;
-
-			default:
-				break;
-		}
+    switch (field) {
+        case 'userID':
+            setUserID(value);
+            break;
+        case 'password':
+            setPassword(value);
+            setPasswordError(!validatePassword(value) ? "비밀번호는 영어, 숫자, 특수문자를 포함한 8자리 이상이여야 합니다." : "");
+            break;
+        case 'confirmPassword':
+            setConfirmPassword(value);
+            setConfirmPasswordError(value !== password ? "비밀번호가 일치하지 않습니다." : "");
+            break;
+        case 'phoneNumber':
+            setPhoneNumber(value);
+            setPhoneNumberError(!validatePhoneNumber(value) ? "유효한 휴대폰 번호를 입력하세요.(예: 01012345678)" : "");
+            break;
+        case 'enterDate':
+            setEnterDate(value);
+            setEnterDateError(!validateEnterDate(value) ? "유효한 날짜 형식(예: 20990101)이어야 합니다." : "");
+            break;
+        case 'ques1':
+            setQuestion1(value);
+            break;
+        case 'ques2':
+            setQuestion2(value);
+            break;
+        case 'name':
+            setName(value);
+            break;
+        case 'Mail':
+            setMail(value);
+            break;
+        default:
+            break;
+    }
 	};
 
 	const validatePhoneNumber = (phone: any) => {
-		const phoneRegex = /^\d{8,12}$/;
-		return phoneRegex.test(phone);
+			const phoneRegex = /^\d{8,12}$/;
+			return phoneRegex.test(phone);
 	};
 
 	const validatePassword = (password: any) => {
-		const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-		return PasswordRegex.test(password);
+			const PasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+			return PasswordRegex.test(password);
 	};
 
 	const validateEnterDate = (date: any) => {
-		const dateRegex = /^20\d{6}$/;
-		return dateRegex.test(date);
+			const dateRegex = /^20\d{6}$/;
+			return dateRegex.test(date);
 	};
 
 	const handleOptionClick = (optionName: any, optionValue: any) => {
@@ -204,12 +190,6 @@ const Register = () => {
 						<div className="op" onClick={() => handleOptionClick('team', '관리팀')}>관리팀</div>
 						<div className="op" onClick={() => handleOptionClick('team', '지원팀')}>지원팀</div>
 						<div className="op" onClick={() => handleOptionClick('team', '시설팀')}>시설팀</div>
-					</>
-				);
-			case '블록체인 사업부':
-				return (
-					<>
-						<div className="op" onClick={() => handleOptionClick('team', '블록체인 1팀')}>블록체인 1팀</div>
 					</>
 				);
 			case '마케팅부':
@@ -306,6 +286,7 @@ const Register = () => {
 			})
 	};
 
+	console.log("입력된 메일", mail)
 	return (
 		<div className="Register">
 			<Link to="/login">
@@ -316,13 +297,13 @@ const Register = () => {
 			<div className="RegistorBox">
 				<div className="LeftFlex">
 					<div className="MinimBox">
-						<span>아이디 입력</span>
+						<span>* 아이디 입력</span>
 						<input type="text" className="ShortTextInput" value={id} placeholder="아이디를 입력해 주세요." onChange={(event) => handleInputChange(event, 'userID')} />
 						<button className="CheckID" onClick={handleCheckID}>중복 확인</button>
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
-							<span>패스워드 설정</span>
+							<span>* 패스워드 설정</span>
 							{passwordError ?
 								<input
 									type="password"
@@ -348,7 +329,7 @@ const Register = () => {
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
-							<span>패스워드 재입력</span>
+							<span>* 패스워드 재입력</span>
 							{confirmPasswordError ?
 								<input
 									type="password"
@@ -373,7 +354,7 @@ const Register = () => {
 					</div>
 					<div className="MinisBox">
 						<span>
-							패스워드 재설정<br />
+							* 패스워드 재설정<br />
 							본인 확인용 질문<br />
 							(2개 다 입력)
 						</span>
@@ -401,7 +382,7 @@ const Register = () => {
 						</div>
 					</div>
 					<div className="MiniBox">
-						<span>성명 입력</span>
+						<span>* 성명 입력</span>
 						<input
 							type="text"
 							value={name}
@@ -412,7 +393,7 @@ const Register = () => {
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
-							<span>휴대폰 번호 입력</span>
+							<span>* 휴대폰 번호 입력</span>
 							{phoneNumberError ?
 								<input
 									type="text"
@@ -437,7 +418,7 @@ const Register = () => {
 						</div>
 					</div>
 					<div className="MinimBox">
-						<span>메일 입력</span>
+						<span>* 메일 입력</span>
 						<input
 							type="text"
 							value={mail}
@@ -449,7 +430,7 @@ const Register = () => {
 					</div>
 					<div className="MiniphoneBox">
 						<div className="Phone">
-							<span>입사일자</span>
+							<span>* 입사일자</span>
 							{enterDateError ?
 								<input
 									type="text"
@@ -508,7 +489,6 @@ const Register = () => {
 										<>
 											<div className="op" onClick={() => handleOptionClick('department', '개발부')}>개발부</div>
 											<div className="op" onClick={() => handleOptionClick('department', '관리부')}>관리부</div>
-											<div className="op" onClick={() => handleOptionClick('department', '블록체인 사업부')}>블록체인 사업부</div>
 											<div className="op" onClick={() => handleOptionClick('department', '마케팅부')}>마케팅부</div>
 										</>
 									)}
@@ -531,7 +511,7 @@ const Register = () => {
 						</div>
 					</div>
 					<div className="flexbox">
-						<span className="FlexSpan">직위</span>
+						<span className="FlexSpan">* 직위</span>
 						<div className="custom-select">
 							<div className="select-header" onClick={() => toggleSelect(3)}>
 								<span>{selectedOptions.spot ? selectedOptions.spot : '직위를 선택해주세요'}</span>
@@ -550,7 +530,7 @@ const Register = () => {
 						</div>
 					</div>
 					<div className="flexbox">
-						<span className="FlexSpan">직책</span>
+						<span className="FlexSpan">* 직책</span>
 						<div className="custom-select">
 							<div className="select-header" onClick={() => toggleSelect(4)}>
 								<span>{selectedOptions.position ? selectedOptions.position : '직책을 선택해주세요'}</span>

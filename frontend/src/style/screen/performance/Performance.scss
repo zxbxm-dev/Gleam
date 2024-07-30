@@ -16,6 +16,28 @@
     overflow-y: scroll;
     display: flex;
     justify-content: center;
+
+    .Upload {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+
+      .btn_gap {
+        display: flex;
+        gap: 10px;
+
+        .gray-btn {
+          padding: 8px 20px;
+          border-radius: 5px;
+          font-family: var(--font-family-Noto-B);
+          font-size: 14px;
+          color: #fff;
+          background-color: #777777;
+          cursor: pointer;
+        }
+      }
+    }
   }
 
   .pdf-button {
@@ -128,7 +150,7 @@
     flex-direction: row;
     justify-content: space-between;
     border-bottom: 1px solid #DCDCDC;
-    
+
     .top_left_content {
       width: 50%;
       height: 100%;

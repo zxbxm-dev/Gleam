@@ -303,7 +303,7 @@ ul {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
 
         .name_left {
           display: flex;
@@ -329,10 +329,17 @@ ul {
             font-family: var(--font-family-Noto-M);
           }
 
-          div {
+          .blue_circle {
             width: 10px;
             height: 10px;
             background-color: #000AFF;
+            border-radius: 50%;
+          }
+    
+          .brown_circle {
+            width: 10px;
+            height: 10px;
+            background-color: #0C6605;
             border-radius: 50%;
           }
         }
@@ -347,7 +354,7 @@ ul {
         transition: 0.3s ease-in-out;
         margin-bottom: 5px;
         padding: 10px 13px;
-        margin-bottom: 25px;
+        margin-bottom: 10px;
 
         div {
           width: 100%;
