@@ -517,20 +517,26 @@ const Project = () => {
       
       // pinned 값을 기준으로 정렬 (pinned가 true인 항목을 앞으로)
       const sortedMainProjects = mainprojects.sort((a: ProjectData, b: ProjectData) => {
-        return b.pinned - a.pinned;
+        if (a.pinned && !b.pinned) {
+          return -1;
+        } else if (!a.pinned && b.pinned) {
+          return 1;
+        } else {
+          return b.mainprojectIndex - a.mainprojectIndex;
+        }
       });
 
       if (selectedstateOption === '전체') {
-        setProjects(sortedMainProjects.reverse());
+        setProjects(sortedMainProjects);
       } else if (selectedstateOption === '진행 예정') {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'notstarted');
-        setProjects(filteredProjects.reverse());
+        setProjects(filteredProjects);
       } else if (selectedstateOption === '진행 중'){
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'inprogress');
-        setProjects(filteredProjects.reverse());
+        setProjects(filteredProjects);
       } else {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'done');
-        setProjects(filteredProjects.reverse());
+        setProjects(filteredProjects);
       }
 
       setSubProjects(mainprojects);
@@ -582,6 +588,17 @@ const Project = () => {
 
   // 서브 프로젝트 추가
   const handleAddSubProject = async (mainprojectindex: any) => {
+    const currentDate = new Date();
+    
+    let status;
+    if (startDate === null) {
+      status = 'notstarted';
+    } else if (startDate > currentDate) {
+      status = 'notstarted';
+    } else {
+      status = 'inprogress';
+    }
+
     const pjtDetails = {
       userID: user.userID,
       projectName: pjtTitle,
@@ -591,6 +608,7 @@ const Project = () => {
       startDate: startDate,
       endDate: endDate,
       memo: pjtMemo,
+      status : status,
     };
 
     try {
