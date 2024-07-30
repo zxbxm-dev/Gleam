@@ -1,10 +1,8 @@
 .message-sidebar {
-  width: 320px;
-  max-width: 320px;
+  width: 300px;
+  max-width: 300px;
   height: 100vh;
-  overflow-x: visible;
   overflow-y: scroll;
-
   position: relative;
 
   .tab-container {
@@ -100,29 +98,6 @@
           height: 35px;
           border-radius: 50px;
         }
-      }
-
-      .Message-OnClick-Menu {
-        // display: none;
-        cursor: pointer;
-        display: flex;
-        padding-left: 15px;
-        align-items: center;
-        // &.active {
-        //   cursor: pointer;
-        //   position: absolute;
-        //   display: flex;
-        //   padding-left: 15px;
-        //   align-items: center;
-        //   right: -135px;
-        //   bottom: -20px;
-        //   width: 150px;
-        //   height: 42px;
-        //   background-color: #fff;
-        //   border-radius: 5px;
-        //   z-index: 99999;
-        //   box-shadow: 0 0 3px 2px #e2e2e2;
-        // }
       }
     }
 
@@ -249,4 +224,38 @@
 .message-sidebar::-webkit-scrollbar-track {
   box-shadow: none;
   background-color: #fbfbfb;
+}
+
+.PersonSide_popover {
+  border: none !important;
+  box-shadow: 0px 1px 3px 1px #a8a8a8 !important;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--font-family-Noto-M);
+  font-size: 15px;
+  position: absolute;
+  display: flex;
+  padding-left: 15px;
+  justify-content: center;
+  display: flex;
+  width: 150px !important;
+  height: 42px !important;
+
+  .Message-OnClick-Menu {
+    // &.active {
+    //   cursor: pointer;
+    //   position: absolute;
+    //   display: flex;
+    //   padding-left: 15px;
+    //   align-items: center;
+    //   right: -135px;
+    //   bottom: -20px;
+    //   width: 150px;
+    //   height: 42px;
+    //   background-color: #fff;
+    //   border-radius: 5px;
+    //   z-index: 99999;
+    //   box-shadow: 0 0 3px 2px #e2e2e2;
+    // }
+  }
 }
