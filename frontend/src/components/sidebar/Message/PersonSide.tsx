@@ -11,6 +11,7 @@ import {
 import {
   Popover,
   PopoverTrigger,
+  Portal,
   PopoverContent,
   PopoverHeader,
   PopoverBody,
@@ -154,16 +155,21 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                   }}
                 />
               </PopoverTrigger>
-              <PopoverContent>
-                <div
-                  ref={menuRef}
-                  className={`Message-OnClick-Menu ${
-                    activeMenuUserId === person.userId ? "active" : ""
-                  }`}
+              <Portal>
+                <PopoverContent
+                  className="PersonSide_popover"
+                  _focus={{ boxShadow: "none" }}
                 >
-                  대화 나가기
-                </div>
-              </PopoverContent>
+                  <div
+                    ref={menuRef}
+                    className={`Message-OnClick-Menu ${
+                      activeMenuUserId === person.userId ? "active" : ""
+                    }`}
+                  >
+                    대화 나가기
+                  </div>
+                </PopoverContent>
+              </Portal>
             </li>
           </Popover>
         ))}
