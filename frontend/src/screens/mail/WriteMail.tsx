@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   White_Arrow,
@@ -27,9 +27,14 @@ const WriteMail = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isClicked, setIsClicked] = useState(false);
 
+  const reservationRef = useRef<HTMLDivElement>(null);
+  const timeRef = useRef<HTMLDivElement>(null);
   const [isReservationOpen, setIsReservationOpen] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [timeDropdownOpen, setTimeDropdownOpen] = useState(false);
+  const [selectedTime, setSelectedTime] = useState('16시');
+  const timeOptions = ['16시', '17시', '18시'];
+
 
   const fetchUser = async () => {
     try {
@@ -167,6 +172,33 @@ const WriteMail = () => {
     setIsClicked(!isClicked);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (reservationRef.current && !reservationRef.current.contains(event.target as Node)) {
+        setIsReservationOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [reservationRef]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (timeRef.current && !timeRef.current.contains(event.target as Node)) {
+        setTimeDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [timeRef]);
+
   return(
     <div className="content">
       <div className="write_mail_container">
@@ -177,25 +209,36 @@ const WriteMail = () => {
             <button className="basic_button" onClick={toggleReservation}>
               발송 예약
               {isReservationOpen && (
-                <div className="mail_reservation_container">
+                <div className="mail_reservation_container" onClick={(e) => e.stopPropagation()} ref={reservationRef}>
                   <div className="mail_reservation_title">예약 시간</div>
                   <div className="mail_reservation_content">
                     <div className="mail_reservation_content_date">
                       <DatePicker
                         selected={startDate}
-                        onChange={() => {}}
+                        onChange={(date) => setStartDate(date)}
                         selectsStart
                         startDate={startDate}
-                        endDate={endDate}
                         placeholderText={new Date().toLocaleDateString('ko-KR')}
-                        dateFormat="yyyy-MM-dd"
+                        dateFormat="yyyy.MM.dd"
                         className="datepicker"
                         popperPlacement="top"
                       />
                     </div>
-                    <div className="mail_reservation_content_time">
-                      16시
+                    <div className="mail_reservation_content_time" onClick={() => setTimeDropdownOpen(!timeDropdownOpen)} ref={timeRef}>
+                      {selectedTime}
                       <img src={White_Arrow} alt="White_Arrow" />
+                      {timeDropdownOpen && (
+                        <ul className="time_dropdown">
+                          {timeOptions.map(option => (
+                            <li key={option} onClick={() => {
+                              setSelectedTime(option);
+                              setTimeDropdownOpen(false);
+                            }}>
+                              {option}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                     <div className="mail_reservation_content_time">
                       30분
