@@ -543,6 +543,17 @@ const Project = () => {
   
   // 메인 프로젝트 추가
   const handleAddMainProject = async () => {
+    const currentDate = new Date();
+    
+    let status;
+    if (startDate === null) {
+      status = 'notstarted';
+    } else if (startDate > currentDate) {
+      status = 'notstarted';
+    } else {
+      status = 'inprogress';
+    }
+
     const pjtDetails = {
       userID: user.userID,
       projectName: pjtTitle,
@@ -552,6 +563,7 @@ const Project = () => {
       startDate: startDate,
       endDate: endDate,
       memo: pjtMemo,
+      status : status,
     };
 
     try {
@@ -844,22 +856,31 @@ const Project = () => {
                                 {project.projectName}
                                 {dropdownOpen && (
                                   <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                                    <div className="dropdown_pin" 
+                                    {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                                      <div className="dropdown_pin"
                                         onClick={(e) => {
-                                          e.stopPropagation(); 
+                                          e.stopPropagation();
                                           setEditPjtModalOpen(true);
-                                          setpjtStatus(rightclickedProjects?.status === 'notstarted' ? '진행 예정' : rightclickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
+                                          setpjtStatus(
+                                            rightclickedProjects?.status === 'notstarted' ? '진행 예정' :
+                                            rightclickedProjects?.status === 'inprogress' ? '진행 중' :
+                                            rightclickedProjects?.status === 'completed' ? '진행 완료' :
+                                            '진행 예정'
+                                          );
                                           setPjtTitle(rightclickedProjects?.projectName || ''); 
                                           setTeamLeader(rightclickedProjects?.Leader || '');
                                           setAllMembers(rightclickedProjects?.members || []);
                                           setAllReferrers(rightclickedProjects?.referrer || []);
                                           setStartDate(rightclickedProjects?.startDate || null);
                                           setEndDate(rightclickedProjects?.endDate || null);
-                                    }
-                                    }>
-                                      편집
+                                        }}
+                                      >
+                                        편집
+                                      </div>
+                                    )}
+                                    <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>
+                                      추가
                                     </div>
-                                    <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>추가</div>
                                   </div>
                                 )}
                               </div>
