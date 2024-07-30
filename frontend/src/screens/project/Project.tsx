@@ -1172,6 +1172,8 @@ const Project = () => {
       >
         <div className="body-container">
           <div className="body_container_content">
+          </div>
+          <div className="body_container_content">
             <div className="body_container_content_title">프로젝트 명</div>
             <input type="text" value={pjtTitle} onChange={(e) => setPjtTitle(e.target.value)}/>
           </div>
