@@ -73,6 +73,10 @@
         flex-direction: column;
         gap: 10px;
 
+        &.New-Chat-Room-Body {
+          gap: 5px !important;
+        }
+
         .AddTitle {
           display: flex;
 
@@ -487,12 +491,14 @@
           font-family: var(--font-family-Noto-M);
           display: flex;
           flex-direction: row;
-          gap: 3px;
+          gap: 5px;
+          margin-top: 5px;
 
           .LeftEmployCon {
-            width: 160px;
+            width: 184px;
             max-height: 220px;
             overflow-y: auto;
+            padding-right: 5px;
 
             &::-webkit-scrollbar {
               width: 3px;
@@ -515,7 +521,7 @@
               display: flex;
               flex-direction: row;
               align-items: center;
-              font-size: 12px;
+              font-size: 10px;
               color: #8f8f8f;
               white-space: nowrap;
               margin: 10px 0;
@@ -551,7 +557,7 @@
               }
 
               .PersonName {
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 400;
               }
             }
@@ -560,8 +566,8 @@
               display: flex;
               flex-direction: row;
               align-items: center;
-              background-color: #e1e1e1;
-              border-radius: 23px;
+              //background-color: #e1e1e1;
+              //border-radius: 23px;
               padding-left: 9px;
               height: 20px;
 
@@ -572,7 +578,7 @@
               }
 
               .TeamName {
-                font-size: 8px;
+                font-size: 10px;
               }
             }
           }
@@ -589,23 +595,28 @@
 
             .RightTopText {
               color: #8f8f8f;
-              font-size: 10px;
+              font-size: 12px;
               font-weight: bold;
               width: 100%;
               height: 14px;
+              margin-bottom: 7px;
+
+              span {
+                font-size: 10px;
+                font-weight: bold;
+              }
             }
 
             .ChosenPeople {
               display: grid;
-              grid-template-columns: repeat(2, 1fr);
+              grid-template-columns: repeat(1, 1fr);
 
               .ChosenOne {
                 display: flex;
                 flex-direction: row;
-                width: 78px;
-                height: 20px;
+                width: 100%;
                 align-items: center;
-
+                margin: 3.5px 0;
                 img {
                   width: 6px;
                   height: 6px;
@@ -613,7 +624,7 @@
                 }
 
                 div {
-                  font-size: 10px;
+                  font-size: 12px;
                   color: #323232;
                 }
               }
