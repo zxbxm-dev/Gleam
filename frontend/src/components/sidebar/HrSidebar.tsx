@@ -60,8 +60,8 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                         <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
                           {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/> */}
                           <span className="name_text">{name}</span>
-                          <div className="name_border"></div>
-                          <span className="name_text">{position}</span>
+                          {/* <div className="name_border"></div> */}
+                          <span className="position_text">{position}</span>
                         </li>
                       ))}
                     </ul>
@@ -73,8 +73,8 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                       <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
                         {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/> */}
                         <span className="name_text">{name}</span>
-                        <div className="name_border"></div>
-                        <span className="name_text">{position}</span>
+                        {/* <div className="name_border"></div> */}
+                        <span className="position_text">{position}</span>
                       </li>
                     ))}
                   </ul>
