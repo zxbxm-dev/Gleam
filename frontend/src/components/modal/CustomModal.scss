@@ -34,7 +34,6 @@
         left: 15px;
         font-size: 14px;
         font-family: var(--font-family-Noto-B);
-        color: black;
       }
 
       .modal-close-button {
@@ -488,11 +487,29 @@
           font-family: var(--font-family-Noto-M);
           display: flex;
           flex-direction: row;
+          gap: 3px;
 
           .LeftEmployCon {
             width: 160px;
-            height: auto;
-            overflow-y: scroll;
+            max-height: 220px;
+            overflow-y: auto;
+
+            &::-webkit-scrollbar {
+              width: 3px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background-color: #8f8f8f;
+              border-radius: 10px;
+            }
+
+            &::-webkit-scrollbar-track {
+              background: transparent;
+            }
+
+            &::-webkit-scrollbar-button {
+              display: none;
+            }
 
             .Department-Tab {
               display: flex;
@@ -502,9 +519,11 @@
               color: #8f8f8f;
               white-space: nowrap;
               margin: 10px 0;
+
               img {
                 margin-right: 5px;
               }
+
               .VerticalLine {
                 height: 1px;
                 width: 100%;
@@ -512,6 +531,7 @@
                 margin-left: 6px;
               }
             }
+
             .PersonCon {
               display: flex;
               flex-direction: row;
@@ -540,7 +560,6 @@
               display: flex;
               flex-direction: row;
               align-items: center;
-
               background-color: #e1e1e1;
               border-radius: 23px;
               padding-left: 9px;
@@ -557,10 +576,47 @@
               }
             }
           }
+
           .RightSelectedCon {
             width: 210px;
-            height: auto;
-            overflow-y: scroll;
+            max-height: 220px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #a2a2a2;
+            padding: 10px 15px;
+
+            .RightTopText {
+              color: #8f8f8f;
+              font-size: 10px;
+              font-weight: bold;
+              width: 100%;
+              height: 14px;
+            }
+
+            .ChosenPeople {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+
+              .ChosenOne {
+                display: flex;
+                flex-direction: row;
+                width: 78px;
+                height: 20px;
+                align-items: center;
+
+                img {
+                  width: 6px;
+                  height: 6px;
+                  margin-right: 5px;
+                }
+
+                div {
+                  font-size: 10px;
+                  color: #323232;
+                }
+              }
+            }
           }
         }
 
