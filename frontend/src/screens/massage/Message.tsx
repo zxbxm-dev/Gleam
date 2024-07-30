@@ -157,7 +157,7 @@ const Message = () => {
       {/* 인원관리 */}
       <div className="PeopleManagementCon">
         <div className="Management-header">
-          <span>인원관리</span> <img src={XIcon} alt="XIcon" />
+          <span>인원 관리</span> <img src={XIcon} alt="XIcon" />
         </div>
         <div className="AddPerson-tab">+ 인원 추가하기</div>
         <div className="ChatRoom-Members">
