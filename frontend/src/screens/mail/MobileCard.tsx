@@ -3,6 +3,8 @@ import CustomModal from "../../components/modal/CustomModal";
 import {
   FourchainsLogo,
 } from "../../assets/images/index";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 
 interface Mobile {
   isMobileCardModal: boolean;
@@ -11,6 +13,7 @@ interface Mobile {
 
 
 const MobileCard: React.FC<Mobile> = ({ isMobileCardModal, setIsMobileCardModal }) => {
+  const user = useRecoilValue(userState);
   const [isMobileCard, setIsMobileCard] = useState("사용 함");
 
   const handleUseMoileCard = (e: any) => {
@@ -55,7 +58,7 @@ const MobileCard: React.FC<Mobile> = ({ isMobileCardModal, setIsMobileCardModal 
               </div>
 
               <div className="mobile_user_info">
-                <div><span className="mobile_user_info_bold">구민석</span> <span className="mobile_user_info_mid">개발1팀 / 사원</span></div>
+                <div><span className="mobile_user_info_bold">{user.username}</span> <span className="mobile_user_info_mid">{user.team} / {user.position}</span></div>
                 <div><span className="mobile_user_info_bold">Tel</span> <span className="mobile_user_info_Reg">+82 01000000000</span></div>
                 <div><span className="mobile_user_info_bold">Mobile</span> <span className="mobile_user_info_Reg">+82 01000000000</span></div>
                 <div><span className="mobile_user_info_bold">Email</span> <span className="mobile_user_info_Reg">fourchains@four-chains.com</span></div>

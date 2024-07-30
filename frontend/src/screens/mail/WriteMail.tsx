@@ -7,6 +7,8 @@ import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
 import { isNull } from "mathjs";
@@ -24,6 +26,10 @@ const WriteMail = () => {
   const [inputReferrerValue, setInputReferrerValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [isClicked, setIsClicked] = useState(false);
+
+  const [isReservationOpen, setIsReservationOpen] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const fetchUser = async () => {
     try {
@@ -47,13 +53,16 @@ const WriteMail = () => {
     setMenuIsOpen(!menuIsOpen);
   };
 
+  const toggleReservation = () => {
+    setIsReservationOpen(!isReservationOpen);
+  }
+
   const handleOptionSelect = (option: string) => {
     setSelectedMenuOption(option);
     setMenuIsOpen(false);
 
     if (option === '전체 메일') {
       if (isNull(recipients) || isNull(referrers) || isNull(mailTitle)) {
-        console.log('뭐가 있음')
         window.alert('작성된 사항은 저장되지 않습니다.');
         navigate('/mail');
       } else {
@@ -164,8 +173,40 @@ const WriteMail = () => {
         <div className="write_mail_header">
           <div className="mail_header_left">
             <button className="send_button">보내기</button>
-            <button className="basic_button">임시 저장</button>
-            <button className="basic_button">발송 예약</button>
+            <button className="basic_button" onClick={() => navigate('/mail')}>임시 저장</button>
+            <button className="basic_button" onClick={toggleReservation}>
+              발송 예약
+              {isReservationOpen && (
+                <div className="mail_reservation_container">
+                  <div className="mail_reservation_title">예약 시간</div>
+                  <div className="mail_reservation_content">
+                    <div className="mail_reservation_content_date">
+                      <DatePicker
+                        selected={startDate}
+                        onChange={() => {}}
+                        selectsStart
+                        startDate={startDate}
+                        endDate={endDate}
+                        placeholderText={new Date().toLocaleDateString('ko-KR')}
+                        dateFormat="yyyy-MM-dd"
+                        className="datepicker"
+                        popperPlacement="top"
+                      />
+                    </div>
+                    <div className="mail_reservation_content_time">
+                      16시
+                      <img src={White_Arrow} alt="White_Arrow" />
+                    </div>
+                    <div className="mail_reservation_content_time">
+                      30분
+                      <img src={White_Arrow} alt="White_Arrow" />
+                    </div>
+                  </div>
+                  <div className="mail_reservation_footer">입력된 시간으로 메일 발송되니, 정확히 확인 부탁드립니다.</div>
+                </div>
+              )}
+            </button>
+            
           </div>
 
           <div className="mail_header_right">

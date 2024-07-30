@@ -17,6 +17,7 @@ import {
 } from "../../assets/images/index";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CustomModal from "../../components/modal/CustomModal";
 import BlockMail from "./BlockMail";
 import MobileCard from "./MobileCard";
 import Pagenation from "./Pagenation";
@@ -28,7 +29,10 @@ const Mail = () => {
   const [settingVisible, setSettingVisible] = useState(true);
   const [hoverState, setHoverState] = useState<string>("");
 
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isSpamModalOpen, setSpamModalOpen] = useState(false);
   const [isMobileCardModal, setIsMobileCardModal] = useState(false);
+  const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('전체 메일');
@@ -36,7 +40,6 @@ const Mail = () => {
   const [selectdDueDateOption, setSelectedDueDateOption] = useState('전체');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
 
   const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -250,11 +253,11 @@ const Mail = () => {
               <input type="checkbox" id="check1" checked={allSelected} onChange={toggleAllCheckboxes} />
               <span></span>
             </label>
-            <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")}>
+            <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={() => setDeleteModalOpen(true)}>
               <img src={mail_delete} alt="mail_delete" />
               {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
             </div>
-            <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")}>
+            <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={() => setSpamModalOpen(true)}>
               <img src={mail_spam} alt="mail_spam" />
               {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
             </div>
@@ -476,6 +479,35 @@ const Mail = () => {
           </table>
         </div>
       </div>
+      <CustomModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        header={"알림"}
+        footer1={"삭제"}
+        footer1Class="red-btn"
+        footer2={"취소"}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setDeleteModalOpen(false)}
+      >
+        <div>삭제하시겠습니까?</div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isSpamModalOpen}
+        onClose={() => setSpamModalOpen(false)}
+        header={"알림"}
+        footer1={"예"}
+        onFooter1Click={() => setSpamModalOpen(false)}
+        footer1Class="green-btn"
+        footer2={"아니오"}
+        footer2Class="red-btn"
+        onFooter2Click={() => setSpamModalOpen(false)}
+      >
+        <div className="body-container">
+          선택한 메일이 스팸 메일함으로 이동하였습니다.<br/>
+          수신 차단 하시겠습니까?
+        </div>
+      </CustomModal>
 
       <Pagenation
         setPage={setPage}
