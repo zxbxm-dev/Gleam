@@ -207,7 +207,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                   <div
                     style={{
                       backgroundColor: color,
-                      border: `1px solid ${ProfileBorderPalette[index]}`,
+                      // border: `1px solid ${ProfileBorderPalette[index]}`,
                     }}
                     onClick={() => {
                       setPaletteIndex(index);
