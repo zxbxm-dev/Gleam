@@ -124,6 +124,7 @@ const addProject = async (req, res) => {
             memo,
             pinned,
             status,
+            force,
         } = req.body.data;
         const { 
             mainprojectIndex,
@@ -220,12 +221,13 @@ const addProject = async (req, res) => {
             const subEndDate = subPj.endDate.toISOString().split('T')[0];
             const subStartDate = subPj.startDate.toISOString().split('T')[0];
 
-            if(
+            if(  force !== true && (
                 ( mainStartDate > subStartDate && mainEndDate > subEndDate)|| //mpj 시작이 spj보다 미래일때 , mpj 마감이 spj보다 미래일때
-                ( mainStartDate < subStartDate && mainEndDate < subEndDate) //mpj 시작이 spj 보다 과거일떄 , mpj 마감이 spj보다 과거일때
+                ( mainStartDate < subStartDate && mainEndDate < subEndDate)
+             )   //mpj 시작이 spj 보다 과거일떄 , mpj 마감이 spj보다 과거일때
             ){
-            //     return res.status(420).json({message:"메인 프로젝트와 서브 프로젝트의 일정이 일치하지 않습니다. 기간을 다시 확인해 주세요." });
-            //    }else{
+                return res.status(420).json({message:"메인 프로젝트와 서브 프로젝트의 일정이 일치하지 않습니다. 기간을 다시 확인해 주세요." });
+               }else{
                  subPj.startDate = null;
                  subPj.endDate = null;
                  await subPj.save();                 
