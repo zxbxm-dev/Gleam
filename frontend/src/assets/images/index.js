@@ -46,6 +46,8 @@ export { default as MenuArrow_right } from "./sidebar/MenuArrow_right.svg";
 export { default as UserIcon_dark } from "./sidebar/UserIcon_dark.svg";
 export { default as SideUp } from "./sidebar/SideUp.svg";
 export { default as SideDown } from "./sidebar/SideDown.svg";
+export { default as MenuArrow_Up } from "./sidebar/MenuArrow_Up.svg";
+export { default as NewCloseIcon } from "./sidebar/NewCloseIcon.svg";
 
 // project
 export { default as Right_Arrow } from "./project/Right_Arrow.svg";
