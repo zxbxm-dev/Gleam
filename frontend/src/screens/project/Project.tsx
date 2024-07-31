@@ -1740,7 +1740,7 @@ const Project = () => {
 
       <CustomModal
         isOpen={EditForceMessage}
-        onClose={() => setEditForceMessage(false)}
+        onClose={() => {setEditForceMessage(false); resetForm();}}
         header={'알림'}
         footer1={'예'}
         footer1Class="gray-btn"
@@ -1750,7 +1750,7 @@ const Project = () => {
         }}
         footer2={'아니오'}
         footer2Class="red-btn"
-        onFooter2Click={() => setEditForceMessage(false)}
+        onFooter2Click={() => {setEditForceMessage(false); resetForm();}}
         width="350px"
         height="200px"
       >
