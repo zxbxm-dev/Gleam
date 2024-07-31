@@ -702,9 +702,11 @@ const Project = () => {
       console.log('서브 프로젝트 수정 성공');
       refetchProject();
       resetForm();
+      setClickedProjects(null);
     })
     .catch((error) => {
-      console.log('서브 프로젝트 수정 실패', error)
+      console.log('서브 프로젝트 수정 실패', error);
+      setClickedProjects(null);
     })
   }
 
@@ -777,7 +779,7 @@ const Project = () => {
   useEffect(() => {
     refetchProject();
   }, [refetchProject, selectedstateOption]);
-
+  
   return (
     <div className="content">
       <div className="content_container">
@@ -1025,6 +1027,7 @@ const Project = () => {
         </Tabs>
       </div>
 
+      {/* 메인 프로젝트 생성 모달 */}
       <CustomModal
         isOpen={isAddPjtModalOpen}
         onClose={() => { setAddPjtModalOPen(false); resetForm(); }}
@@ -1156,6 +1159,7 @@ const Project = () => {
         </div>
       </CustomModal>
 
+      {/* 서브 프로젝트 생성 모달 */}
       <CustomModal
         isOpen={isAddSubPjtModalOpen}
         onClose={() => { setAddSubPjtModalOPen(false); resetForm(); }}
@@ -1263,6 +1267,7 @@ const Project = () => {
         </div>
       </CustomModal>
       
+      {/* 메인 프로젝트 수정 모달 */}
       <CustomModal
         isOpen={isEditPjtModalOpen}
         onClose={() => { setEditPjtModalOpen(false); resetForm(); }}
@@ -1415,13 +1420,14 @@ const Project = () => {
         </div>
       </CustomModal>
       
+      {/* 서브 프로젝트 수정 모달 */}
       <CustomModal
         isOpen={isViewSubPjtModalOpen}
         onClose={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null);}}
         header={rightclickedProjects?.projectName}
         footer1={'편집'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false); setClickedProjects(null);}}
+        onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false);}}
         footer2={'삭제'}
         footer2Class="red-btn"
         onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
@@ -1503,7 +1509,7 @@ const Project = () => {
         header={rightclickedProjects?.projectName}
         footer1={'수정'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleEditSubProject(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
+        onFooter1Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleEditSubProject(rightclickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
         footer2={'취소'}
         footer2Class="red-btn"
         onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm(); }}
