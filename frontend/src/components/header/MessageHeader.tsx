@@ -43,7 +43,7 @@ const MessageHeader = () => {
   return (
     <div className="header">
       <div className="header-left">
-        <Link to="/">
+        <Link to="/message">
           <img src={MessageHeaderLogo} alt="MessageHeaderLogo" />
         </Link>
       </div>
