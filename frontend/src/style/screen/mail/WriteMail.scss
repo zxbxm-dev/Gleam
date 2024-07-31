@@ -23,9 +23,101 @@
 
       .basic_button {
         @include report-button;
+        position: relative;
         background-color: #fff;
         color: #000;
         border: 1px solid var(--primary-color);
+
+        .mail_reservation_container {
+          z-index: 99;
+          position: absolute;
+          top: 50px;
+          left: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          width: 383px;
+          height: 133px;
+          border: 1px solid var(--primary-color);
+          padding: 20px;
+          border-radius: 5px;
+          background-color: #FBFBFB;
+          font-family: --var(--font-family-Noto-M);
+
+          .mail_reservation_title {
+            font-size: 13px;
+            text-align: left;
+          }
+
+          .mail_reservation_content {
+            display: flex;
+            gap: 15px;
+
+            .mail_reservation_content_date {
+              .datepicker {
+                width: 155px;
+                height: 38px;
+                border: 1px solid #D8D8D8;
+                border-radius: 2px;
+                font-size: 16px;
+                color: #000000;
+                background-color: #FFFFFF;
+              }
+              .datepicker::placeholder {
+                color: #000000;
+              }
+            }
+
+            .mail_reservation_content_time {
+              position: relative;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 80px;
+              height: 38px;
+              gap: 10px;
+              border: 1px solid #D8D8D8;
+              border-radius: 2px;
+              font-size: 16px;
+              background-color: #FFFFFF;
+
+              img {
+                width: 15px;
+                height: 15px;
+                filter: invert(20%) sepia(0%) saturate(1007%) hue-rotate(164deg) brightness(88%) contrast(86%);
+                transform: rotate(180deg);
+              }
+              .time_dropdown {
+                @include custom-scrollbar;
+                z-index: 99;
+                position: absolute;
+                top: 36px;
+                width: 80px;
+                height: auto;
+                max-height: 200px;
+                overflow-y: auto;
+                border: 1px solid #D8D8D8;
+                background-color: #FFFFFF;
+                
+
+                li {
+                  padding: 5px 10px;
+                  text-align: left;
+                  font-size: 12px;
+
+                  &:hover {
+                    background-color: #F1F1F1;
+                  }
+                }
+              }
+            }
+          }
+
+          .mail_reservation_footer {
+            font-size: 10px;
+            color: #FF5A5A;
+          }
+        }
       }
     }
     

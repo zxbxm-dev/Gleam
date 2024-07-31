@@ -34,7 +34,6 @@
         left: 15px;
         font-size: 14px;
         font-family: var(--font-family-Noto-B);
-        color: black;
       }
 
       .modal-close-button {
@@ -73,6 +72,10 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+
+        &.New-Chat-Room-Body {
+          gap: 5px !important;
+        }
 
         .AddTitle {
           display: flex;
@@ -440,6 +443,10 @@
             &::placeholder {
               color: #c7c7c7;
             }
+
+            &:focus {
+              outline: none;
+            }
           }
 
           .Right-Button-Con {
@@ -465,6 +472,9 @@
               &::placeholder {
                 color: #c7c7c7;
               }
+              &:focus {
+                outline: none;
+              }
             }
           }
 
@@ -488,23 +498,45 @@
           font-family: var(--font-family-Noto-M);
           display: flex;
           flex-direction: row;
+          gap: 5px;
+          margin-top: 5px;
 
           .LeftEmployCon {
-            width: 160px;
-            height: auto;
-            overflow-y: scroll;
+            width: 184px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 5px;
+
+            &::-webkit-scrollbar {
+              width: 3px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background-color: #8f8f8f;
+              border-radius: 10px;
+            }
+
+            &::-webkit-scrollbar-track {
+              background: transparent;
+            }
+
+            &::-webkit-scrollbar-button {
+              display: none;
+            }
 
             .Department-Tab {
               display: flex;
               flex-direction: row;
               align-items: center;
-              font-size: 12px;
+              font-size: 10px;
               color: #8f8f8f;
               white-space: nowrap;
               margin: 10px 0;
+
               img {
                 margin-right: 5px;
               }
+
               .VerticalLine {
                 height: 1px;
                 width: 100%;
@@ -512,6 +544,7 @@
                 margin-left: 6px;
               }
             }
+
             .PersonCon {
               display: flex;
               flex-direction: row;
@@ -531,7 +564,7 @@
               }
 
               .PersonName {
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 400;
               }
             }
@@ -540,9 +573,8 @@
               display: flex;
               flex-direction: row;
               align-items: center;
-
-              background-color: #e1e1e1;
-              border-radius: 23px;
+              //background-color: #e1e1e1;
+              //border-radius: 23px;
               padding-left: 9px;
               height: 20px;
 
@@ -553,14 +585,57 @@
               }
 
               .TeamName {
-                font-size: 8px;
+                font-size: 10px;
               }
             }
           }
+
           .RightSelectedCon {
             width: 210px;
-            height: auto;
-            overflow-y: scroll;
+            max-height: 220px;
+            min-height: 220px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #dcdcdc;
+            padding: 10px 15px;
+
+            .RightTopText {
+              color: #8f8f8f;
+              font-size: 12px;
+              font-weight: bold;
+              width: 100%;
+              height: 14px;
+              margin-bottom: 7px;
+
+              span {
+                font-size: 10px;
+                font-weight: bold;
+              }
+            }
+
+            .ChosenPeople {
+              display: grid;
+              grid-template-columns: repeat(1, 1fr);
+
+              .ChosenOne {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                align-items: center;
+                margin: 3.5px 0;
+                img {
+                  width: 6px;
+                  height: 6px;
+                  margin-right: 5px;
+                }
+
+                div {
+                  font-size: 12px;
+                  color: #323232;
+                }
+              }
+            }
           }
         }
 

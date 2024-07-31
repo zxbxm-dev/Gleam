@@ -11,6 +11,7 @@ import {
   CheckBox_Active,
   DepartmentTabIcon,
   UserIcon_dark,
+  XIcon,
 } from "../../../assets/images/index";
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
@@ -53,9 +54,14 @@ const MessageSidebar: React.FC = () => {
   const [dummyData, setDummyData] = useState<any[]>([]);
   const [isWholeMemberChecked, setIsWholeMemeberChecked] =
     useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const user: User = useRecoilValue(userState) as User;
   const setSelectedPerson = useSetRecoilState(selectedPersonState);
+
+  const [newChatChosenUsers, setNewChatChosenUsers] = useState<Person[] | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +80,10 @@ const MessageSidebar: React.FC = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log("현재 인원>>", newChatChosenUsers);
+  }, [newChatChosenUsers]);
 
   const toggleDepartmentExpansion = (departmentName: string) => {
     setExpandedDepartments((prevExpandedDepartments) => ({
@@ -168,6 +178,52 @@ const MessageSidebar: React.FC = () => {
     setSelectedPerson({ username, team, department, position });
   };
 
+  const groupByDepartmentAndTeam = (data: Person[]) => {
+    const grouped: { [department: string]: { [team: string]: Person[] } } = {};
+
+    data.forEach((person) => {
+      if (!grouped[person.department]) {
+        grouped[person.department] = {};
+      }
+      if (!grouped[person.department][person.team]) {
+        grouped[person.department][person.team] = [];
+      }
+      grouped[person.department][person.team].push(person);
+    });
+
+    return grouped;
+  };
+
+  const groupedData = personData ? groupByDepartmentAndTeam(personData) : {};
+
+  const filterDataBySearchQuery = (data: {
+    [department: string]: { [team: string]: Person[] };
+  }) => {
+    if (!searchQuery) return data;
+    const filtered: { [department: string]: { [team: string]: Person[] } } = {};
+
+    Object.keys(data).forEach((departmentName) => {
+      Object.keys(data[departmentName]).forEach((teamName) => {
+        const filteredPersons = data[departmentName][teamName].filter(
+          (person) =>
+            person.username.includes(searchQuery) ||
+            person.department.includes(searchQuery) ||
+            person.team.includes(searchQuery)
+        );
+        if (filteredPersons.length > 0) {
+          if (!filtered[departmentName]) {
+            filtered[departmentName] = {};
+          }
+          filtered[departmentName][teamName] = filteredPersons;
+        }
+      });
+    });
+
+    return filtered;
+  };
+
+  const filteredData = filterDataBySearchQuery(groupedData);
+
   return (
     <div className="message-sidebar">
       <div className="tab-container">
@@ -217,6 +273,8 @@ const MessageSidebar: React.FC = () => {
         className="new-chat-button"
         alt="new-chat-button"
         onClick={() => {
+          setNewChatChosenUsers(null);
+          setIsWholeMemeberChecked(false);
           setOpenModal(true);
         }}
       />
@@ -225,6 +283,7 @@ const MessageSidebar: React.FC = () => {
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
         header={"새 대화방 생성"}
+        headerTextColor="white"
         footer1={"확인"}
         footer1Class="back-green-btn"
         //onFooter1Click={handleSubmit}
@@ -232,9 +291,9 @@ const MessageSidebar: React.FC = () => {
         footer2Class="gray-btn"
         onFooter2Click={() => setOpenModal(false)}
         width="400px"
-        height="465px"
+        height="431px"
       >
-        <div className="body-container">
+        <div className="body-container New-Chat-Room-Body">
           <div className="New-Chat-Room">
             <input
               placeholder="(필수) 대화방 이름을 입력해주세요."
@@ -248,7 +307,8 @@ const MessageSidebar: React.FC = () => {
               <input
                 placeholder="대화상대 검색"
                 className="LeftTextInput"
-                //\ onChange={handleUrlChange}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="WholeMemberCheckBoxCon">
@@ -256,43 +316,146 @@ const MessageSidebar: React.FC = () => {
                 className="CheckBox"
                 src={isWholeMemberChecked ? CheckBox_Active : CheckBox}
                 alt="checkBoxIcon"
-                onClick={() => setIsWholeMemeberChecked(!isWholeMemberChecked)}
+                onClick={() => {
+                  setIsWholeMemeberChecked(!isWholeMemberChecked);
+                  newChatChosenUsers === personData
+                    ? setNewChatChosenUsers(null)
+                    : setNewChatChosenUsers(personData);
+                }}
               />
               전체 멤버
             </div>
           </div>
           <div className="PeopleSearchCon">
             <div className="LeftEmployCon">
-              <div className="Department-Tab">
-                <img src={DepartmentTabIcon} alt="DepartmentTabIcon" />
-                마케팅부
-                <div className="VerticalLine"></div>
+              {Object.keys(filteredData).map((departmentName) => (
+                <div key={departmentName}>
+                  {departmentName.trim() !== "" && (
+                    <div className="Department-Tab">
+                      <img src={DepartmentTabIcon} alt="DepartmentTabIcon" />
+                      {departmentName}
+                      <div className="VerticalLine"></div>
+                    </div>
+                  )}
+                  {Object.keys(filteredData[departmentName]).map((teamName) => (
+                    <div key={teamName}>
+                      {teamName.trim() !== "" && (
+                        <div className="Team-Tab">
+                          <img
+                            src={
+                              filteredData[departmentName][teamName].every(
+                                (person) => newChatChosenUsers?.includes(person)
+                              )
+                                ? CheckBox_Active
+                                : CheckBox
+                            }
+                            className="TeamCheckBox"
+                            alt="TeamCheckBox"
+                            onClick={() => {
+                              let allMembersSelected = filteredData[
+                                departmentName
+                              ][teamName].every((person) =>
+                                newChatChosenUsers?.includes(person)
+                              );
+                              setNewChatChosenUsers((prevUsers) => {
+                                if (prevUsers) {
+                                  return allMembersSelected
+                                    ? prevUsers.filter(
+                                        (user) =>
+                                          !filteredData[departmentName][
+                                            teamName
+                                          ].includes(user)
+                                      )
+                                    : [
+                                        ...prevUsers,
+                                        ...filteredData[departmentName][
+                                          teamName
+                                        ].filter(
+                                          (person) =>
+                                            !prevUsers.includes(person)
+                                        ),
+                                      ];
+                                } else {
+                                  return filteredData[departmentName][teamName];
+                                }
+                              });
+                            }}
+                          />
+                          <div className="TeamName">{teamName}</div>
+                        </div>
+                      )}
+                      {filteredData[departmentName][teamName].map((person) => (
+                        <div className="PersonCon" key={person.userId}>
+                          <img
+                            src={
+                              isWholeMemberChecked ||
+                              newChatChosenUsers?.includes(person)
+                                ? CheckBox_Active
+                                : CheckBox
+                            }
+                            className="PersonCheckBox"
+                            alt="PersonCheckBox"
+                            onClick={() =>
+                              setNewChatChosenUsers((prevUsers) =>
+                                prevUsers
+                                  ? prevUsers.includes(person)
+                                    ? prevUsers.filter(
+                                        (user) => user !== person
+                                      )
+                                    : [...prevUsers, person]
+                                  : [person]
+                              )
+                            }
+                          />
+                          <img
+                            src={
+                              person.attachment
+                                ? person.attachment
+                                : UserIcon_dark
+                            }
+                            className="ProfileIcon"
+                            alt="usericondark"
+                          />
+                          <div className="PersonName">
+                            {person.team} {person.username}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div className="RightSelectedCon">
+              <div className="RightTopText">
+                선택인원{" "}
+                <span>
+                  ({newChatChosenUsers === null ? 0 : newChatChosenUsers.length}
+                  명)
+                </span>
               </div>
 
-              <div className="PersonCon">
-                <img
-                  src={CheckBox}
-                  className="PersonCheckBox"
-                  alt="PersonCheckBox"
-                />
-                <img
-                  src={UserIcon_dark}
-                  className="ProfileIcon"
-                  alt="usericondark"
-                />
-                <div className="PersonName">개발 1팀 테스트</div>
-              </div>
+              <div className="ChosenPeople">
+                {newChatChosenUsers?.map((person) => (
+                  <div className="ChosenOne" key={person.userId}>
+                    <img
+                      src={XIcon}
+                      onClick={() =>
+                        setNewChatChosenUsers((prevUsers) =>
+                          prevUsers !== null
+                            ? prevUsers.filter((user) => user !== person)
+                            : []
+                        )
+                      }
+                    />
 
-              <div className="Team-Tab">
-                <img
-                  src={CheckBox}
-                  className="TeamCheckBox"
-                  alt="TeamCheckBox"
-                />
-                <div className="TeamName">기획팀</div>
+                    <div>
+                      {person.team} {person.username}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="RightSelectedCon">사이트명</div>
           </div>
         </div>
       </CustomModal>

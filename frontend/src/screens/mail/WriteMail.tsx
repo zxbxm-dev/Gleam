@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   White_Arrow,
@@ -7,6 +7,8 @@ import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
 import { isNull } from "mathjs";
@@ -24,6 +26,34 @@ const WriteMail = () => {
   const [inputReferrerValue, setInputReferrerValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [isClicked, setIsClicked] = useState(false);
+
+  const reservationRef = useRef<HTMLDivElement>(null);
+  const timeRef = useRef<HTMLDivElement>(null);
+  const minuteRef = useRef<HTMLDivElement>(null);
+  const [isReservationOpen, setIsReservationOpen] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const year = startDate ? startDate.getFullYear() : null;
+  const month = startDate ? startDate.getMonth() + 1 : null;
+  const date = startDate ? startDate.getDate() : null;
+  const [timeDropdownOpen, setTimeDropdownOpen] = useState(false);
+  const [selectedTime, setSelectedTime] = useState('');
+  const [minuteDropdownOpen, setMinuteDropdownOpen] = useState(false);
+  const [selectedMinute, setSelectedMinute] = useState('');
+  const generateTimeOptions = () => {
+    const timeOptions = [];
+    for (let hour = 0; hour <= 24; hour++) {
+      if (hour === 24) {
+        timeOptions.push('24시');
+      } else {
+        timeOptions.push(`${hour.toString().padStart(2, '0')}시`);
+      }
+    }
+    return timeOptions;
+  };
+  
+  const timeOptions = generateTimeOptions();
+  const minuteOptions = ['00분', '30분'];
+
 
   const fetchUser = async () => {
     try {
@@ -47,13 +77,16 @@ const WriteMail = () => {
     setMenuIsOpen(!menuIsOpen);
   };
 
+  const toggleReservation = () => {
+    setIsReservationOpen(!isReservationOpen);
+  }
+
   const handleOptionSelect = (option: string) => {
     setSelectedMenuOption(option);
     setMenuIsOpen(false);
 
     if (option === '전체 메일') {
       if (isNull(recipients) || isNull(referrers) || isNull(mailTitle)) {
-        console.log('뭐가 있음')
         window.alert('작성된 사항은 저장되지 않습니다.');
         navigate('/mail');
       } else {
@@ -158,14 +191,102 @@ const WriteMail = () => {
     setIsClicked(!isClicked);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (reservationRef.current && !reservationRef.current.contains(event.target as Node)) {
+        setIsReservationOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [reservationRef]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (timeRef.current && !timeRef.current.contains(event.target as Node)) {
+        setTimeDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [timeRef]);
+
   return(
     <div className="content">
       <div className="write_mail_container">
         <div className="write_mail_header">
           <div className="mail_header_left">
             <button className="send_button">보내기</button>
-            <button className="basic_button">임시 저장</button>
-            <button className="basic_button">발송 예약</button>
+            <button className="basic_button" onClick={() => navigate('/mail')}>임시 저장</button>
+            <button className="basic_button" onClick={toggleReservation}>
+              발송 예약
+              {year && <span> &nbsp;&nbsp;&nbsp; {year}.</span>}
+              {month && <span> {month}.</span>}
+              {date && <span> {date}</span>}
+              {selectedTime && <span> &nbsp; {selectedTime?.slice(0,2)} : </span>}
+              {selectedMinute && <span> {selectedMinute?.slice(0,2)} </span>}
+              
+              {isReservationOpen && (
+                <div className="mail_reservation_container" onClick={(e) => e.stopPropagation()} ref={reservationRef}>
+                  <div className="mail_reservation_title">예약 시간</div>
+                  <div className="mail_reservation_content">
+                    <div className="mail_reservation_content_date">
+                      <DatePicker
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        selectsStart
+                        startDate={startDate}
+                        placeholderText={new Date().toLocaleDateString('ko-KR')}
+                        dateFormat="yyyy.MM.dd"
+                        className="datepicker"
+                        popperPlacement="top"
+                      />
+                    </div>
+                    <div className="mail_reservation_content_time" onClick={() => setTimeDropdownOpen(!timeDropdownOpen)} ref={timeRef}>
+                      {selectedTime || '00시'}
+                      <img src={White_Arrow} alt="White_Arrow" />
+                      {timeDropdownOpen && (
+                        <ul className="time_dropdown">
+                          {timeOptions.map(option => (
+                            <li key={option} onClick={() => {
+                              setSelectedTime(option);
+                              setTimeDropdownOpen(false);
+                            }}>
+                              {option}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                    <div className="mail_reservation_content_time" onClick={() => setMinuteDropdownOpen(!minuteDropdownOpen)} ref={minuteRef}>
+                      {selectedMinute || '00분'}
+                      <img src={White_Arrow} alt="White_Arrow" />
+                      {minuteDropdownOpen && (
+                        <ul className="time_dropdown">
+                          {minuteOptions.map(option => (
+                            <li key={option} onClick={() => {
+                              setSelectedMinute(option);
+                              setMinuteDropdownOpen(false);
+                            }}>
+                              {option}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mail_reservation_footer">입력된 시간으로 메일 발송되니, 정확히 확인 부탁드립니다.</div>
+                </div>
+              )}
+            </button>
+            
           </div>
 
           <div className="mail_header_right">

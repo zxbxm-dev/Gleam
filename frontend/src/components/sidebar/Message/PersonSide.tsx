@@ -8,6 +8,18 @@ import {
   MenuArrow_right,
   NotiIcon,
 } from "../../../assets/images/index";
+import {
+  Popover,
+  PopoverTrigger,
+  Portal,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+} from "@chakra-ui/react";
 
 interface PersonDataTabProps {
   personData: Person[] | null;
@@ -83,7 +95,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
           setIsNotibarActive(true);
         }}
       >
-        <img className="My-attach" src={NotiIcon} alt="my-attach" />
+        <img className="Noti-Icon" src={NotiIcon} alt="my-attach" />
         <div>통합 알림</div>
       </li>
       <li
@@ -106,49 +118,60 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
       {personData
         .filter((person) => !person.department)
         .map((person) => (
-          <li
-            className={`No-dept ${
-              selectedUserId === person.userId ? "selected" : ""
-            }`}
-            key={person.userId}
-            onClick={() => {
-              onPersonClick(
-                person.username,
-                person.team,
-                person.department,
-                person.position
-              );
-              setSelectedUserId(person.userId);
-              setIsNotibarActive(false);
-            }}
-          >
-            <div className="No-Left">
-              <img
-                src={person.attachment ? person.attachment : UserIcon_dark}
-                alt={`${person.username}`}
-              />
-              {person.username}
-            </div>
-            <img
-              className="Message-Menu"
-              src={MessageMenu}
-              alt="message-menu"
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveMenuUserId((prev) =>
-                  prev === person.userId ? null : person.userId
-                );
-              }}
-            />
-            <div
-              ref={menuRef}
-              className={`Message-OnClick-Menu ${
-                activeMenuUserId === person.userId ? "active" : ""
+          <Popover placement="right">
+            <li
+              className={`No-dept ${
+                selectedUserId === person.userId ? "selected" : ""
               }`}
+              key={person.userId}
+              onClick={() => {
+                onPersonClick(
+                  person.username,
+                  person.team,
+                  person.department,
+                  person.position
+                );
+                setSelectedUserId(person.userId);
+                setIsNotibarActive(false);
+              }}
             >
-              대화 나가기
-            </div>
-          </li>
+              <div className="No-Left">
+                <img
+                  src={person.attachment ? person.attachment : UserIcon_dark}
+                  alt={`${person.username}`}
+                />
+                {person.username}
+              </div>
+              <PopoverTrigger>
+                <img
+                  className="Message-Menu"
+                  src={MessageMenu}
+                  alt="message-menu"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveMenuUserId((prev) =>
+                      prev === person.userId ? null : person.userId
+                    );
+                  }}
+                />
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent
+                  className="PersonSide_popover"
+                  _focus={{ boxShadow: "none" }}
+                >
+                  <div
+                    ref={menuRef}
+                    className={`Message-OnClick-Menu ${
+                      activeMenuUserId === person.userId ? "active" : ""
+                    }`}
+                  >
+                    대화 나가기
+                  </div>
+                </PopoverContent>
+              </Portal>
+            </li>
+          </Popover>
         ))}
       {Object.keys(departmentTeams).map((department) => (
         <li className="DeptTeams" key={department}>

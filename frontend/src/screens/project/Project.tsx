@@ -378,10 +378,6 @@ const Project = () => {
     setDropdownPosition({ x: event.pageX, y: event.pageY });
   };
 
-  const handleSubRightClick = (project: ProjectData, event: any) => {
-    event.preventDefault();
-  };
-
   const handleOpenSubProject = (subProject: any) => {
     setClickedProjects(subProject);
   };
@@ -517,20 +513,26 @@ const Project = () => {
       
       // pinned 값을 기준으로 정렬 (pinned가 true인 항목을 앞으로)
       const sortedMainProjects = mainprojects.sort((a: ProjectData, b: ProjectData) => {
-        return b.pinned - a.pinned;
+        if (a.pinned && !b.pinned) {
+          return -1;
+        } else if (!a.pinned && b.pinned) {
+          return 1;
+        } else {
+          return b.mainprojectIndex - a.mainprojectIndex;
+        }
       });
 
       if (selectedstateOption === '전체') {
-        setProjects(sortedMainProjects.reverse());
+        setProjects(sortedMainProjects);
       } else if (selectedstateOption === '진행 예정') {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'notstarted');
-        setProjects(filteredProjects.reverse());
+        setProjects(filteredProjects);
       } else if (selectedstateOption === '진행 중'){
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'inprogress');
-        setProjects(filteredProjects.reverse());
+        setProjects(filteredProjects);
       } else {
         const filteredProjects = sortedMainProjects.filter((project: ProjectData) => project.status === 'done');
-        setProjects(filteredProjects.reverse());
+        setProjects(filteredProjects);
       }
 
       setSubProjects(mainprojects);
@@ -543,6 +545,17 @@ const Project = () => {
   
   // 메인 프로젝트 추가
   const handleAddMainProject = async () => {
+    const currentDate = new Date();
+    
+    let status;
+    if (startDate === null) {
+      status = 'notstarted';
+    } else if (startDate > currentDate) {
+      status = 'notstarted';
+    } else {
+      status = 'inprogress';
+    }
+
     const pjtDetails = {
       userID: user.userID,
       projectName: pjtTitle,
@@ -552,6 +565,7 @@ const Project = () => {
       startDate: startDate,
       endDate: endDate,
       memo: pjtMemo,
+      status : status,
     };
 
     try {
@@ -570,6 +584,17 @@ const Project = () => {
 
   // 서브 프로젝트 추가
   const handleAddSubProject = async (mainprojectindex: any) => {
+    const currentDate = new Date();
+    
+    let status;
+    if (startDate === null) {
+      status = 'notstarted';
+    } else if (startDate > currentDate) {
+      status = 'notstarted';
+    } else {
+      status = 'inprogress';
+    }
+
     const pjtDetails = {
       userID: user.userID,
       projectName: pjtTitle,
@@ -579,6 +604,7 @@ const Project = () => {
       startDate: startDate,
       endDate: endDate,
       memo: pjtMemo,
+      status : status,
     };
 
     try {
@@ -844,22 +870,31 @@ const Project = () => {
                                 {project.projectName}
                                 {dropdownOpen && (
                                   <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                                    <div className="dropdown_pin" 
+                                    {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                                      <div className="dropdown_pin"
                                         onClick={(e) => {
-                                          e.stopPropagation(); 
+                                          e.stopPropagation();
                                           setEditPjtModalOpen(true);
-                                          setpjtStatus(rightclickedProjects?.status === 'notstarted' ? '진행 예정' : rightclickedProjects?.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정')
+                                          setpjtStatus(
+                                            rightclickedProjects?.status === 'notstarted' ? '진행 예정' :
+                                            rightclickedProjects?.status === 'inprogress' ? '진행 중' :
+                                            rightclickedProjects?.status === 'completed' ? '진행 완료' :
+                                            '진행 예정'
+                                          );
                                           setPjtTitle(rightclickedProjects?.projectName || ''); 
                                           setTeamLeader(rightclickedProjects?.Leader || '');
                                           setAllMembers(rightclickedProjects?.members || []);
                                           setAllReferrers(rightclickedProjects?.referrer || []);
                                           setStartDate(rightclickedProjects?.startDate || null);
                                           setEndDate(rightclickedProjects?.endDate || null);
-                                    }
-                                    }>
-                                      편집
+                                        }}
+                                      >
+                                        편집
+                                      </div>
+                                    )}
+                                    <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>
+                                      추가
                                     </div>
-                                    <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>추가</div>
                                   </div>
                                 )}
                               </div>
@@ -870,7 +905,7 @@ const Project = () => {
                           </tr>
                           {subprojectVisible[project.mainprojectIndex] && project.subProjects && (
                             project.subProjects?.slice().reverse().map((subProject: any, subindex: any) => (
-                              <tr key={subProject.mainprojectIndex} className="board_content subproject" onContextMenu={(e) => handleSubRightClick(subProject, e)}>
+                              <tr key={subProject.mainprojectIndex} className="board_content subproject">
                                 <td>
                                   <label className="custom-checkbox">
                                     <input type="checkbox" id="check1"/>
@@ -879,7 +914,7 @@ const Project = () => {
                                 </td>
                                 <td>{projects.length - (index) + '-' + (project.subProjects.length - subindex)}</td>
                                 <td className={subProject.status === 'notstarted' ? 'text_medium' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{subProject.status === 'notstarted' ? '진행 예정' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
-                                <td className="text_left_half text_cursor" onClick={() => { handleOpenSubProject(subProject);}}>
+                                <td className="text_left_half text_cursor" onClick={() => { handleOpenSubProject(subProject); }}>
                                   <div className="dropdown">
                                     {subProject.projectName}
                                   </div>
@@ -1133,6 +1168,8 @@ const Project = () => {
       >
         <div className="body-container">
           <div className="body_container_content">
+          </div>
+          <div className="body_container_content">
             <div className="body_container_content_title">프로젝트 명</div>
             <input type="text" value={pjtTitle} onChange={(e) => setPjtTitle(e.target.value)}/>
           </div>
@@ -1380,14 +1417,14 @@ const Project = () => {
       
       <CustomModal
         isOpen={isViewSubPjtModalOpen}
-        onClose={() => { setViewSubPjtModalOpen(false); resetForm(); }}
+        onClose={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null);}}
         header={rightclickedProjects?.projectName}
         footer1={'편집'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false);}}
+        onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false); setClickedProjects(null);}}
         footer2={'삭제'}
         footer2Class="red-btn"
-        onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
+        onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
         width="500px"
         height="auto"
       >

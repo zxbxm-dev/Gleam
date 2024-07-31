@@ -5,6 +5,9 @@ import {
   MailIcon,
   WorkReportIcon,
   ScheduleIcon,
+  UserManagementIcon,
+  XIcon,
+  GearIcon,
 } from "../../assets/images/index";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
@@ -76,14 +79,25 @@ const Message = () => {
   return (
     <div className="Message-contents">
       <div className="Message-header">
-        <span>
-          {selectedPerson.team
-            ? selectedPerson.team
-            : selectedPerson.department}{" "}
-          {selectedPerson.username}
-        </span>
-        {selectedPerson.position && <img src={HrLine} alt="Horizontal Line" />}
-        <span>{selectedPerson.position}</span>
+        <div>
+          <span>
+            {selectedPerson.team
+              ? selectedPerson.team
+              : selectedPerson.department}{" "}
+            {selectedPerson.username}
+          </span>
+          {selectedPerson.position && (
+            <img src={HrLine} alt="Horizontal Line" />
+          )}
+          <span>{selectedPerson.position}</span>
+        </div>
+        {selectedPerson && (
+          <img
+            src={UserManagementIcon}
+            className="UserManagementIcon"
+            alt="UserManagementIcon"
+          />
+        )}
       </div>
       <div className="Message-container">
         {selectedPerson.username !== "통합 알림" &&
@@ -136,6 +150,23 @@ const Message = () => {
             <div className="send-btn" onClick={handleSendMessage}>
               전송
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 인원관리 */}
+      <div className="PeopleManagementCon">
+        <div className="Management-header">
+          <span>인원 관리</span> <img src={XIcon} alt="XIcon" />
+        </div>
+        <div className="AddPerson-tab">+ 인원 추가하기</div>
+        <div className="ChatRoom-Members">
+          <div className="OneMember">
+            <div className="AttachWithName">
+              <img src={UserIcon_dark} alt="UserIcon_dark" />
+              <span>개발 1팀 장현지</span>
+            </div>
+            <img src={GearIcon} alt="GearIcon" />
           </div>
         </div>
       </div>
