@@ -637,7 +637,7 @@ const Project = () => {
   };
 
   // 메인 프로젝트 수정
-  const handleEditProject = (mainprojectIndex: any) => {
+  const handleEditProject = (mainprojectIndex: any, force = false) => {
     let projectStatus;
 
     if (pjtStatus === '진행 예정') {
@@ -660,7 +660,7 @@ const Project = () => {
       endDate: endDate,
       memo: pjtMemo,
       status: projectStatus,
-      force: false,
+      force: force,
     }
 
     EditMainProject(mainprojectIndex, pjtData)
@@ -671,6 +671,14 @@ const Project = () => {
     })
     .catch((error) => {
       console.log('메인 프로젝트 수정 실패', error);
+      if (error.response) {
+        const { status } = error.response;
+        switch (status ) {
+          case 420:
+            setEditForceMessage(true);
+            break;
+        }
+      }
     })
   };
 
@@ -1289,7 +1297,7 @@ const Project = () => {
         header={rightclickedProjects?.projectName}
         footer1={'편집'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditPjtModalOpen(false); resetForm(); handleEditProject(rightclickedProjects?.mainprojectIndex || 0)}}
+        onFooter1Click={() => { setEditPjtModalOpen(false); handleEditProject(rightclickedProjects?.mainprojectIndex || 0)}}
         footer2={'삭제'}
         footer2Class="red-btn"
         onFooter2Click={() => { setEditPjtModalOpen(false); resetForm(); hanelDeleteMainPjt(rightclickedProjects?.mainprojectIndex || 0)}}
@@ -1736,7 +1744,10 @@ const Project = () => {
         header={'알림'}
         footer1={'예'}
         footer1Class="gray-btn"
-        onFooter1Click={() => setEditForceMessage(false)}
+        onFooter1Click={() => {
+          handleEditProject(rightclickedProjects?.mainprojectIndex, true); 
+          setEditForceMessage(false); 
+        }}
         footer2={'아니오'}
         footer2Class="red-btn"
         onFooter2Click={() => setEditForceMessage(false)}
