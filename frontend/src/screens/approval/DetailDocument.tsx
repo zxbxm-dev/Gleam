@@ -8,7 +8,8 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { CheckReport, DeleteReport } from '../../services/approval/ApprovalServices';
 import { PersonData } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -33,6 +34,7 @@ interface Person {
 const DetailDocument = () => {
   let navigate = useNavigate();
   let location = useLocation();
+  const user = useRecoilValue(userState);
   const [file, setFile] = useState<PDFFile>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [memoState, setMemoState] = useState<string>('');
@@ -49,6 +51,8 @@ const DetailDocument = () => {
   const completedapproveLine = documentInfo[0].completed?.split(',').map((item:any) => item.trim()) ?? []; // 결재가 모두 완료 됐을 시 결재라인
   const rejectapproveLine = documentInfo[0].rejected?.split(',').map((item:any) => item.trim()) ?? []; // 반려됐을 때 결재라인
   const approveDates = documentInfo[0]?.approveDate?.split(',').map((item:any) => item.trim()) ?? [];
+  const referLine = documentInfo[0].referName?.split(',').map((item:any) => item.trim()) ?? [];
+  const shouldHideDeleteButton = approveLine.length > 0 || referLine.includes(user.username);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -216,7 +220,9 @@ const DetailDocument = () => {
       <div className='oper_header_right'>
         <button className='primary_button' onClick={() => navigate(-1)}>확인</button>
         <button className='white_button' onClick={exportToPDF}>다운로드</button>
-        <button className='red_button' onClick={() => setDeleteEventModalOPen(true)}>삭제</button>
+        {!shouldHideDeleteButton && (
+          <button className='red_button' onClick={() => setDeleteEventModalOPen(true)}>삭제</button>
+        )}
       </div>
 
       <div className="content_container">
