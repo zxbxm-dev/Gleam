@@ -39,6 +39,8 @@ export { default as DepartmentTabIcon } from "./Modal/DepartmentTabIcon.svg";
 export { default as Logo } from "./header/MainLogo.svg";
 export { default as SideMenu } from "./header/SideMenu.svg";
 export { default as UserIcon } from "./header/UserIcon.svg";
+export { default as MessageIcon } from "./header/MessageIcon.svg";
+export { default as MessageHeaderLogo } from "./header/MessageHeaderLogo.svg";
 
 // sidebar
 export { default as MenuArrow_down } from "./sidebar/MenuArrow_down.svg";

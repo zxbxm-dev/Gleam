@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
-import { Header, MessageSidebar } from "../components";
+import { MessageHeader, MessageSidebar } from "../components";
 
 const ChatLayout = () => {
 
     return (
         <main className="page-wrapper">
-            <Header />
+            <MessageHeader />
 
             <div className="content-wrapper" style={{ display: 'flex' }}>
                 <MessageSidebar />

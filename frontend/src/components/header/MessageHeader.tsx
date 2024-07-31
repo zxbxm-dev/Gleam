@@ -1,10 +1,9 @@
 import "./Header.scss";
 import { useNavigate, Link } from "react-router-dom";
 import {
-  Logo,
+  MessageHeaderLogo,
   UserIcon_dark,
   SettingIcon,
-  MessageIcon,
 } from "../../assets/images/index";
 import {
   Popover,
@@ -22,7 +21,7 @@ import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { LogoutServices } from "../../services/login/LoginService";
 
-const Header = () => {
+const MessageHeader = () => {
   let navigate = useNavigate();
   const user = useRecoilValue(userState);
   const resetUserState = useResetRecoilState(userState);
@@ -45,14 +44,11 @@ const Header = () => {
     <div className="header">
       <div className="header-left">
         <Link to="/">
-          <img src={Logo} alt="Logo" />
+          <img src={MessageHeaderLogo} alt="MessageHeaderLogo" />
         </Link>
       </div>
 
       <div className="header-right">
-        <div className="MessageTab" onClick={() => window.open('http://localhost:3000/message', '_blank')}>
-          <img src={MessageIcon} alt="MessageIcon" />
-        </div>
         <div className="UserTab">
           <Popover>
             <PopoverTrigger>
@@ -114,4 +110,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default MessageHeader;
