@@ -129,7 +129,10 @@ const Message = () => {
                 </div>
                 <div className="MsgTimeBox">
                   <div className="MsgBox">{message}</div>
-                  <div className="MsgTime">오후 4:30</div>
+                  <div className="MsgTime">
+                    <div className="ViewCount">1</div>
+                    오후 4:30
+                  </div>
                 </div>
               </div>
             </div>
