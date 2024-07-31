@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   FileUploadIcon,
   UserIcon_dark,
-  CloseIcon,
+  NewCloseIcon,
   SelectArrow,
   Approval_Plus,
   Approval_Plus_green,
@@ -155,7 +155,7 @@ const WriteReport = () => {
     ['김경현', '블록체인 연구실', 'API 개발팀', '연구원'],
   ]
 
-  const allmembers : Member[] = [
+  const allmembers: Member[] = [
     ['이정훈', '포체인스 주식회사', '', '대표이사'],
     ['안후상', '포체인스 주식회사', '', '이사'],
     ['이정열', '관리부', '', '부서장'],
@@ -201,28 +201,28 @@ const WriteReport = () => {
     ? members.find(member => member[0] === '진유빈') || null
     : (user.department === '관리부')
       ? null
-        : (user.department === '마케팅부')
-          ? members.find(member => member[0] === '김현지') || null
-          : (user.department === '')
-            ? null
-            : null;
+      : (user.department === '마케팅부')
+        ? members.find(member => member[0] === '김현지') || null
+        : (user.department === '')
+          ? null
+          : null;
 
 
   const teamLeader = (user.team === '개발 1팀')
     ? members.find(member => member[0] === '장현지') || null
     : (user.team === '개발 2팀')
       ? members.find(member => member[0] === '변도일') || null
-        : (user.team === '기획팀')
-          ? members.find(member => member[0] === '전아름') || null
-          : (user.team === '관리팀')
-            ? members.find(member => member[0] === '김효은') || null
-            : (user.team === '지원팀')
-              ? members.find(member => member[0] === '김태희') || null
-              : (user.team === '디자인팀')
+      : (user.team === '기획팀')
+        ? members.find(member => member[0] === '전아름') || null
+        : (user.team === '관리팀')
+          ? members.find(member => member[0] === '김효은') || null
+          : (user.team === '지원팀')
+            ? members.find(member => member[0] === '김태희') || null
+            : (user.team === '디자인팀')
+              ? null
+              : (user.team === '')
                 ? null
-                : (user.team === '')
-                  ? null
-                  : null;
+                : null;
 
 
   const writer = members.find(member => member[0] === user.username) || null
@@ -709,13 +709,22 @@ const WriteReport = () => {
                             </div>
                           ))}
                           {approvalLines.length <= 6 ? (
-                            <img src={isHovered ? Approval_Plus_green : Approval_Plus}
-                              alt="Approval_Plus"
+                            // <img src={isHovered ? Approval_Plus_green : Approval_Plus}
+                            //   alt="Approval_Plus"
+                            //   onClick={addApprovalLine}
+                            //   style={{ cursor: 'pointer' }}
+                            //   onMouseEnter={() => setIsHovered(true)}
+                            //   onMouseLeave={() => setIsHovered(false)}
+                            // />
+                            <div
                               onClick={addApprovalLine}
                               style={{ cursor: 'pointer' }}
                               onMouseEnter={() => setIsHovered(true)}
                               onMouseLeave={() => setIsHovered(false)}
-                            />
+                              className='PlusDivs'
+                            >
+                              <img src={Approval_Plus} />
+                            </div>
                           ) : (
                             <></>
 
@@ -747,10 +756,11 @@ const WriteReport = () => {
                                   <div className='approvals_contents'>
                                     {line.selectedMembers.map((member, index) => (
                                       <div key={index} className='approval_small_name'>
+                                        <div className='NameFlex'>
                                         <div className='name_text'>{member[0]}</div>
-                                        {/* <div className='name_border'></div> */}
                                         <div className='position_text'>{member[3]}</div>
-                                        <img src={CloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
+                                        </div>
+                                        <img src={NewCloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
                                       </div>
                                     ))}
                                   </div>

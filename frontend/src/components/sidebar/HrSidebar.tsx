@@ -2,7 +2,7 @@ import "./Sidebar.scss";
 import React, { useState } from "react";
 import {
   MenuArrow_down,
-  UserIcon_dark,
+  MenuArrow_Up,
 } from "../../assets/images/index";
 
 type Member = [string, string, string, string]; // 멤버 배열의 타입
@@ -11,8 +11,6 @@ interface Props {
   members: Member[]; // members prop의 타입
   onClickMember: (name: string, dept: string, team: string, position: string) => void;
 }
-
-
 
 const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
   const [expandedTeams, setExpandedTeams] = useState<string[]>([]); // 확장된 팀의 배열
@@ -44,23 +42,21 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
       <div className="hrsidebar">
         {Object.entries(departments).map(([dept, teams]) => (
           <div key={dept} className="department">
-            <span className="department_name">{dept}</span>
+            <div className="department_name">{dept}</div>
             
             {Object.entries(teams).map(([team, members]) => (
               <div key={team}>
                 {team ? ( // 팀 이름이 비어있지 않은 경우
                   <div style={{ cursor: "pointer" }} onClick={() => toggleTeam(team)} className="team">
-                    <img src={MenuArrow_down} alt="MenuArrow" />
                     {team}
+                    <img src={expandedTeams.includes(team) ? MenuArrow_Up : MenuArrow_down} alt="Arrow" />
                   </div>
                 ) : ( // 팀 이름이 비어있는 경우
                   <div className="team-placeholder">
                     <ul>
                       {members.map(({ name, position }, index) => (
                         <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
-                          {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/> */}
                           <span className="name_text">{name}</span>
-                          {/* <div className="name_border"></div> */}
                           <span className="position_text">{position}</span>
                         </li>
                       ))}
@@ -71,9 +67,7 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                   <ul>
                     {members.map(({ name, position }, index) => (
                       <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
-                        {/* <img src={UserIcon_dark} alt="UserIcon_dark" className="name_img"/> */}
                         <span className="name_text">{name}</span>
-                        {/* <div className="name_border"></div> */}
                         <span className="position_text">{position}</span>
                       </li>
                     ))}
@@ -86,7 +80,6 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
       </div>
     );
   };
-  
 
   // 팀의 확장 여부를 토글하는 함수
   const toggleTeam = (team: string) => {
@@ -103,7 +96,6 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
     // 클릭된 멤버의 정보를 부모 컴포넌트로 전달
     onClickMember(name, dept, team, position);
   };
-  
 
   return (
     <div>
