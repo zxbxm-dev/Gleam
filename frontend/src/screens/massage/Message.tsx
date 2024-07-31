@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   HrLine,
   UserIcon_dark,
@@ -8,6 +8,7 @@ import {
   UserManagementIcon,
   XIcon,
   GearIcon,
+  MessageMenu,
 } from "../../assets/images/index";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
@@ -57,6 +58,8 @@ const Message = () => {
 
   const [messageInput, setMessageInput] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
+  const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
+    useState<boolean>(false);
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
 
@@ -96,6 +99,9 @@ const Message = () => {
             src={UserManagementIcon}
             className="UserManagementIcon"
             alt="UserManagementIcon"
+            onClick={() =>
+              setChatRoomPeopleManagement(!chatRoomPeopleManagement)
+            }
           />
         )}
       </div>
@@ -155,9 +161,18 @@ const Message = () => {
       </div>
 
       {/* 인원관리 */}
-      <div className="PeopleManagementCon">
+      <div
+        className={`PeopleManagementCon ${
+          chatRoomPeopleManagement ? "" : "Hidden"
+        }`}
+      >
         <div className="Management-header">
-          <span>인원 관리</span> <img src={XIcon} alt="XIcon" />
+          <span>인원 관리</span>{" "}
+          <img
+            src={XIcon}
+            alt="XIcon"
+            onClick={() => setChatRoomPeopleManagement(false)}
+          />
         </div>
         <div className="AddPerson-tab">+ 인원 추가하기</div>
         <div className="ChatRoom-Members">
@@ -166,7 +181,7 @@ const Message = () => {
               <img src={UserIcon_dark} alt="UserIcon_dark" />
               <span>개발 1팀 장현지</span>
             </div>
-            <img src={GearIcon} alt="GearIcon" />
+            <img src={MessageMenu} alt="MenuIcon" className="OptionIcon" />
           </div>
         </div>
       </div>

@@ -69,6 +69,7 @@
             }
 
             .mail_reservation_content_time {
+              position: relative;
               display: flex;
               align-items: center;
               justify-content: center;
@@ -85,6 +86,29 @@
                 height: 15px;
                 filter: invert(20%) sepia(0%) saturate(1007%) hue-rotate(164deg) brightness(88%) contrast(86%);
                 transform: rotate(180deg);
+              }
+              .time_dropdown {
+                @include custom-scrollbar;
+                z-index: 99;
+                position: absolute;
+                top: 36px;
+                width: 80px;
+                height: auto;
+                max-height: 200px;
+                overflow-y: auto;
+                border: 1px solid #D8D8D8;
+                background-color: #FFFFFF;
+                
+
+                li {
+                  padding: 5px 10px;
+                  text-align: left;
+                  font-size: 12px;
+
+                  &:hover {
+                    background-color: #F1F1F1;
+                  }
+                }
               }
             }
           }
