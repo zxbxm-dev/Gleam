@@ -202,7 +202,14 @@
       .AttachWithName {
         display: flex;
         flex-direction: row;
-        gap: 10px;
+
+        .AttachIcon {
+          margin-right: 10px;
+        }
+
+        .AdminIcon {
+          margin-left: 5px;
+        }
       }
 
       .OptionIcon {
