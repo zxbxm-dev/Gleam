@@ -9,7 +9,20 @@ import {
   XIcon,
   GearIcon,
   MessageMenu,
+  AdminIcon,
 } from "../../assets/images/index";
+import {
+  Popover,
+  PopoverTrigger,
+  Portal,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+} from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
 
@@ -176,13 +189,30 @@ const Message = () => {
         </div>
         <div className="AddPerson-tab">+ 인원 추가하기</div>
         <div className="ChatRoom-Members">
-          <div className="OneMember">
-            <div className="AttachWithName">
-              <img src={UserIcon_dark} alt="UserIcon_dark" />
-              <span>개발 1팀 장현지</span>
+          <Popover placement="left-start">
+            <div className="OneMember">
+              <div className="AttachWithName">
+                <img
+                  src={UserIcon_dark}
+                  alt="UserIcon_dark"
+                  className="AttachIcon"
+                />
+                <span>개발 1팀 장현지</span>
+                <img src={AdminIcon} alt="Admin_Icon" className="AdminIcon" />
+              </div>
+              <PopoverTrigger>
+                <img src={MessageMenu} alt="MenuIcon" className="OptionIcon" />
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent
+                  className="PersonSide_popover PopPerson"
+                  _focus={{ boxShadow: "none" }}
+                >
+                  <div className="PopPerson">내보내기</div>
+                </PopoverContent>
+              </Portal>
             </div>
-            <img src={MessageMenu} alt="MenuIcon" className="OptionIcon" />
-          </div>
+          </Popover>
         </div>
       </div>
     </div>
