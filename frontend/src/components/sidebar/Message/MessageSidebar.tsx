@@ -27,6 +27,7 @@ export interface Person {
   usermail?: string;
   entering: Date;
   attachment: string;
+  company: string;
 }
 
 interface User {
