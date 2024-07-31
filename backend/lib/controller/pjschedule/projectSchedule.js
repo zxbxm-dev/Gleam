@@ -218,21 +218,21 @@ const addProject = async (req, res) => {
             where: { mainprojectIndex },
         });
         for(const subPj of subprojects){
-            const subEndDate = subPj.endDate.toISOString().split('T')[0];
-            const subStartDate = subPj.startDate.toISOString().split('T')[0];
-
-            if(  force !== true && (
+            const subEndDate = subPj.endDate ? subPj.endDate.toISOString().split('T')[0] : null;
+            const subStartDate = subPj.startDate ? subPj.startDate.toISOString().split('T')[0] : null;
+            if(force == false){
+                return res.status(420).json({message:"메인 프로젝트와 서브 프로젝트의 일정이 일치하지 않습니다. 기간을 다시 확인해 주세요." })};
+        
+            if(( force == false && 
                 ( mainStartDate > subStartDate && mainEndDate > subEndDate)|| //mpj 시작이 spj보다 미래일때 , mpj 마감이 spj보다 미래일때
-                ( mainStartDate < subStartDate && mainEndDate < subEndDate)
-             )   //mpj 시작이 spj 보다 과거일떄 , mpj 마감이 spj보다 과거일때
+                ( mainStartDate < subStartDate && mainEndDate < subEndDate)   //mpj 시작이 spj 보다 과거일떄 , mpj 마감이 spj보다 과거일때
+             )
             ){
-                return res.status(420).json({message:"메인 프로젝트와 서브 프로젝트의 일정이 일치하지 않습니다. 기간을 다시 확인해 주세요." });
-               }else{
-                 subPj.startDate = null;
-                 subPj.endDate = null;
-                 await subPj.save();                 
-               };
-        };
+            subPj.startDate = null;
+            subPj.endDate = null;
+            await subPj.save();                 
+            }
+      };
 
         // 프로젝트 상태값 설정
         const oldMainStatus = mainPj.status;
