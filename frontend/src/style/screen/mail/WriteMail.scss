@@ -23,10 +23,19 @@
 
       .basic_button {
         @include report-button;
+        display: flex;
+        align-items: center;
         position: relative;
         background-color: #fff;
         color: #000;
         border: 1px solid var(--primary-color);
+
+        img {
+          width: 10px;
+          height: 10px;
+          filter: invert(62%) sepia(92%) saturate(388%) hue-rotate(73deg) brightness(90%) contrast(80%);
+          margin-left: 10px;
+        }
 
         .mail_reservation_container {
           z-index: 99;
@@ -69,6 +78,7 @@
             }
 
             .mail_reservation_content_time {
+              position: relative;
               display: flex;
               align-items: center;
               justify-content: center;
@@ -85,6 +95,29 @@
                 height: 15px;
                 filter: invert(20%) sepia(0%) saturate(1007%) hue-rotate(164deg) brightness(88%) contrast(86%);
                 transform: rotate(180deg);
+              }
+              .time_dropdown {
+                @include custom-scrollbar;
+                z-index: 99;
+                position: absolute;
+                top: 36px;
+                width: 80px;
+                height: auto;
+                max-height: 200px;
+                overflow-y: auto;
+                border: 1px solid #D8D8D8;
+                background-color: #FFFFFF;
+                
+
+                li {
+                  padding: 5px 10px;
+                  text-align: left;
+                  font-size: 12px;
+
+                  &:hover {
+                    background-color: #F1F1F1;
+                  }
+                }
               }
             }
           }

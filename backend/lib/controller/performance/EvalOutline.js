@@ -3,48 +3,47 @@ const evalOutline = models.evalOutline
 
 //인사평가 개요 파일 업로드
 const uploadEvalOutline = async (req, res) => {
-    try{
-        const { file, fileName } = req.file?{
+    try {
+        const { file, fileName } = req.file ? {
             file: req.file.path,
-            fileName: req.file.fileName,
+            fileName: req.file.filename,
         } : { file: null, fileName: null };
-        console.log("인사평가 개요 파일: ",file, fileName)
-    
-        const existOutline = await evalOutline.findOne({where:{file:file}});
-        let uploadOutline;
-        if(existOutline){
-            await existOutline.destroy();
-            console.log('기존 파일 삭제 성공');
-        }
-        uploadOutline = await evalOutline.create({ file, fileName })
-      
 
-        console.log(`인사평가 개요 업로드 성공: ${uploadOutline.fileName}`);
+        console.log("인사평가 개요 파일: ", file, fileName);
+
+        // 모든 기존 인사평가 개요 파일 삭제
+        await evalOutline.destroy({ where: {} });
+        console.log('기존 파일 모두 삭제 성공');
+
+        // 새 파일 저장
+        const uploadOutline = await evalOutline.create({ file, fileName });
+
         res.status(201).json({
-            message: "인사평가 개요파일 업로드가 완료되었습니다.",
+            message: "인사평가 개요 파일 업로드가 완료되었습니다.",
             file: file,
         });
-    }catch(error){
+    } catch (error) {
         console.error("인사평가 개요 파일 업로드 실패: ", error);
-        res.status(500).json({ error: "인사평가 개요파일 업로드에 실패했습니다." });
+        res.status(500).json({ error: "인사평가 개요 파일 업로드에 실패했습니다." });
     }
-    };
+};
 
-
+// 추후 파일 자체로 보낼 수 있도록 수정 부탁드립니다
 //인사평가 개요 파일 조회 --------------------------------------------------
 const getEvalOutline = async (req, res) => {
-    try{
-        
-        const outline = await evalOutline.findAll();
+    try {
+        // DB에서 하나의 인사평가 개요 파일만 조회
+        const outline = await evalOutline.findOne();
+
         if (!outline) {
-            return res.status(400).json({ error: "파일 이름이 제공되지 않았습니다" });
+            return res.status(404).json({ error: "인사평가 개요 파일이 없습니다." });
         }
-       
-        
+
+        // 단일 객체로 응답
         res.status(200).json(outline);
-    }catch(error){
-        console.error("인사평가 개요파일 조회 실패:", error);
-        res.status(500).json({error: "인사평가 개요파일이 서버에 존재하지 않습니다" });
+    } catch (error) {
+        console.error("인사평가 개요 파일 조회 실패:", error);
+        res.status(500).json({ error: "인사평가 개요 파일 조회에 실패했습니다." });
     }
 };
 

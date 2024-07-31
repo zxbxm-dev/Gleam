@@ -39,6 +39,8 @@ export { default as DepartmentTabIcon } from "./Modal/DepartmentTabIcon.svg";
 export { default as Logo } from "./header/MainLogo.svg";
 export { default as SideMenu } from "./header/SideMenu.svg";
 export { default as UserIcon } from "./header/UserIcon.svg";
+export { default as MessageIcon } from "./header/MessageIcon.svg";
+export { default as MessageHeaderLogo } from "./header/MessageHeaderLogo.svg";
 
 // sidebar
 export { default as MenuArrow_down } from "./sidebar/MenuArrow_down.svg";
@@ -46,6 +48,8 @@ export { default as MenuArrow_right } from "./sidebar/MenuArrow_right.svg";
 export { default as UserIcon_dark } from "./sidebar/UserIcon_dark.svg";
 export { default as SideUp } from "./sidebar/SideUp.svg";
 export { default as SideDown } from "./sidebar/SideDown.svg";
+export { default as MenuArrow_Up } from "./sidebar/MenuArrow_Up.svg";
+export { default as NewCloseIcon } from "./sidebar/NewCloseIcon.svg";
 
 // project
 export { default as Right_Arrow } from "./project/Right_Arrow.svg";
@@ -77,3 +81,5 @@ export { default as WorkReportIcon } from "./Message/Work ReportIcon.svg";
 export { default as ScheduleIcon } from "./Message/ScheduleIcon.svg";
 export { default as XIcon } from "./Message/XIcon.svg";
 export { default as UserManagementIcon } from "./Message/UserManagementIcon.svg";
+export { default as GearIcon } from "./Message/GearIcon.svg";
+export { default as AdminIcon } from "./Message/AdminIcon.svg";

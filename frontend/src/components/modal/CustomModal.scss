@@ -77,6 +77,11 @@
           gap: 5px !important;
         }
 
+        &.ProfileSetting {
+          gap: 5px !important;
+          justify-content: center;
+        }
+
         .AddTitle {
           display: flex;
 
@@ -426,11 +431,13 @@
           }
         }
 
-        .New-Chat-Room {
+        .New-Chat-Room,
+        .ProfileSetting {
           display: flex;
           flex-direction: row;
           width: 100%;
           font-family: var(--font-family-Noto-M);
+          padding-bottom: 0;
 
           .TextInputCon {
             width: 100%;
@@ -439,9 +446,14 @@
             border-radius: 5px;
             font-size: 14px;
             padding: 10px;
+            &.large {
+              height: 66px;
+              resize: none;
+            }
 
             &::placeholder {
               color: #c7c7c7;
+              font-size: 12px;
             }
 
             &:focus {
@@ -471,7 +483,9 @@
               height: 100%;
               &::placeholder {
                 color: #c7c7c7;
+                font-size: 12px;
               }
+
               &:focus {
                 outline: none;
               }
@@ -492,6 +506,48 @@
               margin: 0 5px 0 7px;
             }
           }
+
+          .ProfileAndPalette {
+            display: flex;
+            width: 210px;
+            justify-content: center;
+            flex-direction: row;
+            gap: 10px;
+            margin-bottom: 15px;
+
+            .Profile {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 24px;
+              color: #fff;
+              background-color: #ff8181;
+              border-radius: 50%;
+              height: 50px;
+              width: 50px;
+              border: 1px solid #dc5a31;
+              box-sizing: border-box;
+            }
+
+            .Palette {
+              width: 150px;
+              height: 50px;
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+
+              div {
+                box-sizing: border-box;
+                height: 100%;
+                width: 100%;
+                cursor: pointer;
+              }
+            }
+          }
+        }
+
+        .ProfileSetting {
+          display: flex;
+          justify-content: center;
         }
 
         .PeopleSearchCon {
@@ -549,7 +605,7 @@
               display: flex;
               flex-direction: row;
               align-items: center;
-              margin: 10px 8px;
+              margin: 10px 9px;
 
               .PersonCheckBox {
                 width: 12px;
@@ -561,6 +617,7 @@
                 width: 24px;
                 height: 24px;
                 margin-right: 7px;
+                border-radius: 50%;
               }
 
               .PersonName {
@@ -597,8 +654,25 @@
             overflow-y: auto;
             box-sizing: border-box;
             border-radius: 5px;
-            border: 1px solid #a2a2a2;
+            border: 1px solid #dcdcdc;
             padding: 10px 15px;
+
+            &::-webkit-scrollbar {
+              width: 3px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background-color: #8f8f8f;
+              border-radius: 10px;
+            }
+
+            &::-webkit-scrollbar-track {
+              background: transparent;
+            }
+
+            &::-webkit-scrollbar-button {
+              display: none;
+            }
 
             .RightTopText {
               color: #8f8f8f;

@@ -42,23 +42,18 @@ module.exports = (sequelize, DataTypes) => {
         endDate: {
             type: DataTypes.DATE,
             allowNull: false,
-        },
-         //null값 허용
-         memo: {
-            type: DataTypes.STRING,
-            allowNull: true,
-          },
-          //프로젝트 상태 (시작전, 진행중, 완료)
-          status: {
-            type: DataTypes.ENUM("notstarted","inprogress","done"),
-            allowNull: false,
-            defaultValue: "notstarted",
-          },
-         // 게시글 고정
-          pinned: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-          },
+       },
+      //프로젝트 상태 (시작전, 진행중, 완료)
+      status: {
+        type: DataTypes.ENUM("notstarted","inprogress","done"),
+        allowNull: false,
+        defaultValue: "notstarted",
+      },
+      // 게시글 고정
+      pinned: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
         },
         {
           tableName: "mainProject"

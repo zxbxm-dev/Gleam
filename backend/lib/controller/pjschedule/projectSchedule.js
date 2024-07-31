@@ -123,7 +123,8 @@ const addProject = async (req, res) => {
             endDate,
             memo,
             pinned,
-            status
+            status,
+            force,
         } = req.body.data;
         const { 
             mainprojectIndex,
@@ -154,20 +155,28 @@ const addProject = async (req, res) => {
         //메인-서브 프로젝트 간 일정 일치여부 확인
         const mainProject = await project.findOne({where: {mainprojectIndex}});
         const mainEndDate = mainProject.endDate.toISOString().split('T')[0];
-        const mainStartDate = mainProject.startDate.toISOString().split('T')[0];
-       
-        const subEndDate = subPj.endDate.toISOString().split('T')[0];
-        const subStartDate = subPj.startDate.toISOString().split('T')[0];
+        const mainStartDate = mainProject.startDate.toISOString().split('T')[0];       
+        const subEndDate = new Date(endDate).toISOString().split('T')[0];
+        const subStartDate = new Date(startDate).toISOString().split('T')[0];
 
-        if(subEndDate> mainEndDate) { return res.status(419).json({message:"메인프로젝트 마감일정을 초과하여 등록 할 수 없습니다." });}
-        if(subStartDate<mainStartDate) { return res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });}    
+        if(subPj.endDate !== endDate){
+        if(subEndDate > mainEndDate) { 
+            return res.status(419).json({message:"메인프로젝트 마감일정을 초과하여 등록 할 수 없습니다." });
+        }else{ subPj.endDate = endDate};
+        };
+        if(subPj.startDate !== startDate){
+        if(subStartDate < mainStartDate) { 
+            return res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });
+        }else{ subPj.startDate = startDate};    
+        };
 
         // 프로젝트 상태값 설정
         const oldSubStatus = subPj.status;
+        const subStartDateForstatus = subPj.startDate.toISOString().split('T')[0];
         if(oldSubStatus !== status){
             subPj.status = status;
         }else{
-        if (subStartDate <= today) {
+        if (subStartDateForstatus <= today) {
             subPj.status = "inprogress";
         } else {
             subPj.status = "notstarted";
@@ -203,11 +212,27 @@ const addProject = async (req, res) => {
         }
 
         //메인-서브 프로젝트 간 일정 일치여부 확인
-        // const mainEndDate = mainProject.endDate.toISOString().split('T')[0];
-        const mainStartDate = mainPj.startDate.toISOString().split('T')[0];  
-        // const subEndDate = subPj.endDate.toISOString().split('T')[0];
-        // const subStartDate = subPj.startDate.toISOString().split('T')[0];
-        // if(mainEndDate> subEndDate&&mainStartDate<subStartDate) { return res.status(420).json({message:"메인 프로젝트와 서브 프로젝트의 일정이 일치하지 않습니다. 기간을 다시 확인해 주세요." });}
+        const mainEndDate = mainPj.endDate.toISOString().split('T')[0];
+        const mainStartDate = mainPj.startDate.toISOString().split('T')[0];
+        const subprojects = await subproject.findAll({
+            where: { mainprojectIndex },
+        });
+        for(const subPj of subprojects){
+            const subEndDate = subPj.endDate ? subPj.endDate.toISOString().split('T')[0] : null;
+            const subStartDate = subPj.startDate ? subPj.startDate.toISOString().split('T')[0] : null;
+            if(force == false){
+                return res.status(420).json({message:"메인 프로젝트와 서브 프로젝트의 일정이 일치하지 않습니다. 기간을 다시 확인해 주세요." })};
+        
+            if(( force == false && 
+                ( mainStartDate > subStartDate && mainEndDate > subEndDate)|| //mpj 시작이 spj보다 미래일때 , mpj 마감이 spj보다 미래일때
+                ( mainStartDate < subStartDate && mainEndDate < subEndDate)   //mpj 시작이 spj 보다 과거일떄 , mpj 마감이 spj보다 과거일때
+             )
+            ){
+            subPj.startDate = null;
+            subPj.endDate = null;
+            await subPj.save();                 
+            }
+      };
 
         // 프로젝트 상태값 설정
         const oldMainStatus = mainPj.status;

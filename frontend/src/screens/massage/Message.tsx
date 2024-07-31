@@ -1,11 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   HrLine,
   UserIcon_dark,
   MailIcon,
   WorkReportIcon,
   ScheduleIcon,
+  UserManagementIcon,
+  XIcon,
+  GearIcon,
+  MessageMenu,
+  AdminIcon,
 } from "../../assets/images/index";
+import {
+  Popover,
+  PopoverTrigger,
+  Portal,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+} from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
 
@@ -40,6 +57,30 @@ const Message = () => {
     },
   ];
 
+  const DummyMessage1 = [
+    {
+      user: {
+        id: "qw506799",
+        username: "박세준",
+        userID: "qw506799",
+        usermail: "qw506799@four-chains.com",
+        phoneNumber: "01011111111",
+        company: "",
+        department: "",
+        team: "",
+        position: "대표이사",
+        spot: "대표이사",
+        question1: "1",
+        question2: "1",
+        entering: "2024-07-26",
+        attachment: "http://localhost:3001/uploads/NextBtn.png",
+        Sign: null,
+      },
+      message: "안녕하세요",
+      date: new Date(),
+    },
+  ];
+
   const NoticeNameList: { [key: string]: string } = {
     Mail: "Mail - Notification",
     WorkReport: "Work Report - Notification",
@@ -54,7 +95,10 @@ const Message = () => {
 
   const [messageInput, setMessageInput] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
+  const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
+    useState<boolean>(false);
   const user = useRecoilValue(userState);
+  console.log("uer", user);
   const selectedPerson = useRecoilValue(selectedPersonState);
 
   const handleSendMessage = () => {
@@ -76,14 +120,28 @@ const Message = () => {
   return (
     <div className="Message-contents">
       <div className="Message-header">
-        <span>
-          {selectedPerson.team
-            ? selectedPerson.team
-            : selectedPerson.department}{" "}
-          {selectedPerson.username}
-        </span>
-        {selectedPerson.position && <img src={HrLine} alt="Horizontal Line" />}
-        <span>{selectedPerson.position}</span>
+        <div>
+          <span>
+            {selectedPerson.team
+              ? selectedPerson.team
+              : selectedPerson.department}{" "}
+            {selectedPerson.username}
+          </span>
+          {selectedPerson.position && (
+            <img src={HrLine} alt="Horizontal Line" />
+          )}
+          <span>{selectedPerson.position}</span>
+        </div>
+        {selectedPerson && (
+          <img
+            src={UserManagementIcon}
+            className="UserManagementIcon"
+            alt="UserManagementIcon"
+            onClick={() =>
+              setChatRoomPeopleManagement(!chatRoomPeopleManagement)
+            }
+          />
+        )}
       </div>
       <div className="Message-container">
         {selectedPerson.username !== "통합 알림" &&
@@ -96,7 +154,10 @@ const Message = () => {
                 </div>
                 <div className="MsgTimeBox">
                   <div className="MsgBox">{message}</div>
-                  <div className="MsgTime">오후 4:30</div>
+                  <div className="MsgTime">
+                    <div className="ViewCount">1</div>
+                    오후 4:30
+                  </div>
                 </div>
               </div>
             </div>
@@ -137,6 +198,49 @@ const Message = () => {
               전송
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* 인원관리 */}
+      <div
+        className={`PeopleManagementCon ${
+          chatRoomPeopleManagement ? "" : "Hidden"
+        }`}
+      >
+        <div className="Management-header">
+          <span>인원 관리</span>{" "}
+          <img
+            src={XIcon}
+            alt="XIcon"
+            onClick={() => setChatRoomPeopleManagement(false)}
+          />
+        </div>
+        <div className="AddPerson-tab">+ 인원 추가하기</div>
+        <div className="ChatRoom-Members">
+          <Popover placement="left-start">
+            <div className="OneMember">
+              <div className="AttachWithName">
+                <img
+                  src={UserIcon_dark}
+                  alt="UserIcon_dark"
+                  className="AttachIcon"
+                />
+                <span>개발 1팀 장현지</span>
+                <img src={AdminIcon} alt="Admin_Icon" className="AdminIcon" />
+              </div>
+              <PopoverTrigger>
+                <img src={MessageMenu} alt="MenuIcon" className="OptionIcon" />
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent
+                  className="PersonSide_popover PopPerson"
+                  _focus={{ boxShadow: "none" }}
+                >
+                  <div className="PopPerson">내보내기</div>
+                </PopoverContent>
+              </Portal>
+            </div>
+          </Popover>
         </div>
       </div>
     </div>
