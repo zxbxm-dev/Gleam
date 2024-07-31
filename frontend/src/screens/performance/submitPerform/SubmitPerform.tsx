@@ -5,7 +5,6 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../recoil/atoms';
-import { useQuery } from 'react-query';
 import { uploadOutline, getOutline } from '../../../services/report/ReportServices';
 
 import testPDF from '../../../assets/pdf/인사평가개요(안내).pdf'
@@ -21,15 +20,21 @@ const SubmitPerform = () => {
   const [numPages, setNumPages] = useState<number>(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
+  const [outlineData, setOutlineData] = useState<Blob | null>(null);
+  console.log(outlineData);
 
-  const { data: outlineData } = useQuery('outline', getOutline);
+  const fetchOutlineData = async () => {
+    try {
+      const response = await getOutline();
+      setOutlineData(response.data.file);
+    } catch (error) {
+      console.error('Error fetching outline data:', error);
+    }
+  };
 
   useEffect(() => {
-    if (outlineData) {
-      setPdfBlob(outlineData.data);
-    }
-  }, [outlineData]);
+    fetchOutlineData();
+  }, []);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
@@ -47,7 +52,6 @@ const SubmitPerform = () => {
     const file = event.target.files && event.target.files[0];
     if (file) {
       setSelectedFile(file);
-      setPdfBlob(null);
     }
   };
 
@@ -62,6 +66,8 @@ const SubmitPerform = () => {
       formData.append('filename', selectedFile.name);
 
       await uploadOutline(formData);
+
+      fetchOutlineData()
     } catch (error) {
       console.error('Error uploading file:', error);
     } finally {
@@ -76,7 +82,10 @@ const SubmitPerform = () => {
         <div className="perform_content">
           <div className="pdf-container">
             {/* <Document file={testPDF} onLoadS/uccess={onDocumentLoadSuccess}> */}
-              <Document file={pdfBlob ? pdfBlob : selectedFile ? selectedFile : testPDF} onLoadSuccess={onDocumentLoadSuccess}>
+            <Document
+              file={selectedFile || (outlineData ? `http://localhost:3000/${outlineData}` : testPDF)}
+              onLoadSuccess={onDocumentLoadSuccess}>
+
               {(user.team === '관리팀' || user.position === '센터장') && (
                 <div className='Upload'>
                   {!selectedFile &&
