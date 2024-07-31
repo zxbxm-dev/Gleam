@@ -57,6 +57,30 @@ const Message = () => {
     },
   ];
 
+  const DummyMessage1 = [
+    {
+      user: {
+        id: "qw506799",
+        username: "박세준",
+        userID: "qw506799",
+        usermail: "qw506799@four-chains.com",
+        phoneNumber: "01011111111",
+        company: "",
+        department: "",
+        team: "",
+        position: "대표이사",
+        spot: "대표이사",
+        question1: "1",
+        question2: "1",
+        entering: "2024-07-26",
+        attachment: "http://localhost:3001/uploads/NextBtn.png",
+        Sign: null,
+      },
+      message: "안녕하세요",
+      date: new Date(),
+    },
+  ];
+
   const NoticeNameList: { [key: string]: string } = {
     Mail: "Mail - Notification",
     WorkReport: "Work Report - Notification",
@@ -74,6 +98,7 @@ const Message = () => {
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
     useState<boolean>(false);
   const user = useRecoilValue(userState);
+  console.log("uer", user);
   const selectedPerson = useRecoilValue(selectedPersonState);
 
   const handleSendMessage = () => {

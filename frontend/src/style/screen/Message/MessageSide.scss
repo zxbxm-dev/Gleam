@@ -263,3 +263,29 @@
     // }
   }
 }
+
+.ChatRoomSide_popover {
+  border: none !important;
+  box-shadow: 0px 1px 3px 1px #a8a8a8 !important;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--font-family-Noto-M);
+  font-size: 15px;
+  position: absolute;
+  display: flex;
+  padding-left: 15px;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  width: 150px !important;
+  height: 84px !important;
+  .ProfileChange {
+    cursor: pointer;
+    border-bottom: 1px solid #eeeeee;
+    padding: 9px 0;
+  }
+  .OutOfChat {
+    cursor: pointer;
+    padding: 9px 0;
+  }
+}
