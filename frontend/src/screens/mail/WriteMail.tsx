@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   White_Arrow,
+  ModalCloseBtn,
 } from "../../assets/images/index";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
@@ -232,6 +233,9 @@ const WriteMail = () => {
               {date && <span> {date}</span>}
               {selectedTime && <span> &nbsp; {selectedTime?.slice(0,2)} : </span>}
               {selectedMinute && <span> {selectedMinute?.slice(0,2)} </span>}
+              {year && month && date && selectedTime && selectedMinute && (
+                <img src={ModalCloseBtn} alt="ModalCloseBtn" onClick={() => {setStartDate(null); setSelectedTime(''); setSelectedMinute(''); }}/>
+              )}
               
               {isReservationOpen && (
                 <div className="mail_reservation_container" onClick={(e) => e.stopPropagation()} ref={reservationRef}>

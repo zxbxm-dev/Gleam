@@ -23,10 +23,19 @@
 
       .basic_button {
         @include report-button;
+        display: flex;
+        align-items: center;
         position: relative;
         background-color: #fff;
         color: #000;
         border: 1px solid var(--primary-color);
+
+        img {
+          width: 10px;
+          height: 10px;
+          filter: invert(62%) sepia(92%) saturate(388%) hue-rotate(73deg) brightness(90%) contrast(80%);
+          margin-left: 10px;
+        }
 
         .mail_reservation_container {
           z-index: 99;
