@@ -38,6 +38,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [paletteIndex, setPaletteIndex] = useState<number | null>(null);
+  const [selectedChatRoom, setSelectedChatRoom] = useState("");
 
   const ProfilePalette: string[] = [
     "#FF96EE",
@@ -95,16 +96,19 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
         .map((dummy) => (
           <Popover placement="right">
             <div
-              className="ChatLog"
+              className={`ChatLog ${
+                selectedChatRoom === dummy.username ? "selected" : ""
+              }`}
               key={dummy.userId}
-              onClick={() =>
+              onClick={() => {
                 onPersonClick(
                   dummy.username,
                   dummy.team,
                   dummy.department,
                   dummy.position
-                )
-              }
+                );
+                setSelectedChatRoom(dummy.username);
+              }}
             >
               {dummy.isGroupChat ? (
                 <div className="LogBox">

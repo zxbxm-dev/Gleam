@@ -180,16 +180,21 @@ const MessageSidebar: React.FC = () => {
   };
 
   const groupByDepartmentAndTeam = (data: Person[]) => {
-    const grouped: { [department: string]: { [team: string]: Person[] } } = {};
+    const grouped: {
+      [company: string]: { [department: string]: { [team: string]: Person[] } };
+    } = {};
 
     data.forEach((person) => {
-      if (!grouped[person.department]) {
-        grouped[person.department] = {};
+      if (!grouped[person.company]) {
+        grouped[person.company] = {};
       }
-      if (!grouped[person.department][person.team]) {
-        grouped[person.department][person.team] = [];
+      if (!grouped[person.company][person.department]) {
+        grouped[person.company][person.department] = {};
       }
-      grouped[person.department][person.team].push(person);
+      if (!grouped[person.company][person.department][person.team]) {
+        grouped[person.company][person.department][person.team] = [];
+      }
+      grouped[person.company][person.department][person.team].push(person);
     });
 
     return grouped;
@@ -198,25 +203,34 @@ const MessageSidebar: React.FC = () => {
   const groupedData = personData ? groupByDepartmentAndTeam(personData) : {};
 
   const filterDataBySearchQuery = (data: {
-    [department: string]: { [team: string]: Person[] };
+    [company: string]: { [department: string]: { [team: string]: Person[] } };
   }) => {
     if (!searchQuery) return data;
-    const filtered: { [department: string]: { [team: string]: Person[] } } = {};
+    const filtered: {
+      [company: string]: { [department: string]: { [team: string]: Person[] } };
+    } = {};
 
-    Object.keys(data).forEach((departmentName) => {
-      Object.keys(data[departmentName]).forEach((teamName) => {
-        const filteredPersons = data[departmentName][teamName].filter(
-          (person) =>
-            person.username.includes(searchQuery) ||
-            person.department.includes(searchQuery) ||
-            person.team.includes(searchQuery)
-        );
-        if (filteredPersons.length > 0) {
-          if (!filtered[departmentName]) {
-            filtered[departmentName] = {};
+    Object.keys(data).forEach((companyName) => {
+      Object.keys(data[companyName]).forEach((departmentName) => {
+        Object.keys(data[companyName][departmentName]).forEach((teamName) => {
+          const filteredPersons = data[companyName][departmentName][
+            teamName
+          ].filter(
+            (person) =>
+              person.username.includes(searchQuery) ||
+              person.department.includes(searchQuery) ||
+              person.team.includes(searchQuery)
+          );
+          if (filteredPersons.length > 0) {
+            if (!filtered[companyName]) {
+              filtered[companyName] = {};
+            }
+            if (!filtered[companyName][departmentName]) {
+              filtered[companyName][departmentName] = {};
+            }
+            filtered[companyName][departmentName][teamName] = filteredPersons;
           }
-          filtered[departmentName][teamName] = filteredPersons;
-        }
+        });
       });
     });
 
@@ -224,6 +238,7 @@ const MessageSidebar: React.FC = () => {
   };
 
   const filteredData = filterDataBySearchQuery(groupedData);
+
   console.log("filteredData", filteredData);
 
   return (
@@ -330,101 +345,216 @@ const MessageSidebar: React.FC = () => {
           </div>
           <div className="PeopleSearchCon">
             <div className="LeftEmployCon">
-              {Object.keys(filteredData).map((departmentName) => (
-                <div key={departmentName}>
-                  {departmentName.trim() !== "" && (
-                    <div className="Department-Tab">
-                      <img src={DepartmentTabIcon} alt="DepartmentTabIcon" />
-                      {departmentName}
-                      <div className="VerticalLine"></div>
-                    </div>
+              {Object.keys(filteredData).map((companyName) => (
+                <div key={companyName}>
+                  {companyName === "R&D" && (
+                    <div className="Department-Tab">{companyName}</div>
                   )}
-                  {Object.keys(filteredData[departmentName]).map((teamName) => (
-                    <div key={teamName}>
-                      {teamName.trim() !== "" && (
-                        <div className="Team-Tab">
-                          <img
-                            src={
-                              filteredData[departmentName][teamName].every(
-                                (person) => newChatChosenUsers?.includes(person)
-                              )
-                                ? CheckBox_Active
-                                : CheckBox
-                            }
-                            className="TeamCheckBox"
-                            alt="TeamCheckBox"
-                            onClick={() => {
-                              let allMembersSelected = filteredData[
-                                departmentName
-                              ][teamName].every((person) =>
-                                newChatChosenUsers?.includes(person)
-                              );
-                              setNewChatChosenUsers((prevUsers) => {
-                                if (prevUsers) {
-                                  return allMembersSelected
-                                    ? prevUsers.filter(
-                                        (user) =>
-                                          !filteredData[departmentName][
-                                            teamName
-                                          ].includes(user)
-                                      )
-                                    : [
-                                        ...prevUsers,
-                                        ...filteredData[departmentName][
-                                          teamName
-                                        ].filter(
-                                          (person) =>
-                                            !prevUsers.includes(person)
-                                        ),
-                                      ];
-                                } else {
-                                  return filteredData[departmentName][teamName];
-                                }
-                              });
-                            }}
-                          />
-                          <div className="TeamName">{teamName}</div>
-                        </div>
-                      )}
-                      {filteredData[departmentName][teamName].map((person) => (
-                        <div className="PersonCon" key={person.userId}>
-                          <img
-                            src={
-                              isWholeMemberChecked ||
-                              newChatChosenUsers?.includes(person)
-                                ? CheckBox_Active
-                                : CheckBox
-                            }
-                            className="PersonCheckBox"
-                            alt="PersonCheckBox"
-                            onClick={() =>
-                              setNewChatChosenUsers((prevUsers) =>
-                                prevUsers
-                                  ? prevUsers.includes(person)
-                                    ? prevUsers.filter(
-                                        (user) => user !== person
-                                      )
-                                    : [...prevUsers, person]
-                                  : [person]
-                              )
-                            }
-                          />
-                          <img
-                            src={
-                              person.attachment
-                                ? person.attachment
-                                : UserIcon_dark
-                            }
-                            className="ProfileIcon"
-                            alt="usericondark"
-                          />
-                          <div className="PersonName">
-                            {person.team} {person.username}
+                  {Object.keys(filteredData[companyName])
+                    .filter((departmentName) => departmentName === "")
+                    .map((departmentName) =>
+                      Object.keys(filteredData[companyName][departmentName])
+                        .filter((teamName) => teamName === "")
+                        .map((teamName) => (
+                          <div key={teamName}>
+                            {filteredData[companyName][departmentName][
+                              teamName
+                            ].map((person) => (
+                              <div className="PersonCon" key={person.userId}>
+                                <img
+                                  src={
+                                    isWholeMemberChecked ||
+                                    newChatChosenUsers?.includes(person)
+                                      ? CheckBox_Active
+                                      : CheckBox
+                                  }
+                                  className="PersonCheckBox"
+                                  alt="PersonCheckBox"
+                                  onClick={() =>
+                                    setNewChatChosenUsers((prevUsers) =>
+                                      prevUsers
+                                        ? prevUsers.includes(person)
+                                          ? prevUsers.filter(
+                                              (user) => user !== person
+                                            )
+                                          : [...prevUsers, person]
+                                        : [person]
+                                    )
+                                  }
+                                />
+                                <img
+                                  src={
+                                    person.attachment
+                                      ? person.attachment
+                                      : UserIcon_dark
+                                  }
+                                  className="ProfileIcon"
+                                  alt="usericondark"
+                                />
+                                <div className="PersonName">
+                                  {person.team} {person.username}
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
+                        ))
+                    )}
+                  {Object.keys(filteredData[companyName])
+                    .filter((departmentName) => departmentName !== "")
+                    .map((departmentName) => (
+                      <div key={departmentName}>
+                        {departmentName.trim() !== "" && (
+                          <div className="Department-Tab">
+                            <img
+                              src={DepartmentTabIcon}
+                              alt="DepartmentTabIcon"
+                            />
+                            {departmentName}
+                            <div className="VerticalLine"></div>
+                          </div>
+                        )}
+                        {Object.keys(filteredData[companyName][departmentName])
+                          .filter((teamName) => teamName === "")
+                          .map((teamName) => (
+                            <div key={teamName}>
+                              {filteredData[companyName][departmentName][
+                                teamName
+                              ].map((person) => (
+                                <div className="PersonCon" key={person.userId}>
+                                  <img
+                                    src={
+                                      isWholeMemberChecked ||
+                                      newChatChosenUsers?.includes(person)
+                                        ? CheckBox_Active
+                                        : CheckBox
+                                    }
+                                    className="PersonCheckBox"
+                                    alt="PersonCheckBox"
+                                    onClick={() =>
+                                      setNewChatChosenUsers((prevUsers) =>
+                                        prevUsers
+                                          ? prevUsers.includes(person)
+                                            ? prevUsers.filter(
+                                                (user) => user !== person
+                                              )
+                                            : [...prevUsers, person]
+                                          : [person]
+                                      )
+                                    }
+                                  />
+                                  <img
+                                    src={
+                                      person.attachment
+                                        ? person.attachment
+                                        : UserIcon_dark
+                                    }
+                                    className="ProfileIcon"
+                                    alt="usericondark"
+                                  />
+                                  <div className="PersonName">
+                                    {person.team} {person.username}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                        {Object.keys(filteredData[companyName][departmentName])
+                          .filter((teamName) => teamName !== "")
+                          .map((teamName) => (
+                            <div key={teamName}>
+                              {teamName.trim() !== "" && (
+                                <div className="Team-Tab">
+                                  <img
+                                    src={
+                                      filteredData[companyName][departmentName][
+                                        teamName
+                                      ].every((person) =>
+                                        newChatChosenUsers?.includes(person)
+                                      )
+                                        ? CheckBox_Active
+                                        : CheckBox
+                                    }
+                                    className="TeamCheckBox"
+                                    alt="TeamCheckBox"
+                                    onClick={() => {
+                                      let allMembersSelected = filteredData[
+                                        companyName
+                                      ][departmentName][teamName].every(
+                                        (person) =>
+                                          newChatChosenUsers?.includes(person)
+                                      );
+                                      setNewChatChosenUsers((prevUsers) => {
+                                        if (prevUsers) {
+                                          return allMembersSelected
+                                            ? prevUsers.filter(
+                                                (user) =>
+                                                  !filteredData[companyName][
+                                                    departmentName
+                                                  ][teamName].includes(user)
+                                              )
+                                            : [
+                                                ...prevUsers,
+                                                ...filteredData[companyName][
+                                                  departmentName
+                                                ][teamName].filter(
+                                                  (person) =>
+                                                    !prevUsers.includes(person)
+                                                ),
+                                              ];
+                                        } else {
+                                          return filteredData[companyName][
+                                            departmentName
+                                          ][teamName];
+                                        }
+                                      });
+                                    }}
+                                  />
+                                  <div className="TeamName">{teamName}</div>
+                                </div>
+                              )}
+                              {filteredData[companyName][departmentName][
+                                teamName
+                              ].map((person) => (
+                                <div className="PersonCon" key={person.userId}>
+                                  <img
+                                    src={
+                                      isWholeMemberChecked ||
+                                      newChatChosenUsers?.includes(person)
+                                        ? CheckBox_Active
+                                        : CheckBox
+                                    }
+                                    className="PersonCheckBox"
+                                    alt="PersonCheckBox"
+                                    onClick={() =>
+                                      setNewChatChosenUsers((prevUsers) =>
+                                        prevUsers
+                                          ? prevUsers.includes(person)
+                                            ? prevUsers.filter(
+                                                (user) => user !== person
+                                              )
+                                            : [...prevUsers, person]
+                                          : [person]
+                                      )
+                                    }
+                                  />
+                                  <img
+                                    src={
+                                      person.attachment
+                                        ? person.attachment
+                                        : UserIcon_dark
+                                    }
+                                    className="ProfileIcon"
+                                    alt="usericondark"
+                                  />
+                                  <div className="PersonName">
+                                    {person.team} {person.username}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                      </div>
+                    ))}
                 </div>
               ))}
             </div>
