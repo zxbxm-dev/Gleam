@@ -43,10 +43,13 @@ export const isSelectMemberState = atom({
   default: ["", "", "", "", ""],
 });
 
+const latestChat = localStorage.getItem("latestChat");
+const defaultUsername = latestChat ? latestChat : "통합 알림";
+
 export const selectedPersonState = atom({
   key: "selectedPersonState",
   default: {
-    username: "통합 알림",
+    username: defaultUsername,
     team: "",
     department: "",
     position: "",

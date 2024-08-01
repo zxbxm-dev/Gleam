@@ -131,7 +131,7 @@ const Message = () => {
           )}
           <span>{selectedPerson.position}</span>
         </div>
-        {selectedPerson && (
+        {selectedPerson && selectedPerson.username !== "통합 알림" && (
           <img
             src={UserManagementIcon}
             className="UserManagementIcon"
@@ -233,10 +233,13 @@ const Message = () => {
               </PopoverTrigger>
               <Portal>
                 <PopoverContent
-                  className="PersonSide_popover PopPerson"
+                  className="PersonSide_popover Management"
                   _focus={{ boxShadow: "none" }}
                 >
-                  <div className="PopPerson">내보내기</div>
+                  <div className={`Message-OnClick-Menu`}>
+                    <div className="OutOfChat">내보내기</div>
+                    <div className="ChangeAdmin">관리자 변경</div>
+                  </div>
                 </PopoverContent>
               </Portal>
             </div>

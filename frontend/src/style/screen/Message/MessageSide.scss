@@ -245,22 +245,15 @@
     width: 86px !important;
   }
 
-  .Message-OnClick-Menu {
-    // &.active {
-    //   cursor: pointer;
-    //   position: absolute;
-    //   display: flex;
-    //   padding-left: 15px;
-    //   align-items: center;
-    //   right: -135px;
-    //   bottom: -20px;
-    //   width: 150px;
-    //   height: 42px;
-    //   background-color: #fff;
-    //   border-radius: 5px;
-    //   z-index: 99999;
-    //   box-shadow: 0 0 3px 2px #e2e2e2;
-    // }
+  &.Management {
+    font-family: var(--font-family-Noto-M);
+    font-size: 12px;
+    height: 64px !important;
+    width: 98px !important;
+
+    .OutOfChat {
+      margin-bottom: 10px;
+    }
   }
 }
 
