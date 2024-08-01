@@ -119,11 +119,8 @@ const Message = () => {
 
   useEffect(() => {
     if (messageContainerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } =
-        messageContainerRef.current;
-      if (scrollHeight - scrollTop - clientHeight <= clientHeight) {
-        messageContainerRef.current.scrollTop = scrollHeight;
-      }
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
