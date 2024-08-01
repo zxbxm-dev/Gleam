@@ -46,7 +46,7 @@ const AttendanceRegist = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [isAddAttend, setAddAttend] = useState(false);
-  const [selectedScreen, setSelectedScreen] = useState('R&D');
+  const [selectedScreen, setSelectedScreen] = useState('');
   const [members, setMembers] = useState<Member[]>([]);
   const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
@@ -1069,7 +1069,7 @@ const onSubmit = (data: any) => {
           ) : null}
         </div>
 
-        {user.company === '본사' || selectedScreen !== 'R&D' ? (
+        {selectedScreen === 'R&D' || user.company === '본사' ? (
           <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (
