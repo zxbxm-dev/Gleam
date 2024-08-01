@@ -224,8 +224,6 @@ const MessageSidebar: React.FC = () => {
   };
 
   const filteredData = filterDataBySearchQuery(groupedData);
-  console.log("filteredData", filteredData);
-
   return (
     <div className="message-sidebar">
       <div className="tab-container">

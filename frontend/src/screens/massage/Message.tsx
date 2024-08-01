@@ -98,7 +98,6 @@ const Message = () => {
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
     useState<boolean>(false);
   const user = useRecoilValue(userState);
-  console.log("uer", user);
   const selectedPerson = useRecoilValue(selectedPersonState);
 
   const handleSendMessage = () => {
