@@ -82,10 +82,6 @@ const MessageSidebar: React.FC = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log("현재 인원>>", newChatChosenUsers);
-  }, [newChatChosenUsers]);
-
   const toggleDepartmentExpansion = (departmentName: string) => {
     setExpandedDepartments((prevExpandedDepartments) => ({
       ...prevExpandedDepartments,
@@ -238,8 +234,6 @@ const MessageSidebar: React.FC = () => {
   };
 
   const filteredData = filterDataBySearchQuery(groupedData);
-
-  console.log("filteredData", filteredData);
 
   return (
     <div className="message-sidebar">
