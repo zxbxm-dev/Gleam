@@ -99,6 +99,7 @@ const Message = () => {
     useState<boolean>(false);
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = () => {
     if (messageInput.trim() !== "") {
@@ -115,6 +116,16 @@ const Message = () => {
       handleSendMessage();
     }
   };
+
+  useEffect(() => {
+    if (messageContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } =
+        messageContainerRef.current;
+      if (scrollHeight - scrollTop - clientHeight <= clientHeight) {
+        messageContainerRef.current.scrollTop = scrollHeight;
+      }
+    }
+  }, [messages]);
 
   return (
     <div className="Message-contents">
@@ -142,7 +153,7 @@ const Message = () => {
           />
         )}
       </div>
-      <div className="Message-container">
+      <div className="Message-container" ref={messageContainerRef}>
         {selectedPerson.username !== "통합 알림" &&
           messages.map((message, index) => (
             <div key={index} className="Message">
