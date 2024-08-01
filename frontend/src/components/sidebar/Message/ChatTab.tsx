@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   MessageMe,
   MessageMenu,
+  NotiIcon,
   UserIcon_dark,
 } from "../../../assets/images/index";
 import {
@@ -67,12 +68,25 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   ];
 
   const [profileName, setProfileName] = useState<string>("");
+  const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfileName(e.target.value);
   };
   return (
     <div className="chat-data-tab">
+      <li
+        className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
+        onClick={() => {
+          onPersonClick("통합 알림", "", "", "");
+          setSelectedUserId(null);
+          setIsNotibarActive(true);
+        }}
+      >
+        <img className="Noti-Icon" src={NotiIcon} alt="my-attach" />
+        <div>통합 알림</div>
+      </li>
       <li
         className="My-bar"
         onClick={() =>
@@ -84,11 +98,11 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           )
         }
       >
-        <img className="My-attach" src={userAttachment} />
+        <img className="My-attach" src={userAttachment} alt="my-attach" />
         <div>
           {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
         </div>
-        <img className="Message-Me" src={MessageMe} />
+        <img className="Message-Me" src={MessageMe} alt="message-me" />
       </li>
 
       {dummyData
