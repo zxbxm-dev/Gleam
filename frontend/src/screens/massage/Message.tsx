@@ -184,21 +184,22 @@ const Message = () => {
               </div>
             </div>
           ))}
-
-        <div className="Message-Input">
-          <div className="Input-Outer">
-            <input
-              type="text"
-              placeholder="메시지를 입력하세요."
-              value={messageInput}
-              onChange={(e) => setMessageInput(e.target.value)}
-              onKeyDown={handleInputKeyPress}
-            />
-            <div className="send-btn" onClick={handleSendMessage}>
-              전송
+        {selectedPerson.username !== "통합 알림" && (
+          <div className="Message-Input">
+            <div className="Input-Outer">
+              <input
+                type="text"
+                placeholder="메시지를 입력하세요."
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+                onKeyDown={handleInputKeyPress}
+              />
+              <div className="send-btn" onClick={handleSendMessage}>
+                전송
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* 인원관리 */}
