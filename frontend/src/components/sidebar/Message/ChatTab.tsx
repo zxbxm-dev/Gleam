@@ -108,7 +108,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                   dummy.position
                 );
                 setSelectedChatRoom(dummy.username);
-                localStorage.setItem("latestChat", dummy.username);
+                localStorage.setItem("latestChat", JSON.stringify(dummy));
               }}
             >
               {dummy.isGroupChat ? (
