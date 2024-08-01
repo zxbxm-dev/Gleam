@@ -227,35 +227,37 @@ const DetailDocument = () => {
 
       <div className="content_container">
         <div className="approval_write_container">
-          <div className="write_top_container_document">
             {memoState ? (
               memoState === 'reject' ?
                 <>
-                  <div className='document_container'>
-                    <div className='document_title'>반려자</div>
-                    <div className='document_content'>{documentInfo[0].rejectName}</div>
-                  </div>
-                  <div className='document_container'>
-                    <div className='document_title'>반려사유</div>
-                    <div className='document_content'>{documentInfo[0].rejectContent}</div>
+                  <div className="write_top_container_document">
+                    <div className='document_container'>
+                      <div className='document_title'>반려자</div>
+                      <div className='document_content'>{documentInfo[0].rejectName}</div>
+                    </div>
+                    <div className='document_container'>
+                      <div className='document_title'>반려사유</div>
+                      <div className='document_content'>{documentInfo[0].rejectContent}</div>
+                    </div>
                   </div>
                 </>
                 :
                 <>
-                  <div className='document_container'>
-                    <div className='document_title'>작성자</div>
-                    <div className='document_content'>{documentInfo[0].opinionName}</div>
-                  </div>
-                  <div className='document_container'>
-                    <div className='document_title'>의견 내용</div>
-                    <div className='document_content'>{documentInfo[0].opinionContent}</div>
+                  <div className="write_top_container_document">
+                    <div className='document_container'>
+                      <div className='document_title'>작성자</div>
+                      <div className='document_content'>{documentInfo[0].opinionName}</div>
+                    </div>
+                    <div className='document_container'>
+                      <div className='document_title'>의견 내용</div>
+                      <div className='document_content'>{documentInfo[0].opinionContent}</div>
+                    </div>
                   </div>
                 </>
             ) : (
               <>
               </>
             )}
-          </div>
           <div className="write_btm_container">
             <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
               <div ref={containerRef} id="report-to-xls">
