@@ -28,6 +28,7 @@
     padding: 24px 30px 20px 30px;
     position: relative;
     height: calc(100vh - 150px);
+    overflow-y: auto;
 
     .Message {
       display: flex;
@@ -107,9 +108,11 @@
     }
 
     .Message-Input {
-      position: absolute;
-      bottom: 0px;
-      width: calc(100% - 60px);
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: calc(100% - 300px);
+      background-color: #fff;
 
       .Input-Outer {
         display: flex;
