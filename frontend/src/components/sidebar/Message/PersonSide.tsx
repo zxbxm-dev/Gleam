@@ -98,6 +98,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
 
   return (
     <ul className="Sidebar-Ms">
+      {/*
       <li
         className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
         onClick={() => {
@@ -126,6 +127,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
         </div>
         <img className="Message-Me" src={MessageMe} alt="message-me" />
       </li>
+        */}
 
       {personData
         .filter((person) => !person.department && person.company !== "R&D")

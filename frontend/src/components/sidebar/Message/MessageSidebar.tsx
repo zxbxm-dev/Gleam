@@ -302,7 +302,7 @@ const MessageSidebar: React.FC = () => {
         footer2Class="gray-btn"
         onFooter2Click={() => setOpenModal(false)}
         width="400px"
-        height="431px"
+        height="460px"
       >
         <div className="body-container New-Chat-Room-Body">
           <div className="New-Chat-Room">
@@ -334,7 +334,7 @@ const MessageSidebar: React.FC = () => {
                     : setNewChatChosenUsers(personData);
                 }}
               />
-              전체 멤버
+              <span>전체 멤버</span>
             </div>
           </div>
           <div className="PeopleSearchCon">
@@ -386,7 +386,7 @@ const MessageSidebar: React.FC = () => {
                                   alt="usericondark"
                                 />
                                 <div className="PersonName">
-                                  {person.team} {person.username}
+                                  {person.username} | {person.position}
                                 </div>
                               </div>
                             ))}
@@ -446,7 +446,7 @@ const MessageSidebar: React.FC = () => {
                                     alt="usericondark"
                                   />
                                   <div className="PersonName">
-                                    {person.team} {person.username}
+                                    {person.username} | {person.position}
                                   </div>
                                 </div>
                               ))}
@@ -504,6 +504,7 @@ const MessageSidebar: React.FC = () => {
                                     }}
                                   />
                                   <div className="TeamName">{teamName}</div>
+                                  <div className="VerticalLine"></div>
                                 </div>
                               )}
                               {filteredData[companyName][departmentName][
@@ -541,7 +542,7 @@ const MessageSidebar: React.FC = () => {
                                     alt="usericondark"
                                   />
                                   <div className="PersonName">
-                                    {person.team} {person.username}
+                                    {person.username} | {person.position}
                                   </div>
                                 </div>
                               ))}
