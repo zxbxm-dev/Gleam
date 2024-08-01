@@ -183,13 +183,10 @@
             height: 35px;
             border-radius: 50px;
           }
+        }
 
-          .Message-Me {
-            margin-left: 5px;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-          }
+        img {
+          cursor: pointer;
         }
       }
       &.selected {
