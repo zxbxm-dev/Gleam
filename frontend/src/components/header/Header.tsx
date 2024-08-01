@@ -50,9 +50,9 @@ const Header = () => {
       </div>
 
       <div className="header-right">
-        <div className="MessageTab" onClick={() => window.open('http://localhost:3000/message', '_blank')}>
+        {/* <div className="MessageTab" onClick={() => window.open('http://localhost:3000/message', '_blank')}>
           <img src={MessageIcon} alt="MessageIcon" />
-        </div>
+        </div> */}
         <div className="UserTab">
           <Popover>
             <PopoverTrigger>
