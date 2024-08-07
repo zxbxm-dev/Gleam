@@ -16,6 +16,9 @@ const getMyReports = async (req, res) => {
       where: {
         userId: userID,
       },
+      order: [
+        ['id','desc'],
+      ],
     });
     // 내가 참조로 들어간 문서 조회
     const referencedDocuments = await Report.findAll({
@@ -24,6 +27,9 @@ const getMyReports = async (req, res) => {
           [Op.like]: `%${username}%`,
         },
       },
+      order: [
+        ['id','desc'],
+      ],
     });
 
     // 문서 상태 설정
@@ -96,6 +102,9 @@ const getDocumentsToApprove = async (req, res) => {
           [Op.like]: `%${username}`, // 이름이 personSigning의 끝부분에 있는 경우
         },
       },
+      order: [
+        ['id','desc'],
+      ],
     });
 
     // 필터링: pending에 이름이 있는 문서는 다음 결재자의 이름을 가져옴
@@ -134,6 +143,9 @@ console.log(req.query);
           { pending: { [Op.like]: `%${username}%` } },
         ],
       },
+      order: [
+        ['id','desc'],
+      ],
     });
 
     const reportsToSend = reports.map((report) => report.toJSON());
@@ -165,6 +177,9 @@ const getRejectedDocuments = async (req, res) => {
           { username: { [Op.ne]: username } } // 작성자가 현재 사용자가 아닌 문서만 선택
         ],
       },
+      order: [
+        ['id','desc'],
+      ],
     });
 
     const reportsToSend = reports.map((report) => report.toJSON());
@@ -190,6 +205,9 @@ const getApprovedDocuments = async (req, res) => {
           { completed: { [Op.like]: `%${username}%` } },
         ],
       },
+      order: [
+        ['id','desc'],
+      ],
     });
 
     const reportsToSend = reports.map((report) => report.toJSON());

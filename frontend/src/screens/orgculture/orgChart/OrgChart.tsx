@@ -30,6 +30,13 @@ interface Person {
   attachment: string;
 }
 
+const formatPhoneNumber = (phoneNumber: string) => {
+  if (phoneNumber.length === 11) {
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7)}`;
+  }
+  return phoneNumber
+};
+
 const MemberPopover: React.FC<{ member: Person, isOpen: boolean, onOpen: () => void, onClose: () => void }> = ({ member, isOpen, onOpen, onClose }) => (
   <Popover
     isOpen={isOpen}
@@ -53,7 +60,7 @@ const MemberPopover: React.FC<{ member: Person, isOpen: boolean, onOpen: () => v
           <div className='custom_popover_body_right'>
             <div className='custom_popover_body_right_div'>
               <div>연락처</div>
-              <div>{member.phoneNumber}</div>
+              <div>{formatPhoneNumber(member.phoneNumber || 'N/A')}</div>
             </div>
             <div className='custom_popover_body_right_div'>
               <div>메일주소</div>
@@ -145,7 +152,7 @@ const OrgChart = () => {
                       dept={'대표이사'}
                       name={ceo.username}
                       attachment={ceo?.attachment}
-                      phone={personData.find(person => person.position === '대표이사')?.phoneNumber || 'N/A'}
+                      phone={formatPhoneNumber(personData.find(person => person.position === '대표이사')?.phoneNumber || 'N/A')}
                       mail={personData.find(person => person.position === '대표이사')?.usermail || 'N/A'}
                     />
                   )
@@ -159,7 +166,7 @@ const OrgChart = () => {
                       dept={'임원'}
                       name={exec.username}
                       attachment={exec?.attachment}
-                      phone={personData.find(person => person.position === '이사')?.phoneNumber || 'N/A'}
+                      phone={formatPhoneNumber(personData.find(person => person.position === '이사')?.phoneNumber || 'N/A')}
                       mail={personData.find(person => person.position === '이사')?.usermail || 'N/A'}
                     />
                   )
@@ -174,7 +181,7 @@ const OrgChart = () => {
                       dept={devHead.department}
                       name={devHead.username}
                       attachment={devHead?.attachment}
-                      phone={personData.find(person => (person.position === '부서장') && (person.department === '개발부'))?.phoneNumber || 'N/A'}
+                      phone={formatPhoneNumber(personData.find(person => (person.position === '부서장') && (person.department === '개발부'))?.phoneNumber || 'N/A')}
                       mail={personData.find(person => (person.position === '부서장') && (person.department === '개발부'))?.usermail || 'N/A'}
                     />
                   )

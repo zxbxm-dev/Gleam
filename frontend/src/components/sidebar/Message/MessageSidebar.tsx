@@ -15,7 +15,7 @@ import {
 } from "../../../assets/images/index";
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
-import CustomModal from "../../modal/CustomModal";
+import NewChatModal from "./NewChatModal";
 
 export interface Person {
   userId: string;
@@ -27,6 +27,7 @@ export interface Person {
   usermail?: string;
   entering: Date;
   attachment: string;
+  company: string;
 }
 
 interface User {
@@ -55,6 +56,7 @@ const MessageSidebar: React.FC = () => {
   const [isWholeMemberChecked, setIsWholeMemeberChecked] =
     useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
 
   const user: User = useRecoilValue(userState) as User;
   const setSelectedPerson = useSetRecoilState(selectedPersonState);
@@ -80,10 +82,6 @@ const MessageSidebar: React.FC = () => {
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    console.log("현재 인원>>", newChatChosenUsers);
-  }, [newChatChosenUsers]);
 
   const toggleDepartmentExpansion = (departmentName: string) => {
     setExpandedDepartments((prevExpandedDepartments) => ({
@@ -179,16 +177,21 @@ const MessageSidebar: React.FC = () => {
   };
 
   const groupByDepartmentAndTeam = (data: Person[]) => {
-    const grouped: { [department: string]: { [team: string]: Person[] } } = {};
+    const grouped: {
+      [company: string]: { [department: string]: { [team: string]: Person[] } };
+    } = {};
 
     data.forEach((person) => {
-      if (!grouped[person.department]) {
-        grouped[person.department] = {};
+      if (!grouped[person.company]) {
+        grouped[person.company] = {};
       }
-      if (!grouped[person.department][person.team]) {
-        grouped[person.department][person.team] = [];
+      if (!grouped[person.company][person.department]) {
+        grouped[person.company][person.department] = {};
       }
-      grouped[person.department][person.team].push(person);
+      if (!grouped[person.company][person.department][person.team]) {
+        grouped[person.company][person.department][person.team] = [];
+      }
+      grouped[person.company][person.department][person.team].push(person);
     });
 
     return grouped;
@@ -197,25 +200,34 @@ const MessageSidebar: React.FC = () => {
   const groupedData = personData ? groupByDepartmentAndTeam(personData) : {};
 
   const filterDataBySearchQuery = (data: {
-    [department: string]: { [team: string]: Person[] };
+    [company: string]: { [department: string]: { [team: string]: Person[] } };
   }) => {
     if (!searchQuery) return data;
-    const filtered: { [department: string]: { [team: string]: Person[] } } = {};
+    const filtered: {
+      [company: string]: { [department: string]: { [team: string]: Person[] } };
+    } = {};
 
-    Object.keys(data).forEach((departmentName) => {
-      Object.keys(data[departmentName]).forEach((teamName) => {
-        const filteredPersons = data[departmentName][teamName].filter(
-          (person) =>
-            person.username.includes(searchQuery) ||
-            person.department.includes(searchQuery) ||
-            person.team.includes(searchQuery)
-        );
-        if (filteredPersons.length > 0) {
-          if (!filtered[departmentName]) {
-            filtered[departmentName] = {};
+    Object.keys(data).forEach((companyName) => {
+      Object.keys(data[companyName]).forEach((departmentName) => {
+        Object.keys(data[companyName][departmentName]).forEach((teamName) => {
+          const filteredPersons = data[companyName][departmentName][
+            teamName
+          ].filter(
+            (person) =>
+              person.username.includes(searchQuery) ||
+              person.department.includes(searchQuery) ||
+              person.team.includes(searchQuery)
+          );
+          if (filteredPersons.length > 0) {
+            if (!filtered[companyName]) {
+              filtered[companyName] = {};
+            }
+            if (!filtered[companyName][departmentName]) {
+              filtered[companyName][departmentName] = {};
+            }
+            filtered[companyName][departmentName][teamName] = filteredPersons;
           }
-          filtered[departmentName][teamName] = filteredPersons;
-        }
+        });
       });
     });
 
@@ -223,7 +235,6 @@ const MessageSidebar: React.FC = () => {
   };
 
   const filteredData = filterDataBySearchQuery(groupedData);
-  console.log("filteredData", filteredData);
 
   return (
     <div className="message-sidebar">
@@ -265,8 +276,12 @@ const MessageSidebar: React.FC = () => {
           userName={user.username}
           userPosition={user.position}
           onPersonClick={handlePersonClick}
+          isNotibarActive={isNotibarActive}
+          setIsNotibarActive={setIsNotibarActive}
         />
       ) : (
+        // const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
+
         <p>Loading...</p>
       )}
       <img
@@ -280,186 +295,11 @@ const MessageSidebar: React.FC = () => {
         }}
       />
 
-      <CustomModal
-        isOpen={openModal}
-        onClose={() => setOpenModal(false)}
-        header={"새 대화방 생성"}
-        headerTextColor="white"
-        footer1={"확인"}
-        footer1Class="back-green-btn"
-        //onFooter1Click={handleSubmit}
-        footer2={"취소"}
-        footer2Class="gray-btn"
-        onFooter2Click={() => setOpenModal(false)}
-        width="400px"
-        height="431px"
-      >
-        <div className="body-container New-Chat-Room-Body">
-          <div className="New-Chat-Room">
-            <input
-              placeholder="(필수) 대화방 이름을 입력해주세요."
-              className="TextInputCon"
-              //onChange={handleTitleChange}
-            />
-          </div>
-          <div className="New-Chat-Room">
-            <div className="Right-Button-Con">
-              <img src={SearchIcon} className="SearchIcon" alt="searchIcon" />
-              <input
-                placeholder="대화상대 검색"
-                className="LeftTextInput"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="WholeMemberCheckBoxCon">
-              <img
-                className="CheckBox"
-                src={isWholeMemberChecked ? CheckBox_Active : CheckBox}
-                alt="checkBoxIcon"
-                onClick={() => {
-                  setIsWholeMemeberChecked(!isWholeMemberChecked);
-                  newChatChosenUsers === personData
-                    ? setNewChatChosenUsers(null)
-                    : setNewChatChosenUsers(personData);
-                }}
-              />
-              전체 멤버
-            </div>
-          </div>
-          <div className="PeopleSearchCon">
-            <div className="LeftEmployCon">
-              {Object.keys(filteredData).map((departmentName) => (
-                <div key={departmentName}>
-                  {departmentName.trim() !== "" && (
-                    <div className="Department-Tab">
-                      <img src={DepartmentTabIcon} alt="DepartmentTabIcon" />
-                      {departmentName}
-                      <div className="VerticalLine"></div>
-                    </div>
-                  )}
-                  {Object.keys(filteredData[departmentName]).map((teamName) => (
-                    <div key={teamName}>
-                      {teamName.trim() !== "" && (
-                        <div className="Team-Tab">
-                          <img
-                            src={
-                              filteredData[departmentName][teamName].every(
-                                (person) => newChatChosenUsers?.includes(person)
-                              )
-                                ? CheckBox_Active
-                                : CheckBox
-                            }
-                            className="TeamCheckBox"
-                            alt="TeamCheckBox"
-                            onClick={() => {
-                              let allMembersSelected = filteredData[
-                                departmentName
-                              ][teamName].every((person) =>
-                                newChatChosenUsers?.includes(person)
-                              );
-                              setNewChatChosenUsers((prevUsers) => {
-                                if (prevUsers) {
-                                  return allMembersSelected
-                                    ? prevUsers.filter(
-                                        (user) =>
-                                          !filteredData[departmentName][
-                                            teamName
-                                          ].includes(user)
-                                      )
-                                    : [
-                                        ...prevUsers,
-                                        ...filteredData[departmentName][
-                                          teamName
-                                        ].filter(
-                                          (person) =>
-                                            !prevUsers.includes(person)
-                                        ),
-                                      ];
-                                } else {
-                                  return filteredData[departmentName][teamName];
-                                }
-                              });
-                            }}
-                          />
-                          <div className="TeamName">{teamName}</div>
-                        </div>
-                      )}
-                      {filteredData[departmentName][teamName].map((person) => (
-                        <div className="PersonCon" key={person.userId}>
-                          <img
-                            src={
-                              isWholeMemberChecked ||
-                              newChatChosenUsers?.includes(person)
-                                ? CheckBox_Active
-                                : CheckBox
-                            }
-                            className="PersonCheckBox"
-                            alt="PersonCheckBox"
-                            onClick={() =>
-                              setNewChatChosenUsers((prevUsers) =>
-                                prevUsers
-                                  ? prevUsers.includes(person)
-                                    ? prevUsers.filter(
-                                        (user) => user !== person
-                                      )
-                                    : [...prevUsers, person]
-                                  : [person]
-                              )
-                            }
-                          />
-                          <img
-                            src={
-                              person.attachment
-                                ? person.attachment
-                                : UserIcon_dark
-                            }
-                            className="ProfileIcon"
-                            alt="usericondark"
-                          />
-                          <div className="PersonName">
-                            {person.team} {person.username}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <div className="RightSelectedCon">
-              <div className="RightTopText">
-                선택인원{" "}
-                <span>
-                  ({newChatChosenUsers === null ? 0 : newChatChosenUsers.length}
-                  명)
-                </span>
-              </div>
-
-              <div className="ChosenPeople">
-                {newChatChosenUsers?.map((person) => (
-                  <div className="ChosenOne" key={person.userId}>
-                    <img
-                      src={XIcon}
-                      onClick={() =>
-                        setNewChatChosenUsers((prevUsers) =>
-                          prevUsers !== null
-                            ? prevUsers.filter((user) => user !== person)
-                            : []
-                        )
-                      }
-                    />
-
-                    <div>
-                      {person.team} {person.username}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </CustomModal>
+      <NewChatModal
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        filteredData={filteredData}
+      />
     </div>
   );
 };

@@ -81,6 +81,72 @@ const Message = () => {
     },
   ];
 
+  const DummyPeoples = [
+    {
+      userId: "qw506799",
+      username: "박세준",
+      usermail: "qw123456789@four-chains.com",
+      phoneNumber: "01012345678",
+      company: "",
+      department: "",
+      team: "",
+      position: "대표이사",
+      spot: "대표이사",
+      question1: "1",
+      question2: "1",
+      attachment: "http://localhost:3001/uploads/제목 없음.png",
+      Sign: "http://localhost:3001/uploads/images.jpg",
+      status: "approved",
+      entering: "2024-07-28T00:00:00.000Z",
+      leavedate: null,
+      createdAt: "2024-07-28T10:46:16.000Z",
+      updatedAt: "2024-07-31T10:46:48.000Z",
+      isAdmin: true,
+    },
+    {
+      userId: "qwe1234",
+      username: "테스트1",
+      usermail: "qwe1234@four-chains.com",
+      phoneNumber: "0101234324",
+      company: "본사",
+      department: "개발부",
+      team: "개발 1팀",
+      position: "사원",
+      spot: "사원",
+      question1: "1",
+      question2: "1",
+      attachment: null,
+      Sign: null,
+      status: "approved",
+      entering: "2024-07-29T00:00:00.000Z",
+      leavedate: null,
+      createdAt: "2024-07-29T11:29:54.000Z",
+      updatedAt: "2024-07-29T11:29:54.000Z",
+      isAdmin: false,
+    },
+    {
+      userId: "qwe12345",
+      username: "테스트2",
+      usermail: "qwewq4e2@four-chains.com",
+      phoneNumber: "01012344444",
+      company: "본사",
+      department: "개발부",
+      team: "개발 1팀",
+      position: "사원",
+      spot: "사원",
+      question1: "1",
+      question2: "1",
+      attachment: null,
+      Sign: null,
+      status: "approved",
+      entering: "2024-07-29T00:00:00.000Z",
+      leavedate: null,
+      createdAt: "2024-07-29T11:30:34.000Z",
+      updatedAt: "2024-07-29T11:30:34.000Z",
+      isAdmin: false,
+    },
+  ];
+
   const NoticeNameList: { [key: string]: string } = {
     Mail: "Mail - Notification",
     WorkReport: "Work Report - Notification",
@@ -98,8 +164,8 @@ const Message = () => {
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
     useState<boolean>(false);
   const user = useRecoilValue(userState);
-  console.log("uer", user);
   const selectedPerson = useRecoilValue(selectedPersonState);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = () => {
     if (messageInput.trim() !== "") {
@@ -117,6 +183,13 @@ const Message = () => {
     }
   };
 
+  useEffect(() => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
     <div className="Message-contents">
       <div className="Message-header">
@@ -132,7 +205,7 @@ const Message = () => {
           )}
           <span>{selectedPerson.position}</span>
         </div>
-        {selectedPerson && (
+        {selectedPerson && selectedPerson.username !== "통합 알림" && (
           <img
             src={UserManagementIcon}
             className="UserManagementIcon"
@@ -143,7 +216,7 @@ const Message = () => {
           />
         )}
       </div>
-      <div className="Message-container">
+      <div className="Message-container" ref={messageContainerRef}>
         {selectedPerson.username !== "통합 알림" &&
           messages.map((message, index) => (
             <div key={index} className="Message">
@@ -184,21 +257,22 @@ const Message = () => {
               </div>
             </div>
           ))}
-
-        <div className="Message-Input">
-          <div className="Input-Outer">
-            <input
-              type="text"
-              placeholder="메시지를 입력하세요."
-              value={messageInput}
-              onChange={(e) => setMessageInput(e.target.value)}
-              onKeyDown={handleInputKeyPress}
-            />
-            <div className="send-btn" onClick={handleSendMessage}>
-              전송
+        {selectedPerson.username !== "통합 알림" && (
+          <div className="Message-Input">
+            <div className="Input-Outer">
+              <input
+                type="text"
+                placeholder="메시지를 입력하세요."
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+                onKeyDown={handleInputKeyPress}
+              />
+              <div className="send-btn" onClick={handleSendMessage}>
+                전송
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* 인원관리 */}
@@ -217,30 +291,49 @@ const Message = () => {
         </div>
         <div className="AddPerson-tab">+ 인원 추가하기</div>
         <div className="ChatRoom-Members">
-          <Popover placement="left-start">
-            <div className="OneMember">
-              <div className="AttachWithName">
-                <img
-                  src={UserIcon_dark}
-                  alt="UserIcon_dark"
-                  className="AttachIcon"
-                />
-                <span>개발 1팀 장현지</span>
-                <img src={AdminIcon} alt="Admin_Icon" className="AdminIcon" />
+          {DummyPeoples.map((onePerson, index) => (
+            <Popover placement="left-start">
+              <div className="OneMember">
+                <div className="AttachWithName">
+                  <img
+                    src={UserIcon_dark}
+                    alt="UserIcon_dark"
+                    className="AttachIcon"
+                  />
+                  <span>
+                    {onePerson.team} {onePerson.username}
+                  </span>
+                  {onePerson.isAdmin ? (
+                    <img
+                      src={AdminIcon}
+                      alt="Admin_Icon"
+                      className="AdminIcon"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <PopoverTrigger>
+                  <img
+                    src={MessageMenu}
+                    alt="MenuIcon"
+                    className="OptionIcon"
+                  />
+                </PopoverTrigger>
+                <Portal>
+                  <PopoverContent
+                    className="PersonSide_popover Management"
+                    _focus={{ boxShadow: "none" }}
+                  >
+                    <div className={`Message-OnClick-Menu`}>
+                      <div className="OutOfChat">내보내기</div>
+                      <div className="ChangeAdmin">관리자 변경</div>
+                    </div>
+                  </PopoverContent>
+                </Portal>
               </div>
-              <PopoverTrigger>
-                <img src={MessageMenu} alt="MenuIcon" className="OptionIcon" />
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent
-                  className="PersonSide_popover PopPerson"
-                  _focus={{ boxShadow: "none" }}
-                >
-                  <div className="PopPerson">내보내기</div>
-                </PopoverContent>
-              </Portal>
-            </div>
-          </Popover>
+            </Popover>
+          ))}
         </div>
       </div>
     </div>

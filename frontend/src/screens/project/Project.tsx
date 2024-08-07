@@ -47,6 +47,7 @@ const Project = () => {
   const [isDeletePjtModalOpen, setDeletePjtModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const [EditForceMessage, setEditForceMessage] = useState(false);
 
   const [persondata, setPersonData] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState(0);
@@ -110,7 +111,7 @@ const Project = () => {
     setAllReferrers([]);
     setStartDate(null);
     setEndDate(null);
-  }
+  };
 
   useEffect(() => {
     if (Array.isArray(projects)) {
@@ -355,21 +356,21 @@ const Project = () => {
 
   const togglestate = () => {
     setStateIsOpen(!stateIsOpen);
-  }
+  };
 
   const togglePjtstate = () => {
     setPjtStateIsOpen(!pjtstateIsOpen);
-  }
+  };
 
   const handleStateSelect = (option: string) => {
     setSelectedStateOption(option);
     setStateIsOpen(false);
-  }
+  };
 
   const handlePjtStateSelect = (option: string) => {
     setpjtStatus(option);
     setPjtStateIsOpen(false);
-  }
+  };
 
   const handleRightClick = (project: ProjectData, event: any) => {
     setRightClickedProjects(project);
@@ -636,7 +637,7 @@ const Project = () => {
   };
 
   // 메인 프로젝트 수정
-  const handleEditProject = (mainprojectIndex: any) => {
+  const handleEditProject = (mainprojectIndex: any, force = false) => {
     let projectStatus;
 
     if (pjtStatus === '진행 예정') {
@@ -659,6 +660,7 @@ const Project = () => {
       endDate: endDate,
       memo: pjtMemo,
       status: projectStatus,
+      force: force,
     }
 
     EditMainProject(mainprojectIndex, pjtData)
@@ -668,9 +670,17 @@ const Project = () => {
       resetForm();
     })
     .catch((error) => {
-      console.log('메인 프로젝트 수정 실패', error)
+      console.log('메인 프로젝트 수정 실패', error);
+      if (error.response) {
+        const { status } = error.response;
+        switch (status ) {
+          case 420:
+            setEditForceMessage(true);
+            break;
+        }
+      }
     })
-  }
+  };
 
   // 서브 프로젝트 수정
   const handleEditSubProject = (mainprojectIndex: any, subprojectIndex: any) => {
@@ -707,8 +717,23 @@ const Project = () => {
     .catch((error) => {
       console.log('서브 프로젝트 수정 실패', error);
       setClickedProjects(null);
+      if (error.response) {
+        const { status } = error.response;
+        const { message } = error.response.data;
+        switch (status ) {
+          case 418:
+            setStatusMessage(message);
+            setIsStatusModalOpen(true);
+            break;
+
+          case 419:
+            setStatusMessage(message);
+            setIsStatusModalOpen(true);
+            break;
+        }
+      }
     })
-  }
+  };
 
   // 메인 프로젝트 삭제
   const hanelDeleteMainPjt = (mainprojectIndex: any) => {
@@ -720,8 +745,7 @@ const Project = () => {
     .catch(error => {
       console.log('메인 프로젝트 삭제 실패', error);
     })
-
-  }
+  };
 
   // 서브 프로젝트 삭제
   const handleDeleteSubPjt = (mainprojectIndex: any, subprojectIndex: any) => {
@@ -733,8 +757,7 @@ const Project = () => {
     .catch(error => {
       console.log('서브 프로젝트 삭제 실패', error);
     })
-
-  }
+  };
 
   // 체크박스로 선택한 프로젝트 삭제
   const handleDeleteCheckboxPjt = (selectedProjects: any) => {
@@ -849,7 +872,7 @@ const Project = () => {
                       {(Array.isArray(projects) ? projects : []).map((project, index) => (
                         <React.Fragment key={project.mainprojectIndex}>
                           <tr className="board_content" onContextMenu={(e) => handleRightClick(project, e)}
-                            style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? 'gray' : ''}}
+                            style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
                           >
                             <td>
                               <label className="custom-checkbox">
@@ -922,8 +945,8 @@ const Project = () => {
                                   </div>
                                 </td>
                                 <td>{subProject.Leader}</td>
-                                <td>{new Date(subProject.startDate).getFullYear() + '-' + String(new Date(subProject.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subProject.startDate).getDate()).padStart(2, '0')}</td>
-                                <td>{new Date(subProject.endDate).getFullYear() + '-' + String(new Date(subProject.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subProject.endDate).getDate()).padStart(2, '0')}</td>
+                                <td>{subProject?.startDate ? new Date(subProject.startDate).getFullYear() + '-' + String(new Date(subProject.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subProject.startDate).getDate()).padStart(2, '0') : null}</td>
+                                <td>{subProject?.endDate ? new Date(subProject.endDate).getFullYear() + '-' + String(new Date(subProject.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subProject.endDate).getDate()).padStart(2, '0') : null}</td>
                               </tr>
                             ))
                           )}
@@ -1274,7 +1297,7 @@ const Project = () => {
         header={rightclickedProjects?.projectName}
         footer1={'편집'}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditPjtModalOpen(false); resetForm(); handleEditProject(rightclickedProjects?.mainprojectIndex || 0)}}
+        onFooter1Click={() => { setEditPjtModalOpen(false); handleEditProject(rightclickedProjects?.mainprojectIndex || 0)}}
         footer2={'삭제'}
         footer2Class="red-btn"
         onFooter2Click={() => { setEditPjtModalOpen(false); resetForm(); hanelDeleteMainPjt(rightclickedProjects?.mainprojectIndex || 0)}}
@@ -1714,6 +1737,29 @@ const Project = () => {
           <span>{statusMessage}</span>
         </div>
       </CustomModal>
+
+      <CustomModal
+        isOpen={EditForceMessage}
+        onClose={() => {setEditForceMessage(false); resetForm();}}
+        header={'알림'}
+        footer1={'예'}
+        footer1Class="gray-btn"
+        onFooter1Click={() => {
+          handleEditProject(rightclickedProjects?.mainprojectIndex, true); 
+          setEditForceMessage(false); 
+        }}
+        footer2={'아니오'}
+        footer2Class="red-btn"
+        onFooter2Click={() => {setEditForceMessage(false); resetForm();}}
+        width="350px"
+        height="200px"
+      >
+        <div className="text-center">
+          <span>프로젝트 기간 설정이 올바르지 않습니다.</span>
+          <span>그래도 수정하시겠습니까?</span>
+        </div>
+      </CustomModal>
+
     </div>
   );
 };

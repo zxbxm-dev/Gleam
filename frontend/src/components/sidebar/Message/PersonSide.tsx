@@ -82,11 +82,23 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     개발부: ["개발 1팀", "개발 2팀"],
     마케팅부: ["디자인팀", "기획팀"],
     관리부: ["관리팀", "지원팀", "시설팀"],
-    "R&D 센터": ["암호 연구팀", "동형분석 연구팀", "크립토 블록체인 연구팀"],
+  };
+
+  const RndDepartments = [
+    "알고리즘 연구실",
+    "동형분석 연구실",
+    "블록체인 연구실",
+  ];
+
+  const RndDepartmentTeams: { [key: string]: string[] } = {
+    "알고리즘 연구실": ["암호 연구팀", "AI 연구팀"],
+    "동형분석 연구실": ["동형분석 연구팀"],
+    "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
   };
 
   return (
     <ul className="Sidebar-Ms">
+      {/*
       <li
         className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
         onClick={() => {
@@ -115,15 +127,16 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
         </div>
         <img className="Message-Me" src={MessageMe} alt="message-me" />
       </li>
+        */}
+
       {personData
-        .filter((person) => !person.department)
+        .filter((person) => !person.department && person.company !== "R&D")
         .map((person) => (
-          <Popover placement="right">
+          <Popover placement="right" key={person.userId}>
             <li
               className={`No-dept ${
                 selectedUserId === person.userId ? "selected" : ""
               }`}
-              key={person.userId}
               onClick={() => {
                 onPersonClick(
                   person.username,
@@ -182,7 +195,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
             {expandedDepartments[department] ? (
               <img src={MenuArrow_down} alt="down" />
             ) : (
-              <img src={MenuArrow_right} alt="up" />
+              <img src={MenuArrow_right} alt="right" />
             )}{" "}
             {department}
           </button>
@@ -207,14 +220,13 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         (person) =>
                           person.department === department &&
                           person.team === team && (
-                            <Popover placement="right">
+                            <Popover placement="right" key={person.userId}>
                               <li
                                 className={`No-dept ${
                                   selectedUserId === person.userId
                                     ? "selected"
                                     : ""
                                 }`}
-                                key={person.userId}
                                 onClick={() => {
                                   onPersonClick(
                                     person.username,
@@ -235,9 +247,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     }
                                     alt={`${person.username}`}
                                   />
-                                  {person.team
-                                    ? `${person.team}`
-                                    : `${person.department}`}{" "}
                                   {person.username}
                                 </div>
                                 <PopoverTrigger>
@@ -284,6 +293,195 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
           )}
         </li>
       ))}
+
+      <li className="DeptTeams" key="R&D">
+        <button
+          className="downBtn"
+          onClick={() => toggleDepartmentExpansion("R&D")}
+        >
+          {expandedDepartments["R&D"] ? (
+            <img src={MenuArrow_down} alt="down" />
+          ) : (
+            <img src={MenuArrow_right} alt="right" />
+          )}{" "}
+          R&D 센터
+        </button>
+        {expandedDepartments["R&D"] && (
+          <ul className="DeptDown">
+            {personData
+              .filter(
+                (person) => !person.department && person.company === "R&D"
+              )
+              .map((person) => (
+                <Popover placement="right" key={person.userId}>
+                  <li
+                    className={`No-dept ${
+                      selectedUserId === person.userId ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      onPersonClick(
+                        person.username,
+                        person.team,
+                        person.department,
+                        person.position
+                      );
+                      setSelectedUserId(person.userId);
+                      setIsNotibarActive(false);
+                    }}
+                  >
+                    <div className="No-Left">
+                      <img
+                        src={
+                          person.attachment ? person.attachment : UserIcon_dark
+                        }
+                        alt={`${person.username}`}
+                      />
+                      {person.username}
+                    </div>
+                    <PopoverTrigger>
+                      <img
+                        className="Message-Menu"
+                        src={MessageMenu}
+                        alt="message-menu"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveMenuUserId((prev) =>
+                            prev === person.userId ? null : person.userId
+                          );
+                        }}
+                      />
+                    </PopoverTrigger>
+                    <Portal>
+                      <PopoverContent
+                        className="PersonSide_popover"
+                        _focus={{ boxShadow: "none" }}
+                      >
+                        <div
+                          ref={menuRef}
+                          className={`Message-OnClick-Menu ${
+                            activeMenuUserId === person.userId ? "active" : ""
+                          }`}
+                        >
+                          대화 나가기
+                        </div>
+                      </PopoverContent>
+                    </Portal>
+                  </li>
+                </Popover>
+              ))}
+
+            {RndDepartments.map((department) => (
+              <li className="DeptTeams" key={department}>
+                <button
+                  className="downBtn"
+                  onClick={() => toggleDepartmentExpansion(department)}
+                >
+                  {expandedDepartments[department] ? (
+                    <img src={MenuArrow_down} alt="down" />
+                  ) : (
+                    <img src={MenuArrow_right} alt="right" />
+                  )}{" "}
+                  {department}
+                </button>
+                {expandedDepartments[department] && (
+                  <ul className="DeptDown">
+                    {RndDepartmentTeams[department].map((team) => (
+                      <li key={team}>
+                        <button
+                          className="downTeamBtn"
+                          onClick={() => toggleTeamExpansion(team)}
+                        >
+                          {expandedTeams[team] ? (
+                            <img src={MenuArrow_down} alt="down" />
+                          ) : (
+                            <img src={MenuArrow_right} alt="right" />
+                          )}{" "}
+                          {team}
+                        </button>
+                        {expandedTeams[team] && (
+                          <ul>
+                            {personData
+                              .filter(
+                                (person) =>
+                                  person.department === department &&
+                                  person.team === team
+                              )
+                              .map((person) => (
+                                <Popover placement="right" key={person.userId}>
+                                  <li
+                                    className={`No-dept ${
+                                      selectedUserId === person.userId
+                                        ? "selected"
+                                        : ""
+                                    }`}
+                                    onClick={() => {
+                                      onPersonClick(
+                                        person.username,
+                                        person.team,
+                                        person.department,
+                                        person.position
+                                      );
+                                      setSelectedUserId(person.userId);
+                                      setIsNotibarActive(false);
+                                    }}
+                                  >
+                                    <div className="No-Left">
+                                      <img
+                                        src={
+                                          person.attachment
+                                            ? person.attachment
+                                            : UserIcon_dark
+                                        }
+                                        alt={`${person.username}`}
+                                      />
+                                      {person.username}
+                                    </div>
+                                    <PopoverTrigger>
+                                      <img
+                                        className="Message-Menu"
+                                        src={MessageMenu}
+                                        alt="message-menu"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setActiveMenuUserId((prev) =>
+                                            prev === person.userId
+                                              ? null
+                                              : person.userId
+                                          );
+                                        }}
+                                      />
+                                    </PopoverTrigger>
+                                    <Portal>
+                                      <PopoverContent
+                                        className="PersonSide_popover"
+                                        _focus={{ boxShadow: "none" }}
+                                      >
+                                        <div
+                                          ref={menuRef}
+                                          className={`Message-OnClick-Menu ${
+                                            activeMenuUserId === person.userId
+                                              ? "active"
+                                              : ""
+                                          }`}
+                                        >
+                                          대화 나가기
+                                        </div>
+                                      </PopoverContent>
+                                    </Portal>
+                                  </li>
+                                </Popover>
+                              ))}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
     </ul>
   );
 };

@@ -40,13 +40,13 @@ const AttendanceRegist = () => {
   const user = useRecoilValue(userState);
   const location = useLocation();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState((new Date().getMonth() + 1) % 3);
+  const [activeTab, setActiveTab] = useState((new Date().getMonth()) % 3);
   const [tabHeights, setTabHeights] = useState<Record<number, string>>({0: '41px', 1: '35px', 2: '35px'});
   const [tabMargins, setTabMargins] = useState<Record<number, string>>({0: '6px', 1: '6px', 2: '6px'});
   const [isLoading, setIsLoading] = useState(true);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [isAddAttend, setAddAttend] = useState(false);
-  const [selectedScreen, setSelectedScreen] = useState('R&D');
+  const [selectedScreen, setSelectedScreen] = useState('');
   const [members, setMembers] = useState<Member[]>([]);
   const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
@@ -57,7 +57,7 @@ const AttendanceRegist = () => {
   const [explanRDHeight, setExplanRDHeight] = useState<number>(0);
   // 모달 창 입력값
   const { register, handleSubmit, reset, setValue } = useForm();
-
+  
   useEffect(() => {
     if (activeTab === 0) {
       setTabHeights({0: '41px', 1: '35px', 2: '35px'});
@@ -1069,7 +1069,7 @@ const onSubmit = (data: any) => {
           ) : null}
         </div>
 
-        {user.company === '본사' || selectedScreen !== 'R&D' ? (
+        {selectedScreen === 'R&D' || user.company === '본사' ? (
           <Tabs variant='enclosed' index={activeTab} onChange={(index) => setActiveTab(index)}>
             <TabList>
               {yearData.map((monthData, index) => (
