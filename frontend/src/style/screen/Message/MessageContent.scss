@@ -109,10 +109,17 @@
 
     .Message-Input {
       position: fixed;
+      display: flex;
+      flex-direction: row;
       bottom: 20px;
       right: 20px;
       width: calc(100% - 300px);
       background-color: #fff;
+
+      img {
+        cursor: pointer;
+        margin-right: 10px;
+      }
 
       .Input-Outer {
         display: flex;

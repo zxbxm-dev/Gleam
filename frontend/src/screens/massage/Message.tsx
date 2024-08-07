@@ -10,6 +10,7 @@ import {
   GearIcon,
   MessageMenu,
   AdminIcon,
+  FileIcon,
 } from "../../assets/images/index";
 import {
   Popover,
@@ -259,6 +260,7 @@ const Message = () => {
           ))}
         {selectedPerson.username !== "통합 알림" && (
           <div className="Message-Input">
+            <img src={FileIcon} alt="FileIcon" />
             <div className="Input-Outer">
               <input
                 type="text"
