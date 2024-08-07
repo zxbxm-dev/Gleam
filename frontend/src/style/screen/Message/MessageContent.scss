@@ -132,6 +132,7 @@
         border: 1px solid #cecece;
         border-radius: 5px;
         min-height: 51px;
+        max-height: 150px;
         width: 100%;
         padding-left: 15px;
 
@@ -141,11 +142,14 @@
           width: 95%;
           vertical-align: middle;
           height: auto;
+          max-height: 150px;
+          overflow-y: auto;
 
           &:empty:before,
           &:focus:empty:before {
             content: attr(data-placeholder);
             color: gray;
+            cursor: text;
           }
 
           &:focus {

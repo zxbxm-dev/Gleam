@@ -173,6 +173,8 @@ const Message = () => {
   const [files, setFiles] = useState<Files>();
 
   const handleSendMessage = () => {
+    console.log(messageInput.trim());
+
     if (messageInput.trim() !== "") {
       setMessages([...messages, messageInput.trim()]);
       setMessageInput("");
