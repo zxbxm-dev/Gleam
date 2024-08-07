@@ -10,6 +10,7 @@ import {
   GearIcon,
   MessageMenu,
   AdminIcon,
+  FileIcon,
 } from "../../assets/images/index";
 import {
   Popover,
@@ -167,6 +168,9 @@ const Message = () => {
   const selectedPerson = useRecoilValue(selectedPersonState);
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
+  type Files = string | File | null;
+  const [files, setFiles] = useState<Files[]>([]);
+
   const handleSendMessage = () => {
     if (messageInput.trim() !== "") {
       setMessages([...messages, messageInput.trim()]);
@@ -259,6 +263,7 @@ const Message = () => {
           ))}
         {selectedPerson.username !== "통합 알림" && (
           <div className="Message-Input">
+            <img src={FileIcon} alt="FileIcon" />
             <div className="Input-Outer">
               <input
                 type="text"

@@ -45,8 +45,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [paletteIndex, setPaletteIndex] = useState<number | null>(null);
 
   const latestChatString = localStorage.getItem("latestChat");
-  const latestChat = latestChatString ? JSON.parse(latestChatString) : null;
-  const [selectedChatRoom, setSelectedChatRoom] = useState(latestChat.username);
+  const latestChat = latestChatString
+    ? JSON.parse(latestChatString).username
+    : null;
+  const [selectedChatRoom, setSelectedChatRoom] = useState(latestChat);
 
   const ProfilePalette: string[] = [
     "#FF96EE",
