@@ -168,6 +168,9 @@ const Message = () => {
   const selectedPerson = useRecoilValue(selectedPersonState);
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
+  type Files = string | File | null;
+  const [files, setFiles] = useState<Files[]>([]);
+
   const handleSendMessage = () => {
     if (messageInput.trim() !== "") {
       setMessages([...messages, messageInput.trim()]);
