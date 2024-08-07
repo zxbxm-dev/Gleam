@@ -83,3 +83,4 @@ export { default as XIcon } from "./Message/XIcon.svg";
 export { default as UserManagementIcon } from "./Message/UserManagementIcon.svg";
 export { default as GearIcon } from "./Message/GearIcon.svg";
 export { default as AdminIcon } from "./Message/AdminIcon.svg";
+export { default as FileIcon } from "./Message/FileIcon.svg";
