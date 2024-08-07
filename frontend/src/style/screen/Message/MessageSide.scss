@@ -76,7 +76,7 @@
       }
 
       .Message-Menu {
-        cursor: pointer;
+        display: none;
       }
 
       .No-Left {
@@ -88,6 +88,13 @@
           width: 35px;
           height: 35px;
           border-radius: 50px;
+        }
+      }
+
+      &:hover {
+        .Message-Menu {
+          display: block;
+          cursor: pointer;
         }
       }
     }
@@ -196,8 +203,15 @@
           }
         }
 
-        img {
-          cursor: pointer;
+        .Message-Menu {
+          display: none;
+        }
+
+        &:hover {
+          .Message-Menu {
+            display: block;
+            cursor: pointer;
+          }
         }
       }
       &.selected {
