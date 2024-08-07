@@ -62,15 +62,6 @@
       }
     }
 
-    .Noti-bar {
-      cursor: pointer;
-      border-bottom: none;
-
-      &.active {
-        background-color: #efefef;
-      }
-    }
-
     .No-dept {
       display: flex;
       position: relative;
@@ -171,6 +162,14 @@
         width: 16px;
         height: 16px;
         border-image-width: 2px;
+      }
+    }
+    .Noti-bar {
+      cursor: pointer;
+      border-bottom: none;
+
+      &.active {
+        background-color: #efefef !important;
       }
     }
     .My-bar {

@@ -26,6 +26,8 @@ interface ChatDataTabProps {
     department: string,
     position: string
   ) => void;
+  isNotibarActive: boolean | null;
+  setIsNotibarActive: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
 const ChatDataTab: React.FC<ChatDataTabProps> = ({
@@ -36,6 +38,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   userName,
   onPersonClick,
   userPosition,
+  isNotibarActive,
+  setIsNotibarActive,
 }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [paletteIndex, setPaletteIndex] = useState<number | null>(null);
@@ -68,12 +72,36 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   ];
 
   const [profileName, setProfileName] = useState<string>("");
-  const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
+  const [profileDescription, setProfileDescription] = useState<string>("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfileName(e.target.value);
   };
+
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setProfileDescription(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (!profileName) {
+      alert("프로필 이름을 입력해주세요.");
+      return;
+    }
+
+    const payload = {
+      colorIndex: paletteIndex,
+      title: profileName,
+      description: profileDescription,
+    };
+
+    console.log("페이로드 >>", payload);
+
+    setOpenModal(false);
+  };
+
   return (
     <div className="chat-data-tab">
       <li
@@ -126,7 +154,12 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
               }}
             >
               {dummy.isGroupChat ? (
-                <div className="LogBox">
+                <div
+                  className="LogBox"
+                  onClick={() => {
+                    setIsNotibarActive(false);
+                  }}
+                >
                   <div className="Left">
                     <img
                       className="My-attach"
@@ -151,7 +184,12 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                   </PopoverTrigger>
                 </div>
               ) : (
-                <div className="LogBox">
+                <div
+                  className="LogBox"
+                  onClick={() => {
+                    setIsNotibarActive(false);
+                  }}
+                >
                   <div className="Left">
                     <img
                       className="My-attach"
@@ -198,7 +236,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
         headerTextColor="white"
         footer1={"수정"}
         footer1Class="green-btn"
-        //onFooter1Click={handleSubmit}
+        onFooter1Click={handleSubmit}
         footer2={"취소"}
         footer2Class="gray-btn"
         onFooter2Click={() => setOpenModal(false)}
@@ -247,7 +285,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             <textarea
               placeholder="(선택) 설명을 입력해주세요."
               className="TextInputCon large"
-              //onChange={handleTitleChange}
+              onChange={handleDescriptionChange}
             />
           </div>
         </div>
