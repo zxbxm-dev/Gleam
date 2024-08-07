@@ -84,3 +84,5 @@ export { default as UserManagementIcon } from "./Message/UserManagementIcon.svg"
 export { default as GearIcon } from "./Message/GearIcon.svg";
 export { default as AdminIcon } from "./Message/AdminIcon.svg";
 export { default as FileIcon } from "./Message/FileIcon.svg";
+export { default as GraySearchIcon } from "./Message/GraySearchIcon.svg";
+export { default as GoToBottomIcon } from "./Message/GotoBottom.svg";

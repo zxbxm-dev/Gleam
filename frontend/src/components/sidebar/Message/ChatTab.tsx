@@ -77,17 +77,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   ];
 
   const [profileName, setProfileName] = useState<string>("");
-  const [profileDescription, setProfileDescription] = useState<string>("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfileName(e.target.value);
-  };
-
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setProfileDescription(e.target.value);
   };
 
   const handleSubmit = () => {
@@ -99,7 +92,6 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const payload = {
       colorIndex: paletteIndex,
       title: profileName,
-      description: profileDescription,
     };
 
     console.log("페이로드 >>", payload);
@@ -285,13 +277,6 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
               placeholder="(필수) 대화방 이름을 입력해주세요."
               className="TextInputCon"
               onChange={handleNameChange}
-            />
-          </div>
-          <div className="ProfileSetting">
-            <textarea
-              placeholder="(선택) 설명을 입력해주세요."
-              className="TextInputCon large"
-              onChange={handleDescriptionChange}
             />
           </div>
         </div>

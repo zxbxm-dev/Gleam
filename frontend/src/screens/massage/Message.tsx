@@ -11,6 +11,8 @@ import {
   MessageMenu,
   AdminIcon,
   FileIcon,
+  GraySearchIcon,
+  GoToBottomIcon,
 } from "../../assets/images/index";
 import {
   Popover,
@@ -26,6 +28,7 @@ import {
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
+import { e } from "mathjs";
 
 const Message = () => {
   const DummyNotice: {
@@ -169,22 +172,49 @@ const Message = () => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
   type Files = string | File | null;
-  const [files, setFiles] = useState<Files[]>([]);
+  const [files, setFiles] = useState<Files>();
 
   const handleSendMessage = () => {
+    console.log(messageInput.trim());
+
     if (messageInput.trim() !== "") {
       setMessages([...messages, messageInput.trim()]);
       setMessageInput("");
+      const inputElement = document.querySelector(
+        ".text-input"
+      ) as HTMLDivElement;
+      if (inputElement) {
+        inputElement.innerText = "";
+      }
     }
   };
 
-  const handleInputKeyPress = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
+  const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" && event.shiftKey) {
+      return;
+    } else if (event.key === "Enter") {
       event.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    setMessageInput((e.target as HTMLDivElement).innerText);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFiles(event.target.files[0]);
+    }
+  };
+
+  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setFiles(event.dataTransfer.files[0]);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
   };
 
   useEffect(() => {
@@ -193,6 +223,10 @@ const Message = () => {
         messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    console.log("파일 >>", files);
+  }, [files]);
 
   return (
     <div className="Message-contents">
@@ -209,18 +243,30 @@ const Message = () => {
           )}
           <span>{selectedPerson.position}</span>
         </div>
-        {selectedPerson && selectedPerson.username !== "통합 알림" && (
+        <div className="UpperIconBar">
           <img
-            src={UserManagementIcon}
-            className="UserManagementIcon"
-            alt="UserManagementIcon"
-            onClick={() =>
-              setChatRoomPeopleManagement(!chatRoomPeopleManagement)
-            }
+            src={GraySearchIcon}
+            className="SearchIcon"
+            alt="GraySearchIcon"
           />
-        )}
+          {selectedPerson && selectedPerson.username !== "통합 알림" && (
+            <img
+              src={UserManagementIcon}
+              className="UserManagementIcon"
+              alt="UserManagementIcon"
+              onClick={() =>
+                setChatRoomPeopleManagement(!chatRoomPeopleManagement)
+              }
+            />
+          )}
+        </div>
       </div>
-      <div className="Message-container" ref={messageContainerRef}>
+      <div
+        className="Message-container"
+        ref={messageContainerRef}
+        onDrop={handleFileDrop}
+        onDragOver={handleDragOver}
+      >
         {selectedPerson.username !== "통합 알림" &&
           messages.map((message, index) => (
             <div key={index} className="Message">
@@ -263,17 +309,38 @@ const Message = () => {
           ))}
         {selectedPerson.username !== "통합 알림" && (
           <div className="Message-Input">
-            <img src={FileIcon} alt="FileIcon" />
-            <div className="Input-Outer">
-              <input
-                type="text"
-                placeholder="메시지를 입력하세요."
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={handleInputKeyPress}
-              />
-              <div className="send-btn" onClick={handleSendMessage}>
-                전송
+            <img
+              className="GoToBottom"
+              src={GoToBottomIcon}
+              alt="GoToBottomIcon"
+            />
+            <div className="MessageTypeContainer">
+              {/* <label
+                htmlFor="file-upload"
+                style={{ cursor: "pointer", display: "flex", gap: "5px" }}
+              >
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="*"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+                <img src={FileIcon} alt="FileIcon" />
+              </label> */}
+              <div className="Input-Outer">
+                <div
+                  className="text-input"
+                  contentEditable="true"
+                  onInput={handleInput}
+                  onKeyDown={handleInputKeyPress}
+                  data-placeholder="메시지를 입력하세요. (Shift + Enter로 개행)"
+                >
+                  {" "}
+                </div>
+                <div className="send-btn" onClick={handleSendMessage}>
+                  전송
+                </div>
               </div>
             </div>
           </div>
@@ -331,7 +398,7 @@ const Message = () => {
                     _focus={{ boxShadow: "none" }}
                   >
                     <div className={`Message-OnClick-Menu`}>
-                      <div className="OutOfChat">내보내기</div>
+                      <div className="OutOfChat">내보 내기</div>
                       <div className="ChangeAdmin">관리자 변경</div>
                     </div>
                   </PopoverContent>
