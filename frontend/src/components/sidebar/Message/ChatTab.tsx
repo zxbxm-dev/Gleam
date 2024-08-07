@@ -43,7 +43,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [paletteIndex, setPaletteIndex] = useState<number | null>(null);
-  const [selectedChatRoom, setSelectedChatRoom] = useState("");
+
+  const latestChatString = localStorage.getItem("latestChat");
+  const latestChat = latestChatString ? JSON.parse(latestChatString) : null;
+  const [selectedChatRoom, setSelectedChatRoom] = useState(latestChat.username);
 
   const ProfilePalette: string[] = [
     "#FF96EE",
@@ -109,6 +112,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
         onClick={() => {
           onPersonClick("통합 알림", "", "", "");
           setSelectedUserId(null);
+          setSelectedChatRoom("통합 알림");
           setIsNotibarActive(true);
         }}
       >
