@@ -11,6 +11,8 @@ import {
   MessageMenu,
   AdminIcon,
   FileIcon,
+  GraySearchIcon,
+  GoToBottomIcon,
 } from "../../assets/images/index";
 import {
   Popover,
@@ -173,6 +175,8 @@ const Message = () => {
   const [files, setFiles] = useState<Files>();
 
   const handleSendMessage = () => {
+    console.log(messageInput.trim());
+
     if (messageInput.trim() !== "") {
       setMessages([...messages, messageInput.trim()]);
       setMessageInput("");
@@ -239,16 +243,23 @@ const Message = () => {
           )}
           <span>{selectedPerson.position}</span>
         </div>
-        {selectedPerson && selectedPerson.username !== "통합 알림" && (
+        <div className="UpperIconBar">
           <img
-            src={UserManagementIcon}
-            className="UserManagementIcon"
-            alt="UserManagementIcon"
-            onClick={() =>
-              setChatRoomPeopleManagement(!chatRoomPeopleManagement)
-            }
+            src={GraySearchIcon}
+            className="SearchIcon"
+            alt="GraySearchIcon"
           />
-        )}
+          {selectedPerson && selectedPerson.username !== "통합 알림" && (
+            <img
+              src={UserManagementIcon}
+              className="UserManagementIcon"
+              alt="UserManagementIcon"
+              onClick={() =>
+                setChatRoomPeopleManagement(!chatRoomPeopleManagement)
+              }
+            />
+          )}
+        </div>
       </div>
       <div
         className="Message-container"
@@ -298,31 +309,38 @@ const Message = () => {
           ))}
         {selectedPerson.username !== "통합 알림" && (
           <div className="Message-Input">
-            <label
-              htmlFor="file-upload"
-              style={{ cursor: "pointer", display: "flex", gap: "5px" }}
-            >
-              <input
-                id="file-upload"
-                type="file"
-                accept="*"
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-              />
-              <img src={FileIcon} alt="FileIcon" />
-            </label>
-            <div className="Input-Outer">
-              <div
-                className="text-input"
-                contentEditable="true"
-                onInput={handleInput}
-                onKeyDown={handleInputKeyPress}
-                data-placeholder="메시지를 입력하세요.."
+            <img
+              className="GoToBottom"
+              src={GoToBottomIcon}
+              alt="GoToBottomIcon"
+            />
+            <div className="MessageTypeContainer">
+              {/* <label
+                htmlFor="file-upload"
+                style={{ cursor: "pointer", display: "flex", gap: "5px" }}
               >
-                {" "}
-              </div>
-              <div className="send-btn" onClick={handleSendMessage}>
-                전송
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="*"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+                <img src={FileIcon} alt="FileIcon" />
+              </label> */}
+              <div className="Input-Outer">
+                <div
+                  className="text-input"
+                  contentEditable="true"
+                  onInput={handleInput}
+                  onKeyDown={handleInputKeyPress}
+                  data-placeholder="메시지를 입력하세요. (Shift + Enter로 개행)"
+                >
+                  {" "}
+                </div>
+                <div className="send-btn" onClick={handleSendMessage}>
+                  전송
+                </div>
               </div>
             </div>
           </div>
@@ -380,7 +398,7 @@ const Message = () => {
                     _focus={{ boxShadow: "none" }}
                   >
                     <div className={`Message-OnClick-Menu`}>
-                      <div className="OutOfChat">내보내기</div>
+                      <div className="OutOfChat">내보 내기</div>
                       <div className="ChangeAdmin">관리자 변경</div>
                     </div>
                   </PopoverContent>
