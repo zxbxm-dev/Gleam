@@ -6,30 +6,44 @@ const logger = require("morgan");
 const secure = require("express-force-https");
 const cors = require("cors");
 
+// Socket.IO와 HTTP 서버 설정
+const http = require("http");
+const { Server } = require("socket.io");
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 // 리다이렉트 라이브러리
 app.use(secure);
 
-//sequlize 동기화
+// Sequelize 동기화
 const { sequelize } = require("./lib/models");
 
 sequelize
   .sync({ force: false })
   .then(() => {
-    console.log("데이터 베이스 연결 성공");
+    console.log("데이터베이스 연결 성공");
   })
   .catch((err) => {
-    console.log(err);
+    console.error("데이터베이스 연결 실패:", err);
   });
 
-// 옵션 설정
+// Express 설정
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
-// 클라이언트 연결
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   cors({
@@ -40,34 +54,50 @@ app.use(
 );
 
 // 라우터 불러오기
-require("./lib/router/user")(app);
-require("./lib/router/expense")(app);
-require("./lib/router/noticeBoard")(app);
-require("./lib/router/attendance")(app);
-require("./lib/router/workLog")(app);
-require("./lib/router/employment")(app);
-require("./lib/router/performance")(app);
-require("./lib/router/management")(app);
-require("./lib/router/meetingRoom")(app);
-require("./lib/router/pjschedule")(app);
-require("./lib/router/performanceOutline")(app);
+const routers = [
+  "user",
+  "expense",
+  "noticeBoard",
+  "attendance",
+  "workLog",
+  "employment",
+  "performance",
+  "management",
+  "meetingRoom",
+  "pjschedule",
+  "performanceOutline",
+];
 
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+routers.forEach((route) => {
+  require(`./lib/router/${route}`)(app);
+});
 
-// 404에러 핸들러
-app.use(function (req, res, next) {
+// 404 에러 핸들러
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // 오류 처리
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // 에러페이지 랜딩
   res.status(err.status || 500);
   res.render("error");
 });
 
-module.exports = app;
+// Socket.IO 이벤트 처리
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  socket.on("chat message", (msg) => {
+    console.log("Message:", msg);
+    io.emit("chat message", msg); // 모든 클라이언트에 메시지 전송
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
+module.exports = { app, server };

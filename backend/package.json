@@ -28,6 +28,7 @@
     "pug": "2.0.0-beta11",
     "sanitize-filename": "^1.6.3",
     "sequelize": "^6.37.3",
+    "socket.io": "^4.7.5",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
