@@ -26,6 +26,7 @@ import {
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
+import { e } from "mathjs";
 
 const Message = () => {
   const DummyNotice: {
@@ -175,16 +176,26 @@ const Message = () => {
     if (messageInput.trim() !== "") {
       setMessages([...messages, messageInput.trim()]);
       setMessageInput("");
+      const inputElement = document.querySelector(
+        ".text-input"
+      ) as HTMLDivElement;
+      if (inputElement) {
+        inputElement.innerText = "";
+      }
     }
   };
 
-  const handleInputKeyPress = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
+  const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" && event.shiftKey) {
+      return;
+    } else if (event.key === "Enter") {
       event.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    setMessageInput((e.target as HTMLDivElement).innerText);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -301,13 +312,15 @@ const Message = () => {
               <img src={FileIcon} alt="FileIcon" />
             </label>
             <div className="Input-Outer">
-              <input
-                type="text"
-                placeholder="메시지를 입력하세요."
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
+              <div
+                className="text-input"
+                contentEditable="true"
+                onInput={handleInput}
                 onKeyDown={handleInputKeyPress}
-              />
+                data-placeholder="메시지를 입력하세요.."
+              >
+                {" "}
+              </div>
               <div className="send-btn" onClick={handleSendMessage}>
                 전송
               </div>
