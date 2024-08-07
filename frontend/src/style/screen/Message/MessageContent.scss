@@ -18,9 +18,13 @@
       gap: 14px;
     }
 
-    .UserManagementIcon {
-      cursor: pointer;
+    .UpperIconBar {
       margin-right: 25px;
+      gap: 15px;
+      .UserManagementIcon,
+      .SearchIcon {
+        cursor: pointer;
+      }
     }
   }
 
@@ -194,6 +198,7 @@
     border-left: 1px solid #e2e2e2;
     border-bottom: 1px solid #e2e2e2;
     font-family: var(--font-family-Noto-M);
+    background-color: #fff;
 
     .Management-header {
       display: flex;
