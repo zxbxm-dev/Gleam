@@ -131,14 +131,26 @@
         align-items: center;
         border: 1px solid #cecece;
         border-radius: 5px;
-        height: 51px;
+        min-height: 51px;
         width: 100%;
         padding-left: 15px;
 
-        input {
+        .text-input {
           font-size: 14px;
           font-family: var(--font-family-Noto-M);
           width: 95%;
+          vertical-align: middle;
+          height: auto;
+
+          &:empty:before,
+          &:focus:empty:before {
+            content: attr(data-placeholder);
+            color: gray;
+          }
+
+          &:focus {
+            outline: none;
+          }
         }
 
         input:focus {
