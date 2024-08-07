@@ -196,7 +196,10 @@
     }
 
     .ChatRoom-Members {
+      display: flex;
+      flex-direction: column;
       gap: 15px;
+      margin-top: 15px;
       .OneMember {
         display: flex;
         flex-direction: row;
@@ -205,7 +208,6 @@
         align-items: center;
         width: 100%;
         height: 30px;
-        margin: 15px 0;
 
         &:hover {
           .OptionIcon {
