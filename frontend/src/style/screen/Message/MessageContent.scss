@@ -114,71 +114,83 @@
     .Message-Input {
       position: fixed;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
       bottom: 20px;
       right: 20px;
       width: calc(100% - 300px);
-      background-color: #fff;
 
-      img {
+      .GoToBottom {
+        margin-bottom: 10px;
         cursor: pointer;
-        margin-right: 10px;
-        width: 30px;
-        height: 30px;
       }
 
-      .Input-Outer {
+      .MessageTypeContainer {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        border: 1px solid #cecece;
-        border-radius: 5px;
-        min-height: 51px;
-        max-height: 150px;
-        width: 100%;
-        padding-left: 15px;
+        width: 95%;
 
-        .text-input {
-          font-size: 14px;
-          font-family: var(--font-family-Noto-M);
-          width: 95%;
-          vertical-align: middle;
-          height: auto;
+        img {
+          cursor: pointer;
+          margin-right: 10px;
+          width: 30px;
+          height: 30px;
+        }
+
+        .Input-Outer {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          border: 1px solid #cecece;
+          border-radius: 5px;
+          min-height: 51px;
           max-height: 150px;
-          overflow-y: auto;
+          width: 100%;
+          padding-left: 15px;
+          background-color: #fff;
 
-          &:empty:before,
-          &:focus:empty:before {
-            content: attr(data-placeholder);
-            color: gray;
-            cursor: text;
+          .text-input {
+            font-size: 14px;
+            font-family: var(--font-family-Noto-M);
+            width: 95%;
+            vertical-align: middle;
+            height: auto;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #fff;
+
+            &:empty:before,
+            &:focus:empty:before {
+              content: attr(data-placeholder);
+              color: gray;
+              cursor: text;
+            }
+
+            &:focus {
+              outline: none;
+            }
           }
 
-          &:focus {
+          input:focus {
             outline: none;
           }
-        }
 
-        input:focus {
-          outline: none;
-        }
-
-        .send-btn {
-          cursor: pointer;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 33px;
-          width: 62px;
-          background-color: #929292;
-          color: #fff;
-          font-size: 15px;
-          font-weight: 500;
-          font-family: var(--font-family-Noto-M);
-          margin-right: 12px;
-          border-radius: 5px;
+          .send-btn {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 33px;
+            width: 62px;
+            background-color: #929292;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 12px;
+            border-radius: 5px;
+          }
         }
       }
     }

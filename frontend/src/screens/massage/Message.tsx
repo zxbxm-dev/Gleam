@@ -12,6 +12,7 @@ import {
   AdminIcon,
   FileIcon,
   GraySearchIcon,
+  GoToBottomIcon,
 } from "../../assets/images/index";
 import {
   Popover,
@@ -308,31 +309,38 @@ const Message = () => {
           ))}
         {selectedPerson.username !== "통합 알림" && (
           <div className="Message-Input">
-            <label
-              htmlFor="file-upload"
-              style={{ cursor: "pointer", display: "flex", gap: "5px" }}
-            >
-              <input
-                id="file-upload"
-                type="file"
-                accept="*"
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-              />
-              <img src={FileIcon} alt="FileIcon" />
-            </label>
-            <div className="Input-Outer">
-              <div
-                className="text-input"
-                contentEditable="true"
-                onInput={handleInput}
-                onKeyDown={handleInputKeyPress}
-                data-placeholder="메시지를 입력하세요. (Shift + Enter로 개행)"
+            <img
+              className="GoToBottom"
+              src={GoToBottomIcon}
+              alt="GoToBottomIcon"
+            />
+            <div className="MessageTypeContainer">
+              {/* <label
+                htmlFor="file-upload"
+                style={{ cursor: "pointer", display: "flex", gap: "5px" }}
               >
-                {" "}
-              </div>
-              <div className="send-btn" onClick={handleSendMessage}>
-                전송
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="*"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+                <img src={FileIcon} alt="FileIcon" />
+              </label> */}
+              <div className="Input-Outer">
+                <div
+                  className="text-input"
+                  contentEditable="true"
+                  onInput={handleInput}
+                  onKeyDown={handleInputKeyPress}
+                  data-placeholder="메시지를 입력하세요. (Shift + Enter로 개행)"
+                >
+                  {" "}
+                </div>
+                <div className="send-btn" onClick={handleSendMessage}>
+                  전송
+                </div>
               </div>
             </div>
           </div>
