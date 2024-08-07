@@ -111,6 +111,7 @@
       position: fixed;
       display: flex;
       flex-direction: row;
+      align-items: center;
       bottom: 20px;
       right: 20px;
       width: calc(100% - 300px);
@@ -119,6 +120,8 @@
       img {
         cursor: pointer;
         margin-right: 10px;
+        width: 30px;
+        height: 30px;
       }
 
       .Input-Outer {
