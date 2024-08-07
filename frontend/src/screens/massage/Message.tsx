@@ -169,7 +169,7 @@ const Message = () => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
   type Files = string | File | null;
-  const [files, setFiles] = useState<Files[]>([]);
+  const [files, setFiles] = useState<Files>();
 
   const handleSendMessage = () => {
     if (messageInput.trim() !== "") {
@@ -187,12 +187,31 @@ const Message = () => {
     }
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFiles(event.target.files[0]);
+    }
+  };
+
+  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setFiles(event.dataTransfer.files[0]);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
   useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    console.log("파일 >>", files);
+  }, [files]);
 
   return (
     <div className="Message-contents">
@@ -220,7 +239,12 @@ const Message = () => {
           />
         )}
       </div>
-      <div className="Message-container" ref={messageContainerRef}>
+      <div
+        className="Message-container"
+        ref={messageContainerRef}
+        onDrop={handleFileDrop}
+        onDragOver={handleDragOver}
+      >
         {selectedPerson.username !== "통합 알림" &&
           messages.map((message, index) => (
             <div key={index} className="Message">
@@ -263,7 +287,19 @@ const Message = () => {
           ))}
         {selectedPerson.username !== "통합 알림" && (
           <div className="Message-Input">
-            <img src={FileIcon} alt="FileIcon" />
+            <label
+              htmlFor="file-upload"
+              style={{ cursor: "pointer", display: "flex", gap: "5px" }}
+            >
+              <input
+                id="file-upload"
+                type="file"
+                accept="*"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              <img src={FileIcon} alt="FileIcon" />
+            </label>
             <div className="Input-Outer">
               <input
                 type="text"
