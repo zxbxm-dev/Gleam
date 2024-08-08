@@ -20,11 +20,13 @@ interface ChatDataTabProps {
   userDepartment: string | null;
   userName: string | null;
   userPosition: string | null;
+  userId: string | null;
   onPersonClick: (
     username: string,
     team: string,
     department: string,
-    position: string
+    position: string,
+    userId: string
   ) => void;
   isNotibarActive: boolean | null;
   setIsNotibarActive: React.Dispatch<React.SetStateAction<boolean | null>>;
@@ -36,6 +38,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   userTeam,
   userDepartment,
   userName,
+  userId,
   onPersonClick,
   userPosition,
   isNotibarActive,
@@ -104,7 +107,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
       <li
         className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
         onClick={() => {
-          onPersonClick("통합 알림", "", "", "");
+          onPersonClick("통합 알림", "", "", "", "");
           setSelectedUserId(null);
           setSelectedChatRoom("통합 알림");
           setIsNotibarActive(true);
@@ -120,7 +123,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             userName || "",
             userTeam || "",
             userDepartment || "",
-            userPosition || ""
+            userPosition || "",
+            userId || ""
           )
         }
       >
@@ -145,7 +149,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                   dummy.username,
                   dummy.team,
                   dummy.department,
-                  dummy.position
+                  dummy.position,
+                  dummy.userId
                 );
                 setSelectedChatRoom(dummy.username);
                 localStorage.setItem("latestChat", JSON.stringify(dummy));

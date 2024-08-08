@@ -33,6 +33,7 @@ interface PersonDataTabProps {
   userName: string | null;
   userPosition: string | null;
   onPersonClick: (
+    userId: string,
     username: string,
     team: string,
     department: string,
@@ -142,7 +143,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                   person.username,
                   person.team,
                   person.department,
-                  person.position
+                  person.position,
+                  person.userId
                 );
                 setSelectedUserId(person.userId);
                 setIsNotibarActive(false);
@@ -232,7 +234,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     person.username,
                                     person.team,
                                     person.department,
-                                    person.position
+                                    person.position,
+                                    person.userId
                                   );
                                   setSelectedUserId(person.userId);
                                   setIsNotibarActive(false);
@@ -323,7 +326,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         person.username,
                         person.team,
                         person.department,
-                        person.position
+                        person.position,
+                        person.userId
                       );
                       setSelectedUserId(person.userId);
                       setIsNotibarActive(false);
@@ -419,7 +423,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                         person.username,
                                         person.team,
                                         person.department,
-                                        person.position
+                                        person.position,
+                                        person.userId
                                       );
                                       setSelectedUserId(person.userId);
                                       setIsNotibarActive(false);
