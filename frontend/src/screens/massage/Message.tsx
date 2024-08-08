@@ -169,6 +169,7 @@ const Message = () => {
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const messageTypeContainerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
 
   type Files = string | File | null;
@@ -269,6 +270,26 @@ const Message = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (messageTypeContainerRef.current) {
+        const messageTypeHeight = messageTypeContainerRef.current.offsetHeight;
+        document.documentElement.style.setProperty(
+          "--message-type-height",
+          `${messageTypeHeight}px`
+        );
+        console.log("높이", messageTypeHeight);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div className="Message-contents">
       <div className="Message-header">
@@ -359,7 +380,7 @@ const Message = () => {
               alt="GoToBottomIcon"
               onClick={scrollToBottom}
             />
-            <div className="MessageTypeContainer">
+            <div className="MessageTypeContainer" ref={messageTypeContainerRef}>
               <div className="Input-Outer">
                 <div
                   className="text-input"
@@ -427,11 +448,7 @@ const Message = () => {
                     {onePerson.team} {onePerson.username}
                   </span>
                   {onePerson.isAdmin ? (
-                    <img
-                      src={AdminIcon}
-                      alt="Admin_Icon"
-                      className="AdminIcon"
-                    />
+                    <div className="AdminIcon">admin</div>
                   ) : (
                     ""
                   )}
