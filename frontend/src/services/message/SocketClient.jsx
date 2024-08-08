@@ -19,4 +19,4 @@ const receiveMsg = (callback) => {
   });
 };
 
-export default { joinChatRoom, sendMsg, receiveMsg };
+export { joinChatRoom, sendMsg, receiveMsg };
