@@ -360,19 +360,6 @@ const Message = () => {
               onClick={scrollToBottom}
             />
             <div className="MessageTypeContainer">
-              {/* <label
-                htmlFor="file-upload"
-                style={{ cursor: "pointer", display: "flex", gap: "5px" }}
-              >
-                <input
-                  id="file-upload"
-                  type="file"
-                  accept="*"
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                />
-                <img src={FileIcon} alt="FileIcon" />
-              </label> */}
               <div className="Input-Outer">
                 <div
                   className="text-input"
