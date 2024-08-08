@@ -123,6 +123,10 @@
       .GoToBottom {
         margin-bottom: 10px;
         cursor: pointer;
+
+        &.hidden {
+          display: none;
+        }
       }
 
       .MessageTypeContainer {
@@ -163,7 +167,7 @@
             &:empty:before,
             &:focus:empty:before {
               content: attr(data-placeholder);
-              color: gray;
+              color: #929292;
               cursor: text;
             }
 
@@ -193,6 +197,53 @@
           }
         }
       }
+      .underIcons {
+        margin: 5px 0 0 5px;
+        width: 95%;
+        display: flex;
+        flex-direction: row;
+
+        .fileIconBox {
+          position: relative;
+
+          .textBubble {
+            display: none;
+          }
+
+          &:hover {
+            .textBubble {
+              position: absolute;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 50px;
+              height: 20px;
+              background-color: #45c552;
+              border-radius: 3px;
+              font-size: 10px;
+              color: #fff;
+              top: -25px;
+              left: -15px;
+
+              &::after {
+                position: absolute;
+                content: "";
+                width: 0;
+                height: 0;
+                bottom: -3px;
+                border-top: 3px solid #45c552;
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+              }
+            }
+          }
+          .fileIcon {
+            cursor: pointer;
+            width: 19px;
+            height: 19px;
+          }
+        }
+      }
     }
   }
 
@@ -203,7 +254,7 @@
     display: flex;
     flex-direction: column;
     width: 300px;
-    height: calc(100% - 196px);
+    height: calc(100% - 220px);
     position: fixed;
     top: 116px;
     right: 0;
