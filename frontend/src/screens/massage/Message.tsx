@@ -29,7 +29,10 @@ import {
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
 import SocketClient from "../../services/message/SocketClient";
-import { createChatRoom } from "../../services/message/MessageApi";
+import {
+  createChatRoom,
+  getChatRooms,
+} from "../../services/message/MessageApi";
 
 const Message = () => {
   const DummyNotice: {
@@ -166,6 +169,7 @@ const Message = () => {
 
   // const socket = io("http://localhost:3001");
   const [room, setRoom] = useState("");
+  const [rooms, setRooms] = useState({});
   const [messageInput, setMessageInput] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
@@ -185,6 +189,10 @@ const Message = () => {
     ) as HTMLDivElement;
 
     if (inputElement && inputElement.innerHTML.trim() !== "") {
+      // 백엔드 완성 시 주석 해제
+
+      // createChatRoom(user.id, selectedPerson.userId);
+
       setMessages([...messages, inputElement.innerHTML.trim()]);
 
       SocketClient.sendMsg(room, inputElement.innerHTML.trim());
@@ -241,22 +249,6 @@ const Message = () => {
     }
   };
 
-  useEffect(() => {
-    SocketClient.joinChatRoom(room);
-    SocketClient.receiveMsg((msg: any) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
-    });
-  }, [room]);
-
-  useEffect(() => {
-    const inputElement = document.querySelector(
-      ".text-input"
-    ) as HTMLDivElement;
-    if (inputElement && inputElement.innerHTML.trim() === "") {
-      inputElement.innerHTML = "";
-    }
-  }, []);
-
   const scrollToBottom = () => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTo({
@@ -265,6 +257,32 @@ const Message = () => {
       });
     }
   };
+
+  /*
+  //백엔드 완료 시 주석 해제
+  useEffect(() => {
+    const fetchChatRooms = async () => {
+      try {
+        if (user) {
+          const rooms = await getChatRooms(user.id);
+          setRooms(rooms);
+        }
+      } catch (err) {
+        console.error("Error fetching person data:", err);
+      }
+    };
+
+    fetchChatRooms();
+  }, []);
+  */
+  useEffect(() => {
+    const inputElement = document.querySelector(
+      ".text-input"
+    ) as HTMLDivElement;
+    if (inputElement && inputElement.innerHTML.trim() === "") {
+      inputElement.innerHTML = "";
+    }
+  }, []);
 
   useEffect(() => {
     const container = messageContainerRef.current;
@@ -277,35 +295,18 @@ const Message = () => {
   }, []);
 
   useEffect(() => {
+    SocketClient.joinChatRoom(room);
+    SocketClient.receiveMsg((msg: any) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
+  }, [room]);
+
+  useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (messageTypeContainerRef.current) {
-        const messageTypeHeight = messageTypeContainerRef.current.offsetHeight;
-        document.documentElement.style.setProperty(
-          "--message-type-height",
-          `${messageTypeHeight}px`
-        );
-        console.log("높이", messageTypeHeight);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    //createChatRoom(user.id, selectedPerson.userId);
-  }, [selectedPerson]);
 
   return (
     <div className="Message-contents">

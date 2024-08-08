@@ -286,7 +286,7 @@
     display: flex;
     flex-direction: column;
     width: 300px;
-    height: calc(100vh - 220px - var(--message-type-height, 60px));
+    height: calc(100vh - 220px);
     position: fixed;
     top: 116px;
     right: 0;
