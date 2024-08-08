@@ -28,7 +28,7 @@ import {
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
-import SocketClient from "../../services/message/SocketClient";
+import { joinChatRoom } from "../../services/message/SocketClient";
 import {
   createChatRoom,
   getChatRooms,
@@ -169,7 +169,7 @@ const Message = () => {
 
   // const socket = io("http://localhost:3001");
   const [room, setRoom] = useState("");
-  const [rooms, setRooms] = useState({});
+  const [rooms, setRooms] = useState([]);
   const [messageInput, setMessageInput] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
@@ -189,13 +189,29 @@ const Message = () => {
     ) as HTMLDivElement;
 
     if (inputElement && inputElement.innerHTML.trim() !== "") {
+      /*
       // 백엔드 완성 시 주석 해제
-
-      // createChatRoom(user.id, selectedPerson.userId);
+      const isChatRoomExist = rooms.some(room => {
+        return room.users.length === 2 && 
+               room.includes(user.id) && 
+               room.includes(selectedPerson.userId);
+      });
+      
+      if(isChatRoomExist) { 
+        SocketClient.sendMsg(room, inputElement.innerHTML.trim());
+        setMessageInput("");
+        if (inputElement) {
+          inputElement.innerHTML = "";
+        }
+        
+      } else {
+        createChatRoom(user.id, selectedPerson.userId);
+        // 방 만들고 이후 동작 추가할 것
+      }
+    
+*/
 
       setMessages([...messages, inputElement.innerHTML.trim()]);
-
-      SocketClient.sendMsg(room, inputElement.innerHTML.trim());
       setMessageInput("");
       if (inputElement) {
         inputElement.innerHTML = "";
@@ -294,12 +310,14 @@ const Message = () => {
     }
   }, []);
 
+  //백엔드 완료 시 주석 해제할 것
+  /*
   useEffect(() => {
-    SocketClient.joinChatRoom(room);
-    SocketClient.receiveMsg((msg: any) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
+    rooms.forEach(room => {
+      joinChatRoom(room.roomId);
     });
-  }, [room]);
+  }, [rooms]);
+  */
 
   useEffect(() => {
     if (messageContainerRef.current) {
