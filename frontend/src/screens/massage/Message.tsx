@@ -28,6 +28,8 @@ import {
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
+import SocketClient from "../../services/message/SocketClient";
+import { createChatRoom } from "../../services/message/MessageApi";
 
 const Message = () => {
   const DummyNotice: {
@@ -63,7 +65,7 @@ const Message = () => {
   const DummyMessage1 = [
     {
       user: {
-        id: "qw506799",
+        id: "qw506799a",
         username: "박세준",
         userID: "qw506799",
         usermail: "qw506799@four-chains.com",
@@ -86,7 +88,7 @@ const Message = () => {
 
   const DummyPeoples = [
     {
-      userId: "qw506799",
+      userId: "qw506799b",
       username: "박세준",
       usermail: "qw123456789@four-chains.com",
       phoneNumber: "01012345678",
@@ -107,7 +109,7 @@ const Message = () => {
       isAdmin: true,
     },
     {
-      userId: "qwe1234",
+      userId: "qwe1234c",
       username: "테스트1",
       usermail: "qwe1234@four-chains.com",
       phoneNumber: "0101234324",
@@ -128,7 +130,7 @@ const Message = () => {
       isAdmin: false,
     },
     {
-      userId: "qwe12345",
+      userId: "qwe12345d",
       username: "테스트2",
       usermail: "qwewq4e2@four-chains.com",
       phoneNumber: "01012344444",
@@ -162,6 +164,8 @@ const Message = () => {
     Schedule: ScheduleIcon,
   };
 
+  // const socket = io("http://localhost:3001");
+  const [room, setRoom] = useState("");
   const [messageInput, setMessageInput] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
@@ -182,6 +186,8 @@ const Message = () => {
 
     if (inputElement && inputElement.innerHTML.trim() !== "") {
       setMessages([...messages, inputElement.innerHTML.trim()]);
+
+      SocketClient.sendMsg(room, inputElement.innerHTML.trim());
       setMessageInput("");
       if (inputElement) {
         inputElement.innerHTML = "";
@@ -236,21 +242,18 @@ const Message = () => {
   };
 
   useEffect(() => {
+    SocketClient.joinChatRoom(room);
+    SocketClient.receiveMsg((msg: any) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
+  }, [room]);
+
+  useEffect(() => {
     const inputElement = document.querySelector(
       ".text-input"
     ) as HTMLDivElement;
     if (inputElement && inputElement.innerHTML.trim() === "") {
       inputElement.innerHTML = "";
-    }
-  }, []);
-
-  useEffect(() => {
-    const container = messageContainerRef.current;
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-      return () => {
-        container.removeEventListener("scroll", handleScroll);
-      };
     }
   }, []);
 
@@ -262,6 +265,16 @@ const Message = () => {
       });
     }
   };
+
+  useEffect(() => {
+    const container = messageContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+      return () => {
+        container.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -289,6 +302,10 @@ const Message = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    //createChatRoom(user.id, selectedPerson.userId);
+  }, [selectedPerson]);
 
   return (
     <div className="Message-contents">

@@ -171,9 +171,10 @@ const MessageSidebar: React.FC = () => {
     username: string,
     team: string,
     department: string,
-    position: string
+    position: string,
+    userId: string
   ) => {
-    setSelectedPerson({ username, team, department, position });
+    setSelectedPerson({ username, team, department, position, userId });
   };
 
   const groupByDepartmentAndTeam = (data: Person[]) => {
@@ -275,6 +276,7 @@ const MessageSidebar: React.FC = () => {
           userDepartment={user.department}
           userName={user.username}
           userPosition={user.position}
+          userId={user.userId}
           onPersonClick={handlePersonClick}
           isNotibarActive={isNotibarActive}
           setIsNotibarActive={setIsNotibarActive}
