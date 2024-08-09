@@ -72,6 +72,10 @@ routers.forEach((route) => {
   require(`./lib/router/${route}`)(app);
 });
 
+// 백업 스케줄링 시작
+const { scheduleBackup } = require('./lib/config/backup');
+scheduleBackup();
+
 // 404 에러 핸들러
 app.use((req, res, next) => {
   next(createError(404));
