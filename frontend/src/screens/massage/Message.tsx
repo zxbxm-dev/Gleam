@@ -28,7 +28,16 @@ import {
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
-import { e } from "mathjs";
+// import { joinChatRoom, sendMsg } from "../../services/message/SocketClient";
+import {
+  createChatRoom,
+  getChatRooms,
+} from "../../services/message/MessageApi";
+import { io } from "socket.io-client";
+
+const socket = io("localhost:3002", {
+  transports: ["websocket"],
+});
 
 const Message = () => {
   const DummyNotice: {
@@ -64,7 +73,7 @@ const Message = () => {
   const DummyMessage1 = [
     {
       user: {
-        id: "qw506799",
+        id: "qw506799a",
         username: "박세준",
         userID: "qw506799",
         usermail: "qw506799@four-chains.com",
@@ -87,7 +96,7 @@ const Message = () => {
 
   const DummyPeoples = [
     {
-      userId: "qw506799",
+      userId: "qw506799b",
       username: "박세준",
       usermail: "qw123456789@four-chains.com",
       phoneNumber: "01012345678",
@@ -108,7 +117,7 @@ const Message = () => {
       isAdmin: true,
     },
     {
-      userId: "qwe1234",
+      userId: "qwe1234c",
       username: "테스트1",
       usermail: "qwe1234@four-chains.com",
       phoneNumber: "0101234324",
@@ -129,7 +138,7 @@ const Message = () => {
       isAdmin: false,
     },
     {
-      userId: "qwe12345",
+      userId: "qwe12345d",
       username: "테스트2",
       usermail: "qwewq4e2@four-chains.com",
       phoneNumber: "01012344444",
@@ -163,6 +172,8 @@ const Message = () => {
     Schedule: ScheduleIcon,
   };
 
+  const [room, setRoom] = useState("");
+  const [rooms, setRooms] = useState([]);
   const [messageInput, setMessageInput] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
@@ -170,21 +181,46 @@ const Message = () => {
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const messageTypeContainerRef = useRef<HTMLDivElement>(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const socketRef = useRef<any>(null);
 
   type Files = string | File | null;
   const [files, setFiles] = useState<Files>();
 
   const handleSendMessage = () => {
-    console.log(messageInput.trim());
+    const inputElement = document.querySelector(
+      ".text-input"
+    ) as HTMLDivElement;
 
-    if (messageInput.trim() !== "") {
-      setMessages([...messages, messageInput.trim()]);
+    if (inputElement && inputElement.innerHTML.trim() !== "") {
+      /*
+      // 백엔드 완성 시 주석 해제
+      const isChatRoomExist = rooms.some(room => {
+        return room.users.length === 2 && 
+               room.includes(user.id) && 
+               room.includes(selectedPerson.userId);
+      });
+      
+      if(isChatRoomExist) { 
+        SocketClient.sendMsg(room, inputElement.innerHTML.trim());
+        setMessageInput("");
+        if (inputElement) {
+          inputElement.innerHTML = "";
+        }
+        
+      } else {
+        createChatRoom(user.id, selectedPerson.userId);
+        // 방 만들고 이후 동작 추가할 것
+      }
+        */
+
+      setMessages([...messages, inputElement.innerHTML.trim()]);
+      //sendMsg(room, inputElement.innerHTML.trim());
+      socket.emit("sendMsg", inputElement.innerHTML.trim());
       setMessageInput("");
-      const inputElement = document.querySelector(
-        ".text-input"
-      ) as HTMLDivElement;
       if (inputElement) {
-        inputElement.innerText = "";
+        inputElement.innerHTML = "";
       }
     }
   };
@@ -199,7 +235,16 @@ const Message = () => {
   };
 
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
-    setMessageInput((e.target as HTMLDivElement).innerText);
+    const inputElement = e.target as HTMLDivElement;
+    setMessageInput(inputElement.innerText);
+
+    if (
+      inputElement.innerText.trim() === "" &&
+      inputElement.childNodes.length === 1 &&
+      inputElement.childNodes[0].nodeName === "BR"
+    ) {
+      inputElement.innerHTML = "";
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -217,16 +262,76 @@ const Message = () => {
     event.preventDefault();
   };
 
+  const handleScroll = () => {
+    if (messageContainerRef.current) {
+      const { scrollHeight, scrollTop, clientHeight } =
+        messageContainerRef.current;
+      const atBottom = scrollHeight - scrollTop === clientHeight;
+      setIsAtBottom(atBottom);
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTo({
+        top: messageContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  /*
+  //백엔드 완료 시 주석 해제
+  useEffect(() => {
+    const fetchChatRooms = async () => {
+      try {
+        if (user) {
+          const rooms = await getChatRooms(user.id);
+          setRooms(rooms);
+        }
+      } catch (err) {
+        console.error("Error fetching person data:", err);
+      }
+    };
+
+    fetchChatRooms();
+  }, []);
+  */
+
+  useEffect(() => {
+    const inputElement = document.querySelector(
+      ".text-input"
+    ) as HTMLDivElement;
+    if (inputElement && inputElement.innerHTML.trim() === "") {
+      inputElement.innerHTML = "";
+    }
+  }, []);
+
+  useEffect(() => {
+    const container = messageContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+      return () => {
+        container.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
+
+  /*
+  //백엔드 완료 시 주석 해제할 것
+  useEffect(() => {
+    rooms.forEach(room => {
+      joinChatRoom(room.roomId);
+    });
+  }, [rooms]);
+  */
+
   useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
-
-  useEffect(() => {
-    console.log("파일 >>", files);
-  }, [files]);
 
   return (
     <div className="Message-contents">
@@ -276,7 +381,10 @@ const Message = () => {
                   {user.team ? user.team : user.department} {user.username}
                 </div>
                 <div className="MsgTimeBox">
-                  <div className="MsgBox">{message}</div>
+                  <div
+                    className="MsgBox"
+                    dangerouslySetInnerHTML={{ __html: message }}
+                  />
                   <div className="MsgTime">
                     <div className="ViewCount">1</div>
                     오후 4:30
@@ -310,14 +418,32 @@ const Message = () => {
         {selectedPerson.username !== "통합 알림" && (
           <div className="Message-Input">
             <img
-              className="GoToBottom"
+              className={`GoToBottom ${isAtBottom ? "hidden" : ""}`}
               src={GoToBottomIcon}
               alt="GoToBottomIcon"
+              onClick={scrollToBottom}
             />
-            <div className="MessageTypeContainer">
-              {/* <label
+            <div className="MessageTypeContainer" ref={messageTypeContainerRef}>
+              <div className="Input-Outer">
+                <div
+                  className="text-input"
+                  contentEditable="true"
+                  suppressContentEditableWarning
+                  onInput={handleInput}
+                  onKeyDown={handleInputKeyPress}
+                  data-placeholder="메시지를 입력하세요. (Enter로 전송 / Shift + Enter로 개행)"
+                >
+                  {" "}
+                </div>
+                <div className="send-btn" onClick={handleSendMessage}>
+                  전송
+                </div>
+              </div>
+            </div>
+            <div className="underIcons">
+              <label
                 htmlFor="file-upload"
-                style={{ cursor: "pointer", display: "flex", gap: "5px" }}
+                style={{ cursor: "pointer", display: "flex" }}
               >
                 <input
                   id="file-upload"
@@ -326,22 +452,11 @@ const Message = () => {
                   onChange={handleFileChange}
                   style={{ display: "none" }}
                 />
-                <img src={FileIcon} alt="FileIcon" />
-              </label> */}
-              <div className="Input-Outer">
-                <div
-                  className="text-input"
-                  contentEditable="true"
-                  onInput={handleInput}
-                  onKeyDown={handleInputKeyPress}
-                  data-placeholder="메시지를 입력하세요. (Shift + Enter로 개행)"
-                >
-                  {" "}
+                <div className="fileIconBox">
+                  <div className="textBubble">파일 첨부</div>
+                  <img src={FileIcon} alt="fileIcon" className="fileIcon" />
                 </div>
-                <div className="send-btn" onClick={handleSendMessage}>
-                  전송
-                </div>
-              </div>
+              </label>
             </div>
           </div>
         )}
@@ -364,7 +479,7 @@ const Message = () => {
         <div className="AddPerson-tab">+ 인원 추가하기</div>
         <div className="ChatRoom-Members">
           {DummyPeoples.map((onePerson, index) => (
-            <Popover placement="left-start">
+            <Popover key={index} placement="left-start">
               <div className="OneMember">
                 <div className="AttachWithName">
                   <img
@@ -376,11 +491,7 @@ const Message = () => {
                     {onePerson.team} {onePerson.username}
                   </span>
                   {onePerson.isAdmin ? (
-                    <img
-                      src={AdminIcon}
-                      alt="Admin_Icon"
-                      className="AdminIcon"
-                    />
+                    <div className="AdminIcon">admin</div>
                   ) : (
                     ""
                   )}
@@ -398,7 +509,7 @@ const Message = () => {
                     _focus={{ boxShadow: "none" }}
                   >
                     <div className={`Message-OnClick-Menu`}>
-                      <div className="OutOfChat">내보 내기</div>
+                      <div className="OutOfChat">내보내기</div>
                       <div className="ChangeAdmin">관리자 변경</div>
                     </div>
                   </PopoverContent>
