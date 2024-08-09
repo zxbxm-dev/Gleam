@@ -19,6 +19,12 @@
     font-size: 12px;
     font-family: var(--font-family-Noto-M);
 
+    .mail_delete_img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
     .dropdown_menu_box {
       display: flex;
       justify-content: space-between;
@@ -30,6 +36,13 @@
       border: 1px solid #45C552;
       border-radius: 3px;
       cursor: pointer;
+
+      img {
+        width: 15px;
+        height: 5px;
+        filter: invert(20%) sepia(0%) saturate(1007%) hue-rotate(164deg) brightness(88%) contrast(86%);
+        transform: rotate(180deg);
+      }
     }
 
     .dropdown_menu {
@@ -62,13 +75,6 @@
     .dropdown_menu li:hover {
       background-color: #f0f0f0;
     }
-
-    img {
-      width: 15px;
-      height: 5px;
-      filter: invert(20%) sepia(0%) saturate(1007%) hue-rotate(164deg) brightness(88%) contrast(86%);
-      transform: rotate(180deg);
-    }
   }
 
   button {
@@ -77,8 +83,6 @@
 }
 
 .project_container {
-  @include custom-scrollbar;
-  overflow-y: auto;
   height: 85vh;
   width: 100%;
   background-color: white;
@@ -89,19 +93,75 @@
   border-bottom-right-radius: 5px;
 
   .project_content {
+    @include custom-scrollbar;
     display: flex;
+    height: 100%;
     flex-wrap: wrap;
-    height: auto;
     border-radius: 5px;
-    margin: -10px 0 0 -10px;
+    border-bottom: none;
+    border-right: none;
+    overflow-y: auto;
+    box-sizing: border-box;
+    
 
     .project_box {
-      flex: 1 1 calc(33.33% - 10px);
-      max-width: calc(33.33% - 10px);
-      height: 340px;
-      border: 1px solid black;
-      border-radius: 5px;
-      margin: 10px 0 0 10px;
+      flex: 1 1 33.33%;
+      max-width: 33.33%;
+      height: 50%;
+      max-height: 50%;
+      padding: 25px;
+      box-sizing: border-box;
+      border-bottom: 1px solid #D9D9D9;
+      border-right: 1px solid #D9D9D9;
+      
+      &:nth-child(3n) {
+        border-right: none;
+      }
+
+      .project_box_header {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        height: 20%;
+        font-family: var(--font-family-Noto-M);
+        font-size: 10px;
+        color: #fff;
+
+        .box_header_status {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 24px;
+          max-width: 60px;
+          padding: 0 10px;
+          border-radius: 17px;
+        }
+
+        .box_header_title {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          color: #323232;
+          font-size: 16px;
+
+          .box_header_title_left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            .box_header_title_important {
+              width: 20px;
+              height: 20px;
+            }
+          }
+
+        }
+      }
+
+      .project_box_content {
+        height: 80%;
+        background-color: gray;
+      }
     }
   }
 
