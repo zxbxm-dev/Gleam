@@ -175,7 +175,7 @@ const Message = () => {
   const [room, setRoom] = useState("");
   const [rooms, setRooms] = useState([]);
   const [messageInput, setMessageInput] = useState<string>("");
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
     useState<boolean>(false);
   const user = useRecoilValue(userState);
@@ -184,6 +184,31 @@ const Message = () => {
   const messageTypeContainerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const socketRef = useRef<any>(null);
+
+  interface Message {
+    name: string;
+    id: string;
+    msg: string;
+    team: string;
+    department: string;
+    position: string;
+  }
+
+  useEffect(() => {
+    socket.on("recMsg", ({ name, id, msg, team, department, position }) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { name, id, msg, team, department, position },
+      ]);
+    });
+    return () => {
+      socket.off("recMsg");
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("메시지>>", messages);
+  }, [messages]);
 
   type Files = string | File | null;
   const [files, setFiles] = useState<Files>();
@@ -215,9 +240,18 @@ const Message = () => {
       }
         */
 
-      setMessages([...messages, inputElement.innerHTML.trim()]);
-      //sendMsg(room, inputElement.innerHTML.trim());
-      socket.emit("sendMsg", inputElement.innerHTML.trim());
+      // setMessages([...messages, inputElement.innerHTML.trim()]);
+
+      socket.emit("sendMsg", {
+        roomId: rooms,
+        name: user.username,
+        id: user.id,
+        team: user.team,
+        department: user.department,
+        position: user.position,
+        msg: inputElement.innerHTML.trim(),
+      });
+
       setMessageInput("");
       if (inputElement) {
         inputElement.innerHTML = "";
@@ -321,7 +355,7 @@ const Message = () => {
   //백엔드 완료 시 주석 해제할 것
   useEffect(() => {
     rooms.forEach(room => {
-      joinChatRoom(room.roomId);
+      socket.emit("joinRoom", room.roomId);
     });
   }, [rooms]);
   */
@@ -378,12 +412,13 @@ const Message = () => {
               <img src={UserIcon_dark} alt="User Icon" />
               <div className="RightBox">
                 <div>
-                  {user.team ? user.team : user.department} {user.username}
+                  {/* {user.team ? user.team : user.department} {user.username} */}
+                  {message.name}
                 </div>
                 <div className="MsgTimeBox">
                   <div
                     className="MsgBox"
-                    dangerouslySetInnerHTML={{ __html: message }}
+                    dangerouslySetInnerHTML={{ __html: message.msg }}
                   />
                   <div className="MsgTime">
                     <div className="ViewCount">1</div>
