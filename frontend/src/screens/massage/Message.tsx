@@ -28,11 +28,16 @@ import {
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
-import { joinChatRoom } from "../../services/message/SocketClient";
+// import { joinChatRoom, sendMsg } from "../../services/message/SocketClient";
 import {
   createChatRoom,
   getChatRooms,
 } from "../../services/message/MessageApi";
+import { io } from "socket.io-client";
+
+const socket = io("localhost:3002", {
+  transports: ["websocket"],
+});
 
 const Message = () => {
   const DummyNotice: {
@@ -167,7 +172,6 @@ const Message = () => {
     Schedule: ScheduleIcon,
   };
 
-  // const socket = io("http://localhost:3001");
   const [room, setRoom] = useState("");
   const [rooms, setRooms] = useState([]);
   const [messageInput, setMessageInput] = useState<string>("");
@@ -179,6 +183,7 @@ const Message = () => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const messageTypeContainerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
+  const socketRef = useRef<any>(null);
 
   type Files = string | File | null;
   const [files, setFiles] = useState<Files>();
@@ -208,10 +213,11 @@ const Message = () => {
         createChatRoom(user.id, selectedPerson.userId);
         // 방 만들고 이후 동작 추가할 것
       }
-    
-*/
+        */
 
       setMessages([...messages, inputElement.innerHTML.trim()]);
+      //sendMsg(room, inputElement.innerHTML.trim());
+      socket.emit("sendMsg", inputElement.innerHTML.trim());
       setMessageInput("");
       if (inputElement) {
         inputElement.innerHTML = "";
@@ -291,6 +297,7 @@ const Message = () => {
     fetchChatRooms();
   }, []);
   */
+
   useEffect(() => {
     const inputElement = document.querySelector(
       ".text-input"
@@ -310,8 +317,8 @@ const Message = () => {
     }
   }, []);
 
-  //백엔드 완료 시 주석 해제할 것
   /*
+  //백엔드 완료 시 주석 해제할 것
   useEffect(() => {
     rooms.forEach(room => {
       joinChatRoom(room.roomId);
