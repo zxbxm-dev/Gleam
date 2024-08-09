@@ -36,7 +36,8 @@ const MemberSidebar: React.FC<Props> = ({ onClickMember }) => {
     const fetchData = async () => {
       try {
         const response = await PersonData();
-        const sortedData = response.data.sort((a: Person, b: Person) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
+        const approveduser = response.data.filter((item: any) => item.status === 'approved');
+        const sortedData = approveduser.sort((a: Person, b: Person) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
         setPersonData(sortedData);
       } catch (err) {
         console.error("Error fetching person data:", err);
