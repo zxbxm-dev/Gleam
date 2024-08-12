@@ -54,6 +54,7 @@ export { default as NewCloseIcon } from "./sidebar/NewCloseIcon.svg";
 // project
 export { default as Right_Arrow } from "./project/Right_Arrow.svg";
 export { default as White_Arrow } from "./project/White_Arrow.svg";
+export { default as Down_Arrow } from "./project/Down_Arrow.svg";
 
 // mail
 export { default as mail_calendar } from "./mail/mail_calendar.svg";
