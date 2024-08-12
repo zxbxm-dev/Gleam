@@ -74,12 +74,13 @@ const AttendanceRegist = () => {
   const fetchUser = async () => {
     try {
       const response = await PersonData();
+      const approveduser = response.data.filter((item: any) => item.status === 'approved');
       const userMap = new Map();
       response.data.forEach((user: any) => {
         userMap.set(user.username, user.userId);
       });
       return {
-        users: response.data,
+        users: approveduser,
         userMap
       };
     } catch (error) {

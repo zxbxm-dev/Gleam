@@ -62,15 +62,6 @@
       }
     }
 
-    .Noti-bar {
-      cursor: pointer;
-      border-bottom: none;
-
-      &.active {
-        background-color: #efefef;
-      }
-    }
-
     .No-dept {
       display: flex;
       position: relative;
@@ -85,7 +76,7 @@
       }
 
       .Message-Menu {
-        cursor: pointer;
+        display: none;
       }
 
       .No-Left {
@@ -97,6 +88,13 @@
           width: 35px;
           height: 35px;
           border-radius: 50px;
+        }
+      }
+
+      &:hover {
+        .Message-Menu {
+          display: block;
+          cursor: pointer;
         }
       }
     }
@@ -142,7 +140,8 @@
   }
 
   .chat-data-tab {
-    .My-bar {
+    .My-bar,
+    .Noti-bar {
       display: flex;
       align-items: center;
       border-top: 1px solid #e2e2e2;
@@ -151,18 +150,37 @@
       font-family: var(--font-family-Noto-M);
       font-size: 15px;
 
-      .My-attach {
+      .My-attach,
+      .Noti-Icon {
         margin-right: 10px;
         width: 35px;
         height: 35px;
         border-radius: 50px;
       }
 
+      .My-attach {
+        border: 2px solid #42e452;
+        box-sizing: border-box;
+        padding: 0;
+      }
+
       .Message-Me {
         margin-left: 5px;
         width: 16px;
         height: 16px;
+        border-image-width: 2px;
       }
+    }
+    .Noti-bar {
+      cursor: pointer;
+      border-bottom: none;
+
+      &.active {
+        background-color: #efefef !important;
+      }
+    }
+    .My-bar {
+      border-top: none !important;
     }
 
     .ChatLog {
@@ -185,8 +203,15 @@
           }
         }
 
-        img {
-          cursor: pointer;
+        .Message-Menu {
+          display: none;
+        }
+
+        &:hover {
+          .Message-Menu {
+            display: block;
+            cursor: pointer;
+          }
         }
       }
       &.selected {

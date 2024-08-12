@@ -10,6 +10,9 @@ import {
   GearIcon,
   MessageMenu,
   AdminIcon,
+  FileIcon,
+  GraySearchIcon,
+  GoToBottomIcon,
 } from "../../assets/images/index";
 import {
   Popover,
@@ -25,6 +28,16 @@ import {
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { userState, selectedPersonState } from "../../recoil/atoms";
+// import { joinChatRoom, sendMsg } from "../../services/message/SocketClient";
+import {
+  createChatRoom,
+  getChatRooms,
+} from "../../services/message/MessageApi";
+import { io } from "socket.io-client";
+
+const socket = io("localhost:3002", {
+  transports: ["websocket"],
+});
 
 const Message = () => {
   const DummyNotice: {
@@ -60,7 +73,7 @@ const Message = () => {
   const DummyMessage1 = [
     {
       user: {
-        id: "qw506799",
+        id: "qw506799a",
         username: "박세준",
         userID: "qw506799",
         usermail: "qw506799@four-chains.com",
@@ -81,6 +94,72 @@ const Message = () => {
     },
   ];
 
+  const DummyPeoples = [
+    {
+      userId: "qw506799b",
+      username: "박세준",
+      usermail: "qw123456789@four-chains.com",
+      phoneNumber: "01012345678",
+      company: "",
+      department: "",
+      team: "",
+      position: "대표이사",
+      spot: "대표이사",
+      question1: "1",
+      question2: "1",
+      attachment: "http://localhost:3001/uploads/제목 없음.png",
+      Sign: "http://localhost:3001/uploads/images.jpg",
+      status: "approved",
+      entering: "2024-07-28T00:00:00.000Z",
+      leavedate: null,
+      createdAt: "2024-07-28T10:46:16.000Z",
+      updatedAt: "2024-07-31T10:46:48.000Z",
+      isAdmin: true,
+    },
+    {
+      userId: "qwe1234c",
+      username: "테스트1",
+      usermail: "qwe1234@four-chains.com",
+      phoneNumber: "0101234324",
+      company: "본사",
+      department: "개발부",
+      team: "개발 1팀",
+      position: "사원",
+      spot: "사원",
+      question1: "1",
+      question2: "1",
+      attachment: null,
+      Sign: null,
+      status: "approved",
+      entering: "2024-07-29T00:00:00.000Z",
+      leavedate: null,
+      createdAt: "2024-07-29T11:29:54.000Z",
+      updatedAt: "2024-07-29T11:29:54.000Z",
+      isAdmin: false,
+    },
+    {
+      userId: "qwe12345d",
+      username: "테스트2",
+      usermail: "qwewq4e2@four-chains.com",
+      phoneNumber: "01012344444",
+      company: "본사",
+      department: "개발부",
+      team: "개발 1팀",
+      position: "사원",
+      spot: "사원",
+      question1: "1",
+      question2: "1",
+      attachment: null,
+      Sign: null,
+      status: "approved",
+      entering: "2024-07-29T00:00:00.000Z",
+      leavedate: null,
+      createdAt: "2024-07-29T11:30:34.000Z",
+      updatedAt: "2024-07-29T11:30:34.000Z",
+      isAdmin: false,
+    },
+  ];
+
   const NoticeNameList: { [key: string]: string } = {
     Mail: "Mail - Notification",
     WorkReport: "Work Report - Notification",
@@ -93,29 +172,193 @@ const Message = () => {
     Schedule: ScheduleIcon,
   };
 
+  const [room, setRoom] = useState("");
+  const [rooms, setRooms] = useState([]);
   const [messageInput, setMessageInput] = useState<string>("");
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] =
     useState<boolean>(false);
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const messageTypeContainerRef = useRef<HTMLDivElement>(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const socketRef = useRef<any>(null);
+
+  interface Message {
+    name: string;
+    id: string;
+    msg: string;
+    team: string;
+    department: string;
+    position: string;
+  }
+
+  useEffect(() => {
+    socket.on("recMsg", ({ name, id, msg, team, department, position }) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { name, id, msg, team, department, position },
+      ]);
+    });
+    return () => {
+      socket.off("recMsg");
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("메시지>>", messages);
+  }, [messages]);
+
+  type Files = string | File | null;
+  const [files, setFiles] = useState<Files>();
 
   const handleSendMessage = () => {
-    if (messageInput.trim() !== "") {
-      setMessages([...messages, messageInput.trim()]);
+    const inputElement = document.querySelector(
+      ".text-input"
+    ) as HTMLDivElement;
+
+    if (inputElement && inputElement.innerHTML.trim() !== "") {
+      /*
+      // 백엔드 완성 시 주석 해제
+      const isChatRoomExist = rooms.some(room => {
+        return room.users.length === 2 && 
+               room.includes(user.id) && 
+               room.includes(selectedPerson.userId);
+      });
+      
+      if(isChatRoomExist) { 
+        SocketClient.sendMsg(room, inputElement.innerHTML.trim());
+        setMessageInput("");
+        if (inputElement) {
+          inputElement.innerHTML = "";
+        }
+        
+      } else {
+        createChatRoom(user.id, selectedPerson.userId);
+        // 방 만들고 이후 동작 추가할 것
+      }
+        */
+
+      // setMessages([...messages, inputElement.innerHTML.trim()]);
+
+      socket.emit("sendMsg", {
+        roomId: rooms,
+        name: user.username,
+        id: user.id,
+        team: user.team,
+        department: user.department,
+        position: user.position,
+        msg: inputElement.innerHTML.trim(),
+      });
+
       setMessageInput("");
+      if (inputElement) {
+        inputElement.innerHTML = "";
+      }
     }
   };
 
-  const handleInputKeyPress = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
+  const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" && event.shiftKey) {
+      return;
+    } else if (event.key === "Enter") {
       event.preventDefault();
       handleSendMessage();
     }
   };
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const inputElement = e.target as HTMLDivElement;
+    setMessageInput(inputElement.innerText);
+
+    if (
+      inputElement.innerText.trim() === "" &&
+      inputElement.childNodes.length === 1 &&
+      inputElement.childNodes[0].nodeName === "BR"
+    ) {
+      inputElement.innerHTML = "";
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFiles(event.target.files[0]);
+    }
+  };
+
+  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setFiles(event.dataTransfer.files[0]);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleScroll = () => {
+    if (messageContainerRef.current) {
+      const { scrollHeight, scrollTop, clientHeight } =
+        messageContainerRef.current;
+      const atBottom = scrollHeight - scrollTop === clientHeight;
+      setIsAtBottom(atBottom);
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTo({
+        top: messageContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  /*
+  //백엔드 완료 시 주석 해제
+  useEffect(() => {
+    const fetchChatRooms = async () => {
+      try {
+        if (user) {
+          const rooms = await getChatRooms(user.id);
+          setRooms(rooms);
+        }
+      } catch (err) {
+        console.error("Error fetching person data:", err);
+      }
+    };
+
+    fetchChatRooms();
+  }, []);
+  */
+
+  useEffect(() => {
+    const inputElement = document.querySelector(
+      ".text-input"
+    ) as HTMLDivElement;
+    if (inputElement && inputElement.innerHTML.trim() === "") {
+      inputElement.innerHTML = "";
+    }
+  }, []);
+
+  useEffect(() => {
+    const container = messageContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+      return () => {
+        container.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
+
+  /*
+  //백엔드 완료 시 주석 해제할 것
+  useEffect(() => {
+    rooms.forEach(room => {
+      socket.emit("joinRoom", room.roomId);
+    });
+  }, [rooms]);
+  */
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -139,28 +382,44 @@ const Message = () => {
           )}
           <span>{selectedPerson.position}</span>
         </div>
-        {selectedPerson && selectedPerson.username !== "통합 알림" && (
+        <div className="UpperIconBar">
           <img
-            src={UserManagementIcon}
-            className="UserManagementIcon"
-            alt="UserManagementIcon"
-            onClick={() =>
-              setChatRoomPeopleManagement(!chatRoomPeopleManagement)
-            }
+            src={GraySearchIcon}
+            className="SearchIcon"
+            alt="GraySearchIcon"
           />
-        )}
+          {selectedPerson && selectedPerson.username !== "통합 알림" && (
+            <img
+              src={UserManagementIcon}
+              className="UserManagementIcon"
+              alt="UserManagementIcon"
+              onClick={() =>
+                setChatRoomPeopleManagement(!chatRoomPeopleManagement)
+              }
+            />
+          )}
+        </div>
       </div>
-      <div className="Message-container" ref={messageContainerRef}>
+      <div
+        className="Message-container"
+        ref={messageContainerRef}
+        onDrop={handleFileDrop}
+        onDragOver={handleDragOver}
+      >
         {selectedPerson.username !== "통합 알림" &&
           messages.map((message, index) => (
             <div key={index} className="Message">
               <img src={UserIcon_dark} alt="User Icon" />
               <div className="RightBox">
                 <div>
-                  {user.team ? user.team : user.department} {user.username}
+                  {/* {user.team ? user.team : user.department} {user.username} */}
+                  {message.name}
                 </div>
                 <div className="MsgTimeBox">
-                  <div className="MsgBox">{message}</div>
+                  <div
+                    className="MsgBox"
+                    dangerouslySetInnerHTML={{ __html: message.msg }}
+                  />
                   <div className="MsgTime">
                     <div className="ViewCount">1</div>
                     오후 4:30
@@ -193,17 +452,46 @@ const Message = () => {
           ))}
         {selectedPerson.username !== "통합 알림" && (
           <div className="Message-Input">
-            <div className="Input-Outer">
-              <input
-                type="text"
-                placeholder="메시지를 입력하세요."
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={handleInputKeyPress}
-              />
-              <div className="send-btn" onClick={handleSendMessage}>
-                전송
+            <img
+              className={`GoToBottom ${isAtBottom ? "hidden" : ""}`}
+              src={GoToBottomIcon}
+              alt="GoToBottomIcon"
+              onClick={scrollToBottom}
+            />
+            <div className="MessageTypeContainer" ref={messageTypeContainerRef}>
+              <div className="Input-Outer">
+                <div
+                  className="text-input"
+                  contentEditable="true"
+                  suppressContentEditableWarning
+                  onInput={handleInput}
+                  onKeyDown={handleInputKeyPress}
+                  data-placeholder="메시지를 입력하세요. (Enter로 전송 / Shift + Enter로 개행)"
+                >
+                  {" "}
+                </div>
+                <div className="send-btn" onClick={handleSendMessage}>
+                  전송
+                </div>
               </div>
+            </div>
+            <div className="underIcons">
+              <label
+                htmlFor="file-upload"
+                style={{ cursor: "pointer", display: "flex" }}
+              >
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="*"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+                <div className="fileIconBox">
+                  <div className="textBubble">파일 첨부</div>
+                  <img src={FileIcon} alt="fileIcon" className="fileIcon" />
+                </div>
+              </label>
             </div>
           </div>
         )}
@@ -225,33 +513,45 @@ const Message = () => {
         </div>
         <div className="AddPerson-tab">+ 인원 추가하기</div>
         <div className="ChatRoom-Members">
-          <Popover placement="left-start">
-            <div className="OneMember">
-              <div className="AttachWithName">
-                <img
-                  src={UserIcon_dark}
-                  alt="UserIcon_dark"
-                  className="AttachIcon"
-                />
-                <span>개발 1팀 장현지</span>
-                <img src={AdminIcon} alt="Admin_Icon" className="AdminIcon" />
+          {DummyPeoples.map((onePerson, index) => (
+            <Popover key={index} placement="left-start">
+              <div className="OneMember">
+                <div className="AttachWithName">
+                  <img
+                    src={UserIcon_dark}
+                    alt="UserIcon_dark"
+                    className="AttachIcon"
+                  />
+                  <span>
+                    {onePerson.team} {onePerson.username}
+                  </span>
+                  {onePerson.isAdmin ? (
+                    <div className="AdminIcon">admin</div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <PopoverTrigger>
+                  <img
+                    src={MessageMenu}
+                    alt="MenuIcon"
+                    className="OptionIcon"
+                  />
+                </PopoverTrigger>
+                <Portal>
+                  <PopoverContent
+                    className="PersonSide_popover Management"
+                    _focus={{ boxShadow: "none" }}
+                  >
+                    <div className={`Message-OnClick-Menu`}>
+                      <div className="OutOfChat">내보내기</div>
+                      <div className="ChangeAdmin">관리자 변경</div>
+                    </div>
+                  </PopoverContent>
+                </Portal>
               </div>
-              <PopoverTrigger>
-                <img src={MessageMenu} alt="MenuIcon" className="OptionIcon" />
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent
-                  className="PersonSide_popover Management"
-                  _focus={{ boxShadow: "none" }}
-                >
-                  <div className={`Message-OnClick-Menu`}>
-                    <div className="OutOfChat">내보내기</div>
-                    <div className="ChangeAdmin">관리자 변경</div>
-                  </div>
-                </PopoverContent>
-              </Portal>
-            </div>
-          </Popover>
+            </Popover>
+          ))}
         </div>
       </div>
     </div>

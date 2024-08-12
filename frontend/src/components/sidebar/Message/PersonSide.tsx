@@ -33,6 +33,7 @@ interface PersonDataTabProps {
   userName: string | null;
   userPosition: string | null;
   onPersonClick: (
+    userId: string,
     username: string,
     team: string,
     department: string,
@@ -98,6 +99,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
 
   return (
     <ul className="Sidebar-Ms">
+      {/*
       <li
         className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
         onClick={() => {
@@ -126,6 +128,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
         </div>
         <img className="Message-Me" src={MessageMe} alt="message-me" />
       </li>
+        */}
 
       {personData
         .filter((person) => !person.department && person.company !== "R&D")
@@ -140,7 +143,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                   person.username,
                   person.team,
                   person.department,
-                  person.position
+                  person.position,
+                  person.userId
                 );
                 setSelectedUserId(person.userId);
                 setIsNotibarActive(false);
@@ -230,7 +234,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     person.username,
                                     person.team,
                                     person.department,
-                                    person.position
+                                    person.position,
+                                    person.userId
                                   );
                                   setSelectedUserId(person.userId);
                                   setIsNotibarActive(false);
@@ -321,7 +326,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         person.username,
                         person.team,
                         person.department,
-                        person.position
+                        person.position,
+                        person.userId
                       );
                       setSelectedUserId(person.userId);
                       setIsNotibarActive(false);
@@ -417,7 +423,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                         person.username,
                                         person.team,
                                         person.department,
-                                        person.position
+                                        person.position,
+                                        person.userId
                                       );
                                       setSelectedUserId(person.userId);
                                       setIsNotibarActive(false);

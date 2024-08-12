@@ -96,11 +96,37 @@ const Project = () => {
     '진행 완료',
   ];
 
+  const getOptionStyle = (option: string) => {
+    switch (option) {
+      case '진행 예정':
+        return { color: '#717171' };
+      case '진행 중':
+        return { color: '#3870FF' };
+      case '진행 완료':
+        return { color: '#009544' };
+      default:
+        return { color: '#323232' };
+    }
+  };
+
   const pjtstateOptions = [
     '진행 예정',
     '진행 중',
     '진행 완료',
   ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'notstarted':
+        return '#717171';
+      case 'inprogress':
+        return '#3870FF';
+      case 'done':
+        return '#009544';
+      default:
+        return '#717171';
+    }
+  };
 
   const resetForm = () => {
     setPjtStateIsOpen(false);
@@ -802,15 +828,47 @@ const Project = () => {
   useEffect(() => {
     refetchProject();
   }, [refetchProject, selectedstateOption]);
-  
+
+  useEffect(() => {
+    const boxes = document.querySelectorAll('.project_box');
+    const totalBoxes = projects?.length;
+    const boxesPerRow = 3;
+
+    const lastRowStartIndex = totalBoxes - (totalBoxes % boxesPerRow || boxesPerRow);
+
+    boxes.forEach((box, index) => {
+      const boxElement = box as HTMLElement;
+      if (index >= lastRowStartIndex) {
+        boxElement.style.borderBottom = 'none';
+      }
+    });
+  }, []);
+
   return (
     <div className="content">
       <div className="content_container">
-        {activeTab === 0 &&
+        {activeTab === 0 && (
           <div className="project_header_right">
+            <div className="project_container_header_right">
+              <img className="mail_delete_img" src={mail_delete} alt="mail_delete" onClick={() => setDeletePjtModalOpen(true)}/>
+              <div className="dropdown_menu_box" onClick={togglestate}>
+                <span style={getOptionStyle(selectedstateOption)}>{selectedstateOption}</span>
+                <img src={White_Arrow} alt="White_Arrow" />
+              </div>
+              {stateIsOpen && (
+                <ul className="dropdown_menu">
+                  {stateOptions.map((option) => (
+                    <li key={option} onClick={() => handleStateSelect(option)} style={getOptionStyle(option)}>
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             <button className="primary_button" onClick={() => setAddPjtModalOPen(true)}>새업무 +</button>
           </div>
-        }
+        )}
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>담당 업무</Tab>
@@ -820,114 +878,85 @@ const Project = () => {
           <TabPanels>
             <TabPanel>
               <div className="project_container">
-                <div className="project_container_header">
+                {/*<div className="project_container_header">
                   <div className="project_container_header_left">
                     <label className="custom-checkbox">
                       <input type="checkbox" id="check1" checked={allSelected} onChange={toggleAllCheckboxes}/>
                       <span></span>
                     </label>
-                    <img src={mail_delete} alt="mail_delete" onClick={() => setDeletePjtModalOpen(true)}/>
-                    <img src={mail_important} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(selectedProjects)}/>
+                    
+                    
                   </div>
-
-                  <div className="project_container_header_right" onClick={togglestate}>
-                    <span>상태 : {selectedstateOption}</span>
-                    <img src={White_Arrow} alt="White_Arrow" />
-                  </div>
-                  {stateIsOpen && (
-                    <ul className="dropdown_menu">
-                      {stateOptions.map((option) => (
-                        <li key={option} onClick={() => handleStateSelect(option)}>
-                          {option}
-                          <div className={option === '진행 중' ? 'blue_circle' : option === '진행 완료' ? 'brown_circle' : ''}></div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+                </div> */}
 
                 <div className="project_content">
-                  <table className="project_board_list">
-                    <colgroup>
-                      <col width="3%" />
-                      <col width="7%" />
-                      <col width="10%" />
-                      <col width="35%" />
-                      <col width="15%" />
-                      <col width="15%" />
-                      <col width="15%" />
-                    </colgroup>
-                    <thead>
-                      <tr className="board_header">
-                        <th></th>
-                        <th>번호</th>
-                        <th>상태</th>
-                        <th>제목</th>
-                        <th>팀리더</th>
-                        <th>시작일</th>
-                        <th>마감일</th>
-                      </tr>
-                    </thead>
-                    <tbody className="board_container">
-                      {(Array.isArray(projects) ? projects : []).map((project, index) => (
-                        <React.Fragment key={project.mainprojectIndex}>
-                          <tr className="board_content" onContextMenu={(e) => handleRightClick(project, e)}
-                            style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
+                  {(Array.isArray(projects) ? projects : []).map((project, index) => (
+                    <React.Fragment key={project.mainprojectIndex}>
+                      <div className="project_box" onContextMenu={(e) => handleRightClick(project, e)}
+                        style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
+                      >
+                        <div className="project_box_header">
+                          <span className="box_header_status" style={{ backgroundColor: getStatusColor(project.status) }}>
+                            {project.status === 'notstarted' ? '진행 예정' : project.status === 'inprogress' ? '진행 중' : '진행 완료'}
+                          </span>
+                          <div className="box_header_title">
+                            <div className="box_header_title_left">
+                              <img className="box_header_title_important" src={mail_important} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(selectedProjects)}/>
+                              <span>{project.projectName}</span>
+                            </div>
+                            <label className="custom-checkbox">
+                              <input 
+                                type="checkbox"
+                                checked={allSelected ? allSelected : selectedProjects[project.mainprojectIndex] || false}
+                                onChange={() => toggleProjectSelection(project.mainprojectIndex)}   
+                              />
+                              <span></span>
+                            </label>
+                          </div>
+                        </div>
+                        <div className="project_box_content">
+                          <td>{projects.length - (index)}</td>
+                          <td
+                            className="text_left_half text_cursor"
+                            onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}
                           >
-                            <td>
-                              <label className="custom-checkbox">
-                                <input 
-                                  type="checkbox"
-                                  checked={allSelected ? allSelected : selectedProjects[project.mainprojectIndex] || false}
-                                  onChange={() => toggleProjectSelection(project.mainprojectIndex)}   
-                                />
-                                <span></span>
-                              </label>
-                            </td>
-                            <td>{projects.length - (index)}</td>
-                            <td className={project.status === 'notstarted' ? 'text_medium' : project.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_brown'}>{project.status === 'notstarted' ? '진행 예정' : project.status === 'inprogress' ? '진행 중' : '진행 완료'}</td>
-                            <td
-                              className="text_left_half text_cursor"
-                              onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}
-                            >
-                              <div className="dropdown">
-                                {project.pinned ? <img src={mail_important_active} alt="mail_important_active"/> : <></>}
-                                {project.projectName}
-                                {dropdownOpen && (
-                                  <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                                    {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
-                                      <div className="dropdown_pin"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setEditPjtModalOpen(true);
-                                          setpjtStatus(
-                                            rightclickedProjects?.status === 'notstarted' ? '진행 예정' :
-                                            rightclickedProjects?.status === 'inprogress' ? '진행 중' :
-                                            rightclickedProjects?.status === 'completed' ? '진행 완료' :
-                                            '진행 예정'
-                                          );
-                                          setPjtTitle(rightclickedProjects?.projectName || ''); 
-                                          setTeamLeader(rightclickedProjects?.Leader || '');
-                                          setAllMembers(rightclickedProjects?.members || []);
-                                          setAllReferrers(rightclickedProjects?.referrer || []);
-                                          setStartDate(rightclickedProjects?.startDate || null);
-                                          setEndDate(rightclickedProjects?.endDate || null);
-                                        }}
-                                      >
-                                        편집
-                                      </div>
-                                    )}
-                                    <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>
-                                      추가
+                            <div className="dropdown">
+                              {project.pinned ? <img src={mail_important_active} alt="mail_important_active"/> : <></>}
+                              
+                              {dropdownOpen && (
+                                <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
+                                  {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                                    <div className="dropdown_pin"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setEditPjtModalOpen(true);
+                                        setpjtStatus(
+                                          rightclickedProjects?.status === 'notstarted' ? '진행 예정' :
+                                          rightclickedProjects?.status === 'inprogress' ? '진행 중' :
+                                          rightclickedProjects?.status === 'completed' ? '진행 완료' :
+                                          '진행 예정'
+                                        );
+                                        setPjtTitle(rightclickedProjects?.projectName || ''); 
+                                        setTeamLeader(rightclickedProjects?.Leader || '');
+                                        setAllMembers(rightclickedProjects?.members || []);
+                                        setAllReferrers(rightclickedProjects?.referrer || []);
+                                        setStartDate(rightclickedProjects?.startDate || null);
+                                        setEndDate(rightclickedProjects?.endDate || null);
+                                      }}
+                                    >
+                                      편집
                                     </div>
+                                  )}
+                                  <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>
+                                    추가
                                   </div>
-                                )}
-                              </div>
-                            </td>
-                            <td>{project.Leader}</td>
-                            <td>{new Date(project.startDate).getFullYear() + '-' + String(new Date(project.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.startDate).getDate()).padStart(2, '0')}</td>
-                            <td>{new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0')}</td>
-                          </tr>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td>{project.Leader}</td>
+                          <td>{new Date(project.startDate).getFullYear() + '-' + String(new Date(project.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.startDate).getDate()).padStart(2, '0')}</td>
+                          <td>{new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0')}</td>
                           {subprojectVisible[project.mainprojectIndex] && project.subProjects && (
                             project.subProjects?.slice().reverse().map((subProject: any, subindex: any) => (
                               <tr key={subProject.mainprojectIndex} className="board_content subproject">
@@ -950,10 +979,10 @@ const Project = () => {
                               </tr>
                             ))
                           )}
-                        </React.Fragment>
-                      ))}
-                    </tbody>
-                  </table>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  ))}
                 </div>
               </div>
             </TabPanel>

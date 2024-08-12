@@ -273,7 +273,10 @@ const Approval = () => {
 
                     return (
                       <tr key={approvaling.id} className="board_content">
-                        <td>{index + 1}</td>
+                        <td>
+                          {approvalings?.length -
+                              ((page - 1) * postPerPage + index)}
+                        </td>
                         <td style={{ textAlign: 'center' }}>{approvaling.selectForm}</td>
                         <td>{formattedSendDate}</td>
                         <td>{approvaling.approval} / {approvaling.currentSigner}</td>
@@ -382,7 +385,10 @@ const Approval = () => {
 
                     return (
                       <tr key={inProgres.id} className="board_content">
-                        <td>{index + 1}</td>
+                        <td>
+                          {inProgress?.length -
+                              ((page - 1) * postPerPage + index)}
+                        </td>
                         <td style={{ textAlign: 'center' }}>{inProgres.selectForm}</td>
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>
@@ -492,7 +498,10 @@ const Approval = () => {
 
                     return (
                       <tr key={rejected.id} className="board_content">
-                        <td>{index + 1}</td>
+                        <td>
+                          {rejecteds?.length -
+                              ((page - 1) * postPerPage + index)}
+                        </td>
                         <td style={{ textAlign: 'center' }}>{rejected.selectForm}</td>
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>
@@ -602,7 +611,10 @@ const Approval = () => {
 
                     return (
                       <tr key={compledocument.id} className="board_content">
-                        <td>{index + 1}</td>
+                        <td>
+                          {compleDocuments?.length -
+                              ((page - 1) * postPerPage + index)}
+                        </td>
                         <td style={{ textAlign: 'center' }}>{compledocument.selectForm}</td>
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>
@@ -721,7 +733,10 @@ const Approval = () => {
 
                     return (
                       <tr key={mydocument.id} className="board_content">
-                        <td>{index + 1}</td>
+                        <td>
+                          {mydocuments?.length -
+                            ((page - 1) * postPerPage + index)}
+                        </td>
                         <td style={{ textAlign: 'center' }}>{mydocument.selectForm}</td>
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>

@@ -52,5 +52,6 @@ export const selectedPersonState = atom({
     team: latestChat ? latestChat.team : "",
     department: latestChat ? latestChat.department : "",
     position: latestChat ? latestChat.position : "",
+    userId: latestChat ? latestChat.userId : "",
   },
 });

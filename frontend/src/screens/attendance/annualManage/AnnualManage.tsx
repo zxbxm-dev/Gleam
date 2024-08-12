@@ -25,12 +25,13 @@ interface AnnualData {
 const fetchUser = async () => {
   try {
     const response = await PersonData();
+    const approveduser = response.data.filter((item: any) => item.status === 'approved');
     const userMap = new Map();
-    response.data.forEach((user: any) => {
+    approveduser.forEach((user: any) => {
       userMap.set(user.username, user.userId);
     });
     return {
-      users: response.data,
+      users: approveduser,
       userMap
     };
   } catch (error) {
@@ -634,7 +635,6 @@ const AnnualManage = () => {
     );
   };
 
-  console.log(user.company)
   return (
     <div className="content">
       <div className='anuual_header_right'>

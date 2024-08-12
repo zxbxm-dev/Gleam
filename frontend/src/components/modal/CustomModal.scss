@@ -465,7 +465,7 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            width: 75%;
+            width: 78%;
             height: 33px;
             border: 1px solid #dcdcdc;
             border-radius: 5px;
@@ -498,12 +498,18 @@
             align-items: center;
             font-size: 12px;
             color: #555555;
+            width: auto;
 
             .CheckBox {
               cursor: pointer;
               width: 16px;
               height: 16px;
               margin: 0 5px 0 7px;
+            }
+
+            span {
+              display: block;
+              white-space: nowrap;
             }
           }
 
@@ -534,6 +540,7 @@
               height: 50px;
               display: grid;
               grid-template-columns: repeat(5, 1fr);
+              gap: 1px;
 
               div {
                 box-sizing: border-box;
@@ -559,7 +566,7 @@
 
           .LeftEmployCon {
             width: 184px;
-            max-height: 220px;
+            max-height: 240px;
             overflow-y: auto;
             padding-right: 5px;
 
@@ -585,6 +592,7 @@
               flex-direction: row;
               align-items: center;
               font-size: 10px;
+              font-weight: bold;
               color: #8f8f8f;
               white-space: nowrap;
               margin: 10px 0;
@@ -621,7 +629,7 @@
               }
 
               .PersonName {
-                font-size: 12px;
+                font-size: 11px;
                 font-weight: 400;
               }
             }
@@ -634,6 +642,14 @@
               //border-radius: 23px;
               padding-left: 9px;
               height: 20px;
+              color: #8f8f8f;
+
+              .VerticalLine {
+                height: 1px;
+                width: 100%;
+                background-color: #dcdcdc;
+                margin-left: 6px;
+              }
 
               .TeamCheckBox {
                 width: 12px;
@@ -643,18 +659,19 @@
 
               .TeamName {
                 font-size: 10px;
+                white-space: nowrap;
               }
             }
           }
 
           .RightSelectedCon {
-            width: 210px;
-            max-height: 220px;
-            min-height: 220px;
+            width: 186px;
+            max-height: 240px;
+            min-height: 240px;
             overflow-y: auto;
             box-sizing: border-box;
             border-radius: 5px;
-            border: 1px solid #dcdcdc;
+            background-color: #f2f2f2;
             padding: 10px 15px;
 
             &::-webkit-scrollbar {
@@ -705,7 +722,7 @@
                 }
 
                 div {
-                  font-size: 12px;
+                  font-size: 10px;
                   color: #323232;
                 }
               }
