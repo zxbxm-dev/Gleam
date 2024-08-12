@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas';
 import { useQuery } from 'react-query';
 import { CheckOperating, WriteOperating } from '../../services/operating/OperatingServices';
 
-type TeamType = 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | "management" | "support" | "devOne" | "devTwo" | "blockchain" | "design" | "planning";
+type TeamType = 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | "management" | "support" | "devOne" | "devTwo" | "design" | "planning";
 
 type Expense = {
   id: number;
@@ -44,7 +44,6 @@ const Operating = () => {
       support: [['', '', '', '']],
       devOne: [['', '', '', '']],
       devTwo: [['', '', '', '']],
-      blockchain: [['', '', '', '']],
       design: [['', '', '', '']],
       planning: [['', '', '', '']]
     };
@@ -71,7 +70,6 @@ const Operating = () => {
     setSupportTeam(teams.support);
     setDevOneTeam(teams.devOne);
     setDevTwoTeam(teams.devTwo);
-    setBlockChainTeam(teams.blockchain);
     setDesignTeam(teams.design);
     setPlanningTeam(teams.planning);
   };
@@ -199,7 +197,6 @@ const Operating = () => {
   const [supportTeam, setSupportTeam] = useState<string[][]>([['', '', '', '']]);
   const [devOneTeam, setDevOneTeam] = useState<string[][]>([['', '', '', '']]);
   const [devTwoTeam, setDevTwoTeam] = useState<string[][]>([['', '', '', '']]);
-  const [blockchainTeam, setBlockChainTeam] = useState<string[][]>([['', '', '', '']]);
   const [designTeam, setDesignTeam] = useState<string[][]>([['', '', '', '']]);
   const [planningTeam, setPlanningTeam] = useState<string[][]>([['', '', '', '']]);
   
@@ -214,7 +211,6 @@ const Operating = () => {
   const [supportCost, setSupportCost] = useState<number>(0);
   const [devOneCost, setDevOneCost] = useState<number>(0);
   const [devTwoCost, setDevTwoCost] = useState<number>(0);
-  const [blockchainCost, setBlockChainCost] = useState<number>(0);
   const [designCost, setDesignCost] = useState<number>(0);
   const [planningCost, setPlanningnCost] = useState<number>(0);
 
@@ -237,12 +233,11 @@ const Operating = () => {
     setSupportCost(calculateCost(supportTeam));
     setDevOneCost(calculateCost(devOneTeam));
     setDevTwoCost(calculateCost(devTwoTeam));
-    setBlockChainCost(calculateCost(blockchainTeam));
     setDesignCost(calculateCost(designTeam));
     setPlanningnCost(calculateCost(planningTeam));
-  }, [common811Team, common812Team, common813Team, common814Team, common815Team, common818Team, common819Team, managementTeam, supportTeam, devOneTeam, devTwoTeam, blockchainTeam, designTeam, planningTeam]);
+  }, [common811Team, common812Team, common813Team, common814Team, common815Team, common818Team, common819Team, managementTeam, supportTeam, devOneTeam, devTwoTeam, designTeam, planningTeam]);
 
-  const addRow = (team: 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
+  const addRow = (team: 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | 'management' | 'support' | 'devOne' | 'devTwo' | 'design' | 'planning') => {
     let newTeam: string[][];
 
     if (team === 'common811') {
@@ -278,9 +273,6 @@ const Operating = () => {
     } else if (team === 'devTwo') {
       newTeam = [...devTwoTeam, ['', '', '', '']];
       setDevTwoTeam(newTeam);
-    } else if (team === 'blockchain') {
-      newTeam = [...blockchainTeam, ['', '', '', '']];
-      setBlockChainTeam(newTeam);
     } else if (team === 'design') {
       newTeam = [...designTeam, ['', '', '', '']];
       setDesignTeam(newTeam);
@@ -291,7 +283,7 @@ const Operating = () => {
     setDropdownOpen(false);
   };
 
-  const removeRow = (team: 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | 'management' | 'support' | 'devOne' | 'devTwo' | 'blockchain' | 'design' | 'planning') => {
+  const removeRow = (team: 'common811' | 'common812' | 'common813' | 'common814' | 'common815' | 'common818' | 'common819' | 'management' | 'support' | 'devOne' | 'devTwo' | 'design' | 'planning') => {
     switch (team) {
       case 'common811':
         setCommon811Team(prevTeam => {
@@ -395,16 +387,6 @@ const Operating = () => {
         break;
       case 'devTwo':
         setDevTwoTeam(prevTeam => {
-          if (prevTeam.length > 1) {
-            const newTeam = [...prevTeam];
-            newTeam.pop();
-            return newTeam;
-          }
-          return prevTeam;
-        });
-        break;
-      case 'blockchain':
-        setBlockChainTeam(prevTeam => {
           if (prevTeam.length > 1) {
             const newTeam = [...prevTeam];
             newTeam.pop();
@@ -518,9 +500,6 @@ const Operating = () => {
       case 'devTwo':
         setTeamState(setDevTwoTeam, team, index, column, value);
         break;
-      case 'blockchain':
-        setTeamState(setBlockChainTeam, team, index, column, value);
-        break;
       case 'design':
         setTeamState(setDesignTeam, team, index, column, value);
         break;
@@ -578,9 +557,6 @@ const Operating = () => {
           case 'devTwo':
             setDevTwoCost(prevCost => prevCost + calculatedValue);
             break;
-          case 'blockchain':
-            setBlockChainCost(prevCost => prevCost + calculatedValue);
-            break;
           case 'design':
             setDesignCost(prevCost => prevCost + calculatedValue);
             break;
@@ -612,7 +588,6 @@ const Operating = () => {
   const CommonRowSpan = common811Team.length + common812Team.length + common813Team.length + common814Team.length + common815Team.length + common818Team.length + common819Team.length;
   const ManageRowSpan = managementTeam.length + supportTeam.length;
   const DevRowSpan = devOneTeam.length + devTwoTeam.length;
-  const BlockChainRowSpan = blockchainTeam.length;
   const MarketingRowSpan = designTeam.length + planningTeam.length;
 
   useEffect(() => {
@@ -645,14 +620,11 @@ const handleSubmit = () => {
     support: supportTeam,
     devOne: devOneTeam,
     devTwo: devTwoTeam,
-    blockchain: blockchainTeam,
     design: designTeam,
     planning: planningTeam,
     percent:percentage
   }
   
-
-  console.log('전송된 데이터', formData);
 
   // API 호출
   WriteOperating(formData)
@@ -666,16 +638,14 @@ const handleSubmit = () => {
 
   // 예비비 금액 계산
   useEffect(() => {
-    const totalCost = common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost;
+    const totalCost = common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + designCost + planningCost;
     if (percentage) {
       const reserveFund = totalCost * (parseFloat(percentage) / 100);
       setReserveFund(reserveFund);
     } else {
       setReserveFund(0);
     }
-  }, [percentage, common811Cost, common812Cost, common813Cost, common814Cost, common815Cost, common818Cost, common819Cost, managementCost, supportCost, devOneCost, devTwoCost, blockchainCost, designCost, planningCost]);
-
-  console.log('가져온 예비비 비율',percentage)
+  }, [percentage, common811Cost, common812Cost, common813Cost, common814Cost, common815Cost, common818Cost, common819Cost, managementCost, supportCost, devOneCost, devTwoCost, designCost, planningCost]);
 
   return (
     <div className="content">
@@ -1180,55 +1150,6 @@ const handleSubmit = () => {
                       ) : null}
                     </tr>
                   ))}
-
-                  {blockchainTeam.map((row, index) => (
-                    <tr key={index} onContextMenu={(e) => e.preventDefault()}>
-                      {index === 0 ? (
-                        <>
-                          <th rowSpan={BlockChainRowSpan} className="th_right th_bottom">블록체인 <br />사업부 <br /> (30) </th>
-                          <th rowSpan={blockchainTeam.length} className="th_right th_bottom">블록체인 <br /> 1팀 <br /> (01) </th>
-                          <th rowSpan={blockchainTeam.length} className="th_right th_bottom">3001</th>
-                        </>
-                      ) : null}
-                      {row.map((item, i) => (
-                        <React.Fragment key={i}>
-                          {i === 1 ? (
-                            <td className={index === blockchainTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'blockchain')}>
-                              <select
-                                value={item}
-                                onChange={(e) => handleAccountNameChange('blockchain', index, e.target.value)}
-                                className="left-align"
-                                disabled={!editMode}
-                              >
-                                {Object.entries(accountCode).map(([code, department]) => (
-                                  <option key={code} value={department}>
-                                    {department}
-                                  </option>
-                                ))}
-                              </select>
-                            </td>
-                          ) : (
-                            <td className={index === blockchainTeam.length-1 ? 'border_line' : 'dashed_line'} onContextMenu={(e) => handleRightClick(e, 'blockchain')}>
-                              <input
-                                type="text"
-                                value={item}
-                                onChange={(e) => handleInputChange('blockchain', index, i, e.target.value)}
-                                onKeyDown={i === 2 ? (e) => handleInputKeyDown('blockchain', index, i, e) : undefined}
-                                className={i === 1 ? 'left-align' : i === 2 ? 'right-align' : 'center-align'}
-                                disabled={!editMode}
-                              />
-                            </td>
-                          )}
-                        </React.Fragment>
-                      ))}
-                      {index === 0 ? (
-                        <>
-                          <th rowSpan={BlockChainRowSpan} className="th_left th_right th_bottom text_right"> {blockchainCost.toLocaleString()} </th>
-                          <th rowSpan={blockchainTeam.length} className="th_bottom text_right"> {blockchainCost.toLocaleString()} </th>
-                        </>
-                      ) : null}
-                    </tr>
-                  ))}
                   
                   {designTeam.map((row, index) => (
                     <tr key={index} onContextMenu={(e) => e.preventDefault()}>
@@ -1334,7 +1255,7 @@ const handleSubmit = () => {
                 <tbody onContextMenu={(e) => e.preventDefault()}>
                   <tr>
                     <td className="total_title">부서(팀)별 편성액 합계</td>
-                    <td className="total_cost">{( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost).toLocaleString()}</td>
+                    <td className="total_cost">{( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + designCost + planningCost).toLocaleString()}</td>
                     <td>  </td>
                   </tr>
                   <tr>
@@ -1351,7 +1272,7 @@ const handleSubmit = () => {
                           className='dropdown_select'
                           onChange={(e) => {
                             const ratio = parseFloat(e.target.value) || 0;
-                            const reserveFund = (common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) * ratio / 100;
+                            const reserveFund = (common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + designCost + planningCost) * ratio / 100;
                             setReserveFund(reserveFund);
                             setPercentage(e.target.value); 
                           }}
@@ -1380,7 +1301,7 @@ const handleSubmit = () => {
                   </tr>
                   <tr>
                     <td className="total_title">{selectedYear}년 총 예산</td>
-                    <td className="total_cost">{(( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + blockchainCost + designCost + planningCost) + reserveFund).toLocaleString()}</td>
+                    <td className="total_cost">{(( common811Cost + common812Cost + common813Cost + common814Cost + common815Cost + common818Cost + common819Cost + managementCost + supportCost + devOneCost + devTwoCost + designCost + planningCost) + reserveFund).toLocaleString()}</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -1415,8 +1336,6 @@ const handleSubmit = () => {
                   return '개발 1팀';
                 case 'devTwo':
                   return '개발 2팀';
-                case 'blockchain':
-                  return '블록체인 1팀';
                 case 'design':
                   return '디자인팀';
                 case 'planning':
