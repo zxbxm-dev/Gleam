@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false, // 방장 필드
       },
       invitedUserIds: {
-        type: DataTypes.ARRAY(DataTypes.STRING), // 초대받은 사용자들의 ID 배열
+        type: DataTypes.JSON, // 초대받은 사용자들의 ID 배열
         allowNull: true,
       },
     },

@@ -221,15 +221,20 @@ const Message = () => {
       try {
         if (user) {
           const response = await getChatRooms(user.id);
-          setRooms(response.data);
+  
+          // 응답이 배열인지 확인하고, 아니라면 빈 배열로 초기화
+          const roomsData = Array.isArray(response.data) ? response.data : [];
+          setRooms(roomsData);
         }
       } catch (err) {
         console.error("Error fetching chat rooms:", err);
+        setRooms([]);
       }
     };
-
+  
     fetchChatRooms();
   }, [user]);
+  
 
   useEffect(() => {
     rooms.forEach((room) => {

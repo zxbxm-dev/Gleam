@@ -16,7 +16,7 @@ const sendMessageToServer = async (roomId, userId, message) => {
 };
 // 본인이 포함된 모든 대화방 목록 조회
 const getChatRooms = (userId) => {
-  return api.get("/getChatRooms", { params: { userId } });
+  return api.get(`/${userId}`);
 };
 
 export { sendMessageToServer, getChatRooms };
