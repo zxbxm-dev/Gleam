@@ -4,9 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       roomId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
+        primaryKey: true
       },
       name: {
         type: DataTypes.STRING,
@@ -27,22 +26,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       hostUserId: {
         type: DataTypes.STRING,
-        allowNull: false, // 방장 필드
+        allowNull: false, // 방장 사용자
       },
       invitedUserIds: {
-        type: DataTypes.ARRAY(DataTypes.STRING), // 초대받은 사용자들의 ID 배열
-        allowNull: true,
+        type: DataTypes.JSON,
+        allowNull: true, // 초대된 사용자
       },
     },
     {
       tableName: "chatRoom",
     }
-  );
-  // 관계 설정
-  ChatRoom.associate = (models) => {
-    ChatRoom.hasMany(models.Message, { foreignKey: "roomId" });
-    ChatRoom.belongsTo(models.User, { foreignKey: "hostUserId", as: "Host" }); // 방장과의 관계 설정
-  };
-
+  )
   return ChatRoom;
 };

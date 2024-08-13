@@ -4,33 +4,28 @@ module.exports = (sequelize, DataTypes) => {
     {
       messageId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
+        primaryKey: true
       },
       content: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: false
       },
       userId: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       roomId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        references: {
+          model: 'ChatRooms',
+          key: 'roomId'
+        }
       },
     },
     {
       tableName: "message",
     }
   );
-
-  // 관계 설정
-  Message.associate = (models) => {
-    Message.belongsTo(models.User, { foreignKey: "userId" });
-    Message.belongsTo(models.ChatRoom, { foreignKey: "roomId" });
-  };
-
   return Message;
 };
