@@ -5,22 +5,27 @@ module.exports = (sequelize, DataTypes) => {
       messageId: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
-      content: {
+      content: { // 메신저 내용
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: false,
       },
-      userId: {
+      userId: { // 메신저를 보낸 사람
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       roomId: {
         type: DataTypes.INTEGER,
-        references: {
-          model: 'ChatRooms',
-          key: 'roomId'
-        }
+        allowNull: true,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
     },
     {
