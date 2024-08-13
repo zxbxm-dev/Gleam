@@ -6,12 +6,6 @@ import {
   ChatTab,
   PersonTab,
   NewChatIcon,
-  SearchIcon,
-  CheckBox,
-  CheckBox_Active,
-  DepartmentTabIcon,
-  UserIcon_dark,
-  XIcon,
 } from "../../../assets/images/index";
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";

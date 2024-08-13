@@ -1,24 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Person } from "./MessageSidebar";
 import {
-  MessageMe,
   MessageMenu,
   UserIcon_dark,
   MenuArrow_down,
   MenuArrow_right,
-  NotiIcon,
 } from "../../../assets/images/index";
 import {
   Popover,
   PopoverTrigger,
   Portal,
   PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
 } from "@chakra-ui/react";
 
 interface PersonDataTabProps {
@@ -47,12 +39,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   expandedTeams,
   toggleDepartmentExpansion,
   toggleTeamExpansion,
-  userAttachment,
-  userTeam,
-  userDepartment,
-  userName,
   onPersonClick,
-  userPosition,
 }) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
