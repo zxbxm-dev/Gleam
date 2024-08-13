@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   HrLine,
   UserIcon_dark,
@@ -24,6 +24,10 @@ import { getChatRooms } from "../../services/message/MessageApi";
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3001", { transports: ["websocket"] });
+
+socket.on("connect", () => {
+  console.log("Socket connected:", socket.id);
+});
 
 interface Message {
   name: string;
@@ -64,23 +68,6 @@ const Message = () => {
     },
   ];
 
-  const DummyMessage1 = [
-    {
-      user: {
-        id: "qw506799a",
-        username: "박세준",
-        userID: "qw506799",
-        usermail: "qw506799@four-chains.com",
-        phoneNumber: "01011111111",
-        position: "대표이사",
-        spot: "대표이사",
-        attachment: "http://localhost:3001/uploads/NextBtn.png",
-      },
-      message: "안녕하세요",
-      date: new Date(),
-    },
-  ];
-
   const NoticeIcons: { [key: string]: string } = {
     Mail: MailIcon,
     WorkReport: WorkReportIcon,
@@ -99,18 +86,19 @@ const Message = () => {
 
   useEffect(() => {
     const handleIncomingMessage = ({ name, id, msg, team, department, position }: Message) => {
+      console.log("Received message:", { name, id, msg, team, department, position }); // Log the incoming message
       setMessages(prevMessages => [
         ...prevMessages,
         { name, id, msg, team, department, position }
       ]);
     };
-  
+
     socket.on("recMsg", handleIncomingMessage);
-  
+
     return () => {
       socket.off("recMsg", handleIncomingMessage);
     };
-  }, []);  
+  }, []);
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -118,28 +106,29 @@ const Message = () => {
     }
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = useCallback(() => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
-  
+
     if (inputElement && inputElement.innerHTML.trim() !== "") {
       const message = inputElement.innerHTML.trim();
-      const roomname = selectedPerson.team 
+      const roomname = selectedPerson.team
         ? `${selectedPerson.team} ${selectedPerson.username}`
-        : selectedPerson.department 
+        : selectedPerson.department
           ? `${selectedPerson.department} ${selectedPerson.username}`
           : "defaultRoomId";
-  
-//-------------------------1:1 메시지 전송 데이터 설정---------------------------
+
       const messageData = {
-        roomname,
+        roomname: null,
         TargetID: selectedPerson.userId,
-        username: user.username,
         userID: user.id,
-        msg: message,
+        message: message,
+        chatAdmin: null,
+        PrivateTitle: null,
+        Targetinfo: null
       };
-  
+
       emitMessage(messageData);
-  
+
       setMessages(prevMessages => [
         ...prevMessages,
         {
@@ -151,19 +140,21 @@ const Message = () => {
           position: user.position || "",
         }
       ]);
-  
+
       setMessageInput("");
       inputElement.innerHTML = "";
     }
-  };
+  }, [selectedPerson, user]);
 
   //-------------------------1:1 메시지 소켓 전송---------------------------
   const emitMessage = (messageData: {
-    roomname: string;
+    roomname: null;
     TargetID: string;
-    username: string;
     userID: string;
-    msg: string;
+    message: string;
+    chatAdmin: null;
+    PrivateTitle: null;
+    Targetinfo: null;
   }) => {
     console.log("Emitting message data:", messageData);
     socket.emit("createPrivateRoom", messageData);
@@ -221,15 +212,21 @@ const Message = () => {
       try {
         if (user) {
           const response = await getChatRooms(user.id);
-          setRooms(response.data);
+
+          // 응답이 배열인지 확인하고, 아니라면 빈 배열로 초기화
+          const roomsData = Array.isArray(response.data) ? response.data : [];
+          setRooms(roomsData);
         }
       } catch (err) {
         console.error("Error fetching chat rooms:", err);
+        setRooms([]);
       }
     };
 
     fetchChatRooms();
   }, [user]);
+
+
 
   useEffect(() => {
     rooms.forEach((room) => {

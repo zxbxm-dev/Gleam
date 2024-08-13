@@ -29,8 +29,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false, // 방장 사용자
       },
       invitedUserIds: {
+<<<<<<< HEAD
         type: DataTypes.JSON,
         allowNull: true, // 초대된 사용자
+=======
+        type: DataTypes.JSON, // 초대받은 사용자들의 ID 배열
+        allowNull: true,
+>>>>>>> 29b6601b9d95abf54cd5d592aa0830b23e0d779e
       },
     },
     {
