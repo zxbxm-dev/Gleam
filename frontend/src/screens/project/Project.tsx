@@ -4,8 +4,8 @@ import {
   White_Arrow,
   Down_Arrow,
   mail_delete,
-  mail_important,
-  mail_important_active,
+  pinned_true,
+  pinned_false,
 } from "../../assets/images/index";
 import React, { useState, useEffect, useRef } from "react";
 import FullCalendar from '@fullcalendar/react';
@@ -807,16 +807,16 @@ const Project = () => {
                 <div className="project_content_section_list">
                   {(Array.isArray(projects) ? projects.filter(project => project.status === 'notstarted') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className="project_box" onContextMenu={(e) => handleRightClick(project, e)}
+                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
                       >
                         <div className="project_box_header">
                           <div className="box_header_title">
                             <div className="box_header_title_left">
                               {project?.pinned === false ? (
-                                <img className="box_header_title_important" src={mail_important} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img className="box_header_title_important" src={pinned_false} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
                               ) : (
-                                <img className="box_header_title_important" src={mail_important_active} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img className="box_header_title_important" src={pinned_true} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
                               )}
                               <span>{project.projectName}</span>
                             </div>
@@ -913,16 +913,16 @@ const Project = () => {
                 <div className="project_content_section_list">
                   {(Array.isArray(projects) ? projects.filter(project => project.status === 'inprogress') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className="project_box" onContextMenu={(e) => handleRightClick(project, e)}
+                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
                       >
                         <div className="project_box_header">
                           <div className="box_header_title">
                             <div className="box_header_title_left">
                               {project?.pinned === false ? (
-                                <img className="box_header_title_important" src={mail_important} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img className="box_header_title_important" src={pinned_false} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
                               ) : (
-                                <img className="box_header_title_important" src={mail_important_active} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img className="box_header_title_important" src={pinned_true} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
                               )}
                               <span>{project.projectName}</span>
                             </div>
@@ -1019,16 +1019,16 @@ const Project = () => {
                 <div className="project_content_section_list">
                   {(Array.isArray(projects) ? projects.filter(project => project.status === 'done') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className="project_box" onContextMenu={(e) => handleRightClick(project, e)}
+                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
                       >
                         <div className="project_box_header">
                           <div className="box_header_title">
                             <div className="box_header_title_left">
                               {project?.pinned === false ? (
-                                <img className="box_header_title_important" src={mail_important} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img className="box_header_title_important" src={pinned_false} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
                               ) : (
-                                <img className="box_header_title_important" src={mail_important_active} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img className="box_header_title_important" src={pinned_true} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
                               )}
                               <span>{project.projectName}</span>
                             </div>

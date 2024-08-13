@@ -8,6 +8,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
+  PopoverArrow,
   PopoverHeader,
   PopoverBody,
   PopoverCloseButton,
@@ -50,6 +51,7 @@ const CustomPopover: React.FC<CustomPopoverProps> = ({
       <Portal>
         <PopoverContent className='custom_popover'>
           <PopoverHeader className='custom_popover_header'>{dept}</PopoverHeader>
+          <PopoverArrow />
           <PopoverCloseButton />
           <PopoverBody className='custom_popover_body'>
             <div className='custom_popover_body_left'>

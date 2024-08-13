@@ -20,6 +20,8 @@ export { default as SelectArrow } from "./Common/SelectArrow.svg";
 export { default as PageNotIcon } from "./Common/PageNotIcon.svg";
 export { default as PinnedIcon } from "./Common/PinnedIcon.svg";
 export { default as SelectDownArrow } from "./Common/Select_report_Header.svg";
+export { default as pinned_true } from "./Common/pinned_true.svg";
+export { default as pinned_false } from "./Common/pinned_false.svg";
 
 // Approval
 export { default as Approval_Plus } from "./Approval/Approval_Plus.svg";
