@@ -1,36 +1,36 @@
-// models/message.js
 module.exports = (sequelize, DataTypes) => {
-    const Message = sequelize.define('Message', {
+  const Message = sequelize.define(
+    "Message",
+    {
       messageId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-      },
-      chatRoomId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'ChatRoom',
-          key: 'chatRoomId',
-        },
-      },
-      userId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-          model: 'User',
-          key: 'userId',
-        },
       },
       content: {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-    }, {
-      tableName: 'message',
-      timestamps: true,
-    });
-  
-    return Message;
+      userId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      roomId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+    },
+    {
+      tableName: "message",
+    }
+  );
+
+  // 관계 설정
+  Message.associate = (models) => {
+    Message.belongsTo(models.User, { foreignKey: "userId" });
+    Message.belongsTo(models.ChatRoom, { foreignKey: "roomId" });
   };
-  
+
+  return Message;
+};

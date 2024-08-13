@@ -31,7 +31,6 @@ const subProject = require("./pjschedule/subProject");
 //채팅방
 const chatRoom = require("./messenger/chatRoom");
 const message = require("./messenger/message");
-const userChatRoom = require("./messenger/userChatRoom");
 
 const db = {};
 
@@ -62,9 +61,9 @@ db.mainProject = mainProject(sequelize, Sequelize);
 db.subProject = subProject(sequelize, Sequelize);
 db.ChatRoom = chatRoom(sequelize, Sequelize);
 db.Message = message(sequelize, Sequelize);
-db.UserChatRoom = userChatRoom(sequelize, Sequelize);
 
-//프로젝트 부모 - 자식 cascade 설정
+// 모델 관계 설정
+// 프로젝트 부모 - 자식 cascade 설정
 db.mainProject.hasMany(db.subProject, {
   foreignKey: "mainprojectIndex",
   onDelete: "cascade",
@@ -74,20 +73,11 @@ db.subProject.belongsTo(db.mainProject, {
   onDelete: "cascade",
 });
 
-// 채팅 관계 설정
-db.User.belongsToMany(db.ChatRoom, {
-  through: db.UserChatRoom,
-  foreignKey: "userId",
-});
-db.ChatRoom.belongsToMany(db.User, {
-  through: db.UserChatRoom,
-  foreignKey: "chatRoomId",
-});
+// 채팅방과 메시지 간의 관계 설정
+db.ChatRoom.hasMany(db.Message, { foreignKey: 'roomId', onDelete: 'CASCADE' });
+db.Message.belongsTo(db.ChatRoom, { foreignKey: 'roomId' });
 
-db.ChatRoom.hasMany(db.Message, { foreignKey: "chatRoomId" });
-db.Message.belongsTo(db.ChatRoom, { foreignKey: "chatRoomId" });
-
-db.User.hasMany(db.Message, { foreignKey: "userId" });
-db.Message.belongsTo(db.User, { foreignKey: "userId" });
+db.User.hasMany(db.Message, { foreignKey: 'userId' });
+db.Message.belongsTo(db.User, { foreignKey: 'userId' });
 
 module.exports = db;

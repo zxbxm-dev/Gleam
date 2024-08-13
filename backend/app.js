@@ -20,9 +20,6 @@ const io = new Server(server, {
   },
 });
 
-// 리다이렉트 라이브러리
-app.use(secure);
-
 // Sequelize 동기화
 const { sequelize } = require("./lib/models");
 
@@ -39,6 +36,8 @@ sequelize
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
+// 리다이렉트 라이브러리
+app.use(secure);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -66,15 +65,12 @@ const routers = [
   "meetingRoom",
   "pjschedule",
   "performanceOutline",
+  "message"
 ];
 
 routers.forEach((route) => {
   require(`./lib/router/${route}`)(app);
 });
-
-// 백업 스케줄링 시작
-const { scheduleBackup } = require('./lib/config/backup');
-scheduleBackup();
 
 // 404 에러 핸들러
 app.use((req, res, next) => {
@@ -92,11 +88,23 @@ app.use((err, req, res, next) => {
 
 // Socket.IO 이벤트 처리
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  console.log("실시간 연결이 완료 되었습니다.");
 
-  socket.on("chat message", (msg) => {
-    console.log("Message:", msg);
-    io.emit("chat message", msg); // 모든 클라이언트에 메시지 전송
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId);
+    console.log(`사용자가 방에 참여했습니다. ${roomId}`);
+  });
+
+  socket.on("sendMessage", async ({ content, roomId, userId }) => {
+    try {
+      // 메시지를 데이터베이스에 저장
+      const Message = require("./lib/models").Message;
+      const message = await Message.create({ content, roomId, userId });
+      // 채팅방에 있는 모든 클라이언트에 메시지 전송
+      io.to(roomId).emit("message", message);
+    } catch (error) {
+      console.error('실시간 메시지 보내기 오류:', error);
+    }
   });
 
   socket.on("disconnect", () => {
