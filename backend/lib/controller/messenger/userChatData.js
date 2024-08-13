@@ -1,4 +1,3 @@
-// controllers/userController.js
 const models = require("../../models");
 const userData = models.User;
 
