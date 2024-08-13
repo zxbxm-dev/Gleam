@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userState, selectedPersonState } from "../../../recoil/atoms";
+import { useRecoilValue } from "recoil";
+import { userState } from "../../../recoil/atoms";
 import {
   SearchIcon,
   CheckBox,
@@ -10,6 +10,9 @@ import {
   XIcon,
 } from "../../../assets/images/index";
 import CustomModal from "../../modal/CustomModal";
+import SetProfile from "./SetProfile";
+import { createRoom } from "../../../services/message/MessageApi";
+
 
 export interface Person {
   userId: string;
@@ -22,18 +25,6 @@ export interface Person {
   entering: Date;
   attachment: string;
   company: string;
-}
-
-interface User {
-  userId: string;
-  username: string;
-  position: string;
-  department: string;
-  team: string;
-  phoneNumber?: string;
-  usermail?: string;
-  entering: Date;
-  attachment: string;
 }
 
 interface NewChatModalProps {
@@ -61,17 +52,24 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   );
   const [chatTitle, setChatTitle] = useState<string>("");
 
-  const user: User = useRecoilValue(userState) as User;
-  const setSelectedPerson = useSetRecoilState(selectedPersonState);
+  const user = useRecoilValue(userState);
 
   useEffect(() => {
     if (openModal) {
-      setNewChatChosenUsers(null);
+      const allPersons = Object.values(filteredData).flatMap((company) =>
+        Object.values(company).flatMap((department) =>
+          Object.values(department).flat()
+        )
+      );
+
+      const initialChosenUsers = allPersons.filter(person => person.username === user.username);
+
+      setNewChatChosenUsers(initialChosenUsers.length > 0 ? initialChosenUsers : null);
       setChatTitle("");
       setSearchQuery("");
       setIsWholeMemeberChecked(false);
     }
-  }, [openModal]);
+  }, [openModal, filteredData, user.username]);
 
   const filterDataBySearchQuery = (data: {
     [company: string]: { [department: string]: { [team: string]: Person[] } };
@@ -110,156 +108,121 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
 
   const filteredPersonsData = filterDataBySearchQuery(filteredData);
 
-  const handleSubmit = () => {
-    if (!chatTitle) {
+  const generateRandomColor = () => {
+    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8C33', '#8CFF33', '#33FF8C', '#8C33FF', '#FF3333', '#33FF33'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+  const handleSubmit = async () => {
+    // `newChatChosenUsers`가 `null`일 경우 빈 배열로 처리
+    const chosenUsers = newChatChosenUsers || [];
+
+    // 선택된 사용자가 2명 이상이고 채팅방 이름이 비어있는 경우
+    if (chosenUsers.length > 2 && !chatTitle) {
       alert("채팅방 이름을 입력해주세요.");
       return;
     }
 
-    if (!newChatChosenUsers || newChatChosenUsers?.length === 0) {
+    // 선택된 사용자가 없을 경우 처리
+    if (chosenUsers.length === 0) {
       alert("채팅방 인원을 선택해주세요.");
       return;
     }
 
+    // 그룹 채팅 여부 확인
+    const isGroup = chosenUsers.length > 2;
+    const targetIds = chosenUsers.map(user => user.userId);
+
     const payload = {
-      //랜덤 색상 index 0~9 추가할 것
+      name: null,
+      invitedUserIds: isGroup ? targetIds : targetIds[0],
+      hostUserId: null, // 서버에서 설정
+      isGroup,
+      color: generateRandomColor(),
       title: chatTitle,
-      users: newChatChosenUsers,
     };
 
-    console.log("페이로드 >> ", payload);
-
-    setOpenModal(false);
+    try {
+      const response = await createRoom(payload);
+      console.log("Chat room created successfully:", response.data);
+      setOpenModal(false);
+    } catch (error) {
+      console.error('Error creating chat room:', error);
+    }
   };
 
   return (
-    <CustomModal
-      isOpen={openModal}
-      onClose={() => setOpenModal(false)}
-      header={"새 대화방 생성"}
-      headerTextColor="white"
-      footer1={"확인"}
-      footer1Class="back-green-btn"
-      onFooter1Click={handleSubmit}
-      footer2={"취소"}
-      footer2Class="gray-btn"
-      onFooter2Click={() => setOpenModal(false)}
-      width="400px"
-      height="460px"
-    >
-      <div className="body-container New-Chat-Room-Body">
-        <div className="New-Chat-Room">
-          <input
-            placeholder="(필수) 대화방 이름을 입력해주세요."
-            className="TextInputCon"
-            value={chatTitle}
-            onChange={(e) => setChatTitle(e.target.value)}
-          />
-        </div>
-        <div className="New-Chat-Room">
-          <div className="Right-Button-Con">
-            <img src={SearchIcon} className="SearchIcon" alt="searchIcon" />
+    <>
+      <CustomModal
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        header={"새 대화방 생성"}
+        headerTextColor="white"
+        footer1={"확인"}
+        footer1Class="back-green-btn"
+        onFooter1Click={handleSubmit}
+        footer2={"취소"}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setOpenModal(false)}
+        width="400px"
+        height="460px"
+      >
+        <div className="body-container New-Chat-Room-Body">
+          <div className="New-Chat-Room">
             <input
-              placeholder="대화상대 검색"
-              className="LeftTextInput"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={
+                newChatChosenUsers && newChatChosenUsers.length === 2
+                  ? "1:1 대화방"
+                  : "(필수) 대화방 이름을 입력해주세요."
+              }
+              className="TextInputCon"
+              value={chatTitle}
+              onChange={(e) => setChatTitle(e.target.value)}
+              disabled={Boolean(newChatChosenUsers?.length === 2)}
             />
           </div>
-          <div className="WholeMemberCheckBoxCon">
-            <img
-              className="CheckBox"
-              src={isWholeMemberChecked ? CheckBox_Active : CheckBox}
-              alt="checkBoxIcon"
-              onClick={() => {
-                setIsWholeMemeberChecked(!isWholeMemberChecked);
-                setNewChatChosenUsers(
-                  isWholeMemberChecked
-                    ? null
-                    : Object.values(filteredData).flatMap((company) =>
+          <div className="New-Chat-Room">
+            <div className="Right-Button-Con">
+              <img src={SearchIcon} className="SearchIcon" alt="searchIcon" />
+              <input
+                placeholder="대화상대 검색"
+                className="LeftTextInput"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="WholeMemberCheckBoxCon">
+              <img
+                className="CheckBox"
+                src={isWholeMemberChecked ? CheckBox_Active : CheckBox}
+                alt="checkBoxIcon"
+                onClick={() => {
+                  setIsWholeMemeberChecked(!isWholeMemberChecked);
+                  setNewChatChosenUsers(
+                    isWholeMemberChecked
+                      ? null
+                      : Object.values(filteredData).flatMap((company) =>
                         Object.values(company).flatMap((department) =>
                           Object.values(department).flat()
                         )
                       )
-                );
-              }}
-            />
-            <span>전체 멤버</span>
+                  );
+                }}
+              />
+              <span>전체 멤버</span>
+            </div>
           </div>
-        </div>
-        <div className="PeopleSearchCon">
-          <div className="LeftEmployCon">
-            {Object.keys(filteredPersonsData).map((companyName) => (
-              <div key={companyName}>
-                {companyName === "R&D" && (
-                  <div className="Department-Tab">{companyName}</div>
-                )}
-                {Object.keys(filteredPersonsData[companyName])
-                  .filter((departmentName) => departmentName === "")
-                  .map((departmentName) =>
-                    Object.keys(
-                      filteredPersonsData[companyName][departmentName]
-                    )
-                      .filter((teamName) => teamName === "")
-                      .map((teamName) => (
-                        <div key={teamName}>
-                          {filteredPersonsData[companyName][departmentName][
-                            teamName
-                          ].map((person) => (
-                            <div className="PersonCon" key={person.userId}>
-                              <img
-                                src={
-                                  isWholeMemberChecked ||
-                                  newChatChosenUsers?.includes(person)
-                                    ? CheckBox_Active
-                                    : CheckBox
-                                }
-                                className="PersonCheckBox"
-                                alt="PersonCheckBox"
-                                onClick={() =>
-                                  setNewChatChosenUsers((prevUsers) =>
-                                    prevUsers
-                                      ? prevUsers.includes(person)
-                                        ? prevUsers.filter(
-                                            (user) => user !== person
-                                          )
-                                        : [...prevUsers, person]
-                                      : [person]
-                                  )
-                                }
-                              />
-                              <img
-                                src={
-                                  person.attachment
-                                    ? person.attachment
-                                    : UserIcon_dark
-                                }
-                                className="ProfileIcon"
-                                alt="usericondark"
-                              />
-                              <div className="PersonName">
-                                {person.username} | {person.position}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ))
+          <div className="PeopleSearchCon">
+            <div className="LeftEmployCon">
+              {Object.keys(filteredPersonsData).map((companyName) => (
+                <div key={companyName}>
+                  {companyName === "R&D" && (
+                    <div className="Department-Tab">{companyName}</div>
                   )}
-                {Object.keys(filteredPersonsData[companyName])
-                  .filter((departmentName) => departmentName !== "")
-                  .map((departmentName) => (
-                    <div key={departmentName}>
-                      {departmentName.trim() !== "" && (
-                        <div className="Department-Tab">
-                          <img
-                            src={DepartmentTabIcon}
-                            alt="DepartmentTabIcon"
-                          />
-                          {departmentName}
-                          <div className="VerticalLine"></div>
-                        </div>
-                      )}
-                      {Object.keys(
+                  {Object.keys(filteredPersonsData[companyName])
+                    .filter((departmentName) => departmentName === "")
+                    .map((departmentName) =>
+                      Object.keys(
                         filteredPersonsData[companyName][departmentName]
                       )
                         .filter((teamName) => teamName === "")
@@ -272,7 +235,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                                 <img
                                   src={
                                     isWholeMemberChecked ||
-                                    newChatChosenUsers?.includes(person)
+                                      newChatChosenUsers?.includes(person)
                                       ? CheckBox_Active
                                       : CheckBox
                                   }
@@ -283,8 +246,8 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                                       prevUsers
                                         ? prevUsers.includes(person)
                                           ? prevUsers.filter(
-                                              (user) => user !== person
-                                            )
+                                            (user) => user !== person
+                                          )
                                           : [...prevUsers, person]
                                         : [person]
                                     )
@@ -305,38 +268,100 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                               </div>
                             ))}
                           </div>
-                        ))}
-                      {Object.keys(
-                        filteredPersonsData[companyName][departmentName]
-                      )
-                        .filter((teamName) => teamName !== "")
-                        .map((teamName) => (
-                          <div key={teamName}>
-                            {teamName.trim() !== "" && (
-                              <div className="Team-Tab">
-                                <img
-                                  src={
-                                    filteredPersonsData[companyName][
-                                      departmentName
-                                    ][teamName].every((person) =>
-                                      newChatChosenUsers?.includes(person)
-                                    )
-                                      ? CheckBox_Active
-                                      : CheckBox
-                                  }
-                                  className="TeamCheckBox"
-                                  alt="TeamCheckBox"
-                                  onClick={() => {
-                                    let allMembersSelected =
+                        ))
+                    )}
+                  {Object.keys(filteredPersonsData[companyName])
+                    .filter((departmentName) => departmentName !== "")
+                    .map((departmentName) => (
+                      <div key={departmentName}>
+                        {departmentName.trim() !== "" && (
+                          <div className="Department-Tab">
+                            <img
+                              src={DepartmentTabIcon}
+                              alt="DepartmentTabIcon"
+                            />
+                            {departmentName}
+                            <div className="VerticalLine"></div>
+                          </div>
+                        )}
+                        {Object.keys(
+                          filteredPersonsData[companyName][departmentName]
+                        )
+                          .filter((teamName) => teamName === "")
+                          .map((teamName) => (
+                            <div key={teamName}>
+                              {filteredPersonsData[companyName][departmentName][
+                                teamName
+                              ].map((person) => (
+                                <div className="PersonCon" key={person.userId}>
+                                  <img
+                                    src={
+                                      isWholeMemberChecked ||
+                                        newChatChosenUsers?.includes(person)
+                                        ? CheckBox_Active
+                                        : CheckBox
+                                    }
+                                    className="PersonCheckBox"
+                                    alt="PersonCheckBox"
+                                    onClick={() =>
+                                      setNewChatChosenUsers((prevUsers) =>
+                                        prevUsers
+                                          ? prevUsers.includes(person)
+                                            ? prevUsers.filter(
+                                              (user) => user !== person
+                                            )
+                                            : [...prevUsers, person]
+                                          : [person]
+                                      )
+                                    }
+                                  />
+                                  <img
+                                    src={
+                                      person.attachment
+                                        ? person.attachment
+                                        : UserIcon_dark
+                                    }
+                                    className="ProfileIcon"
+                                    alt="usericondark"
+                                  />
+                                  <div className="PersonName">
+                                    {person.username} | {person.position}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                        {Object.keys(
+                          filteredPersonsData[companyName][departmentName]
+                        )
+                          .filter((teamName) => teamName !== "")
+                          .map((teamName) => (
+                            <div key={teamName}>
+                              {teamName.trim() !== "" && (
+                                <div className="Team-Tab">
+                                  <img
+                                    src={
                                       filteredPersonsData[companyName][
                                         departmentName
                                       ][teamName].every((person) =>
                                         newChatChosenUsers?.includes(person)
-                                      );
-                                    setNewChatChosenUsers((prevUsers) => {
-                                      if (prevUsers) {
-                                        return allMembersSelected
-                                          ? prevUsers.filter(
+                                      )
+                                        ? CheckBox_Active
+                                        : CheckBox
+                                    }
+                                    className="TeamCheckBox"
+                                    alt="TeamCheckBox"
+                                    onClick={() => {
+                                      let allMembersSelected =
+                                        filteredPersonsData[companyName][
+                                          departmentName
+                                        ][teamName].every((person) =>
+                                          newChatChosenUsers?.includes(person)
+                                        );
+                                      setNewChatChosenUsers((prevUsers) => {
+                                        if (prevUsers) {
+                                          return allMembersSelected
+                                            ? prevUsers.filter(
                                               (user) =>
                                                 !filteredPersonsData[
                                                   companyName
@@ -344,7 +369,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                                                   teamName
                                                 ].includes(user)
                                             )
-                                          : [
+                                            : [
                                               ...prevUsers,
                                               ...filteredPersonsData[
                                                 companyName
@@ -355,97 +380,98 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                                                   !prevUsers.includes(person)
                                               ),
                                             ];
-                                      } else {
-                                        return filteredPersonsData[companyName][
-                                          departmentName
-                                        ][teamName];
-                                      }
-                                    });
-                                  }}
-                                />
-                                <div className="TeamName">{teamName}</div>
-                                <div className="VerticalLine"></div>
-                              </div>
-                            )}
-                            {filteredPersonsData[companyName][departmentName][
-                              teamName
-                            ].map((person) => (
-                              <div className="PersonCon" key={person.userId}>
-                                <img
-                                  src={
-                                    isWholeMemberChecked ||
-                                    newChatChosenUsers?.includes(person)
-                                      ? CheckBox_Active
-                                      : CheckBox
-                                  }
-                                  className="PersonCheckBox"
-                                  alt="PersonCheckBox"
-                                  onClick={() =>
-                                    setNewChatChosenUsers((prevUsers) =>
-                                      prevUsers
-                                        ? prevUsers.includes(person)
-                                          ? prevUsers.filter(
+                                        } else {
+                                          return filteredPersonsData[companyName][
+                                            departmentName
+                                          ][teamName];
+                                        }
+                                      });
+                                    }}
+                                  />
+                                  <div className="TeamName">{teamName}</div>
+                                  <div className="VerticalLine"></div>
+                                </div>
+                              )}
+                              {filteredPersonsData[companyName][departmentName][
+                                teamName
+                              ].map((person) => (
+                                <div className="PersonCon" key={person.userId}>
+                                  <img
+                                    src={
+                                      isWholeMemberChecked ||
+                                        newChatChosenUsers?.includes(person)
+                                        ? CheckBox_Active
+                                        : CheckBox
+                                    }
+                                    className="PersonCheckBox"
+                                    alt="PersonCheckBox"
+                                    onClick={() =>
+                                      setNewChatChosenUsers((prevUsers) =>
+                                        prevUsers
+                                          ? prevUsers.includes(person)
+                                            ? prevUsers.filter(
                                               (user) => user !== person
                                             )
-                                          : [...prevUsers, person]
-                                        : [person]
-                                    )
-                                  }
-                                />
-                                <img
-                                  src={
-                                    person.attachment
-                                      ? person.attachment
-                                      : UserIcon_dark
-                                  }
-                                  className="ProfileIcon"
-                                  alt="usericondark"
-                                />
-                                <div className="PersonName">
-                                  {person.username} | {person.position}
+                                            : [...prevUsers, person]
+                                          : [person]
+                                      )
+                                    }
+                                  />
+                                  <img
+                                    src={
+                                      person.attachment
+                                        ? person.attachment
+                                        : UserIcon_dark
+                                    }
+                                    className="ProfileIcon"
+                                    alt="usericondark"
+                                  />
+                                  <div className="PersonName">
+                                    {person.username} | {person.position}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                        ))}
-                    </div>
-                  ))}
-              </div>
-            ))}
-          </div>
-          <div className="RightSelectedCon">
-            <div className="RightTopText">
-              선택인원{" "}
-              <span>
-                ({newChatChosenUsers === null ? 0 : newChatChosenUsers.length}
-                명)
-              </span>
-            </div>
-
-            <div className="ChosenPeople">
-              {newChatChosenUsers?.map((person) => (
-                <div className="ChosenOne" key={person.userId}>
-                  <img
-                    src={XIcon}
-                    onClick={() =>
-                      setNewChatChosenUsers((prevUsers) =>
-                        prevUsers !== null
-                          ? prevUsers.filter((user) => user !== person)
-                          : []
-                      )
-                    }
-                  />
-
-                  <div>
-                    {person.team} {person.username}
-                  </div>
+                              ))}
+                            </div>
+                          ))}
+                      </div>
+                    ))}
                 </div>
               ))}
             </div>
+            <div className="RightSelectedCon">
+              <div className="RightTopText">
+                선택인원{" "}
+                <span>
+                  ({newChatChosenUsers === null ? 0 : newChatChosenUsers.length}
+                  명)
+                </span>
+              </div>
+
+              <div className="ChosenPeople">
+                {newChatChosenUsers?.map((person) => (
+                  <div className="ChosenOne" key={person.userId}>
+                    <img
+                      src={XIcon}
+                      onClick={() =>
+                        setNewChatChosenUsers((prevUsers) =>
+                          prevUsers !== null
+                            ? prevUsers.filter((user) => user !== person)
+                            : []
+                        )
+                      }
+                    />
+
+                    <div>
+                      {person.team} {person.username}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </CustomModal>
+      </CustomModal>
+    </>
   );
 };
 
