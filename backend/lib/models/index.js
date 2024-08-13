@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
-const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config')[env];
+const Sequelize = require("sequelize");
+const env = process.env.NODE_ENV || "development";
+const config = require("../config/config")[env];
 
 // 유저관리
 const userData = require("./user/user");
@@ -24,14 +24,22 @@ const Transfer = require("./management/personnel_transfer");
 // 채용공고
 const jobPosting = require("./employment/JobPosting");
 //회의실
-const meetingRoom = require('./meetingRoom/meetingRoom');
+const meetingRoom = require("./meetingRoom/meetingRoom");
 //프로젝트
-const mainProject = require('./pjschedule/mainProject');
-const subProject = require('./pjschedule/subProject');
+const mainProject = require("./pjschedule/mainProject");
+const subProject = require("./pjschedule/subProject");
+//채팅방
+const chatRoom = require("./messenger/chatRoom");
+const message = require("./messenger/message");
 
 const db = {};
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config
+);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
@@ -49,18 +57,27 @@ db.evalOutline = evalOutline(sequelize, Sequelize);
 db.TransferPosition = Transfer(sequelize, Sequelize);
 db.Management = management(sequelize, Sequelize);
 db.Meeting = meetingRoom(sequelize, Sequelize);
-db.mainProject =  mainProject(sequelize, Sequelize);
+db.mainProject = mainProject(sequelize, Sequelize);
 db.subProject = subProject(sequelize, Sequelize);
+db.ChatRoom = chatRoom(sequelize, Sequelize);
+db.Message = message(sequelize, Sequelize);
 
-//프로젝트 부모 - 자식 cascade 설정
-db.mainProject.hasMany(db.subProject,{
-    foreignKey: 'mainprojectIndex',
-    onDelete: 'cascade',
+// 모델 관계 설정
+// 프로젝트 부모 - 자식 cascade 설정
+db.mainProject.hasMany(db.subProject, {
+  foreignKey: "mainprojectIndex",
+  onDelete: "cascade",
 });
-db.subProject.belongsTo(db.mainProject,{
-    foreignKey: 'mainprojectIndex',
-    onDelete: 'cascade',
+db.subProject.belongsTo(db.mainProject, {
+  foreignKey: "mainprojectIndex",
+  onDelete: "cascade",
 });
 
+// 채팅방과 메시지 간의 관계 설정
+db.ChatRoom.hasMany(db.Message, { foreignKey: 'roomId', onDelete: 'CASCADE' });
+db.Message.belongsTo(db.ChatRoom, { foreignKey: 'roomId' });
+
+db.User.hasMany(db.Message, { foreignKey: 'userId' });
+db.Message.belongsTo(db.User, { foreignKey: 'userId' });
 
 module.exports = db;

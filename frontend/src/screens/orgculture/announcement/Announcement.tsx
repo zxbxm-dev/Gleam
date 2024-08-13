@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SearchIcon, PinnedIcon } from "../../../assets/images/index";
+import { SearchIcon, pinned_true } from "../../../assets/images/index";
 import { ReactComponent as RightIcon } from "../../../assets/images/Common/RightIcon.svg";
 import { ReactComponent as LeftIcon } from "../../../assets/images/Common/LeftIcon.svg";
 import { ReactComponent as LastRightIcon } from "../../../assets/images/Common/LastRightIcon.svg";
@@ -173,7 +173,7 @@ const Announcement = () => {
                       <td style={{ textAlign: "left", paddingLeft: "20px" }} onContextMenu={(e) => handleRightClick(announcement.id, e)}>
                         <Link to={`/detailAnnounce/${announcement.id}`} style={{ display: 'flex', gap: '10px', alignItems: 'center'}} onClick={() => {incrementViewCount(announcement.id)}}>
                           {announcement.pinned ? (
-                            <img src={PinnedIcon} alt="PinnedIcon" className="pinned_icon" />
+                            <img src={pinned_true} alt="PinnedIcon" className="pinned_icon" />
                           ) : null}
                           <div className="dropdown">
                             {announcement.title}

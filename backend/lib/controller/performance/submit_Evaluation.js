@@ -1,6 +1,5 @@
 const models = require("../../models");
 const evaluation = models.Evaluation;
-const sanitizeFilename = require("sanitize-filename");
 
 // 인사평가서 제출
 const submitEvaluation = async (req, res) => {
