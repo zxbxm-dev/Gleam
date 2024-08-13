@@ -138,12 +138,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
       {dummyData
         .sort((a, b) => b.isUpdateat - a.isUpdateat)
         .map((dummy) => (
-          <Popover placement="right">
+          <Popover key={dummy.userId} placement="right">
             <div
-              className={`ChatLog ${
-                selectedChatRoom === dummy.username ? "selected" : ""
-              }`}
-              key={dummy.userId}
+              className={`ChatLog ${selectedChatRoom === dummy.username ? "selected" : ""
+                }`}
               onClick={() => {
                 onPersonClick(
                   dummy.username,
@@ -172,11 +170,13 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     <p>단체채팅방: {dummy.username}</p>
                   </div>
                   <ul>
-                    {/* {dummy.participants.map((participant:any) => (
-                                        <li key={participant.userId}>
-                                            {participant.team ? `${participant.team}` : `${participant.department}`} {participant.username}
-                                        </li>
-                                    ))} */}
+                    {/* Uncomment and add unique key to each list item if necessary
+              {dummy.participants.map((participant) => (
+                <li key={participant.userId}>
+                  {participant.team ? `${participant.team}` : `${participant.department}`} {participant.username}
+                </li>
+              ))}
+              */}
                   </ul>
                   <PopoverTrigger>
                     <img
@@ -199,8 +199,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                       src={UserIcon_dark}
                       alt="User Icon"
                     />
-                    {dummy.team ? `${dummy.team}` : `${dummy.department}`}{" "}
-                    {dummy.username}
+                    {dummy.team ? `${dummy.team}` : `${dummy.department}`} {dummy.username}
                   </div>
                   <PopoverTrigger>
                     <img
@@ -231,6 +230,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             </div>
           </Popover>
         ))}
+
 
       <CustomModal
         isOpen={openModal}
@@ -265,6 +265,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
               <div className="Palette">
                 {ProfilePalette.map((color, index) => (
                   <div
+                    key={index}
                     style={{
                       backgroundColor: color,
                       // border: `1px solid ${ProfileBorderPalette[index]}`,

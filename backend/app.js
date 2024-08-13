@@ -89,12 +89,12 @@ app.use((err, req, res, next) => {
 // Socket.IO 이벤트 처리
 io.on("connection", (socket) => {
 
-  // socket.on("createPrivateRoom", (messageData) => {
-  //   console.log("Received message data:", messageData);
-  // });
+  socket.on("createPrivateRoom", (messageData) => {
+    console.log("Received message data:", messageData);
+  });
 
   console.log("실시간 연결이 완료 되었습니다.");
-  // console.log("New client connected:", socket.id);
+  console.log("New client connected:", socket.id);
 
   // 사용자가 특정 방에 참여
   socket.on("joinRoom", (roomId) => {
