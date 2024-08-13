@@ -20,7 +20,7 @@ const io = new Server(server, {
   },
 });
 
-// Sequelize 동기화
+// 모델을 불러옵니다
 const { sequelize } = require("./lib/models");
 
 sequelize

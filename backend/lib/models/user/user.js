@@ -89,14 +89,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  // 관계 설정
-  User.associate = (models) => {
-    User.hasMany(models.Message, { foreignKey: "userId" });
-    User.hasMany(models.ChatRoom, {
-      foreignKey: "hostUserId",
-      as: "HostRooms",
-    }); // 방장으로 연결된 방들
-  };
-
   return User;
 };
