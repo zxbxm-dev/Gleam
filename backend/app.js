@@ -86,10 +86,6 @@ app.use((err, req, res, next) => {
   res.render("error");
 });
 
-<<<<<<< HEAD
-// Socket.IO 관련 코드
-require('./lib/socket/socket')(io);
-=======
 // Socket.IO 이벤트 처리
 io.on("connection", (socket) => {
 
@@ -125,6 +121,5 @@ io.on("connection", (socket) => {
     console.log("사용자가 종료하였습니다.");
   });
 });
->>>>>>> 29b6601b9d95abf54cd5d592aa0830b23e0d779e
 
 module.exports = { app, server };
