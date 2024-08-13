@@ -73,11 +73,8 @@ db.subProject.belongsTo(db.mainProject, {
   onDelete: "cascade",
 });
 
-// 채팅방과 메시지 간의 관계 설정
-db.ChatRoom.hasMany(db.Message, { foreignKey: 'roomId', onDelete: 'CASCADE' });
+// 메신저 관계 설정
 db.Message.belongsTo(db.ChatRoom, { foreignKey: 'roomId' });
-
-db.User.hasMany(db.Message, { foreignKey: 'userId' });
-db.Message.belongsTo(db.User, { foreignKey: 'userId' });
+db.ChatRoom.hasMany(db.Message, { foreignKey: 'roomId' });
 
 module.exports = db;

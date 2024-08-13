@@ -4,33 +4,33 @@ module.exports = (sequelize, DataTypes) => {
     {
       messageId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      content: {
+      content: { // 메신저 내용
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      userId: {
+      userId: { // 메신저를 보낸 사람
         type: DataTypes.STRING,
         allowNull: false,
       },
       roomId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
     },
     {
       tableName: "message",
     }
   );
-
-  // 관계 설정
-  Message.associate = (models) => {
-    Message.belongsTo(models.User, { foreignKey: "userId" });
-    Message.belongsTo(models.ChatRoom, { foreignKey: "roomId" });
-  };
-
   return Message;
 };
