@@ -807,7 +807,7 @@ const Project = () => {
                 <div className="project_content_section_list">
                   {(Array.isArray(projects) ? projects.filter(project => project.status === 'notstarted') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => handleRightClick(project, e)}
+                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
                       >
                         <div className="project_box_header">
@@ -830,9 +830,9 @@ const Project = () => {
                                 <span></span>
                               </label>
                               {subprojectVisible[project.mainprojectIndex] ? (
-                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate" onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}/>
+                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate"/>
                               ) : (
-                                <img src={Down_Arrow} alt="Down_Arrow" onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}/>
+                                <img src={Down_Arrow} alt="Down_Arrow"/>
                               )}
                             </div>
                           </div>
@@ -913,7 +913,7 @@ const Project = () => {
                 <div className="project_content_section_list">
                   {(Array.isArray(projects) ? projects.filter(project => project.status === 'inprogress') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => handleRightClick(project, e)}
+                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
                       >
                         <div className="project_box_header">
@@ -936,9 +936,9 @@ const Project = () => {
                                 <span></span>
                               </label>
                               {subprojectVisible[project.mainprojectIndex] ? (
-                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate" onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}/>
+                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate"/>
                               ) : (
-                                <img src={Down_Arrow} alt="Down_Arrow" onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}/>
+                                <img src={Down_Arrow} alt="Down_Arrow"/>
                               )}
                             </div>
                           </div>
@@ -1019,7 +1019,7 @@ const Project = () => {
                 <div className="project_content_section_list">
                   {(Array.isArray(projects) ? projects.filter(project => project.status === 'done') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => handleRightClick(project, e)}
+                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
                       >
                         <div className="project_box_header">
@@ -1042,9 +1042,9 @@ const Project = () => {
                                 <span></span>
                               </label>
                               {subprojectVisible[project.mainprojectIndex] ? (
-                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate" onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}/>
+                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate"/>
                               ) : (
-                                <img src={Down_Arrow} alt="Down_Arrow" onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}}/>
+                                <img src={Down_Arrow} alt="Down_Arrow"/>
                               )}
                             </div>
                           </div>
