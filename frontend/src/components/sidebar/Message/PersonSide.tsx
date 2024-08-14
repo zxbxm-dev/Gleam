@@ -216,6 +216,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     ? "selected"
                                     : ""
                                 }`}
+                                style={{backgroundColor:'red'}}
                                 onClick={() => {
                                   onPersonClick(
                                     person.username,
@@ -308,6 +309,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                     className={`No-dept ${
                       selectedUserId === person.userId ? "selected" : ""
                     }`}
+                    style={{backgroundColor:'red'}}
                     onClick={() => {
                       onPersonClick(
                         person.username,
@@ -405,6 +407,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                         ? "selected"
                                         : ""
                                     }`}
+                                    style={{backgroundColor:'red'}}
                                     onClick={() => {
                                       onPersonClick(
                                         person.username,
