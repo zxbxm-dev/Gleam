@@ -73,13 +73,11 @@ const Message: React.FC = () => {
           : "defaultRoomId";
 
       const messageData = {
-        roomname: null,
-        TargetID: selectedPerson.userId,
-        userID: user.id,
-        message: message,
-        chatAdmin: null,
-        PrivateTitle: null,
-        Targetinfo: null
+        invitedUserIds: selectedPerson.userId,
+        userId: user.id,
+        content: message,
+        hostUserId: null,
+        name: null
       };
 
       emitMessage(messageData);
@@ -102,6 +100,8 @@ const Message: React.FC = () => {
 
   const emitMessage = (messageData: any) => {
     socket.emit("createPrivateRoom", messageData);
+    console.log(messageData);
+    
   };
 
   const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
