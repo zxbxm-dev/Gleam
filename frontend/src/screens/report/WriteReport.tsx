@@ -126,11 +126,10 @@ const WriteReport = () => {
     ['김효은', '관리부', '관리팀', '팀장'],
     ['우현지', '관리부', '관리팀', '사원'],
     ['염승희', '관리부', '관리팀', '사원'],
-    ['김태희', '관리부', '지원팀', '팀장'],
+    ['한지희', '관리부', '지원팀', '사원'],
     ['진유빈', '개발부', '', '부서장'],
     ['장현지', '개발부', '개발 1팀', '팀장'],
     ['구민석', '개발부', '개발 1팀', '사원'],
-    ['박세준', '개발부', '개발 1팀', '사원'],
     ['윤재원', '개발부', '개발 1팀', '사원'],
     ['변도일', '개발부', '개발 2팀', '팀장'],
     ['이로운', '개발부', '개발 2팀', '사원'],
@@ -162,11 +161,10 @@ const WriteReport = () => {
     ['김효은', '관리부', '관리팀', '팀장'],
     ['우현지', '관리부', '관리팀', '사원'],
     ['염승희', '관리부', '관리팀', '사원'],
-    ['김태희', '관리부', '지원팀', '팀장'],
+    ['한지희', '관리부', '지원팀', '사원'],
     ['진유빈', '개발부', '', '부서장'],
     ['장현지', '개발부', '개발 1팀', '팀장'],
     ['구민석', '개발부', '개발 1팀', '사원'],
-    ['박세준', '개발부', '개발 1팀', '사원'],
     ['윤재원', '개발부', '개발 1팀', '사원'],
     ['변도일', '개발부', '개발 2팀', '팀장'],
     ['이로운', '개발부', '개발 2팀', '사원'],
@@ -194,7 +192,7 @@ const WriteReport = () => {
 
   const approvalFixed = members.find(member => member[0] === '이정훈') || null;
   const ManagementFixed = members.find(member => member[0] === '김효은') || null;
-  const SupportFixed = members.find(member => member[0] === '김태희') || null;
+  const SupportFixed = members.find(member => member[0] === '한지희') || null;
   const vacationFixed = members.find(member => member[0] === '우현지') || null;
 
   const departmentDirector = (user.department === '개발부')
@@ -217,7 +215,7 @@ const WriteReport = () => {
         : (user.team === '관리팀')
           ? members.find(member => member[0] === '김효은') || null
           : (user.team === '지원팀')
-            ? members.find(member => member[0] === '김태희') || null
+            ? null
             : (user.team === '디자인팀')
               ? null
               : (user.team === '')
@@ -263,7 +261,7 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '지원팀장', checked: true, selectedMember: SupportFixed },
+        { name: '담당자', checked: true, selectedMember: SupportFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
         { name: '작성자', checked: true, selectedMember: writer },
@@ -306,14 +304,14 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '지원팀장', checked: true, selectedMember: SupportFixed },
+        { name: '담당자', checked: true, selectedMember: SupportFixed },
       ]
     }
 
     function supportTeamLast() {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
-        { name: '지원팀장', checked: true, selectedMember: SupportFixed },
+        { name: '담당자', checked: true, selectedMember: SupportFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
         { name: '작성자', checked: true, selectedMember: writer },
