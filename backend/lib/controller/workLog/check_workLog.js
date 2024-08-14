@@ -11,60 +11,60 @@ const getMyReports = async (req, res) => {
   }
 
   try {
-    // 내가 작성한 문서 조회
-    const myDocuments = await Report.findAll({
+    // 내가 작성한 문서와 내가 참조로 들어간 문서 조회
+    const documents = await Report.findAll({
       where: {
-        userId: userID,
+        [Op.or]: [
+          { userId: userID },
+          { referName: { [Op.like]: `%${username}%` } }
+        ]
       },
       order: [
-        ['id','desc'],
-      ],
-    });
-    // 내가 참조로 들어간 문서 조회
-    const referencedDocuments = await Report.findAll({
-      where: {
-        referName: {
-          [Op.like]: `%${username}%`,
-        },
-      },
-      order: [
-        ['id','desc'],
+        ['createdAt', 'desc'], // 날짜 및 시간 순으로 내림차순 정렬
       ],
     });
 
     // 문서 상태 설정
-    const documentsWithStatus = myDocuments.map((doc) => {
-      let status = "결재 진행 중";
+    const documentsWithStatus = documents.map((doc) => {
+      let status = "";
 
-      // 결재 완료 확인
-      if (doc.completed && doc.completed.includes(username)) {
-        status = "결재 완료";
-      } else if (doc.rejected && doc.rejected.includes(username)) {
-        status = "반려됨";
-      } else if (doc.pending && doc.pending.includes(username)) {
+      // 내가 작성한 문서일 때 상태 설정
+      if (doc.userId === userID) {
         status = "결재 진행 중";
-      }
 
-      // 결재 진행중 문서 확인
-      if (doc.personSigning && doc.personSigning.includes(username)) {
-        if (doc.pending && doc.pending.includes(username)) {
+        if (doc.completed && doc.completed.includes(username)) {
+          status = "결재 완료";
+        } else if (doc.rejected && doc.rejected.includes(username)) {
+          status = "반려됨";
+        } else if (doc.pending && doc.pending.includes(username)) {
           status = "결재 진행 중";
-        } else {
-          // 결재 싸인을 한명이라도 완료한 사람
-          const signers = doc.personSigning.split(",");
-          const pendingSigners = doc.pending ? doc.pending.split(",") : [];
-          const intersection = signers.filter((signer) =>
-            pendingSigners.includes(signer)
-          );
-          if (intersection.length > 0) {
+        }
+
+        if (doc.personSigning && doc.personSigning.includes(username)) {
+          if (doc.pending && doc.pending.includes(username)) {
             status = "결재 진행 중";
+          } else {
+            const signers = doc.personSigning.split(",");
+            const pendingSigners = doc.pending ? doc.pending.split(",") : [];
+            const intersection = signers.filter((signer) =>
+              pendingSigners.includes(signer)
+            );
+            if (intersection.length > 0) {
+              status = "결재 진행 중";
+            }
           }
         }
+
+        if (doc.currentSigner === doc.approval) {
+          status = "결재 완료";
+        }
       }
-      // currentSigner와 approval이 같은 경우, 결재 완료 상태로 설정
-      if (doc.currentSigner === doc.approval) {
-        status = "결재 완료";
+
+      // 내가 참조로 들어간 문서일 때 상태를 "참조"로 설정
+      if (doc.referName && doc.referName.includes(username)) {
+        status = "참조";
       }
+
       console.log(`문서 ${doc.id}의 상태: ${status}`); // ❌로그 나중에 삭제할것❌
       return {
         ...doc.toJSON(),
@@ -72,18 +72,8 @@ const getMyReports = async (req, res) => {
       };
     });
 
-    // 참조 문서 상태 설정
-    const referencedWithStatus = referencedDocuments.map((doc) => {
-      const status = "참조";
-      console.log(`문서 ${doc.id}의 상태: ${status}`);// ❌로그 나중에 삭제할것❌
-      return {
-        ...doc.toJSON(),
-        status
-      };
-    });
     // 전체 문서와 상태 결합하여 클라이언트에게 전달
-    const allDocuments = [...documentsWithStatus, ...referencedWithStatus];
-    res.status(200).json(allDocuments);
+    res.status(200).json(documentsWithStatus);
   } catch (error) {
     console.error("문서 조회 중 오류 발생:", error);
     res.status(500).json({ error: "내부 서버 오류입니다." });

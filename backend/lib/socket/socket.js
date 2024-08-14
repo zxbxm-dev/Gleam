@@ -88,7 +88,7 @@ module.exports = (io) => {
     });
 
     // 클라이언트가 방을 나가는 경우
-    socket.on('leaveRoom', (roomId) => {
+    socket.on('exitRoom', (roomId) => {
       socket.leave(roomId);
       console.log(`User ${socket.id} left room ${roomId}`);
     });
