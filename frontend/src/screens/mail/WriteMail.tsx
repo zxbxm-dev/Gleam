@@ -391,7 +391,7 @@ const WriteMail = () => {
           <div className="write_mail_content_bottom">
             <Editor
               initialValue={" "}
-              height={window.innerWidth >= 1600 ? '45vh' : '35vh'}
+              height={window.innerWidth >= 1600 ? '43vh' : '35vh'}
               initialEditType="wysiwyg"
               useCommandShortcut={false}
               hideModeSwitch={true}
