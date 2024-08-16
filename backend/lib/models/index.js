@@ -31,6 +31,9 @@ const subProject = require("./pjschedule/subProject");
 //채팅방
 const chatRoom = require("./messenger/chatRoom");
 const message = require("./messenger/message");
+//이메일
+const email = require("./email/email");
+
 
 const db = {};
 
@@ -61,9 +64,11 @@ db.mainProject = mainProject(sequelize, Sequelize);
 db.subProject = subProject(sequelize, Sequelize);
 db.ChatRoom = chatRoom(sequelize, Sequelize);
 db.Message = message(sequelize, Sequelize);
+db.email = email(sequelize, Sequelize);
+
 
 // 모델 관계 설정
-// 프로젝트 부모 - 자식 cascade 설정
+// 프로젝트 관계 설정
 db.mainProject.hasMany(db.subProject, {
   foreignKey: "mainprojectIndex",
   onDelete: "cascade",

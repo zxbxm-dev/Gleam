@@ -1,10 +1,9 @@
-
 module.exports = (sequelize, DataTypes) => {
-    const email = sequelize.define(
-        "email",
+    const junk = sequelize.define(
+        'junk',
         {
             //PK
-            Id:{
+            Id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 autoIncrement: true, 
@@ -39,30 +38,23 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.TEXT,
                 allowNull : true,
             },
-            //null 값 허용
-            sendAt: {
-                type: DataTypes.DATE,
-                allowNull: true,
-            },
-            //null 값 허용
             receiveAt: {
                 type: DataTypes.DATE,
-                allowNull: true,
+                allowNull: false,
             },
             signature: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
             folder: {
-                type:DataTypes.ENUM,
-                values: ['inbox', 'sent', 'starred', 'unread', 'drafts', 'junk'],
+                type:DataTypes.STRING,
                 allowNull: false,
-                defaultValue: "inbox",
+                defaultValue: "junk",
             },
         },
         {
-            tableName: "email"
+            tableName: 'junk'
         }
     );
-    return email;
+    return junk;
 }
