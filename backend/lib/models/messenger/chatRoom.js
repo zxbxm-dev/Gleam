@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: false,
       },
-      hostUserId: {
+      hostUserId: { // 채팅의 주인
         type: DataTypes.STRING,
         allowNull: true,
       },
-      invitedUserIds: {
+      invitedUserIds: { // 초대된 사람
         type: DataTypes.JSON,
         allowNull: true,
       },
