@@ -1,7 +1,6 @@
-
 module.exports = (sequelize, DataTypes) => {
-    const email = sequelize.define(
-        "email",
+    const Email = sequelize.define(
+        "Email",
         {
             //PK
             Id:{
@@ -14,12 +13,6 @@ module.exports = (sequelize, DataTypes) => {
              sender: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                references:{
-                    model : 'user',
-                    key: 'userId',
-                },
-                ondelete: 'CASCADE',
-                onupdate: 'CASCADE'
             },
             receiver: {
                 type: DataTypes.JSON, //배열형태로 저장
@@ -49,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
+            //명함
             signature: {
                 type: DataTypes.STRING,
                 allowNull: true,
@@ -58,11 +52,11 @@ module.exports = (sequelize, DataTypes) => {
                 values: ['inbox', 'sent', 'starred', 'unread', 'drafts', 'junk'],
                 allowNull: false,
                 defaultValue: "inbox",
-            },
+            }
         },
         {
             tableName: "email"
         }
     );
-    return email;
+    return Email;
 }
