@@ -65,7 +65,6 @@ const getMyReports = async (req, res) => {
         status = "참조";
       }
 
-      console.log(`문서 ${doc.id}의 상태: ${status}`); // ❌로그 나중에 삭제할것❌
       return {
         ...doc.toJSON(),
         status,

@@ -30,11 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       profileColor: {  // 프로필 색상
         type: DataTypes.STRING,
-        allowNull: true,  // 필수 항목이 아닐 경우 true로 설정
+        allowNull: true,
       },
       profileImage: {  // 프로필 이미지
         type: DataTypes.STRING, // URL을 저장할 경우 STRING 타입 사용
-        allowNull: true,  // 필수 항목이 아닐 경우 true로 설정
+        allowNull: true,
       },
       createdAt: {
         type: DataTypes.DATE,

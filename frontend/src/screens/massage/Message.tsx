@@ -76,8 +76,8 @@ const Message: React.FC = () => {
       invitedUserIds: [selectedPerson.userId], // 배열로 수정
       userId: user.id,
       content: message,
-      hostUserId: null, // 서버에서 null을 허용하지 않는다면 user.id로 수정
-      name: null // 서버에서 null을 허용하지 않는다면 user.username으로 수정
+      hostUserId: null,
+      name: null
     };
 
       emitMessage(messageData);
