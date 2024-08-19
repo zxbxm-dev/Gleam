@@ -572,7 +572,7 @@
             overflow-y: auto;
             padding-right: 5px;
             display: flex;
-            flex-direction: column-reverse;
+            flex-direction: column;
 
             &::-webkit-scrollbar {
               width: 3px;
