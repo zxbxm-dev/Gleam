@@ -225,7 +225,7 @@ const OrgChart = () => {
                         dept={adminHead.department}
                         name={adminHead.username}
                         attachment={adminHead?.attachment}
-                        phone={personData.find(person => (person.position === '부서장') && (person.department === '관리부'))?.phoneNumber || 'N/A'}
+                        phone={formatPhoneNumber(personData.find(person => (person.position === '부서장') && (person.department === '관리부'))?.phoneNumber || 'N/A')}
                         mail={personData.find(person => (person.position === '부서장') && (person.department === '관리부'))?.usermail || 'N/A'}
                       />
                     )
@@ -269,7 +269,7 @@ const OrgChart = () => {
                       dept={marketingHead.department}
                       name={marketingHead.username}
                       attachment={marketingHead?.attachment}
-                      phone={personData.find(person => (person.position === '부서장') && (person.department === '마케팅부'))?.phoneNumber || 'N/A'}
+                      phone={formatPhoneNumber(personData.find(person => (person.position === '부서장') && (person.department === '마케팅부'))?.phoneNumber || 'N/A')}
                       mail={personData.find(person => (person.position === '부서장') && (person.department === '마케팅부'))?.usermail || 'N/A'}
                     />
                   )
@@ -319,7 +319,7 @@ const OrgChart = () => {
                       dept={'센터장'}
                       name={rndHead.username}
                       attachment={rndHead?.attachment}
-                      phone={personData.find(person => person.position === '센터장')?.phoneNumber || 'N/A'}
+                      phone={formatPhoneNumber(personData.find(person => person.position === '센터장')?.phoneNumber || 'N/A')}
                       mail={personData.find(person => person.position === '센터장')?.usermail || 'N/A'}
                     />
                   )
@@ -333,7 +333,7 @@ const OrgChart = () => {
                       dept={algoHead.department}
                       name={algoHead.username}
                       attachment={algoHead?.attachment}
-                      phone={personData.find(person => (person.position === '연구실장') && (person.department === '알고리즘 연구실'))?.phoneNumber || 'N/A'}
+                      phone={formatPhoneNumber(personData.find(person => (person.position === '연구실장') && (person.department === '알고리즘 연구실'))?.phoneNumber || 'N/A')}
                       mail={personData.find(person => (person.position === '연구실장') && (person.department === '알고리즘 연구실'))?.usermail || 'N/A'}
                     />
                   )
@@ -376,7 +376,7 @@ const OrgChart = () => {
                       dept={homomorphicHead.department}
                       name={homomorphicHead.username}
                       attachment={homomorphicHead?.attachment}
-                      phone={personData.find(person => (person.position === '연구실장') && (person.department === '동형분석 연구실'))?.phoneNumber || 'N/A'}
+                      phone={formatPhoneNumber(personData.find(person => (person.position === '연구실장') && (person.department === '동형분석 연구실'))?.phoneNumber || 'N/A')}
                       mail={personData.find(person => (person.position === '연구실장') && (person.department === '동형분석 연구실'))?.usermail || 'N/A'}
                     />
                   )

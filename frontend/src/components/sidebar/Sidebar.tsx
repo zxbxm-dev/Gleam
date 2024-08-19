@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./Sidebar.scss";
 import { MenuArrow_down, MenuArrow_right } from "../../assets/images/index";
 import { Link } from "react-router-dom";
@@ -22,6 +23,7 @@ interface MenuItem {
 }
 
 const Sidebar = () => {
+  const location = useLocation();
   const [isSelectMember, setIsSelectMember] = useRecoilState(isSelectMemberState);
   const [isSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
@@ -163,6 +165,25 @@ const Sidebar = () => {
       link: '/user-management',
     }
   ].filter(Boolean) as MenuItem[];
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    
+    menuList.forEach(({ menu, link, subMenu }) => {
+      if (link === currentPath) {
+        setSelectedMenu(menu);
+      }
+
+      if (subMenu) {
+        subMenu.forEach((subItem) => {
+          if (subItem.link === currentPath) {
+            setSelectedMenu(menu);
+          }
+        });
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   return (
     <>
