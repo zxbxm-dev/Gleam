@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       content: { // 메신저 내용
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       userId: { // 메신저를 보낸 사람
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       roomId: {
         type: DataTypes.INTEGER,

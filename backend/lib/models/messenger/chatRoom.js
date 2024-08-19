@@ -9,16 +9,32 @@ module.exports = (sequelize, DataTypes) => {
       },
       isGroup: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
         defaultValue: false,
       },
-      hostUserId: { //chatAdmin 채팅방 관리자
+      hostUserId: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
-      invitedUserIds: { // 초대된 사용자
+      invitedUserIds: {
         type: DataTypes.JSON,
-        allowNull: false,
+        allowNull: true,
+      },
+      title: {  // 방제목
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      subContent: {  // 방 설명
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      profileColor: {  // 프로필 색상
+        type: DataTypes.STRING,
+        allowNull: true,  // 필수 항목이 아닐 경우 true로 설정
+      },
+      profileImage: {  // 프로필 이미지
+        type: DataTypes.STRING, // URL을 저장할 경우 STRING 타입 사용
+        allowNull: true,  // 필수 항목이 아닐 경우 true로 설정
       },
       createdAt: {
         type: DataTypes.DATE,
