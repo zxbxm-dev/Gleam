@@ -116,10 +116,11 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     const isGroup = selectedUsers.length > 2;
     const targetIds = selectedUsers.map(user => user.userId);
 
+
     const payload = {
       name: null,
       invitedUserIds: isGroup ? targetIds : targetIds[0],
-      hostUserId: null, // 서버에서 설정
+      hostUserId: user.userID, // 서버에서 설정
       isGroup,
       color: generateRandomColor(),
       title: chatTitle,
