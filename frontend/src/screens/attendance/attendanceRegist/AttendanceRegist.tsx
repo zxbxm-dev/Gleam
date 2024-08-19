@@ -542,6 +542,16 @@ const AttendanceRegist = () => {
             itemBackgroundColor = '#FF4747';
             break;
           case '지문X':
+            if (personData[2][0] > '10:01') {
+              countLateWork[j]++
+    
+              const attendTime = new Date(`2000-01-01T${personData[2][0]}`);
+    
+              const standardTime = new Date(`2000-01-01T10:01`);
+              const lateMinutes = attendTime > standardTime ? (attendTime.getHours() - 10) * 60 + attendTime.getMinutes() : 0;
+    
+              TotalLateWork[j] += lateMinutes;
+            }
             itemBackgroundColor = '#EF0AD8';
             break;
           case '기타':
