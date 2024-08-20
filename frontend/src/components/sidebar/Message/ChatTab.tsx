@@ -12,9 +12,26 @@ import {
   Portal,
 } from "@chakra-ui/react";
 import SetProfile from "./SetProfile";
+import { Person } from "./MessageSidebar";
+import { selectedRoomIdState } from "../../../recoil/atoms";
+import { useRecoilState } from "recoil";
+
+interface ChatRoom {
+  roomId: string;
+  isGroup: boolean;
+  hostUserId: string;
+  invitedUserIds: string[];
+  title: string;
+  subContent: string;
+  profileColor: string;
+  profileImage: string | null;
+  crt: string;
+  upt: string;
+}
 
 interface ChatDataTabProps {
   userAttachment: string;
+  personData: Person[] | null;
   userTeam: string | null;
   userDepartment: string | null;
   userName: string | null;
@@ -28,7 +45,7 @@ interface ChatDataTabProps {
     userId: string
   ) => void;
   isNotibarActive: boolean | null;
-  chatRooms:any[];
+  chatRooms: ChatRoom[];
   setIsNotibarActive: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
@@ -47,13 +64,26 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
 
+  const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
+
+  const handleChatRoomClick = (chatRoom: ChatRoom) => {
+    setSelectedRoomId({ roomId: chatRoom.roomId });
+    onPersonClick(
+      chatRoom.title,
+      "",
+      "",
+      "",
+      chatRoom.hostUserId
+    );
+    setIsNotibarActive(false);
+  };
+
   return (
     <div className="chat-data-tab">
       <li
         className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
         onClick={() => {
-          onPersonClick("통합 알림", "", "", "", "");
-          // setSelectedUserId(null);
+          // onPersonClick("통합 알림", "", "", "", "");
           setSelectedChatRoom("통합 알림");
           setIsNotibarActive(true);
         }}
@@ -81,30 +111,14 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
       </li>
 
       {chatRooms
-        .sort((a, b) => b.isUpdateat - a.isUpdateat)
-        .map((chatRooms) => (
-          <Popover key={chatRooms.title} placement="right">
+        .sort((a, b) => new Date(b.upt).getTime() - new Date(a.upt).getTime())
+        .map((chatRoom) => (
+          <Popover key={chatRoom.roomId} placement="right">
             <div
-              className={`ChatLog ${selectedChatRoom === chatRooms.username ? "selected" : ""
-                }`}
-              onClick={() => {
-                onPersonClick(
-                  chatRooms.username,
-                  chatRooms.team,
-                  chatRooms.department,
-                  chatRooms.position,
-                  chatRooms.userId
-                );
-                setSelectedChatRoom(chatRooms.username);
-                localStorage.setItem("latestChat", JSON.stringify(chatRooms));
-              }}
+              className={`ChatLog ${selectedChatRoom === chatRoom.roomId ? "selected" : ""}`}
+              onClick={() => handleChatRoomClick(chatRoom)}
             >
-              <div
-                className="LogBox"
-                onClick={() => {
-                  setIsNotibarActive(false);
-                }}
-              >
+              <div className="LogBox">
                 <div className="Left">
                   <img
                     className="My-attach"
@@ -112,8 +126,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     alt="User Icon"
                   />
                   <p>
-                    {chatRooms.isGroup ? chatRooms.name : chatRooms.title}
-                    {/* {chatRooms.isGroupChat ? `단체채팅방: ${chatRooms.username}` : `${chatRooms.team ? chatRooms.team : chatRooms.department} ${chatRooms.username}`} */}
+                    {chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}
                   </p>
                 </div>
                 <PopoverTrigger>
