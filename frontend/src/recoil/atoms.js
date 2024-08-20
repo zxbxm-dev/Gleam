@@ -55,3 +55,10 @@ export const selectedPersonState = atom({
     userId: latestChat ? latestChat.userId : "",
   },
 });
+
+export const selectedRoomIdState = atom({
+  key: 'selectedRoomIdState',
+  default: {
+    roomId : ""
+  },
+});

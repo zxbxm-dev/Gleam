@@ -24,8 +24,16 @@ const Message: React.FC = () => {
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] = useState<boolean>(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [files, setFiles] = useState<File | null>(null);
+  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
+
+  useEffect(() => {
+    const storedRoomId = localStorage.getItem('latestChatRoomId');
+    if (storedRoomId) {
+      setSelectedRoomId(storedRoomId);
+    }
+  }, []);
 
   const handleIncomingMessage = ({ name, id, msg, team, department, position }: Message) => {
     setMessages(prevMessages => [
@@ -62,6 +70,15 @@ const Message: React.FC = () => {
     });
   }, [rooms]);
 
+  useEffect(() => {
+    if (selectedRoomId) {
+      const room = rooms.find(room => room.roomId === selectedRoomId);
+      if (room) {
+        socket.emit("joinRoom", selectedRoomId);
+      }
+    }
+  }, [selectedRoomId, rooms]);
+
   const handleSendMessage = useCallback(() => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
     if (inputElement && inputElement.innerHTML.trim() !== "") {
@@ -72,13 +89,13 @@ const Message: React.FC = () => {
           ? `${selectedPerson.department} ${selectedPerson.username}`
           : "defaultRoomId";
 
-   const messageData = {
-      invitedUserIds: [selectedPerson.userId], // 배열로 수정
-      userId: user.id,
-      content: message,
-      hostUserId: null,
-      name: null
-    };
+      const messageData = {
+        invitedUserIds: [selectedPerson.userId], // 배열로 수정
+        userId: user.id,
+        content: message,
+        hostUserId: null,
+        name: null
+      };
 
       emitMessage(messageData);
       setMessages(prevMessages => [
@@ -153,7 +170,6 @@ const Message: React.FC = () => {
       };
     }
   }, []);
-
 
   return (
     <div className="Message-contents">

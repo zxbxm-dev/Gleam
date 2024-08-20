@@ -83,26 +83,27 @@ const MessageSidebar: React.FC = () => {
   useEffect(() => {
     const userId = user.userID;
 
-    console.log(`[Client] Connecting to socket server at http://localhost:3001`);
+    // console.log(`[Client] Connecting to socket server at http://localhost:3001`);
 
     // 서버와의 소켓 연결이 성공했는지 확인
     socket.on('connect', () => {
-      console.log(`[Client] Connected to socket server with id: ${socket.id}`);
+      // console.log(`[Client] Connected to socket server with id: ${socket.id}`);
     });
 
     // 서버에 채팅방 목록 요청
-    console.log(`[Client] Requesting chat rooms for userId: ${userId}`);
+    // console.log(`[Client] Requesting chat rooms for userId: ${userId}`);
     socket.emit('getChatRooms', userId);
 
     // 서버로부터 채팅방 목록을 받아옴
     socket.on('chatRooms', (data: any) => {
-      console.log('[Client] Received chat rooms:', data);
+      // console.log('[Client] Received chat rooms:', data);
+      setChatRooms(data);
       setChatRooms(data);
     });
 
     // 서버와의 연결이 끊겼을 때
     socket.on('disconnect', () => {
-      console.log('[Client] Disconnected from socket server');
+      // console.log('[Client] Disconnected from socket server');
     });
 
     // 컴포넌트 언마운트 시 소켓 연결 해제
@@ -136,7 +137,7 @@ const MessageSidebar: React.FC = () => {
     team: string,
     department: string,
     position: string,
-    userId: string
+    userId: string,
   ) => {
     setSelectedPerson({ username, team, department, position, userId });
   };
@@ -200,7 +201,6 @@ const MessageSidebar: React.FC = () => {
   };
 
   const filteredData = filterDataBySearchQuery(groupedData);
-  console.log(chatRooms);
 
   return (
     <div className="message-sidebar">
@@ -235,6 +235,7 @@ const MessageSidebar: React.FC = () => {
         />
       ) : activeTab === "ChatData" ? (
         <ChatDataTab
+          personData={personData}
           userAttachment={user.attachment}
           userTeam={user.team}
           userDepartment={user.department}
