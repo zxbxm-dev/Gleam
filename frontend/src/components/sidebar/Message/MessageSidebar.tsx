@@ -10,6 +10,7 @@ import {
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
 import NewChatModal from "./NewChatModal";
+import io from 'socket.io-client';
 
 export interface Person {
   userId: string;
@@ -24,16 +25,17 @@ export interface Person {
   company: string;
 }
 
-interface User {
-  userId: string;
-  username: string;
-  position: string;
-  department: string;
-  team: string;
-  phoneNumber?: string;
-  usermail?: string;
-  entering: Date;
-  attachment: string;
+interface ChatRoom {
+  roomId: string;
+  isGroup: boolean;
+  hostUserId: string;
+  invitedUserIds: string[];
+  title: string;
+  subContent: string;
+  profileColor: string;
+  profileImage: string | null;
+  crt: string;
+  upt: string;
 }
 
 const MessageSidebar: React.FC = () => {
@@ -52,12 +54,15 @@ const MessageSidebar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
 
-  const user: User = useRecoilValue(userState) as User;
+  const user = useRecoilValue(userState);
   const setSelectedPerson = useSetRecoilState(selectedPersonState);
 
   const [newChatChosenUsers, setNewChatChosenUsers] = useState<Person[] | null>(
     null
   );
+  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+
+  const socket = io('http://localhost:3001', { transports: ["websocket"] }); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +73,6 @@ const MessageSidebar: React.FC = () => {
             new Date(a.entering).getTime() - new Date(b.entering).getTime()
         );
         setPersonData(sortedData);
-        console.log("사람>>", sortedData);
       } catch (err) {
         console.error("Error fetching person data:", err);
       }
@@ -77,6 +81,39 @@ const MessageSidebar: React.FC = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const userId = user.userID;
+  
+    console.log(`[Client] Connecting to socket server at http://localhost:3001`);
+  
+    // 서버와의 소켓 연결이 성공했는지 확인
+    socket.on('connect', () => {
+      console.log(`[Client] Connected to socket server with id: ${socket.id}`);
+    });
+  
+    // 서버에 채팅방 목록 요청
+    console.log(`[Client] Requesting chat rooms for userId: ${userId}`);
+    socket.emit('getChatRooms', userId);
+  
+    // 서버로부터 채팅방 목록을 받아옴
+    socket.on('chatRooms', (data: any) => {
+      console.log('[Client] Received chat rooms:', data);
+      setChatRooms(data);
+    });
+  
+    // 서버와의 연결이 끊겼을 때
+    socket.on('disconnect', () => {
+      console.log('[Client] Disconnected from socket server');
+    });
+  
+    // 컴포넌트 언마운트 시 소켓 연결 해제
+    return () => {
+      socket.off('chatRooms');
+      socket.off('connect');
+      socket.off('disconnect');
+    };
+  }, [user.userID]);
+  
   const toggleDepartmentExpansion = (departmentName: string) => {
     setExpandedDepartments((prevExpandedDepartments) => ({
       ...prevExpandedDepartments,
@@ -96,65 +133,6 @@ const MessageSidebar: React.FC = () => {
 
     if (tab === "ChatData") {
       setDummyData([
-        {
-          userId: "dummy1",
-          username: "진유빈",
-          department: "개발부",
-          team: "",
-          position: "팀장",
-          entering: new Date(),
-          attachment: "",
-          isGroupChat: false,
-        },
-        {
-          userId: "dummy2",
-          username: "구민석",
-          department: "개발부",
-          team: "개발 1팀",
-          position: "팀장",
-          entering: new Date(),
-          attachment: "",
-          isGroupChat: false,
-        },
-        {
-          userId: "dummy3",
-          username: "글림",
-          department: "",
-          team: "",
-          entering: new Date(),
-          attachment: "",
-          isGroupChat: true,
-          participants: [
-            {
-              userId: "dummy4",
-              username: "김효은",
-              department: "관리부",
-              team: "관리팀",
-              position: "팀장",
-              entering: new Date(),
-              attachment: "",
-            },
-            {
-              userId: "dummy5",
-              username: "장현지",
-              department: "개발부",
-              team: "개발 1팀",
-              position: "팀장",
-              entering: new Date(),
-              attachment: "",
-            },
-          ],
-        },
-        {
-          userId: "dummy4",
-          username: "전아름",
-          department: "마케팅부",
-          team: "기획팀",
-          position: "팀장",
-          entering: new Date(),
-          attachment: "",
-          isGroupChat: false,
-        },
       ]);
     } else {
       setDummyData([]);
@@ -230,9 +208,18 @@ const MessageSidebar: React.FC = () => {
   };
 
   const filteredData = filterDataBySearchQuery(groupedData);
+console.log(chatRooms);
 
   return (
     <div className="message-sidebar">
+      sdf
+        {chatRooms.map(room => (
+          <li key={room.roomId}>
+            <h3>{room.title}</h3>
+            <p>{room.subContent}</p>
+            {room.profileImage && <img src={room.profileImage || undefined} alt="프로필 이미지" />}
+          </li>
+        ))}
       <div className="tab-container">
         <div
           className={`tab-button ${activeTab === "personData" ? "active" : ""}`}
