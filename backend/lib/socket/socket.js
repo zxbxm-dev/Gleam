@@ -130,6 +130,7 @@ module.exports = (io) => {
 
         // 새로 생성된 채팅방을 클라이언트에게 전달
         sendUserChatRooms(userId);
+        io.emit('chatRooms', (await ChatRoom.findAll()).map(room => room.toJSON()));
       } catch (error) {
         console.error('채팅방 생성 및 메시지 저장 오류:', error);
         socket.emit('error', { message: '채팅 생성 서버 오류' });
