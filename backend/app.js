@@ -63,7 +63,7 @@ const routers = [
   "pjschedule",
   "performanceOutline",
   "message",
-  "email"
+  "email",
 ];
 
 routers.forEach((route) => {
