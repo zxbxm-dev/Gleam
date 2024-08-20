@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
                 autoIncrement: true, 
                 primaryKey: true,
             },
-             //user테이블 userId 외래키 설정
              sender: {
                 type: DataTypes.STRING,
                 allowNull: false,

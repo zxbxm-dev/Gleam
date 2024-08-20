@@ -26,6 +26,7 @@ const WriteMail = () => {
   const [inputValue, setInputValue] = useState('');
   const [inputReferrerValue, setInputReferrerValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [isClicked, setIsClicked] = useState(false);
 
   const reservationRef = useRef<HTMLDivElement>(null);
@@ -190,6 +191,18 @@ const WriteMail = () => {
 
   const handleClick = () => {
     setIsClicked(!isClicked);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      setAttachments([...attachments, ...Array.from(files)]);
+    }
+  };
+
+  const handleRemoveFile = (fileName: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    setAttachments(attachments.filter((file) => file.name !== fileName));
   };
 
   useEffect(() => {
@@ -381,9 +394,25 @@ const WriteMail = () => {
                   id="file-upload"
                   type="file"
                   accept=".pdf"
+                  onChange={handleFileChange}
+                  multiple
+                  style={{ display: 'none' }}
                 />
-                <span>파일 첨부하기 +</span>
-                <span>클릭 후 파일선택이나 드래그로 파일 첨부 가능합니다.</span>
+                {attachments.length > 0 ? (
+                  <div className="attachment_list">
+                    {attachments.map((file, index) => (
+                      <div key={index} className="attachment_item">
+                        <button onClick={(e) => handleRemoveFile(file.name, e)}>×</button>
+                        <span>{file.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <span>파일 첨부하기 +</span>
+                    <span>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</span>
+                  </>
+                )}
               </label>
             </div>
           </div>

@@ -178,7 +178,9 @@ module.exports = (io) => {
     socket.on('fetchMessages', async (data) => {
       try {
         const { roomId, limit = 50, offset = 0 } = data;
-
+        console.log('fetchMessages called with roomId:', roomId); // 로그 추가
+        console.log('Limit:', limit, 'Offset:', offset); // 로그 추가
+    
         // 방의 과거 메시지들을 데이터베이스에서 조회
         const messages = await Message.findAll({
           where: { roomId },
@@ -186,7 +188,9 @@ module.exports = (io) => {
           offset,   // 시작 위치
           order: [['createdAt', 'ASC']] // 메시지 생성일 기준으로 오름차순 정렬
         });
-
+    
+        console.log('Messages fetched:', messages); // 로그 추가
+    
         // 클라이언트에게 메시지 목록 전송
         socket.emit('messages', messages.map(message => message.toJSON()));
       } catch (error) {
@@ -194,7 +198,6 @@ module.exports = (io) => {
         socket.emit('error', { message: '메시지 조회 서버 오류' });
       }
     });
-
     // 사용자가 연결을 끊었을 때 처리하는 함수
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);
