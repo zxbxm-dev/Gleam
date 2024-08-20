@@ -5,11 +5,12 @@ const emails = models.Email;
 require('dotenv').config();
 
 //현재 접속한 유저의 인증정보 
+   
 
 
 // IMAP 연결 설정 및 이메일 가져오기 함수
 async function fetchMailcowEmails(email, password) {
-   
+
    //임의로 작성한 이메일계정입니다.
    email = 'onion@gleam.im';
    password = '123qwe';
@@ -104,7 +105,7 @@ const saveEmail = async (mail) => {
             body: mail.text || mail.html || '',
             sendAt: mail.date || new Date(),
             receiveAt: new Date(),
-            signature: mail.messageId || '',
+            signature: mail.signature || '',
             folder: 'inbox'
         };
 
@@ -116,7 +117,43 @@ const saveEmail = async (mail) => {
     }
 };
 
+// SMTP를 통한 이메일 전송 함수 추가
+async function sendEmail(to, subject, body) {
+
+   //임의로 작성한 이메일계정입니다.
+   const email = 'onion@gleam.im';
+   const password = '123qwe';
+
+    const transporter = nodemailer.createTransport({
+        host: 'mail.gleam.im', 
+        port: 587, 
+        secure: false, 
+        auth: {
+           user: email, 
+           pass : password
+        }
+    });
+
+    const mailOptions = {
+        from: email, 
+        to: to, 
+        subject: subject, 
+        text: body 
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('이메일이 성공적으로 전송되었습니다: ', info.response);
+        return info;
+    } catch (error) {
+        console.error('이메일 전송 중 오류가 발생했습니다: ', error);
+        throw error;
+    }
+}
+
+
 module.exports = { 
     fetchMailcowEmails,
     saveEmail,
+    sendEmail,
  };
