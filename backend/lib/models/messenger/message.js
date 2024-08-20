@@ -15,15 +15,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      roomId: {
+      roomId: { // 메신저가 속한 채팅방의 ID
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      createdAt: {
+      createdAt: { // 메시지 생성 시간
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-      updatedAt: {
+      updatedAt: { // 메시지 업데이트 시간
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },

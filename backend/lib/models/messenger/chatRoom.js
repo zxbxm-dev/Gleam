@@ -12,11 +12,27 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: false,
       },
-      hostUserId: { // 채팅의 주인
+      hostUserId: { // 👻채팅방 방장 아이디
         type: DataTypes.STRING,
         allowNull: true,
       },
-      invitedUserIds: { // 초대된 사람
+      hostName: {
+        type: DataTypes.STRING, // 👻채팅방 방장 이름
+        allowNull: true
+      },
+      hostDepartment: { // 👻채팅방 방장 부서
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      hostTeam: { // 👻채팅방 방장 팀
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      hostPosition: { // 👻채팅방 방장 직위
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      invitedUsers: { // 😎초대된 사용자 정보 (아이디, 부서, 팀, 직위 포함)
         type: DataTypes.JSON,
         allowNull: true,
       },
@@ -46,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "chatRoom",
+      tableName: "chatroom",
     }
   );
 

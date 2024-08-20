@@ -18,7 +18,7 @@ const server = http.createServer(app);
 const io = require('socket.io')(server);
 
 // 소켓 설정
-require('./lib/socket/socket')(io);
+require('./lib/socket')(io);
 
 // 데이터베이스 연결
 sequelize
