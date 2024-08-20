@@ -64,7 +64,7 @@ db.mainProject = mainProject(sequelize, Sequelize);
 db.subProject = subProject(sequelize, Sequelize);
 db.ChatRoom = chatRoom(sequelize, Sequelize);
 db.Message = message(sequelize, Sequelize);
-db.email = email(sequelize, Sequelize);
+db.Email = email(sequelize, Sequelize);
 
 
 // 모델 관계 설정

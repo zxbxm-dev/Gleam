@@ -62,7 +62,8 @@ const routers = [
   "meetingRoom",
   "pjschedule",
   "performanceOutline",
-  "message"
+  "message",
+  "email"
 ];
 
 routers.forEach((route) => {
