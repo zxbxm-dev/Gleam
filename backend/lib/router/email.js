@@ -5,10 +5,8 @@ module.exports = (app) => {
     const router = express.Router();
 
         // ⚠️⚠️mailcow 이메일 가져오기 router  ⚠️⚠️
-    
-
-        //이메일 조회하기
-        router.get("/checkEmail",emailController.getAllEmail);
+        router.get("/checkEmail/:userId",emailController.getAllEmail);
+        router.post("/")
 
         app.use("/api", router);
 };
