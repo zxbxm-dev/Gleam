@@ -14,7 +14,6 @@ import {
 import SetProfile from "./SetProfile";
 
 interface ChatDataTabProps {
-  dummyData: any[];
   userAttachment: string;
   userTeam: string | null;
   userDepartment: string | null;
@@ -29,11 +28,11 @@ interface ChatDataTabProps {
     userId: string
   ) => void;
   isNotibarActive: boolean | null;
+  chatRooms:any[];
   setIsNotibarActive: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
 const ChatDataTab: React.FC<ChatDataTabProps> = ({
-  dummyData,
   userAttachment,
   userTeam,
   userDepartment,
@@ -43,6 +42,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   userPosition,
   isNotibarActive,
   setIsNotibarActive,
+  chatRooms
 }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
@@ -80,23 +80,23 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
         <img className="Message-Me" src={MessageMe} alt="message-me" />
       </li>
 
-      {dummyData
+      {chatRooms
         .sort((a, b) => b.isUpdateat - a.isUpdateat)
-        .map((dummy) => (
-          <Popover key={dummy.userId} placement="right">
+        .map((chatRooms) => (
+          <Popover key={chatRooms.title} placement="right">
             <div
-              className={`ChatLog ${selectedChatRoom === dummy.username ? "selected" : ""
+              className={`ChatLog ${selectedChatRoom === chatRooms.username ? "selected" : ""
                 }`}
               onClick={() => {
                 onPersonClick(
-                  dummy.username,
-                  dummy.team,
-                  dummy.department,
-                  dummy.position,
-                  dummy.userId
+                  chatRooms.username,
+                  chatRooms.team,
+                  chatRooms.department,
+                  chatRooms.position,
+                  chatRooms.userId
                 );
-                setSelectedChatRoom(dummy.username);
-                localStorage.setItem("latestChat", JSON.stringify(dummy));
+                setSelectedChatRoom(chatRooms.username);
+                localStorage.setItem("latestChat", JSON.stringify(chatRooms));
               }}
             >
               <div
@@ -112,7 +112,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     alt="User Icon"
                   />
                   <p>
-                    {dummy.isGroupChat ? `단체채팅방: ${dummy.username}` : `${dummy.team ? dummy.team : dummy.department} ${dummy.username}`}
+                    {chatRooms.isGroup ? chatRooms.name : chatRooms.title}
+                    {/* {chatRooms.isGroupChat ? `단체채팅방: ${chatRooms.username}` : `${chatRooms.team ? chatRooms.team : chatRooms.department} ${chatRooms.username}`} */}
                   </p>
                 </div>
                 <PopoverTrigger>
