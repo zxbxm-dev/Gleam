@@ -72,7 +72,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 
   const borderRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  const socket = io('http://localhost:3001', { transports: ["websocket"] });
+  // const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
     setSelectedRoomId({ roomId: chatRoom.roomId });
@@ -103,7 +103,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           borderRef.current.style.border = idleBorderColor;
         }
         console.log("User status: 자리비움 (no mouse movement for 5 minutes)");
-      }, 5000); // 5분
+      }, 300000); // 5분
       setTimeoutId(newTimeoutId);
     };
 
