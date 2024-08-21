@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const ChatRoom = sequelize.define(
-    "ChatRoom",
+    'ChatRoom',
     {
       roomId: {
         type: DataTypes.INTEGER,
@@ -9,31 +9,42 @@ module.exports = (sequelize, DataTypes) => {
       },
       isGroup: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
         defaultValue: false,
       },
-      hostUserId: { // 채팅의 주인
+      hostUserId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      hostName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      hostDepartment: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      invitedUserIds: { // 초대된 사람
-        type: DataTypes.JSON,
-        allowNull: true,
-      },
-      title: {  // 방제목
+      hostTeam: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      subContent: {  // 방 설명
+      hostPosition: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      profileColor: {  // 프로필 색상
+      title: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      profileImage: {  // 프로필 이미지
-        type: DataTypes.STRING, // URL을 저장할 경우 STRING 타입 사용
+      subContent: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      profileColor: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      profileImage: {
+        type: DataTypes.STRING,
         allowNull: true,
       },
       createdAt: {
@@ -46,9 +57,22 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "chatRoom",
+      tableName: 'chatroom',
     }
   );
+
+  ChatRoom.associate = (models) => {
+
+    ChatRoom.hasMany(models.ChatRoomParticipant, {
+      foreignKey: 'roomId',
+      as: 'participants',
+    });
+
+    ChatRoom.hasMany(models.Message, {
+      foreignKey: 'roomId',
+      as: 'messages',
+    });
+  };
 
   return ChatRoom;
 };
