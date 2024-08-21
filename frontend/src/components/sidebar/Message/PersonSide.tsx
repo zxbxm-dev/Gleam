@@ -12,6 +12,8 @@ import {
   Portal,
   PopoverContent,
 } from "@chakra-ui/react";
+import { selectedRoomIdState } from "../../../recoil/atoms";
+import { useRecoilState } from "recoil";
 
 interface PersonDataTabProps {
   personData: Person[] | null;
@@ -44,7 +46,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
   const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
-
+  const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -135,6 +137,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 );
                 setSelectedUserId(person.userId);
                 setIsNotibarActive(false);
+                setSelectedRoomId({ roomId: '-1' });
               }}
             >
               <div className="No-Left">
@@ -227,6 +230,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                   );
                                   setSelectedUserId(person.userId);
                                   setIsNotibarActive(false);
+                                  setSelectedRoomId({ roomId: '0' });
                                 }}
                               >
                                 <div className="No-Left">
@@ -320,6 +324,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                       );
                       setSelectedUserId(person.userId);
                       setIsNotibarActive(false);
+                      setSelectedRoomId({ roomId: '0' });
                     }}
                   >
                     <div className="No-Left">
@@ -418,6 +423,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                       );
                                       setSelectedUserId(person.userId);
                                       setIsNotibarActive(false);
+                                      setSelectedRoomId({ roomId: '0' });
                                     }}
                                   >
                                     <div className="No-Left">

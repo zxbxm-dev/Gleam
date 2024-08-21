@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
-import { userState, selectedPersonState } from '../../recoil/atoms';
+import { userState, selectedPersonState, selectedRoomIdState } from '../../recoil/atoms';
 import { getChatRooms } from '../../services/message/MessageApi';
 import { io } from 'socket.io-client';
 import Header from './MessageHeader';
@@ -27,6 +27,7 @@ const Message: React.FC = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
+  const selectedRoomIds = useRecoilValue(selectedRoomIdState);
 
   useEffect(() => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');
@@ -83,19 +84,24 @@ const Message: React.FC = () => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
     if (inputElement && inputElement.innerHTML.trim() !== "") {
       const message = inputElement.innerHTML.trim();
-      const roomname = selectedPerson.team
-        ? `${selectedPerson.team} ${selectedPerson.username}`
-        : selectedPerson.department
-          ? `${selectedPerson.department} ${selectedPerson.username}`
-          : "defaultRoomId";
 
-      const messageData = {
-        invitedUserIds: [selectedPerson.userId], // 배열로 수정
-        userId: user.id,
-        content: message,
-        hostUserId: null,
-        name: null
-      };
+      let messageData;
+      if (selectedRoomIds.roomId === '-1') {
+        messageData = {
+          invitedUserIds: [selectedPerson.userId],
+          userId: user.id,
+          content: message,
+          hostUserId: null,
+          name: null
+        };
+      } else {
+        messageData = {
+          roomId: Number(selectedRoomIds.roomId),
+          userId: user.id,
+          content: message,
+        };
+      }
+console.log(messageData);
 
       emitMessage(messageData);
       setMessages(prevMessages => [
@@ -113,11 +119,14 @@ const Message: React.FC = () => {
       setFiles(null);
       inputElement.innerHTML = "";
     }
-  }, [selectedPerson, user]);
+  }, [selectedRoomIds, selectedPerson, user]);
 
   const emitMessage = (messageData: any) => {
-    socket.emit("createPrivateRoom", messageData);
-    console.log("Emitting message:", messageData);
+    if (selectedRoomIds.roomId === '-1') {
+      socket.emit("createPrivateRoom", messageData);
+    } else {
+      socket.emit("sendMessageToRoom", messageData);
+    }
   };
 
   const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {

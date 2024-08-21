@@ -83,7 +83,6 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
       <li
         className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
         onClick={() => {
-          // onPersonClick("통합 알림", "", "", "", "");
           setSelectedChatRoom("통합 알림");
           setIsNotibarActive(true);
         }}
@@ -93,15 +92,16 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
       </li>
       <li
         className="My-bar"
-        onClick={() =>
+        onClick={() => {
           onPersonClick(
             userName || "",
             userTeam || "",
             userDepartment || "",
             userPosition || "",
             userId || ""
-          )
-        }
+          );
+          setSelectedRoomId({ roomId: '0' });
+        }}
       >
         <img className="My-attach" src={userAttachment} alt="my-attach" />
         <div>

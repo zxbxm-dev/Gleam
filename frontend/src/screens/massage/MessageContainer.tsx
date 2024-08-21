@@ -43,7 +43,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [servermsg, setMessages] = useState<any[]>([]);
   const [servermsgCreateAt, setMessageCreateAt] = useState<string[]>([]);
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
-  
+
   const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
   useEffect(() => {
@@ -135,7 +135,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
               <div>{/* 팀, 이름 */}</div>
               <div className="MsgTimeBox">
                 <div className="MsgBox">
-                  {msg}
+                  {msg ? msg : ""}
                 </div>
                 <div className="MsgTime">
                   <div className="ViewCount">1</div>
