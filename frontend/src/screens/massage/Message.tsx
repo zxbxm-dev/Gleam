@@ -86,7 +86,7 @@ const Message: React.FC = () => {
       const message = inputElement.innerHTML.trim();
 
       let messageData;
-      if (selectedRoomIds.roomId === '0') {
+      if (selectedRoomIds.roomId === '-1') {
         messageData = {
           invitedUserIds: [selectedPerson.userId],
           userId: user.id,
@@ -101,6 +101,7 @@ const Message: React.FC = () => {
           content: message,
         };
       }
+console.log(messageData);
 
       emitMessage(messageData);
       setMessages(prevMessages => [
@@ -121,7 +122,7 @@ const Message: React.FC = () => {
   }, [selectedRoomIds, selectedPerson, user]);
 
   const emitMessage = (messageData: any) => {
-    if (selectedRoomIds.roomId === '0') {
+    if (selectedRoomIds.roomId === '-1') {
       socket.emit("createPrivateRoom", messageData);
     } else {
       socket.emit("sendMessageToRoom", messageData);

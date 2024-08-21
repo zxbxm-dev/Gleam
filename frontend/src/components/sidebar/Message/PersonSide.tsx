@@ -137,7 +137,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 );
                 setSelectedUserId(person.userId);
                 setIsNotibarActive(false);
-                setSelectedRoomId({ roomId: '0' });
+                setSelectedRoomId({ roomId: '-1' });
               }}
             >
               <div className="No-Left">
