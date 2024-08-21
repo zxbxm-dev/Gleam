@@ -7,30 +7,35 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      content: { // 메신저 내용
+      content: {
         type: DataTypes.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
-      userId: { // 메신저를 보낸 사람
+      userId: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
-      roomId: { // 메신저가 속한 채팅방의 ID
+      roomId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        references: {
+          model: 'ChatRoom',
+          key: 'roomId'
+        },
+        allowNull: false
       },
-      createdAt: { // 메시지 생성 시간
+      createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-      updatedAt: { // 메시지 업데이트 시간
+      updatedAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
     },
     {
-      tableName: "message",
+      tableName: 'message',
     }
   );
+
   return Message;
 };
