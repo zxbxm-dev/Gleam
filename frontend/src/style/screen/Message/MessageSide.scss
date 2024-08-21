@@ -150,19 +150,20 @@
       font-family: var(--font-family-Noto-M);
       font-size: 15px;
 
-      .My-attach,
-      .Noti-Icon {
+      .Border{
+        border-radius: 50px;
         margin-right: 10px;
+        width: 37px;
+        height: 37px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      .My-attach {
         width: 35px;
         height: 35px;
         border-radius: 50px;
       }
-
-      .My-attach {
-        border: 2px solid #42e452;
-        box-sizing: border-box;
-        padding: 0;
-      }
+    }
 
       .Message-Me {
         margin-left: 5px;
@@ -195,12 +196,20 @@
           display: flex;
           align-items: center;
 
-          .My-attach {
+          .Border{
+            border-radius: 50px;
             margin-right: 10px;
+            width: 37px;
+            height: 37px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          .My-attach {
             width: 35px;
             height: 35px;
             border-radius: 50px;
           }
+        }
         }
 
         .Message-Menu {
