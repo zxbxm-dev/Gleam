@@ -31,6 +31,7 @@ const subProject = require("./pjschedule/subProject");
 //채팅방
 const chatRoom = require("./messenger/chatRoom");
 const message = require("./messenger/message");
+const chatRoomParticipant = require("./messenger/ChatRoomParticipant");
 //이메일
 const email = require("./email/email");
 
@@ -63,6 +64,7 @@ db.Meeting = meetingRoom(sequelize, Sequelize);
 db.mainProject = mainProject(sequelize, Sequelize);
 db.subProject = subProject(sequelize, Sequelize);
 db.ChatRoom = chatRoom(sequelize, Sequelize);
+db.ChatRoomParticipant = chatRoomParticipant(sequelize, Sequelize);
 db.Message = message(sequelize, Sequelize);
 db.Email = email(sequelize, Sequelize);
 
@@ -79,7 +81,14 @@ db.subProject.belongsTo(db.mainProject, {
 });
 
 // 메신저 관계 설정
-db.Message.belongsTo(db.ChatRoom, { foreignKey: 'roomId' });
 db.ChatRoom.hasMany(db.Message, { foreignKey: 'roomId' });
+db.Message.belongsTo(db.ChatRoom, { foreignKey: 'roomId' });
+
+db.ChatRoom.hasMany(db.ChatRoomParticipant, { foreignKey: 'roomId' });
+db.ChatRoomParticipant.belongsTo(db.ChatRoom, { foreignKey: 'roomId' });
+
+db.ChatRoomParticipant.belongsTo(db.User, { foreignKey: 'userId' });
+db.User.hasMany(db.ChatRoomParticipant, { foreignKey: 'userId' });
+
 
 module.exports = db;

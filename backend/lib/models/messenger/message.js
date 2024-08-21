@@ -7,17 +7,21 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      content: { // 메신저 내용
+      content: {
         type: DataTypes.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
-      userId: { // 메신저를 보낸 사람
+      userId: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       roomId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        references: {
+          model: 'ChatRoom',
+          key: 'roomId'
+        },
+        allowNull: false
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -29,8 +33,9 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "message",
+      tableName: 'message',
     }
   );
+
   return Message;
 };
