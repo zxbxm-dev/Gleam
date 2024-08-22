@@ -33,7 +33,7 @@ interface PersonDataTabProps {
     department: string,
     position: string
   ) => void;
-  borderColor:string;
+  borderColor: string;
 }
 
 const PersonDataTab: React.FC<PersonDataTabProps> = ({
@@ -90,45 +90,13 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
 
   return (
     <ul className="Sidebar-Ms">
-      {/*
-      <li
-        className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
-        onClick={() => {
-          onPersonClick("통합 알림", "", "", "");
-          setSelectedUserId(null);
-          setIsNotibarActive(true);
-        }}
-      >
-        <img className="Noti-Icon" src={NotiIcon} alt="my-attach" />
-        <div>통합 알림</div>
-      </li>
-      <li
-        className="My-bar"
-        onClick={() =>
-          onPersonClick(
-            userName || "",
-            userTeam || "",
-            userDepartment || "",
-            userPosition || ""
-          )
-        }
-      >
-        <img className="My-attach" src={userAttachment} alt="my-attach" />
-        <div>
-          {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
-        </div>
-        <img className="Message-Me" src={MessageMe} alt="message-me" />
-      </li>
-        */}
-
       {personData
         .filter((person) => !person.department && person.company !== "R&D")
         .map((person) => (
           <Popover placement="right" key={person.userId}>
             <li
-              className={`No-dept ${
-                selectedUserId === person.userId ? "selected" : ""
-              }`}
+              className={`No-dept ${selectedUserId === person.userId ? "selected" : ""
+                }`}
               onClick={() => {
                 onPersonClick(
                   person.username,
@@ -169,9 +137,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 >
                   <div
                     ref={menuRef}
-                    className={`Message-OnClick-Menu ${
-                      activeMenuUserId === person.userId ? "active" : ""
-                    }`}
+                    className={`Message-OnClick-Menu ${activeMenuUserId === person.userId ? "active" : ""
+                      }`}
                   >
                     대화 나가기
                   </div>
@@ -195,6 +162,79 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
           </button>
           {expandedDepartments[department] && (
             <ul className="DeptDown">
+              {expandedDepartments[department] && (
+                <ul>
+                  {personData.map(
+                    (person) =>
+                      person.department === department &&
+                      !(person.team) && (
+                        <Popover placement="right" key={person.userId}>
+                          <li
+                            className={`No-dept ${selectedUserId === person.userId
+                                ? "selected"
+                                : ""
+                              }`}
+                            onClick={() => {
+                              onPersonClick(
+                                person.username,
+                                person.team,
+                                person.department,
+                                person.position,
+                                person.userId
+                              );
+                              setSelectedUserId(person.userId);
+                              setIsNotibarActive(false);
+                              setSelectedRoomId({ roomId: '0' });
+                            }}
+                          >
+                            <div className="No-Left">
+                              <img
+                                src={
+                                  person.attachment
+                                    ? person.attachment
+                                    : UserIcon_dark
+                                }
+                                alt={`${person.username}`}
+                              />
+                              {person.username}
+                            </div>
+                            <PopoverTrigger>
+                              <img
+                                className="Message-Menu"
+                                src={MessageMenu}
+                                alt="message-menu"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveMenuUserId((prev) =>
+                                    prev === person.userId
+                                      ? null
+                                      : person.userId
+                                  );
+                                }}
+                              />
+                            </PopoverTrigger>
+                            <Portal>
+                              <PopoverContent
+                                className="PersonSide_popover"
+                                _focus={{ boxShadow: "none" }}
+                              >
+                                <div
+                                  ref={menuRef}
+                                  className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
+                                      ? "active"
+                                      : ""
+                                    }`}
+                                >
+                                  대화 나가기
+                                </div>
+                              </PopoverContent>
+                            </Portal>
+                          </li>
+                        </Popover>
+                      )
+                  )}
+                </ul>
+              )}
               {departmentTeams[department].map((team) => (
                 <li key={team}>
                   <button
@@ -216,12 +256,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                           person.team === team && (
                             <Popover placement="right" key={person.userId}>
                               <li
-                                className={`No-dept ${
-                                  selectedUserId === person.userId
+                                className={`No-dept ${selectedUserId === person.userId
                                     ? "selected"
                                     : ""
-                                }`}
-                                style={{backgroundColor:'red'}}
+                                  }`}
                                 onClick={() => {
                                   onPersonClick(
                                     person.username,
@@ -268,11 +306,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                   >
                                     <div
                                       ref={menuRef}
-                                      className={`Message-OnClick-Menu ${
-                                        activeMenuUserId === person.userId
+                                      className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
                                           ? "active"
                                           : ""
-                                      }`}
+                                        }`}
                                     >
                                       대화 나가기
                                     </div>
@@ -312,10 +349,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
               .map((person) => (
                 <Popover placement="right" key={person.userId}>
                   <li
-                    className={`No-dept ${
-                      selectedUserId === person.userId ? "selected" : ""
-                    }`}
-                    style={{backgroundColor:'red'}}
+                    className={`No-dept ${selectedUserId === person.userId ? "selected" : ""
+                      }`}
                     onClick={() => {
                       onPersonClick(
                         person.username,
@@ -358,9 +393,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                       >
                         <div
                           ref={menuRef}
-                          className={`Message-OnClick-Menu ${
-                            activeMenuUserId === person.userId ? "active" : ""
-                          }`}
+                          className={`Message-OnClick-Menu ${activeMenuUserId === person.userId ? "active" : ""
+                            }`}
                         >
                           대화 나가기
                         </div>
@@ -409,12 +443,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                               .map((person) => (
                                 <Popover placement="right" key={person.userId}>
                                   <li
-                                    className={`No-dept ${
-                                      selectedUserId === person.userId
+                                    className={`No-dept ${selectedUserId === person.userId
                                         ? "selected"
                                         : ""
-                                    }`}
-                                    style={{backgroundColor:'red'}}
+                                      }`}
                                     onClick={() => {
                                       onPersonClick(
                                         person.username,
@@ -461,11 +493,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                       >
                                         <div
                                           ref={menuRef}
-                                          className={`Message-OnClick-Menu ${
-                                            activeMenuUserId === person.userId
+                                          className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
                                               ? "active"
                                               : ""
-                                          }`}
+                                            }`}
                                         >
                                           대화 나가기
                                         </div>
