@@ -89,9 +89,15 @@ const MessageSidebar: React.FC = () => {
       transports: ['websocket'],
     });
 
+    const userId = user.userID;
+
     socket.on('connect', () => {
       console.log(`[Client] Connected to socket server with id: ${socket.id}`);
     });
+
+
+    // 서버에 채팅방 목록 요청
+    socket.emit('getChatRooms', userId);
 
     socket.on('connect_error', (error) => {
       console.error('Connection error:', error);
@@ -99,6 +105,7 @@ const MessageSidebar: React.FC = () => {
 
     socket.on('chatRooms', (data: any) => {
       setChatRooms(data);
+      console.log(data);
     });
 
     socket.on('disconnect', () => {
