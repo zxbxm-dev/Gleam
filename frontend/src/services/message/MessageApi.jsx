@@ -16,13 +16,13 @@ import api from "../../api/auth";
 // };
 
 // 본인이 포함된 모든 대화방 목록 조회
-const getChatRooms = (userId) => {
-  return api.get(`/${userId}`);
-};
+// const getChatRooms = (userId) => {
+//   return api.get(`/${userId}`);
+// };
 
 const createRoom = (payload) => {
   return api.post("/rooms", payload);
 };
 
 
-export { createRoom, getChatRooms };
+export { createRoom };

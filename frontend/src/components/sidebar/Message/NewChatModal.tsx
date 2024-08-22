@@ -46,7 +46,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
 }) => {
   const [isWholeMemberChecked, setIsWholeMemberChecked] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedUsers, setSelectedUsers] = useState<Person[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [chatTitle, setChatTitle] = useState<string>("");
 
   const user = useRecoilValue(userState);
@@ -58,11 +58,14 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
           Object.values(department).flat()
         )
       );
-
+  
       const initialSelectedUsers = allPersons.filter(person => person.username === user.username);
-
-      setSelectedUsers(initialSelectedUsers.length > 0 ? initialSelectedUsers : []);
-      setChatTitle("");
+  
+      setSelectedUsers(prevSelected => {
+        const newSelection = new Set(prevSelected);
+        initialSelectedUsers.forEach(user => newSelection.add(user.userId));
+        return newSelection;
+      });
       setSearchQuery("");
       setIsWholeMemberChecked(false);
     }
@@ -103,19 +106,18 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   };
 
   const handleSubmit = async () => {
-    if (selectedUsers.length === 0) {
+    if (selectedUsers.size === 0) {
       alert("채팅방 인원을 선택해주세요.");
       return;
     }
 
-    if (selectedUsers.length > 2 && !chatTitle) {
+    if (selectedUsers.size > 2 && !chatTitle) {
       alert("채팅방 이름을 입력해주세요.");
       return;
     }
 
-    const isGroup = selectedUsers.length > 2;
-    const targetIds = selectedUsers.map(user => user.userId);
-
+    const isGroup = selectedUsers.size > 2;
+    const targetIds = Array.from(selectedUsers);
 
     const payload = {
       name: null,
@@ -137,32 +139,35 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
 
   const handlePersonClick = (person: Person) => {
     if (person.username === user.username) return;
-
-    setSelectedUsers(prevUsers =>
-      prevUsers.includes(person)
-        ? prevUsers.filter(user => user !== person)
-        : [...prevUsers, person]
-    );
-  };
-
-  const handleTeamClick = (teamName: string, companyName: string, departmentName: string) => {
-    const teamMembers = filteredPersonsData[companyName][departmentName][teamName];
-    const allMembersSelected = teamMembers.every(member => selectedUsers.includes(member));
-
-    setSelectedUsers(prevUsers => {
-      if (allMembersSelected) {
-        return prevUsers.filter(user => !teamMembers.includes(user));
+    
+    setSelectedUsers(prevSelected => {
+      const newSelection = new Set(prevSelected);
+      if (newSelection.has(person.userId)) {
+        newSelection.delete(person.userId);
       } else {
-        return [...prevUsers, ...teamMembers.filter(member => !prevUsers.includes(member))];
+        newSelection.add(person.userId);
       }
+      return newSelection;
     });
   };
+  
+  const handleTeamClick = (teamName: string, companyName: string, departmentName: string) => {
+    const teamMembers = filteredPersonsData[companyName][departmentName][teamName];
+    const allMembersSelected = teamMembers.every(member => selectedUsers.has(member.userId));
+    
+    setSelectedUsers(prevSelected => {
+      const newSelection = new Set(prevSelected);
+      if (allMembersSelected) {
+        teamMembers.forEach(member => newSelection.delete(member.userId));
+      } else {
+        teamMembers.forEach(member => newSelection.add(member.userId));
+      }
+      return newSelection;
+    });
+  };
+  
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTop = -2000;
-    }
-  }, [filteredPersonsData]);
+
   return (
     <CustomModal
       isOpen={openModal}
@@ -182,14 +187,14 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
         <div className="New-Chat-Room">
           <input
             placeholder={
-              selectedUsers.length === 2
+              selectedUsers.size === 2
                 ? "1:1 대화방"
                 : "(필수) 대화방 이름을 입력해주세요."
             }
             className="TextInputCon"
             value={chatTitle}
             onChange={e => setChatTitle(e.target.value)}
-            disabled={selectedUsers.length === 2}
+            disabled={selectedUsers.size === 2}
           />
         </div>
         <div className="New-Chat-Room">
@@ -211,12 +216,12 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                 setIsWholeMemberChecked(!isWholeMemberChecked);
                 setSelectedUsers(
                   isWholeMemberChecked
-                    ? []
-                    : Object.values(filteredData).flatMap(company =>
+                    ? new Set()
+                    : new Set(Object.values(filteredData).flatMap(company =>
                       Object.values(company).flatMap(department =>
                         Object.values(department).flat()
                       )
-                    )
+                    ).map(person => person.userId))
                 );
               }}
             />
@@ -244,7 +249,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                                   src={
                                     person.username === user.username
                                       ? CheckBox_Not
-                                      : (isWholeMemberChecked || selectedUsers.includes(person))
+                                      : (isWholeMemberChecked || selectedUsers.has(person.userId))
                                         ? CheckBox_Active
                                         : CheckBox
                                   }
@@ -287,7 +292,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                                     src={
                                       person.username === user.username
                                         ? CheckBox_Not
-                                        : (isWholeMemberChecked || selectedUsers.includes(person))
+                                        : (isWholeMemberChecked || selectedUsers.has(person.userId))
                                           ? CheckBox_Active
                                           : CheckBox
                                     }
@@ -316,7 +321,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                                 <img
                                   src={
                                     filteredPersonsData[companyName][departmentName][teamName]
-                                      .every(person => selectedUsers.includes(person))
+                                      .every(person => selectedUsers.has(person.userId))
                                       ? CheckBox_Active
                                       : CheckBox
                                   }
@@ -335,7 +340,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                                     src={
                                       person.username === user.username
                                         ? CheckBox_Not
-                                        : isWholeMemberChecked || selectedUsers.includes(person)
+                                        : isWholeMemberChecked || selectedUsers.has(person.userId)
                                           ? CheckBox_Active
                                           : CheckBox
                                     }
@@ -362,26 +367,34 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
           </div>
           <div className="RightSelectedCon">
             <div className="RightTopText">
-              선택인원 <span>({selectedUsers.length} 명)</span>
+              선택인원 <span>({selectedUsers.size} 명)</span>
             </div>
             <div className="ChosenPeople">
-              {selectedUsers.map(person => (
-                <div className="ChosenOne" key={person.userId}>
-                  {person.username === user.username ? (
-                    <img src={MinusIcon} alt="MinusIcon" />
-                  ) : (
-                    <img
-                      src={XIcon}
-                      alt="XIcon"
-                      onClick={() => handlePersonClick(person)}
-                    />
-                  )}
-                  <div className={person.username === user.username ? "createMe" : "createBy"}>
-                    {person.team ? person.team : person.department} {person.username}
-                    {person.username === user.username && " (본인)"}
+              {Array.from(selectedUsers).map(userId => {
+                const person = Object.values(filteredData).flatMap(company =>
+                  Object.values(company).flatMap(department =>
+                    Object.values(department).flat()
+                  )
+                ).find(person => person.userId === userId);
+                
+                return person && (
+                  <div className="ChosenOne" key={userId}>
+                    {person.username === user.username ? (
+                      <img src={MinusIcon} alt="MinusIcon" />
+                    ) : (
+                      <img
+                        src={XIcon}
+                        alt="XIcon"
+                        onClick={() => handlePersonClick(person)}
+                      />
+                    )}
+                    <div className={person.username === user.username ? "createMe" : "createBy"}>
+                      {person.team ? person.team : person.department} {person.username}
+                      {person.username === user.username && " (본인)"}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
