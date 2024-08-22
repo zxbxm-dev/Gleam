@@ -14,6 +14,7 @@ import {
   mail_calendar,
   White_Arrow,
   SearchIcon,
+  Down_Arrow,
 } from "../../assets/images/index";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -28,6 +29,8 @@ const Mail = () => {
   const [postPerPage, setPostPerPage] = useState<number>(11);
   const [settingVisible, setSettingVisible] = useState(true);
   const [hoverState, setHoverState] = useState<string>("");
+  const [isRecipientHover, setIsRecipientHover] = useState(false);
+  const [isDownFileVisible, setIsDownFilevisible] = useState(false);
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isSpamModalOpen, setSpamModalOpen] = useState(false);
@@ -49,7 +52,7 @@ const Mail = () => {
   const [selectedMails, setSelectedMails] = useState<{ [key: number]: boolean }>({});
 
 
-  const itemsPerPage = 8;
+  const itemsPerPage = 10;
 
   const menuOptions = [
     '전체 메일',
@@ -89,11 +92,11 @@ const Mail = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1600) {
-        setPostPerPage(11); // Desktop
+        setPostPerPage(15); // Desktop
       } else if (window.innerWidth >= 992) {
-        setPostPerPage(8); // Laptop
+        setPostPerPage(12); // Laptop
       } else {
-        setPostPerPage(8);
+        setPostPerPage(12);
       }
     };
 
@@ -107,19 +110,26 @@ const Mail = () => {
 
   useEffect(() => {
     const initialMails = [
-      { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정1.pdf", mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "2024-05-01" },
-      { id: 2, title: "홈페이지 조직도 관련 안내", content: "메일입니다.2", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정2.pdf", mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "2024-05-01" },
-      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
-      { id: 4, title: "개발 1팀 업무 설정 보고", content: "메일입니다.4", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정4.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
-      { id: 5, title: "개발 1팀 업무 설정 보고", content: "메일입니다.5", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정5.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
-      { id: 6, title: "개발 1팀 업무 설정 보고", content: "메일입니다.6", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정6.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
-      { id: 7, title: "개발 1팀 업무 설정 보고", content: "메일입니다.7", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정7.pdf", mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
-      { id: 8, title: "개발 1팀 업무 설정 보고", content: "메일입니다.8", sender: "개발부 진유빈", recipient: "개발부 진유빈", attachment: "업무설정8.pdf", mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
-      { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정9.pdf", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
-      { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정10.pdf", mailType: "보낸 메일함", reservation: false, important: false, spam: false, date: "2024-05-01" },
-      { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "업무설정11.pdf", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
-      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: "개발부 진유빈", attachment: "", mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "2024-05-01" },
-      { id: 13, title: "스팸 메일입니다", content: "스팸메일입니다.13", sender: "개발1팀 구민석", recipient: "개발1팀 구민석", attachment: "", mailType: "받은 메일함", reservation: false, important: true, spam: true, date: "2024-05-01" },
+      { id: 1, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.1", sender: "개발1팀 구민석", recipient: ['개발부 진유빈', '개발부 진유빈', '개발부 진유빈', '개발부 진유빈', '개발부 진유빈', '개발부 진유빈'], attachment: ["업무설정1.pdf","업무설정2.pdf","업무설정3.pdf"], mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 2, title: "홈페이지 조직도 관련 안내", content: "메일입니다.2", sender: "개발부 진유빈", recipient: ['개발부 진유빈', '개발1팀 구민석', '개발부 진유빈', '개발1팀 구민석', '개발부 진유빈', '개발1팀 구민석', '개발부 진유빈', '개발1팀 구민석'], attachment: ["업무설정2.pdf"], mailType: "받은 메일함", reservation: true, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 3, title: "개발 1팀 업무 설정 보고", content: "메일입니다.3", sender: "개발부 진유빈", recipient: ["개발부 진유빈"], attachment: [], mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "24.12.30 15:20" },
+      { id: 4, title: "개발 1팀 업무 설정 보고", content: "메일입니다.4", sender: "개발부 진유빈", recipient: ["개발부 진유빈"], attachment: ["업무설정4.pdf"], mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 5, title: "개발 1팀 업무 설정 보고", content: "메일입니다.5", sender: "개발부 진유빈", recipient: ["개발부 진유빈"], attachment: ["업무설정5.pdf"], mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 6, title: "개발 1팀 업무 설정 보고", content: "메일입니다.6", sender: "개발부 진유빈", recipient: ["개발부 진유빈"], attachment: ["업무설정6.pdf"], mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "24.12.30 15:20" },
+      { id: 7, title: "개발 1팀 업무 설정 보고", content: "메일입니다.7", sender: "개발부 진유빈", recipient: ["개발부 진유빈"], attachment: ["업무설정7.pdf"], mailType: "받은 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 8, title: "개발 1팀 업무 설정 보고", content: "메일입니다.8", sender: "개발부 진유빈", recipient: ["개발부 진유빈"], attachment: ["업무설정8.pdf"], mailType: "받은 메일함", reservation: false, important: false, spam: false, date: "24.12.30 15:20" },
+      { id: 9, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.9", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: ["업무설정9.pdf"], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 10, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.10", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: ["업무설정10.pdf"], mailType: "보낸 메일함", reservation: false, important: false, spam: false, date: "24.12.30 15:20" },
+      { id: 11, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.11", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: ["업무설정11.pdf"], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 12, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: [], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 13, title: "스팸 메일입니다", content: "스팸메일입니다.13", sender: "개발1팀 구민석", recipient: ["개발1팀 구민석"], attachment: "", mailType: ["받은 메일함"], reservation: false, important: true, spam: true, date: "24.12.30 15:20" },
+      { id: 14, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: [], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 15, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: [], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 16, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: [], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 17, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: [], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 18, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: [], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 19, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: [], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
+      { id: 20, title: "2024년 5월 급여명세서 보내드립니다.", content: "메일입니다.12", sender: "개발1팀 구민석", recipient: ["개발부 진유빈"], attachment: [], mailType: "보낸 메일함", reservation: false, important: true, spam: false, date: "24.12.30 15:20" },
     ];
     switch (selectdMenuOption) {
       case "전체 메일":
@@ -169,6 +179,10 @@ const Mail = () => {
     setMenuIsOpen(!menuIsOpen);
   };
 
+  const toggleDownFile = () => {
+    setIsDownFilevisible(!isDownFileVisible);
+  }
+
   const handleOptionSelect = (option: string) => {
     setSelectedMenuOption(option);
     setMenuIsOpen(false);
@@ -193,6 +207,7 @@ const Mail = () => {
 
   // 메일 세부내용 열기
   const toggleMailContent = (mailId: number) => {
+    setIsDownFilevisible(false);
     const newVisibility = Object.fromEntries(
       Object.keys(mailContentVisibility).map((key) => [key, false])
     );
@@ -363,14 +378,18 @@ const Mail = () => {
             <colgroup>
               <col width="3%" />
               <col width="15%" />
-              <col width="67%" />
-              <col width="13%" />
+              <col width="62.5%" />
+              <col width="5%" />
+              <col width="4.5%" />
+              <col width="8%" />
             </colgroup>
             <thead>
               <tr className="board_header">
                 <th></th>
                 <th>보낸 사람</th>
                 <th>제목</th>
+                <th></th>
+                <th></th>
                 <th>날짜</th>
               </tr>
             </thead>
@@ -396,7 +415,7 @@ const Mail = () => {
                           <div onClick={() => handleMailFixed(mail.id)}>
                             <img src={mail.important ? mail_important_active : mail_important} alt="mail_important" />
                           </div>
-                          {mail.attachment ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
+                          {mail.attachment.length > 0 ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
                         </div>
                         <span>[{mail.mailType}]</span>
                         <div className={`${clickedMails[mail.id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.id)}>
@@ -404,11 +423,13 @@ const Mail = () => {
                           <img src={mail_triangle} alt="mail_triangle" />
                         </div>
                       </td>
+                      <td>1/3 읽음</td>
+                      <td><div>발송 취소</div></td>
                       <td>{mail.date}</td>
                     </tr>
 
                     <tr className={`mail_detail_overlay ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
-                      <td colSpan={4}>
+                      <td colSpan={6}>
                         <div className={`mail_detail_wrapper ${mailContentVisibility[mail.id] ? 'visible' : ''}`}>
                           <div className="mail_detail_header">
                             <span>
@@ -443,14 +464,47 @@ const Mail = () => {
                                   <div>{mail.sender}</div>
                                   <span>{mail.date}</span>
                                 </div>
-                                <div className="DownFile">
-                                  <span>{mail.attachment}</span>
-                                  <img src={mail_download} alt="mail_download" />
-                                </div>
+                                {mail.attachment.length > 0 ? 
+                                  <div className="DownFile" onClick={toggleDownFile}>
+                                    {isDownFileVisible ?
+                                      <img src={Down_Arrow} className="rotate_Arrow" alt="Down_Arrow" />
+                                      :
+                                      <img src={Down_Arrow} alt="Down_Arrow" />
+                                    }
+                                    <span>{`첨부파일 ${mail.attachment.length}`}</span>
+                                    <img src={mail_download} alt="mail_download" />
+
+                                    {isDownFileVisible && (
+                                      <div className="DownFile_list">
+                                        {mail.attachment?.map((file: string, index: number) => (
+                                          <div key={index}>{file}</div>
+                                        ))}
+                                      </div>  
+                                    )}
+                                  </div>
+                                  :
+                                  <></>
+                                }
                               </div>
                               <div>
                                 <div>받는 사람 :</div>
-                                <div>{mail.recipient}</div>
+                                <div>{(mail.recipient?.slice(0, 5)).join(', ')}</div>
+                                <div
+                                  className="recipient_hover"
+                                  onMouseEnter={() => setIsRecipientHover(true)}
+                                  onMouseLeave={() => setIsRecipientHover(false)}
+                                >
+                                  {mail.recipient.length - 5 > 0 && `외 ${mail.recipient.length - 5}명`}
+                                </div>
+                                {
+                                  isRecipientHover && (
+                                    <div
+                                      className="recipient_list"
+                                    >
+                                    {mail.recipient.join(', ')}
+                                  </div>
+                                  )
+                                }
                               </div>
                             </div>
 
