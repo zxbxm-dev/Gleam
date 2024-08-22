@@ -1,6 +1,8 @@
 const models = require("../../models");
 const email = models.Email;
 const { sendEmail } = require("../../services/emailService");
+const { draftEmails } = require("./draftEmail");
+
 
 //이메일 전송하기
 const sendMail = async (req, res) => {
@@ -15,11 +17,18 @@ const sendMail = async (req, res) => {
         attachment,
         receiveAt,
         signature,
+        isDraft
     } = req.body;
 
     if(!userId){
         res.status(500).json({error: "사용자 정보를 찾을 수 없습니다:"});
+    
     };
+
+    if(isDraft){
+        await draftEmails(req,res,userId);
+        return;
+    }
 
     console.log("요청 본문 받음 :", req.body);
     const to = receiver; 
@@ -50,6 +59,15 @@ const sendMail = async (req, res) => {
 };
 
 //임시저장 이메일 전송하기
+const sendDraftEmail = async ( req,res ) => {
+    const { Id,} = req.body;
+
+    if(!Id){
+        res.status(500).json({error: "임시저장 이메일 정보를 찾을 수 없습니다."});
+    };
+
+    console.log("요청 본문 받음 :", req.body);
+}
 
 //예약이메일 전송하기
 

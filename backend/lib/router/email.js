@@ -3,7 +3,7 @@ const email = require("../models/email/email");
 module.exports = (app) => {
     const getEmailController = require("../controller/email/checkEmail");
     const sendEmailController = require("../controller/email/sendEmail");
-    const draftEmailController = require("../controller/email/draftEmail");
+    //const draftEmailController = require("../controller/email/draftEmail");
 
     const express = require("express");
     const router = express.Router();

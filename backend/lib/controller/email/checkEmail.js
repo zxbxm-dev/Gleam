@@ -1,6 +1,7 @@
 const models = require("../../models");
 const { fetchMailcowEmails } = require("../../services/emailService");
-const email = models.Email;
+const Email = models.Email;
+const User = models.User
 
 
 //중복 확인
@@ -12,15 +13,23 @@ const getAllEmail = async (req, res) => {
 
     const{
         userId,
-        folder,
-    } = req.query;
+    } = req.params;
 
     if(userId){
 
+        const user = await User.findByPk(userId);
+        if(!user) {
+            return res.status(404).json({message: "사용자를 찾을 수 없습니다."});
+        }
+
+        const usermail = user.usermail;
+        const password = user.password;
+
     try{
-        //email , password 고정값으로 되어있습니다. 추후 수정 예정입니다.
-        await fetchMailcowEmails('onion@gleam.im', '123qwe', userId);        
-        const emails = await email.findAll();
+        await fetchMailcowEmails( usermail, password , userId );        
+        const emails = await Email.findAll({
+            where: {userId: userId},
+    });
         res.status(200).json({message: "이메일 조회를 완료했습니다:", emails:emails});
     }catch(error){
         console.error("이메일 조회 중 오류가 발생했습니다.: ", error);
@@ -33,7 +42,7 @@ const getAllEmail = async (req, res) => {
 const deleteEmail = async(req, res) => {
     const emailId = req.params.mailId;
     try{
-        const deleteEmail = await email.findByPk(emailId);
+        const deleteEmail = await Email.findByPk(emailId);
         
         if(!deleteEmail){
             return res.status(404).json({ error: "이메일 정보를 찾을 수 없습니다."});
