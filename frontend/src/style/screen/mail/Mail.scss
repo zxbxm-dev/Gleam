@@ -306,6 +306,7 @@
 
       .board_header {
         border-top: none;
+        font-size: 14px;
 
         th:nth-of-type(2) {
           text-align: left;
@@ -322,16 +323,18 @@
         font-family: var(--font-family-Noto-M);
 
         .board_content {
-          height: 60px;
+          height: 44.3px;
           border-bottom: none;
+          font-size: 12px;
 
           td:nth-of-type(2) {
             text-align: left;
             padding-left: 20px;
+            font-size: 14px;
           }
 
           td:nth-of-type(3) {
-            height: 60px;
+            height: 44.3px;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -359,6 +362,25 @@
               color: #939393;
               font-size: 14px;
             }
+          }
+
+          td:nth-of-type(4) {
+            font-size: 12px;
+            cursor: pointer;
+          }
+
+          td:nth-of-type(5) {
+            div {
+              border: 1px solid black;
+              border-radius: 3px;
+              color: #C54D45;
+              padding: 5px 8px;
+              cursor: pointer;
+            }
+          }
+
+          td:nth-of-type(6) {
+            color: #717171;
           }
         }
 
@@ -460,14 +482,36 @@
                   }
 
                   .DownFile{
+                    position: relative;
                     cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    
+                    .rotate_Arrow {
+                      transform: rotate(180deg);
+                    }
+
+                    .DownFile_list {
+                      display: flex;
+                      flex-direction: column;
+                      position: absolute;
+                      top: 25px;
+                      right: 0;
+                      width: 250px;
+                      height: auto;
+                      border: 1px solid #000;
+                      background-color: #fff;
+                      font-size: 11px;
+                      padding: 5px;
+                    }
                   }
                 }
 
                 div:nth-of-type(2) {
+                  position: relative;
                   display: flex;
                   align-items: center;
-                  gap: 10px;
+                  gap: 5px;
 
                   span {
                     font-size: 14px;
@@ -477,6 +521,23 @@
                   img {
                     width: 14px;
                     height: 14px;
+                  }
+
+                  .recipient_hover {
+                    position: relative;
+                    display: inline-block;
+                    cursor: pointer;
+                  }
+
+                  .recipient_list {
+                    position: absolute;
+                    top: -80px;
+                    left: 450px;
+                    max-width: 450px;
+                    max-height: 70px;
+                    padding: 10px;
+                    background-color: #f9f9f9;
+                    border: 1px solid #ddd;
                   }
                 }
               }
@@ -505,13 +566,12 @@
 }
 
 .mail_pagination {
-  width: 100%;
+  width: 80%;
   display: flex;
   justify-content: space-between;
   position: fixed;
   bottom: 0px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding: 5px 0;
   background-color: #FBFBFB;
   border-top: 1px solid #E3E3E3;
 
