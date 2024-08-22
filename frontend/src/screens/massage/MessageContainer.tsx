@@ -52,12 +52,16 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     socket.emit('fetchMessages', { roomId });
 
     socket.on('messages', (fetchedMessages: any[]) => {
-      const contents = fetchedMessages.map(msg => msg.content);
-      const createAt = fetchedMessages.map(msg => formatTime(msg.createdAt));
-      setMessages(contents);
-      setMessageCreateAt(createAt);
+      if (Array.isArray(fetchedMessages)) {
+        const contents = fetchedMessages.map(msg => msg.content);
+        const createAt = fetchedMessages.map(msg => formatTime(msg.createdAt));
+        setMessages(contents);
+        setMessageCreateAt(createAt);
+      } else {
+        console.error('Expected an array of messages, but got:', fetchedMessages);
+      }
     });
-
+    
     socket.on('message', (newMessage: any) => {
       setMessages(prevMessages => [...prevMessages, newMessage.content]);
       setMessageCreateAt(prevCreateAt => [...prevCreateAt, formatTime(newMessage.createdAt)]);

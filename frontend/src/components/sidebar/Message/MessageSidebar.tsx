@@ -10,7 +10,7 @@ import {
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
 import NewChatModal from "./NewChatModal";
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import { useLocation } from "react-router-dom";
 
 export interface Person {
@@ -32,6 +32,7 @@ interface ChatRoom {
   hostUserId: string;
   invitedUserIds: string[];
   title: string;
+  userTitle?: { [userId: string]: string };
   subContent: string;
   profileColor: string;
   profileImage: string | null;
@@ -40,6 +41,7 @@ interface ChatRoom {
 }
 
 const MessageSidebar: React.FC = () => {
+  const [socket, setSocket] = useState<Socket | null>(null); // Socket 타입 사용
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [expandedDepartments, setExpandedDepartments] = useState<{
@@ -88,38 +90,41 @@ const MessageSidebar: React.FC = () => {
     const socket = io('http://localhost:3001', {
       transports: ['websocket'],
     });
+    setSocket(socket);
 
     const userId = user.userID;
+    socket.emit('registerUser', userId);
 
     socket.on('connect', () => {
       console.log(`[Client] Connected to socket server with id: ${socket.id}`);
     });
 
-
-    // 서버에 채팅방 목록 요청
     socket.emit('getChatRooms', userId);
 
-    socket.on('connect_error', (error) => {
-      console.error('Connection error:', error);
-    });
-
     socket.on('chatRooms', (data: any) => {
-      setChatRooms(data);
-      console.log(data);
+      const updatedRooms = data.map((room: ChatRoom) => {
+        const title = room.userTitle?.[userId] || room.title;
+        return { ...room, title };
+      });
+      setChatRooms(updatedRooms);
     });
 
     socket.on('disconnect', () => {
       console.log('[Client] Disconnected from socket server');
     });
 
+    socket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
+    });
+
     return () => {
       socket.off('chatRooms');
       socket.off('connect');
       socket.off('disconnect');
+      socket.off('connect_error');
       socket.close();
     };
   }, [user.userID]);
-
 
   const toggleDepartmentExpansion = (departmentName: string) => {
     setExpandedDepartments((prevExpandedDepartments) => ({

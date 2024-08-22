@@ -18,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       roomId: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'ChatRoom',
-          key: 'roomId'
+          model: "ChatRoom",
+          key: "roomId",
         },
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -33,9 +33,24 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'message',
+      tableName: "message",
     }
   );
+
+  Message.associate = function(models) {
+    // `User`와 `Message` 간의 관계 설정
+    Message.belongsTo(models.User, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE',
+      as: 'User'
+    });
+    // `ChatRoom`과 `Message` 간의 관계 설정
+    Message.belongsTo(models.ChatRoom, {
+      foreignKey: 'roomId',
+      onDelete: 'CASCADE',
+      as: 'ChatRoom'
+    });
+  };
 
   return Message;
 };
