@@ -65,7 +65,7 @@ const MessageSidebar: React.FC = () => {
   const [borderColor, setBorderColor] = useState<string>("");
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const setUserStatetoServer = useSetRecoilState(userStateMessage);
-  // const socket = io('http://localhost:3001', { transports: ["websocket"] });
+  const socket = io('http://localhost:3001', { transports: ["websocket"] });
   const location = useLocation();
 
   useEffect(() => {
@@ -85,39 +85,39 @@ const MessageSidebar: React.FC = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const userId = user.userID;
+  useEffect(() => {
+    const userId = user.userID;
 
-  //   // console.log(`[Client] Connecting to socket server at http://localhost:3001`);
+    // console.log(`[Client] Connecting to socket server at http://localhost:3001`);
 
-  //   // 서버와의 소켓 연결이 성공했는지 확인
-  //   socket.on('connect', () => {
-  //     // console.log(`[Client] Connected to socket server with id: ${socket.id}`);
-  //   });
+    // 서버와의 소켓 연결이 성공했는지 확인
+    socket.on('connect', () => {
+      // console.log(`[Client] Connected to socket server with id: ${socket.id}`);
+    });
 
-  //   // 서버에 채팅방 목록 요청
-  //   // console.log(`[Client] Requesting chat rooms for userId: ${userId}`);
-  //   socket.emit('getChatRooms', userId);
+    // 서버에 채팅방 목록 요청
+    // console.log(`[Client] Requesting chat rooms for userId: ${userId}`);
+    socket.emit('getChatRooms', userId);
 
-  //   // 서버로부터 채팅방 목록을 받아옴
-  //   socket.on('chatRooms', (data: any) => {
-  //     // console.log('[Client] Received chat rooms:', data);
-  //     setChatRooms(data);
-  //     setChatRooms(data);
-  //   });
+    // 서버로부터 채팅방 목록을 받아옴
+    socket.on('chatRooms', (data: any) => {
+      // console.log('[Client] Received chat rooms:', data);
+      setChatRooms(data);
+      setChatRooms(data);
+    });
 
-  //   // 서버와의 연결이 끊겼을 때
-  //   socket.on('disconnect', () => {
-  //     // console.log('[Client] Disconnected from socket server');
-  //   });
+    // 서버와의 연결이 끊겼을 때
+    socket.on('disconnect', () => {
+      // console.log('[Client] Disconnected from socket server');
+    });
 
-  //   // 컴포넌트 언마운트 시 소켓 연결 해제
-  //   return () => {
-  //     socket.off('chatRooms');
-  //     socket.off('connect');
-  //     socket.off('disconnect');
-  //   };
-  // }, [user.userID]);
+    // 컴포넌트 언마운트 시 소켓 연결 해제
+    return () => {
+      socket.off('chatRooms');
+      socket.off('connect');
+      socket.off('disconnect');
+    };
+  }, [user.userID]);
 
   const toggleDepartmentExpansion = (departmentName: string) => {
     setExpandedDepartments((prevExpandedDepartments) => ({
