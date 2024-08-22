@@ -28,6 +28,7 @@ const Sidebar = () => {
   const [isSidebarVisible] = useRecoilState(isSidebarVisibleState);
   const [isHrSidebarVisible, setIsHrSidebarVisible] = useRecoilState(isHrSidebarVisibleState);
   const [isOrgCultureMenuOpen, setIsOrgCultureMenuOpen] = useState(false);
+  const [isScheduleMenuOpen, setIsScheduleMenuOpen] = useState(false);
   const [isPerformanceMenuOpen, setIsPerformanceMenuOpen] = useState(false);
   const [isAttendanceMenuOpen, setIsAttendanceMenuOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
@@ -46,13 +47,20 @@ const Sidebar = () => {
     if (menu === 'orgculture') {
       setIsOrgCultureMenuOpen(!isOrgCultureMenuOpen);
     }
-    
+
+    if (menu === 'schedule') {
+      setIsScheduleMenuOpen(!isScheduleMenuOpen);
+    }
+
     if (menu !== 'performance') {
       setIsSelectMember(['', '', '', '']);
-      }
+    }
 
     if (menu !== 'orgculture' && menu !== 'announcement' && menu !== 'regulations' && menu !== 'orgchart') {
       setIsOrgCultureMenuOpen(false);
+    }
+    if (menu !== 'schedule' && menu !== 'calender' && menu !== 'meetingroom' && menu !== 'project') {
+      setIsScheduleMenuOpen(false);
     }
     if (menu !== 'performance' && menu !== 'submit-perform' && menu !== 'manage-perform') {
       setIsPerformanceMenuOpen(false);
@@ -60,13 +68,13 @@ const Sidebar = () => {
     if (menu !== 'attendance' && menu !== 'annual-manage' && menu !== 'attendance-regist') {
       setIsAttendanceMenuOpen(false);
     }
-    
+
     setIsHrSidebarVisible(false);
   };
 
-
   const toggleMenu = (menuType: string) => {
     setIsOrgCultureMenuOpen(menuType === 'orgCulture' && !isOrgCultureMenuOpen);
+    setIsScheduleMenuOpen(menuType === 'schedule' && !isScheduleMenuOpen);
     setIsPerformanceMenuOpen(menuType === 'performance' && !isPerformanceMenuOpen);
     setIsAttendanceMenuOpen(menuType === 'attendance' && !isAttendanceMenuOpen);
   };
@@ -89,9 +97,14 @@ const Sidebar = () => {
       ))}
     </ul>
   );
-  
+
 
   const menuList: MenuItem[] = [
+    {
+      menu: 'mail',
+      label: '메일',
+      link: '/mail',
+    },
     {
       menu: 'orgculture',
       label: '조직문화',
@@ -104,9 +117,15 @@ const Sidebar = () => {
       ]
     },
     {
-      menu: 'calendar',
-      label: '휴가 관리',
-      link: '/calendar',
+      menu: 'schedule',
+      label: '일정관리',
+      menuType: isScheduleMenuOpen,
+      toggleMenuType: 'schedule',
+      subMenu: [
+        { menu: 'calender', label: '휴가관리', link: '/calendar' },
+        { menu: 'meetingroom', label: '회의실 관리', link: '/meetingroom' },
+        { menu: 'project', label: '프로젝트', link: '/project' },
+      ]
     },
     // {
     //   menu: 'meetingroom',
@@ -168,21 +187,21 @@ const Sidebar = () => {
 
   useEffect(() => {
     const currentPath = location.pathname;
-    
+
     menuList.forEach(({ menu, link, subMenu }) => {
       if (link === currentPath) {
         setSelectedMenu(menu);
       }
 
-      if (subMenu) {
-        subMenu.forEach((subItem) => {
-          if (subItem.link === currentPath) {
-            setSelectedMenu(menu);
-          }
-        });
-      }
+      // if (subMenu) {
+      //   subMenu.forEach((subItem) => {
+      //     if (subItem.link === currentPath) {
+      //       setSelectedMenu(menu);
+      //     }
+      //   });
+      // }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   return (
@@ -193,37 +212,37 @@ const Sidebar = () => {
             <div className="sidebar-menu">
               <ul className="menu-list">
                 <div>
-                {menuList.map(({ menu, label, link, menuType, toggleMenuType, subMenu, requiresHrSideClick }) => (
-                  <li key={menu} className={`menu-item ${selectedMenu === menu ? 'active' : ''}`}>
-                    {link ? (
-                      <Link to={link} className={`menu-link ${selectedMenu === menu ? 'active' : ''}`} onClick={() => {
-                        handleMenuClick(menu);
-                        if (requiresHrSideClick) handleHrSideClick();
-                      }}>
-                        <span className="menu-link-text">{label}</span>
-                      </Link>
-                    ) : (
-                      <>
-                        <Link to="#" className={`menu-link2 ${menuType ? 'active' : ''}`}
-                          onClick={() => {
-                            toggleMenu(toggleMenuType || '');
-                            handleMenuClick(menu);
-                            setActiveTab(menu);
-                          }}
-                        >
-                          <img src={menuType ? MenuArrow_down : MenuArrow_right} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
+                  {menuList.map(({ menu, label, link, menuType, toggleMenuType, subMenu, requiresHrSideClick }) => (
+                    <li key={menu} className={`menu-item ${selectedMenu === menu ? 'active' : ''}`}>
+                      {link ? (
+                        <Link to={link} className={`menu-link ${selectedMenu === menu ? 'active' : ''}`} onClick={() => {
+                          handleMenuClick(menu);
+                          if (requiresHrSideClick) handleHrSideClick();
+                        }}>
                           <span className="menu-link-text">{label}</span>
                         </Link>
-                        {renderSubMenu(menuType, subMenu)}
-                      </>
-                    )}
-                  </li>
-                ))}
+                      ) : (
+                        <>
+                          <Link to="#" className={`menu-link2 ${menuType ? 'active' : ''}`}
+                            onClick={() => {
+                              toggleMenu(toggleMenuType || '');
+                              handleMenuClick(menu);
+                              setActiveTab(menu);
+                            }}
+                          >
+                            <img src={menuType ? MenuArrow_down : MenuArrow_right} alt="MenuArrow" style={{ paddingLeft: '5px' }} />
+                            <span className="menu-link-text">{label}</span>
+                          </Link>
+                          {renderSubMenu(menuType, subMenu)}
+                        </>
+                      )}
+                    </li>
+                  ))}
                 </div>
               </ul>
             </div>
             <div>
-              {isHrSidebarVisible && 
+              {isHrSidebarVisible &&
                 <MemberSidebar onClickMember={(userID, name, dept, team, position) => handleMemberClick(userID, name, dept, team, position)} />
               }
             </div>
