@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userState, selectedPersonState, selectedRoomIdState } from '../../recoil/atoms';
-import { getChatRooms } from '../../services/message/MessageApi';
+// import { getChatRooms } from '../../services/message/MessageApi';
 import { io } from 'socket.io-client';
 import Header from './MessageHeader';
 import MessageContainer from './MessageContainer';
@@ -50,20 +50,20 @@ const Message: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchChatRooms = async () => {
-      try {
-        if (user) {
-          const response = await getChatRooms(user.id);
-          setRooms(Array.isArray(response.data) ? response.data : []);
-        }
-      } catch (err) {
-        console.error("Error fetching chat rooms:", err);
-        setRooms([]);
-      }
-    };
-    fetchChatRooms();
-  }, [user]);
+  // useEffect(() => {
+  //   const fetchChatRooms = async () => {
+  //     try {
+  //       if (user) {
+  //         const response = await getChatRooms(user.id);
+  //         setRooms(Array.isArray(response.data) ? response.data : []);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error fetching chat rooms:", err);
+  //       setRooms([]);
+  //     }
+  //   };
+  //   fetchChatRooms();
+  // }, [user]);
 
   useEffect(() => {
     rooms.forEach((room) => {
