@@ -26,6 +26,7 @@ const sendMail = async (req, res) => {
 
     try{
         const sendResult = await sendEmail(to, subject, body);
+        console.log("전송한 이메일 : ", sendResult);
 
         const newSentEmail = await email.create({
             userId: userId,
@@ -40,7 +41,7 @@ const sendMail = async (req, res) => {
             attachment,
             folder: 'sent'
         })
-        res.status(200).json({message: "이메일 전송이 성공적으로 완료되었습니다. "})
+        res.status(200).json({message: "이메일 전송이 성공적으로 완료되었습니다. ",newSentEmail:newSentEmail});
     }catch(error){
         console.error("전송한 이메일을 저장하는 도중 오류 발생",error);
         res.status(500).json({message: "전송한 이메일 저장 중 오류가 발생했습니다."});

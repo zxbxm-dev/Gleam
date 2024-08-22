@@ -1,6 +1,7 @@
 const models = require("../../models");
 const project = models.mainProject;
 const subproject = models.subProject;
+const { statusController, subStatusController } = require("./statusController");
 
 //프로젝트 일정 추가 (main,sub)
 const addProject = async (req, res) => {
@@ -101,6 +102,10 @@ const addProject = async (req, res) => {
 
     //프로젝트 일정 조회
     const getAllProject = async (req, res) => {
+ 
+       await statusController();
+       await subStatusController();
+
         try{
             const mainprojects  = await project.findAll();
             const subprojects = await subproject.findAll();
