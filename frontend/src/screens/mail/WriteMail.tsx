@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React , { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   White_Arrow,
@@ -10,19 +10,25 @@ import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/atoms';
 import { PersonData } from '../../services/person/PersonServices';
+import { SendMail } from "../../services/email/EmailService";
 import { useQuery } from 'react-query';
 import { isNull } from "mathjs";
 
 
 const WriteMail = () => {
   let navigate = useNavigate();
+  const user = useRecoilValue(userState);
   const [persondata, setPersonData] = useState<any[]>([]);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('메일 작성');
   const [recipients, setRecipients] = useState<string[]>([]);
   const [referrers, setReferrers] = useState<string[]>([]);
   const [mailTitle, setMailTitle] = useState<string>('');
+  const editorRef = React.useRef<any>(null);
+  const [mailContent, setMailContent] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
   const [inputReferrerValue, setInputReferrerValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -74,6 +80,28 @@ const WriteMail = () => {
       console.log(error);
     }
   })
+
+  const handleSendEmail = async () => {
+    const formData = {
+      userId : user.userID,
+      sender : user.usermail,
+      receiver : recipients,
+      referrer : referrers,
+      subject : mailTitle,
+      body : mailContent,
+      sendAt: new Date(),
+      attachment : attachments,
+      receiveAt : new Date(),
+      signature : false,
+    }
+
+    try {
+      const response = await SendMail(formData);
+      console.log('이메일 전송 성공', response)
+    } catch (error) {
+      console.log('이메일 전송 실패',error)
+    }
+  }
 
   const toggleDropdown = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -205,6 +233,11 @@ const WriteMail = () => {
     setAttachments(attachments.filter((file) => file.name !== fileName));
   };
 
+  const handleMailContent = () => {
+    const markdownContent = editorRef.current.getInstance().getMarkdown();
+    setMailContent(markdownContent);
+  }
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (reservationRef.current && !reservationRef.current.contains(event.target as Node)) {
@@ -231,13 +264,13 @@ const WriteMail = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [timeRef]);
-
+  
   return(
     <div className="content">
       <div className="write_mail_container">
         <div className="write_mail_header">
           <div className="mail_header_left">
-            <button className="send_button">보내기</button>
+            <button className="send_button" onClick={handleSendEmail}>보내기</button>
             <button className="basic_button" onClick={() => navigate('/mail')}>임시 저장</button>
             <button className="basic_button" onClick={toggleReservation}>
               발송 예약
@@ -419,6 +452,7 @@ const WriteMail = () => {
 
           <div className="write_mail_content_bottom">
             <Editor
+              ref={editorRef}
               initialValue={" "}
               height={window.innerWidth >= 1600 ? '43vh' : '35vh'}
               initialEditType="wysiwyg"
@@ -433,6 +467,7 @@ const WriteMail = () => {
                 ['image', 'link'],
                 ['scrollSync'],                    
               ]}
+              onChange={handleMailContent}
             />
           </div>
         </div>
