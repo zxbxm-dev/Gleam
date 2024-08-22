@@ -33,6 +33,7 @@ interface PersonDataTabProps {
     department: string,
     position: string
   ) => void;
+  borderColor:string;
 }
 
 const PersonDataTab: React.FC<PersonDataTabProps> = ({
@@ -42,6 +43,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   toggleDepartmentExpansion,
   toggleTeamExpansion,
   onPersonClick,
+  borderColor
 }) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);

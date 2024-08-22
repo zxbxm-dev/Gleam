@@ -62,3 +62,17 @@ export const selectedRoomIdState = atom({
     roomId : ""
   },
 });
+
+/**
+ * @typedef {"접속됨" | "접속안됨" | "자리비움"} UserState
+ */
+
+/**
+ * @type {import('recoil').RecoilState<{ state: UserState }>}
+ */
+export const userStateMessage = atom({
+  key: 'userStateMessage',
+  default: {
+    state: ""
+  },
+});

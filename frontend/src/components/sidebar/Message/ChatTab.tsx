@@ -15,8 +15,6 @@ import SetProfile from "./SetProfile";
 import { Person } from "./MessageSidebar";
 import { selectedRoomIdState } from "../../../recoil/atoms";
 import { useRecoilState } from "recoil";
-import { useLocation } from "react-router-dom";
-import io from 'socket.io-client';
 
 interface ChatRoom {
   roomId: string;
@@ -49,6 +47,7 @@ interface ChatDataTabProps {
   isNotibarActive: boolean | null;
   chatRooms: ChatRoom[];
   setIsNotibarActive: React.Dispatch<React.SetStateAction<boolean | null>>;
+  borderColor: string;
 }
 
 const ChatDataTab: React.FC<ChatDataTabProps> = ({
@@ -61,18 +60,12 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   userPosition,
   isNotibarActive,
   setIsNotibarActive,
-  chatRooms
+  chatRooms,
+  borderColor
 }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
-  const [status, setStatus] = useState<string>("접속됨");
-  const [borderColor, setBorderColor] = useState<string>("");
-
-  const borderRef = useRef<HTMLDivElement>(null);
-  const location = useLocation();
-  const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
     setSelectedRoomId({ roomId: chatRoom.roomId });
@@ -85,57 +78,6 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     );
     setIsNotibarActive(false);
   };
-
-    useEffect(() => {
-    const handleMouseMove = () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      setStatus("접속됨");
-      const newBorderColor = location.pathname === "/message" ? "2px solid #42E452" : "2px solid #848484";
-      setBorderColor(newBorderColor);
-      if (borderRef.current) {
-        borderRef.current.style.border = newBorderColor;
-      }
-      const newTimeoutId = setTimeout(() => {
-        setStatus("자리비움");
-        const idleBorderColor = location.pathname === "/message" ? "2px solid #E0B727" : "2px solid #848484";
-        setBorderColor(idleBorderColor);
-        if (borderRef.current) {
-          borderRef.current.style.border = idleBorderColor;
-        }
-        console.log("User status: 자리비움 (no mouse movement for 5 minutes)");
-      }, 5000); // 5분
-      setTimeoutId(newTimeoutId);
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setStatus("접속안됨");
-        console.log("User status: 접속안됨 (browser tab inactive)");
-      } else {
-        setStatus("접속됨");
-        console.log("User status: 접속됨 (browser tab active)");
-      }
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [timeoutId, location.pathname]);
-
-
-  // 렉이 너무 많이 걸려서 주석처리합니다! -- socket 활동 상태
-  // useEffect(() => {
-  //   console.log("Emitting user status to server:", {
-  //     status,
-  //     borderColor
-  //   });
-  //   socket.emit('userStatus', { status, borderColor });
-  // }, [status]);
 
   return (
     <div className="chat-data-tab">
@@ -162,8 +104,11 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           setSelectedRoomId({ roomId: '0' });
         }}
       >
-        <div ref={borderRef} className="Border">
-        <img className="My-attach" src={userAttachment?userAttachment:UserIcon_dark} alt="my-attach" />
+        <div
+          className="Border"
+          style={{ border: borderColor }}
+        >
+          <img className="My-attach" src={userAttachment ? userAttachment : UserIcon_dark} alt="my-attach" />
         </div>
         <div>
           {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}

@@ -1,4 +1,5 @@
 import "./Header.scss";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Logo,
@@ -13,13 +14,10 @@ import {
   PopoverBody,
   Portal,
   Menu,
-  MenuButton,
-  MenuList,
   MenuItem,
-  Button,
 } from '@chakra-ui/react';
-import { useRecoilValue, useResetRecoilState } from 'recoil';
-import { userState } from '../../recoil/atoms';
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { userState, userStateMessage } from '../../recoil/atoms';
 import { LogoutServices } from "../../services/login/LoginService";
 
 const Header = () => {
@@ -41,6 +39,40 @@ const Header = () => {
     }
   };
 
+  let messageWindow: Window | null = null;
+  const CHECK_INTERVAL = 1000; // 1초마다 상태 확인
+  
+  const openMessageWindow = () => {
+    if (messageWindow && !messageWindow.closed) {
+      // 창이 열려있으므로 세션 스토리지에 true 저장
+      sessionStorage.setItem('messageWindowOpen', 'true');
+      messageWindow.focus();
+    } else {
+      // 새 창을 열고 세션 스토리지에 true 저장
+      messageWindow = window.open('http://localhost:3000/message', '_blank') as Window;
+      sessionStorage.setItem('messageWindowOpen', 'true');
+    }
+    
+    // 창이 닫히는 것을 주기적으로 확인
+    startCheckingWindowStatus();
+  };
+  
+  const startCheckingWindowStatus = () => {
+    setInterval(() => {
+      if (messageWindow && messageWindow.closed) {
+        // 창이 닫혔으므로 세션 스토리지에 false 저장
+        sessionStorage.setItem('messageWindowOpen', 'false');
+        messageWindow = null; // 변수 초기화
+      } else if (messageWindow) {
+        // 창이 여전히 열려있다면 세션 스토리지에 true 저장
+        sessionStorage.setItem('messageWindowOpen', 'true');
+      }
+    }, CHECK_INTERVAL);
+  };
+  
+  // 페이지 로드 시 창 상태를 초기화합니다.
+  startCheckingWindowStatus();
+
   return (
     <div className="header">
       <div className="header-left">
@@ -50,9 +82,9 @@ const Header = () => {
       </div>
 
       <div className="header-right">
-        {/* <div className="MessageTab" onClick={() => window.open('http://localhost:3000/message', '_blank')}>
+        <div className="MessageTab" onClick={openMessageWindow}>
           <img src={MessageIcon} alt="MessageIcon" />
-        </div> */}
+        </div>
         <div className="UserTab">
           <Popover>
             <PopoverTrigger>

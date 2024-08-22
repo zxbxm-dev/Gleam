@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { PersonData } from "../../../services/person/PersonServices";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userState, selectedPersonState } from "../../../recoil/atoms";
+import { userState, selectedPersonState, userStateMessage } from "../../../recoil/atoms";
 import {
   ChatTab,
   PersonTab,
@@ -11,6 +11,7 @@ import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
 import NewChatModal from "./NewChatModal";
 import io from 'socket.io-client';
+import { useLocation } from "react-router-dom";
 
 export interface Person {
   userId: string;
@@ -55,13 +56,17 @@ const MessageSidebar: React.FC = () => {
 
   const user = useRecoilValue(userState);
   const setSelectedPerson = useSetRecoilState(selectedPersonState);
+  const MsguserState = useRecoilValue(userStateMessage);
 
   const [newChatChosenUsers, setNewChatChosenUsers] = useState<Person[] | null>(
     null
   );
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
-
+  const [borderColor, setBorderColor] = useState<string>("");
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const setUserStatetoServer = useSetRecoilState(userStateMessage);
   const socket = io('http://localhost:3001', { transports: ["websocket"] });
+  const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -202,6 +207,66 @@ const MessageSidebar: React.FC = () => {
 
   const filteredData = filterDataBySearchQuery(groupedData);
 
+
+  //상태 설정 - 자리비움 등
+  useEffect(() => {
+    sessionStorage.setItem('messageWindowOpen', 'true');
+    const checkWindowStatus = () => {
+      const messageWindowOpen = sessionStorage.getItem('messageWindowOpen');
+      if (messageWindowOpen === 'true') {
+        // setStatus("접속됨");
+        setUserStatetoServer({ state: "접속됨" });
+        const idleBorderColor = "2px solid #42E452";
+        setBorderColor(idleBorderColor);
+      } else {
+        // setStatus("접속안됨");
+        setUserStatetoServer({ state: "접속안됨" });
+        const idleBorderColor = "2px solid #848484";
+        setBorderColor(idleBorderColor);
+      }
+    };
+
+    // 처음 실행 시 상태 확인
+    checkWindowStatus();
+
+    // 1초마다 상태 확인
+    const intervalId = setInterval(checkWindowStatus, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = () => {
+      const newTimeoutId = setTimeout(() => {
+        setUserStatetoServer({ state: "자리비움" });
+        const idleBorderColor = "2px solid #E0B727";
+        setBorderColor(idleBorderColor);
+        console.log("User status: 자리비움 (no mouse movement for 5 minutes)");
+      }, 300000); // 5분
+      setTimeoutId(newTimeoutId);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [timeoutId, location.pathname]);
+
+  
+  // 렉이 너무 많이 걸려서 주석처리합니다! -- socket 활동 상태
+  // useEffect(() => {
+  //   console.log("Emitting user status to server:", {
+  //     status,
+  //     borderColor
+  //   });
+  //   socket.emit('userStatus', { status, borderColor });
+  // }, [MsguserState.state]);
+
+
   return (
     <div className="message-sidebar">
       <div className="tab-container">
@@ -232,6 +297,7 @@ const MessageSidebar: React.FC = () => {
           userName={user.username}
           userPosition={user.position}
           onPersonClick={handlePersonClick}
+          borderColor={borderColor}
         />
       ) : activeTab === "ChatData" ? (
         <ChatDataTab
@@ -246,6 +312,7 @@ const MessageSidebar: React.FC = () => {
           isNotibarActive={isNotibarActive}
           setIsNotibarActive={setIsNotibarActive}
           chatRooms={chatRooms}
+          borderColor={borderColor}
         />
       ) : (
         // const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
