@@ -779,7 +779,7 @@ const Project = () => {
           {activeTab === 0 && (
             <div className="project_container_header_right">
               <img className="mail_delete_img" src={mail_delete} alt="mail_delete" onClick={() => setDeletePjtModalOpen(true)}/>
-              <button className="primary_button" onClick={() => setAddPjtModalOPen(true)}>새업무 +</button>
+              <button className="primary_button" onClick={() => setAddPjtModalOPen(true)}>새 업무 +</button>
             </div>
           )}
         </div>

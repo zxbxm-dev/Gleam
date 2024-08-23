@@ -567,7 +567,9 @@
           margin-top: 5px;
 
           .LeftEmployCon {
+            box-shadow: inset 0px -20px 20px -20px rgba(0, 0, 0, 0.15);
             width: 184px;
+            border-radius: 5px;
             max-height: 240px;
             overflow-y: auto;
             padding-right: 5px;
