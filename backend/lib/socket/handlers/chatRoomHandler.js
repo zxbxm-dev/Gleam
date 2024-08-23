@@ -29,6 +29,10 @@ const createPrivateRoom = async (io, socket, data) => {
       position: target.position,
     }));
 
+    // 사용자 이름에 팀 이름을 붙여서 생성
+    const userDisplayName = `${user.team} ${user.username}`;
+    const invitedUserDisplayName = `${invitedUsers[0]?.team} ${invitedUsers[0]?.username}`;
+
     // 기존 채팅방을 조회하거나 새로운 채팅방을 생성
     const [chatRoom, created] = await ChatRoom.findOrCreate({
       where: {
@@ -54,12 +58,11 @@ const createPrivateRoom = async (io, socket, data) => {
         hostDepartment: user.department,
         hostTeam: user.team,
         hostPosition: user.position,
-        title: invitedUsers[0]?.username || "New Chat",
-        // 각각의 사용자에게 상대방의 이름이 제목으로 보이도록 설정
+        title: invitedUserDisplayName || null,
         userTitle: JSON.stringify(
           invitedUsers.reduce((acc, invitedUser) => {
-            acc[userId] = invitedUser.username;  // 현재 사용자에게는 상대방의 이름을 보여줌
-            acc[invitedUser.userId] = user.username;  // 초대된 사용자에게는 현재 사용자의 이름을 보여줌
+            acc[userId] = `${invitedUser.team} ${invitedUser.username}`;  // 현재 사용자에게 상대방의 팀과 이름을 보여줌
+            acc[invitedUser.userId] = userDisplayName;  // 초대된 사용자에게는 현재 사용자의 팀과 이름을 보여줌
             return acc;
           }, {})
         ),
