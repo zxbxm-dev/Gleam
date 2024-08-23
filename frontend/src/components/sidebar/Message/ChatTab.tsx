@@ -66,6 +66,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
+console.log(chatRooms);
 
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
     setSelectedRoomId({ roomId: chatRoom.roomId });
