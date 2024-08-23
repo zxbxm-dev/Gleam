@@ -13,7 +13,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { PersonData } from '../../services/person/PersonServices';
-import { SendMail } from "../../services/email/EmailService";
+import { SendMail, DraftEmail } from "../../services/email/EmailService";
 import { useQuery } from 'react-query';
 import { isNull } from "mathjs";
 
@@ -62,6 +62,13 @@ const WriteMail = () => {
   const timeOptions = generateTimeOptions();
   const minuteOptions = ['00분', '30분'];
 
+  const resetForm = () => {
+    setRecipients([]);
+    setReferrers([]);
+    setMailTitle('');
+    setAttachments([]);
+    setMailContent('');
+  }
 
   const fetchUser = async () => {
     try {
@@ -97,11 +104,37 @@ const WriteMail = () => {
 
     try {
       const response = await SendMail(formData);
-      console.log('이메일 전송 성공', response)
+      console.log('이메일 전송 성공', response);
+      resetForm();
+      navigate('/mail');
     } catch (error) {
       console.log('이메일 전송 실패',error)
     }
-  }
+  };
+
+  const handleDraftEmail = async () => {
+    const formData = {
+      userId : user.userID,
+      sender : user.usermail,
+      receiver : recipients,
+      referrer : referrers,
+      subject : mailTitle,
+      body : mailContent,
+      sendAt: new Date(),
+      attachment : attachments,
+      receiveAt : new Date(),
+      signature : false,
+    }
+
+    try {
+      const response = await DraftEmail(formData);
+      console.log('이메일 임시저장 성공', response);
+      resetForm();
+      navigate('/mail');
+    } catch (error) {
+      console.log('이메일 임시저장 실패',error)
+    }
+  };
 
   const toggleDropdown = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -272,7 +305,7 @@ const WriteMail = () => {
         <div className="write_mail_header">
           <div className="mail_header_left">
             <button className="send_button" onClick={handleSendEmail}>보내기</button>
-            <button className="basic_button" onClick={() => navigate('/mail')}>임시 저장</button>
+            <button className="basic_button" onClick={handleDraftEmail}>임시 저장</button>
             <button className="basic_button" onClick={toggleReservation}>
               발송 예약
               {year && <span> &nbsp;&nbsp;&nbsp; {year}.</span>}

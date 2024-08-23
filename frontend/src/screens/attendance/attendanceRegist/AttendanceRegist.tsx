@@ -832,7 +832,7 @@ const AttendanceRegist = () => {
             <Tooltip label={`${month}월 ${date}일`}>
               <tr
                 className="conta_three"
-                onClick={() => handleDivClickRD(date, year, month, personIndex)}
+                onClick={() => handleDivClickRD(date, year, month, personIndex, personData[3])}
                 key={`${i}-${j}`}
               >
                 <td className='conta'>{startTime.slice(0, 5)} </td>
@@ -992,12 +992,23 @@ const AttendanceRegist = () => {
   };
   
 
-  const handleDivClickRD = (date: number, year: number, month: number, personIndex: number) => {
+  const handleDivClickRD = (date: number, year: number, month: number, personIndex: number, dbindex: any) => {
     setAddAttend(true);
+    setClickIdx(dbindex);
     const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
     const dayOfWeekIndex = new Date(year, month - 1, date).getDay(); // 0(일요일)부터 시작하는 요일 인덱스
     const dayOfWeek = dayOfWeekNames[dayOfWeekIndex];
     const name = membersRD[personIndex][0];
+    const personData = HO_Data.find(data => data[0] === name && data[1] === `${year}-${month}-${date}`);
+
+    if (personData) {
+      setValue('startTime', personData[2][0]);
+      setValue('endTime', personData[2][1]);
+      setValue('otherValue', personData[2][2]);
+    } else {
+      reset(); // 새로운 데이터를 입력할 때는 초기화
+    }
+
     setSelectedDateInfo({
       name: name,
       year: year,
