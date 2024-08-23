@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import {
   MessageMe,
   MessageMenu,
@@ -79,6 +79,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
+  const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
+
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
     const roomId = chatRoom.dataValues?.roomId?.toString() || '';
 
@@ -136,54 +138,60 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
         .sort((a, b) => new Date(b.upt).getTime() - new Date(a.upt).getTime())
         .map((chatRoom) => (
           <Popover key={chatRoom.roomId} placement="right">
-            <div
-              className={`ChatLog ${selectedChatRoom === chatRoom.roomId ? "selected" : ""}`}
-              onClick={() => {
-                handleChatRoomClick(chatRoom);
-              }}
-            >
-              <div className="LogBox">
-                <div className="Left">
-                  <div className="Border">
-                    <img
-                      className="My-attach"
-                      src={UserIcon_dark}
-                      alt="User Icon"
-                    />
+            <PopoverTrigger>
+              <div
+                className={`ChatLog ${selectedChatRoom === chatRoom.roomId ? "selected" : ""}`}
+                onClick={() => {
+                  handleChatRoomClick(chatRoom);
+                  setCurrentRoomId(chatRoom.roomId);
+                }}
+              >
+                <div className="LogBox">
+                  <div className="Left">
+                    <div className="Border">
+                      <img
+                        className="My-attach"
+                        src={UserIcon_dark}
+                        alt="User Icon"
+                      />
+                    </div>
+                    <p>
+                      {chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}
+                    </p>
                   </div>
-                  <p>
-                    {chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}
-                  </p>
-                </div>
-                <PopoverTrigger>
                   <img
                     className="Message-Menu"
                     src={MessageMenu}
                     alt="Message Menu"
                   />
-                </PopoverTrigger>
+                </div>
               </div>
-
-              <Portal>
-                <PopoverContent
-                  className="ChatRoomSide_popover"
-                  _focus={{ boxShadow: "none" }}
-                >
-                  <div className={`Message-OnClick-Menu`}>
-                    <div
-                      className="ProfileChange"
-                      onClick={() => setOpenProfile(true)}
-                    >
-                      대화방 프로필 설정
+            </PopoverTrigger>
+            <Portal>
+              <PopoverContent
+                className="ChatRoomSide_popover"
+                _focus={{ boxShadow: "none" }}
+              >
+                {currentRoomId === chatRoom.roomId && (
+                  chatRoom.isGroup ? (
+                    <div className={`Message-OnClick-Menu`}>
+                      <div
+                        className="ProfileChange"
+                        onClick={() => setOpenProfile(true)}
+                      >
+                        대화방 프로필 설정
+                      </div>
+                      <div className="OutOfChat">대화 나가기</div>
                     </div>
+                  ) : (
                     <div className="OutOfChat">대화 나가기</div>
-                  </div>
-                </PopoverContent>
-              </Portal>
-            </div>
+                  )
+                )}
+              </PopoverContent>
+            </Portal>
           </Popover>
         ))}
-
+      
       <SetProfile
         openProfile={openProfile}
         setOpenProfile={setOpenProfile}
