@@ -175,6 +175,7 @@ async function sendEmail(to, subject, body,userId) {
     });
 
     const mailOptions = {
+        userId: userId,
         from: email, 
         to: to, 
         subject: subject, 
