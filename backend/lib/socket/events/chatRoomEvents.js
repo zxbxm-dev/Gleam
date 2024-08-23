@@ -16,6 +16,16 @@ module.exports = (io, socket) => {
     await chatRoomHandlers.createPrivateRoom(io, socket, data);
   });
 
+  // 서버에서 메시지 전송 이벤트 처리
+  socket.on("sendMessage", async ({ roomId, content }) => {
+    await chatRoomHandlers.sendMessageToRoomParticipants(
+      io,
+      roomId,
+      content,
+      socket.id
+    );
+  });
+
   // 채팅방 참여 요청 처리
   socket.on("joinRoom", async (roomId) => {
     await chatRoomHandlers.joinRoom(socket, roomId);

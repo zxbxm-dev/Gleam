@@ -54,8 +54,16 @@ console.log(servermsg);
 
     socket.on('messages', (fetchedMessages: any[]) => {
       setMessages(fetchedMessages);
+      if (Array.isArray(fetchedMessages)) {
+        const contents = fetchedMessages.map(msg => msg.content);
+        const createAt = fetchedMessages.map(msg => formatTime(msg.createdAt));
+        setMessages(contents);
+        setMessageCreateAt(createAt);
+      } else {
+        console.error('Expected an array of messages, but got:', fetchedMessages);
+      }
     });
-
+    
     socket.on('message', (newMessage: any) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });

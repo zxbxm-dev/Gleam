@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      userTitle: { // 사용자별 제목 저장
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
       title: {
         type: DataTypes.STRING,
         allowNull: true,

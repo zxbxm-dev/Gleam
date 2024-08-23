@@ -89,5 +89,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  User.associate = function(models) {
+    // `User`와 `Message` 간의 관계 설정
+    User.hasMany(models.Message, {
+      foreignKey: 'userId',
+      as: 'Messages'
+    });
+  };
+
   return User;
 };

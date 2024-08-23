@@ -35,7 +35,6 @@ const chatRoomParticipant = require("./messenger/ChatRoomParticipant");
 //이메일
 const email = require("./email/email");
 
-
 const db = {};
 
 const sequelize = new Sequelize(
@@ -68,7 +67,6 @@ db.ChatRoomParticipant = chatRoomParticipant(sequelize, Sequelize);
 db.Message = message(sequelize, Sequelize);
 db.Email = email(sequelize, Sequelize);
 
-
 // 모델 관계 설정
 // 프로젝트 관계 설정
 db.mainProject.hasMany(db.subProject, {
@@ -81,14 +79,20 @@ db.subProject.belongsTo(db.mainProject, {
 });
 
 // 메신저 관계 설정
-db.ChatRoom.hasMany(db.Message, { foreignKey: 'roomId' });
-db.Message.belongsTo(db.ChatRoom, { foreignKey: 'roomId' });
+// User와 Message 간의 관계 설정
+db.User.hasMany(db.Message, { foreignKey: "userId", as: "Messages" });
+db.Message.belongsTo(db.User, { foreignKey: "userId", as: "User" });
 
-db.ChatRoom.hasMany(db.ChatRoomParticipant, { foreignKey: 'roomId' });
-db.ChatRoomParticipant.belongsTo(db.ChatRoom, { foreignKey: 'roomId' });
+// ChatRoom과 Message 간의 관계 설정
+db.ChatRoom.hasMany(db.Message, { foreignKey: "roomId" });
+db.Message.belongsTo(db.ChatRoom, { foreignKey: "roomId" });
 
-db.ChatRoomParticipant.belongsTo(db.User, { foreignKey: 'userId' });
-db.User.hasMany(db.ChatRoomParticipant, { foreignKey: 'userId' });
+// ChatRoom과 ChatRoomParticipant 간의 관계 설정
+db.ChatRoom.hasMany(db.ChatRoomParticipant, { foreignKey: "roomId" });
+db.ChatRoomParticipant.belongsTo(db.ChatRoom, { foreignKey: "roomId" });
 
+// User와 ChatRoomParticipant 간의 관계 설정
+db.User.hasMany(db.ChatRoomParticipant, { foreignKey: "userId" });
+db.ChatRoomParticipant.belongsTo(db.User, { foreignKey: "userId" });
 
 module.exports = db;
