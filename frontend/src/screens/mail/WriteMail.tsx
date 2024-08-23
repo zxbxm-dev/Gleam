@@ -234,8 +234,9 @@ const WriteMail = () => {
   };
 
   const handleMailContent = () => {
-    const markdownContent = editorRef.current.getInstance().getMarkdown();
-    setMailContent(markdownContent);
+    const htmlContent = editorRef.current.getInstance().getHTML();
+    console.log(htmlContent)
+    setMailContent(htmlContent);
   }
 
   useEffect(() => {
