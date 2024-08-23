@@ -1,4 +1,4 @@
-const messageHandlers = require("../handlers/messageHandler");
+const chatRoomHandlers = require("../handlers/chatRoomHandler");
 
 module.exports = (io, socket) => {
   if (!socket) {
@@ -6,8 +6,18 @@ module.exports = (io, socket) => {
     return;
   }
 
-  // 사용자의 채팅방 메시지 조회 처리
-  socket.on("fetchMessages", async (data) => {
-    await messageHandlers.fetchMessages(socket, data);
+  // 서버에서 메시지 전송 이벤트 처리 ( 단순 메신지 전송 / 알림에 활용 )
+  socket.on("sendMessage", async ({ roomId, content }) => {
+    await chatRoomHandlers.sendMessageToRoomParticipants(
+      io,
+      roomId,
+      content,
+      socket.id
+    );
+  });
+
+  // 특정 채팅방의 과거 메시지 요청 처리
+  socket.on("getChatHistory", async (roomId) => {
+    await messageHandlers.getChatHistory(socket, roomId);
   });
 };
