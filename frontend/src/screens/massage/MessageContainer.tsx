@@ -45,39 +45,60 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
-console.log(servermsg);
+  // useEffect(() => {
+  //   console.log('Server messages:', servermsg);
+  
+  //   if (servermsg.length > 0) {
+  //     const userPart = servermsg[0]?.User;
+      
+  //     if (userPart && typeof userPart === 'object') {
+  //       const username = userPart.username;
+  //       console.log('Username:', username);
+  //     } else {
+  //       console.log('User part is not an object or is undefined');
+  //     }
+  //   }
+  // }, [servermsg]);
 
-  useEffect(() => {
-    const { roomId } = selectedRoomId;
+useEffect(() => {
+  const { roomId } = selectedRoomId;
+console.log(roomId);
 
-    socket.emit('fetchMessages', { roomId, limit: 25 });
+  // 메시지 요청 보내기
+  socket.emit('getChatHistory', { roomId });
 
-    socket.on('messages', (fetchedMessages: any[]) => {
-      setMessages(fetchedMessages);
-      if (Array.isArray(fetchedMessages)) {
-        const contents = fetchedMessages.map(msg => msg.content);
-        const createAt = fetchedMessages.map(msg => formatTime(msg.createdAt));
-        setMessages(contents);
-        setMessageCreateAt(createAt);
-      } else {
-        console.error('Expected an array of messages, but got:', fetchedMessages);
-      }
-    });
-    
-    socket.on('message', (newMessage: any) => {
+  // 메시지 응답 처리
+  socket.on('messages', (response: { roomId: string, messages: any[] }) => {
+    if (Array.isArray(response.messages)) {
+      setMessages(response.messages);
+      const createAt = response.messages.map(msg => formatTime(msg.createdAt));
+      setMessageCreateAt(createAt);
+    } else {
+      console.error('메시지 배열이 아닌 데이터가 반환되었습니다:', response);
+    }
+  });
+
+  // 새로운 메시지 처리
+  socket.on('message', (newMessage: any) => {
+    if (Array.isArray(newMessage)) {
+      setMessages(prevMessages => [...prevMessages, ...newMessage]);
+    } else {
       setMessages(prevMessages => [...prevMessages, newMessage]);
-    });
+    }
+  });
 
-    socket.on('error', (error) => {
-      console.error('Message fetch error:', error);
-    });
+  // 에러 처리
+  socket.on('error', (error) => {
+    console.error('메시지 가져오기 에러:', error);
+  });
 
-    return () => {
-      if (socket) {
-        socket.disconnect();
-      }
-    };
-  }, [selectedRoomId.roomId]);
+  // 컴포넌트 언마운트 시 소켓 연결 해제
+  return () => {
+    if (socket) {
+      socket.disconnect();
+    }
+  };
+}, [selectedRoomId.roomId]);
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -144,7 +165,7 @@ console.log(servermsg);
               <div>{/* 팀, 이름 */}</div>
               <div className="MsgTimeBox">
                 <div className="MsgBox">
-                  {msg ? msg : ""}
+                  {msg.content ? msg.content : ""}
                 </div>
                 <div className="MsgTime">
                   <div className="ViewCount">1</div>

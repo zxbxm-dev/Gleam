@@ -92,8 +92,12 @@ const createPrivateRoom = async (io, socket, data) => {
     // 사용자의 채팅방 목록을 클라이언트에게 전송
     sendUserChatRooms(socket, userId);
 
-    // 생성된 채팅방의 메시지 저장 및 전송
-    await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
+    // 전체 채팅방 목록을 클라이언트에 전송
+    // const allChatRooms = await ChatRoom.findAll();
+    // io.emit('chatRooms', allChatRooms.map(room => room.toJSON()));
+
+        // 생성된 채팅방의 메시지 저장 및 전송
+        await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
   } catch (error) {
     console.error("채팅방 생성 및 메시지 저장 오류:", error);
     socket.emit("error", { message: "채팅 생성 서버 오류" });
