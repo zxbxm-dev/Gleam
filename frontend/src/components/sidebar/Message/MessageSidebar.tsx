@@ -137,6 +137,8 @@ const MessageSidebar: React.FC = () => {
         return { ...room, title };
       });
       setChatRooms(updatedRooms);
+      console.log(updatedRooms);
+      
     });
   
     socket.on('disconnect', () => {

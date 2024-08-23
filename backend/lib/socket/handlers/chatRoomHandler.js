@@ -96,8 +96,8 @@ const createPrivateRoom = async (io, socket, data) => {
     sendUserChatRooms(socket, userId);
 
     // 전체 채팅방 목록을 클라이언트에 전송
-    // const allChatRooms = await ChatRoom.findAll();
-    // io.emit('chatRooms', allChatRooms.map(room => room.toJSON()));
+    const allChatRooms = await ChatRoom.findAll();
+    io.emit('chatRooms', allChatRooms.map(room => room.toJSON()));
 
         // 생성된 채팅방의 메시지 저장 및 전송
         await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);

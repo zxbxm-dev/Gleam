@@ -1,16 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   MessageMe,
   MessageMenu,
   NotiIcon,
   UserIcon_dark,
 } from "../../../assets/images/index";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Portal,
-} from "@chakra-ui/react";
 import SetProfile from "./SetProfile";
 import { Person } from "./MessageSidebar";
 import { selectedRoomIdState } from "../../../recoil/atoms";
@@ -80,6 +74,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
+  const [popovers, setPopovers] = useState<{ [key: string]: boolean }>({});
+  const popoverRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
     const roomId = chatRoom.dataValues?.roomId?.toString() || '';
@@ -97,6 +93,26 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     setIsNotibarActive(false);
   };
 
+  const handleMessageMenuClick = (roomId: string) => {
+    setPopovers(prev => ({
+      ...prev,
+      [roomId]: !prev[roomId]
+    }));
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (!Object.values(popoverRefs.current).some(ref => ref?.contains(event.target as Node))) {
+      setPopovers({});
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="chat-data-tab">
       <li
@@ -106,7 +122,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           setIsNotibarActive(true);
         }}
       >
-        <img className="Noti-Icon" src={NotiIcon} alt="my-attach" />
+        <img className="Noti-Icon" src={NotiIcon} alt="Notification Icon" />
         <div>통합 알림</div>
       </li>
       <li
@@ -126,70 +142,67 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           className="Border"
           style={{ border: borderColor }}
         >
-          <img className="My-attach" src={userAttachment ? userAttachment : UserIcon_dark} alt="my-attach" />
+          <img className="My-attach" src={userAttachment ? userAttachment : UserIcon_dark} alt="User Attachment" />
         </div>
         <div>
           {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
         </div>
-        <img className="Message-Me" src={MessageMe} alt="message-me" />
+        <img className="Message-Me" src={MessageMe} alt="Message Me" />
       </li>
 
       {chatRooms
         .sort((a, b) => new Date(b.upt).getTime() - new Date(a.upt).getTime())
         .map((chatRoom) => (
-          <Popover key={chatRoom.roomId} placement="right">
-            <PopoverTrigger>
-              <div
-                className={`ChatLog ${selectedChatRoom === chatRoom.roomId ? "selected" : ""}`}
-                onClick={() => {
-                  handleChatRoomClick(chatRoom);
-                  setCurrentRoomId(chatRoom.roomId);
-                }}
-              >
-                <div className="LogBox">
-                  <div className="Left">
-                    <div className="Border">
-                      <img
-                        className="My-attach"
-                        src={UserIcon_dark}
-                        alt="User Icon"
-                      />
-                    </div>
-                    <p>
-                      {chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}
-                    </p>
+          <div key={chatRoom.roomId}>
+            <div
+              className={`ChatLog ${selectedChatRoom === chatRoom.roomId ? "selected" : ""}`}
+              onClick={() => {
+                handleChatRoomClick(chatRoom);
+                setCurrentRoomId(chatRoom.roomId);
+              }}
+            >
+              <div className="LogBox">
+                <div className="Left">
+                  <div className="Border">
+                    <img
+                      className="My-attach"
+                      src={UserIcon_dark}
+                      alt="User Icon"
+                    />
                   </div>
-                  <img
-                    className="Message-Menu"
-                    src={MessageMenu}
-                    alt="Message Menu"
-                  />
+                  <p>
+                    {chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}
+                  </p>
                 </div>
+                <img
+                  className="Message-Menu"
+                  src={MessageMenu}
+                  alt="Message Menu"
+                />
               </div>
-            </PopoverTrigger>
-            <Portal>
-              <PopoverContent
-                className="ChatRoomSide_popover"
-                _focus={{ boxShadow: "none" }}
-              >
-                {currentRoomId === chatRoom.roomId && (
-                  chatRoom.isGroup ? (
-                    <div className={`Message-OnClick-Menu`}>
-                      <div
-                        className="ProfileChange"
-                        onClick={() => setOpenProfile(true)}
-                      >
-                        대화방 프로필 설정
-                      </div>
-                      <div className="OutOfChat">대화 나가기</div>
+            </div>
+            <div
+              className="ChatRoomSide_popover"
+              ref={ref => popoverRefs.current[chatRoom.roomId] = ref}
+              style={{ display: popovers[chatRoom.roomId] ? "block" : "none" }}
+            >
+              {currentRoomId === chatRoom.roomId && (
+                chatRoom.isGroup ? (
+                  <div className={`Message-OnClick-Menu`}>
+                    <div
+                      className="ProfileChange"
+                      onClick={() => setOpenProfile(true)}
+                    >
+                      대화방 프로필 설정
                     </div>
-                  ) : (
                     <div className="OutOfChat">대화 나가기</div>
-                  )
-                )}
-              </PopoverContent>
-            </Portal>
-          </Popover>
+                  </div>
+                ) : (
+                  <div className="OutOfChat">대화 나가기</div>
+                )
+              )}
+            </div>
+          </div>
         ))}
       
       <SetProfile
