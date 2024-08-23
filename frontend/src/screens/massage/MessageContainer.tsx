@@ -59,13 +59,13 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   //     }
   //   }
   // }, [servermsg]);
-  
 
 useEffect(() => {
   const { roomId } = selectedRoomId;
+console.log(roomId);
 
   // 메시지 요청 보내기
-  socket.emit('fetchMessages', { roomId, limit: 25 });
+  socket.emit('getChatHistory', { roomId });
 
   // 메시지 응답 처리
   socket.on('messages', (response: { roomId: string, messages: any[] }) => {

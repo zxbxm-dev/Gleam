@@ -27,6 +27,19 @@ interface ChatRoom {
   profileImage: string | null;
   crt: string;
   upt: string;
+  dataValues?: {
+    roomId: number;
+    isGroup: boolean;
+    hostUserId: string;
+    invitedUserIds: string[];
+    title: string;
+    userTitle?: { [userId: string]: string };
+    subContent: string;
+    profileColor: string;
+    profileImage: string | null;
+    crt: string;
+    upt: string;
+  };
 }
 
 interface ChatDataTabProps {
@@ -66,10 +79,11 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
-console.log(chatRooms);
-
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
-    setSelectedRoomId({ roomId: chatRoom.roomId });
+    const roomId = chatRoom.dataValues?.roomId?.toString() || '';
+
+    setSelectedRoomId({ roomId });
+  
     onPersonClick(
       chatRoom.title,
       "",
@@ -77,6 +91,7 @@ console.log(chatRooms);
       "",
       chatRoom.hostUserId
     );
+    
     setIsNotibarActive(false);
   };
 
@@ -123,7 +138,9 @@ console.log(chatRooms);
           <Popover key={chatRoom.roomId} placement="right">
             <div
               className={`ChatLog ${selectedChatRoom === chatRoom.roomId ? "selected" : ""}`}
-              onClick={() => handleChatRoomClick(chatRoom)}
+              onClick={() => {
+                handleChatRoomClick(chatRoom);
+              }}
             >
               <div className="LogBox">
                 <div className="Left">

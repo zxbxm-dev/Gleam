@@ -38,6 +38,19 @@ interface ChatRoom {
   profileImage: string | null;
   crt: string;
   upt: string;
+  dataValues?: {
+    roomId: number;
+    isGroup: boolean;
+    hostUserId: string;
+    invitedUserIds: string[];
+    title: string;
+    userTitle?: { [userId: string]: string };
+    subContent: string;
+    profileColor: string;
+    profileImage: string | null;
+    crt: string;
+    upt: string;
+  };
 }
 
 const MessageSidebar: React.FC = () => {
@@ -108,32 +121,32 @@ const MessageSidebar: React.FC = () => {
       transports: ['websocket'],
     });
     setSocket(socket);
-
+  
     const userId = user.userID;
     socket.emit('registerUser', userId);
-
+  
     socket.on('connect', () => {
       console.log(`[Client] Connected to socket server with id: ${socket.id}`);
     });
-
+  
     socket.emit('getChatRooms', userId);
-
-    socket.on('chatRooms', (data: any) => {
+  
+    socket.on('chatRooms', (data: ChatRoom[]) => {
       const updatedRooms = data.map((room: ChatRoom) => {
         const title = room.userTitle?.[userId] || room.title;
         return { ...room, title };
       });
       setChatRooms(updatedRooms);
     });
-
+  
     socket.on('disconnect', () => {
       console.log('[Client] Disconnected from socket server');
     });
-
+  
     socket.on('connect_error', (error) => {
       console.error('Connection error:', error);
     });
-
+  
     return () => {
       socket.off('chatRooms');
       socket.off('connect');
