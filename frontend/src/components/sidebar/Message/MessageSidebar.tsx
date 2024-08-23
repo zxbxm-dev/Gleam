@@ -67,6 +67,7 @@ const MessageSidebar: React.FC = () => {
   const setUserStatetoServer = useSetRecoilState(userStateMessage);
   const location = useLocation();
 
+  //personData - side fetch
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -84,6 +85,22 @@ const MessageSidebar: React.FC = () => {
     fetchData();
   }, []);
 
+  //personSide - 부서, 팀
+  const toggleDepartmentExpansion = (departmentName: string) => {
+    setExpandedDepartments((prevExpandedDepartments) => ({
+      ...prevExpandedDepartments,
+      [departmentName]: !prevExpandedDepartments[departmentName],
+    }));
+  };
+
+  const toggleTeamExpansion = (teamName: string) => {
+    setExpandedTeams((prevExpandedTeams) => ({
+      ...prevExpandedTeams,
+      [teamName]: !prevExpandedTeams[teamName],
+    }));
+  };
+
+  //chatTab - socket 채팅방 목록 조회
   useEffect(() => {
     const socket = io('http://localhost:3001', {
       transports: ['websocket'],
@@ -105,7 +122,7 @@ const MessageSidebar: React.FC = () => {
 
     socket.on('chatRooms', (data: any) => {
       setChatRooms(data);
-      console.log(data);
+      // console.log(data);
     });
 
     socket.on('disconnect', () => {
@@ -119,21 +136,6 @@ const MessageSidebar: React.FC = () => {
       socket.close();
     };
   }, [user.userID]);
-
-
-  const toggleDepartmentExpansion = (departmentName: string) => {
-    setExpandedDepartments((prevExpandedDepartments) => ({
-      ...prevExpandedDepartments,
-      [departmentName]: !prevExpandedDepartments[departmentName],
-    }));
-  };
-
-  const toggleTeamExpansion = (teamName: string) => {
-    setExpandedTeams((prevExpandedTeams) => ({
-      ...prevExpandedTeams,
-      [teamName]: !prevExpandedTeams[teamName],
-    }));
-  };
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -245,7 +247,7 @@ const MessageSidebar: React.FC = () => {
         setUserStatetoServer({ state: "자리비움" });
         const idleBorderColor = "2px solid #E0B727";
         setBorderColor(idleBorderColor);
-        console.log("User status: 자리비움 (no mouse movement for 5 minutes)");
+        // console.log("User status: 자리비움 (no mouse movement for 5 minutes)");
       }, 300000); // 5분
       setTimeoutId(newTimeoutId);
     };
@@ -259,15 +261,22 @@ const MessageSidebar: React.FC = () => {
   }, [timeoutId, location.pathname]);
 
 
-  // 렉이 너무 많이 걸려서 주석처리합니다! -- socket 활동 상태
-  // useEffect(() => {
-  //   console.log("Emitting user status to server:", {
-  //     status,
-  //     borderColor
-  //   });
-  //   socket.emit('userStatus', { status, borderColor });
-  // }, [MsguserState.state]);
-
+  // socket 활동 상태
+  useEffect(() => {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
+  
+    // console.log("Emitting user status to server:", {
+    //   status: MsguserState.state,
+    //   borderColor
+    // });
+    socket.emit('userStatus', { status: MsguserState.state, borderColor });
+  
+    return () => {
+      socket.disconnect();
+    };
+  }, [MsguserState.state, borderColor]); 
 
   return (
     <div className="message-sidebar">
@@ -300,6 +309,7 @@ const MessageSidebar: React.FC = () => {
           userPosition={user.position}
           onPersonClick={handlePersonClick}
           borderColor={borderColor}
+          chatRooms={chatRooms}
         />
       ) : activeTab === "ChatData" ? (
         <ChatDataTab

@@ -43,24 +43,25 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [servermsg, setMessages] = useState<any[]>([]);
   const [servermsgCreateAt, setMessageCreateAt] = useState<string[]>([]);
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
-
   const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
-  useEffect(() => {
-    const roomId = selectedRoomId.roomId;
+console.log(servermsg);
 
-    socket.emit('fetchMessages', { roomId });
+  useEffect(() => {
+    const { roomId } = selectedRoomId;
+
+    socket.emit('fetchMessages', { roomId, limit: 25 });
 
     socket.on('messages', (fetchedMessages: any[]) => {
-      const contents = fetchedMessages.map(msg => msg.content);
-      const createAt = fetchedMessages.map(msg => formatTime(msg.createdAt));
-      setMessages(contents);
-      setMessageCreateAt(createAt);
+      setMessages(fetchedMessages);
     });
 
     socket.on('message', (newMessage: any) => {
-      setMessages(prevMessages => [...prevMessages, newMessage.content]);
-      setMessageCreateAt(prevCreateAt => [...prevCreateAt, formatTime(newMessage.createdAt)]);
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+    });
+
+    socket.on('error', (error) => {
+      console.error('Message fetch error:', error);
     });
 
     return () => {
