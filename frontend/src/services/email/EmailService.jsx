@@ -17,5 +17,8 @@ const CheckEmail = (userId) => {
 
 
 // 메일 임시 저장
+const DraftEmail = (formData) => {
+  return api.post("/draftEmail", formData);
+}
 
-export { SendMail, CheckEmail };
+export { SendMail, CheckEmail, DraftEmail };
