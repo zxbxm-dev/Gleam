@@ -115,6 +115,7 @@ const WriteMail = () => {
   const handleDraftEmail = async () => {
     const formData = {
       userId : user.userID,
+      messageId : user.userID + new Date(),
       sender : user.usermail,
       receiver : recipients,
       referrer : referrers,
