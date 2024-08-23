@@ -11,19 +11,9 @@ module.exports = (io, socket) => {
     await chatRoomHandlers.sendUserChatRooms(socket, userId);
   });
 
-  // 새 채팅방 생성 요청 처리
+  // 새 채팅방 생성 요청 처리 ( 방생성, 기존 채팅방 확인, 메신저 저장 및 전송 )
   socket.on("createPrivateRoom", async (data) => {
     await chatRoomHandlers.createPrivateRoom(io, socket, data);
-  });
-
-  // 서버에서 메시지 전송 이벤트 처리
-  socket.on("sendMessage", async ({ roomId, content }) => {
-    await chatRoomHandlers.sendMessageToRoomParticipants(
-      io,
-      roomId,
-      content,
-      socket.id
-    );
   });
 
   // 채팅방 참여 요청 처리
