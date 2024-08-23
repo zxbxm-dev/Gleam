@@ -225,7 +225,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                 );
               }}
             />
-            <span>전체 멤버</span>
+            <span>전체 선택</span>
           </div>
         </div>
         <div className="PeopleSearchCon">

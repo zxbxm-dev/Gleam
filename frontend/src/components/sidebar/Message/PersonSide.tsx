@@ -15,6 +15,20 @@ import {
 import { selectedRoomIdState } from "../../../recoil/atoms";
 import { useRecoilState } from "recoil";
 
+
+interface ChatRoom {
+  roomId: string;
+  isGroup: boolean;
+  hostUserId: string;
+  invitedUserIds: string[];
+  title: string;
+  subContent: string;
+  profileColor: string;
+  profileImage: string | null;
+  crt: string;
+  upt: string;
+}
+
 interface PersonDataTabProps {
   personData: Person[] | null;
   expandedDepartments: { [key: string]: boolean };
@@ -34,6 +48,7 @@ interface PersonDataTabProps {
     position: string
   ) => void;
   borderColor: string;
+  chatRooms: ChatRoom[];
 }
 
 const PersonDataTab: React.FC<PersonDataTabProps> = ({
@@ -43,13 +58,27 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   toggleDepartmentExpansion,
   toggleTeamExpansion,
   onPersonClick,
-  borderColor
+  borderColor,
+  chatRooms
 }) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
   const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  //hostUserIds -> 받아오는 상대방의 ID로 변경
+  useEffect(() => {
+    if (selectedUserId) {
+      const matchingRoom = chatRooms.find(room => room.hostUserId === selectedUserId);
+
+      if (matchingRoom) {
+        console.log(`match ID : ${selectedUserId}`);
+        console.log(`roomID값 : ${matchingRoom.roomId}`);
+        setSelectedRoomId({ roomId: matchingRoom.roomId });
+      }
+    }
+  }, [selectedUserId, chatRooms]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
