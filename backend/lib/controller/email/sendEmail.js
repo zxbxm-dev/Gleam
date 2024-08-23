@@ -3,9 +3,10 @@ const Email = models.Email;
 const { sendEmail } = require("../../services/emailService");
 
 //이메일 전송하기
-const sendMail = async (req, res) => {
+const sendMail = async (req, res ) => {
     const {
         Id,
+        messageId,
         userId,
         sender,
         receiver,
@@ -32,11 +33,12 @@ const sendMail = async (req, res) => {
     const to = receiver; 
 
     try{
-        const sendResult = await sendEmail(to, subject, body);
+        const sendResult = await sendEmail(to, subject, body, userId);
         console.log("전송한 이메일 : ", sendResult);
 
         const newSentEmail = await Email.create({
             userId: userId,
+            messageId: messageId,
             sender,
             receiver,
             referrer,
