@@ -5,6 +5,7 @@ const Email = models.Email;
 const draftEmails = async (req, res) => {
     const{
         userId,
+        messageId,
         sender,
         receiver,
         referrer,
@@ -21,6 +22,7 @@ const draftEmails = async (req, res) => {
     try{
         const newDraftEmail = await Email.create({
             userId,
+            messageId,
             sender,
             receiver,
             referrer,

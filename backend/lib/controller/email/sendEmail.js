@@ -1,6 +1,7 @@
 const models = require("../../models");
 const Email = models.Email;
 const { sendEmail } = require("../../services/emailService");
+const { deleteDraftEmail } = require("../../controller/email/draftEmail");
 
 //이메일 전송하기
 const sendMail = async (req, res ) => {
@@ -25,7 +26,7 @@ const sendMail = async (req, res ) => {
     };
 
     if(Id){
-        await sendDraftEmail(Id);
+        await sendDraftEmail(req,res,Id);
         return;
     }
 
@@ -63,6 +64,7 @@ const sendDraftEmail = async ( req,res ) => {
     const {
         Id,
         userId,
+        messageId,
         sender,
         receiver,
         referrer,
@@ -77,11 +79,12 @@ const sendDraftEmail = async ( req,res ) => {
     console.log("요청 본문 받음 :", req.body);
     const to = receiver;
     try{
-        const draftSendResult = await sendEmail(to, subject, body);
+        const draftSendResult = await sendEmail(receiver, subject, body, userId);
         console.log("전송한 이메일 :", draftSendResult);
-        
+        deleteDraftEmail(req, res, Id);
         const newDraftSentEmail = await Email.create({
             userId: userId,
+            messageId,
             sender,
             receiver,
             referrer,
@@ -94,7 +97,7 @@ const sendDraftEmail = async ( req,res ) => {
             folder: 'sent'
         })
         res.status(200).json({message: "임시저장 이메일 전송이 성공적으로 완료되었습니다.",newDraftSentEmail: newDraftSentEmail});
-        deleteDraftEmail(req, res, Id);
+       
     }catch(error){
         console.error("임시저장 이메일 전송 도중 오류 발생", error);
         res.status(500).json({message: "임시저장 이메일 전송 도중 오류가 발생했습니다."});
