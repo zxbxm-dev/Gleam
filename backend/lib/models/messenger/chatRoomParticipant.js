@@ -35,12 +35,15 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'chatroom_participant',
     }
   );
-
+  
   ChatRoomParticipant.associate = (models) => {
-
     ChatRoomParticipant.belongsTo(models.ChatRoom, {
       foreignKey: 'roomId',
       as: 'chatRoom',
+    });
+    ChatRoomParticipant.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'User'
     });
   };
 
