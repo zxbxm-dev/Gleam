@@ -6,8 +6,14 @@ const getChatHistory = async (socket, roomId) => {
   try {
     const messages = await Message.findAll({
       where: { roomId },
-      include: [{ model: ChatRoomParticipant, as: 'User' }],
-      order: [['createdAt', 'ASC']],
+      include: [
+        {
+          model: ChatRoomParticipant,
+          as: "User",
+          attributes: ["userId", "username", "team"],
+        },
+      ],
+      order: [["createdAt", "ASC"]],
     });
 
     // 메시지와 관련된 발신자 이름과 시간 정보를 포함하여 클라이언트에 전송
@@ -15,7 +21,7 @@ const getChatHistory = async (socket, roomId) => {
       messageId: message.messageId,
       content: message.content,
       userId: message.userId,
-      username: message.User.username, // 사용자 이름
+      username: `${message.User.team} ${message.User.username}`, // 팀 이름과 사용자 이름 조합
       timestamp: message.createdAt, // 메시지 생성 시간
     }));
 
