@@ -3,11 +3,6 @@ const { fetchMailcowEmails } = require("../../services/emailService");
 const Email = models.Email;
 const User = models.User
 
-
-//중복 확인
-
-
-
 //모든 이메일 조회하기
 const getAllEmail = async (req, res) => {
 
