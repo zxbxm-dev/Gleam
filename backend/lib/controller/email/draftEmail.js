@@ -42,14 +42,24 @@ const draftEmails = async (req, res) => {
 
 //임시저장 이메일 전송 시 기존에 있던 레코드 삭제하기
 const deleteDraftEmail = async (req, res, Id) => {
+    try{
     const draftedEmail = await Email.findOne({
         where: { Id : Id}
     });
-    draftedEmail.destroy();
 
-
-}
+    if(draftedEmail){
+    draftedEmail.destroy()
+    console.log(`임시저장 이메일 Id : ${Id}가 성공적으로 삭제되었습니다.`);
+    }else{
+    console.log(`임시저장 이메일 Id: ${Id} 정보를 찾을 수 없습니다.`);
+    };
+  }catch(error){
+    console.error("임시저장 이메일 삭제 도중 오류 발생", error);
+    res.status(500).json({message:"임시저장 이메일 삭제 도중 오류가 발생했습니다."});
+  }
+};
 
 module.exports = {
     draftEmails,
+    deleteDraftEmail,
 }
