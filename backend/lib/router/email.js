@@ -11,7 +11,7 @@ module.exports = (app) => {
         // ⚠️⚠️ 이메일 router  ⚠️⚠️
         router.get("/checkEmail/:userId",getEmailController.getAllEmail);
         router.post("/sendEmail",sendEmailController.sendMail);
-        router.delete("/deleteEmail",getEmailController.deleteEmail);
+        router.delete("/deleteEmail/:Id",getEmailController.deleteEmail);
         
         //이메일 임시저장하기
         router.post("/draftEmail",draftEmailController.draftEmails);
