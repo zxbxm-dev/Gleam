@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const fs = require("fs");
 const path = require("path");
 const Models = require("../../models");
+const { fetchMailcowEmails } = require("../../services/emailService");
 const User = Models.User;
 
 require("dotenv").config();
@@ -12,7 +13,7 @@ const secretKey = process.env.DB_DATABASE;
 //로그인
 const login = async (req, res) => {
   const { userID, password } = req.body;
-
+  
   try {
     const user = await User.findOne({ where: { userId: userID } });
 
@@ -31,6 +32,9 @@ const login = async (req, res) => {
         const token = jwt.sign({ userId: user.id }, secretKey, {
           expiresIn: "1h",
         });
+
+        //이메일 서버 접속
+        await fetchMailcowEmails(userID);
 
         return res.status(200).json({
           token,
@@ -53,6 +57,7 @@ const login = async (req, res) => {
             status: user.status,
           },
         });
+        
       } else {
         return res.status(401).json({ error: "비밀번호가 일치하지 않습니다." });
       }

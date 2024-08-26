@@ -4,7 +4,7 @@
 
 .mail_container {
   width: 100%;
-  height: 100%;
+  height: 95%;
   padding-right: 20px;
 
   .mail_header {
@@ -566,7 +566,8 @@
 }
 
 .mail_pagination {
-  width: 80%;
+  width: 100%;
+  height: 5%;
   display: flex;
   justify-content: space-between;
   position: fixed;
@@ -582,7 +583,6 @@
     justify-content: start;
     align-items: center;
     gap: 8px;
-    margin: 15px auto;
 
     li {
       width: 30px;

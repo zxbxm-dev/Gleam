@@ -7,11 +7,13 @@ require('dotenv').config();
 
 
 // IMAP 연결 설정 및 이메일 가져오기
-async function fetchMailcowEmails(email, password, userId) {
+async function fetchMailcowEmails(userId) {
 
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
-    email = userId + "@gleam.im";
-    password = "123qwe";
+    const email = userId + "@gleam.im";
+    const password = 'math123!!'
+    
+    console.log("이메일 서버에 현재 접속한 사용자 :", userId);
 
     const imap = new Imap({
         user: email,
@@ -23,26 +25,34 @@ async function fetchMailcowEmails(email, password, userId) {
     });
 
     imap.once('ready', () => {
-
         // imap.getBoxes((err, boxes) => {
         //     if (err) throw err;
         //     console.log('>>>>>>>사용 가능한 폴더 목록:', boxes);
         // });
 
         imap.openBox('INBOX', true, (err, box) => {
-            if (err) throw err;
-            fetchEmails(imap, userId, 'inbox', () => {
-                imap.openBox('Sent', true, (err, box) => {
-                    if (err) throw err;
-                    fetchEmails(imap, userId, 'sent', () => {
-                        console.log('모든 이메일 불러오기 완료.');
-                        imap.end();
+            // 읽지 않은 메일만 검색
+            imap.search(['UNSEEN'], (err, results) => {
+                if (err) throw err;
+
+                if (results.length === 0) {
+                    console.log('읽지 않은 메일이 없습니다.');
+                    imap.end();
+                    return;
+                }
+
+                fetchEmails(imap, userId, 'inbox', () => {
+                    imap.openBox('Sent', true, (err, box) => {
+                        if (err) throw err;
+                        fetchEmails(imap, userId, 'sent', () => {
+                            console.log('모든 이메일 불러오기 완료.');
+                            imap.end();
+                        });
                     });
                 });
             });
         });
     });
-
 
     imap.once('error', (err) => {
         console.error('IMAP 연결 에러:', err);
@@ -70,7 +80,7 @@ async function fetchMailcowEmails(email, password, userId) {
 
             const f = imap.fetch(results, fetchOptions);
 
-            //이메일 파싱 
+            // 이메일 파싱 
             f.on('message', (msg, seqno) => {
                 console.log('불러온 이메일 #%d', seqno);
                 msg.on('body', (stream) => {
@@ -84,6 +94,7 @@ async function fetchMailcowEmails(email, password, userId) {
                             console.log('저장된 이메일 Id:', checksavedEmail.Id);
                         } catch (saveErr) {
                             console.error('이메일을 저장하는 도중 에러가 발생했습니다.:', saveErr);
+                            console.log('>>>>>>저장 실패한 이메일 제목: ', mail.subject);
                         }
                     });
                 });
@@ -98,40 +109,38 @@ async function fetchMailcowEmails(email, password, userId) {
             });
         });
     }
-};
+}
 
-
-
-//불러온 이메일 데이터베이스에 저장
-const saveEmail = async (mail,userId,folderName) => {
+// 불러온 이메일 데이터베이스에 저장
+const saveEmail = async (mail, userId, folderName) => {
     if (!mail || !mail.subject) {
-        console.error('Error: mail 객체가 존재하지않거나 제목이 존재하지않습니다.');
+        console.error('Error: mail 객체가 존재하지 않거나 제목이 존재하지 않습니다.');
         return;
     }
     
-    //이메일 중복체크 - messageId 사용
-   try{
-     const existingEmails = await Email.findOne({
-        where :{
-            userId: userId,
-            messageId: mail.messageId,
+    // 이메일 중복체크 - messageId 사용
+    try {
+        const existingEmails = await Email.findOne({
+            where: {
+                userId: userId,
+                messageId: mail.messageId,
+            }
+        });
+
+        if (existingEmails) {
+            console.log(`중복된 이메일이 이미 저장되어 있습니다. Message-ID: ${mail.messageId}`);
+            return null; 
         }
-     });
 
-     if (existingEmails) {
-        console.log(`중복된 이메일이 이미 저장되어 있습니다. Message-ID: ${mail.messageId}`);
-        return null; 
-    }
-
-    //중복확인 후 이메일 저장
+        // 중복확인 후 이메일 저장
         const emailData = {
-            subject: mail.subject||'(제목없음)',
+            subject: mail.subject || '(제목없음)',
             userId: userId,
             messageId: mail.messageId,
-            sender: mail.from.text ,
+            sender: mail.from.text,
             receiver: JSON.stringify(mail.to ? mail.to.value.map(to => to.address) : []),
             referrer: JSON.stringify(mail.cc ? mail.cc.value.map(cc => cc.address) : []),
-            body: mail.html || '',
+            body: mail.html || mail.text || '',
             sendAt: mail.date || new Date(),
             receiveAt: new Date(),
             signature: mail.signature || '',
@@ -146,13 +155,12 @@ const saveEmail = async (mail,userId,folderName) => {
     }
 };
 
-
 // SMTP를 통한 이메일 전송 함수 추가
-async function sendEmail(to, subject, body) {
+async function sendEmail(to, subject, body,userId) {
 
-   //임의로 작성한 이메일계정입니다.
-   const email = 'onion@gleam.im';
-   const password = '123qwe';
+    // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
+    const email = userId + "@gleam.im";
+    const password = 'math123!!'
 
     const transporter = nodemailer.createTransport({
         host: 'mail.gleam.im', 
@@ -162,15 +170,17 @@ async function sendEmail(to, subject, body) {
            user: email, 
            pass : password
         },
-        //추후 TLS/SSL 인증서 등 신뢰 가능한 인증서로 설정해야 합니다.
+        // 추후 TLS/SSL 인증서 등 신뢰 가능한 인증서로 설정해야 합니다.
         tls: {rejectUnauthorized: false}
     });
 
     const mailOptions = {
+        userId: userId,
         from: email, 
         to: to, 
         subject: subject, 
-        text: body 
+        text: body, 
+        html: body
     };
 
     try {
@@ -183,9 +193,8 @@ async function sendEmail(to, subject, body) {
     }
 }
 
-
 module.exports = { 
     fetchMailcowEmails,
     saveEmail,
     sendEmail,
- };
+};

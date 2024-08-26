@@ -1,12 +1,13 @@
 const models = require("../../models");
-const email = models.Email;
+const Email = models.Email;
 const { sendEmail } = require("../../services/emailService");
-const { draftEmails } = require("./draftEmail");
-
+const { deleteDraftEmail } = require("../../controller/email/draftEmail");
 
 //이메일 전송하기
-const sendMail = async (req, res) => {
+const sendMail = async (req, res ) => {
     const {
+        Id,
+        messageId,
         userId,
         sender,
         receiver,
@@ -17,7 +18,6 @@ const sendMail = async (req, res) => {
         attachment,
         receiveAt,
         signature,
-        isDraft
     } = req.body;
 
     if(!userId){
@@ -25,8 +25,8 @@ const sendMail = async (req, res) => {
     
     };
 
-    if(isDraft){
-        await draftEmails(req,res,userId);
+    if(Id){
+        await sendDraftEmail(req,res,Id);
         return;
     }
 
@@ -34,11 +34,12 @@ const sendMail = async (req, res) => {
     const to = receiver; 
 
     try{
-        const sendResult = await sendEmail(to, subject, body);
+        const sendResult = await sendEmail(to, subject, body, userId);
         console.log("전송한 이메일 : ", sendResult);
 
-        const newSentEmail = await email.create({
+        const newSentEmail = await Email.create({
             userId: userId,
+            messageId: messageId,
             sender,
             receiver,
             referrer,
@@ -60,19 +61,54 @@ const sendMail = async (req, res) => {
 
 //임시저장 이메일 전송하기
 const sendDraftEmail = async ( req,res ) => {
-    const { Id,} = req.body;
-
-    if(!Id){
-        res.status(500).json({error: "임시저장 이메일 정보를 찾을 수 없습니다."});
-    };
+    const {
+        Id,
+        userId,
+        messageId,
+        sender,
+        receiver,
+        referrer,
+        subject,
+        body,
+        sendAt,
+        attachment,
+        receiveAt,
+        signature,
+    } = req.body;
 
     console.log("요청 본문 받음 :", req.body);
-}
+    const to = receiver;
+    try{
+        const draftSendResult = await sendEmail(receiver, subject, body, userId);
+        console.log("전송한 이메일 :", draftSendResult);
+        deleteDraftEmail(req, res, Id);
+        const newDraftSentEmail = await Email.create({
+            userId: userId,
+            messageId,
+            sender,
+            receiver,
+            referrer,
+            subject,
+            body,
+            sendAt,
+            receiveAt,
+            signature,
+            attachment,
+            folder: 'sent'
+        })
+        res.status(200).json({message: "임시저장 이메일 전송이 성공적으로 완료되었습니다.",newDraftSentEmail: newDraftSentEmail});
+       
+    }catch(error){
+        console.error("임시저장 이메일 전송 도중 오류 발생", error);
+        res.status(500).json({message: "임시저장 이메일 전송 도중 오류가 발생했습니다."});
+    }
+};
 
 //예약이메일 전송하기
 
 
 module.exports = {
     sendMail,
+    sendDraftEmail,
 
 }
