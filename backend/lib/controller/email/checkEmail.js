@@ -21,7 +21,7 @@ const getAllEmail = async (req, res) => {
         const password = user.password;
 
     try{
-        await fetchMailcowEmails( usermail, password , userId );        
+        await fetchMailcowEmails( userId );        
         const emails = await Email.findAll({
             where: {userId: userId},
     });
