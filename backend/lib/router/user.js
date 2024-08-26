@@ -26,5 +26,8 @@ module.exports = (app) => {
   // 유저 정보 전달
   router.get('/checkInformation', userListController.getAllUserList);
 
+  // 탈퇴한 회원 리스트 전달
+  router.get('/checkQuitterList', userListController.getAllQuitterList);
+
   app.use("/api", router);
 };
