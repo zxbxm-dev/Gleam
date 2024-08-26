@@ -1,5 +1,5 @@
 const models = require("../../models");
-const { Message, ChatRoomParticipant } = models;
+const { Message, ChatRoomParticipant, User} = models;
 
 // 특정 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistory = async (socket, roomId) => {
@@ -8,8 +8,8 @@ const getChatHistory = async (socket, roomId) => {
       where: { roomId },
       include: [
         {
-          model: ChatRoomParticipant,
-          as: "User",
+          model: User,
+          as: 'User',
           attributes: ["userId", "username", "team"],
         },
       ],
@@ -20,9 +20,9 @@ const getChatHistory = async (socket, roomId) => {
     const chatHistory = messages.map(message => ({
       messageId: message.messageId,
       content: message.content,
-      userId: message.userId,
-      username: `${message.User.team} ${message.User.username}`, // 팀 이름과 사용자 이름 조합
-      timestamp: message.createdAt, // 메시지 생성 시간
+      userId: message.User.userId,  // User alias를 통해 접근
+      username: `${message.User.team} ${message.User.username}`,  // 팀 이름과 사용자 이름 조합
+      timestamp: message.createdAt,  // 메시지 생성 시간
     }));
 
     socket.emit("chatHistory", chatHistory);

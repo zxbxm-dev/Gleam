@@ -1,5 +1,6 @@
 const models = require("../../models");
 const userList = models.User;
+const Quitter = models.Quitter;
 
 //유저 정보 리스트 전달
 const getAllUserList = async (req, res) => {
@@ -39,6 +40,45 @@ const getAllUserList = async (req, res) => {
   }
 };
 
+// 탈퇴한 회원 리스트 전달
+const getAllQuitterList = async (req, res) => {
+  try {
+    const quitters = await Quitter.findAll();
+    // 이미지 업로드 디렉토리의 경로
+    const baseUrl = `${req.protocol}://${req.get("host")}/uploads/`;
+    // 배열로 반환
+    const quitterProfiles = quitters.map((quitter) => ({
+      userId: quitter.userId,
+      username: quitter.username,
+      usermail: quitter.usermail,
+      phoneNumber: quitter.phoneNumber,
+      company: quitter.company,
+      department: quitter.department,
+      team: quitter.team,
+      position: quitter.position,
+      spot: quitter.spot,
+      question1: quitter.question1,
+      question2: quitter.question2,
+      attachment: quitter.attachment ? baseUrl + quitter.attachment : null,
+      Sign: quitter.Sign ? baseUrl + quitter.Sign : null,
+      status: quitter.status,
+      entering: quitter.entering,
+      leavedate: quitter.leavedate,
+      createdAt: quitter.createdAt,
+      updatedAt: quitter.updatedAt,
+    }));
+
+    res.json(quitterProfiles);
+  } catch (error) {
+    console.error("탈퇴한 회원 정보를 가져오는 중에 오류가 발생했습니다.:", error.message);
+    console.error(error.stack);
+    res
+      .status(500)
+      .json({ error: "탈퇴한 회원 리스트 확인 서버 오류", details: error.message });
+  }
+};
+
 module.exports = {
   getAllUserList,
+  getAllQuitterList
 };

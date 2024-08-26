@@ -1,4 +1,4 @@
-const chatRoomHandlers = require("../handlers/chatRoomHandler");
+const chatRoomHandlers = require("../handlers/messageHandler");
 
 module.exports = (io, socket) => {
   if (!socket) {
@@ -18,6 +18,7 @@ module.exports = (io, socket) => {
 
   // 특정 채팅방의 과거 메시지 요청 처리
   socket.on("getChatHistory", async (roomId) => {
-    await messageHandlers.getChatHistory(socket, roomId);
+    await chatRoomHandlers.getChatHistory(socket, roomId);
   });
-};
+  
+}

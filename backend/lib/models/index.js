@@ -95,4 +95,9 @@ db.ChatRoomParticipant.belongsTo(db.ChatRoom, { foreignKey: "roomId" });
 db.User.hasMany(db.ChatRoomParticipant, { foreignKey: "userId" });
 db.ChatRoomParticipant.belongsTo(db.User, { foreignKey: "userId" });
 
+// ChatRoomParticipant와 Message 간의 관계 설정
+db.ChatRoomParticipant.hasMany(db.Message, { foreignKey: "userId" });
+db.Message.belongsTo(db.ChatRoomParticipant, { foreignKey: "userId", as: "Participant" });
+
+
 module.exports = db;

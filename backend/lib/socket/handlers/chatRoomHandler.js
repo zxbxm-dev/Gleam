@@ -1,8 +1,7 @@
 const models = require("../../models");
 const { User, ChatRoom, ChatRoomParticipant, Message } = models;
 const { Op, Sequelize } = require("sequelize");
-const { sendMessageToRoomParticipants } = require("./messageHandler"); // 함수가 정의된 파일을 임포트
-
+const { sendMessageToRoomParticipants } = require("./messageHandler");
 
 // 새로운 개인 채팅방을 생성하거나 기존 채팅방을 조회
 // 생성된 채팅방에 메시지를 저장하고 해당 채팅방의 사용자들에게 메시지를 전송
@@ -24,9 +23,12 @@ const createPrivateRoom = async (io, socket, data) => {
     const invitedUsers = targets.map(target => ({
       userId: target.userId,
       username: target.username,
-      department: target.department,
-      team: target.team,
-      position: target.position,
+      company: target.company || null,
+      department: target.department || null,
+      team: target.team || null,
+      position: target.position || null,
+      spot: target.spot || null,
+      attachment: target.attachment || null,
     }));
 
     // 사용자 이름에 팀 이름을 붙여서 생성
@@ -61,8 +63,17 @@ const createPrivateRoom = async (io, socket, data) => {
         title: invitedUserDisplayName || null,
         userTitle: JSON.stringify(
           invitedUsers.reduce((acc, invitedUser) => {
-            acc[userId] = `${invitedUser.team} ${invitedUser.username}`;  // 현재 사용자에게 상대방의 팀과 이름을 보여줌
-            acc[invitedUser.userId] = userDisplayName;  // 초대된 사용자에게는 현재 사용자의 팀과 이름을 보여줌
+            acc[userId] = {
+              userId,
+              username: user.username,
+              company: user.company || null,
+              department: user.department || null,
+              team: user.team || null,
+              position: user.position || null,
+              spot: user.spot || null,
+              attachment: user.attachment || null
+            };
+            acc[invitedUser.userId] = invitedUser;  // 초대된 사용자에 대한 정보
             return acc;
           }, {})
         ),
@@ -94,32 +105,33 @@ const createPrivateRoom = async (io, socket, data) => {
 
     // 사용자의 채팅방 목록을 클라이언트에게 전송
     sendUserChatRooms(socket, userId);
-
+    
     // 전체 채팅방 목록을 클라이언트에 전송
     const allChatRooms = await ChatRoom.findAll();
     io.emit('chatRooms', allChatRooms.map(room => room.toJSON()));
 
-        // 생성된 채팅방의 메시지 저장 및 전송
-        await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
+    // 생성된 채팅방의 메시지 저장 및 전송
+    await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
   } catch (error) {
     console.error("채팅방 생성 및 메시지 저장 오류:", error);
     socket.emit("error", { message: "채팅 생성 서버 오류" });
   }
 };
 
+// 채팅방 조회 후 클라이언트에게 파싱
 const sendUserChatRooms = async (socket, userId) => {
   try {
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
       include: [{ model: ChatRoom }],
     });
-  
+
     // 각 사용자가 참여한 채팅방의 userTitle을 파싱해서 각 사용자에게 맞는 제목을 설정
     const roomsWithDetails = chatRooms.map(participant => {
       const room = participant.ChatRoom;
       const userTitle = JSON.parse(room.userTitle || '{}');
-      const title = userTitle[userId] || room.title;
-      return { ...room, title };
+      const title = userTitle[userId]?.username || room.title;
+      return { ...room, title, userTitle };
     });
 
     // 채팅방 목록을 클라이언트에 전송합니다.
@@ -136,7 +148,7 @@ const joinRoom = async (socket, roomId) => {
     const chatRoom = await ChatRoom.findOne({ where: { roomId } });
 
     if (chatRoom) {
-      const userId = socket.id; // Verify if this should be used
+      const userId = socket.id; // 사용자 ID를 적절히 설정
 
       const isMember = await ChatRoomParticipant.findOne({
         where: { roomId, userId },

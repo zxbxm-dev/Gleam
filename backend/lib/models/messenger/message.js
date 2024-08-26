@@ -38,13 +38,13 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Message.associate = function(models) {
-    // `User`와 `Message` 간의 관계 설정
+    // User와 Message 간의 관계 설정
     Message.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
       as: 'User'
     });
-    // `ChatRoom`과 `Message` 간의 관계 설정
+    // ChatRoom과 Message 간의 관계 설정
     Message.belongsTo(models.ChatRoom, {
       foreignKey: 'roomId',
       onDelete: 'CASCADE',
