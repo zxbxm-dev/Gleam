@@ -5,7 +5,6 @@ const models = require("../models");
 const Email = models.Email;
 require('dotenv').config();
 
-
 // IMAP 연결 설정 및 이메일 가져오기
 async function fetchMailcowEmails(userId) {
 
@@ -13,7 +12,7 @@ async function fetchMailcowEmails(userId) {
     const email = userId + "@gleam.im";
     const password = 'math123!!'
     
-    console.log("이메일 서버에 현재 접속한 사용자 :", userId);
+    console.log("이메일 서버에 접속한 사용자 :", userId);
 
     const imap = new Imap({
         user: email,

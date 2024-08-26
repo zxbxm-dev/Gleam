@@ -57,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
+            queueDate:{
+                type: DataTypes.DATE,
+                allowNUll: true,
+            },
             //명함
             signature: {
                 type: DataTypes.STRING,
@@ -64,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             folder: {
                 type:DataTypes.ENUM,
-                values: ['inbox', 'sent', 'starred', 'unread', 'drafts', 'junk'],
+                values: ['inbox', 'sent', 'starred', 'unread', 'drafts', 'junk', 'queue'],
                 allowNull: false,
                 defaultValue: "inbox",
             }

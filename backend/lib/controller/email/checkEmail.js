@@ -35,7 +35,9 @@ const getAllEmail = async (req, res) => {
 
 //이메일 삭제하기
 const deleteEmail = async(req, res) => {
-    const emailId = req.params.mailId;
+
+    const emailId = req.params.Id
+
     try{
         const deleteEmail = await Email.findByPk(emailId);
         

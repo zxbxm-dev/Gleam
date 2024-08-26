@@ -2,13 +2,14 @@ const models = require("../../models");
 const Email = models.Email;
 const { sendEmail } = require("../../services/emailService");
 const { deleteDraftEmail } = require("../../controller/email/draftEmail");
+const { QueueEmail, deleteQueueEmail} = require("../../controller/email/emailQueue");
 
 //이메일 전송하기
 const sendMail = async (req, res ) => {
     const {
         Id,
-        messageId,
         userId,
+        messageId,
         sender,
         receiver,
         referrer,
@@ -17,7 +18,9 @@ const sendMail = async (req, res ) => {
         sendAt,
         attachment,
         receiveAt,
+        queueDate,
         signature,
+        
     } = req.body;
 
     if(!userId){
@@ -27,6 +30,11 @@ const sendMail = async (req, res ) => {
 
     if(Id){
         await sendDraftEmail(req,res,Id);
+        return;
+    };
+
+    if(queueDate){
+        await QueueEmail(req,res);
         return;
     }
 
@@ -39,7 +47,7 @@ const sendMail = async (req, res ) => {
 
         const newSentEmail = await Email.create({
             userId: userId,
-            messageId: messageId,
+            messageId,
             sender,
             receiver,
             referrer,
@@ -77,7 +85,7 @@ const sendDraftEmail = async ( req,res ) => {
     } = req.body;
 
     console.log("요청 본문 받음 :", req.body);
-    const to = receiver;
+    const to = receiver;  //확인
     try{
         const draftSendResult = await sendEmail(receiver, subject, body, userId);
         console.log("전송한 이메일 :", draftSendResult);
@@ -105,10 +113,54 @@ const sendDraftEmail = async ( req,res ) => {
 };
 
 //예약이메일 전송하기
+// const sendQueueEmail = async(req, res) =>{
+//     const{
+//         Id, 
+//         userId,
+//         messageId,
+//         sender,
+//         receiver,
+//         referrer,
+//         subject,
+//         body,
+//         sendAt,
+//         attachment,
+//         receiveAt,
+//         queueDate,
+//         signature,
+//     } = req.body;
+
+//     console.log("요청 본문 받음:",req.body);
+//     const to = receiver;
+
+//     try{
+//         const queueSendResult = await sendEmail(to, subject, body, userId);
+//         console.log("전송한 예약 이메일:", queueSendResult);
+//         deleteQueueEmail(req, res, Id);
+//         const newQueueSentEmail = await Email.create({
+//             userId: userId,
+//             messageId,
+//             sender,
+//             receiver,
+//             referrer,
+//             subject,
+//             body,
+//             sendAt,
+//             receiveAt,
+//             signature,
+//             attachment,
+//             folder: 'sent'
+//         })
+//         res.status(200).json({message:"예약한 이메일 전송이 성공적으로 완료되었습니다", newQueueSentEmail: newQueueSentEmail });
+//     }catch(error){
+//         console.error("예약 이메일 전송 도중 오류 발생", error);
+//         res.status(500).json({message: "예약한 이메일 전송 도중 오류가 발생했습니다."});
+//     }
+// }
 
 
 module.exports = {
     sendMail,
     sendDraftEmail,
-
+    sendQueueEmail,
 }
