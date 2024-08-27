@@ -365,17 +365,23 @@
           }
 
           td:nth-of-type(4) {
-            font-size: 12px;
+            font-size: 10px;
+            color: #9E9E9E;
             cursor: pointer;
           }
 
           td:nth-of-type(5) {
             div {
-              border: 1px solid black;
+              border: 1px solid #D56D6D;
               border-radius: 3px;
-              color: #C54D45;
+              color: #E85D5D;
               padding: 5px 8px;
               cursor: pointer;
+
+              &:hover {
+                color: #fff;
+                background-color: #F45F5F;
+              }
             }
           }
 
@@ -392,7 +398,7 @@
             transition: max-height 0.5s ease-in-out;
 
             &.visible {
-              max-height: 500px;
+              max-height: 1000px;
             }
           }
 
@@ -459,7 +465,7 @@
               }
             }
             .mail_detail_content {
-              height: 350px;
+              height: auto;
               background-color: #F3F3F3;
               display: flex;
               flex-direction: column;
@@ -545,11 +551,11 @@
               .mail_detail_content_middle {
                 @include custom-scrollbar();
                 width: 100%;
-                height: 200px;
+                height: auto;
                 margin: 20px 0;
                 padding: 20px;
                 background-color: #fff;
-                overflow-y: auto;
+                overflow-y: scroll;
               }
 
               .mail_detail_content_bottom {

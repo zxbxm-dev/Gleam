@@ -25,7 +25,7 @@ import Pagenation from "./Pagenation";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { useQuery } from 'react-query';
-import { CheckEmail } from "../../services/email/EmailService";
+import { CheckEmail, DeleteEmail } from "../../services/email/EmailService";
 
 const Mail = () => {
   let navigate = useNavigate();
@@ -51,10 +51,11 @@ const Mail = () => {
 
   const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [originalMails, setOriginalMails] = useState<any[]>([]);
   const [mails, setMails] = useState<any[]>([]);
   const [clickedMails, setClickedMails] = useState<{ [key: number]: boolean }>({});
   const [allSelected, setAllSelected] = useState(false);
-  const [selectedMails, setSelectedMails] = useState<{ [key: number]: boolean }>({});
+  const [selectedMails, setSelectedMails] = useState<{ [key: number]: { messageId: any; selected: boolean } }>({});
 
   const itemsPerPage = 10;
 
@@ -124,8 +125,9 @@ const Mail = () => {
   const { refetch : refetchEmail } = useQuery("Email", fetchEmail, {
     enabled: false,
     onSuccess: (data) => {
-      console.log(data.emails);
-      setMails(data?.emails);
+      const reversedEmails = data?.emails.reverse();
+      setOriginalMails(reversedEmails);
+      setMails(reversedEmails);
     },
     onError: (error) => {
       console.log(error);
@@ -133,43 +135,108 @@ const Mail = () => {
   });
 
   useEffect(() => {
+    // 페이지 첫 렌더링 시 전체 메일 데이터를 가져옴
     refetchEmail();
+  }, []);
 
-    // switch (selectdMenuOption) {
-    //   case "전체 메일":
-    //     return (
-    //       setMails(initialMails.filter((mail) => (mail.spam === false)))
-    //     )
-    //   case "중요 메일":
-    //     return (
-    //       setMails(initialMails.filter((mail) => (mail.important === true && mail.spam === false)))
-    //     )
-    //   case "받은 메일함":
-    //     return (
-    //       setMails(initialMails.filter((mail) => (mail.mailType === '받은 메일함' && mail.spam === false)))
-    //     )
-    //   case "보낸 메일함":
-    //     return (
-    //       setMails(initialMails.filter((mail) => (mail.mailType === '보낸 메일함' && mail.spam === false)))
-    //     )
-    //   case "안 읽은 메일":
-    //     return (
-    //       // 안 읽은 메일 처리 (Clicked 타입 boolean 으로 설정)
-    //       setMails(initialMails)
-    //     )
-    //   case "임시 보관함":
-    //     return (
-    //       // 임시 보관메일 처리
-    //       setMails(initialMails)
-    //     )
-    //   case "스팸 메일함":
-    //     return (
-    //       setMails(initialMails.filter((mail) => mail.spam === true))
-    //     )
-    // }
-  }, [selectdMenuOption]);
+  useEffect(() => {
+    switch (selectdMenuOption) {
+      case "전체 메일":
+        setMails(originalMails?.filter((mail) => mail.folder !== 'junk'));
+        break;
+      case "중요 메일":
+        setMails(originalMails?.filter((mail) => mail.folder === 'starred'));
+        break;
+      case "받은 메일함":
+        setMails(originalMails?.filter((mail) => mail.folder === 'inbox'));
+        break;
+      case "보낸 메일함":
+        setMails(originalMails?.filter((mail) => mail.folder === 'sent'));
+        break;
+      case "안 읽은 메일":
+        setMails(originalMails?.filter((mail) => mail.folder === 'unread'));
+        break;
+      case "임시 보관함":
+        setMails(originalMails?.filter((mail) => mail.folder === 'drafts'));
+        break;
+      case "스팸 메일함":
+        setMails(originalMails?.filter((mail) => mail.folder === 'junk'));
+        break;
+      default:
+        setMails(originalMails);
+    }
+  }, [selectdMenuOption, originalMails]);
 
-  const filteredMails = mails.filter((mail) =>
+  const getStartOfPeriod = (period: string) => {
+    const now = new Date();
+    switch (period) {
+      case "최근 1주일":
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - 7);
+        return startOfWeek;
+      case "최근 1개월":
+        const startOfMonth = new Date(now);
+        startOfMonth.setMonth(now.getMonth() - 1);
+        return startOfMonth;
+      case "최근 1년":
+        const startOfYear = new Date(now);
+        startOfYear.setFullYear(now.getFullYear() - 1);
+        return startOfYear;
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    let filteredMails = originalMails;
+    const now = new Date();
+
+    switch (selectdDueDateOption) {
+      case "전체":
+        // No filtering
+        break;
+      case "최근 1주일":
+      case "최근 1개월":
+      case "최근 1년":
+        const startDate = getStartOfPeriod(selectdDueDateOption);
+        if (startDate) {
+          filteredMails = originalMails.filter(mail => {
+            const mailDate = new Date(mail.receiveAt);
+            return mailDate >= startDate && mailDate <= now;
+          });
+        }
+        break;
+      default:
+        break;
+    }
+
+    setMails(filteredMails);
+  }, [selectdDueDateOption, originalMails]);
+
+  useEffect(() => {
+    let filteredMails = originalMails;
+
+    if (startDate && endDate) {
+      filteredMails = originalMails.filter(mail => {
+        const mailDate = new Date(mail?.receiveAt);
+        return mailDate >= startDate && mailDate <= endDate;
+      });
+    } else if (startDate) {
+      filteredMails = originalMails.filter(mail => {
+        const mailDate = new Date(mail?.receiveAt);
+        return mailDate >= startDate;
+      });
+    } else if (endDate) {
+      filteredMails = originalMails.filter(mail => {
+        const mailDate = new Date(mail?.receiveAt);
+        return mailDate <= endDate;
+      });
+    }
+
+    setMails(filteredMails);
+  }, [startDate, endDate, originalMails]);
+  
+  const filteredMails = mails?.filter((mail) =>
     mail.subject.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -177,7 +244,7 @@ const Mail = () => {
     return { __html: mail.body };
   };
 
-  const totalPages = Math.ceil(filteredMails.length / postPerPage);
+  const totalPages = Math.ceil(filteredMails?.length / postPerPage);
 
   const toggleDropdown = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -255,12 +322,16 @@ const Mail = () => {
     window.alert("발송을 취소하면 수신자의 메일함에서 메일이 삭제됩니다.\n발송을 취소하시겠습니까?")
   }
 
-  const toggleMailSelection = (mailId: number) => {
-    setSelectedMails((prevSelectedMails) => ({
+  const toggleMailSelection = (mailId: number, messageId: any) => {
+    setSelectedMails(prevSelectedMails => ({
       ...prevSelectedMails,
-      [mailId]: !prevSelectedMails[mailId],
+      [mailId]: {
+        messageId,
+        selected: !prevSelectedMails[mailId]?.selected
+      }
     }));
   };
+  
 
   function formatDate(dateString: string) {
     if (!dateString) return '';
@@ -274,7 +345,38 @@ const Mail = () => {
     const minute = String(date.getMinutes()).padStart(2, '0');
   
     return `${year}.${month}.${day} ${hour}:${minute}`;
-  }
+  };
+  
+  // 메일 삭제
+  const handleDeleteEmail = (mailId: any, messageId: any) => {
+    DeleteEmail(mailId, messageId)
+    .then(response => {
+      console.log('이메일 삭제 성공', response);
+      refetchEmail();
+    })
+    .catch(error => {
+      console.log('이메일 삭제 실패', error);
+    })
+  };
+
+  // 체크박스 메일 삭제
+  const handleDeleteCheckboxEmail = (selectedMails: any) => {
+    Object.keys(selectedMails).forEach(mailId => {
+      if (selectedMails[mailId]?.selected) {
+        const { messageId } = selectedMails[mailId];
+        DeleteEmail(mailId, messageId)
+          .then(response => {
+            console.log('선택된 이메일 삭제 성공', response);
+            setDeleteModalOpen(false);
+            setSelectedMails({});
+            refetchEmail();
+          })
+          .catch(error => {
+            console.log('선택된 이메일 삭제 실패', error);
+          });
+      }
+    });
+  };
   
 
   return (
@@ -413,18 +515,18 @@ const Mail = () => {
             </thead>
             <tbody className="board_container">
               {filteredMails
-                .slice((page - 1) * postPerPage, page * postPerPage)
+                ?.slice((page - 1) * postPerPage, page * postPerPage)
                 .map((mail) => (
                   <>
                     <tr key={mail.Id} className="board_content">
                       <td>
                         <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            checked={allSelected ? allSelected : selectedMails[mail.Id] || false}
-                            onChange={() => toggleMailSelection(mail.Id)}
-                          />
-                          <span></span>
+                        <input
+                          type="checkbox"
+                          checked={allSelected ? allSelected : selectedMails[mail.Id]?.selected || false}
+                          onChange={() => toggleMailSelection(mail.Id, mail.messageId)}
+                        />
+                        <span></span>
                         </label>
                       </td>
                       <td>
@@ -442,14 +544,22 @@ const Mail = () => {
                           </div>
                           {mail.attachment?.length > 0 ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
                         </div>
-                        <span>[{mail.folder === 'inbox' ? '받은 메일함' : '보낸 메일함'}]</span>
-                        <div className={`${clickedMails[mail.Id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.Id)}>
-                          {mail?.subject}--{mail?.Id}
-                          <img src={mail_triangle} alt="mail_triangle" />
-                        </div>
+                        <span>[{mail.folder === 'inbox' ? '받은 메일함' : mail.folder === 'sent' ? '보낸 메일함' : mail.folder === 'starred' ? '중요 메일함' : mail.folder === 'unread' ? '안 읽은 메일' : mail.folder === 'drafts' ? '임시 보관함' : mail.folder === 'junk' ? '스팸 메일함' : ''}]</span>
+                        {mail.folder === 'drafts' ? 
+                          <div onClick={() => navigate('/writeMail', { state: { mail, status: 'DRAFTS' }})}>
+                            {mail?.subject}--{mail?.Id}
+                          </div>
+                        :
+                          <div className={`${clickedMails[mail.Id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.Id)}>
+                            {mail?.subject}--{mail?.Id}
+                            <img src={mail_triangle} alt="mail_triangle" />
+                          </div>
+                        }
                       </td>
-                      <td>1/3 읽음</td>
-                      <td><div>발송 취소</div></td>
+                      <td>{mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div>1/3 읽음</div> : null}</td>
+                      <td>
+                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div>발송 취소</div> : mail.folder === 'reserved' ? <div>예약 취소</div> : null}
+                      </td>
                       <td>
                         {formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}
                       </td>
@@ -469,7 +579,7 @@ const Mail = () => {
                                   <img src={mail_spam} alt="mail_spam" />
                                   {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
                                 </div>
-                                <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={handleSendCancle}>
+                                <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={() => handleDeleteEmail(mail.Id, mail.messageId)}>
                                   <img src={mail_delete} alt="mail_delete" />
                                   {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
                                 </div>
@@ -505,7 +615,7 @@ const Mail = () => {
                                       :
                                       <img src={Down_Arrow} alt="Down_Arrow" />
                                     }
-                                    <span>{`첨부파일 ${mail.attachment.length}`}</span>
+                                    <span>{`첨부파일 ${mail.attachment?.length}`}</span>
                                     <img src={mail_download} alt="mail_download" />
 
                                     {isDownFileVisible && (
@@ -549,12 +659,12 @@ const Mail = () => {
 
                             {mail.folder === 'inbox' ? (
                               <div className="mail_detail_content_bottom">
-                                <button className="white_button" onClick={() => navigate('/writeMail')}>전달</button>
-                                <button className="primary_button" onClick={() => navigate('/writeMail')}>답장</button>
+                                <button className="white_button" onClick={() => navigate('/writeMail', { state: { mail, status: 'FW' }})}>전달</button>
+                                <button className="primary_button" onClick={() => navigate('/writeMail', { state: { mail, status: 'RE' }})}>답장</button>
                               </div>
                             ) : (
                               <div className="mail_detail_content_bottom">
-                                <button className="white_button" onClick={() => navigate('/writeMail')}>전달</button>
+                                <button className="white_button" onClick={() => navigate('/writeMail', { state: { mail, status: 'FW' }})}>전달</button>
                               </div>
                             )}
                           </div>
@@ -573,6 +683,7 @@ const Mail = () => {
         header={"알림"}
         footer1={"삭제"}
         footer1Class="red-btn"
+        onFooter1Click={() => {handleDeleteCheckboxEmail(selectedMails)}}
         footer2={"취소"}
         footer2Class="gray-btn"
         onFooter2Click={() => setDeleteModalOpen(false)}

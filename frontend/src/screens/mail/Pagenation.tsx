@@ -23,7 +23,7 @@ const Pagenation: React.FC<PageProps> = ({
 
   return (
     <div className="mail_pagination">
-      {filteredMails.length > itemsPerPage && (
+      {filteredMails?.length > itemsPerPage && (
         <div className="Pagination">
           <img
             src={LeftIcon}

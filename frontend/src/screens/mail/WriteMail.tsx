@@ -1,5 +1,5 @@
 import React , { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   White_Arrow,
   ModalCloseBtn,
@@ -20,7 +20,9 @@ import { isNull } from "mathjs";
 
 const WriteMail = () => {
   let navigate = useNavigate();
+  const location = useLocation();
   const user = useRecoilValue(userState);
+  const { mail, status } = location.state || {};
   const [persondata, setPersonData] = useState<any[]>([]);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('메일 작성');
@@ -91,6 +93,7 @@ const WriteMail = () => {
   const handleSendEmail = async () => {
     const formData = {
       userId : user.userID,
+      messageId : user.userID + new Date(),
       sender : user.usermail,
       receiver : recipients,
       referrer : referrers,
@@ -269,9 +272,32 @@ const WriteMail = () => {
 
   const handleMailContent = () => {
     const htmlContent = editorRef.current.getInstance().getHTML();
-    console.log(htmlContent)
     setMailContent(htmlContent);
   }
+
+  const formatDate = (sendAt: any) => {
+    const date = new Date(sendAt);
+  
+    // 날짜 형식 지정 (예: 2024-06-13)
+    const datePart = date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      weekday: 'short',
+    });
+  
+    // 시간 형식 지정 (예: 03:37:34)
+    const timePart = date.toLocaleTimeString('ko-KR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  
+    // 타임존 (GMT+09:00) 부분 추가
+    const timeZone = 'GMT+09:00'; // 고정된 시간대를 사용
+  
+    return `${datePart} ${timePart} (${timeZone})`;
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -300,6 +326,42 @@ const WriteMail = () => {
     };
   }, [timeRef]);
   
+  useEffect(() => {
+    if (status === 'DRAFTS') {
+      setRecipients(Array.isArray(mail?.receiver) ? mail?.receiver : []);
+      setReferrers(Array.isArray(mail?.referrer) ? mail?.referrer : []);
+      setMailTitle(mail?.subject);
+    
+      if (editorRef.current && mail?.body) {
+        editorRef.current.getInstance().setHTML(mail.body);
+      }
+    } else if (status === 'FW') {
+      setMailTitle('FW: ' + mail?.subject);
+
+      if (editorRef.current && mail?.body) {
+        editorRef.current.getInstance().setHTML(mail.body);
+      }
+    } else if (status === 'RE') {
+      setRecipients([mail?.sender]);
+      setMailTitle('RE: ' + mail?.subject);
+
+      if (editorRef.current) {
+        const customContent = `
+          <div>-----Original Message-----</div>
+          <div>From: &lt; ${mail?.sender} &gt;</div>
+          <div>To: &lt; ${user?.usermail} &gt;</div>
+          <div>Cc: ${Array.isArray(mail?.referrer) ? mail?.referrer : []}</div>
+          <div>Sent: ${formatDate(mail?.sendAt)}</div>
+          <div>Subject : ${mail?.subject}</div>
+          <br/>
+          <div>${mail?.body}</div>
+        `;
+
+        editorRef.current.getInstance().setHTML(customContent);
+      }
+    }
+  }, [mail, status, user]);
+
   return(
     <div className="content">
       <div className="write_mail_container">
@@ -339,7 +401,7 @@ const WriteMail = () => {
                       <img src={White_Arrow} alt="White_Arrow" />
                       {timeDropdownOpen && (
                         <ul className="time_dropdown">
-                          {timeOptions.map(option => (
+                          {timeOptions?.map(option => (
                             <li key={option} onClick={() => {
                               setSelectedTime(option);
                               setTimeDropdownOpen(false);
@@ -355,7 +417,7 @@ const WriteMail = () => {
                       <img src={White_Arrow} alt="White_Arrow" />
                       {minuteDropdownOpen && (
                         <ul className="time_dropdown">
-                          {minuteOptions.map(option => (
+                          {minuteOptions?.map(option => (
                             <li key={option} onClick={() => {
                               setSelectedMinute(option);
                               setMinuteDropdownOpen(false);
@@ -382,7 +444,7 @@ const WriteMail = () => {
                 </div>
                 {menuIsOpen && (
                   <ul className="dropdown_menu">
-                    {menuOptions.map((option: string) => (
+                    {menuOptions?.map((option: string) => (
                       <li key={option} onClick={() => handleOptionSelect(option)}>
                         {option}
                       </li>
@@ -398,7 +460,7 @@ const WriteMail = () => {
             <div className="write_form">
               <div>받는사람</div>
               <div className={`input_recipients ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
-                {recipients.map((email, index) => (
+                {recipients?.map((email, index) => (
                   <div className="recipient" key={index}>
                     {email}
                     <span className="remove" onClick={() => handleRecipientRemove(email)}>×</span>
@@ -414,7 +476,7 @@ const WriteMail = () => {
                 />
                 {inputValue && (
                   <ul className="autocomplete_dropdown">
-                    {filteredEmails.map(person => (
+                    {filteredEmails?.map(person => (
                       <li key={person.usermail} onClick={() => handleAutoCompleteClick(person.usermail)}>
                         {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
@@ -426,7 +488,7 @@ const WriteMail = () => {
             <div className="write_form">
               <div>참조</div>
               <div className={`input_recipients ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
-                {referrers.map((email, index) => (
+                {referrers?.map((email, index) => (
                   <div className="recipient" key={index}>
                     {email}
                     <span className="remove" onClick={() => handleReferrerRemove(email)}>×</span>
@@ -442,7 +504,7 @@ const WriteMail = () => {
                 />
                 {inputReferrerValue && (
                   <ul className="autocomplete_dropdown">
-                    {filteredReferrerEmails.map(person => (
+                    {filteredReferrerEmails?.map(person => (
                       <li key={person.usermail} onClick={() => handleReferrerAutoCompleteClick(person.usermail)}>
                         {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
@@ -468,7 +530,7 @@ const WriteMail = () => {
                 />
                 {attachments.length > 0 ? (
                   <div className="attachment_list">
-                    {attachments.map((file, index) => (
+                    {attachments?.map((file, index) => (
                       <div key={index} className="attachment_item">
                         <button onClick={(e) => handleRemoveFile(file.name, e)}>×</button>
                         <span>{file.name}</span>
@@ -488,7 +550,7 @@ const WriteMail = () => {
           <div className="write_mail_content_bottom">
             <Editor
               ref={editorRef}
-              initialValue={" "}
+              initialValue={mailContent ? mailContent : ' '}
               height={window.innerWidth >= 1600 ? '43vh' : '35vh'}
               initialEditType="wysiwyg"
               useCommandShortcut={false}
