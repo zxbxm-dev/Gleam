@@ -16,8 +16,8 @@ const CancleReserveEmail = (mailId) => {
 }
 
 // 메일 삭제
-const DeleteEmail = (mailId) => {
-  return api.delete(`/deleteEmail/${mailId}`);
+const DeleteEmail = (mailId, messageId) => {
+  return api.delete(`/deleteEmail/${mailId}/${messageId}`);
 }
 
 
