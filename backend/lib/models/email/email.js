@@ -71,6 +71,10 @@ module.exports = (sequelize, DataTypes) => {
                 values: ['inbox', 'sent', 'starred', 'unread', 'drafts', 'junk', 'queue'],
                 allowNull: false,
                 defaultValue: "inbox",
+            },
+            star : {
+                type: DataTypes.STRING,
+                allowNull: true,
             }
         },
         {
