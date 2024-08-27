@@ -132,9 +132,7 @@ const editMeetingRoom = async (req, res) => {
     console.log("요청 본문:", req.body);
 
     if(!meetingId) {
-        return res
-        .status(400)
-        .json({ message: "회의실 예약 ID가 제공되지 않았습니다." });
+        return res.status(400).json({ message: "회의실 예약 ID가 제공되지 않았습니다." });
     }    
     try{
 
@@ -209,9 +207,7 @@ const editMeetingRoom = async (req, res) => {
         where: { meetingId: meetingId },
     });
     if (!meetingRoom) {
-        return res
-        .status(404)
-        .json({ message: "해당 회의실 예약 정보를 찾을 수 없습니다." });
+        return res.status(404).json({ message: "해당 회의실 예약 정보를 찾을 수 없습니다." });
     }
    
     meetingRoom.title = title;

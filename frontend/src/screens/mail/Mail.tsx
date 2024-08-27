@@ -25,7 +25,7 @@ import Pagenation from "./Pagenation";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { useQuery } from 'react-query';
-import { CheckEmail, DeleteEmail } from "../../services/email/EmailService";
+import { CheckEmail, DeleteEmail, StarringEmail } from "../../services/email/EmailService";
 
 const Mail = () => {
   let navigate = useNavigate();
@@ -145,7 +145,7 @@ const Mail = () => {
         setMails(originalMails?.filter((mail) => mail.folder !== 'junk'));
         break;
       case "중요 메일":
-        setMails(originalMails?.filter((mail) => mail.folder === 'starred'));
+        setMails(originalMails?.filter((mail) => mail.star === 'starred'));
         break;
       case "받은 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'inbox'));
@@ -295,12 +295,20 @@ const Mail = () => {
   };
 
   // 중요 메일
-  const handleMailFixed = (mailId: number) => {
-    setMails((prevMails) =>
-      prevMails.map((mail) =>
-        mail.id === mailId ? { ...mail, important: !mail.important } : mail
-      )
-    );
+  const handleMailStarring = (mailId: number, star: string) => {
+    const formData = {
+      Id: mailId,
+      star: star,
+    }
+    
+    StarringEmail(formData)
+    .then((response) => {
+      console.log('중요 메일 등록 성공', response);
+      refetchEmail();
+    })
+    .catch((error) => {
+      console.log('중요 메일 등록 실패', error);
+    })
   };
 
   const toggleAllCheckboxes = () => {
@@ -539,8 +547,8 @@ const Mail = () => {
                       </td>
                       <td>
                         <div>
-                          <div onClick={() => handleMailFixed(mail.Id)}>
-                            <img src={mail.important ? mail_important_active : mail_important} alt="mail_important" />
+                          <div onClick={() => handleMailStarring(mail.Id, mail.star)}>
+                            <img src={mail.star ? mail_important_active : mail_important} alt="mail_important" />
                           </div>
                           {mail.attachment?.length > 0 ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
                         </div>

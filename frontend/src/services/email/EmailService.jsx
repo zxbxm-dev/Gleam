@@ -20,10 +20,14 @@ const DeleteEmail = (mailId, messageId) => {
   return api.delete(`/deleteEmail/${mailId}/${messageId}`);
 }
 
-
 // 메일 임시 저장
 const DraftEmail = (formData) => {
   return api.post("/draftEmail", formData);
 }
 
-export { SendMail, CheckEmail, CancleReserveEmail, DeleteEmail, DraftEmail };
+// 중요 메일 등록
+const StarringEmail = (formData) => {
+  return api.put("/starringEmail", formData);
+}
+
+export { SendMail, CheckEmail, CancleReserveEmail, DeleteEmail, DraftEmail, StarringEmail };
