@@ -51,6 +51,7 @@ const Mail = () => {
 
   const [mailContentVisibility, setMailContentVisibility] = useState<{ [key: number]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [originalMails, setOriginalMails] = useState<any[]>([]);
   const [mails, setMails] = useState<any[]>([]);
   const [clickedMails, setClickedMails] = useState<{ [key: number]: boolean }>({});
   const [allSelected, setAllSelected] = useState(false);
@@ -124,8 +125,9 @@ const Mail = () => {
   const { refetch : refetchEmail } = useQuery("Email", fetchEmail, {
     enabled: false,
     onSuccess: (data) => {
-      console.log(data.emails);
-      setMails(data?.emails);
+      const reversedEmails = data?.emails.reverse();
+      setOriginalMails(reversedEmails);
+      setMails(reversedEmails);
     },
     onError: (error) => {
       console.log(error);
@@ -133,41 +135,37 @@ const Mail = () => {
   });
 
   useEffect(() => {
+    // 페이지 첫 렌더링 시 전체 메일 데이터를 가져옴
     refetchEmail();
+  }, []);
 
-    // switch (selectdMenuOption) {
-    //   case "전체 메일":
-    //     return (
-    //       setMails(initialMails.filter((mail) => (mail.spam === false)))
-    //     )
-    //   case "중요 메일":
-    //     return (
-    //       setMails(initialMails.filter((mail) => (mail.important === true && mail.spam === false)))
-    //     )
-    //   case "받은 메일함":
-    //     return (
-    //       setMails(initialMails.filter((mail) => (mail.mailType === '받은 메일함' && mail.spam === false)))
-    //     )
-    //   case "보낸 메일함":
-    //     return (
-    //       setMails(initialMails.filter((mail) => (mail.mailType === '보낸 메일함' && mail.spam === false)))
-    //     )
-    //   case "안 읽은 메일":
-    //     return (
-    //       // 안 읽은 메일 처리 (Clicked 타입 boolean 으로 설정)
-    //       setMails(initialMails)
-    //     )
-    //   case "임시 보관함":
-    //     return (
-    //       // 임시 보관메일 처리
-    //       setMails(initialMails)
-    //     )
-    //   case "스팸 메일함":
-    //     return (
-    //       setMails(initialMails.filter((mail) => mail.spam === true))
-    //     )
-    // }
-  }, [selectdMenuOption]);
+  useEffect(() => {
+    switch (selectdMenuOption) {
+      case "전체 메일":
+        setMails(originalMails.filter((mail) => mail.folder !== 'junk'));
+        break;
+      case "중요 메일":
+        setMails(originalMails.filter((mail) => mail.folder === 'starred'));
+        break;
+      case "받은 메일함":
+        setMails(originalMails.filter((mail) => mail.folder === 'inbox'));
+        break;
+      case "보낸 메일함":
+        setMails(originalMails.filter((mail) => mail.folder === 'sent'));
+        break;
+      case "안 읽은 메일":
+        setMails(originalMails.filter((mail) => mail.folder === 'unread'));
+        break;
+      case "임시 보관함":
+        setMails(originalMails.filter((mail) => mail.folder === 'drafts'));
+        break;
+      case "스팸 메일함":
+        setMails(originalMails.filter((mail) => mail.folder === 'junk'));
+        break;
+      default:
+        setMails(originalMails);
+    }
+  }, [selectdMenuOption, originalMails]);
 
   const filteredMails = mails.filter((mail) =>
     mail.subject.toLowerCase().includes(searchTerm.toLowerCase())
@@ -442,14 +440,22 @@ const Mail = () => {
                           </div>
                           {mail.attachment?.length > 0 ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
                         </div>
-                        <span>[{mail.folder === 'inbox' ? '받은 메일함' : '보낸 메일함'}]</span>
-                        <div className={`${clickedMails[mail.Id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.Id)}>
-                          {mail?.subject}--{mail?.Id}
-                          <img src={mail_triangle} alt="mail_triangle" />
-                        </div>
+                        <span>[{mail.folder === 'inbox' ? '받은 메일함' : mail.folder === 'sent' ? '보낸 메일함' : mail.folder === 'starred' ? '중요 메일함' : mail.folder === 'unread' ? '안 읽은 메일' : mail.folder === 'drafts' ? '임시 보관함' : mail.folder === 'junk' ? '스팸 메일함' : ''}]</span>
+                        {mail.folder === 'drafts' ? 
+                          <div onClick={() => navigate('/writeMail', { state: { mail }})}>
+                            {mail?.subject}--{mail?.Id}
+                          </div>
+                        :
+                          <div className={`${clickedMails[mail.Id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.Id)}>
+                            {mail?.subject}--{mail?.Id}
+                            <img src={mail_triangle} alt="mail_triangle" />
+                          </div>
+                        }
                       </td>
-                      <td>1/3 읽음</td>
-                      <td><div>발송 취소</div></td>
+                      <td>{mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div>1/3 읽음</div> : null}</td>
+                      <td>
+                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div>발송 취소</div> : mail.folder === 'reserved' ? <div>예약 취소</div> : null}
+                      </td>
                       <td>
                         {formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}
                       </td>
