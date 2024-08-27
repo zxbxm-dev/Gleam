@@ -34,11 +34,12 @@ const draftEmails = async (req, res) => {
             attachment,
             folder: 'drafts'
         })
-        res.status(200).json({message:"이메일 임시저장이 성공적으로 완료되었습니다.",newDraftEmail:newDraftEmail});
         console.log(`이메일 임시저장 완료`);
+        return res.status(200).json({message:"이메일 임시저장이 성공적으로 완료되었습니다.",newDraftEmail:newDraftEmail});
+  
     }catch(error){
         console.error("이메일을 임시저장 하는 도중 에러 발생",error);
-        res.status(500).json({message: "이메일을 임시저장 하는 도중 오류가 발생했습니다."});
+        return res.status(500).json({message: "이메일을 임시저장 하는 도중 오류가 발생했습니다."});
     };
 };
 
@@ -58,7 +59,7 @@ const deleteDraftEmail = async (req, res, Id) => {
     };
   }catch(error){
     console.error("임시저장 이메일 삭제 도중 오류 발생", error);
-    res.status(500).json({message:"임시저장 이메일 삭제 도중 오류가 발생했습니다."});
+    return res.status(500).json({message:"임시저장 이메일 삭제 도중 오류가 발생했습니다."});
   }
 };
 
