@@ -167,6 +167,75 @@ const Mail = () => {
     }
   }, [selectdMenuOption, originalMails]);
 
+  const getStartOfPeriod = (period: string) => {
+    const now = new Date();
+    switch (period) {
+      case "최근 1주일":
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - 7);
+        return startOfWeek;
+      case "최근 1개월":
+        const startOfMonth = new Date(now);
+        startOfMonth.setMonth(now.getMonth() - 1);
+        return startOfMonth;
+      case "최근 1년":
+        const startOfYear = new Date(now);
+        startOfYear.setFullYear(now.getFullYear() - 1);
+        return startOfYear;
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    let filteredMails = originalMails;
+    const now = new Date();
+
+    switch (selectdDueDateOption) {
+      case "전체":
+        // No filtering
+        break;
+      case "최근 1주일":
+      case "최근 1개월":
+      case "최근 1년":
+        const startDate = getStartOfPeriod(selectdDueDateOption);
+        if (startDate) {
+          filteredMails = originalMails.filter(mail => {
+            const mailDate = new Date(mail.receiveAt);
+            return mailDate >= startDate && mailDate <= now;
+          });
+        }
+        break;
+      default:
+        break;
+    }
+
+    setMails(filteredMails);
+  }, [selectdDueDateOption, originalMails]);
+
+  useEffect(() => {
+    let filteredMails = originalMails;
+
+    if (startDate && endDate) {
+      filteredMails = originalMails.filter(mail => {
+        const mailDate = new Date(mail?.receiveAt);
+        return mailDate >= startDate && mailDate <= endDate;
+      });
+    } else if (startDate) {
+      filteredMails = originalMails.filter(mail => {
+        const mailDate = new Date(mail?.receiveAt);
+        return mailDate >= startDate;
+      });
+    } else if (endDate) {
+      filteredMails = originalMails.filter(mail => {
+        const mailDate = new Date(mail?.receiveAt);
+        return mailDate <= endDate;
+      });
+    }
+
+    setMails(filteredMails);
+  }, [startDate, endDate, originalMails]);
+  
   const filteredMails = mails?.filter((mail) =>
     mail.subject.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -477,7 +546,7 @@ const Mail = () => {
                         </div>
                         <span>[{mail.folder === 'inbox' ? '받은 메일함' : mail.folder === 'sent' ? '보낸 메일함' : mail.folder === 'starred' ? '중요 메일함' : mail.folder === 'unread' ? '안 읽은 메일' : mail.folder === 'drafts' ? '임시 보관함' : mail.folder === 'junk' ? '스팸 메일함' : ''}]</span>
                         {mail.folder === 'drafts' ? 
-                          <div onClick={() => navigate('/writeMail', { state: { mail }})}>
+                          <div onClick={() => navigate('/writeMail', { state: { mail, status: 'DRAFTS' }})}>
                             {mail?.subject}--{mail?.Id}
                           </div>
                         :
@@ -590,12 +659,12 @@ const Mail = () => {
 
                             {mail.folder === 'inbox' ? (
                               <div className="mail_detail_content_bottom">
-                                <button className="white_button" onClick={() => navigate('/writeMail')}>전달</button>
-                                <button className="primary_button" onClick={() => navigate('/writeMail')}>답장</button>
+                                <button className="white_button" onClick={() => navigate('/writeMail', { state: { mail, status: 'FW' }})}>전달</button>
+                                <button className="primary_button" onClick={() => navigate('/writeMail', { state: { mail, status: 'RE' }})}>답장</button>
                               </div>
                             ) : (
                               <div className="mail_detail_content_bottom">
-                                <button className="white_button" onClick={() => navigate('/writeMail')}>전달</button>
+                                <button className="white_button" onClick={() => navigate('/writeMail', { state: { mail, status: 'FW' }})}>전달</button>
                               </div>
                             )}
                           </div>

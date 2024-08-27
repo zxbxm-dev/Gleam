@@ -22,7 +22,7 @@ const WriteMail = () => {
   let navigate = useNavigate();
   const location = useLocation();
   const user = useRecoilValue(userState);
-  const { mail } = location.state || {};
+  const { mail, status } = location.state || {};
   const [persondata, setPersonData] = useState<any[]>([]);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('메일 작성');
@@ -272,9 +272,32 @@ const WriteMail = () => {
 
   const handleMailContent = () => {
     const htmlContent = editorRef.current.getInstance().getHTML();
-    console.log(htmlContent)
     setMailContent(htmlContent);
   }
+
+  const formatDate = (sendAt: any) => {
+    const date = new Date(sendAt);
+  
+    // 날짜 형식 지정 (예: 2024-06-13)
+    const datePart = date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      weekday: 'short',
+    });
+  
+    // 시간 형식 지정 (예: 03:37:34)
+    const timePart = date.toLocaleTimeString('ko-KR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  
+    // 타임존 (GMT+09:00) 부분 추가
+    const timeZone = 'GMT+09:00'; // 고정된 시간대를 사용
+  
+    return `${datePart} ${timePart} (${timeZone})`;
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -304,14 +327,40 @@ const WriteMail = () => {
   }, [timeRef]);
   
   useEffect(() => {
-    setRecipients(Array.isArray(mail?.receiver) ? mail?.receiver : []);
-    setReferrers(Array.isArray(mail?.referrer) ? mail?.referrer : []);
-    setMailTitle(mail?.subject);
-  
-    if (editorRef.current && mail?.body) {
-      editorRef.current.getInstance().setHTML(mail.body);
+    if (status === 'DRAFTS') {
+      setRecipients(Array.isArray(mail?.receiver) ? mail?.receiver : []);
+      setReferrers(Array.isArray(mail?.referrer) ? mail?.referrer : []);
+      setMailTitle(mail?.subject);
+    
+      if (editorRef.current && mail?.body) {
+        editorRef.current.getInstance().setHTML(mail.body);
+      }
+    } else if (status === 'FW') {
+      setMailTitle('FW: ' + mail?.subject);
+
+      if (editorRef.current && mail?.body) {
+        editorRef.current.getInstance().setHTML(mail.body);
+      }
+    } else if (status === 'RE') {
+      setRecipients([mail?.sender]);
+      setMailTitle('RE: ' + mail?.subject);
+
+      if (editorRef.current) {
+        const customContent = `
+          <div>-----Original Message-----</div>
+          <div>From: &lt; ${mail?.sender} &gt;</div>
+          <div>To: &lt; ${user?.usermail} &gt;</div>
+          <div>Cc: ${Array.isArray(mail?.referrer) ? mail?.referrer : []}</div>
+          <div>Sent: ${formatDate(mail?.sendAt)}</div>
+          <div>Subject : ${mail?.subject}</div>
+          <br/>
+          <div>${mail?.body}</div>
+        `;
+
+        editorRef.current.getInstance().setHTML(customContent);
+      }
     }
-  }, [mail]);
+  }, [mail, status, user]);
 
   return(
     <div className="content">
