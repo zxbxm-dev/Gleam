@@ -16,10 +16,21 @@ export interface ChatRoom {
   hostUserId: string;
   invitedUserIds: string[];
   title: string;
+  userTitle?: {
+    [userId: string]: {
+      userId: string;
+      username: string;
+      company: string | null;
+      department: string | null;
+      team: string | null;
+      position: string | null;
+      spot: string | null;
+      attachment: string | null;
+    };
+  };
   subContent: string;
   profileColor: string;
   profileImage: string | null;
-  userTitle?: { [userId: string]: string };
   crt: string;
   upt: string;
   dataValues?: {
@@ -78,25 +89,29 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [currentRoomId, setCurrentRoomId] = useState<number | null>(null);
   const [popovers, setPopovers] = useState<{ [key: number]: boolean }>({});
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
-
+  // chatRooms.forEach(room => {
+  //   if (room.dataValues) {
+  //     console.log(room.dataValues);
+  //   }
+  // });
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
     const roomId = chatRoom.dataValues?.roomId ?? -1;
-    
+
     console.log(roomId);
- 
+
     setSelectedRoomId(roomId);
-    
+
     onPersonClick(
-      chatRoom.title,
+      chatRoom.dataValues?.title ?? "",
       "",
       "",
       "",
       chatRoom.hostUserId
     );
-    
+
     setIsNotibarActive(false);
   };
-  
+
   const handleMessageMenuClick = (roomId: number) => {
     setPopovers(prev => ({
       ...prev,
@@ -178,9 +193,13 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                         alt="User Icon"
                       />
                     </div>
-                    <p>
-                      {chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}
-                    </p>
+                    {chatRoom.dataValues ? (
+                      <p>
+                        {chatRoom.dataValues.isGroup ? `Group: ${chatRoom.dataValues.title}` : chatRoom.dataValues.title}
+                      </p>
+                    ) : (
+                      <p>{chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}</p>
+                    )}
                   </div>
                   <img
                     className="Message-Menu"
@@ -196,7 +215,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                 style={{ display: popovers[roomId] ? "block" : "none" }}
               >
                 {currentRoomId === roomId && (
-                  chatRoom.isGroup ? (
+                  chatRoom.dataValues?.isGroup ? (
                     <div className={`Message-OnClick-Menu`}>
                       <div
                         className="ProfileChange"
@@ -214,7 +233,6 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             </div>
           );
         })}
-      
       <SetProfile
         openProfile={openProfile}
         setOpenProfile={setOpenProfile}

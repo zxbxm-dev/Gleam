@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { PersonData } from "../../../services/person/PersonServices";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userState, selectedPersonState, userStateMessage } from "../../../recoil/atoms";
+import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
+import { userState, selectedPersonState, userStateMessage, selectedRoomIdState } from "../../../recoil/atoms";
 import {
   ChatTab,
   PersonTab,
@@ -30,6 +30,7 @@ const MessageSidebar: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null); // Socket 타입 사용
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const [expandedDepartments, setExpandedDepartments] = useState<{
     [key: string]: boolean;
   }>({});
@@ -55,7 +56,14 @@ const MessageSidebar: React.FC = () => {
   const setUserStatetoServer = useSetRecoilState(userStateMessage);
   const location = useLocation();
 
-  //personData - side fetch
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSelectedRoomId(-2);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [setSelectedRoomId]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -99,27 +107,29 @@ const MessageSidebar: React.FC = () => {
     socket.emit('registerUser', userId);
   
     socket.on('connect', () => {
-      console.log(`[Client] Connected to socket server with id: ${socket.id}`);
+      console.log(`[Client] Socket 서버에 연결됨: ${socket.id}`);
     });
   
+    // 채팅 방 요청
     socket.emit('getChatRooms', userId);
   
+    // 채팅 방 데이터 수신
     socket.on('chatRooms', (data: ChatRoom[]) => {
+      // Map data to match ChatRoom type
       const updatedRooms = data.map((room: ChatRoom) => {
-        const title = room.userTitle?.[userId] || room.title;
+        const title = room.userTitle?.[userId]?.username || room.title;
         return { ...room, title };
       });
       setChatRooms(updatedRooms);
-      console.log(updatedRooms);
-      
+      console.log("업데이트된 채팅 방:", updatedRooms);
     });
   
     socket.on('disconnect', () => {
-      console.log('[Client] Disconnected from socket server');
+      console.log('[Client] Socket 서버와의 연결 끊김');
     });
   
     socket.on('connect_error', (error) => {
-      console.error('Connection error:', error);
+      console.error('연결 오류:', error);
     });
   
     return () => {
@@ -260,17 +270,17 @@ const MessageSidebar: React.FC = () => {
     const socket = io('http://localhost:3001', {
       transports: ['websocket'],
     });
-  
+
     // console.log("Emitting user status to server:", {
     //   status: MsguserState.state,
     //   borderColor
     // });
     socket.emit('userStatus', { status: MsguserState.state, borderColor });
-  
+
     return () => {
       socket.disconnect();
     };
-  }, [MsguserState.state, borderColor]); 
+  }, [MsguserState.state, borderColor]);
 
   return (
     <div className="message-sidebar">

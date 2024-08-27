@@ -12,8 +12,8 @@ import {
   Portal,
   PopoverContent,
 } from "@chakra-ui/react";
-import { selectedRoomIdState } from "../../../recoil/atoms";
-import { useRecoilState } from "recoil";
+import { selectedRoomIdState, userState } from "../../../recoil/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { ChatRoom } from "./ChatTab";
 
 interface PersonDataTabProps {
@@ -52,6 +52,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
   const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
+  const user = useRecoilValue(userState);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   //hostUserIds -> 받아오는 상대방의 ID로 변경
@@ -66,6 +67,17 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
       }
     }
   }, [selectedUserId, chatRooms]);
+
+  // useEffect(() => {
+  //   if (chatRooms.length > 0) {
+  //     const firstChatRoom = chatRooms[0];
+  //     const userTitle = firstChatRoom.userTitle || {};
+  //     const keys = Object.keys(userTitle);
+  //     const lastKey = keys[keys.length - 1];
+  //     const lastUserInfo = userTitle[lastKey];
+  //     setMatchChatuserId(lastUserInfo.userId);
+  //   }
+  // }, [chatRooms]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -103,6 +115,12 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     "동형분석 연구실": ["동형분석 연구팀"],
     "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
   };
+
+// const matchUserRoomId = () => {
+//   if(setSelectedUserId === user.userId) {
+//     setSelectedRoomId(0);
+//   } else if (setSelectedUserId)
+// }
 
   return (
     <ul className="Sidebar-Ms">
