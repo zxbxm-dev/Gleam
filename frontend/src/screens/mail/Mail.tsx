@@ -55,7 +55,7 @@ const Mail = () => {
   const [mails, setMails] = useState<any[]>([]);
   const [clickedMails, setClickedMails] = useState<{ [key: number]: boolean }>({});
   const [allSelected, setAllSelected] = useState(false);
-  const [selectedMails, setSelectedMails] = useState<{ [key: number]: boolean }>({});
+  const [selectedMails, setSelectedMails] = useState<{ [key: number]: { messageId: any; selected: boolean } }>({});
 
   const itemsPerPage = 10;
 
@@ -253,12 +253,16 @@ const Mail = () => {
     window.alert("발송을 취소하면 수신자의 메일함에서 메일이 삭제됩니다.\n발송을 취소하시겠습니까?")
   }
 
-  const toggleMailSelection = (mailId: number) => {
-    setSelectedMails((prevSelectedMails) => ({
+  const toggleMailSelection = (mailId: number, messageId: any) => {
+    setSelectedMails(prevSelectedMails => ({
       ...prevSelectedMails,
-      [mailId]: !prevSelectedMails[mailId],
+      [mailId]: {
+        messageId,
+        selected: !prevSelectedMails[mailId]?.selected
+      }
     }));
   };
+  
 
   function formatDate(dateString: string) {
     if (!dateString) return '';
@@ -275,8 +279,8 @@ const Mail = () => {
   };
   
   // 메일 삭제
-  const handleDeleteEmail = (mailId: any) => {
-    DeleteEmail(mailId)
+  const handleDeleteEmail = (mailId: any, messageId: any) => {
+    DeleteEmail(mailId, messageId)
     .then(response => {
       console.log('이메일 삭제 성공', response);
       refetchEmail();
@@ -286,23 +290,25 @@ const Mail = () => {
     })
   };
 
-  // 체크박스 선택된 메일 삭제
+  // 체크박스 메일 삭제
   const handleDeleteCheckboxEmail = (selectedMails: any) => {
     Object.keys(selectedMails).forEach(mailId => {
-      if (selectedMails[mailId]) {
-        DeleteEmail(mailId)
-        .then(response => {
-          console.log('선택된 이메일 삭제 성공', response);
-          setDeleteModalOpen(false);
-          setSelectedMails({});
-          refetchEmail();
-        })
-        .catch(error => {
-          console.log('선택된 이메일 삭제 실패', error);
-        })
+      if (selectedMails[mailId]?.selected) {
+        const { messageId } = selectedMails[mailId];
+        DeleteEmail(mailId, messageId)
+          .then(response => {
+            console.log('선택된 이메일 삭제 성공', response);
+            setDeleteModalOpen(false);
+            setSelectedMails({});
+            refetchEmail();
+          })
+          .catch(error => {
+            console.log('선택된 이메일 삭제 실패', error);
+          });
       }
-    })
+    });
   };
+  
 
   return (
     <div className="content">
@@ -446,12 +452,12 @@ const Mail = () => {
                     <tr key={mail.Id} className="board_content">
                       <td>
                         <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            checked={allSelected ? allSelected : selectedMails[mail.Id] || false}
-                            onChange={() => toggleMailSelection(mail.Id)}
-                          />
-                          <span></span>
+                        <input
+                          type="checkbox"
+                          checked={allSelected ? allSelected : selectedMails[mail.Id]?.selected || false}
+                          onChange={() => toggleMailSelection(mail.Id, mail.messageId)}
+                        />
+                        <span></span>
                         </label>
                       </td>
                       <td>
@@ -504,7 +510,7 @@ const Mail = () => {
                                   <img src={mail_spam} alt="mail_spam" />
                                   {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
                                 </div>
-                                <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={() => handleDeleteEmail(mail.Id)}>
+                                <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={() => handleDeleteEmail(mail.Id, mail.messageId)}>
                                   <img src={mail_delete} alt="mail_delete" />
                                   {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
                                 </div>
