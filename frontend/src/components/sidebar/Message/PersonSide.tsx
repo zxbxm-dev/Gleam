@@ -66,18 +66,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
         setSelectedRoomId(Number(matchingRoom.roomId));
       }
     }
-  }, [selectedUserId, chatRooms]);
-
-  // useEffect(() => {
-  //   if (chatRooms.length > 0) {
-  //     const firstChatRoom = chatRooms[0];
-  //     const userTitle = firstChatRoom.userTitle || {};
-  //     const keys = Object.keys(userTitle);
-  //     const lastKey = keys[keys.length - 1];
-  //     const lastUserInfo = userTitle[lastKey];
-  //     setMatchChatuserId(lastUserInfo.userId);
-  //   }
-  // }, [chatRooms]);
+  }, [selectedUserId]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -115,12 +104,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     "동형분석 연구실": ["동형분석 연구팀"],
     "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
   };
-
-// const matchUserRoomId = () => {
-//   if(setSelectedUserId === user.userId) {
-//     setSelectedRoomId(0);
-//   } else if (setSelectedUserId)
-// }
 
   return (
     <ul className="Sidebar-Ms">

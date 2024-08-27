@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { SideUp, SideDown, UserIcon_dark } from "../../assets/images/index";
 import { PersonData } from "../../services/person/PersonServices";
 
-interface Person {
+export interface Person {
   userId: string;
   username: string;
   position: string;
