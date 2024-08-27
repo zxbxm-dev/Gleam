@@ -9,7 +9,7 @@ import {
 } from "../../assets/images/index";
 import io from 'socket.io-client';
 import { useRecoilValue } from 'recoil';
-import { selectedRoomIdState } from '../../recoil/atoms';
+import { selectedRoomIdState, userState } from '../../recoil/atoms';
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 import { Message } from './Message';
@@ -85,13 +85,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const [serverMessages, setServerMessages] = useState<any[]>([]);
-  const [messageMetadata, setMessageMetadata] = useState<{ createdAt: string[]; userInfo: string[] }>({
+  const [messageMetadata, setMessageMetadata] = useState<{ createdAt: string[]; userInfo: string[]; usersAttachment: string[]; }>({
     createdAt: [],
     userInfo: [],
+    usersAttachment: [],
   });
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [personData, setPersonData] = useState<Person[] | null>(null);
-  const socket = io('http://localhost:3001', { transports: ["websocket"] });
+  const user = useRecoilValue(userState);
 
   const fetchPersonData = useCallback(async () => {
     try {
@@ -110,18 +111,29 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   useEffect(() => {
     if (personData && serverMessages.length > 0) {
+      // userId를 사용자 정보(팀/부서 + 사용자 이름)로 매핑
       const userToInfoMap = personData.reduce((map, person) => {
         map.set(person.userId, `${person.team ? person.team : person.department} ${person.username}`);
         return map;
       }, new Map<string, string>());
 
-      const newUserInfos = serverMessages.map(msg => userToInfoMap.get(msg.userId) || 'Unknown User');
+      // userId를 attachment로 매핑 (없으면 UserIcon_dark)
+      const userToAttachMap = personData.reduce((map, person) => {
+        map.set(person.userId, person.attachment || UserIcon_dark);
+        return map;
+      }, new Map<string, string>());
+
+      const newUserInfos = serverMessages.map(msg => userToInfoMap.get(msg.userId) || '알 수 없는 사용자');
       const createdAt = serverMessages.map(msg => formatTime(msg.timestamp));
-      setMessageMetadata({ userInfo: newUserInfos, createdAt });
+      const usersAttachment = serverMessages.map(msg => userToAttachMap.get(msg.userId) || UserIcon_dark);
+
+      setMessageMetadata({ userInfo: newUserInfos, createdAt, usersAttachment });
     }
   }, [personData, serverMessages]);
 
   useEffect(() => {
+    const socket = io('http://localhost:3001', { transports: ["websocket"] });
+
     socket.emit('getChatHistory', selectedRoomId);
 
     socket.on('chatHistory', (messages: any[]) => {
@@ -161,16 +173,22 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       {selectedRoomId !== -2 ? (
         serverMessages.map((msg, index) => (
           <div key={index} className="Message">
-            <img src={UserIcon_dark} alt="User Icon" />
-            <div className="RightBox">
-              <div>{messageMetadata.userInfo[index]}</div>
-              <div className="MsgTimeBox">
-                <div className="MsgBox">{msg.content || ""}</div>
-                <div className="MsgTime">
-                  <div className="ViewCount">1</div>
-                  {messageMetadata.createdAt[index]}
+            <img src={messageMetadata.usersAttachment[index]} className='userCircleIcon' alt="User Icon" />
+            <div className='CountBox'>
+              <div className="RightBox">
+                <div>{messageMetadata.userInfo[index]}</div>
+                <div className="MsgTimeBox">
+                  {messageMetadata.userInfo[index] &&
+                    <div className={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
+                      {msg.content || ""}
+                    </div>
+                  }
+                  <div className="MsgTime">
+                    {messageMetadata.createdAt[index]}
+                  </div>
                 </div>
               </div>
+              <div className="ViewCount">1</div>
             </div>
           </div>
         ))
