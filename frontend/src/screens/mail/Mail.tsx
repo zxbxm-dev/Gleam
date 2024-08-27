@@ -25,7 +25,7 @@ import Pagenation from "./Pagenation";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { useQuery } from 'react-query';
-import { CheckEmail } from "../../services/email/EmailService";
+import { CheckEmail, DeleteEmail } from "../../services/email/EmailService";
 
 const Mail = () => {
   let navigate = useNavigate();
@@ -272,8 +272,37 @@ const Mail = () => {
     const minute = String(date.getMinutes()).padStart(2, '0');
   
     return `${year}.${month}.${day} ${hour}:${minute}`;
-  }
+  };
   
+  // 메일 삭제
+  const handleDeleteEmail = (mailId: any) => {
+    DeleteEmail(mailId)
+    .then(response => {
+      console.log('이메일 삭제 성공', response);
+      refetchEmail();
+    })
+    .catch(error => {
+      console.log('이메일 삭제 실패', error);
+    })
+  };
+
+  // 체크박스 선택된 메일 삭제
+  const handleDeleteCheckboxEmail = (selectedMails: any) => {
+    Object.keys(selectedMails).forEach(mailId => {
+      if (selectedMails[mailId]) {
+        DeleteEmail(mailId)
+        .then(response => {
+          console.log('선택된 이메일 삭제 성공', response);
+          setDeleteModalOpen(false);
+          setSelectedMails({});
+          refetchEmail();
+        })
+        .catch(error => {
+          console.log('선택된 이메일 삭제 실패', error);
+        })
+      }
+    })
+  };
 
   return (
     <div className="content">
@@ -475,7 +504,7 @@ const Mail = () => {
                                   <img src={mail_spam} alt="mail_spam" />
                                   {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
                                 </div>
-                                <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={handleSendCancle}>
+                                <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={() => handleDeleteEmail(mail.Id)}>
                                   <img src={mail_delete} alt="mail_delete" />
                                   {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
                                 </div>
@@ -579,6 +608,7 @@ const Mail = () => {
         header={"알림"}
         footer1={"삭제"}
         footer1Class="red-btn"
+        onFooter1Click={() => {handleDeleteCheckboxEmail(selectedMails)}}
         footer2={"취소"}
         footer2Class="gray-btn"
         onFooter2Click={() => setDeleteModalOpen(false)}

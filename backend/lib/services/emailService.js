@@ -31,7 +31,7 @@ async function fetchMailcowEmails(userId) {
 
         imap.openBox('INBOX', true, (err, box) => {
             // 읽지 않은 메일만 검색
-            imap.search(['UNSEEN'], (err, results) => {
+            imap.search(['SEEN'], (err, results) => {
                 if (err) throw err;
 
                 if (results.length === 0) {
