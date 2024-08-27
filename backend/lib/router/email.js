@@ -4,6 +4,7 @@ module.exports = (app) => {
     const getEmailController = require("../controller/email/checkEmail");
     const sendEmailController = require("../controller/email/sendEmail");
     const draftEmailController = require("../controller/email/draftEmail");
+    const emailActionController = require("../controller/email/emailAction");
 
     const express = require("express");
     const router = express.Router();
@@ -11,10 +12,13 @@ module.exports = (app) => {
         // ⚠️⚠️ 이메일 router  ⚠️⚠️
         router.get("/checkEmail/:userId",getEmailController.getAllEmail);
         router.post("/sendEmail",sendEmailController.sendMail);
-        router.delete("/deleteEmail/:Id",getEmailController.deleteEmail);
+        router.delete("/deleteEmail/:Id/:messageId",getEmailController.deleteEmail);
         
         //이메일 임시저장하기
         router.post("/draftEmail",draftEmailController.draftEmails);
+
+        //중요 이메일 등록하기 
+        router.put("/starringEmail",emailActionController.starringEmail);
 
         app.use("/api", router);
 };
