@@ -370,7 +370,9 @@
     }
 
     .write_mail_content_bottom {
-      @include custom-scrollbar();
+      div {
+        @include custom-scrollbar();
+      }
     }
   }
 }
