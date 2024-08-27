@@ -162,5 +162,4 @@ const sendDraftEmail = async ( req,res ) => {
 module.exports = {
     sendMail,
     sendDraftEmail,
-    sendQueueEmail,
 }
