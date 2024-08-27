@@ -640,7 +640,7 @@ const Mail = () => {
                               </div>
                               <div>
                                 <div>받는 사람 :</div>
-                                <div>{mail.receiver}</div>
+                                <div>{Array.isArray(mail.receiver) ? mail.receiver?.join(', ') : [mail.receiver?.replace(/[\[\]"]+/g, '')]}</div>
                                 <div
                                   className="recipient_hover"
                                   onMouseEnter={() => setIsRecipientHover(true)}
