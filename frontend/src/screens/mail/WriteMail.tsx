@@ -304,14 +304,14 @@ const WriteMail = () => {
   }, [timeRef]);
   
   useEffect(() => {
-    setRecipients(mail?.receiver);
-    setReferrers(mail?.referrer);
+    setRecipients(Array.isArray(mail?.receiver) ? mail?.receiver : []);
+    setReferrers(Array.isArray(mail?.referrer) ? mail?.referrer : []);
     setMailTitle(mail?.subject);
-
+  
     if (editorRef.current && mail?.body) {
       editorRef.current.getInstance().setHTML(mail.body);
     }
-  },[mail])
+  }, [mail]);
 
   return(
     <div className="content">
