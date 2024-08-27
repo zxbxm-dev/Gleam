@@ -1,5 +1,5 @@
 import React , { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   White_Arrow,
   ModalCloseBtn,
@@ -20,7 +20,9 @@ import { isNull } from "mathjs";
 
 const WriteMail = () => {
   let navigate = useNavigate();
+  const location = useLocation();
   const user = useRecoilValue(userState);
+  const { mail } = location.state || {};
   const [persondata, setPersonData] = useState<any[]>([]);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('메일 작성');
@@ -91,6 +93,7 @@ const WriteMail = () => {
   const handleSendEmail = async () => {
     const formData = {
       userId : user.userID,
+      messageId : user.userID + new Date(),
       sender : user.usermail,
       receiver : recipients,
       referrer : referrers,
@@ -300,6 +303,16 @@ const WriteMail = () => {
     };
   }, [timeRef]);
   
+  useEffect(() => {
+    setRecipients(mail?.receiver);
+    setReferrers(mail?.referrer);
+    setMailTitle(mail?.subject);
+    
+    if (editorRef.current && mail?.body) {
+      editorRef.current.getInstance().setHTML(mail.body);
+    }
+  },[mail])
+
   return(
     <div className="content">
       <div className="write_mail_container">
@@ -488,7 +501,7 @@ const WriteMail = () => {
           <div className="write_mail_content_bottom">
             <Editor
               ref={editorRef}
-              initialValue={" "}
+              initialValue={mailContent ? mailContent : ' '}
               height={window.innerWidth >= 1600 ? '43vh' : '35vh'}
               initialEditType="wysiwyg"
               useCommandShortcut={false}
