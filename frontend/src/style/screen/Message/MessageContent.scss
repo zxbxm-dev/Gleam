@@ -12,6 +12,7 @@
     align-items: center;
     justify-content: space-between;
     font-family: var(--font-family-Noto-M);
+
     div {
       display: flex;
       flex-direction: row;
@@ -21,6 +22,7 @@
     .UpperIconBar {
       margin-right: 25px;
       gap: 15px;
+
       .UserManagementIcon,
       .SearchIcon {
         cursor: pointer;
@@ -34,6 +36,7 @@
     position: relative;
     height: calc(100vh - 170px);
     overflow-y: auto;
+
     &::-webkit-scrollbar {
       width: 3px;
     }
@@ -57,18 +60,36 @@
       font-family: var(--font-family-Noto-M);
       margin-bottom: 30px;
 
+      .userCircleIcon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50px;
+      }
+
       .RightBox {
         margin-left: 9px;
         display: flex;
         flex-direction: column;
         gap: 7px;
 
+        .MsgTimeBox {
+          display: flex;
+          align-items: flex-end;
+
+          .MsgTime {
+            margin-left: 5px;
+            font-size: 14px;
+            color: #929292;
+          }
+        }
+
         .NoticeBox {
           position: relative;
-          width: 621px;
-          background-color: #efefef;
+          max-width: 800px;
           color: #323232;
           gap: 15px;
+          padding: 13px 17px;
+          border-radius: 0px 5px 5px 5px;
 
           .NoticeTitle {
             font-weight: 500;
@@ -90,40 +111,102 @@
             height: 100%;
           }
 
-          &.Mail:after {
-            background-color: #ff8181;
+          &.Mail {
+            background-color: #FFECEC;
           }
 
-          &.WorkReport:after {
-            background-color: #916aff;
+          &.WorkReport {
+            background-color: #EFE9FF;
           }
 
-          &.Schedule:after {
-            background-color: #6ac9ff;
-          }
-        }
-
-        .MsgTimeBox {
-          display: flex;
-          align-items: flex-end;
-
-          .MsgBox {
-            background-color: rgba(69, 197, 82, 0.75);
-            padding: 12px 36px 13px 17px;
-            border-radius: 0px 5px 5px 5px;
-          }
-
-          .MsgTime {
-            margin-left: 11px;
-            font-size: 14px;
-            color: #929292;
-            .ViewCount {
-              text-align: end;
-            }
+          &.Schedule {
+            background-color: #E9F7FF;
           }
         }
       }
+
+      .CountBox {
+        display: flex;
+        align-items: flex-end;
+
+        .RightBox {
+          margin-left: 9px;
+          display: flex;
+          flex-direction: column;
+          gap: 7px;
+
+          .NoticeBox {
+            position: relative;
+            width: 621px;
+            background-color: #efefef;
+            color: #323232;
+            gap: 15px;
+
+            .NoticeTitle {
+              font-weight: 500;
+              line-height: 12px;
+              margin: 12px 17px 15px 12px;
+            }
+
+            .NoticeDescription {
+              font-size: 14px;
+              margin: 10px 17px 10px 12px;
+            }
+
+            &:after {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 2px;
+              height: 100%;
+            }
+
+            &.Mail:after {
+              background-color: #ff8181;
+            }
+
+            &.WorkReport:after {
+              background-color: #916aff;
+            }
+
+            &.Schedule:after {
+              background-color: #6ac9ff;
+            }
+          }
+
+          .MsgTimeBox {
+            display: flex;
+            align-items: flex-end;
+
+            .MsgBox {
+              background-color: rgba(69, 197, 82, 0.75);
+              padding: 12px 15px;
+              border-radius: 0px 5px 5px 5px;
+            }
+
+            .userMsgBox {
+              background-color: #EFEFEF;
+              padding: 12px 15px;
+              border-radius: 0px 5px 5px 5px;
+            }
+
+            .MsgTime {
+              margin-left: 11px;
+              font-size: 14px;
+              color: #929292;
+            }
+          }
+        }
+
+        .ViewCount {
+          font-size: 14px;
+          color: #45c552;
+          margin-left: 5px;
+        }
+      }
     }
+
 
     .Message-Input {
       position: fixed;
@@ -228,6 +311,7 @@
           }
         }
       }
+
       .underIcons {
         margin: 5px 0 0 5px;
         width: 95%;
@@ -268,6 +352,7 @@
               }
             }
           }
+
           .fileIcon {
             cursor: pointer;
             width: 19px;
@@ -282,6 +367,7 @@
     &.Hidden {
       display: none;
     }
+
     display: flex;
     flex-direction: column;
     width: 300px;
@@ -301,6 +387,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 0 25px;
+
       img {
         cursor: pointer;
         width: 14px;
@@ -390,16 +477,19 @@
         flex-direction: column;
         width: 150px !important;
         height: 84px !important;
+
         .ProfileChange {
           cursor: pointer;
           border-bottom: 1px solid #eeeeee;
           padding: 9px 0;
         }
+
         .OutOfChat {
           cursor: pointer;
           padding: 9px 0;
         }
       }
+
       .OptionIcon {
         visibility: hidden;
         width: 3px;

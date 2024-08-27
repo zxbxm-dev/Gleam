@@ -98,7 +98,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const lastWord = title.trim().split(" ").pop();
 
     const person = personData?.find((person) => person.username === lastWord);
-    const position = person ? person.position : "Position not found";
+    const position = person ? person.position : "";
     // -----------------------------------------------
 
     const roomId = chatRoom.dataValues?.roomId ?? -1;
