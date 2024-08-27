@@ -1,7 +1,8 @@
-const { defaultValueSchemable } = require("sequelize/lib/utils");
+
 
 module.exports = (sequelize, DataTypes) => {
-    const emailAttachment = sequelize.define(
+    const EmailAttachment = sequelize.define(
+        "EmailAttachment",
         {
             //PK
             Id: {
@@ -61,5 +62,5 @@ module.exports = (sequelize, DataTypes) => {
             tableName: "emailAttachment"
         }
     );
-    return emailAttachment;
+    return EmailAttachment;
 }

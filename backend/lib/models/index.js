@@ -34,6 +34,7 @@ const message = require("./messenger/message");
 const chatRoomParticipant = require("./messenger/ChatRoomParticipant");
 //이메일
 const email = require("./email/email");
+const emailAttachments= require("./email/emailAttachments");
 
 const db = {};
 
@@ -66,6 +67,7 @@ db.ChatRoom = chatRoom(sequelize, Sequelize);
 db.ChatRoomParticipant = chatRoomParticipant(sequelize, Sequelize);
 db.Message = message(sequelize, Sequelize);
 db.Email = email(sequelize, Sequelize);
+db.EmailAttachment = emailAttachments(sequelize, Sequelize);
 
 // 모델 관계 설정
 // 프로젝트 관계 설정
