@@ -91,27 +91,55 @@ const WriteMail = () => {
   })
 
   const handleSendEmail = async () => {
-    const formData = {
-      userId : user.userID,
-      messageId : user.userID + new Date(),
-      sender : user.usermail,
-      receiver : recipients,
-      referrer : referrers,
-      subject : mailTitle,
-      body : mailContent,
-      sendAt: new Date(),
-      attachment : attachments,
-      receiveAt : new Date(),
-      signature : false,
-    }
+    if(status === "DRAFTS") {
+      const formData = {
+        Id : mail?.Id,
+        userId : user.userID,
+        messageId : user.userID + new Date(),
+        sender : user.usermail,
+        receiver : recipients,
+        referrer : referrers,
+        subject : mailTitle,
+        body : mailContent,
+        sendAt: new Date(),
+        attachment : attachments,
+        receiveAt : new Date(),
+        signature : false,
+        folder: mail?.folder,
+      }
 
-    try {
-      const response = await SendMail(formData);
-      console.log('이메일 전송 성공', response);
-      resetForm();
-      navigate('/mail');
-    } catch (error) {
-      console.log('이메일 전송 실패',error)
+      try {
+        const response = await SendMail(formData);
+        console.log('이메일 전송 성공', response);
+        resetForm();
+        navigate('/mail');
+      } catch (error) {
+        console.log('이메일 전송 실패',error)
+      }
+
+    } else {
+      const formData = {
+        userId : user.userID,
+        messageId : user.userID + new Date(),
+        sender : user.usermail,
+        receiver : recipients,
+        referrer : referrers,
+        subject : mailTitle,
+        body : mailContent,
+        sendAt: new Date(),
+        attachment : attachments,
+        receiveAt : new Date(),
+        signature : false,
+      }
+
+      try {
+        const response = await SendMail(formData);
+        console.log('이메일 전송 성공', response);
+        resetForm();
+        navigate('/mail');
+      } catch (error) {
+        console.log('이메일 전송 실패',error)
+      }
     }
   };
 
@@ -183,7 +211,7 @@ const WriteMail = () => {
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',') {
+    if (e.key === 'Enter' || e.key === ',' || e.key === 'Tab') {
       e.preventDefault();
       if (inputValue.trim()) {
         setRecipients([...recipients, inputValue.trim()]);
@@ -195,10 +223,24 @@ const WriteMail = () => {
   const handleReferrerInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      if (inputValue.trim()) {
-        setReferrers([...referrers, inputValue.trim()]);
+      if (inputReferrerValue.trim()) {
+        setReferrers([...referrers, inputReferrerValue.trim()]);
         setInputReferrerValue('');
       }
+    }
+  };
+
+  const handleBlurRecipients = () => {
+    if (inputValue.trim()) {
+      setRecipients([...recipients, inputValue.trim()]);
+      setInputValue('');
+    }
+  };
+
+  const handleBlurReferrer = () => {
+    if (inputReferrerValue.trim()) {
+      setReferrers([...referrers, inputReferrerValue.trim()]);
+      setInputReferrerValue('');
     }
   };
 
@@ -472,6 +514,7 @@ const WriteMail = () => {
                   value={inputValue}
                   onChange={handleInputChange}
                   onKeyDown={handleInputKeyDown}
+                  onBlur={handleBlurRecipients}
                   ref={inputRef}
                 />
                 {inputValue && (
@@ -500,6 +543,7 @@ const WriteMail = () => {
                   value={inputReferrerValue}
                   onChange={handleInputReferrerChange}
                   onKeyDown={handleReferrerInputKeyDown}
+                  onBlur={handleBlurReferrer}
                   ref={inputRef}
                 />
                 {inputReferrerValue && (

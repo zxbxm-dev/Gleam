@@ -68,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             folder: {
                 type:DataTypes.ENUM,
-                values: ['inbox', 'sent', 'starred', 'unread', 'drafts', 'junk', 'queue'],
+                values: ['inbox', 'sent', 'unread', 'drafts', 'junk', 'queue'],
                 allowNull: false,
                 defaultValue: "inbox",
             },
