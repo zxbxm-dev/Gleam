@@ -12,7 +12,7 @@ import ChatDataTab from "./ChatTab";
 import NewChatModal from "./NewChatModal";
 import io, { Socket } from 'socket.io-client';
 import { useLocation } from "react-router-dom";
-
+import { ChatRoom } from "./ChatTab";
 export interface Person {
   userId: string;
   username: string;
@@ -24,33 +24,6 @@ export interface Person {
   entering: Date;
   attachment: string;
   company: string;
-}
-
-interface ChatRoom {
-  roomId: string;
-  isGroup: boolean;
-  hostUserId: string;
-  invitedUserIds: string[];
-  title: string;
-  userTitle?: { [userId: string]: string };
-  subContent: string;
-  profileColor: string;
-  profileImage: string | null;
-  crt: string;
-  upt: string;
-  dataValues?: {
-    roomId: number;
-    isGroup: boolean;
-    hostUserId: string;
-    invitedUserIds: string[];
-    title: string;
-    userTitle?: { [userId: string]: string };
-    subContent: string;
-    profileColor: string;
-    profileImage: string | null;
-    crt: string;
-    upt: string;
-  };
 }
 
 const MessageSidebar: React.FC = () => {

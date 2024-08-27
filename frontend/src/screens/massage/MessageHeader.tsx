@@ -1,9 +1,11 @@
 import React from 'react';
 import {
-    HrLine,
-    GraySearchIcon,
-    UserManagementIcon
+  HrLine,
+  GraySearchIcon,
+  UserManagementIcon
 } from "../../assets/images/index";
+import { selectedRoomIdState } from '../../recoil/atoms';
+import { useRecoilValue } from 'recoil';
 
 interface HeaderProps {
   selectedPerson: any;
@@ -11,18 +13,26 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ selectedPerson, setChatRoomPeopleManagement }) => {
+  const selectedRoomId = useRecoilValue(selectedRoomIdState);
+
   return (
     <div className="Message-header">
-      <div>
-        <span>
-          {selectedPerson.team || selectedPerson.department} {selectedPerson.username}
-        </span>
-        {selectedPerson.position && <img src={HrLine} alt="Horizontal Line" />}
-        <span>{selectedPerson.position}</span>
-      </div>
+      {selectedRoomId !== -2 ?
+        <div>
+          <span>
+            {selectedPerson.team || selectedPerson.department} {selectedPerson.username}
+          </span>
+          {selectedPerson.position && <img src={HrLine} alt="Horizontal Line" />}
+          <span>{selectedPerson.position}</span>
+        </div>
+        :
+        <div>
+          통합 알림
+        </div>
+      }
       <div className="UpperIconBar">
         <img src={GraySearchIcon} className="SearchIcon" alt="GraySearchIcon" />
-        {selectedPerson && selectedPerson.username !== "통합 알림" && (
+        {selectedPerson && selectedRoomId !== -2 && (
           <img
             src={UserManagementIcon}
             className="UserManagementIcon"

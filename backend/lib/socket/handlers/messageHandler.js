@@ -5,7 +5,7 @@ const { Message, ChatRoomParticipant, User} = models;
 const getChatHistory = async (socket, roomId) => {
   try {
     const messages = await Message.findAll({
-      where: { roomId },
+      where: { roomId: roomId },
       include: [
         {
           model: User,
@@ -16,21 +16,21 @@ const getChatHistory = async (socket, roomId) => {
       order: [["createdAt", "ASC"]],
     });
 
-    // 메시지와 관련된 발신자 이름과 시간 정보를 포함하여 클라이언트에 전송
     const chatHistory = messages.map(message => ({
       messageId: message.messageId,
       content: message.content,
-      userId: message.User.userId,  // User alias를 통해 접근
-      username: `${message.User.team} ${message.User.username}`,  // 팀 이름과 사용자 이름 조합
-      timestamp: message.createdAt,  // 메시지 생성 시간
+      userId: message.User.userId,
+      username: `${message.User.team} ${message.User.username}`,
+      timestamp: message.createdAt,
     }));
 
     socket.emit("chatHistory", chatHistory);
   } catch (error) {
-    console.error("채팅 기록 조회 오류:", error);
-    socket.emit("error", { message: "채팅 기록 조회 오류" });
+    console.error("채팅 기록 조회 오류:", error.message);
+    socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });
   }
 };
+
 
 // 채팅방의 모든 참가자에게 메시지를 전송하는 함수
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {

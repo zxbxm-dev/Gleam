@@ -14,20 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { selectedRoomIdState } from "../../../recoil/atoms";
 import { useRecoilState } from "recoil";
-
-
-interface ChatRoom {
-  roomId: string;
-  isGroup: boolean;
-  hostUserId: string;
-  invitedUserIds: string[];
-  title: string;
-  subContent: string;
-  profileColor: string;
-  profileImage: string | null;
-  crt: string;
-  upt: string;
-}
+import { ChatRoom } from "./ChatTab";
 
 interface PersonDataTabProps {
   personData: Person[] | null;
@@ -75,7 +62,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
       if (matchingRoom) {
         console.log(`match ID : ${selectedUserId}`);
         console.log(`roomID값 : ${matchingRoom.roomId}`);
-        setSelectedRoomId({ roomId: matchingRoom.roomId });
+        setSelectedRoomId(Number(matchingRoom.roomId));
       }
     }
   }, [selectedUserId, chatRooms]);
@@ -136,7 +123,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 );
                 setSelectedUserId(person.userId);
                 setIsNotibarActive(false);
-                setSelectedRoomId({ roomId: '-1' });
+                setSelectedRoomId(-1);
               }}
             >
               <div className="No-Left">
@@ -200,8 +187,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         <Popover placement="right" key={person.userId}>
                           <li
                             className={`No-dept ${selectedUserId === person.userId
-                                ? "selected"
-                                : ""
+                              ? "selected"
+                              : ""
                               }`}
                             onClick={() => {
                               onPersonClick(
@@ -213,7 +200,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                               );
                               setSelectedUserId(person.userId);
                               setIsNotibarActive(false);
-                              setSelectedRoomId({ roomId: '-1' });
+                              setSelectedRoomId(-1);
                             }}
                           >
                             <div className="No-Left">
@@ -250,8 +237,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 <div
                                   ref={menuRef}
                                   className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
-                                      ? "active"
-                                      : ""
+                                    ? "active"
+                                    : ""
                                     }`}
                                 >
                                   대화 나가기
@@ -286,8 +273,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                             <Popover placement="right" key={person.userId}>
                               <li
                                 className={`No-dept ${selectedUserId === person.userId
-                                    ? "selected"
-                                    : ""
+                                  ? "selected"
+                                  : ""
                                   }`}
                                 onClick={() => {
                                   onPersonClick(
@@ -299,7 +286,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                   );
                                   setSelectedUserId(person.userId);
                                   setIsNotibarActive(false);
-                                  setSelectedRoomId({ roomId: '-1' });
+                                  setSelectedRoomId(-1);
                                 }}
                               >
                                 <div className="No-Left">
@@ -336,8 +323,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     <div
                                       ref={menuRef}
                                       className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
-                                          ? "active"
-                                          : ""
+                                        ? "active"
+                                        : ""
                                         }`}
                                     >
                                       대화 나가기
@@ -390,7 +377,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                       );
                       setSelectedUserId(person.userId);
                       setIsNotibarActive(false);
-                      setSelectedRoomId({ roomId: '-1' });
+                      setSelectedRoomId(-1);
                     }}
                   >
                     <div className="No-Left">
@@ -473,8 +460,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 <Popover placement="right" key={person.userId}>
                                   <li
                                     className={`No-dept ${selectedUserId === person.userId
-                                        ? "selected"
-                                        : ""
+                                      ? "selected"
+                                      : ""
                                       }`}
                                     onClick={() => {
                                       onPersonClick(
@@ -486,7 +473,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                       );
                                       setSelectedUserId(person.userId);
                                       setIsNotibarActive(false);
-                                      setSelectedRoomId({ roomId: '0' });
+                                      setSelectedRoomId(-0);
                                     }}
                                   >
                                     <div className="No-Left">
@@ -523,8 +510,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                         <div
                                           ref={menuRef}
                                           className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
-                                              ? "active"
-                                              : ""
+                                            ? "active"
+                                            : ""
                                             }`}
                                         >
                                           대화 나가기
