@@ -142,32 +142,32 @@ const Mail = () => {
   useEffect(() => {
     switch (selectdMenuOption) {
       case "전체 메일":
-        setMails(originalMails.filter((mail) => mail.folder !== 'junk'));
+        setMails(originalMails?.filter((mail) => mail.folder !== 'junk'));
         break;
       case "중요 메일":
-        setMails(originalMails.filter((mail) => mail.folder === 'starred'));
+        setMails(originalMails?.filter((mail) => mail.folder === 'starred'));
         break;
       case "받은 메일함":
-        setMails(originalMails.filter((mail) => mail.folder === 'inbox'));
+        setMails(originalMails?.filter((mail) => mail.folder === 'inbox'));
         break;
       case "보낸 메일함":
-        setMails(originalMails.filter((mail) => mail.folder === 'sent'));
+        setMails(originalMails?.filter((mail) => mail.folder === 'sent'));
         break;
       case "안 읽은 메일":
-        setMails(originalMails.filter((mail) => mail.folder === 'unread'));
+        setMails(originalMails?.filter((mail) => mail.folder === 'unread'));
         break;
       case "임시 보관함":
-        setMails(originalMails.filter((mail) => mail.folder === 'drafts'));
+        setMails(originalMails?.filter((mail) => mail.folder === 'drafts'));
         break;
       case "스팸 메일함":
-        setMails(originalMails.filter((mail) => mail.folder === 'junk'));
+        setMails(originalMails?.filter((mail) => mail.folder === 'junk'));
         break;
       default:
         setMails(originalMails);
     }
   }, [selectdMenuOption, originalMails]);
 
-  const filteredMails = mails.filter((mail) =>
+  const filteredMails = mails?.filter((mail) =>
     mail.subject.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -175,7 +175,7 @@ const Mail = () => {
     return { __html: mail.body };
   };
 
-  const totalPages = Math.ceil(filteredMails.length / postPerPage);
+  const totalPages = Math.ceil(filteredMails?.length / postPerPage);
 
   const toggleDropdown = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -411,7 +411,7 @@ const Mail = () => {
             </thead>
             <tbody className="board_container">
               {filteredMails
-                .slice((page - 1) * postPerPage, page * postPerPage)
+                ?.slice((page - 1) * postPerPage, page * postPerPage)
                 .map((mail) => (
                   <>
                     <tr key={mail.Id} className="board_content">
@@ -511,7 +511,7 @@ const Mail = () => {
                                       :
                                       <img src={Down_Arrow} alt="Down_Arrow" />
                                     }
-                                    <span>{`첨부파일 ${mail.attachment.length}`}</span>
+                                    <span>{`첨부파일 ${mail.attachment?.length}`}</span>
                                     <img src={mail_download} alt="mail_download" />
 
                                     {isDownFileVisible && (
