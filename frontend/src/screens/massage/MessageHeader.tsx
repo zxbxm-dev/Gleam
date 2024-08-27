@@ -2,7 +2,7 @@ import React from 'react';
 import {
   HrLine,
   GraySearchIcon,
-  UserManagementIcon
+  UserManagementIcon,
 } from "../../assets/images/index";
 import { selectedRoomIdState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
@@ -19,9 +19,9 @@ const Header: React.FC<HeaderProps> = ({ selectedPerson, setChatRoomPeopleManage
     <div className="Message-header">
       {selectedRoomId !== -2 ?
         <div>
-          <span>
+          <div>
             {selectedPerson.team || selectedPerson.department} {selectedPerson.username}
-          </span>
+          </div>
           {selectedPerson.position && <img src={HrLine} alt="Horizontal Line" />}
           <span>{selectedPerson.position}</span>
         </div>

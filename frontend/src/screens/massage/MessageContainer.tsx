@@ -1,5 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Message } from './Message';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import {
   UserIcon_dark,
   GoToBottomIcon,
@@ -11,6 +10,9 @@ import {
 import io from 'socket.io-client';
 import { useRecoilValue } from 'recoil';
 import { selectedRoomIdState } from '../../recoil/atoms';
+import { PersonData } from "../../services/person/PersonServices";
+import { Person } from "../../components/sidebar/MemberSidebar";
+import { Message } from './Message';
 
 interface MessageContainerProps {
   messages: Message[];
@@ -26,9 +28,51 @@ interface MessageContainerProps {
   setFiles: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
+const NoticeIcons: { [key: string]: string } = {
+  Mail: MailIcon,
+  WorkReport: WorkReportIcon,
+  Schedule: ScheduleIcon,
+};
+
+const NoticeNameList: { [key: string]: string } = {
+  Mail: "Mail - Notification",
+  WorkReport: "Work Report - Notification",
+  Schedule: "Schedule - Notification",
+};
+
+const DummyNotice = [
+  {
+    classify: "Mail",
+    title: "‘Gleam’에서 새로운 메일이 도착했습니다.",
+    description: "안녕하세요 관리팀 염승희 사원입니다. 이번부터 시행되는 사내시스템 ‘Gleam’에 관련하여",
+    date: new Date(),
+  },
+  {
+    classify: "WorkReport",
+    title: "‘Gleam’에서 새로운 결재 문서가 도착했습니다.",
+    description: "서주희 사원 휴가신청서 결재 요청 알림입니다.",
+    date: new Date(),
+  },
+  {
+    classify: "Schedule",
+    title: "‘Gleam’에서 새로운 회의가 등록되었습니다.",
+    description: "날짜 : 2024/07/26 오전11:57 장소 : 미팅룸 주최자 : 김현지 참가자 : 서주희",
+    date: new Date(),
+  },
+];
+
+const formatTime = (timestamp: string): string => {
+  const date = new Date(timestamp);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const isPM = hours >= 12;
+  const formattedHours = isPM ? hours - 12 : hours;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  const period = isPM ? '오후' : '오전';
+  return `${period} ${formattedHours === 0 ? 12 : formattedHours}:${formattedMinutes}`;
+};
+
 const MessageContainer: React.FC<MessageContainerProps> = ({
-  messages,
-  selectedPerson,
   isAtBottom,
   scrollToBottom,
   handleFileDrop,
@@ -40,57 +84,64 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   setFiles,
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
-  const [servermsg, setMessages] = useState<any[]>([]);
-  const [servermsgCreateAt, setMessageCreateAt] = useState<string[]>([]);
+  const [serverMessages, setServerMessages] = useState<any[]>([]);
+  const [messageMetadata, setMessageMetadata] = useState<{ createdAt: string[]; userInfo: string[] }>({
+    createdAt: [],
+    userInfo: [],
+  });
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
+  const [personData, setPersonData] = useState<Person[] | null>(null);
   const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
-  // useEffect(() => {
-  //   console.log('Server messages:', servermsg);
-  
-  //   if (servermsg.length > 0) {
-  //     const userPart = servermsg[0]?.User;
-      
-  //     if (userPart && typeof userPart === 'object') {
-  //       const username = userPart.username;
-  //       console.log('Username:', username);
-  //     } else {
-  //       console.log('User part is not an object or is undefined');
-  //     }
-  //   }
-  // }, [servermsg]);
-  console.log(selectedRoomId);
+  const fetchPersonData = useCallback(async () => {
+    try {
+      const response = await PersonData();
+      const approvedUsers = response.data.filter((item: any) => item.status === 'approved');
+      const sortedData = approvedUsers.sort((a: Person, b: Person) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
+      setPersonData(sortedData);
+    } catch (err) {
+      console.error("Error fetching person data:", err);
+    }
+  }, []);
+
   useEffect(() => {
-    console.log(selectedRoomId);
-  
+    fetchPersonData();
+  }, [fetchPersonData]);
+
+  useEffect(() => {
+    if (personData && serverMessages.length > 0) {
+      const userToInfoMap = personData.reduce((map, person) => {
+        map.set(person.userId, `${person.team ? person.team : person.department} ${person.username}`);
+        return map;
+      }, new Map<string, string>());
+
+      const newUserInfos = serverMessages.map(msg => userToInfoMap.get(msg.userId) || 'Unknown User');
+      const createdAt = serverMessages.map(msg => formatTime(msg.timestamp));
+      setMessageMetadata({ userInfo: newUserInfos, createdAt });
+    }
+  }, [personData, serverMessages]);
+
+  useEffect(() => {
     socket.emit('getChatHistory', selectedRoomId);
-  
+
     socket.on('chatHistory', (messages: any[]) => {
       if (Array.isArray(messages)) {
-        setMessages(messages);
-        const createAt = messages.map(msg => formatTime(msg.timestamp));
-        setMessageCreateAt(createAt);
+        setServerMessages(messages);
       } else {
         console.error('Received data is not an array of messages:', messages);
       }
     });
-  
+
     socket.on('message', (newMessage: any) => {
-      if (Array.isArray(newMessage)) {
-        setMessages(prevMessages => [...prevMessages, ...newMessage]);
-      } else {
-        setMessages(prevMessages => [...prevMessages, newMessage]);
-      }
+      setServerMessages(prevMessages => [...prevMessages, ...(Array.isArray(newMessage) ? newMessage : [newMessage])]);
     });
-  
+
     socket.on('error', (error) => {
       console.error('Error fetching messages:', error);
     });
-  
+
     return () => {
-      if (socket) {
-        socket.disconnect();
-      }
+      socket.disconnect();
     };
   }, [selectedRoomId]);
 
@@ -98,51 +149,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }
-  }, [messages]);
-
-  const formatTime = (timestamp: string): string => {
-    const date = new Date(timestamp);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const isPM = hours >= 12;
-    const formattedHours = isPM ? hours - 12 : hours;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    const period = isPM ? '오후' : '오전';
-    return `${period} ${formattedHours === 0 ? 12 : formattedHours}:${formattedMinutes}`;
-  };
-
-  const DummyNotice = [
-    {
-      classify: "Mail",
-      title: "‘Gleam’에서 새로운 메일이 도착했습니다.",
-      description: "안녕하세요 관리팀 염승희 사원입니다. 이번부터 시행되는 사내시스템 ‘Gleam’에 관련하여",
-      date: new Date(),
-    },
-    {
-      classify: "WorkReport",
-      title: "‘Gleam’에서 새로운 결재 문서가 도착했습니다.",
-      description: "서주희 사원 휴가신청서 결재 요청 알림입니다.",
-      date: new Date(),
-    },
-    {
-      classify: "Schedule",
-      title: "‘Gleam’에서 새로운 회의가 등록되었습니다.",
-      description: "날짜 : 2024/07/26 오전11:57 장소 : 미팅룸 주최자 : 김현지 참가자 : 서주희",
-      date: new Date(),
-    },
-  ];
-
-  const NoticeIcons: { [key: string]: string } = {
-    Mail: MailIcon,
-    WorkReport: WorkReportIcon,
-    Schedule: ScheduleIcon,
-  };
-
-  const NoticeNameList: { [key: string]: string } = {
-    Mail: "Mail - Notification",
-    WorkReport: "Work Report - Notification",
-    Schedule: "Schedule - Notification",
-  };
+  }, [serverMessages]);
 
   return (
     <div
@@ -152,18 +159,16 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       onDragOver={handleDragOver}
     >
       {selectedRoomId !== -2 ? (
-        servermsg.map((msg, index) => (
+        serverMessages.map((msg, index) => (
           <div key={index} className="Message">
             <img src={UserIcon_dark} alt="User Icon" />
             <div className="RightBox">
-              <div>{/* 팀, 이름 */}</div>
+              <div>{messageMetadata.userInfo[index]}</div>
               <div className="MsgTimeBox">
-                <div className="MsgBox">
-                  {msg.content ? msg.content : ""}
-                </div>
+                <div className="MsgBox">{msg.content || ""}</div>
                 <div className="MsgTime">
                   <div className="ViewCount">1</div>
-                  {servermsgCreateAt[index]}
+                  {messageMetadata.createdAt[index]}
                 </div>
               </div>
             </div>
@@ -203,9 +208,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 onInput={handleInput}
                 onKeyDown={handleInputKeyPress}
                 data-placeholder="메시지를 입력하세요. (Enter로 전송 / Shift + Enter로 개행)"
-              >
-                {" "}
-              </div>
+              />
               <div className="send-btn" onClick={handleSendMessage}>전송</div>
             </div>
           </div>

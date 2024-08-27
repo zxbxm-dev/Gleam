@@ -75,6 +75,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   userTeam,
   userDepartment,
   userName,
+  personData,
   userId,
   onPersonClick,
   userPosition,
@@ -89,12 +90,17 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [currentRoomId, setCurrentRoomId] = useState<number | null>(null);
   const [popovers, setPopovers] = useState<{ [key: number]: boolean }>({});
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
-  // chatRooms.forEach(room => {
-  //   if (room.dataValues) {
-  //     console.log(room.dataValues);
-  //   }
-  // });
+
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
+
+    // personData에서 lastWord와 username이 일치하는 사용자의 position 찾기
+    const title = chatRoom.dataValues?.title ?? "";
+    const lastWord = title.trim().split(" ").pop();
+
+    const person = personData?.find((person) => person.username === lastWord);
+    const position = person ? person.position : "Position not found";
+    // -----------------------------------------------
+
     const roomId = chatRoom.dataValues?.roomId ?? -1;
 
     console.log(roomId);
@@ -102,10 +108,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     setSelectedRoomId(roomId);
 
     onPersonClick(
+      "",
       chatRoom.dataValues?.title ?? "",
       "",
-      "",
-      "",
+      position,
       chatRoom.hostUserId
     );
 
