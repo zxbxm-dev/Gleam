@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { userState, selectedPersonState, selectedRoomIdState } from '../../recoil/atoms';
-// import { getChatRooms } from '../../services/message/MessageApi';
 import { io } from 'socket.io-client';
 import Header from './MessageHeader';
 import MessageContainer from './MessageContainer';
@@ -24,17 +23,16 @@ const Message: React.FC = () => {
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] = useState<boolean>(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [files, setFiles] = useState<File | null>(null);
-  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+  const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
-  const selectedRoomIds = useRecoilValue(selectedRoomIdState);
 
   useEffect(() => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');
     if (storedRoomId) {
-      setSelectedRoomId(storedRoomId);
+      setSelectedRoomId(Number(storedRoomId)); // Convert to number
     }
-  }, []);
+  }, [setSelectedRoomId]);
 
   const handleIncomingMessage = ({ name, id, msg, team, department, position }: Message) => {
     setMessages(prevMessages => [
@@ -50,21 +48,6 @@ const Message: React.FC = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const fetchChatRooms = async () => {
-  //     try {
-  //       if (user) {
-  //         const response = await getChatRooms(user.id);
-  //         setRooms(Array.isArray(response.data) ? response.data : []);
-  //       }
-  //     } catch (err) {
-  //       console.error("Error fetching chat rooms:", err);
-  //       setRooms([]);
-  //     }
-  //   };
-  //   fetchChatRooms();
-  // }, [user]);
-
   useEffect(() => {
     rooms.forEach((room) => {
       socket.emit("joinRoom", room.roomId);
@@ -73,12 +56,9 @@ const Message: React.FC = () => {
 
   useEffect(() => {
     if (selectedRoomId) {
-      const room = rooms.find(room => room.roomId === selectedRoomId);
-      if (room) {
-        socket.emit("joinRoom", selectedRoomId);
-      }
+      socket.emit("joinRoom", selectedRoomId);
     }
-  }, [selectedRoomId, rooms]);
+  }, [selectedRoomId]);
 
   const handleSendMessage = useCallback(() => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
@@ -86,7 +66,7 @@ const Message: React.FC = () => {
       const message = inputElement.innerHTML.trim();
 
       let messageData;
-      if (selectedRoomIds.roomId === '-1') {
+      if (selectedRoomId === -1) {
         messageData = {
           invitedUserIds: [selectedPerson.userId],
           userId: user.id,
@@ -96,12 +76,12 @@ const Message: React.FC = () => {
         };
       } else {
         messageData = {
-          roomId: Number(selectedRoomIds.roomId),
+          roomId: selectedRoomId,
           userId: user.id,
           content: message,
         };
       }
-console.log(messageData);
+      console.log(messageData);
 
       emitMessage(messageData);
       setMessages(prevMessages => [
@@ -119,10 +99,10 @@ console.log(messageData);
       setFiles(null);
       inputElement.innerHTML = "";
     }
-  }, [selectedRoomIds, selectedPerson, user]);
+  }, [selectedRoomId, selectedPerson, user]);
 
   const emitMessage = (messageData: any) => {
-    if (selectedRoomIds.roomId === '-1') {
+    if (selectedRoomId === -1) {
       socket.emit("createPrivateRoom", messageData);
     } else {
       socket.emit("sendMessageToRoom", messageData);

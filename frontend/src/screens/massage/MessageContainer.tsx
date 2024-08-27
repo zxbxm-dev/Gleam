@@ -59,46 +59,40 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   //     }
   //   }
   // }, [servermsg]);
-
-useEffect(() => {
-  const { roomId } = selectedRoomId;
-console.log(roomId);
-
-  // 메시지 요청 보내기
-  socket.emit('getChatHistory', { roomId });
-
-  // 메시지 응답 처리
-  socket.on('messages', (response: { roomId: string, messages: any[] }) => {
-    if (Array.isArray(response.messages)) {
-      setMessages(response.messages);
-      const createAt = response.messages.map(msg => formatTime(msg.createdAt));
-      setMessageCreateAt(createAt);
-    } else {
-      console.error('메시지 배열이 아닌 데이터가 반환되었습니다:', response);
-    }
-  });
-
-  // 새로운 메시지 처리
-  socket.on('message', (newMessage: any) => {
-    if (Array.isArray(newMessage)) {
-      setMessages(prevMessages => [...prevMessages, ...newMessage]);
-    } else {
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-    }
-  });
-
-  // 에러 처리
-  socket.on('error', (error) => {
-    console.error('메시지 가져오기 에러:', error);
-  });
-
-  // 컴포넌트 언마운트 시 소켓 연결 해제
-  return () => {
-    if (socket) {
-      socket.disconnect();
-    }
-  };
-}, [selectedRoomId.roomId]);
+  console.log(selectedRoomId);
+  useEffect(() => {
+    console.log(selectedRoomId);
+  
+    socket.emit('getChatHistory', selectedRoomId);
+  
+    socket.on('chatHistory', (messages: any[]) => {
+      if (Array.isArray(messages)) {
+        setMessages(messages);
+        const createAt = messages.map(msg => formatTime(msg.timestamp));
+        setMessageCreateAt(createAt);
+      } else {
+        console.error('Received data is not an array of messages:', messages);
+      }
+    });
+  
+    socket.on('message', (newMessage: any) => {
+      if (Array.isArray(newMessage)) {
+        setMessages(prevMessages => [...prevMessages, ...newMessage]);
+      } else {
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+      }
+    });
+  
+    socket.on('error', (error) => {
+      console.error('Error fetching messages:', error);
+    });
+  
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [selectedRoomId]);
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -157,7 +151,7 @@ console.log(roomId);
       onDrop={handleFileDrop}
       onDragOver={handleDragOver}
     >
-      {selectedPerson.username !== "통합 알림" ? (
+      {selectedRoomId !== -2 ? (
         servermsg.map((msg, index) => (
           <div key={index} className="Message">
             <img src={UserIcon_dark} alt="User Icon" />
@@ -192,7 +186,7 @@ console.log(roomId);
           </div>
         ))
       )}
-      {selectedPerson.username !== "통합 알림" && (
+      {selectedRoomId !== -2 && (
         <div className="Message-Input">
           <img
             className={`GoToBottom ${isAtBottom ? "hidden" : ""}`}

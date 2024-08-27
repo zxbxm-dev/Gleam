@@ -133,13 +133,11 @@
       .downBtn:hover {
         background-color: #eee;
       }
-
-      .DeptDown {
-      }
     }
   }
 
   .chat-data-tab {
+
     .My-bar,
     .Noti-bar {
       display: flex;
@@ -150,7 +148,7 @@
       font-family: var(--font-family-Noto-M);
       font-size: 15px;
 
-      .Border{
+      .Border {
         border-radius: 50px;
         margin-right: 10px;
         width: 37px;
@@ -158,12 +156,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-      .My-attach {
-        width: 35px;
-        height: 35px;
-        border-radius: 50px;
+
+        .My-attach {
+          width: 35px;
+          height: 35px;
+          border-radius: 50px;
+        }
       }
-    }
 
       .Message-Me {
         margin-left: 5px;
@@ -172,6 +171,7 @@
         border-image-width: 2px;
       }
     }
+
     .Noti-bar {
       cursor: pointer;
       border-bottom: none;
@@ -180,6 +180,7 @@
         background-color: #efefef !important;
       }
     }
+
     .My-bar {
       border-top: none !important;
     }
@@ -196,7 +197,7 @@
           display: flex;
           align-items: center;
 
-          .Border{
+          .Border {
             border-radius: 50px;
             margin-right: 10px;
             width: 37px;
@@ -204,12 +205,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-          .My-attach {
-            width: 35px;
-            height: 35px;
-            border-radius: 50px;
+
+            .My-attach {
+              width: 35px;
+              height: 35px;
+              border-radius: 50px;
+            }
           }
-        }
         }
 
         .Message-Menu {
@@ -223,6 +225,7 @@
           }
         }
       }
+
       &.selected {
         background-color: #efefef;
       }
@@ -298,21 +301,21 @@
   cursor: pointer;
   font-family: var(--font-family-Noto-M);
   font-size: 15px;
-  position: absolute;
+  // position: absolute;
+  // right: 10px;
   display: flex;
-  padding-left: 15px;
   justify-content: center;
-  display: flex;
   flex-direction: column;
-  width: 150px !important;
-  height: 84px !important;
+  width: 134px !important;
+
   .ProfileChange {
     cursor: pointer;
     border-bottom: 1px solid #eeeeee;
-    padding: 9px 0;
+    padding: 10px 25px 10px 15px;
   }
+
   .OutOfChat {
     cursor: pointer;
-    padding: 9px 0;
+    padding: 10px 25px 10px 15px;
   }
 }

@@ -5,23 +5,29 @@ import {
   NotiIcon,
   UserIcon_dark,
 } from "../../../assets/images/index";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Portal,
-} from "@chakra-ui/react";
 import SetProfile from "./SetProfile";
 import { Person } from "./MessageSidebar";
 import { selectedRoomIdState } from "../../../recoil/atoms";
 import { useRecoilState } from "recoil";
 
-interface ChatRoom {
-  roomId: string;
+export interface ChatRoom {
+  roomId: number;
   isGroup: boolean;
   hostUserId: string;
   invitedUserIds: string[];
   title: string;
+  userTitle?: {
+    [userId: string]: {
+      userId: string;
+      username: string;
+      company: string | null;
+      department: string | null;
+      team: string | null;
+      position: string | null;
+      spot: string | null;
+      attachment: string | null;
+    };
+  };
   subContent: string;
   profileColor: string;
   profileImage: string | null;
@@ -41,6 +47,7 @@ interface ChatRoom {
     upt: string;
   };
 }
+
 
 interface ChatDataTabProps {
   userAttachment: string;
@@ -77,34 +84,65 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   borderColor
 }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
-  const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
+  const [selectedChatRoom, setSelectedChatRoom] = useState<number | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
+  const [currentRoomId, setCurrentRoomId] = useState<number | null>(null);
+  const [popovers, setPopovers] = useState<{ [key: number]: boolean }>({});
+  const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  // chatRooms.forEach(room => {
+  //   if (room.dataValues) {
+  //     console.log(room.dataValues);
+  //   }
+  // });
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
-    const roomId = chatRoom.dataValues?.roomId?.toString() || '';
+    const roomId = chatRoom.dataValues?.roomId ?? -1;
 
-    setSelectedRoomId({ roomId });
-  
+    console.log(roomId);
+
+    setSelectedRoomId(roomId);
+
     onPersonClick(
-      chatRoom.title,
+      chatRoom.dataValues?.title ?? "",
       "",
       "",
       "",
       chatRoom.hostUserId
     );
-    
+
     setIsNotibarActive(false);
   };
+
+  const handleMessageMenuClick = (roomId: number) => {
+    setPopovers(prev => ({
+      ...prev,
+      [roomId]: !prev[roomId]
+    }));
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (!Object.values(popoverRefs.current).some(ref => ref?.contains(event.target as Node))) {
+      setPopovers({});
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="chat-data-tab">
       <li
         className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
         onClick={() => {
-          setSelectedChatRoom("통합 알림");
+          setSelectedChatRoom(-2);
           setIsNotibarActive(true);
+          setSelectedRoomId(-2);
         }}
       >
-        <img className="Noti-Icon" src={NotiIcon} alt="my-attach" />
+        <img className="Noti-Icon" src={NotiIcon} alt="Notification Icon" />
         <div>통합 알림</div>
       </li>
       <li
@@ -117,73 +155,84 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             userPosition || "",
             userId || ""
           );
-          setSelectedRoomId({ roomId: '0' });
+          setSelectedRoomId(0);
         }}
       >
         <div
           className="Border"
           style={{ border: borderColor }}
         >
-          <img className="My-attach" src={userAttachment ? userAttachment : UserIcon_dark} alt="my-attach" />
+          <img className="My-attach" src={userAttachment ? userAttachment : UserIcon_dark} alt="User Attachment" />
         </div>
         <div>
           {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
         </div>
-        <img className="Message-Me" src={MessageMe} alt="message-me" />
+        <img className="Message-Me" src={MessageMe} alt="Message Me" />
       </li>
 
       {chatRooms
         .sort((a, b) => new Date(b.upt).getTime() - new Date(a.upt).getTime())
-        .map((chatRoom) => (
-          <Popover key={chatRoom.roomId} placement="right">
-            <div
-              className={`ChatLog ${selectedChatRoom === chatRoom.roomId ? "selected" : ""}`}
-              onClick={() => {
-                handleChatRoomClick(chatRoom);
-              }}
-            >
-              <div className="LogBox">
-                <div className="Left">
-                  <div className="Border">
-                    <img
-                      className="My-attach"
-                      src={UserIcon_dark}
-                      alt="User Icon"
-                    />
+        .map((chatRoom) => {
+          const roomId = chatRoom.roomId;
+
+          return (
+            <div key={roomId}>
+              <div
+                className={`ChatLog ${selectedChatRoom === roomId ? "selected" : ""}`}
+                onClick={() => {
+                  handleChatRoomClick(chatRoom);
+                  setCurrentRoomId(roomId);
+                }}
+              >
+                <div className="LogBox">
+                  <div className="Left">
+                    <div className="Border">
+                      <img
+                        className="My-attach"
+                        src={UserIcon_dark}
+                        alt="User Icon"
+                      />
+                    </div>
+                    {chatRoom.dataValues ? (
+                      <p>
+                        {chatRoom.dataValues.isGroup ? `Group: ${chatRoom.dataValues.title}` : chatRoom.dataValues.title}
+                      </p>
+                    ) : (
+                      <p>{chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}</p>
+                    )}
                   </div>
-                  <p>
-                    {chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}
-                  </p>
-                </div>
-                <PopoverTrigger>
                   <img
                     className="Message-Menu"
                     src={MessageMenu}
                     alt="Message Menu"
+                    onClick={() => handleMessageMenuClick(roomId)}
                   />
-                </PopoverTrigger>
+                </div>
               </div>
-
-              <Portal>
-                <PopoverContent
-                  className="ChatRoomSide_popover"
-                  _focus={{ boxShadow: "none" }}
-                >
-                  <div className={`Message-OnClick-Menu`}>
-                    <div
-                      className="ProfileChange"
-                      onClick={() => setOpenProfile(true)}
-                    >
-                      대화방 프로필 설정
+              <div
+                className="ChatRoomSide_popover"
+                ref={ref => popoverRefs.current[roomId] = ref}
+                style={{ display: popovers[roomId] ? "block" : "none" }}
+              >
+                {currentRoomId === roomId && (
+                  chatRoom.dataValues?.isGroup ? (
+                    <div className={`Message-OnClick-Menu`}>
+                      <div
+                        className="ProfileChange"
+                        onClick={() => setOpenProfile(true)}
+                      >
+                        대화방 프로필 설정
+                      </div>
+                      <div className="OutOfChat">대화 나가기</div>
                     </div>
+                  ) : (
                     <div className="OutOfChat">대화 나가기</div>
-                  </div>
-                </PopoverContent>
-              </Portal>
+                  )
+                )}
+              </div>
             </div>
-          </Popover>
-        ))}
-
+          );
+        })}
       <SetProfile
         openProfile={openProfile}
         setOpenProfile={setOpenProfile}
