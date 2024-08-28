@@ -3,7 +3,7 @@ const Email = models.Email;
 const { sendEmail } = require("../../services/emailService");
 const { deleteDraftEmail } = require("../../controller/email/draftEmail");
 const { QueueEmail, deleteQueueEmail} = require("../../controller/email/emailQueue");
-const shortid = require('shortid');
+// const shortid = require('shortid');
 
 
 //이메일 전송하기
