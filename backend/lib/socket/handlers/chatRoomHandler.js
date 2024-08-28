@@ -20,7 +20,7 @@ const createPrivateRoom = async (io, socket, data) => {
     }
 
     // 초대된 사용자들의 정보를 배열로 생성
-    const invitedUsers = targets.map(target => ({
+    const invitedUsers = targets.map((target) => ({
       userId: target.userId,
       username: target.username,
       company: target.company || null,
@@ -45,12 +45,14 @@ const createPrivateRoom = async (io, socket, data) => {
               [Op.in]: Sequelize.literal(`(
                 SELECT roomId
                 FROM chatroom_participant
-                WHERE userId IN (${invitedUserIds.map(id => `'${id}'`).join(", ")}, '${userId}')
+                WHERE userId IN (${invitedUserIds
+                  .map((id) => `'${id}'`)
+                  .join(", ")}, '${userId}')
                 GROUP BY roomId
                 HAVING COUNT(*) = ${invitedUserIds.length + 1}
               )`),
-            }
-          }
+            },
+          },
         ],
       },
       defaults: {
@@ -60,7 +62,8 @@ const createPrivateRoom = async (io, socket, data) => {
         hostDepartment: user.department,
         hostTeam: user.team,
         hostPosition: user.position,
-        title: invitedUserDisplayName || null,
+        // 개인 채팅방일 경우 title을 설정하지 않음
+        title: null,
         userTitle: JSON.stringify(
           invitedUsers.reduce((acc, invitedUser) => {
             acc[userId] = {
@@ -71,19 +74,19 @@ const createPrivateRoom = async (io, socket, data) => {
               team: user.team || null,
               position: user.position || null,
               spot: user.spot || null,
-              attachment: user.attachment || null
+              attachment: user.attachment || null,
             };
-            acc[invitedUser.userId] = invitedUser;  // 초대된 사용자에 대한 정보
+            acc[invitedUser.userId] = invitedUser; // 초대된 사용자에 대한 정보
             return acc;
           }, {})
         ),
       },
     });
 
+    // 새로운 채팅방이 생성된 경우 참가자를 추가
     if (created) {
-      // 채팅방에 참가자를 추가
       const participants = [
-        ...invitedUsers.map(invitedUser => ({
+        ...invitedUsers.map((invitedUser) => ({
           roomId: chatRoom.roomId,
           userId: invitedUser.userId,
           username: invitedUser.username,
@@ -105,10 +108,13 @@ const createPrivateRoom = async (io, socket, data) => {
 
     // 사용자의 채팅방 목록을 클라이언트에게 전송
     sendUserChatRooms(socket, userId);
-    
+
     // 전체 채팅방 목록을 클라이언트에 전송
     const allChatRooms = await ChatRoom.findAll();
-    io.emit('chatRooms', allChatRooms.map(room => room.toJSON()));
+    io.emit(
+      "chatRooms",
+      allChatRooms.map((room) => room.toJSON())
+    );
 
     // 생성된 채팅방의 메시지 저장 및 전송
     await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
@@ -127,15 +133,39 @@ const sendUserChatRooms = async (socket, userId) => {
     });
 
     // 각 사용자가 참여한 채팅방의 userTitle을 파싱해서 각 사용자에게 맞는 제목을 설정
-    const roomsWithDetails = chatRooms.map(participant => {
+    const roomsWithDetails = chatRooms.map((participant) => {
       const room = participant.ChatRoom;
-      const userTitle = JSON.parse(room.userTitle || '{}');
-      const title = userTitle[userId]?.username || room.title;
+
+      console.log("채팅방 정보:", room.toJSON());
+
+      const userTitle = JSON.parse(room.userTitle || "{}");
+
+      console.log("파싱된 userTitle:", userTitle);
+
+      // 현재 로그인된 사용자(userId)를 제외한 첫 번째 사용자의 제목을 제목으로 설정
+      let title;
+      if (room.isGroup) {
+        // 단체방의 경우 기존 제목을 사용
+        title = room.title;
+      } else {
+        // 개인 채팅방의 경우 상대방의 이름을 제목으로 설정
+        const otherUserId = Object.keys(userTitle).find((id) => id !== userId);
+        if (otherUserId) {
+          title = `${userTitle[otherUserId]?.team || ''} ${userTitle[otherUserId]?.username || ''}`;
+        } else {
+          title = room.title; // 기본 제목 설정
+        }
+      }
+
+      console.log("클라이언트에게 전달될 제목:", title);
+
       return { ...room, title, userTitle };
     });
 
     // 채팅방 목록을 클라이언트에 전송합니다.
     socket.emit("chatRooms", roomsWithDetails);
+
+    console.log("최종 채팅방 목록:", roomsWithDetails);
   } catch (error) {
     console.error("채팅방 조회 오류:", error);
     socket.emit("error", { message: "채팅방 조회 오류" });
