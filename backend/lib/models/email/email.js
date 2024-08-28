@@ -61,6 +61,12 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATE,
                 allowNUll: true,
             },
+            //첨부파일 플래그 
+            hasAttachments:{
+                type: DataTypes.BOOLEAN,
+                allowNull: true,
+                defaultValue: false,
+            },
             //명함
             signature: {
                 type: DataTypes.STRING,
