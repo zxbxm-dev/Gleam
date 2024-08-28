@@ -15,27 +15,6 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
  
     const DummyPeoples = [
         {
-          userId: "qw506799b",
-          username: "박세준",
-          usermail: "qw123456789@four-chains.com",
-          phoneNumber: "01012345678",
-          company: "",
-          department: "",
-          team: "",
-          position: "대표이사",
-          spot: "대표이사",
-          question1: "1",
-          question2: "1",
-          attachment: "http://localhost:3001/uploads/제목 없음.png",
-          Sign: "http://localhost:3001/uploads/images.jpg",
-          status: "approved",
-          entering: "2024-07-28T00:00:00.000Z",
-          leavedate: null,
-          createdAt: "2024-07-28T10:46:16.000Z",
-          updatedAt: "2024-07-31T10:46:48.000Z",
-          isAdmin: true,
-        },
-        {
           userId: "qwe1234c",
           username: "테스트1",
           usermail: "qwe1234@four-chains.com",

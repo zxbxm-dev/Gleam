@@ -85,21 +85,21 @@
 
         .NoticeBox {
           position: relative;
-          max-width: 800px;
+          width: 621px;
           color: #323232;
           gap: 15px;
-          padding: 13px 17px;
+          padding: 12px 0px 10px 20px;
           border-radius: 0px 5px 5px 5px;
+          display: flex;
+          flex-direction: column;
 
           .NoticeTitle {
             font-weight: 500;
             line-height: 12px;
-            margin: 12px 17px 15px 12px;
           }
 
           .NoticeDescription {
             font-size: 14px;
-            margin: 10px 17px 10px 12px;
           }
 
           &:after {
