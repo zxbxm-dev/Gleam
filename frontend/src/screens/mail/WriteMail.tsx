@@ -416,7 +416,7 @@ const WriteMail = () => {
               {year && <span> &nbsp;&nbsp;&nbsp; {year}.</span>}
               {month && <span> {month}.</span>}
               {date && <span> {date}</span>}
-              {selectedTime && <span> &nbsp; {selectedTime?.slice(0,2)} : </span>}
+              {selectedTime && <span> &nbsp; {selectedTime?.slice(0,2)} :&nbsp;</span>}
               {selectedMinute && <span> {selectedMinute?.slice(0,2)} </span>}
               {year && month && date && selectedTime && selectedMinute && (
                 <img src={ModalCloseBtn} alt="ModalCloseBtn" onClick={() => {setStartDate(null); setSelectedTime(''); setSelectedMinute(''); }}/>

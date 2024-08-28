@@ -566,7 +566,7 @@ const Mail = () => {
                       </td>
                       <td>{mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div>1/3 읽음</div> : null}</td>
                       <td>
-                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div>발송 취소</div> : mail.folder === 'reserved' ? <div>예약 취소</div> : null}
+                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div className="sent_cancle_active">발송 취소</div> : mail.folder === 'reserved' ? <div>예약 취소</div> : null}
                       </td>
                       <td>
                         {formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}

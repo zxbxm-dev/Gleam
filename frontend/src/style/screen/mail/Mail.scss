@@ -140,8 +140,11 @@
           @include report-button;
           display: flex;
           align-items: center;
+          white-space: nowrap;
+          overflow: hidden;
           background-color: #FFFFFF;
           border: 1px solid var(--primary-color);
+          width: auto;
           height: 35px;
           color: #000;
 
@@ -371,7 +374,7 @@
           }
 
           td:nth-of-type(5) {
-            div {
+            .sent_cancle_active {
               border: 1px solid #D56D6D;
               border-radius: 3px;
               color: #E85D5D;
@@ -381,6 +384,28 @@
               &:hover {
                 color: #fff;
                 background-color: #F45F5F;
+              }
+            }
+
+            .sent_cancle_inactive {
+              border: 1px solid #9E9E9E;
+              background-color: #9E9E9E;
+              border-radius: 3px;
+              color: #fff;
+              padding: 5px 8px;
+              cursor: pointer;
+            }
+
+            .reserve_cancle {
+              border: 1px solid #45C552;
+              border-radius: 3px;
+              color: #45C552;
+              padding: 5px 8px;
+              cursor: pointer;
+
+              &:hover {
+                color: #fff;
+                background-color: #45C552;
               }
             }
           }
@@ -398,7 +423,7 @@
             transition: max-height 0.5s ease-in-out;
 
             &.visible {
-              max-height: 1000px;
+              max-height: 2000px;
             }
           }
 
