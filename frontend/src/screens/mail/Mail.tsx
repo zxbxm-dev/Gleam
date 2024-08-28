@@ -39,6 +39,9 @@ const Mail = () => {
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isSpamModalOpen, setSpamModalOpen] = useState(false);
+  const [isReadMailListModalOpen, setIsReadMailListOpen] = useState(false);
+  const [isSentCancleModalOpen, setIsSentCancleOpen] = useState(false);
+  const [isReserveCancleModalOpen, setIsReserveCancleOpen] = useState(false);
   const [isMobileCardModal, setIsMobileCardModal] = useState(false);
   const [isSpamSettingModal, setIsSpamSettingModal] = useState(false);
 
@@ -564,9 +567,9 @@ const Mail = () => {
                           </div>
                         }
                       </td>
-                      <td>{mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div>1/3 읽음</div> : null}</td>
+                      <td>{mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div onClick={() => setIsReadMailListOpen(true)}>1/3 읽음</div> : null}</td>
                       <td>
-                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div className="sent_cancle_active">발송 취소</div> : mail.folder === 'reserved' ? <div>예약 취소</div> : null}
+                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div className="sent_cancle_active" onClick={() => setIsSentCancleOpen(true)}>발송 취소</div> : mail.folder === 'reserved' ? <div onClick={() => setIsReserveCancleOpen(true)}>예약 취소</div> : null}
                       </td>
                       <td>
                         {formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}
@@ -710,9 +713,76 @@ const Mail = () => {
         footer2Class="red-btn"
         onFooter2Click={() => setSpamModalOpen(false)}
       >
+        <div>선택한 메일이 스팸 메일함으로 이동하였습니다.</div>
+        <div>수신 차단 하시겠습니까?</div>
+      </CustomModal>
+      
+      <CustomModal
+        isOpen={isReadMailListModalOpen}
+        onClose={() => setIsReadMailListOpen(false)}
+        header={"수신 확인"}
+        height="240px"
+      >
         <div className="body-container">
-          선택한 메일이 스팸 메일함으로 이동하였습니다.<br/>
-          수신 차단 하시겠습니까?
+          <div className="mail_read_list_header">
+            <div>수신인</div>
+            <div>열람 상태</div>
+          </div>
+          <div className="mail_read_list_content">
+            <div className="mail_read_list_user">
+              <div className="mail_read_list_user_name">개발1팀 구민석</div>
+              <div className="mail_read_list_user_status">읽지 않음</div>
+            </div>
+            <div className="mail_read_list_user">
+              <div className="mail_read_list_user_name">개발1팀 구민석</div>
+              <div className="mail_read_list_user_status">읽지 않음</div>
+            </div>
+            <div className="mail_read_list_user">
+              <div className="mail_read_list_user_name">개발1팀 구민석</div>
+              <div className="mail_read_list_user_status">읽지 않음</div>
+            </div>
+            <div className="mail_read_list_user">
+              <div className="mail_read_list_user_name">개발1팀 구민석</div>
+              <div className="mail_read_list_user_status">읽지 않음</div>
+            </div>
+            <div className="mail_read_list_user">
+              <div className="mail_read_list_user_name">개발1팀 구민석</div>
+              <div className="mail_read_list_user_status">읽지 않음</div>
+            </div>
+          </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isSentCancleModalOpen}
+        onClose={() => setIsSentCancleOpen(false)}
+        header={"알림"}
+        footer1={"확인"}
+        onFooter1Click={() => setIsSentCancleOpen(false)}
+        footer1Class="back-green-btn"
+        footer2={"취소"}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setIsSentCancleOpen(false)}
+        height="220px"
+      >
+        <div>발송을 취소하면</div>
+        <div>수신자의 메일함에서 메일이 삭제됩니다.</div>
+        <div>발송을 취소하시겠습니까?</div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isReserveCancleModalOpen}
+        onClose={() => setIsReserveCancleOpen(false)}
+        header={"알림"}
+        footer1={"확인"}
+        onFooter1Click={() => setIsReserveCancleOpen(false)}
+        footer1Class="back-green-btn"
+        footer2={"취소"}
+        footer2Class="gray-btn"
+        onFooter2Click={() => setIsReserveCancleOpen(false)}
+      >
+        <div>
+          본 메일의 예약 발송을 취소하시겠습니까?
         </div>
       </CustomModal>
 
