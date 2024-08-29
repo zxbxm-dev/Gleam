@@ -169,10 +169,13 @@ const createPrivateRoom = async (io, socket, data) => {
 // 채팅방 조회 후 클라이언트에게 파싱
 const sendUserChatRooms = async (socket, userId) => {
   try {
+    console.log("채팅방 조회 시작");
+
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
       include: [{ model: ChatRoom }],
     });
+    console.log("채팅방 조회 완료:", chatRooms);
 
     // 각 사용자가 참여한 채팅방의 userTitle을 파싱해서 각 사용자에게 맞는 제목을 설정
     const roomsWithDetails = chatRooms.map(participant => {
@@ -181,7 +184,7 @@ const sendUserChatRooms = async (socket, userId) => {
       const userTitle = parseUserTitle(roomData.userTitle, userId);
       const othertitle = getOthertitle(roomData, userTitle, userId);
 
-      console.log("클라이언트에게 전달될 제목:", othertitle);
+      console.log("클라이언트에게 전달될 제목:", title);
 
       return {
         othertitle,
@@ -189,6 +192,8 @@ const sendUserChatRooms = async (socket, userId) => {
         dataValues: roomData,
       };
     });
+
+    console.log("클라이언트에게 전송할 채팅방 목록:", roomsWithDetails);
 
     // 채팅방 목록을 클라이언트에 전송합니다.
     socket.emit("chatRooms", roomsWithDetails);
