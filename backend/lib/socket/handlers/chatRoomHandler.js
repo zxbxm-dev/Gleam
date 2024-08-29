@@ -141,9 +141,16 @@ const createPrivateRoom = async (io, socket, data) => {
           // 개인 채팅방의 경우 상대방의 이름을 제목으로 설정
           const otherUserId = Object.keys(userTitle).find((id) => id !== userId);
           if (otherUserId) {
-            othertitle = `${userTitle[otherUserId]?.team || ''} ${userTitle[otherUserId]?.username || ''}`;
+            const otherUser = userTitle[otherUserId];
+            if (otherUser.team) {
+              othertitle = `${otherUser.team} ${otherUser.username}`;
+            } else if (otherUser.department) {
+              othertitle = `${otherUser.department} ${otherUser.username}`;
+            } else {
+              othertitle = otherUser.username;
+            }
           } else {
-            othertitle = roomData.title; // 기본 제목 설정
+            othertitle = roomData.title;
           }
         }
 
@@ -188,9 +195,16 @@ const sendUserChatRooms = async (socket, userId) => {
         // 개인 채팅방의 경우 상대방의 이름을 제목으로 설정
         const otherUserId = Object.keys(userTitle).find((id) => id !== userId);
         if (otherUserId) {
-          othertitle = `${userTitle[otherUserId]?.team || ''} ${userTitle[otherUserId]?.username || ''}`;
+          const otherUser = userTitle[otherUserId];
+          if (otherUser.team) {
+            othertitle = `${otherUser.team} ${otherUser.username}`;
+          } else if (otherUser.department) {
+            othertitle = `${otherUser.department} ${otherUser.username}`;
+          } else {
+            othertitle = otherUser.username;
+          }
         } else {
-          othertitle = roomData.title; // 기본 제목 설정
+          othertitle = roomData.title;
         }
       }
 

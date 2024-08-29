@@ -16,6 +16,7 @@ export interface ChatRoom {
   hostUserId: string;
   invitedUserIds: string[];
   title: string;
+  othertitle : string;
   userTitle?: {
     [userId: string]: {
       userId: string;
@@ -94,7 +95,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
 
     // personData에서 lastWord와 username이 일치하는 사용자의 position 찾기
-    const title = chatRoom.dataValues?.title ?? "";
+    const title = chatRoom.othertitle ?? "";
     const lastWord = title.trim().split(" ").pop();
 
     const person = personData?.find((person) => person.username === lastWord);
@@ -109,7 +110,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 
     onPersonClick(
       "",
-      chatRoom.dataValues?.title ?? "",
+      chatRoom.othertitle ?? "",
       "",
       position,
       chatRoom.hostUserId
@@ -201,10 +202,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     </div>
                     {chatRoom.dataValues ? (
                       <p>
-                        {chatRoom.dataValues.isGroup ? `Group: ${chatRoom.dataValues.title}` : chatRoom.dataValues.title}
+                        {chatRoom.dataValues.isGroup ? `${chatRoom.othertitle}` : chatRoom.othertitle}
                       </p>
                     ) : (
-                      <p>{chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}</p>
+                      <p>{chatRoom.isGroup ? `Group: ${chatRoom.othertitle}` : chatRoom.othertitle}</p>
                     )}
                   </div>
                   <img
