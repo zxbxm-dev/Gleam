@@ -102,10 +102,14 @@ const MessageSidebar: React.FC = () => {
       transports: ['websocket'],
     });
     setSocket(socket);
-  
+
     const userId = user.userID;
+    console.log("유저아이디 가져오기", userId);
+
+    // 서버에 사용자 등록 요청
     socket.emit('registerUser', userId);
   
+    // 서버에 연결되었을 때
     socket.on('connect', () => {
       console.log(`[Client] Socket 서버에 연결됨: ${socket.id}`);
     });

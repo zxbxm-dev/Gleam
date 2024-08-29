@@ -5,14 +5,18 @@ const messageEvents = require("./events/messageEvents");
 const connectedUsers = {};
 
 module.exports = (io) => {
-  io.on("connection", (socket) => {
+  io.on("connect", (socket) => {
     console.log("새로운 사용자 연결:", socket.id);
 
     // 사용자 ID를 클라이언트로부터 받기 위한 이벤트 처리
     socket.on("registerUser", (userId) => {
+      if (!userId || typeof userId !== 'string') {
+        console.error("유효하지 않은 사용자 ID:", userId);
+        return socket.emit("error", { message: "유효하지 않은 사용자 ID입니다." });
+      }
+
       // 기존 사용자의 소켓이 있으면 해제
       if (connectedUsers[userId]) {
-        // 기존 소켓을 찾아서 연결 해제
         connectedUsers[userId].disconnect(true); // true로 설정하면 클라이언트에게 연결 종료 신호 전송
       }
 
@@ -22,16 +26,18 @@ module.exports = (io) => {
     });
 
     // 채팅방 관련 이벤트 처리
-    chatRoomEvents(io, socket);
-
-    // 메시지 관련 이벤트 처리
-    messageEvents(io, socket);
+    try {
+      chatRoomEvents(io, socket);
+      messageEvents(io, socket);
+    } catch (error) {
+      console.error("이벤트 처리 중 오류 발생:", error);
+      socket.emit("error", { message: "이벤트 처리 서버 오류" });
+    }
 
     // 연결 종료 처리
     socket.on("disconnect", () => {
       console.log("사용자가 연결을 종료함:", socket.id);
 
-      // 연결 종료 시 사용자 ID를 찾고, 관리 객체에서 삭제
       for (const [userId, userSocket] of Object.entries(connectedUsers)) {
         if (userSocket === socket) {
           delete connectedUsers[userId];
@@ -44,6 +50,7 @@ module.exports = (io) => {
     // 에러 처리
     socket.on("error", (err) => {
       console.error("소켓 에러:", err);
+      socket.emit("error", { message: "소켓 통신 오류 발생" });
     });
   });
 };

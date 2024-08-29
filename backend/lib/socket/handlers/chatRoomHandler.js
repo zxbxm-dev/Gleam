@@ -1,11 +1,13 @@
 const models = require("../../models");
-const { User, ChatRoom, ChatRoomParticipant, Message } = models;
+const { User, ChatRoom, ChatRoomParticipant } = models;
 const { Op, Sequelize } = require("sequelize");
-const { sendMessageToRoomParticipants } = require("./messageHandler");
+const { sendMessageToRoomParticipants, getChatHistory } = require("./messageHandler");
 
+// 사용자 조회 함수
 const getUserById = async (userId) => User.findOne({ where: { userId } });
 const getUsersByIds = async (userIds) => User.findAll({ where: { userId: userIds } });
 
+// 사용자 제목 파싱 함수
 const parseUserTitle = (userTitle, userId) => {
   let parsedTitle = {};
   if (typeof userTitle === "string") {
@@ -21,6 +23,7 @@ const parseUserTitle = (userTitle, userId) => {
   return parsedTitle;
 };
 
+// 채팅방 제목 결정 함수
 const getOthertitle = (roomData, userTitle, userId) => {
   if (roomData.isGroup) {
     return roomData.title;
@@ -38,20 +41,27 @@ const getOthertitle = (roomData, userTitle, userId) => {
 };
 
 // 새로운 개인 채팅방을 생성하거나 기존 채팅방을 조회
-// 생성된 채팅방에 메시지를 저장하고 해당 채팅방의 사용자들에게 메시지를 전송
 const createPrivateRoom = async (io, socket, data) => {
   try {
     console.log("서버에서 수신한 데이터:", data);
 
     const { userId, content, invitedUserIds } = data;
 
+    if (!userId || !invitedUserIds || invitedUserIds.length === 0) {
+      console.error("userId 또는 invitedUserIds가 정의되지 않았습니다.");
+      return socket.emit("error", { message: "잘못된 데이터입니다" });
+    }
+
     // 사용자 및 초대된 사용자 조회
     const user = await getUserById(userId);
     const targets = await getUsersByIds(invitedUserIds);
 
     if (!user || targets.length !== invitedUserIds.length) {
+      console.error("사용자 또는 초대된 사용자를 찾을 수 없습니다.");
       return socket.emit("error", { message: "사용자를 찾을 수 없습니다" });
     }
+
+    console.log("초대된 사용자들:", targets.map(target => target.userId));
 
     // 초대된 사용자 정보 배열 생성
     const invitedUsers = targets.map(target => ({
@@ -110,6 +120,8 @@ const createPrivateRoom = async (io, socket, data) => {
       },
     });
 
+    console.log(`채팅방 ${created ? "생성됨" : "존재함"}: ${chatRoom.roomId}`);
+
     // 새로운 채팅방이 생성된 경우 참가자를 추가
     if (created) {
       const participants = [
@@ -131,15 +143,23 @@ const createPrivateRoom = async (io, socket, data) => {
         },
       ];
       await ChatRoomParticipant.bulkCreate(participants);
+
+      console.log("참가자 추가됨:", participants);
+    } else {
+      // 기존 채팅방인 경우 과거 메시지 전송
+      console.log(`기존 채팅방에 과거 메시지를 전송합니다: ${chatRoom.roomId}`);
+      await getChatHistory(socket, chatRoom.roomId);
     }
 
     // 사용자의 채팅방 목록을 클라이언트에게 전송
-    sendUserChatRooms(socket, userId);
+    await sendUserChatRooms(socket, userId);
 
     // 전체 채팅방 목록을 클라이언트에 전송
     const allChatRooms = await ChatRoom.findAll({
       include: [{ model: ChatRoomParticipant }],
     });
+
+    console.log("모든 채팅방 목록 전송:", allChatRooms.map(room => room.roomId));
 
     io.emit("chatRooms", allChatRooms.map(room => {
       const roomData = room.toJSON();
@@ -154,12 +174,16 @@ const createPrivateRoom = async (io, socket, data) => {
     }));
 
     // 생성된 채팅방의 메시지 저장 및 전송
-    await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
+    if (content) {
+      console.log(`새로운 메시지 전송: ${content}`);
+      await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
+    }
   } catch (error) {
     console.error("채팅방 생성 및 메시지 저장 오류:", error);
     socket.emit("error", { message: "채팅 생성 서버 오류" });
   }
 };
+
 
 // 채팅방 조회 후 클라이언트에게 파싱
 const sendUserChatRooms = async (socket, userId) => {
@@ -168,6 +192,8 @@ const sendUserChatRooms = async (socket, userId) => {
       where: { userId },
       include: [{ model: ChatRoom }],
     });
+
+    console.log("사용자 채팅방 목록:", chatRooms.map(participant => participant.ChatRoom.roomId));
 
     // 각 사용자가 참여한 채팅방의 userTitle을 파싱해서 각 사용자에게 맞는 제목을 설정
     const roomsWithDetails = chatRooms.map(participant => {
@@ -197,10 +223,22 @@ const sendUserChatRooms = async (socket, userId) => {
 // 채팅방에 참여
 const joinRoom = async (socket, roomId) => {
   try {
+    console.log(`방에 참여하려는 유저 ${socket.userId}, 방 ID: ${roomId}`);
+    
+    if (!roomId || roomId <= 0) {
+      console.error("유효하지 않은 방 ID입니다:", roomId);
+      return socket.emit("error", { message: "유효하지 않은 방 ID입니다" });
+    }
+
     const chatRoom = await ChatRoom.findOne({ where: { roomId } });
 
     if (chatRoom) {
-      const userId = socket.id; // 사용자 ID를 적절히 설정
+      const userId = socket.userId;
+
+      if (!userId) {
+        console.error("유저 ID가 정의되지 않았습니다.");
+        return socket.emit("error", { message: "유저 ID가 정의되지 않았습니다." });
+      }
 
       const isMember = await ChatRoomParticipant.findOne({
         where: { roomId, userId },
@@ -208,11 +246,17 @@ const joinRoom = async (socket, roomId) => {
 
       if (isMember) {
         socket.join(roomId.toString()); // 채팅방에 참여
-        console.log(`합류한 유저: ${socket.id} 합류한 방: ${roomId}`);
+        console.log(`합류한 유저: ${socket.userId} 합류한 방: ${roomId}`);
+
+        // 방에 참여할 때 과거 대화 기록을 전송
+        console.log(`방에 참여한 유저 ${socket.userId}에게 과거 대화 기록을 전송합니다: ${roomId}`);
+        await getChatHistory(socket, roomId);
       } else {
+        console.error("이 방에 참여할 권한이 없습니다.", { roomId, userId });
         socket.emit("error", { message: "이 방에 참여할 권한이 없습니다." });
       }
     } else {
+      console.error("방을 찾을 수 없습니다:", roomId);
       socket.emit("error", { message: "방을 찾을 수 없습니다" });
     }
   } catch (error) {
@@ -224,7 +268,7 @@ const joinRoom = async (socket, roomId) => {
 // 채팅방에서 나가기
 const exitRoom = (socket, roomId) => {
   socket.leave(roomId.toString());
-  console.log(`User ${socket.id} left room ${roomId}`);
+  console.log(`User ${socket.userId} left room ${roomId}`);
 };
 
 module.exports = {
