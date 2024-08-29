@@ -107,8 +107,8 @@ async function fetchMailcowEmails(userId) {
                             const checksavedEmail = await saveEmail(mail, userId, folderName);
                             console.log('저장된 이메일 Id:', checksavedEmail.Id);
                         } catch (saveErr) {
-                            console.error('이메일을 저장하는 도중 에러가 발생했습니다.:', saveErr);
-                            console.log('>>>>>>저장 실패한 이메일 제목: ', mail.subject);
+                            console.error('이메일을 저장하는 도중 에러가 발생했습니다.');
+                            //console.log('>>>>>>저장 실패한 이메일 제목: ', mail.Id);
                         }
                     });
                 });
@@ -172,13 +172,13 @@ const saveEmail = async (mail, userId, folderName) => {
 
 
     } catch (error) {
-        console.error('이메일 저장실패:', error);
+        console.error('이메일 저장실패');
     }
 };
 
 
 // SMTP를 통한 이메일 전송 함수 추가
-async function sendEmail(to, subject, body,userId, attachments = [],messageId,) {
+async function sendEmail(to, subject, body,userId, attachments = [], messageId,) {
 
 
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
