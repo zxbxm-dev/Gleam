@@ -178,7 +178,7 @@ const saveEmail = async (mail, userId, folderName) => {
 
 
 // SMTP를 통한 이메일 전송 함수 추가
-async function sendEmail(to, subject, body,userId, attachments = [],messageId,) {
+async function sendEmail(to, subject, body,userId, attachments = [], messageId,) {
 
 
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
