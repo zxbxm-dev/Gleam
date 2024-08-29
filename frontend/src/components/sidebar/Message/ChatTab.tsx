@@ -16,6 +16,7 @@ export interface ChatRoom {
   hostUserId: string;
   invitedUserIds: string[];
   title: string;
+  othertitle: string;
   userTitle?: {
     [userId: string]: {
       userId: string;
@@ -47,7 +48,6 @@ export interface ChatRoom {
     upt: string;
   };
 }
-
 
 interface ChatDataTabProps {
   userAttachment: string;
@@ -88,18 +88,15 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [selectedChatRoom, setSelectedChatRoom] = useState<number | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const [currentRoomId, setCurrentRoomId] = useState<number | null>(null);
-  const [popovers, setPopovers] = useState<{ [key: number]: boolean }>({});
+  const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
-
-    // personData에서 lastWord와 username이 일치하는 사용자의 position 찾기
-    const title = chatRoom.dataValues?.title ?? "";
+    const title = chatRoom.othertitle ?? "";
     const lastWord = title.trim().split(" ").pop();
 
     const person = personData?.find((person) => person.username === lastWord);
     const position = person ? person.position : "";
-    // -----------------------------------------------
 
     const roomId = chatRoom.dataValues?.roomId ?? -1;
 
@@ -109,7 +106,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 
     onPersonClick(
       "",
-      chatRoom.dataValues?.title ?? "",
+      chatRoom.othertitle ?? "",
       "",
       position,
       chatRoom.hostUserId
@@ -118,16 +115,14 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     setIsNotibarActive(false);
   };
 
-  const handleMessageMenuClick = (roomId: number) => {
-    setPopovers(prev => ({
-      ...prev,
-      [roomId]: !prev[roomId]
-    }));
+  const handleMessageMenuClick = (index: number, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setVisiblePopoverIndex(prevIndex => prevIndex === index ? null : index);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (!Object.values(popoverRefs.current).some(ref => ref?.contains(event.target as Node))) {
-      setPopovers({});
+      setVisiblePopoverIndex(null);
     }
   };
 
@@ -137,6 +132,11 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleLeaveRoom = (roomId: number) => {
+    console.log(`Leaving room with id ${roomId}`);
+    setVisiblePopoverIndex(null);
+  };
 
   return (
     <div className="chat-data-tab">
@@ -170,7 +170,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
         >
           <img className="My-attach" src={userAttachment ? userAttachment : UserIcon_dark} alt="User Attachment" />
         </div>
-        <div>
+        <div className="FontName">
           {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
         </div>
         <img className="Message-Me" src={MessageMe} alt="Message Me" />
@@ -178,8 +178,9 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 
       {chatRooms
         .sort((a, b) => new Date(b.upt).getTime() - new Date(a.upt).getTime())
-        .map((chatRoom) => {
+        .map((chatRoom, index) => {
           const roomId = chatRoom.roomId;
+          const isPopoverVisible = visiblePopoverIndex === index;
 
           return (
             <div key={roomId}>
@@ -200,41 +201,30 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                       />
                     </div>
                     {chatRoom.dataValues ? (
-                      <p>
-                        {chatRoom.dataValues.isGroup ? `Group: ${chatRoom.dataValues.title}` : chatRoom.dataValues.title}
+                      <p className="FontName">
+                        {chatRoom.dataValues.isGroup ? `${chatRoom.othertitle}` : chatRoom.othertitle}
                       </p>
                     ) : (
-                      <p>{chatRoom.isGroup ? `Group: ${chatRoom.title}` : chatRoom.title}</p>
+                      <p className="FontName">{chatRoom.isGroup ? `Group: ${chatRoom.othertitle}` : chatRoom.othertitle}</p>
                     )}
                   </div>
                   <img
                     className="Message-Menu"
                     src={MessageMenu}
                     alt="Message Menu"
-                    onClick={() => handleMessageMenuClick(roomId)}
+                    onClick={(e) => handleMessageMenuClick(index, e)}
                   />
-                </div>
-              </div>
-              <div
-                className="ChatRoomSide_popover"
-                ref={ref => popoverRefs.current[roomId] = ref}
-                style={{ display: popovers[roomId] ? "block" : "none" }}
-              >
-                {currentRoomId === roomId && (
-                  chatRoom.dataValues?.isGroup ? (
-                    <div className={`Message-OnClick-Menu`}>
-                      <div
-                        className="ProfileChange"
-                        onClick={() => setOpenProfile(true)}
-                      >
-                        대화방 프로필 설정
-                      </div>
-                      <div className="OutOfChat">대화 나가기</div>
+
+{isPopoverVisible && (
+                    <div
+                      className="ChatRoomSide_popover"
+                      ref={el => popoverRefs.current[index] = el}
+                      onClick={() => handleLeaveRoom(roomId)}
+                    >
+                  대화 나가기
                     </div>
-                  ) : (
-                    <div className="OutOfChat">대화 나가기</div>
-                  )
-                )}
+                  )}
+                </div>
               </div>
             </div>
           );

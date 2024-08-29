@@ -6,12 +6,6 @@ import {
   MenuArrow_down,
   MenuArrow_right,
 } from "../../../assets/images/index";
-import {
-  Popover,
-  PopoverTrigger,
-  Portal,
-  PopoverContent,
-} from "@chakra-ui/react";
 import { selectedRoomIdState, userState } from "../../../recoil/atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { ChatRoom } from "./ChatTab";
@@ -50,12 +44,12 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
 }) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
-  const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState<{ top: number, left: number } | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const user = useRecoilValue(userState);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
-  //hostUserIds -> 받아오는 상대방의 ID로 변경
   useEffect(() => {
     if (selectedUserId) {
       const matchingRoom = chatRooms.find(room => room.hostUserId === selectedUserId);
@@ -70,7 +64,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target as Node)) {
         setActiveMenuUserId(null);
       }
     };
@@ -79,15 +73,13 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [menuRef]);
+  }, [contextMenuRef]);
 
   if (!personData) {
     return <p>Loading...</p>;
   }
 
-  const departmentTeams: {
-    [key: string]: string[];
-  } = {
+  const departmentTeams: { [key: string]: string[] } = {
     개발부: ["개발 1팀", "개발 2팀"],
     마케팅부: ["디자인팀", "기획팀"],
     관리부: ["관리팀", "지원팀", "시설팀"],
@@ -105,15 +97,28 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
   };
 
+  const handleMenuClick = (event: React.MouseEvent, userId: string, listItem: HTMLLIElement) => {
+    event.stopPropagation();
+    const { offsetTop, offsetLeft, offsetHeight } = listItem;
+    setActiveMenuUserId(userId);
+    setContextMenuPosition({ top: offsetTop + offsetHeight, left: offsetLeft });
+  };
+
+  const handleLeaveChat = (userId: string) => {
+    console.log(`Leave Chat for userId: ${userId}`);
+    // Implement the functionality to leave the chat
+    setActiveMenuUserId(null);
+  };
+
   return (
-    <ul className="Sidebar-Ms">
-      {personData
-        .filter((person) => !person.department && person.company !== "R&D")
-        .map((person) => (
-          <Popover placement="right" key={person.userId}>
+    <div>
+      <ul className="Sidebar-Ms">
+        {personData
+          .filter((person) => !person.department && person.company !== "R&D")
+          .map((person) => (
             <li
-              className={`No-dept ${selectedUserId === person.userId ? "selected" : ""
-                }`}
+              key={person.userId}
+              className={`No-dept ${selectedUserId === person.userId ? "selected" : ""}`}
               onClick={() => {
                 onPersonClick(
                   person.username,
@@ -123,7 +128,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                   person.userId
                 );
                 setSelectedUserId(person.userId);
-                setIsNotibarActive(false);
                 setSelectedRoomId(-1);
               }}
             >
@@ -134,63 +138,48 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 />
                 {person.username}
               </div>
-              <PopoverTrigger>
-                <img
-                  className="Message-Menu"
-                  src={MessageMenu}
-                  alt="message-menu"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveMenuUserId((prev) =>
-                      prev === person.userId ? null : person.userId
-                    );
-                  }}
-                />
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent
-                  className="PersonSide_popover"
-                  _focus={{ boxShadow: "none" }}
-                >
-                  <div
-                    ref={menuRef}
-                    className={`Message-OnClick-Menu ${activeMenuUserId === person.userId ? "active" : ""
-                      }`}
-                  >
-                    대화 나가기
-                  </div>
-                </PopoverContent>
-              </Portal>
+              <img
+                className="Message-Menu"
+                src={MessageMenu}
+                alt="message-menu"
+                onClick={(e) => handleMenuClick(e, person.userId, e.currentTarget.closest('li')!)}
+              />
+
+{activeMenuUserId && contextMenuPosition && (
+        <div
+          className="context-menu"
+          style={{ top: contextMenuPosition.top, left: contextMenuPosition.left }}
+          ref={contextMenuRef}
+        >
+          <button onClick={() => handleLeaveChat(activeMenuUserId)}>Leave Chat {activeMenuUserId}</button>
+        </div>
+      )}
             </li>
-          </Popover>
-        ))}
-      {Object.keys(departmentTeams).map((department) => (
-        <li className="DeptTeams" key={department}>
-          <button
-            className="downBtn"
-            onClick={() => toggleDepartmentExpansion(department)}
-          >
-            {expandedDepartments[department] ? (
-              <img src={MenuArrow_down} alt="down" />
-            ) : (
-              <img src={MenuArrow_right} alt="right" />
-            )}{" "}
-            {department}
-          </button>
-          {expandedDepartments[department] && (
-            <ul className="DeptDown">
-              {expandedDepartments[department] && (
-                <ul>
-                  {personData.map(
-                    (person) =>
-                      person.department === department &&
-                      !(person.team) && (
-                        <Popover placement="right" key={person.userId}>
+          ))}
+        {Object.keys(departmentTeams).map((department) => (
+          <li className="DeptTeams" key={department}>
+            <button
+              className="downBtn"
+              onClick={() => toggleDepartmentExpansion(department)}
+            >
+              {expandedDepartments[department] ? (
+                <img src={MenuArrow_down} alt="down" />
+              ) : (
+                <img src={MenuArrow_right} alt="right" />
+              )}{" "}
+              {department}
+            </button>
+            {expandedDepartments[department] && (
+              <ul className="DeptDown">
+                {expandedDepartments[department] && (
+                  <ul>
+                    {personData.map(
+                      (person) =>
+                        person.department === department &&
+                        !(person.team) && (
                           <li
-                            className={`No-dept ${selectedUserId === person.userId
-                              ? "selected"
-                              : ""
-                              }`}
+                            key={person.userId}
+                            className={`No-dept ${selectedUserId === person.userId ? "selected" : ""}`}
                             onClick={() => {
                               onPersonClick(
                                 person.username,
@@ -200,83 +189,58 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 person.userId
                               );
                               setSelectedUserId(person.userId);
-                              setIsNotibarActive(false);
                               setSelectedRoomId(-1);
                             }}
                           >
                             <div className="No-Left">
                               <img
-                                src={
-                                  person.attachment
-                                    ? person.attachment
-                                    : UserIcon_dark
-                                }
+                                src={person.attachment ? person.attachment : UserIcon_dark}
                                 alt={`${person.username}`}
                               />
                               {person.username}
                             </div>
-                            <PopoverTrigger>
-                              <img
-                                className="Message-Menu"
-                                src={MessageMenu}
-                                alt="message-menu"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setActiveMenuUserId((prev) =>
-                                    prev === person.userId
-                                      ? null
-                                      : person.userId
-                                  );
-                                }}
-                              />
-                            </PopoverTrigger>
-                            <Portal>
-                              <PopoverContent
-                                className="PersonSide_popover"
-                                _focus={{ boxShadow: "none" }}
-                              >
-                                <div
-                                  ref={menuRef}
-                                  className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
-                                    ? "active"
-                                    : ""
-                                    }`}
-                                >
-                                  대화 나가기
-                                </div>
-                              </PopoverContent>
-                            </Portal>
+                            <img
+                              className="Message-Menu"
+                              src={MessageMenu}
+                              alt="message-menu"
+                              onClick={(e) => handleMenuClick(e, person.userId, e.currentTarget.closest('li')!)}
+                            />
+                            {activeMenuUserId && contextMenuPosition && (
+        <div
+          className="context-menu"
+          style={{ top: contextMenuPosition.top, left: contextMenuPosition.left }}
+          ref={contextMenuRef}
+        >
+          <button onClick={() => handleLeaveChat(activeMenuUserId)}>Leave Chat {activeMenuUserId}</button>
+        </div>
+      )}
                           </li>
-                        </Popover>
-                      )
-                  )}
-                </ul>
-              )}
-              {departmentTeams[department].map((team) => (
-                <li key={team}>
-                  <button
-                    className="downTeamBtn"
-                    onClick={() => toggleTeamExpansion(team)}
-                  >
-                    {expandedTeams[team] ? (
-                      <img src={MenuArrow_down} alt="down" />
-                    ) : (
-                      <img src={MenuArrow_right} alt="right" />
-                    )}{" "}
-                    {team}
-                  </button>
-                  {expandedTeams[team] && (
-                    <ul>
-                      {personData.map(
-                        (person) =>
-                          person.department === department &&
-                          person.team === team && (
-                            <Popover placement="right" key={person.userId}>
+                        )
+                    )}
+                  </ul>
+                )}
+                {departmentTeams[department].map((team) => (
+                  <li key={team}>
+                    <button
+                      className="downTeamBtn"
+                      onClick={() => toggleTeamExpansion(team)}
+                    >
+                      {expandedTeams[team] ? (
+                        <img src={MenuArrow_down} alt="down" />
+                      ) : (
+                        <img src={MenuArrow_right} alt="right" />
+                      )}{" "}
+                      {team}
+                    </button>
+                    {expandedTeams[team] && (
+                      <ul>
+                        {personData.map(
+                          (person) =>
+                            person.department === department &&
+                            person.team === team && (
                               <li
-                                className={`No-dept ${selectedUserId === person.userId
-                                  ? "selected"
-                                  : ""
-                                  }`}
+                                key={person.userId}
+                                className={`No-dept ${selectedUserId === person.userId ? "selected" : ""}`}
                                 onClick={() => {
                                   onPersonClick(
                                     person.username,
@@ -286,88 +250,65 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     person.userId
                                   );
                                   setSelectedUserId(person.userId);
-                                  setIsNotibarActive(false);
                                   setSelectedRoomId(-1);
                                 }}
                               >
                                 <div className="No-Left">
                                   <img
-                                    src={
-                                      person.attachment
-                                        ? person.attachment
-                                        : UserIcon_dark
-                                    }
+                                    src={person.attachment ? person.attachment : UserIcon_dark}
                                     alt={`${person.username}`}
                                   />
                                   {person.username}
                                 </div>
-                                <PopoverTrigger>
-                                  <img
-                                    className="Message-Menu"
-                                    src={MessageMenu}
-                                    alt="message-menu"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setActiveMenuUserId((prev) =>
-                                        prev === person.userId
-                                          ? null
-                                          : person.userId
-                                      );
-                                    }}
-                                  />
-                                </PopoverTrigger>
-                                <Portal>
-                                  <PopoverContent
-                                    className="PersonSide_popover"
-                                    _focus={{ boxShadow: "none" }}
-                                  >
-                                    <div
-                                      ref={menuRef}
-                                      className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
-                                        ? "active"
-                                        : ""
-                                        }`}
-                                    >
-                                      대화 나가기
-                                    </div>
-                                  </PopoverContent>
-                                </Portal>
-                              </li>
-                            </Popover>
-                          )
-                      )}
-                    </ul>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </li>
-      ))}
-
-      <li className="DeptTeams" key="R&D">
-        <button
-          className="downBtn"
-          onClick={() => toggleDepartmentExpansion("R&D")}
+                                <img
+                                  className="Message-Menu"
+                                  src={MessageMenu}
+                                  alt="message-menu"
+                                  onClick={(e) => handleMenuClick(e, person.userId, e.currentTarget.closest('li')!)}
+                                />
+                                {activeMenuUserId && contextMenuPosition && (
+        <div
+          className="context-menu"
+          style={{ top: contextMenuPosition.top, left: contextMenuPosition.left }}
+          ref={contextMenuRef}
         >
-          {expandedDepartments["R&D"] ? (
-            <img src={MenuArrow_down} alt="down" />
-          ) : (
-            <img src={MenuArrow_right} alt="right" />
-          )}{" "}
-          R&D 센터
-        </button>
-        {expandedDepartments["R&D"] && (
-          <ul className="DeptDown">
-            {personData
-              .filter(
-                (person) => !person.department && person.company === "R&D"
-              )
-              .map((person) => (
-                <Popover placement="right" key={person.userId}>
+          <button onClick={() => handleLeaveChat(activeMenuUserId)}>Leave Chat {activeMenuUserId}</button>
+        </div>
+      )}
+                              </li>
+                            )
+                        )}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+
+        <li className="DeptTeams" key="R&D">
+          <button
+            className="downBtn"
+            onClick={() => toggleDepartmentExpansion("R&D")}
+          >
+            {expandedDepartments["R&D"] ? (
+              <img src={MenuArrow_down} alt="down" />
+            ) : (
+              <img src={MenuArrow_right} alt="right" />
+            )}{" "}
+            R&D
+          </button>
+          {expandedDepartments["R&D"] && (
+            <ul className="DeptDown">
+              {personData
+                .filter(
+                  (person) => !person.department && person.company === "R&D"
+                )
+                .map((person) => (
                   <li
-                    className={`No-dept ${selectedUserId === person.userId ? "selected" : ""
-                      }`}
+                    key={person.userId}
+                    className={`No-dept ${selectedUserId === person.userId ? "selected" : ""}`}
                     onClick={() => {
                       onPersonClick(
                         person.username,
@@ -377,163 +318,38 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         person.userId
                       );
                       setSelectedUserId(person.userId);
-                      setIsNotibarActive(false);
                       setSelectedRoomId(-1);
                     }}
                   >
                     <div className="No-Left">
                       <img
-                        src={
-                          person.attachment ? person.attachment : UserIcon_dark
-                        }
+                        src={person.attachment ? person.attachment : UserIcon_dark}
                         alt={`${person.username}`}
                       />
                       {person.username}
                     </div>
-                    <PopoverTrigger>
-                      <img
-                        className="Message-Menu"
-                        src={MessageMenu}
-                        alt="message-menu"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveMenuUserId((prev) =>
-                            prev === person.userId ? null : person.userId
-                          );
-                        }}
-                      />
-                    </PopoverTrigger>
-                    <Portal>
-                      <PopoverContent
-                        className="PersonSide_popover"
-                        _focus={{ boxShadow: "none" }}
-                      >
-                        <div
-                          ref={menuRef}
-                          className={`Message-OnClick-Menu ${activeMenuUserId === person.userId ? "active" : ""
-                            }`}
-                        >
-                          대화 나가기
-                        </div>
-                      </PopoverContent>
-                    </Portal>
+                    <img
+                      className="Message-Menu"
+                      src={MessageMenu}
+                      alt="message-menu"
+                      onClick={(e) => handleMenuClick(e, person.userId, e.currentTarget.closest('li')!)}
+                    />
+                    {activeMenuUserId && contextMenuPosition && (
+        <div
+          className="context-menu"
+          style={{ top: contextMenuPosition.top, left: contextMenuPosition.left }}
+          ref={contextMenuRef}
+        >
+          <button onClick={() => handleLeaveChat(activeMenuUserId)}>Leave Chat {activeMenuUserId}</button>
+        </div>
+      )}
                   </li>
-                </Popover>
-              ))}
-
-            {RndDepartments.map((department) => (
-              <li className="DeptTeams" key={department}>
-                <button
-                  className="downBtn"
-                  onClick={() => toggleDepartmentExpansion(department)}
-                >
-                  {expandedDepartments[department] ? (
-                    <img src={MenuArrow_down} alt="down" />
-                  ) : (
-                    <img src={MenuArrow_right} alt="right" />
-                  )}{" "}
-                  {department}
-                </button>
-                {expandedDepartments[department] && (
-                  <ul className="DeptDown">
-                    {RndDepartmentTeams[department].map((team) => (
-                      <li key={team}>
-                        <button
-                          className="downTeamBtn"
-                          onClick={() => toggleTeamExpansion(team)}
-                        >
-                          {expandedTeams[team] ? (
-                            <img src={MenuArrow_down} alt="down" />
-                          ) : (
-                            <img src={MenuArrow_right} alt="right" />
-                          )}{" "}
-                          {team}
-                        </button>
-                        {expandedTeams[team] && (
-                          <ul>
-                            {personData
-                              .filter(
-                                (person) =>
-                                  person.department === department &&
-                                  person.team === team
-                              )
-                              .map((person) => (
-                                <Popover placement="right" key={person.userId}>
-                                  <li
-                                    className={`No-dept ${selectedUserId === person.userId
-                                      ? "selected"
-                                      : ""
-                                      }`}
-                                    onClick={() => {
-                                      onPersonClick(
-                                        person.username,
-                                        person.team,
-                                        person.department,
-                                        person.position,
-                                        person.userId
-                                      );
-                                      setSelectedUserId(person.userId);
-                                      setIsNotibarActive(false);
-                                      setSelectedRoomId(-0);
-                                    }}
-                                  >
-                                    <div className="No-Left">
-                                      <img
-                                        src={
-                                          person.attachment
-                                            ? person.attachment
-                                            : UserIcon_dark
-                                        }
-                                        alt={`${person.username}`}
-                                      />
-                                      {person.username}
-                                    </div>
-                                    <PopoverTrigger>
-                                      <img
-                                        className="Message-Menu"
-                                        src={MessageMenu}
-                                        alt="message-menu"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setActiveMenuUserId((prev) =>
-                                            prev === person.userId
-                                              ? null
-                                              : person.userId
-                                          );
-                                        }}
-                                      />
-                                    </PopoverTrigger>
-                                    <Portal>
-                                      <PopoverContent
-                                        className="PersonSide_popover"
-                                        _focus={{ boxShadow: "none" }}
-                                      >
-                                        <div
-                                          ref={menuRef}
-                                          className={`Message-OnClick-Menu ${activeMenuUserId === person.userId
-                                            ? "active"
-                                            : ""
-                                            }`}
-                                        >
-                                          대화 나가기
-                                        </div>
-                                      </PopoverContent>
-                                    </Portal>
-                                  </li>
-                                </Popover>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </li>
-    </ul>
+                ))}
+            </ul>
+          )}
+        </li>
+      </ul>
+    </div>
   );
 };
 
