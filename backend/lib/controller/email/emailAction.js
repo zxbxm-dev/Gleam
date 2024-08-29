@@ -18,7 +18,6 @@ const EmailAction = models.EmailAction;
 const starringEmail = async (req, res) => {
     const {
         Id, 
-        star,
     } = req.body;
 
     if(!Id){

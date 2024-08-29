@@ -6,6 +6,19 @@ const Email = models.Email;
 require('dotenv').config();
 
 
+//IMAP 연결 설정 
+async function connectIMAP(userId, password){
+    return new Imap({
+        user: userId + "@gleam.im",
+        password: password,
+        host: 'mail.gleam.im',
+        port: 993,
+        tls: true,
+        tlsOptions: { rejectUnauthorized: false },
+    });
+}
+
+
 // IMAP 연결 설정 및 이메일 가져오기
 async function fetchMailcowEmails(userId) {
 
@@ -13,19 +26,8 @@ async function fetchMailcowEmails(userId) {
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
     const email = userId + "@gleam.im";
     const password = 'math123!!'
-   
-    console.log("이메일 서버에 접속한 사용자 :", userId);
 
-
-    const imap = new Imap({
-        user: email,
-        password: password,
-        host: 'mail.gleam.im',
-        port: 993,
-        tls: true,
-        tlsOptions: { rejectUnauthorized: false }
-    });
-
+    const imap = await connectIMAP(userId, password);
 
     imap.once('ready', () => {
         // imap.getBoxes((err, boxes) => {
@@ -35,6 +37,8 @@ async function fetchMailcowEmails(userId) {
 
 
         imap.openBox('INBOX', true, (err, box) => {
+            if(err) throw err;
+
             // 읽지 않은 메일만 검색
             imap.search(['UNSEEN'], (err, results) => {
                 if (err) throw err;
@@ -76,7 +80,7 @@ async function fetchMailcowEmails(userId) {
 
     // 특정 메일함에서 이메일을 가져오는 함수
     function fetchEmails(imap, userId, folderName, callback) {
-        const searchCriteria = ['ALL'];
+        const searchCriteria = ['UNSEEN'];
         const fetchOptions = { bodies: '' };
 
 
@@ -105,7 +109,9 @@ async function fetchMailcowEmails(userId) {
                         }
                         try {
                             const checksavedEmail = await saveEmail(mail, userId, folderName);
-                            console.log('저장된 이메일 Id:', checksavedEmail.Id);
+                            if(checksavedEmail){
+                                console.log('저장된 이메일 Id:', checksavedEmail.Id);
+                            } 
                         } catch (saveErr) {
                             console.error('이메일을 저장하는 도중 에러가 발생했습니다.');
                             //console.log('>>>>>>저장 실패한 이메일 제목: ', mail.Id);
@@ -129,7 +135,7 @@ async function fetchMailcowEmails(userId) {
 
 
 // 불러온 이메일 데이터베이스에 저장
-const saveEmail = async (mail, userId, folderName) => {
+const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment) => {
     if (!mail || !mail.subject) {
         console.error('Error: mail 객체가 존재하지 않거나 제목이 존재하지 않습니다.');
         return;
@@ -163,6 +169,8 @@ const saveEmail = async (mail, userId, folderName) => {
             sendAt: mail.date || new Date(),
             receiveAt: new Date(),
             signature: mail.signature || '',
+            attachments: attachments,
+            hasAttachment,
             folder: folderName
         };
 
@@ -176,6 +184,30 @@ const saveEmail = async (mail, userId, folderName) => {
     }
 };
 
+
+// 보낸 메일을 Sent 메일박스에 저장
+function saveSentMail(imap, mailOptions) {
+    const rawEmail = [
+        `From: ${mailOptions.from}`,
+        `To: ${mailOptions.to}`,
+        `Subject: ${mailOptions.subject}`,
+        '',
+        mailOptions.text || mailOptions.html
+    ].join('\n');
+
+    imap.openBox('Sent', false, function(err, box) {
+        if (err) throw err;
+
+        imap.append(rawEmail, { mailbox: 'Sent' }, function(err) {
+            if (err) {
+                console.error('보낸 메일을 Sent 폴더에 저장하는 도중 오류 발생:', err);
+            } else {
+                console.log('보낸 메일이 Sent 폴더에 저장되었습니다.');
+            }
+            imap.end();
+        });
+    });
+}
 
 // SMTP를 통한 이메일 전송 함수 추가
 async function sendEmail(to, subject, body,userId, attachments = [], messageId,) {
@@ -213,6 +245,16 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId,)
 
     try {
         const info = await transporter.sendMail(mailOptions);
+        const imap = await connectIMAP(userId, password);
+       imap.once('ready', function() {
+           saveSentMail(imap, mailOptions);  // 보낸 메일을 Sent 폴더에 저장
+       });
+
+       imap.once('error', function(err) {
+           console.error('IMAP 연결 에러:', err);
+       });
+
+       imap.connect();
         console.log('이메일이 성공적으로 전송되었습니다: ', info.response);
         return info;
     } catch (error) {
@@ -221,8 +263,8 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId,)
     }
 }
 
-
 module.exports = {
+    connectIMAP,
     fetchMailcowEmails,
     saveEmail,
     sendEmail,
