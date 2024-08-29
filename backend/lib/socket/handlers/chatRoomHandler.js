@@ -106,10 +106,38 @@ const createPrivateRoom = async (io, socket, data) => {
     sendUserChatRooms(socket, userId);
 
     // 전체 채팅방 목록을 클라이언트에 전송
-    const allChatRooms = await ChatRoom.findAll();
-    console.log("전송할 chatRooms 데이터:", allChatRooms.map(room => room.toJSON()));
-    io.emit('chatRooms', allChatRooms.map(room => room.toJSON()));
-    
+    const allChatRooms = await ChatRoom.findAll({
+      include: [{ model: ChatRoomParticipant }],
+    });
+
+    io.emit(
+      "chatRooms",
+      allChatRooms.map((room) => {
+        const roomData = room.toJSON(); // Sequelize 모델 인스턴스를 JSON으로 변환
+
+        // userTitle이 문자열일 경우 파싱
+        if (roomData.userTitle && typeof roomData.userTitle === 'string') {
+          roomData.userTitle = JSON.parse(roomData.userTitle);
+        }
+
+        // 그룹이 아닌 경우 title을 상대방의 정보로 설정
+        if (!roomData.isGroup) {
+          const userTitle = roomData.userTitle || {};
+          const otherUserId = Object.keys(userTitle).find((id) => id !== roomData.hostUserId);
+
+          if (otherUserId) {
+            roomData.title = `${userTitle[otherUserId]?.team || ''} ${userTitle[otherUserId]?.username || ''}`;
+          }
+        }
+
+        // 필요한 필드만 포함된 객체를 반환
+        return {
+          title: roomData.title,
+          userTitle: roomData.userTitle,
+          dataValues: roomData,
+        };
+      })
+    );
 
     // 생성된 채팅방의 메시지 저장 및 전송
     await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);

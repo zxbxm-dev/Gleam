@@ -30,6 +30,7 @@
     "node-schedule": "^2.1.1",
     "pug": "2.0.0-beta11",
     "sequelize": "^6.37.3",
+    "shortid": "^2.2.16",
     "socket.io": "^4.7.5",
     "xlsx": "^0.18.5"
   },
