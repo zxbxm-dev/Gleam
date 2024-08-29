@@ -3,6 +3,45 @@ const { User, ChatRoom, ChatRoomParticipant, Message } = models;
 const { Op, Sequelize } = require("sequelize");
 const { sendMessageToRoomParticipants } = require("./messageHandler");
 
+// 사용자 ID로 단일 사용자를 가져오기
+const getUserById = async (userId) => User.findOne({ where: { userId } });
+
+// 여러 사용자 ID로 사용자 목록을 가져오기
+const getUsersByIds = async (userIds) => User.findAll({ where: { userId: userIds } });
+
+// userTitle을 파싱하고 파싱 오류 처리
+const parseUserTitle = (userTitle, userId) => {
+  let parsedTitle = {};
+  if (typeof userTitle === "string") {
+    try {
+      parsedTitle = JSON.parse(userTitle);
+    } catch (error) {
+      console.error("userTitle 파싱 오류:", error);
+    }
+  } else {
+    parsedTitle = userTitle || {};
+  }
+
+  return parsedTitle;
+};
+
+// 채팅방의 타입에 따라 사용자 제목 반환
+const getOthertitle = (roomData, userTitle, userId) => {
+  if (roomData.isGroup) {
+    return roomData.title;
+  }
+
+  const otherUserId = Object.keys(userTitle).find(id => id !== userId);
+  if (otherUserId) {
+    const otherUser = userTitle[otherUserId];
+    if (otherUser.team) return `${otherUser.team} ${otherUser.username}`;
+    if (otherUser.department) return `${otherUser.department} ${otherUser.username}`;
+    return otherUser.username;
+  }
+
+  return roomData.title;
+};
+
 // 새로운 개인 채팅방을 생성하거나 기존 채팅방을 조회
 // 생성된 채팅방에 메시지를 저장하고 해당 채팅방의 사용자들에게 메시지를 전송
 const createPrivateRoom = async (io, socket, data) => {
@@ -11,16 +50,16 @@ const createPrivateRoom = async (io, socket, data) => {
 
     const { userId, content, invitedUserIds } = data;
 
-    // 현재 사용자와 초대된 사용자들을 조회
-    const user = await User.findOne({ where: { userId } });
-    const targets = await User.findAll({ where: { userId: invitedUserIds } });
+    // 사용자 및 초대된 사용자 조회
+    const user = await getUserById(userId);
+    const targets = await getUsersByIds(invitedUserIds);
 
     if (!user || targets.length !== invitedUserIds.length) {
       return socket.emit("error", { message: "사용자를 찾을 수 없습니다" });
     }
 
-    // 초대된 사용자들의 정보를 배열로 생성
-    const invitedUsers = targets.map((target) => ({
+    // 초대된 사용자 정보 배열 생성
+    const invitedUsers = targets.map(target => ({
       userId: target.userId,
       username: target.username,
       company: target.company || null,
@@ -30,10 +69,6 @@ const createPrivateRoom = async (io, socket, data) => {
       spot: target.spot || null,
       attachment: target.attachment || null,
     }));
-
-    // 사용자 이름에 팀 이름을 붙여서 생성
-    const userDisplayName = `${user.team} ${user.username}`;
-    const invitedUserDisplayName = `${invitedUsers[0]?.team} ${invitedUsers[0]?.username}`;
 
     // 기존 채팅방을 조회하거나 새로운 채팅방을 생성
     const [chatRoom, created] = await ChatRoom.findOrCreate({
@@ -45,9 +80,7 @@ const createPrivateRoom = async (io, socket, data) => {
               [Op.in]: Sequelize.literal(`(
                 SELECT roomId
                 FROM chatroom_participant
-                WHERE userId IN (${invitedUserIds
-                  .map((id) => `'${id}'`)
-                  .join(", ")}, '${userId}')
+                WHERE userId IN (${invitedUserIds.map(id => `'${id}'`).join(", ")}, '${userId}')
                 GROUP BY roomId
                 HAVING COUNT(*) = ${invitedUserIds.length + 1}
               )`),
@@ -62,31 +95,30 @@ const createPrivateRoom = async (io, socket, data) => {
         hostDepartment: user.department,
         hostTeam: user.team,
         hostPosition: user.position,
-        // 개인 채팅방일 경우 title을 설정하지 않음
-        title: null,
-        userTitle: JSON.stringify(
-          invitedUsers.reduce((acc, invitedUser) => {
-            acc[userId] = {
-              userId,
-              username: user.username,
-              company: user.company || null,
-              department: user.department || null,
-              team: user.team || null,
-              position: user.position || null,
-              spot: user.spot || null,
-              attachment: user.attachment || null,
-            };
-            acc[invitedUser.userId] = invitedUser; // 초대된 사용자에 대한 정보
-            return acc;
-          }, {})
-        ),
+        title: null,    // 개인 채팅방일 경우 title을 설정하지 않음
+        userTitle: JSON.stringify({
+          [userId]: {
+            userId,
+            username: user.username,
+            company: user.company || null,
+            department: user.department || null,
+            team: user.team || null,
+            position: user.position || null,
+            spot: user.spot || null,
+            attachment: user.attachment || null,
+          },
+          ...invitedUsers.reduce((acc, invitedUser) => ({
+            ...acc,
+            [invitedUser.userId]: invitedUser  // 초대된 사용자에 대한 정보
+          }), {})
+        }),
       },
     });
 
     // 새로운 채팅방이 생성된 경우 참가자를 추가
     if (created) {
       const participants = [
-        ...invitedUsers.map((invitedUser) => ({
+        ...invitedUsers.map(invitedUser => ({
           roomId: chatRoom.roomId,
           userId: invitedUser.userId,
           username: invitedUser.username,
@@ -114,54 +146,17 @@ const createPrivateRoom = async (io, socket, data) => {
       include: [{ model: ChatRoomParticipant }],
     });
 
-    io.emit(
-      "chatRooms",
-      allChatRooms.map((room) => {
-        const roomData = room.toJSON(); // Sequelize 모델 인스턴스를 JSON으로 변환
+    io.emit("chatRooms", allChatRooms.map(room => {
+      const roomData = room.toJSON();
+      const userTitle = parseUserTitle(roomData.userTitle, userId);
+      const othertitle = getOthertitle(roomData, userTitle, userId);
 
-        // userTitle이 문자열일 경우만 파싱
-        let userTitle;
-        if (roomData.userTitle && typeof roomData.userTitle === "string") {
-          try {
-            userTitle = JSON.parse(roomData.userTitle);
-          } catch (error) {
-            console.error("userTitle 파싱 오류:", error);
-            userTitle = {};
-          }
-        } else {
-          userTitle = roomData.userTitle || {};
-        }
-
-        // othertitle 변수를 정의하고 사용
-        let othertitle;
-        if (roomData.isGroup) {
-          // 단체방의 경우 기존 제목을 사용
-          othertitle = roomData.title;
-        } else {
-          // 개인 채팅방의 경우 상대방의 이름을 제목으로 설정
-          const otherUserId = Object.keys(userTitle).find((id) => id !== userId);
-          if (otherUserId) {
-            const otherUser = userTitle[otherUserId];
-            if (otherUser.team) {
-              othertitle = `${otherUser.team} ${otherUser.username}`;
-            } else if (otherUser.department) {
-              othertitle = `${otherUser.department} ${otherUser.username}`;
-            } else {
-              othertitle = otherUser.username;
-            }
-          } else {
-            othertitle = roomData.title;
-          }
-        }
-
-        // 필요한 필드만 포함된 객체를 반환
-        return {
-          othertitle,
-          userTitle,
-          dataValues: roomData,
-        };
-      })
-    );
+      return {
+        othertitle,
+        userTitle,
+        dataValues: roomData,
+      };
+    }));
 
     // 생성된 채팅방의 메시지 저장 및 전송
     await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
@@ -180,33 +175,11 @@ const sendUserChatRooms = async (socket, userId) => {
     });
 
     // 각 사용자가 참여한 채팅방의 userTitle을 파싱해서 각 사용자에게 맞는 제목을 설정
-    const roomsWithDetails = chatRooms.map((participant) => {
+    const roomsWithDetails = chatRooms.map(participant => {
       const room = participant.ChatRoom;
-      const roomData = room.toJSON(); // Sequelize 모델 인스턴스를 JSON으로 변환
-
-      const userTitle = JSON.parse(roomData.userTitle || "{}");
-
-      // 현재 로그인된 사용자(userId)를 제외한 첫 번째 사용자의 제목을 제목으로 설정
-      let othertitle;
-      if (roomData.isGroup) {
-        // 단체방의 경우 기존 제목을 사용
-        othertitle = roomData.title;
-      } else {
-        // 개인 채팅방의 경우 상대방의 이름을 제목으로 설정
-        const otherUserId = Object.keys(userTitle).find((id) => id !== userId);
-        if (otherUserId) {
-          const otherUser = userTitle[otherUserId];
-          if (otherUser.team) {
-            othertitle = `${otherUser.team} ${otherUser.username}`;
-          } else if (otherUser.department) {
-            othertitle = `${otherUser.department} ${otherUser.username}`;
-          } else {
-            othertitle = otherUser.username;
-          }
-        } else {
-          othertitle = roomData.title;
-        }
-      }
+      const roomData = room.toJSON();    // Sequelize 모델 인스턴스를 JSON으로 변환
+      const userTitle = parseUserTitle(roomData.userTitle, userId);
+      const othertitle = getOthertitle(roomData, userTitle, userId);
 
       console.log("클라이언트에게 전달될 제목:", othertitle);
 
@@ -219,7 +192,6 @@ const sendUserChatRooms = async (socket, userId) => {
 
     // 채팅방 목록을 클라이언트에 전송합니다.
     socket.emit("chatRooms", roomsWithDetails);
-
     console.log("최종 채팅방 목록:", roomsWithDetails);
   } catch (error) {
     console.error("채팅방 조회 오류:", error);
