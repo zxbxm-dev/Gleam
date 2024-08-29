@@ -196,9 +196,18 @@
 
     .My-bar {
       border-top: none !important;
+
+      &.active {
+        background-color: #efefef !important;
+      }
     }
 
     .ChatLog {
+
+      &.active {
+        background-color: #efefef !important;
+      }
+      
       .LogBox {
         font-size: 15px;
         display: flex;

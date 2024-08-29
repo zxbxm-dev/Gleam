@@ -87,8 +87,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<number | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
-  const [currentRoomId, setCurrentRoomId] = useState<number | null>(null);
   const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
+  const [activeItem, setActiveItem] = useState<number | null>(null);
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
@@ -99,8 +99,6 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const position = person ? person.position : "";
 
     const roomId = chatRoom.dataValues?.roomId ?? -1;
-
-    console.log(roomId);
 
     setSelectedRoomId(roomId);
 
@@ -113,6 +111,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     );
 
     setIsNotibarActive(false);
+    setActiveItem(roomId);
   };
 
   const handleMessageMenuClick = (index: number, event: React.MouseEvent) => {
@@ -141,18 +140,19 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   return (
     <div className="chat-data-tab">
       <li
-        className={`Noti-bar ${isNotibarActive ? "active" : ""}`}
+        className={`Noti-bar ${activeItem === -2 ? "active" : ""}`}
         onClick={() => {
           setSelectedChatRoom(-2);
           setIsNotibarActive(true);
           setSelectedRoomId(-2);
+          setActiveItem(-2);
         }}
       >
         <img className="Noti-Icon" src={NotiIcon} alt="Notification Icon" />
         <div>통합 알림</div>
       </li>
       <li
-        className="My-bar"
+        className={`My-bar ${activeItem === 0 ? "active" : ""}`}
         onClick={() => {
           onPersonClick(
             userName || "",
@@ -162,6 +162,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             userId || ""
           );
           setSelectedRoomId(0);
+          setActiveItem(0);
         }}
       >
         <div
@@ -179,16 +180,16 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
       {chatRooms
         .sort((a, b) => new Date(b.upt).getTime() - new Date(a.upt).getTime())
         .map((chatRoom, index) => {
-          const roomId = chatRoom.roomId;
+          const roomId = chatRoom.dataValues?.roomId ?? -1;
           const isPopoverVisible = visiblePopoverIndex === index;
+          const isActive = activeItem === roomId;
 
           return (
             <div key={roomId}>
               <div
-                className={`ChatLog ${selectedChatRoom === roomId ? "selected" : ""}`}
+                className={`ChatLog ${isActive ? "active" : ""}`}
                 onClick={() => {
                   handleChatRoomClick(chatRoom);
-                  setCurrentRoomId(roomId);
                 }}
               >
                 <div className="LogBox">
@@ -215,13 +216,13 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     onClick={(e) => handleMessageMenuClick(index, e)}
                   />
 
-{isPopoverVisible && (
+                  {isPopoverVisible && (
                     <div
                       className="ChatRoomSide_popover"
                       ref={el => popoverRefs.current[index] = el}
                       onClick={() => handleLeaveRoom(roomId)}
                     >
-                  대화 나가기
+                      대화 나가기
                     </div>
                   )}
                 </div>
