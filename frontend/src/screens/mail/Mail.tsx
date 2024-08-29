@@ -10,7 +10,6 @@ import {
   mail_write,
   mail_attachment,
   mail_triangle,
-  mail_cancle,
   mail_calendar,
   White_Arrow,
   SearchIcon,
@@ -553,7 +552,7 @@ const Mail = () => {
                           <div onClick={() => handleMailStarring(mail.Id, mail.star)}>
                             <img src={mail.star ? mail_important_active : mail_important} alt="mail_important" />
                           </div>
-                          {mail.attachment?.length > 0 ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
+                          {mail.hasAttachments ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
                         </div>
                         <span>[{mail.folder === 'inbox' ? '받은 메일함' : mail.folder === 'sent' ? '보낸 메일함' : mail.folder === 'starred' ? '중요 메일함' : mail.folder === 'unread' ? '안 읽은 메일' : mail.folder === 'drafts' ? '임시 보관함' : mail.folder === 'junk' ? '스팸 메일함' : ''}]</span>
                         {mail.folder === 'drafts' ? 
@@ -596,14 +595,6 @@ const Mail = () => {
                                 </div>
                               </span>
                             )}
-                            {mail.folder === 'sent' && (
-                              <span className="button_wrap">
-                                <div className="image-container" onMouseEnter={() => handleHover("cancle")} onMouseLeave={() => handleHover("")} onClick={handleSendCancle}>
-                                  <img src={mail_cancle} alt="mail_cancle" />
-                                  {hoverState === "cancle" && <div className="tooltip">발송취소</div>}
-                                </div>
-                              </span>
-                            )}
                           </div>
                           <div className="mail_detail_content">
                             <div className="mail_detail_content_top">
@@ -619,7 +610,7 @@ const Mail = () => {
                                   </div>
                                   <span>{formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}</span>
                                 </div>
-                                {mail.attachment?.length > 0 ? 
+                                {mail.hasAttachments > 0 ? 
                                   <div className="DownFile" onClick={toggleDownFile}>
                                     {isDownFileVisible ?
                                       <img src={Down_Arrow} className="rotate_Arrow" alt="Down_Arrow" />
