@@ -44,10 +44,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
 }) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
-  const [contextMenuPosition, setContextMenuPosition] = useState<{ top: number, left: number } | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const user = useRecoilValue(userState);
-  const menuRef = useRef<HTMLDivElement | null>(null);
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -97,18 +95,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
   };
 
-  const handleMenuClick = (event: React.MouseEvent, userId: string, listItem: HTMLLIElement) => {
-    event.stopPropagation();
-    const { offsetTop, offsetLeft, offsetHeight } = listItem;
-    setActiveMenuUserId(userId);
-    setContextMenuPosition({ top: offsetTop + offsetHeight, left: offsetLeft });
-  };
-
-  const handleLeaveChat = (userId: string) => {
-    console.log(`Leave Chat for userId: ${userId}`);
-    // Implement the functionality to leave the chat
-    setActiveMenuUserId(null);
-  };
 
   return (
     <div>
@@ -138,22 +124,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 />
                 {person.username}
               </div>
-              <img
-                className="Message-Menu"
-                src={MessageMenu}
-                alt="message-menu"
-                onClick={(e) => handleMenuClick(e, person.userId, e.currentTarget.closest('li')!)}
-              />
-
-{activeMenuUserId && contextMenuPosition && (
-        <div
-          className="context-menu"
-          style={{ top: contextMenuPosition.top, left: contextMenuPosition.left }}
-          ref={contextMenuRef}
-        >
-          <button onClick={() => handleLeaveChat(activeMenuUserId)}>Leave Chat {activeMenuUserId}</button>
-        </div>
-      )}
             </li>
           ))}
         {Object.keys(departmentTeams).map((department) => (
@@ -199,21 +169,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                               />
                               {person.username}
                             </div>
-                            <img
-                              className="Message-Menu"
-                              src={MessageMenu}
-                              alt="message-menu"
-                              onClick={(e) => handleMenuClick(e, person.userId, e.currentTarget.closest('li')!)}
-                            />
-                            {activeMenuUserId && contextMenuPosition && (
-        <div
-          className="context-menu"
-          style={{ top: contextMenuPosition.top, left: contextMenuPosition.left }}
-          ref={contextMenuRef}
-        >
-          <button onClick={() => handleLeaveChat(activeMenuUserId)}>Leave Chat {activeMenuUserId}</button>
-        </div>
-      )}
                           </li>
                         )
                     )}
@@ -260,21 +215,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                   />
                                   {person.username}
                                 </div>
-                                <img
-                                  className="Message-Menu"
-                                  src={MessageMenu}
-                                  alt="message-menu"
-                                  onClick={(e) => handleMenuClick(e, person.userId, e.currentTarget.closest('li')!)}
-                                />
-                                {activeMenuUserId && contextMenuPosition && (
-        <div
-          className="context-menu"
-          style={{ top: contextMenuPosition.top, left: contextMenuPosition.left }}
-          ref={contextMenuRef}
-        >
-          <button onClick={() => handleLeaveChat(activeMenuUserId)}>Leave Chat {activeMenuUserId}</button>
-        </div>
-      )}
                               </li>
                             )
                         )}
@@ -328,27 +268,13 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                       />
                       {person.username}
                     </div>
-                    <img
-                      className="Message-Menu"
-                      src={MessageMenu}
-                      alt="message-menu"
-                      onClick={(e) => handleMenuClick(e, person.userId, e.currentTarget.closest('li')!)}
-                    />
-                    {activeMenuUserId && contextMenuPosition && (
-        <div
-          className="context-menu"
-          style={{ top: contextMenuPosition.top, left: contextMenuPosition.left }}
-          ref={contextMenuRef}
-        >
-          <button onClick={() => handleLeaveChat(activeMenuUserId)}>Leave Chat {activeMenuUserId}</button>
-        </div>
-      )}
                   </li>
                 ))}
             </ul>
           )}
         </li>
       </ul>
+
     </div>
   );
 };
