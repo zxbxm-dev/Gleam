@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { PersonData } from "../../../services/person/PersonServices";
 import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
-import { userState, selectedPersonState, userStateMessage, selectedRoomIdState } from "../../../recoil/atoms";
+import { userState, selectedPersonState, userStateMessage, selectedRoomIdState, NewChatModalstate } from "../../../recoil/atoms";
 import {
   ChatTab,
   PersonTab,
@@ -29,7 +29,8 @@ export interface Person {
 const MessageSidebar: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null); // Socket 타입 사용
   const [personData, setPersonData] = useState<Person[] | null>(null);
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
+
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const [expandedDepartments, setExpandedDepartments] = useState<{
     [key: string]: boolean;
@@ -108,15 +109,15 @@ const MessageSidebar: React.FC = () => {
 
     // 서버에 사용자 등록 요청
     socket.emit('registerUser', userId);
-  
+
     // 서버에 연결되었을 때
     socket.on('connect', () => {
       console.log(`[Client] Socket 서버에 연결됨: ${socket.id}`);
     });
-  
+
     // 채팅 방 요청
     socket.emit('getChatRooms', userId);
-  
+
     // 채팅 방 데이터 수신
     socket.on('chatRooms', (data: ChatRoom[]) => {
       // Map data to match ChatRoom type
@@ -127,15 +128,15 @@ const MessageSidebar: React.FC = () => {
       setChatRooms(updatedRooms);
       console.log("업데이트된 채팅 방:", updatedRooms);
     });
-  
+
     socket.on('disconnect', () => {
       console.log('[Client] Socket 서버와의 연결 끊김');
     });
-  
+
     socket.on('connect_error', (error) => {
       console.error('연결 오류:', error);
     });
-  
+
     return () => {
       socket.off('chatRooms');
       socket.off('connect');
@@ -346,13 +347,11 @@ const MessageSidebar: React.FC = () => {
         onClick={() => {
           setNewChatChosenUsers(null);
           setIsWholeMemeberChecked(false);
-          setOpenModal(true);
+          setOpenchatModal({ openstate: true });
         }}
       />
 
       <NewChatModal
-        openModal={openModal}
-        setOpenModal={setOpenModal}
         filteredData={filteredData}
       />
     </div>

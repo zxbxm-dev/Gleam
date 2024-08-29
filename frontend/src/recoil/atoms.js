@@ -74,3 +74,10 @@ export const userStateMessage = atom({
     state: ""
   },
 });
+
+export const NewChatModalstate = atom({
+  key: "NewChatModalstate",
+  default: {
+    openstate:false
+  },
+});
