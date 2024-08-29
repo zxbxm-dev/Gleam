@@ -119,9 +119,17 @@ const createPrivateRoom = async (io, socket, data) => {
       allChatRooms.map((room) => {
         const roomData = room.toJSON(); // Sequelize 모델 인스턴스를 JSON으로 변환
 
-        // userTitle이 문자열일 경우 파싱
+        // userTitle이 문자열일 경우만 파싱
+        let userTitle;
         if (roomData.userTitle && typeof roomData.userTitle === "string") {
-          roomData.userTitle = JSON.parse(roomData.userTitle);
+          try {
+            userTitle = JSON.parse(roomData.userTitle);
+          } catch (error) {
+            console.error("userTitle 파싱 오류:", error);
+            userTitle = {};
+          }
+        } else {
+          userTitle = roomData.userTitle || {};
         }
 
         // othertitle 변수를 정의하고 사용
@@ -131,11 +139,9 @@ const createPrivateRoom = async (io, socket, data) => {
           othertitle = roomData.title;
         } else {
           // 개인 채팅방의 경우 상대방의 이름을 제목으로 설정
-          const otherUserId = Object.keys(roomData.userTitle).find(
-            (id) => id !== roomData.userId
-          );
+          const otherUserId = Object.keys(userTitle).find((id) => id !== userId);
           if (otherUserId) {
-            othertitle = `${roomData.userTitle[otherUserId]?.team || ''} ${roomData.userTitle[otherUserId]?.username || ''}`;
+            othertitle = `${userTitle[otherUserId]?.team || ''} ${userTitle[otherUserId]?.username || ''}`;
           } else {
             othertitle = roomData.title; // 기본 제목 설정
           }
@@ -143,8 +149,8 @@ const createPrivateRoom = async (io, socket, data) => {
 
         // 필요한 필드만 포함된 객체를 반환
         return {
-          othertitle, // ChatRoom 모델의 title 데이터를 포함한 othertitle 필드
-          userTitle: roomData.userTitle,
+          othertitle,
+          userTitle,
           dataValues: roomData,
         };
       })
@@ -191,7 +197,7 @@ const sendUserChatRooms = async (socket, userId) => {
       console.log("클라이언트에게 전달될 제목:", othertitle);
 
       return {
-        othertitle,   // ChatRoom 모델의 title 데이터를 포함한 othertitle 필드
+        othertitle,
         userTitle,
         dataValues: roomData,
       };
