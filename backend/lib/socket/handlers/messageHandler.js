@@ -1,11 +1,11 @@
 const models = require("../../models");
-const { Message, ChatRoomParticipant, User} = models;
+const { Message, User, ChatRoomParticipant } = models;
 
 // 특정 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistory = async (socket, roomId) => {
   try {
     const messages = await Message.findAll({
-      where: { roomId: roomId },
+      where: { roomId },
       include: [
         {
           model: User,
@@ -30,7 +30,6 @@ const getChatHistory = async (socket, roomId) => {
     socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });
   }
 };
-
 
 // 채팅방의 모든 참가자에게 메시지를 전송하는 함수
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
