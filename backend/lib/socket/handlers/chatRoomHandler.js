@@ -116,23 +116,30 @@ const createPrivateRoom = async (io, socket, data) => {
         const roomData = room.toJSON(); // Sequelize 모델 인스턴스를 JSON으로 변환
 
         // userTitle이 문자열일 경우 파싱
-        if (roomData.userTitle && typeof roomData.userTitle === 'string') {
+        if (roomData.userTitle && typeof roomData.userTitle === "string") {
           roomData.userTitle = JSON.parse(roomData.userTitle);
         }
 
-        // 그룹이 아닌 경우 title을 상대방의 정보로 설정
-        if (!roomData.isGroup) {
-          const userTitle = roomData.userTitle || {};
-          const otherUserId = Object.keys(userTitle).find((id) => id !== roomData.hostUserId);
-
+        // othertitle 변수를 정의하고 사용
+        let othertitle;
+        if (roomData.isGroup) {
+          // 단체방의 경우 기존 제목을 사용
+          othertitle = roomData.title;
+        } else {
+          // 개인 채팅방의 경우 상대방의 이름을 제목으로 설정
+          const otherUserId = Object.keys(roomData.userTitle).find(
+            (id) => id !== roomData.userId
+          );
           if (otherUserId) {
-            roomData.title = `${userTitle[otherUserId]?.team || ''} ${userTitle[otherUserId]?.username || ''}`;
+            othertitle = `${roomData.userTitle[otherUserId]?.team || ''} ${roomData.userTitle[otherUserId]?.username || ''}`;
+          } else {
+            othertitle = roomData.title; // 기본 제목 설정
           }
         }
 
         // 필요한 필드만 포함된 객체를 반환
         return {
-          title: roomData.title,
+          othertitle, // ChatRoom 모델의 title 데이터를 포함한 othertitle 필드
           userTitle: roomData.userTitle,
           dataValues: roomData,
         };
@@ -162,22 +169,29 @@ const sendUserChatRooms = async (socket, userId) => {
     const roomsWithDetails = chatRooms.map((participant) => {
       const room = participant.ChatRoom;
 
+      console.log("채팅방 정보:", room.toJSON());
+
       const userTitle = JSON.parse(room.userTitle || "{}");
 
+      console.log("파싱된 userTitle:", userTitle);
+
       // 현재 로그인된 사용자(userId)를 제외한 첫 번째 사용자의 제목을 제목으로 설정
-      let title;
-      if (room.isGroup) {
+      let othertitle;
+      if (roomData.isGroup) {
         // 단체방의 경우 기존 제목을 사용
-        title = room.title;
+        othertitle = roomData.title;
       } else {
         // 개인 채팅방의 경우 상대방의 이름을 제목으로 설정
         const otherUserId = Object.keys(userTitle).find((id) => id !== userId);
         if (otherUserId) {
-          title = `${userTitle[otherUserId]?.team || ''} ${userTitle[otherUserId]?.username || ''}`;
+          othertitle = `${userTitle[otherUserId]?.team || ''} ${userTitle[otherUserId]?.username || ''}`;
         } else {
-          title = room.title; // 기본 제목 설정
+          othertitle = roomData.title; // 기본 제목 설정
         }
       }
+
+      console.log("클라이언트에게 전달될 제목:", title);
+
       return { ...room, title, userTitle };
     });
 
