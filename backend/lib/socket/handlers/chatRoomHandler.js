@@ -3,13 +3,9 @@ const { User, ChatRoom, ChatRoomParticipant, Message } = models;
 const { Op, Sequelize } = require("sequelize");
 const { sendMessageToRoomParticipants } = require("./messageHandler");
 
-// 사용자 ID로 단일 사용자를 가져오기
 const getUserById = async (userId) => User.findOne({ where: { userId } });
-
-// 여러 사용자 ID로 사용자 목록을 가져오기
 const getUsersByIds = async (userIds) => User.findAll({ where: { userId: userIds } });
 
-// userTitle을 파싱하고 파싱 오류 처리
 const parseUserTitle = (userTitle, userId) => {
   let parsedTitle = {};
   if (typeof userTitle === "string") {
@@ -25,7 +21,6 @@ const parseUserTitle = (userTitle, userId) => {
   return parsedTitle;
 };
 
-// 채팅방의 타입에 따라 사용자 제목 반환
 const getOthertitle = (roomData, userTitle, userId) => {
   if (roomData.isGroup) {
     return roomData.title;
@@ -169,13 +164,10 @@ const createPrivateRoom = async (io, socket, data) => {
 // 채팅방 조회 후 클라이언트에게 파싱
 const sendUserChatRooms = async (socket, userId) => {
   try {
-    console.log("채팅방 조회 시작");
-
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
       include: [{ model: ChatRoom }],
     });
-    console.log("채팅방 조회 완료:", chatRooms);
 
     // 각 사용자가 참여한 채팅방의 userTitle을 파싱해서 각 사용자에게 맞는 제목을 설정
     const roomsWithDetails = chatRooms.map(participant => {
@@ -184,7 +176,7 @@ const sendUserChatRooms = async (socket, userId) => {
       const userTitle = parseUserTitle(roomData.userTitle, userId);
       const othertitle = getOthertitle(roomData, userTitle, userId);
 
-      console.log("클라이언트에게 전달될 제목:", title);
+      console.log("클라이언트에게 전달될 제목:", othertitle);
 
       return {
         othertitle,
@@ -192,8 +184,6 @@ const sendUserChatRooms = async (socket, userId) => {
         dataValues: roomData,
       };
     });
-
-    console.log("클라이언트에게 전송할 채팅방 목록:", roomsWithDetails);
 
     // 채팅방 목록을 클라이언트에 전송합니다.
     socket.emit("chatRooms", roomsWithDetails);

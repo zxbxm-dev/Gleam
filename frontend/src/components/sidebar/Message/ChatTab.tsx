@@ -116,7 +116,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   };
 
   const handleMessageMenuClick = (index: number, event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent click from propagating to parent elements
+    event.stopPropagation();
     setVisiblePopoverIndex(prevIndex => prevIndex === index ? null : index);
   };
 
@@ -134,8 +134,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   }, []);
 
   const handleLeaveRoom = (roomId: number) => {
-    console.log(`Leaving room with id ${roomId}`); // Log the roomId
-    setVisiblePopoverIndex(null); // Hide the popover menu
+    console.log(`Leaving room with id ${roomId}`);
+    setVisiblePopoverIndex(null);
   };
 
   return (
