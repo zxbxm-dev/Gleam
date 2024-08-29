@@ -52,6 +52,7 @@ const sendMail = async (req, res ) => {
         const attachments = attachment ? attachment.map(file => ({
             filename : file.filename,
             path: file.path,
+            contentType: file.mimetype,
         })) : [];
        
         const hasAttachments = attachments.length < 0;
