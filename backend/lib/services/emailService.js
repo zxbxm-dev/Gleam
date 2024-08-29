@@ -107,8 +107,8 @@ async function fetchMailcowEmails(userId) {
                             const checksavedEmail = await saveEmail(mail, userId, folderName);
                             console.log('저장된 이메일 Id:', checksavedEmail.Id);
                         } catch (saveErr) {
-                            console.error('이메일을 저장하는 도중 에러가 발생했습니다.:', saveErr);
-                            console.log('>>>>>>저장 실패한 이메일 제목: ', mail.subject);
+                            console.error('이메일을 저장하는 도중 에러가 발생했습니다.');
+                            //console.log('>>>>>>저장 실패한 이메일 제목: ', mail.Id);
                         }
                     });
                 });
@@ -172,7 +172,7 @@ const saveEmail = async (mail, userId, folderName) => {
 
 
     } catch (error) {
-        console.error('이메일 저장실패:', error);
+        console.error('이메일 저장실패');
     }
 };
 
