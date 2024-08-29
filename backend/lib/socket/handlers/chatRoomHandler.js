@@ -31,10 +31,6 @@ const createPrivateRoom = async (io, socket, data) => {
       attachment: target.attachment || null,
     }));
 
-    // 사용자 이름에 팀 이름을 붙여서 생성
-    const userDisplayName = `${user.team} ${user.username}`;
-    const invitedUserDisplayName = `${invitedUsers[0]?.team} ${invitedUsers[0]?.username}`;
-
     // 기존 채팅방을 조회하거나 새로운 채팅방을 생성
     const [chatRoom, created] = await ChatRoom.findOrCreate({
       where: {
@@ -161,17 +157,23 @@ const createPrivateRoom = async (io, socket, data) => {
 // 채팅방 조회 후 클라이언트에게 파싱
 const sendUserChatRooms = async (socket, userId) => {
   try {
+    console.log("채팅방 조회 시작");
+
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
       include: [{ model: ChatRoom }],
     });
+    console.log("채팅방 조회 완료:", chatRooms);
 
     // 각 사용자가 참여한 채팅방의 userTitle을 파싱해서 각 사용자에게 맞는 제목을 설정
     const roomsWithDetails = chatRooms.map((participant) => {
       const room = participant.ChatRoom;
-      const roomData = room.toJSON(); // Sequelize 모델 인스턴스를 JSON으로 변환
 
-      const userTitle = JSON.parse(roomData.userTitle || "{}");
+      console.log("채팅방 정보:", room.toJSON());
+
+      const userTitle = JSON.parse(room.userTitle || "{}");
+
+      console.log("파싱된 userTitle:", userTitle);
 
       // 현재 로그인된 사용자(userId)를 제외한 첫 번째 사용자의 제목을 제목으로 설정
       let othertitle;
@@ -188,14 +190,12 @@ const sendUserChatRooms = async (socket, userId) => {
         }
       }
 
-      console.log("클라이언트에게 전달될 제목:", othertitle);
+      console.log("클라이언트에게 전달될 제목:", title);
 
-      return {
-        othertitle,   // ChatRoom 모델의 title 데이터를 포함한 othertitle 필드
-        userTitle,
-        dataValues: roomData,
-      };
+      return { ...room, title, userTitle };
     });
+
+    console.log("클라이언트에게 전송할 채팅방 목록:", roomsWithDetails);
 
     // 채팅방 목록을 클라이언트에 전송합니다.
     socket.emit("chatRooms", roomsWithDetails);
