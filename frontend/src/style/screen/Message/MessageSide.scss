@@ -2,7 +2,6 @@
   width: 300px;
   max-width: 300px;
   height: 100vh;
-  overflow-y: scroll;
   position: relative;
 
   .tab-container {
@@ -10,19 +9,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: inset 0px 1px 0px 0px #E2E2E2;
 
     .tab-button {
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
+      box-shadow: inset 0px -1px 0px 0px #E2E2E2;
 
       width: 50%;
       height: 100%;
       padding: 15px 0 15px 0;
 
       &.active {
-        background-color: #e2e2e2;
+        box-shadow: inset 0px -1px 0px 0px #42e452;
       }
     }
   }
@@ -34,7 +35,6 @@
     .Noti-bar {
       display: flex;
       align-items: center;
-      border-top: 1px solid #e2e2e2;
       border-bottom: 1px solid #e2e2e2;
       padding: 15px 0px 15px 31px;
       font-family: var(--font-family-Noto-M);
@@ -146,6 +146,8 @@
   }
 
   .chat-data-tab {
+    overflow-y: scroll;
+height: calc(100vh - 114px);
 
     .Noti-Icon {
       margin-right: 10px;
@@ -158,7 +160,6 @@
     .Noti-bar {
       display: flex;
       align-items: center;
-      border-top: 1px solid #e2e2e2;
       border-bottom: 1px solid #e2e2e2;
       padding: 15px 0px 15px 31px;
       font-family: var(--font-family-Noto-M);
@@ -266,6 +267,27 @@
     }
   }
 
+  .chat-data-tab::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .chat-data-tab::-webkit-scrollbar-thumb {
+    background-color: #a8a8a8;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+  
+  .chat-data-tab::-webkit-scrollbar-corner {
+    background-color: none;
+  }
+  
+  .chat-data-tab::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: #fbfbfb;
+  }
+
   .new-chat-button {
     position: absolute;
     bottom: 80px;
@@ -274,27 +296,6 @@
     width: 58px;
     height: 58px;
   }
-}
-
-.message-sidebar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.message-sidebar::-webkit-scrollbar-thumb {
-  background-color: #a8a8a8;
-  border-radius: 10px;
-  background-clip: padding-box;
-  border: 2px solid transparent;
-}
-
-.message-sidebar::-webkit-scrollbar-corner {
-  background-color: none;
-}
-
-.message-sidebar::-webkit-scrollbar-track {
-  box-shadow: none;
-  background-color: #fbfbfb;
 }
 
 .PersonSide_popover {

@@ -75,10 +75,29 @@ export const userStateMessage = atom({
   },
 });
 
+export const selectUserID = atom({
+  key: 'selectUserID',
+  default: {
+    userID: ""
+  },
+});
+
+
 export const NewChatModalstate = atom({
   key: 'NewChatModalState',
   default: {
     openState: false,
     joinUser: []
   },
+});
+
+export const SearchClickMsg = atom({
+  key: 'SearchClickMsg',
+  default: {
+      content: '',
+      messageId: 0,
+      timestamp: '',
+      userId: '',
+      username: ''
+    }
 });

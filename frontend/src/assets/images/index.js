@@ -56,6 +56,8 @@ export { default as MenuArrow_Up } from "./sidebar/MenuArrow_Up.svg";
 export { default as NewCloseIcon } from "./sidebar/NewCloseIcon.svg";
 export { default as MessageArrow_down } from "./sidebar/MessageArrow_down.svg";
 export { default as MessageArrow_right } from "./sidebar/MessageArrow_right.svg";
+export { default as ActiveChatTab } from "./sidebar/ActiveChatTab.svg";
+export { default as ActivePersonTab } from "./sidebar/ActivePersonTab.svg";
 
 // project
 export { default as Right_Arrow } from "./project/Right_Arrow.svg";
