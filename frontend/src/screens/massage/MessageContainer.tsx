@@ -9,7 +9,7 @@ import {
 } from "../../assets/images/index";
 import io from 'socket.io-client';
 import { useRecoilValue } from 'recoil';
-import { selectedRoomIdState, userState } from '../../recoil/atoms';
+import { selectedRoomIdState, userState, SearchClickMsg } from '../../recoil/atoms';
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 import { Message } from './Message';
@@ -27,6 +27,19 @@ interface MessageContainerProps {
   files: File | null;
   setFiles: React.Dispatch<React.SetStateAction<File | null>>;
 }
+
+interface Messenger {
+  content: string;
+  messageId: number;
+  timestamp: string;
+  userId: string;
+  username: string;
+}
+
+interface ClickMsgSearch {
+  messenger: Messenger;
+}
+
 
 const NoticeIcons: { [key: string]: string } = {
   Mail: MailIcon,
@@ -93,6 +106,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const user = useRecoilValue(userState);
+  const ClickMsgSearch = useRecoilValue(SearchClickMsg);
 
   const fetchPersonData = useCallback(async () => {
     try {
@@ -163,6 +177,9 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [serverMessages]);
 
+// console.log(typeof ClickMsgSearch.messenger);
+// console.log(ClickMsgSearch.messenger.content);
+
   return (
     <div
       className="Message-container"
@@ -181,6 +198,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                   {messageMetadata.userInfo[index] &&
                     <div className={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
                       {msg.content || ""}
+                      {msg.content === ClickMsgSearch ?"asdfsfd":""}
                     </div>
                   }
                   <div className="MsgTime">
@@ -227,10 +245,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 onKeyDown={handleInputKeyPress}
                 data-placeholder="메시지를 입력하세요. (Enter로 전송 / Shift + Enter로 개행)"
               />
-              <div className="send-btn" onClick={handleSendMessage}>전송</div>
-            </div>
-          </div>
-          <div className="underIcons">
+              <div className='InputRight'>
+                        <div className="underIcons">
             <label htmlFor="file-upload" style={{ cursor: "pointer", display: "flex" }}>
               <input
                 id="file-upload"
@@ -244,6 +260,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 <img src={FileIcon} alt="fileIcon" className="fileIcon" />
               </div>
             </label>
+          </div>
+              <div className="send-btn" onClick={handleSendMessage}>전송</div>
+              </div>
+            </div>
           </div>
         </div>
       )}

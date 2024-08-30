@@ -82,3 +82,14 @@ export const NewChatModalstate = atom({
     joinUser: []
   },
 });
+
+export const SearchClickMsg = atom({
+  key: 'SearchClickMsg',
+  default: {
+      content: '',
+      messageId: 0,
+      timestamp: '',
+      userId: '',
+      username: ''
+    }
+});

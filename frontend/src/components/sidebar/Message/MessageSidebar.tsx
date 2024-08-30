@@ -6,6 +6,8 @@ import {
   ChatTab,
   PersonTab,
   NewChatIcon,
+  ActiveChatTab,
+  ActivePersonTab
 } from "../../../assets/images/index";
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
@@ -301,14 +303,14 @@ const MessageSidebar: React.FC = () => {
           className={`tab-button ${activeTab === "personData" ? "active" : ""}`}
           onClick={() => handleTabChange("personData")}
         >
-          <img src={PersonTab} />
+          <img src={activeTab === "personData" ? ActivePersonTab : PersonTab} />
         </div>
 
         <div
           className={`tab-button ${activeTab === "ChatData" ? "active" : ""}`}
           onClick={() => handleTabChange("ChatData")}
         >
-          <img src={ChatTab} />
+          <img src={activeTab === "ChatData" ? ActiveChatTab : ChatTab} />
         </div>
       </div>
       {activeTab === "personData" && personData ? (

@@ -10,9 +10,10 @@ import { useRecoilValue } from 'recoil';
 interface HeaderProps {
   selectedPerson: any;
   setChatRoomPeopleManagement: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowSearch: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header: React.FC<HeaderProps> = ({ selectedPerson, setChatRoomPeopleManagement }) => {
+const Header: React.FC<HeaderProps> = ({ selectedPerson, setChatRoomPeopleManagement, setShowSearch }) => {
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
 
   return (
@@ -31,7 +32,12 @@ const Header: React.FC<HeaderProps> = ({ selectedPerson, setChatRoomPeopleManage
         </div>
       }
       <div className="UpperIconBar">
-        <img src={GraySearchIcon} className="SearchIcon" alt="GraySearchIcon" />
+        <img
+          src={GraySearchIcon}
+          className="SearchIcon"
+          alt="GraySearchIcon"
+          onClick={() => setShowSearch(true)}
+        />
         {selectedPerson && selectedRoomId !== -2 && (
           <img
             src={UserManagementIcon}
