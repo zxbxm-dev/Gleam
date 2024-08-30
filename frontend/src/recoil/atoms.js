@@ -74,3 +74,11 @@ export const userStateMessage = atom({
     state: ""
   },
 });
+
+export const NewChatModalstate = atom({
+  key: 'NewChatModalState',
+  default: {
+    openState: false,
+    joinUser: []
+  },
+});
