@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import {
   mail_delete,
   mail_download,
+  mail_preview,
+  mail_attachment_del,
+  mail_attachment_hwp,
   mail_important,
   mail_important_active,
   mail_setting,
@@ -58,6 +61,8 @@ const Mail = () => {
   const [clickedMails, setClickedMails] = useState<{ [key: number]: boolean }>({});
   const [allSelected, setAllSelected] = useState(false);
   const [selectedMails, setSelectedMails] = useState<{ [key: number]: { messageId: any; selected: boolean } }>({});
+
+  const [visibleAttachments, setVisibleAttachments] = useState(3);
 
   const itemsPerPage = 10;
 
@@ -145,27 +150,35 @@ const Mail = () => {
     switch (selectdMenuOption) {
       case "전체 메일":
         setMails(originalMails?.filter((mail) => mail.folder !== 'junk'));
+        setPage(1);
         break;
       case "중요 메일":
         setMails(originalMails?.filter((mail) => mail.star === 'starred'));
+        setPage(1);
         break;
       case "받은 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'inbox'));
+        setPage(1);
         break;
       case "보낸 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'sent'));
+        setPage(1);
         break;
       case "안 읽은 메일":
         setMails(originalMails?.filter((mail) => mail.folder === 'unread'));
+        setPage(1);
         break;
       case "임시 보관함":
         setMails(originalMails?.filter((mail) => mail.folder === 'drafts'));
+        setPage(1);
         break;
       case "스팸 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'junk'));
+        setPage(1);
         break;
       default:
         setMails(originalMails);
+        setPage(1);
     }
   }, [selectdMenuOption, originalMails]);
 
@@ -278,6 +291,35 @@ const Mail = () => {
     setHoverState(imageName);
   };
 
+  const showAllAttachments = (mail: any) => {
+    setVisibleAttachments(mail.attachments.length);
+  };
+
+  const handlePreviewClick = (file: any) => {
+    const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
+    const url = URL.createObjectURL(blob);
+  
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.document.write(`<iframe src="${url}" width="100%" height="100%"></iframe>`);
+    }
+  };
+
+  const handleDownloadClick = (file: any) => {
+    const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.fileName; // 파일명 설정
+    document.body.appendChild(link);
+    link.click();
+  
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+  
+
   // 메일 세부내용 열기
   const toggleMailContent = (mailId: number) => {
     setIsDownFilevisible(false);
@@ -388,7 +430,7 @@ const Mail = () => {
     });
   };
   
-
+  console.log('불러온메일', mails)
   return (
     <div className="content">
       <div className="mail_container">
@@ -611,21 +653,37 @@ const Mail = () => {
                                   <span>{formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}</span>
                                 </div>
                                 {mail.hasAttachments > 0 ? 
-                                  <div className="DownFile" onClick={toggleDownFile}>
+                                  <div className="DownFile">
                                     {isDownFileVisible ?
-                                      <img src={Down_Arrow} className="rotate_Arrow" alt="Down_Arrow" />
+                                      <img src={Down_Arrow} className="rotate_Arrow" alt="Down_Arrow" onClick={toggleDownFile} />
                                       :
-                                      <img src={Down_Arrow} alt="Down_Arrow" />
+                                      <img src={Down_Arrow} alt="Down_Arrow" onClick={toggleDownFile} />
                                     }
-                                    <span>{`첨부파일 ${mail.attachment?.length}`}</span>
+                                    <span>첨부파일</span><span className="DownFile_count">{mail.attachments?.length}</span>
                                     <img src={mail_download} alt="mail_download" />
 
                                     {isDownFileVisible && (
                                       <div className="DownFile_list">
-                                        {mail.attachment?.map((file: string, index: number) => (
-                                          <div key={index}>{file}</div>
-                                        ))}
-                                      </div>  
+                                        <div className="DownFile_list_content">
+                                          {mail.attachments?.slice(0, visibleAttachments).map((file: any, index: number) => (
+                                            <div key={index} className="DownFile_list_object">
+                                              <div className="DownFile_list_object_filename">{file?.fileName}</div>
+                                              <div className="DownFile_list_object_btn">
+                                                <div>{(file?.fileSize / 1024).toFixed(0)}KB</div>
+                                                <img src={mail_preview} alt="mail_preview" onClick={() => handlePreviewClick(file)}/>
+                                                <img src={mail_attachment_hwp} alt="mail_attachment_hwp" />
+                                                <img src={mail_download} alt="mail_download" onClick={() => handleDownloadClick(file)}/>
+                                                <img src={mail_attachment_del} alt="mail_attachment_del" />
+                                              </div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                        {mail.attachments.length > 3 && visibleAttachments === 3 && (
+                                          <div className="DownFile_list_more" onClick={() => showAllAttachments(mail)}>
+                                            + 더 보기
+                                          </div>
+                                        )}
+                                      </div>
                                     )}
                                   </div>
                                   :

@@ -514,26 +514,77 @@
 
                   .DownFile{
                     position: relative;
-                    cursor: pointer;
                     display: flex;
+                    gap: 7px;
                     align-items: center;
-                    
+
+                    img {
+                      cursor: pointer;
+                    }
+
                     .rotate_Arrow {
                       transform: rotate(180deg);
                     }
 
+                    .DownFile_count {
+                      color: #45C552;
+                    }
+                    
                     .DownFile_list {
                       display: flex;
+                      justify-content: space-between;
                       flex-direction: column;
                       position: absolute;
                       top: 25px;
                       right: 0;
-                      width: 250px;
+                      width: 270px;
                       height: auto;
-                      border: 1px solid #000;
                       background-color: #fff;
                       font-size: 11px;
-                      padding: 5px;
+                      box-shadow: 0px 1px 3px 1px #a8a8a8 !important;
+                      z-index: 99;
+
+                      .DownFile_list_content {
+                        width: inherit;
+                        display: flex;
+                        flex-direction: column;
+                        padding: 5px 5px;
+                        gap: 5px;
+
+                        .DownFile_list_object {
+                          width: inherit;
+                          display: flex;
+                          width: fit-content;
+                          gap: 5px;
+
+                          .DownFile_list_object_filename {
+                            width: 150px;
+                            box-sizing: border-box;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                          }
+
+                          .DownFile_list_object_btn {
+                            display: flex;
+                            justify-content: right; 
+                            width: 100px;
+                            gap: 4px;
+                          }
+                        }
+                      }
+                      
+
+                      .DownFile_list_more {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        height: 24px;
+                        background-color: #EEEEEE;
+                        color: #545454;
+                        font-size: 10px;
+                      }
                     }
                   }
                 }

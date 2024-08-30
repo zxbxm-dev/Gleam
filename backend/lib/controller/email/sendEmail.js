@@ -6,9 +6,6 @@ const { saveAttachments } = require("../../controller/email/emailAttachments");
 const { QueueEmail, deleteQueueEmail} = require("../../controller/email/emailQueue");
 const shortid = require('shortid');
 
-
-
-
 //이메일 전송하기
 const sendMail = async (req, res ) => {
     const {
@@ -20,15 +17,13 @@ const sendMail = async (req, res ) => {
         subject,
         body,
         sendAt,
-        attachment,
         receiveAt,
         queueDate,
         signature,
         folder,
-       
     } = req.body;
 
-
+  
     if(folder === 'drafts'){
         await sendDraftEmail(req,res,Id);
         return;
@@ -43,22 +38,23 @@ const sendMail = async (req, res ) => {
 
     console.log("요청 본문 받음 :", req.body);
     const to = receiver;
-
+    const attachments = req.files;
+    console.log("첨부파일 : ", attachments);
 
     try{
 
 
         //첨부파일 설정
-        const attachments = attachment ? attachment.map(file => ({
-            filename : file.filename,
+        const attachmentsInfo= attachments ? attachments.map(file =>({
+            filename : file.originalname,
             path: file.path,
             contentType: file.mimetype,
         })) : [];
        
-        const hasAttachments = attachments.length < 0;
+        const hasAttachments = attachmentsInfo.length > 0;;
 
 
-        const sendResult = await sendEmail(to, subject, body, userId, attachments);
+        const sendResult = await sendEmail(to, subject, body, userId, attachmentsInfo);
         console.log("전송한 이메일 : ", sendResult);
         // await deleteQueueEmail(req, res, Id);
 
@@ -75,7 +71,6 @@ const sendMail = async (req, res ) => {
             receiveAt,
             queueDate,
             signature,
-            attachment,
             hasAttachments: hasAttachments,
             folder: 'sent'
         })
@@ -83,7 +78,7 @@ const sendMail = async (req, res ) => {
 
          // 첨부파일이 있는 경우 저장
          if (hasAttachments) {
-            await saveAttachments(attachments, newSentEmail.Id);
+            await saveAttachments(attachmentsInfo, newSentEmail.Id);
         }
 
 
