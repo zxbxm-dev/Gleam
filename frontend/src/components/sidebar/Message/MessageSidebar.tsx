@@ -287,6 +287,13 @@ const MessageSidebar: React.FC = () => {
     };
   }, [MsguserState.state, borderColor]);
 
+  const openModal = () => {
+    setOpenchatModal((prevState) => ({
+      ...prevState,
+      openState: false,
+    }));
+  };
+
   return (
     <div className="message-sidebar">
       <div className="tab-container">
@@ -347,7 +354,7 @@ const MessageSidebar: React.FC = () => {
         onClick={() => {
           setNewChatChosenUsers(null);
           setIsWholeMemeberChecked(false);
-          setOpenchatModal({ openstate: true });
+          openModal();
         }}
       />
 

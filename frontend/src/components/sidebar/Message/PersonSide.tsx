@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Person } from "./MessageSidebar";
 import {
-  MessageMenu,
   UserIcon_dark,
-  MenuArrow_down,
-  MenuArrow_right,
+  MessageArrow_down,
+  MessageArrow_right,
 } from "../../../assets/images/index";
 import { selectedRoomIdState, userState } from "../../../recoil/atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { ChatRoom } from "./ChatTab";
+import io, { Socket } from 'socket.io-client';
 
 interface PersonDataTabProps {
   personData: Person[] | null;
@@ -47,6 +47,24 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const user = useRecoilValue(userState);
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
+
+    if (selectedUserId) {
+      socket.emit("personCheckMsg", { selectedUserId, userId: user.userID });
+    }
+
+    socket.on("personDataResponse", (data) => {
+      console.log("Received data:", data);
+    });
+
+    return () => {
+      socket.off("personDataResponse");
+    };
+  }, [selectedUserId]);
 
   useEffect(() => {
     if (selectedUserId) {
@@ -122,7 +140,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                   src={person.attachment ? person.attachment : UserIcon_dark}
                   alt={`${person.username}`}
                 />
-                {person.username}
+                {person.username} &nbsp;|&nbsp; {person.position}
               </div>
             </li>
           ))}
@@ -133,9 +151,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
               onClick={() => toggleDepartmentExpansion(department)}
             >
               {expandedDepartments[department] ? (
-                <img src={MenuArrow_down} alt="down" />
+                <img src={MessageArrow_down} alt="down" />
               ) : (
-                <img src={MenuArrow_right} alt="right" />
+                <img src={MessageArrow_right} alt="right" />
               )}{" "}
               {department}
             </button>
@@ -167,7 +185,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 src={person.attachment ? person.attachment : UserIcon_dark}
                                 alt={`${person.username}`}
                               />
-                              {person.username}
+                              {person.username} &nbsp;|&nbsp; {person.position}
                             </div>
                           </li>
                         )
@@ -181,9 +199,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                       onClick={() => toggleTeamExpansion(team)}
                     >
                       {expandedTeams[team] ? (
-                        <img src={MenuArrow_down} alt="down" />
+                        <img src={MessageArrow_down} alt="down" />
                       ) : (
-                        <img src={MenuArrow_right} alt="right" />
+                        <img src={MessageArrow_right} alt="right" />
                       )}{" "}
                       {team}
                     </button>
@@ -213,7 +231,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     src={person.attachment ? person.attachment : UserIcon_dark}
                                     alt={`${person.username}`}
                                   />
-                                  {person.username}
+                                  {person.username} &nbsp;|&nbsp; {person.position}
                                 </div>
                               </li>
                             )
@@ -233,9 +251,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
             onClick={() => toggleDepartmentExpansion("R&D")}
           >
             {expandedDepartments["R&D"] ? (
-              <img src={MenuArrow_down} alt="down" />
+              <img src={MessageArrow_down} alt="down" />
             ) : (
-              <img src={MenuArrow_right} alt="right" />
+              <img src={MessageArrow_right} alt="right" />
             )}{" "}
             R&D
           </button>
@@ -266,7 +284,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         src={person.attachment ? person.attachment : UserIcon_dark}
                         alt={`${person.username}`}
                       />
-                      {person.username}
+                      {person.username} &nbsp;|&nbsp; {person.position}
                     </div>
                   </li>
                 ))}

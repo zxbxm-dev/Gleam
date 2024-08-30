@@ -63,6 +63,13 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
 
   if (!chatRoomPeopleManagement) return null;
 
+  const openModal = () => {
+    setOpenchatModal((prevState) => ({
+      ...prevState,
+      openState: false,
+    }));
+  };
+
   return (
     <div className="PeopleManagementCon">
       <div className="Management-header">
@@ -75,7 +82,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
       </div>
       <div
         className="AddPerson-tab"
-        onClick={() => setOpenchatModal({ openstate: true })}
+        onClick={() => openModal()}
       >+ 인원 추가하기</div>
       <div className="ChatRoom-Members">
         {DummyPeoples.map((onePerson, index) => (

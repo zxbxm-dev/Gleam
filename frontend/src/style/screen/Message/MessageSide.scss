@@ -75,6 +75,10 @@
         background-color: #efefef;
       }
 
+      &:hover {
+        background-color: #BFFFC6;
+      }
+
       .Message-Menu {
         display: none;
       }
@@ -107,10 +111,10 @@
       .downBtn {
         display: flex;
         align-items: center;
-        padding: 5px 0px 5px 31px;
-        background-color: #eee;
-        font-size: 14px;
-        font-family: var(--font-family-Noto-M);
+        padding: 8px 0px 8px 21px;
+        font-size: 12px;
+        font-family: var(--font-family-Noto-B);
+        background-color: #fff;
 
         img {
           margin-right: 10px;
@@ -120,19 +124,23 @@
       .downTeamBtn {
         display: flex;
         align-items: center;
-        padding: 5px 0px 5px 31px;
-        background-color: #f3f3f3;
+        padding: 8px 0px 8px 30px;
         font-family: var(--font-family-Noto-M);
         width: 100%;
-        font-size: 14px;
+        font-size: 12px;
+        background-color: #fff;
 
         img {
           margin-right: 10px;
         }
       }
 
+      .downTeamBtn:hover{
+        background-color: #BFFFC6;
+      }
+
       .downBtn:hover {
-        background-color: #eee;
+        background-color: #BFFFC6;
       }
     }
   }

@@ -96,6 +96,13 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     return filtered;
   };
 
+  const closeModal = () => {
+    setOpenchatModal((prevState) => ({
+      ...prevState,
+      openState: false,
+    }));
+  };
+
   const filteredPersonsData = filterDataBySearchQuery(filteredData);
 
   const generateRandomColor = () => {
@@ -129,7 +136,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     try {
       const response = await createRoom(payload);
       console.log("Chat room created successfully:", response.data);
-      setOpenchatModal({ openstate: false });
+      closeModal();
     } catch (error) {
       console.error('Error creating chat room:', error);
     }
@@ -168,8 +175,8 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   
   return (
     <CustomModal
-      isOpen={ChatModalOpenState.openstate}
-      onClose={() => setOpenchatModal({ openstate: false })}
+      isOpen={ChatModalOpenState.openState}
+      onClose={() => closeModal()}
       header="새 대화방 생성"
       headerTextColor="white"
       footer1="확인"
@@ -177,7 +184,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       onFooter1Click={handleSubmit}
       footer2="취소"
       footer2Class="gray-btn"
-      onFooter2Click={() => setOpenchatModal({ openstate: false })}
+      onFooter2Click={() => closeModal()}
       width="400px"
       height="460px"
     >
