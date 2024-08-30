@@ -295,6 +295,31 @@ const Mail = () => {
     setVisibleAttachments(mail.attachments.length);
   };
 
+  const handlePreviewClick = (file: any) => {
+    const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
+    const url = URL.createObjectURL(blob);
+  
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.document.write(`<iframe src="${url}" width="100%" height="100%"></iframe>`);
+    }
+  };
+
+  const handleDownloadClick = (file: any) => {
+    const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.fileName; // 파일명 설정
+    document.body.appendChild(link);
+    link.click();
+  
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+  
+
   // 메일 세부내용 열기
   const toggleMailContent = (mailId: number) => {
     setIsDownFilevisible(false);
@@ -642,12 +667,12 @@ const Mail = () => {
                                         <div className="DownFile_list_content">
                                           {mail.attachments?.slice(0, visibleAttachments).map((file: any, index: number) => (
                                             <div key={index} className="DownFile_list_object">
-                                              <div className="DownFile_list_object_filename">{file.fileName}</div>
+                                              <div className="DownFile_list_object_filename">{file?.fileName}</div>
                                               <div className="DownFile_list_object_btn">
-                                                <div>3KB</div>
-                                                <img src={mail_preview} alt="mail_preview" />
+                                                <div>{(file?.fileSize / 1024).toFixed(0)}KB</div>
+                                                <img src={mail_preview} alt="mail_preview" onClick={() => handlePreviewClick(file)}/>
                                                 <img src={mail_attachment_hwp} alt="mail_attachment_hwp" />
-                                                <img src={mail_download} alt="mail_download" />
+                                                <img src={mail_download} alt="mail_download" onClick={() => handleDownloadClick(file)}/>
                                                 <img src={mail_attachment_del} alt="mail_attachment_del" />
                                               </div>
                                             </div>
