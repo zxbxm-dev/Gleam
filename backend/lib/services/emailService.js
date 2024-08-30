@@ -180,7 +180,7 @@ const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment
 
 
     } catch (error) {
-        console.error('이메일 저장실패');
+        //console.error('이메일 저장실패');
     }
 };
 
