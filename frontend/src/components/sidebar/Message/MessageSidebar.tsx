@@ -110,7 +110,7 @@ const MessageSidebar: React.FC = () => {
     socket.emit('registerUser', userId);
   
     // 서버에 연결되었을 때
-    socket.on('connect', () => {
+    socket.on('connection', () => {
       console.log(`[Client] Socket 서버에 연결됨: ${socket.id}`);
     });
   
