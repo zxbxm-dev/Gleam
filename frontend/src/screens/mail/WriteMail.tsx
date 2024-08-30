@@ -106,8 +106,8 @@ const WriteMail = () => {
       formData.append('subject', mailTitle);
       formData.append('body', mailContent);
       formData.append('sendAt', new Date().toISOString());
-      attachments.forEach((attachment, index) => {
-        formData.append(`attachment`, attachment);
+      attachments.forEach((file) => {
+        formData.append('attachment', file); 
       });
       formData.append('receiveAt', new Date().toISOString());
       formData.append('signature', String(false));
@@ -137,10 +137,8 @@ const WriteMail = () => {
       formData.append('subject', mailTitle);
       formData.append('body', mailContent);
       formData.append('sendAt', new Date().toISOString());
-      attachments.forEach((attachment, index) => {
-        if (attachment) {
-          formData.append(`attachment`, attachment);
-        }
+      attachments.forEach((file) => {
+        formData.append('attachment', file); 
       });
       formData.append('receiveAt', new Date().toISOString());
       formData.append('signature', String(false));
@@ -315,11 +313,12 @@ const WriteMail = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      setAttachments([...attachments, ...Array.from(files)]);
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files);
+      setAttachments(prevFiles => [...prevFiles, ...newFiles]);
     }
   };
+  
 
   const handleRemoveFile = (fileName: string, e: React.MouseEvent) => {
     e.preventDefault();
