@@ -36,11 +36,6 @@ interface Messenger {
   username: string;
 }
 
-interface ClickMsgSearch {
-  messenger: Messenger;
-}
-
-
 const NoticeIcons: { [key: string]: string } = {
   Mail: MailIcon,
   WorkReport: WorkReportIcon,

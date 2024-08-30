@@ -75,6 +75,14 @@ export const userStateMessage = atom({
   },
 });
 
+export const selectUserID = atom({
+  key: 'selectUserID',
+  default: {
+    userID: ""
+  },
+});
+
+
 export const NewChatModalstate = atom({
   key: 'NewChatModalState',
   default: {
