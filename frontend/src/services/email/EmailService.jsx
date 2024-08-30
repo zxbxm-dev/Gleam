@@ -2,7 +2,11 @@ import api from "../../api/auth";
 
 // 메일 전송
 const SendMail = (formData) => {
-  return api.post("/sendEmail", formData);
+  return api.post("/sendEmail", formData , {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }
 
 // 메일 조회

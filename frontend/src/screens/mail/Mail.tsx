@@ -145,27 +145,35 @@ const Mail = () => {
     switch (selectdMenuOption) {
       case "전체 메일":
         setMails(originalMails?.filter((mail) => mail.folder !== 'junk'));
+        setPage(1);
         break;
       case "중요 메일":
         setMails(originalMails?.filter((mail) => mail.star === 'starred'));
+        setPage(1);
         break;
       case "받은 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'inbox'));
+        setPage(1);
         break;
       case "보낸 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'sent'));
+        setPage(1);
         break;
       case "안 읽은 메일":
         setMails(originalMails?.filter((mail) => mail.folder === 'unread'));
+        setPage(1);
         break;
       case "임시 보관함":
         setMails(originalMails?.filter((mail) => mail.folder === 'drafts'));
+        setPage(1);
         break;
       case "스팸 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'junk'));
+        setPage(1);
         break;
       default:
         setMails(originalMails);
+        setPage(1);
     }
   }, [selectdMenuOption, originalMails]);
 
