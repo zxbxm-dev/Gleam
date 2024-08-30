@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useRecoilValue } from "recoil";
-import { userState } from "../../../recoil/atoms";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { userState, NewChatModalstate } from "../../../recoil/atoms";
 import {
   SearchIcon,
   CheckBox,
@@ -28,8 +28,6 @@ export interface Person {
 }
 
 interface NewChatModalProps {
-  openModal: boolean;
-  setOpenModal: (value: boolean) => void;
   filteredData: {
     [company: string]: {
       [department: string]: {
@@ -40,19 +38,19 @@ interface NewChatModalProps {
 }
 
 const NewChatModal: React.FC<NewChatModalProps> = ({
-  openModal,
-  setOpenModal,
   filteredData,
 }) => {
   const [isWholeMemberChecked, setIsWholeMemberChecked] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [chatTitle, setChatTitle] = useState<string>("");
+  const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
 
   const user = useRecoilValue(userState);
+  const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
 
   useEffect(() => {
-    if (openModal) {
+    if (ChatModalOpenState) {
       const allPersons = Object.values(filteredData).flatMap(company =>
         Object.values(company).flatMap(department =>
           Object.values(department).flat()
@@ -69,7 +67,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       setSearchQuery("");
       setIsWholeMemberChecked(false);
     }
-  }, [openModal, filteredData, user.username]);
+  }, [ChatModalOpenState, filteredData, user.username]);
 
   const filterDataBySearchQuery = (data: typeof filteredData) => {
     if (!searchQuery) return data;
@@ -96,6 +94,13 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     });
 
     return filtered;
+  };
+
+  const closeModal = () => {
+    setOpenchatModal((prevState) => ({
+      ...prevState,
+      openState: false,
+    }));
   };
 
   const filteredPersonsData = filterDataBySearchQuery(filteredData);
@@ -131,7 +136,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     try {
       const response = await createRoom(payload);
       console.log("Chat room created successfully:", response.data);
-      setOpenModal(false);
+      closeModal();
     } catch (error) {
       console.error('Error creating chat room:', error);
     }
@@ -167,11 +172,11 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   };
   
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
+  
   return (
     <CustomModal
-      isOpen={openModal}
-      onClose={() => setOpenModal(false)}
+      isOpen={ChatModalOpenState.openState}
+      onClose={() => closeModal()}
       header="새 대화방 생성"
       headerTextColor="white"
       footer1="확인"
@@ -179,7 +184,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       onFooter1Click={handleSubmit}
       footer2="취소"
       footer2Class="gray-btn"
-      onFooter2Click={() => setOpenModal(false)}
+      onFooter2Click={() => closeModal()}
       width="400px"
       height="460px"
     >
