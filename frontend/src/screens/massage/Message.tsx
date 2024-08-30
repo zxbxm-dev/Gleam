@@ -30,11 +30,14 @@ const Message: React.FC = () => {
   useEffect(() => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');
     if (storedRoomId) {
-      setSelectedRoomId(Number(storedRoomId)); // Convert to number
+      const roomId = Number(storedRoomId); // Convert to number
+      console.log("클라이언트 저장된 방 ID:", roomId);
+      setSelectedRoomId(roomId);
     }
   }, [setSelectedRoomId]);
 
   const handleIncomingMessage = ({ name, id, msg, team, department, position }: Message) => {
+    console.log("클라이언트 유저 정보 수신:", { name, id, msg, team, department, position });
     setMessages(prevMessages => [
       ...prevMessages,
       { name, id, msg, team, department, position }
@@ -50,12 +53,14 @@ const Message: React.FC = () => {
 
   useEffect(() => {
     rooms.forEach((room) => {
+      console.log("클라이언트에서 보낸 방에 방 번호:", room.roomId);
       socket.emit("joinRoom", room.roomId);
     });
   }, [rooms]);
 
   useEffect(() => {
     if (selectedRoomId) {
+      console.log("선택한 방에 참여 중:", selectedRoomId);
       socket.emit("joinRoom", selectedRoomId);
     }
   }, [selectedRoomId]);
