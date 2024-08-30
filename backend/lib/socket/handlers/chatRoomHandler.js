@@ -1,7 +1,7 @@
 const models = require("../../models");
 const { User, ChatRoom, ChatRoomParticipant } = models;
 const { Op, Sequelize } = require("sequelize");
-const { sendMessageToRoomParticipants, getChatHistory } = require("./messageHandler");
+const { sendMessageToRoomParticipants } = require("./messageHandler");
 
 // 사용자 조회 함수
 const getUserById = async (userId) => User.findOne({ where: { userId } });
@@ -145,10 +145,6 @@ const createPrivateRoom = async (io, socket, data) => {
       await ChatRoomParticipant.bulkCreate(participants);
 
       console.log("참가자 추가됨:", participants);
-    } else {
-      // 기존 채팅방인 경우 과거 메시지 전송
-      console.log(`기존 채팅방에 과거 메시지를 전송합니다: ${chatRoom.roomId}`);
-      await getChatHistory(socket, chatRoom.roomId);
     }
 
     // 사용자의 채팅방 목록을 클라이언트에게 전송
