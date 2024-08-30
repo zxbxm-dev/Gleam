@@ -1,4 +1,6 @@
 const email = require("../models/email/email");
+const multerMiddleware = require('../controller/email/multerMiddleware');
+
 
 module.exports = (app) => {
     const getEmailController = require("../controller/email/checkEmail");
@@ -11,7 +13,7 @@ module.exports = (app) => {
 
         // ⚠️⚠️ 이메일 router  ⚠️⚠️
         router.get("/checkEmail/:userId",getEmailController.getAllEmail);
-        router.post("/sendEmail",sendEmailController.sendMail);
+        router.post("/sendEmail",multerMiddleware.array('attachment'),sendEmailController.sendMail);
         router.delete("/deleteEmail/:Id/:messageId",getEmailController.deleteEmail);
         
         //이메일 임시저장하기
