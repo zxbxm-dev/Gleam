@@ -92,21 +92,25 @@ const WriteMail = () => {
 
   const handleSendEmail = async () => {
     if(status === "DRAFTS") {
-      const formData = {
-        Id : mail?.Id,
-        userId : user.userID,
-        messageId : user.userID + new Date(),
-        sender : user.usermail,
-        receiver : recipients,
-        referrer : referrers,
-        subject : mailTitle,
-        body : mailContent,
-        sendAt: new Date(),
-        attachment : attachments,
-        receiveAt : new Date(),
-        signature : false,
-        folder: mail?.folder,
-      }
+      const formData = new FormData();
+      formData.append('userId', user.userID);
+      formData.append('messageId', user.userID + new Date());
+      formData.append('sender', user.usermail);
+      recipients.forEach((recipient, index) => {
+        formData.append(`receiver`, recipient);
+      });
+      
+      referrers.forEach((referrer, index) => {
+        formData.append(`referrer`, referrer);
+      });
+      formData.append('subject', mailTitle);
+      formData.append('body', mailContent);
+      formData.append('sendAt', new Date().toISOString());
+      attachments.forEach((attachment, index) => {
+        formData.append(`attachment`, attachment);
+      });
+      formData.append('receiveAt', new Date().toISOString());
+      formData.append('signature', String(false));
 
       try {
         const response = await SendMail(formData);
@@ -118,21 +122,31 @@ const WriteMail = () => {
       }
 
     } else {
-      const formData = {
-        userId : user.userID,
-        messageId : user.userID + new Date(),
-        sender : user.usermail,
-        receiver : recipients,
-        referrer : referrers,
-        subject : mailTitle,
-        body : mailContent,
-        sendAt: new Date(),
-        attachment : attachments,
-        receiveAt : new Date(),
-        signature : false,
-      }
+      console.log('첨부된 파일', attachments)
+      const formData = new FormData();
+      formData.append('userId', user.userID);
+      formData.append('messageId', user.userID + new Date());
+      formData.append('sender', user.usermail);
+      recipients.forEach((recipient, index) => {
+        formData.append(`receiver`, recipient);
+      });
+      
+      referrers.forEach((referrer, index) => {
+        formData.append(`referrer`, referrer);
+      });
+      formData.append('subject', mailTitle);
+      formData.append('body', mailContent);
+      formData.append('sendAt', new Date().toISOString());
+      attachments.forEach((attachment, index) => {
+        if (attachment) {
+          formData.append(`attachment`, attachment);
+        }
+      });
+      formData.append('receiveAt', new Date().toISOString());
+      formData.append('signature', String(false));
 
       try {
+        console.log('FormData:', Array.from(formData.entries()));
         const response = await SendMail(formData);
         console.log('이메일 전송 성공', response);
         resetForm();
@@ -403,7 +417,7 @@ const WriteMail = () => {
       }
     }
   }, [mail, status, user]);
-
+  console.log(attachments)
   return(
     <div className="content">
       <div className="write_mail_container">
