@@ -71,7 +71,6 @@ const sendMail = async (req, res ) => {
             receiveAt,
             queueDate,
             signature,
-            attachment: hasAttachments ? attachments[0].originalname: null,
             hasAttachments: hasAttachments,
             folder: 'sent'
         })
