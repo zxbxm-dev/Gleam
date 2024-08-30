@@ -580,7 +580,6 @@ const WriteMail = () => {
                 <input
                   id="file-upload"
                   type="file"
-                  accept=".pdf"
                   onChange={handleFileChange}
                   multiple
                   style={{ display: 'none' }}
