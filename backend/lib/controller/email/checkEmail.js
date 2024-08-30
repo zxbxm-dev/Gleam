@@ -1,5 +1,6 @@
 const models = require("../../models");
 const { fetchMailcowEmails } = require("../../services/emailService");
+const { getAttachmentsByEmailId } = require("./emailAttachments");
 const Email = models.Email;
 const User = models.User
 
@@ -25,6 +26,11 @@ const getAllEmail = async (req, res) => {
         const emails = await Email.findAll({
             where: {userId: userId},
     });
+
+        for(const email of emails){
+            const attachments = await getAttachmentsByEmailId(email.Id);
+            email.dataValues.attachments = attachments;
+        }
         res.status(200).json({message: "이메일 조회를 완료했습니다:", emails:emails});
     }catch(error){
         console.error("이메일 조회 중 오류가 발생했습니다.: ", error);
