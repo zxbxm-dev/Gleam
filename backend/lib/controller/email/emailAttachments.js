@@ -16,18 +16,19 @@ async function getAttachmentsByEmailId(emailId){
     }
 }
 
-
 //이메일 첨부파일 저장 
 async function saveAttachments(attachments, emailId) {
     return Promise.all(attachments.map(async (file)=>{
+        const fileName = Buffer.from(file.filename, 'latin1').toString('utf8');
         return models.EmailAttachment.create({
             emailId: emailId,
-            fileName: file.filename,
+            fileName: fileName,
             mimeType: file.contentType,
             type: 'file',
             fileSize: fs.statSync(file.path).size,
             fileData: fs.readFileSync(file.path), 
         });
+        
     }));
 }
 
