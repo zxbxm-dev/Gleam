@@ -1,4 +1,4 @@
-const chatRoomHandlers = require("../handlers/messageHandler");
+const messageHandlers = require("../handlers/messageHandler");
 
 module.exports = (io, socket) => {
   if (!socket) {
@@ -6,9 +6,9 @@ module.exports = (io, socket) => {
     return;
   }
 
-  // 서버에서 메시지 전송 이벤트 처리 ( 단순 메신지 전송 / 알림에 활용 )
+  // 서버에서 메시지 전송 이벤트 처리
   socket.on("sendMessage", async ({ roomId, content }) => {
-    await chatRoomHandlers.sendMessageToRoomParticipants(
+    await messageHandlers.sendMessageToRoomParticipants(
       io,
       roomId,
       content,
@@ -18,7 +18,29 @@ module.exports = (io, socket) => {
 
   // 특정 채팅방의 과거 메시지 요청 처리
   socket.on("getChatHistory", async (roomId) => {
-    await chatRoomHandlers.getChatHistory(socket, roomId);
+    await messageHandlers.getChatHistory(socket, roomId);
   });
-  
-}
+
+  // person 개인 메시지 기록 요청 처리
+  socket.on('personCheckMsg', async ({ selectedUserId, userId }) => {
+    try {
+      console.log(`사용자의 채팅 기록을 가져오는 중 ${selectedUserId}`);
+      await messageHandlers.getChatHistoryForUser(socket, selectedUserId, userId);
+    } catch (error) {
+      console.error("personCheckMsg 이벤트 처리 오류:", error.message);
+      socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });
+    }
+  });
+
+  // 메세지 실시간 화면 노출
+  socket.on("broadcastNewMessage", async ({ roomId, content }) => {
+    try {
+      // 클라이언트에서의 새로운 메시지를 방송
+      await messageHandlers.broadcastNewMessage(io, roomId, content, socket.id);
+    } catch (error) {
+      console.error("broadcastNewMessage 이벤트 처리 오류:", error.message);
+      socket.emit("error", { message: "메시지 전송 오류 발생. 나중에 다시 시도해 주세요." });
+    }
+  });
+
+};

@@ -5,7 +5,7 @@ import {
   MessageArrow_down,
   MessageArrow_right,
 } from "../../../assets/images/index";
-import { selectedRoomIdState, userState } from "../../../recoil/atoms";
+import { selectedRoomIdState, userState, selectUserID } from "../../../recoil/atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { ChatRoom } from "./ChatTab";
 import io, { Socket } from 'socket.io-client';
@@ -43,6 +43,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   chatRooms
 }) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUserIdstate, setSelectedUserIdstate] = useRecoilState(selectUserID);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const user = useRecoilValue(userState);
@@ -53,12 +54,15 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
       transports: ['websocket'],
     });
 
+    console.log("Socket connected");
+
     if (selectedUserId) {
+      console.log("Emitting personCheckMsg");
       socket.emit("personCheckMsg", { selectedUserId, userId: user.userID });
     }
 
-    socket.on("personDataResponse", (data) => {
-      console.log("Received data:", data);
+    socket.on("chatHistory", (data) => {
+      console.log("Received personDataResponse:", data);
     });
 
     return () => {
@@ -132,6 +136,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                   person.userId
                 );
                 setSelectedUserId(person.userId);
+                setSelectedUserIdstate({ userID: person.userId });
                 setSelectedRoomId(-1);
               }}
             >
@@ -177,6 +182,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 person.userId
                               );
                               setSelectedUserId(person.userId);
+                              setSelectedUserIdstate({ userID: person.userId });
                               setSelectedRoomId(-1);
                             }}
                           >
@@ -223,6 +229,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     person.userId
                                   );
                                   setSelectedUserId(person.userId);
+                                  setSelectedUserIdstate({ userID: person.userId });
                                   setSelectedRoomId(-1);
                                 }}
                               >
@@ -276,6 +283,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         person.userId
                       );
                       setSelectedUserId(person.userId);
+                      setSelectedUserIdstate({ userID: person.userId });
                       setSelectedRoomId(-1);
                     }}
                   >

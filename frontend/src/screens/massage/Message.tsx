@@ -5,6 +5,7 @@ import { io } from 'socket.io-client';
 import Header from './MessageHeader';
 import MessageContainer from './MessageContainer';
 import PeopleManagement from './PeopleManagement';
+import MessageSearch from './MessageSearch';
 
 const socket = io("http://localhost:3001", { transports: ["websocket"] });
 
@@ -26,6 +27,7 @@ const Message: React.FC = () => {
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
+  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');
@@ -170,6 +172,7 @@ const Message: React.FC = () => {
       <Header
         selectedPerson={selectedPerson}
         setChatRoomPeopleManagement={setChatRoomPeopleManagement}
+        setShowSearch={setShowSearch}
       />
       <MessageContainer
         messages={messages}
@@ -188,6 +191,10 @@ const Message: React.FC = () => {
         chatRoomPeopleManagement={chatRoomPeopleManagement}
         setChatRoomPeopleManagement={setChatRoomPeopleManagement}
       />
+
+{showSearch && <MessageSearch
+        setShowSearch={setShowSearch}
+/>} 
     </div>
   );
 };
