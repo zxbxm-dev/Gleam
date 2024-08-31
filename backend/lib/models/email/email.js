@@ -85,7 +85,16 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             tableName: "email"
-        }
+        },
     );
+
+    Email.associate = (models) => {
+        Email.hasMany(models.EmailAttachment, {
+            foreignKey: 'emailId',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+    };
+
     return Email;
 }

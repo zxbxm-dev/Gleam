@@ -187,26 +187,33 @@ const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment
 
 // 보낸 메일을 Sent 메일박스에 저장
 function saveSentMail(imap, mailOptions) {
-    const rawEmail = [
-        `From: ${mailOptions.from}`,
-        `To: ${mailOptions.to}`,
-        `Subject: ${mailOptions.subject}`,
-        '',
-        mailOptions.text || mailOptions.html
-    ].join('\n');
+    return new Promise((resolve, reject) => {
 
-    imap.openBox('Sent', false, function(err, box) {
-        if (err) throw err;
-
-        imap.append(rawEmail, { mailbox: 'Sent' }, function(err) {
-            if (err) {
-                console.error('보낸 메일을 Sent 폴더에 저장하는 도중 오류 발생:', err);
-            } else {
-                console.log('보낸 메일이 Sent 폴더에 저장되었습니다.');
-            }
-            imap.end();
+        const rawEmail = [
+            `From: ${mailOptions.from}`,
+            `To: ${mailOptions.to}`,
+            `Subject: ${mailOptions.subject}`,
+            '',
+            mailOptions.text || mailOptions.html
+        ].join('\n');
+    
+        imap.openBox('Sent', false, function(err, box) {
+            if (err) throw err;
+    
+            imap.append(rawEmail, { mailbox: 'Sent' }, function(err) {
+                if (err) {
+                    console.error('보낸 메일을 Sent 폴더에 저장하는 도중 오류 발생:', err);
+                    imap.end();
+                    return reject(err);
+                } else {
+                    console.log('보낸 메일이 Sent 폴더에 저장되었습니다.');
+                }
+                imap.end();
+                resolve();
+            });
         });
-    });
+    })
+    
 }
 
 // SMTP를 통한 이메일 전송 함수 추가
