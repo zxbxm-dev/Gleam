@@ -127,6 +127,15 @@ const WriteMail = () => {
       }
 
     } else {
+      const hour = selectedTime.replace('시', '').trim();
+      const minute = selectedMinute.replace('분', '').trim();
+
+      const formattedMonth = String(month).padStart(2, '0');
+      const formattedDate = String(date).padStart(2, '0');
+      const formattedHour = String(hour).padStart(2, '0');
+      const formattedMinute = String(minute).padStart(2, '0');
+      const formattedQueueDate = `${year}-${formattedMonth}-${formattedDate} ${formattedHour}:${formattedMinute}:00`;
+      
       const formData = new FormData();
       formData.append('userId', user.userID);
       formData.append('messageId', user.userID + new Date());
@@ -145,6 +154,7 @@ const WriteMail = () => {
         formData.append('attachment', file); 
       });
       formData.append('receiveAt', new Date().toISOString());
+      formData.append('queueDate', formattedQueueDate);
       formData.append('signature', String(false));
 
       try {
