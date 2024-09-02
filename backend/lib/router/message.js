@@ -3,10 +3,10 @@ module.exports = (app) => {
 
   const express = require("express");
   const router = express.Router();
+  const upload = require("../controller/messenger/multerMiddleware");
 
-  router.post("/rooms", messageConstroller.createChatRoom);
-  router.get("/rooms/:roomId/messages", messageConstroller.getChatRoomMessages);
-  router.post("/rooms/:roomId/messages", messageConstroller.sendMessage);
+  // 단채 채팅방 생성 라우트
+  router.post("/rooms", upload.single("profileImage"), messageConstroller);
 
   app.use("/api", router);
 };
