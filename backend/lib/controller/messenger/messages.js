@@ -1,18 +1,44 @@
 const models = require("../../models");
 const chatRoomData = models.ChatRoom;
-const messageData = models.Message;
 
+// 채팅방 생성
 const createChatRoom = async (req, res) => {
   try {
-    const { name, isGroup, color, title, hostUserId, invitedUserIds } = req.body;
-
-    // 채팅방 생성
-    const chatRoom = await chatRoomData.create({
+    const {
       name,
       isGroup,
       color,
       title,
-      hostUserId, // 방장 설정
+      subContent,
+      profileColor,
+      hostUserId,
+      hostName,
+      hostDepartment,
+      hostTeam,
+      hostPosition,
+      invitedUserIds,
+    } = req.body;
+
+    let profileImage = null;
+
+    // 프로필 이미지가 있으면 경로 설정
+    if (req.file) {
+      profileImage = req.file.path;
+    }
+
+    const chatRoom = await chatRoomData.create({
+      name,
+      isGroup: true,
+      color,
+      title,
+      subContent,
+      profileColor,
+      profileImage,
+      hostUserId,
+      hostName,
+      hostDepartment,
+      hostTeam,
+      hostPosition,
       invitedUserIds, // 초대받은 사용자 설정
     });
 
@@ -22,25 +48,4 @@ const createChatRoom = async (req, res) => {
   }
 };
 
-const getChatRoomMessages = async (req, res) => {
-  try {
-    const messages = await messageData.findAll({
-      where: { roomId: req.params.roomId },
-      include: [{ model: models.User, attributes: ["username"] }],
-    });
-    res.json(messages);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const sendMessage = async (req, res) => {
-  try {
-    const message = await messageData.create(req.body);
-    res.status(201).json(message);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-module.exports = { createChatRoom, getChatRoomMessages, sendMessage };
+module.exports = { createChatRoom };
