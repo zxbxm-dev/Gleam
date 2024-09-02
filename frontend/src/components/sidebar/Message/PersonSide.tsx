@@ -120,10 +120,15 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
               }}
             >
               <div className="No-Left">
-                <img
-                  src={person.attachment ? person.attachment : UserIcon_dark}
-                  alt={`${person.username}`}
-                />
+                <div
+                  className="Border"
+                  style={{ border: "2px solid red" }}
+                >
+                  <img
+                    src={person.attachment ? person.attachment : UserIcon_dark}
+                    alt={`${person.username}`}
+                  />
+                </div>
                 {person.username} &nbsp;|&nbsp; {person.position}
               </div>
             </li>
@@ -166,10 +171,15 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                             }}
                           >
                             <div className="No-Left">
-                              <img
-                                src={person.attachment ? person.attachment : UserIcon_dark}
-                                alt={`${person.username}`}
-                              />
+                              <div
+                                className="Border"
+                                style={{ border: "2px solid red" }}
+                              >
+                                <img
+                                  src={person.attachment ? person.attachment : UserIcon_dark}
+                                  alt={`${person.username}`}
+                                />
+                              </div>
                               {person.username} &nbsp;|&nbsp; {person.position}
                             </div>
                           </li>
@@ -213,10 +223,15 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 }}
                               >
                                 <div className="No-Left">
-                                  <img
-                                    src={person.attachment ? person.attachment : UserIcon_dark}
-                                    alt={`${person.username}`}
-                                  />
+                                  <div
+                                    className="Border"
+                                    style={{ border: "2px solid red" }}
+                                  >
+                                    <img
+                                      src={person.attachment ? person.attachment : UserIcon_dark}
+                                      alt={`${person.username}`}
+                                    />
+                                  </div>
                                   {person.username} &nbsp;|&nbsp; {person.position}
                                 </div>
                               </li>
@@ -267,10 +282,15 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                     }}
                   >
                     <div className="No-Left">
-                      <img
-                        src={person.attachment ? person.attachment : UserIcon_dark}
-                        alt={`${person.username}`}
-                      />
+                      <div
+                        className="Border"
+                        style={{ border: "2px solid red" }}
+                      >
+                        <img
+                          src={person.attachment ? person.attachment : UserIcon_dark}
+                          alt={`${person.username}`}
+                        />
+                      </div>
                       {person.username} &nbsp;|&nbsp; {person.position}
                     </div>
                   </li>

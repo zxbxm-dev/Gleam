@@ -82,7 +82,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   isNotibarActive,
   setIsNotibarActive,
   chatRooms,
-  borderColor
+  borderColor,
 }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<number | null>(null);
@@ -98,19 +98,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 
     const person = personData?.find((person) => person.username === lastWord);
     const position = person ? person.position : "";
-
     const roomId = chatRoom.dataValues?.roomId ?? -1;
 
     setSelectedRoomId(roomId);
-
-    onPersonClick(
-      "",
-      chatRoom.othertitle ?? "",
-      "",
-      position,
-      chatRoom.hostUserId
-    );
-
+    onPersonClick("", chatRoom.othertitle ?? "", "", position, chatRoom.hostUserId);
     setIsNotibarActive(false);
     setActiveItem(roomId);
     setSelectedUserIdstate({ userID: "" });
@@ -118,11 +109,11 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 
   const handleMessageMenuClick = (index: number, event: React.MouseEvent) => {
     event.stopPropagation();
-    setVisiblePopoverIndex(prevIndex => prevIndex === index ? null : index);
+    setVisiblePopoverIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (!Object.values(popoverRefs.current).some(ref => ref?.contains(event.target as Node))) {
+    if (!Object.values(popoverRefs.current).some((ref) => ref?.contains(event.target as Node))) {
       setVisiblePopoverIndex(null);
     }
   };
@@ -137,6 +128,13 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const handleLeaveRoom = (roomId: number) => {
     console.log(`Leaving room with id ${roomId}`);
     setVisiblePopoverIndex(null);
+  };
+
+  const PersonMatchData = (chatRoom: ChatRoom) => {
+    const title = chatRoom.othertitle ?? "";
+    const lastWord = title.trim().split(" ").pop();
+    const person = personData?.find((person) => person.username === lastWord);
+    return person ? person.attachment : "";
   };
 
   return (
@@ -167,49 +165,42 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           setActiveItem(0);
         }}
       >
-        <div
-          className="Border"
-          style={{ border: borderColor }}
-        >
-          <img className="My-attach" src={userAttachment ? userAttachment : UserIcon_dark} alt="User Attachment" />
+        <div className="Border" style={{ border: borderColor }}>
+          <img
+            className="My-attach"
+            src={userAttachment || UserIcon_dark}
+            alt="User Attachment"
+          />
         </div>
         <div className="FontName">
           {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
         </div>
         <img className="Message-Me" src={MessageMe} alt="Message Me" />
       </li>
-
       {chatRooms
         .sort((a, b) => new Date(b.upt).getTime() - new Date(a.upt).getTime())
         .map((chatRoom, index) => {
           const roomId = chatRoom.dataValues?.roomId ?? -1;
           const isPopoverVisible = visiblePopoverIndex === index;
           const isActive = activeItem === roomId;
+          const attachment = PersonMatchData(chatRoom) || UserIcon_dark;
 
           return (
             <div key={roomId}>
               <div
                 className={`ChatLog ${isActive ? "active" : ""}`}
-                onClick={() => {
-                  handleChatRoomClick(chatRoom);
-                }}
+                onClick={() => handleChatRoomClick(chatRoom)}
               >
                 <div className="LogBox">
                   <div className="Left">
-                    <div className="Border">
-                      <img
-                        className="My-attach"
-                        src={UserIcon_dark}
-                        alt="User Icon"
-                      />
+                    <div className="Border" style={{ border: "2px solid red" }}>
+                      <img className="My-attach" src={attachment} alt="User Icon" />
                     </div>
-                    {chatRoom.dataValues ? (
-                      <p className="FontName">
-                        {chatRoom.dataValues.isGroup ? `${chatRoom.othertitle}` : chatRoom.othertitle}
-                      </p>
-                    ) : (
-                      <p className="FontName">{chatRoom.isGroup ? `Group: ${chatRoom.othertitle}` : chatRoom.othertitle}</p>
-                    )}
+                    <p className="FontName">
+                      {chatRoom.dataValues?.isGroup
+                        ? `${chatRoom.othertitle}`
+                        : chatRoom.othertitle}
+                    </p>
                   </div>
                   <img
                     className="Message-Menu"
@@ -217,11 +208,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     alt="Message Menu"
                     onClick={(e) => handleMessageMenuClick(index, e)}
                   />
-
                   {isPopoverVisible && (
                     <div
                       className="ChatRoomSide_popover"
-                      ref={el => popoverRefs.current[index] = el}
+                      ref={(el) => (popoverRefs.current[index] = el)}
                       onClick={() => handleLeaveRoom(roomId)}
                     >
                       대화 나가기
@@ -232,10 +222,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             </div>
           );
         })}
-      <SetProfile
-        openProfile={openProfile}
-        setOpenProfile={setOpenProfile}
-      />
+      <SetProfile openProfile={openProfile} setOpenProfile={setOpenProfile} />
     </div>
   );
 };
