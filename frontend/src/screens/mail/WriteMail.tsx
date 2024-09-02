@@ -93,6 +93,7 @@ const WriteMail = () => {
   const handleSendEmail = async () => {
     if(status === "DRAFTS") {
       const formData = new FormData();
+      formData.append('Id', mail?.Id);
       formData.append('userId', user.userID);
       formData.append('messageId', user.userID + new Date());
       formData.append('sender', user.usermail);
@@ -111,6 +112,7 @@ const WriteMail = () => {
       });
       formData.append('receiveAt', new Date().toISOString());
       formData.append('signature', String(false));
+      formData.append('folder', mail?.folder);
 
       try {
         const response = await SendMail(formData);
@@ -122,7 +124,6 @@ const WriteMail = () => {
       }
 
     } else {
-      console.log('첨부된 파일', attachments)
       const formData = new FormData();
       formData.append('userId', user.userID);
       formData.append('messageId', user.userID + new Date());
@@ -416,7 +417,7 @@ const WriteMail = () => {
       }
     }
   }, [mail, status, user]);
-  console.log(attachments)
+
   return(
     <div className="content">
       <div className="write_mail_container">
