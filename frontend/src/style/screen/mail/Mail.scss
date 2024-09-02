@@ -94,6 +94,7 @@
         opacity: 0;
         transition: max-width 0.5s ease-in-out, opacity 0.5s ease-in-out, transform 0.2s ease-in-out;
         transform: scaleY(0);
+        z-index: 999;
 
         &.visible {
           max-width: 1000px;
@@ -163,7 +164,6 @@
           border: 1px solid var(--primary-color);
           border-radius: 5px;
           cursor: pointer;
-          z-index: 1;
 
           .selected_option {
             display: flex;
@@ -188,7 +188,6 @@
             position: absolute;
             top: 30px;
             left: -1px;
-            z-index: 10;
             background-color: #fff;
             border: 1px solid var(--primary-color);
             border-top: none;
@@ -266,6 +265,7 @@
 
         .dropdown_menu {
           position: absolute;
+          z-index: 1000;
           top: 30px;
           left: -1px;
           z-index: 10;
@@ -374,6 +374,7 @@
           }
 
           td:nth-of-type(5) {
+
             .sent_cancle_active {
               border: 1px solid #D56D6D;
               border-radius: 3px;
@@ -403,7 +404,6 @@
                 width: 137px;
                 height: 47px;
                 padding: 5px;
-                z-index: 100;
                 color: #323232;
                 background-color: #FFFFFF;
                 border-radius: 5px;

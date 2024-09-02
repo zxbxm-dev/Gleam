@@ -324,12 +324,32 @@ const Mail = () => {
     const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
     const url = URL.createObjectURL(blob);
   
-    const newWindow = window.open();
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  
+    const width = isMobile ? 650 : 700; // 모바일은 650x450, 데스크탑은 700x500
+    const height = isMobile ? 450 : 500;
+  
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+  
+    const newWindow = window.open('', '', `width=${width},height=${height},top=${top},left=${left}`);
     if (newWindow) {
-      newWindow.document.write(`<iframe src="${url}" width="100%" height="100%"></iframe>`);
+      newWindow.document.write(`
+        <html>
+          <head>
+            <style>
+              body { margin: 0; padding: 0; }
+              iframe { width: 100%; height: 100%; border: none; }
+            </style>
+          </head>
+          <body>
+            <iframe src="${url}"></iframe>
+          </body>
+        </html>
+      `);
     }
   };
-
+  
   const handleDownloadClick = (file: any) => {
     const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
     const url = URL.createObjectURL(blob);
@@ -760,6 +780,9 @@ const Mail = () => {
                             </div>
 
                             <div className="mail_detail_content_middle">
+                              {mail?.folder === 'junk' && 
+                                <div style={{color: '#FF0000'}}>이 메일은 받은메일함에서 스팸 차단한 메일입니다.</div>
+                              }
                               <div dangerouslySetInnerHTML={renderMailContent(mail)}>
                               </div>
                             </div>
