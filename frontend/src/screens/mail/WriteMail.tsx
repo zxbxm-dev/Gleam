@@ -134,7 +134,6 @@ const WriteMail = () => {
       const formattedDate = String(date).padStart(2, '0');
       const formattedHour = String(hour).padStart(2, '0');
       const formattedMinute = String(minute).padStart(2, '0');
-      const formattedQueueDate = `${year}-${formattedMonth}-${formattedDate} ${formattedHour}:${formattedMinute}:00`;
       
       const formData = new FormData();
       formData.append('userId', user.userID);
@@ -154,7 +153,10 @@ const WriteMail = () => {
         formData.append('attachment', file); 
       });
       formData.append('receiveAt', new Date().toISOString());
-      formData.append('queueDate', formattedQueueDate);
+      if (year && month && date && selectedTime && selectedMinute) {
+        const formattedQueueDate = `${year}-${formattedMonth}-${formattedDate} ${formattedHour}:${formattedMinute}:00`;
+        formData.append('queueDate', formattedQueueDate);
+      }
       formData.append('signature', String(false));
 
       try {
