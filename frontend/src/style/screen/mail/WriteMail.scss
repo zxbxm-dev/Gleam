@@ -242,6 +242,10 @@
             border-bottom-color: var(--primary-color);
           }
 
+          &.marginleft {
+            margin-left: 2px;
+          }
+
           .recipient {
             display: flex;
             align-items: center;
@@ -272,6 +276,14 @@
           #recipient_input_element:focus {
             outline: none;
           }
+        }
+
+        .add_receiver {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 2%;
+          cursor: pointer;
         }
 
         .autocomplete_dropdown {
