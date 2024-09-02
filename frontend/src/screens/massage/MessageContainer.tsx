@@ -9,7 +9,7 @@ import {
 } from "../../assets/images/index";
 import io from 'socket.io-client';
 import { useRecoilValue } from 'recoil';
-import { selectedRoomIdState, userState, SearchClickMsg } from '../../recoil/atoms';
+import { selectedRoomIdState, userState, SearchClickMsg, selectUserID } from '../../recoil/atoms';
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 import { Message } from './Message';
@@ -101,6 +101,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const user = useRecoilValue(userState);
+  const personSideGetmsg = useRecoilValue(selectUserID);
   const ClickMsgSearch = useRecoilValue(SearchClickMsg);
 
   const fetchPersonData = useCallback(async () => {
@@ -140,6 +141,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [personData, serverMessages]);
 
+
+  //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   useEffect(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
@@ -172,8 +175,37 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [serverMessages]);
 
-// console.log(typeof ClickMsgSearch.messenger);
-// console.log(ClickMsgSearch.messenger.content);
+  // personSide에서 사람 이름 클릭 시 대화방 메시지 조회
+  useEffect(() => {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
+
+    console.log("Socket connected");
+    const selectedUserId = personSideGetmsg.userID;
+    const userId = user.userID
+
+    if (selectedUserId) {
+      console.log("Emitting personCheckMsg");
+      socket.emit("personCheckMsg", { selectedUserId, userId });
+    }
+
+    socket.on("chatHistory", (data) => {
+      console.log("Received personDataResponse:", data);
+      if (Array.isArray(data)) {
+        setServerMessages(data);
+      } else {
+        console.error('Received data is not an array of messages:', data);
+      }
+    });
+
+    return () => {
+      socket.off("personDataResponse");
+    };
+  }, [personSideGetmsg]);
+
+  // console.log(typeof ClickMsgSearch.messenger);
+  // console.log(ClickMsgSearch.messenger.content);
 
   return (
     <div
@@ -193,7 +225,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                   {messageMetadata.userInfo[index] &&
                     <div className={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
                       {msg.content || ""}
-                      {msg.content === ClickMsgSearch ?"asdfsfd":""}
+                      {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
                     </div>
                   }
                   <div className="MsgTime">
@@ -241,22 +273,22 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 data-placeholder="메시지를 입력하세요. (Enter로 전송 / Shift + Enter로 개행)"
               />
               <div className='InputRight'>
-                        <div className="underIcons">
-            <label htmlFor="file-upload" style={{ cursor: "pointer", display: "flex" }}>
-              <input
-                id="file-upload"
-                type="file"
-                accept="*"
-                onChange={(event) => setFiles(event.target.files ? event.target.files[0] : null)}
-                style={{ display: "none" }}
-              />
-              <div className="fileIconBox">
-                <div className="textBubble">파일 첨부</div>
-                <img src={FileIcon} alt="fileIcon" className="fileIcon" />
-              </div>
-            </label>
-          </div>
-              <div className="send-btn" onClick={handleSendMessage}>전송</div>
+                <div className="underIcons">
+                  <label htmlFor="file-upload" style={{ cursor: "pointer", display: "flex" }}>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      accept="*"
+                      onChange={(event) => setFiles(event.target.files ? event.target.files[0] : null)}
+                      style={{ display: "none" }}
+                    />
+                    <div className="fileIconBox">
+                      <div className="textBubble">파일 첨부</div>
+                      <img src={FileIcon} alt="fileIcon" className="fileIcon" />
+                    </div>
+                  </label>
+                </div>
+                <div className="send-btn" onClick={handleSendMessage}>전송</div>
               </div>
             </div>
           </div>
