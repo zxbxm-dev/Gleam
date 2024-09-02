@@ -50,27 +50,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
-
-    console.log("Socket connected");
-
-    if (selectedUserId) {
-      console.log("Emitting personCheckMsg");
-      socket.emit("personCheckMsg", { selectedUserId, userId: user.userID });
-    }
-
-    socket.on("chatHistory", (data) => {
-      console.log("Received personDataResponse:", data);
-    });
-
-    return () => {
-      socket.off("personDataResponse");
-    };
-  }, [selectedUserId]);
-
-  useEffect(() => {
     if (selectedUserId) {
       const matchingRoom = chatRooms.find(room => room.hostUserId === selectedUserId);
 
