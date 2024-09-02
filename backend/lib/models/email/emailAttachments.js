@@ -62,5 +62,14 @@ module.exports = (sequelize, DataTypes) => {
             tableName: "emailAttachment"
         }
     );
+
+    EmailAttachment.associate = function(models) {
+        EmailAttachment.belongsTo(models.Email, {
+            foreignKey: 'emailId',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+        });
+    };
+
     return EmailAttachment;
 }

@@ -598,7 +598,7 @@ const Mail = () => {
                       </td>
                       {selectdMenuOption === '보낸 메일함' ?
                         <td>
-                          {mail.recipient}
+                          {mail.receiver}
                         </td>
                       :
                         <td>
