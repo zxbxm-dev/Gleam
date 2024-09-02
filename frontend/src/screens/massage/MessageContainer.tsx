@@ -9,7 +9,13 @@ import {
 } from "../../assets/images/index";
 import io from 'socket.io-client';
 import { useRecoilValue } from 'recoil';
-import { selectedRoomIdState, userState, SearchClickMsg, selectUserID } from '../../recoil/atoms';
+import {
+  selectedRoomIdState,
+  userState,
+  SearchClickMsg,
+  selectUserID,
+  selectedPersonState
+} from '../../recoil/atoms';
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 import { Message } from './Message';
@@ -21,9 +27,7 @@ interface MessageContainerProps {
   scrollToBottom: () => void;
   handleFileDrop: (event: React.DragEvent<HTMLDivElement>) => void;
   handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
-  handleSendMessage: () => void;
   handleInput: (e: React.FormEvent<HTMLDivElement>) => void;
-  handleInputKeyPress: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   files: File | null;
   setFiles: React.Dispatch<React.SetStateAction<File | null>>;
 }
@@ -85,14 +89,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   scrollToBottom,
   handleFileDrop,
   handleDragOver,
-  handleSendMessage,
   handleInput,
-  handleInputKeyPress,
   files,
   setFiles,
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const [serverMessages, setServerMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+
   const [messageMetadata, setMessageMetadata] = useState<{ createdAt: string[]; userInfo: string[]; usersAttachment: string[]; }>({
     createdAt: [],
     userInfo: [],
@@ -103,6 +107,72 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const user = useRecoilValue(userState);
   const personSideGetmsg = useRecoilValue(selectUserID);
   const ClickMsgSearch = useRecoilValue(SearchClickMsg);
+  const selectedPerson = useRecoilValue(selectedPersonState);
+
+  //메신저 보내기 Socket
+  const handleSendMessage = useCallback(() => {
+    const inputElement = document.querySelector(".text-input") as HTMLDivElement;
+    if (inputElement && inputElement.innerHTML.trim() !== "") {
+      const message = inputElement.innerHTML.trim();
+
+      let messageData;
+      if (selectedRoomId === -1) {
+        messageData = {
+          invitedUserIds: [selectedPerson.userId],
+          userId: user.id,
+          content: message,
+          hostUserId: null,
+          name: null
+        };
+      } else {
+        messageData = {
+          roomId: selectedRoomId,
+          userId: user.id,
+          content: message,
+        };
+      }
+      console.log(messageData);
+
+      emitMessage(messageData);
+      setMessages(prevMessages => [
+        ...prevMessages,
+        {
+          name: user.username,
+          id: user.id,
+          msg: message,
+          team: user.team || "",
+          department: user.department || "",
+          position: user.position || "",
+        }
+      ]);
+
+      setFiles(null);
+      inputElement.innerHTML = "";
+
+      setTimeout(() => {
+        ChatTabGetMessage();
+        PersonSideGetMessage();
+      }, 200);
+    }
+  }, [selectedRoomId, selectedPerson, user]);
+
+
+  const emitMessage = (messageData: any) => {
+    const socket = io('http://localhost:3001', { transports: ["websocket"] });
+    if (selectedRoomId === -1) {
+      socket.emit("createPrivateRoom", messageData);
+    } else {
+      socket.emit("sendMessageToRoom", messageData);
+    }
+  };
+
+  const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
 
   const fetchPersonData = useCallback(async () => {
     try {
@@ -143,10 +213,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
 
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
-  useEffect(() => {
+  const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
-
     socket.emit('getChatHistory', selectedRoomId);
+    console.log(selectedRoomId);
+
 
     socket.on('chatHistory', (messages: any[]) => {
       if (Array.isArray(messages)) {
@@ -167,7 +238,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     return () => {
       socket.disconnect();
     };
-  }, [selectedRoomId]);
+  }, [handleSendMessage]);
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -176,18 +247,16 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   }, [serverMessages]);
 
   // personSide에서 사람 이름 클릭 시 대화방 메시지 조회
-  useEffect(() => {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
-
+  const PersonSideGetMessage = useCallback(() => {
+    const socket = io('http://localhost:3001', { transports: ["websocket"] });
     console.log("Socket connected");
     const selectedUserId = personSideGetmsg.userID;
-    const userId = user.userID
+    const userId = user.id;
 
     if (selectedUserId) {
       console.log("Emitting personCheckMsg");
       socket.emit("personCheckMsg", { selectedUserId, userId });
+      console.log(selectedUserId, userId);
     }
 
     socket.on("chatHistory", (data) => {
@@ -200,9 +269,25 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     });
 
     return () => {
-      socket.off("personDataResponse");
+      socket.off("personCheckMsg");
     };
-  }, [personSideGetmsg]);
+  }, [handleSendMessage]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ChatTabGetMessage();
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [selectedRoomId]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      PersonSideGetMessage();
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [selectedPerson]);
 
   // console.log(typeof ClickMsgSearch.messenger);
   // console.log(ClickMsgSearch.messenger.content);

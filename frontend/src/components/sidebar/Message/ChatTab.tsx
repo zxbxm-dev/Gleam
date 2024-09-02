@@ -7,7 +7,7 @@ import {
 } from "../../../assets/images/index";
 import SetProfile from "./SetProfile";
 import { Person } from "./MessageSidebar";
-import { selectedRoomIdState } from "../../../recoil/atoms";
+import { selectedRoomIdState, selectUserID } from "../../../recoil/atoms";
 import { useRecoilState } from "recoil";
 
 export interface ChatRoom {
@@ -90,6 +90,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const [selectedUserIdstate, setSelectedUserIdstate] = useRecoilState(selectUserID);
 
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
     const title = chatRoom.othertitle ?? "";
@@ -112,6 +113,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 
     setIsNotibarActive(false);
     setActiveItem(roomId);
+    setSelectedUserIdstate({ userID: "" });
   };
 
   const handleMessageMenuClick = (index: number, event: React.MouseEvent) => {
