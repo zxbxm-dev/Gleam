@@ -75,6 +75,11 @@
         flex-direction: column;
         gap: 10px;
 
+        &.custom_scroll {
+          @include custom-scrollbar;
+          overflow-y: auto;
+        }
+
         &.New-Chat-Room-Body {
           gap: 5px !important;
         }

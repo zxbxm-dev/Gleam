@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { userState, selectedPersonState, selectedRoomIdState } from '../../recoil/atoms';
-import { io } from 'socket.io-client';
 import Header from './MessageHeader';
 import MessageContainer from './MessageContainer';
 import PeopleManagement from './PeopleManagement';
 import MessageSearch from './MessageSearch';
-
-const socket = io("http://localhost:3001", { transports: ["websocket"] });
+import io from 'socket.io-client';
 
 export interface Message {
   name: string;
@@ -28,6 +26,7 @@ const Message: React.FC = () => {
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [showSearch, setShowSearch] = useState(false);
+  const socket = io("http://localhost:3001", { transports: ["websocket"] });
 
   useEffect(() => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');
@@ -62,66 +61,13 @@ const Message: React.FC = () => {
 
   useEffect(() => {
     if (selectedRoomId) {
-      console.log("선택한 방에 참여 중:", selectedRoomId);
       socket.emit("joinRoom", selectedRoomId);
     }
   }, [selectedRoomId]);
 
-  const handleSendMessage = useCallback(() => {
-    const inputElement = document.querySelector(".text-input") as HTMLDivElement;
-    if (inputElement && inputElement.innerHTML.trim() !== "") {
-      const message = inputElement.innerHTML.trim();
+  
 
-      let messageData;
-      if (selectedRoomId === -1) {
-        messageData = {
-          invitedUserIds: [selectedPerson.userId],
-          userId: user.id,
-          content: message,
-          hostUserId: null,
-          name: null
-        };
-      } else {
-        messageData = {
-          roomId: selectedRoomId,
-          userId: user.id,
-          content: message,
-        };
-      }
-      console.log(messageData);
 
-      emitMessage(messageData);
-      setMessages(prevMessages => [
-        ...prevMessages,
-        {
-          name: user.username,
-          id: user.id,
-          msg: message,
-          team: user.team || "",
-          department: user.department || "",
-          position: user.position || "",
-        }
-      ]);
-
-      setFiles(null);
-      inputElement.innerHTML = "";
-    }
-  }, [selectedRoomId, selectedPerson, user]);
-
-  const emitMessage = (messageData: any) => {
-    if (selectedRoomId === -1) {
-      socket.emit("createPrivateRoom", messageData);
-    } else {
-      socket.emit("sendMessageToRoom", messageData);
-    }
-  };
-
-  const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      handleSendMessage();
-    }
-  };
 
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const inputElement = e.target as HTMLDivElement;
@@ -181,9 +127,7 @@ const Message: React.FC = () => {
         scrollToBottom={scrollToBottom}
         handleFileDrop={handleFileDrop}
         handleDragOver={handleDragOver}
-        handleSendMessage={handleSendMessage}
         handleInput={handleInput}
-        handleInputKeyPress={handleInputKeyPress}
         files={files}
         setFiles={setFiles}
       />

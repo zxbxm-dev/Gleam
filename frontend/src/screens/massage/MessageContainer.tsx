@@ -9,7 +9,13 @@ import {
 } from "../../assets/images/index";
 import io from 'socket.io-client';
 import { useRecoilValue } from 'recoil';
-import { selectedRoomIdState, userState, SearchClickMsg } from '../../recoil/atoms';
+import {
+  selectedRoomIdState,
+  userState,
+  SearchClickMsg,
+  selectUserID,
+  selectedPersonState
+} from '../../recoil/atoms';
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 import { Message } from './Message';
@@ -21,9 +27,7 @@ interface MessageContainerProps {
   scrollToBottom: () => void;
   handleFileDrop: (event: React.DragEvent<HTMLDivElement>) => void;
   handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
-  handleSendMessage: () => void;
   handleInput: (e: React.FormEvent<HTMLDivElement>) => void;
-  handleInputKeyPress: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   files: File | null;
   setFiles: React.Dispatch<React.SetStateAction<File | null>>;
 }
@@ -85,14 +89,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   scrollToBottom,
   handleFileDrop,
   handleDragOver,
-  handleSendMessage,
   handleInput,
-  handleInputKeyPress,
   files,
   setFiles,
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const [serverMessages, setServerMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+
   const [messageMetadata, setMessageMetadata] = useState<{ createdAt: string[]; userInfo: string[]; usersAttachment: string[]; }>({
     createdAt: [],
     userInfo: [],
@@ -101,7 +105,74 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const user = useRecoilValue(userState);
+  const personSideGetmsg = useRecoilValue(selectUserID);
   const ClickMsgSearch = useRecoilValue(SearchClickMsg);
+  const selectedPerson = useRecoilValue(selectedPersonState);
+
+  //메신저 보내기 Socket
+  const handleSendMessage = useCallback(() => {
+    const inputElement = document.querySelector(".text-input") as HTMLDivElement;
+    if (inputElement && inputElement.innerHTML.trim() !== "") {
+      const message = inputElement.innerHTML.trim();
+
+      let messageData;
+      if (selectedRoomId === -1) {
+        messageData = {
+          invitedUserIds: [selectedPerson.userId],
+          userId: user.id,
+          content: message,
+          hostUserId: null,
+          name: null
+        };
+      } else {
+        messageData = {
+          roomId: selectedRoomId,
+          userId: user.id,
+          content: message,
+        };
+      }
+      console.log(messageData);
+
+      emitMessage(messageData);
+      setMessages(prevMessages => [
+        ...prevMessages,
+        {
+          name: user.username,
+          id: user.id,
+          msg: message,
+          team: user.team || "",
+          department: user.department || "",
+          position: user.position || "",
+        }
+      ]);
+
+      setFiles(null);
+      inputElement.innerHTML = "";
+
+      setTimeout(() => {
+        ChatTabGetMessage();
+        PersonSideGetMessage();
+      }, 200);
+    }
+  }, [selectedRoomId, selectedPerson, user]);
+
+
+  const emitMessage = (messageData: any) => {
+    const socket = io('http://localhost:3001', { transports: ["websocket"] });
+    if (selectedRoomId === -1) {
+      socket.emit("createPrivateRoom", messageData);
+    } else {
+      socket.emit("sendMessageToRoom", messageData);
+    }
+  };
+
+  const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
 
   const fetchPersonData = useCallback(async () => {
     try {
@@ -140,10 +211,13 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [personData, serverMessages]);
 
-  useEffect(() => {
-    const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
+  //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
+  const ChatTabGetMessage = useCallback(() => {
+    const socket = io('http://localhost:3001', { transports: ["websocket"] });
     socket.emit('getChatHistory', selectedRoomId);
+    console.log(selectedRoomId);
+
 
     socket.on('chatHistory', (messages: any[]) => {
       if (Array.isArray(messages)) {
@@ -164,7 +238,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     return () => {
       socket.disconnect();
     };
-  }, [selectedRoomId]);
+  }, [handleSendMessage]);
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -172,8 +246,51 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [serverMessages]);
 
-// console.log(typeof ClickMsgSearch.messenger);
-// console.log(ClickMsgSearch.messenger.content);
+  // personSide에서 사람 이름 클릭 시 대화방 메시지 조회
+  const PersonSideGetMessage = useCallback(() => {
+    const socket = io('http://localhost:3001', { transports: ["websocket"] });
+    console.log("Socket connected");
+    const selectedUserId = personSideGetmsg.userID;
+    const userId = user.id;
+
+    if (selectedUserId) {
+      console.log("Emitting personCheckMsg");
+      socket.emit("personCheckMsg", { selectedUserId, userId });
+      console.log(selectedUserId, userId);
+    }
+
+    socket.on("chatHistory", (data) => {
+      console.log("Received personDataResponse:", data);
+      if (Array.isArray(data)) {
+        setServerMessages(data);
+      } else {
+        console.error('Received data is not an array of messages:', data);
+      }
+    });
+
+    return () => {
+      socket.off("personCheckMsg");
+    };
+  }, [handleSendMessage]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ChatTabGetMessage();
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [selectedRoomId]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      PersonSideGetMessage();
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [selectedPerson]);
+
+  // console.log(typeof ClickMsgSearch.messenger);
+  // console.log(ClickMsgSearch.messenger.content);
 
   return (
     <div
@@ -193,7 +310,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                   {messageMetadata.userInfo[index] &&
                     <div className={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
                       {msg.content || ""}
-                      {msg.content === ClickMsgSearch ?"asdfsfd":""}
+                      {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
                     </div>
                   }
                   <div className="MsgTime">
@@ -241,22 +358,22 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 data-placeholder="메시지를 입력하세요. (Enter로 전송 / Shift + Enter로 개행)"
               />
               <div className='InputRight'>
-                        <div className="underIcons">
-            <label htmlFor="file-upload" style={{ cursor: "pointer", display: "flex" }}>
-              <input
-                id="file-upload"
-                type="file"
-                accept="*"
-                onChange={(event) => setFiles(event.target.files ? event.target.files[0] : null)}
-                style={{ display: "none" }}
-              />
-              <div className="fileIconBox">
-                <div className="textBubble">파일 첨부</div>
-                <img src={FileIcon} alt="fileIcon" className="fileIcon" />
-              </div>
-            </label>
-          </div>
-              <div className="send-btn" onClick={handleSendMessage}>전송</div>
+                <div className="underIcons">
+                  <label htmlFor="file-upload" style={{ cursor: "pointer", display: "flex" }}>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      accept="*"
+                      onChange={(event) => setFiles(event.target.files ? event.target.files[0] : null)}
+                      style={{ display: "none" }}
+                    />
+                    <div className="fileIconBox">
+                      <div className="textBubble">파일 첨부</div>
+                      <img src={FileIcon} alt="fileIcon" className="fileIcon" />
+                    </div>
+                  </label>
+                </div>
+                <div className="send-btn" onClick={handleSendMessage}>전송</div>
               </div>
             </div>
           </div>
