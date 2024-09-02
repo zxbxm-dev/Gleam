@@ -65,10 +65,6 @@ const Message: React.FC = () => {
     }
   }, [selectedRoomId]);
 
-  
-
-
-
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const inputElement = e.target as HTMLDivElement;
     if (inputElement.innerText.trim() === "" && inputElement.childNodes.length === 1 && inputElement.childNodes[0].nodeName === "BR") {
@@ -113,12 +109,24 @@ const Message: React.FC = () => {
     }
   }, []);
 
+  const toggleSection = (section: 'search' | 'peopleManagement') => {
+    if (section === 'search') {
+      setShowSearch(true);
+      setChatRoomPeopleManagement(false);
+    } else if (section === 'peopleManagement') {
+      setShowSearch(false);
+      setChatRoomPeopleManagement(true);
+    } else {
+      setShowSearch(false);
+      setChatRoomPeopleManagement(false);
+    }
+  };
+
   return (
     <div className="Message-contents">
       <Header
         selectedPerson={selectedPerson}
-        setChatRoomPeopleManagement={setChatRoomPeopleManagement}
-        setShowSearch={setShowSearch}
+        toggleSection={toggleSection}
       />
       <MessageContainer
         messages={messages}

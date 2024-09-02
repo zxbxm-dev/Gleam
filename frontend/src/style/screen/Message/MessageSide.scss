@@ -77,6 +77,7 @@
 
       &:hover {
         background-color: #BFFFC6;
+        cursor: pointer;
       }
 
       .Message-Menu {
@@ -88,12 +89,22 @@
         align-items: center;
         font-size: 14px;
 
-        img {
+        .Border{
+          border-radius: 50px;
           margin-right: 10px;
+          width: 35px;
+          height: 35px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 10px;
+
+        img {
           width: 33px;
           height: 33px;
           border-radius: 50px;
         }
+      }
       }
 
       &:hover {
@@ -135,7 +146,7 @@
         }
       }
 
-      .downTeamBtn:hover{
+      .downTeamBtn:hover {
         background-color: #BFFFC6;
       }
 
@@ -147,7 +158,7 @@
 
   .chat-data-tab {
     overflow-y: scroll;
-height: calc(100vh - 114px);
+    height: calc(100vh - 114px);
 
     .Noti-Icon {
       margin-right: 10px;
@@ -168,20 +179,20 @@ height: calc(100vh - 114px);
       .Border {
         border-radius: 50px;
         margin-right: 10px;
-        width: 37px;
-        height: 37px;
+        width: 35px;
+        height: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
 
         .My-attach {
-          width: 35px;
-          height: 35px;
+          width: 33px;
+          height: 33px;
           border-radius: 50px;
         }
       }
 
-      .FontName{
+      .FontName {
         font-size: 14px;
       }
 
@@ -203,6 +214,11 @@ height: calc(100vh - 114px);
       }
     }
 
+    .Noti-bar:hover {
+      background-color: #BFFFC6;
+      cursor: pointer;
+    }
+
     .My-bar {
       border-top: none !important;
 
@@ -211,12 +227,17 @@ height: calc(100vh - 114px);
       }
     }
 
+    .My-bar:hover {
+      background-color: #BFFFC6;
+      cursor: pointer;
+    }
+
     .ChatLog {
 
       &.active {
         background-color: #efefef !important;
       }
-      
+
       .LogBox {
         font-size: 15px;
         display: flex;
@@ -231,15 +252,15 @@ height: calc(100vh - 114px);
           .Border {
             border-radius: 50px;
             margin-right: 10px;
-            width: 33px;
-            height: 33px;
+            width: 35px;
+            height: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
 
             .My-attach {
-              width: 35px;
-              height: 35px;
+              width: 33px;
+              height: 33px;
               border-radius: 50px;
             }
           }
@@ -261,6 +282,11 @@ height: calc(100vh - 114px);
         }
       }
 
+      .LogBox:hover {
+        cursor: pointer;
+        background-color: #BFFFC6;
+      }
+
       &.selected {
         background-color: #efefef;
       }
@@ -271,18 +297,18 @@ height: calc(100vh - 114px);
     width: 6px;
     height: 6px;
   }
-  
+
   .chat-data-tab::-webkit-scrollbar-thumb {
     background-color: #a8a8a8;
     border-radius: 10px;
     background-clip: padding-box;
     border: 2px solid transparent;
   }
-  
+
   .chat-data-tab::-webkit-scrollbar-corner {
     background-color: none;
   }
-  
+
   .chat-data-tab::-webkit-scrollbar-track {
     box-shadow: none;
     background-color: #fbfbfb;
@@ -340,7 +366,8 @@ height: calc(100vh - 114px);
   font-size: 12px;
   position: absolute;
   right: 24px;
-margin-top: 35px;
+  margin-top: 35px;
+
   .ProfileChange {
     cursor: pointer;
     border-bottom: 1px solid #eeeeee;

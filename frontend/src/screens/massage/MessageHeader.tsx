@@ -9,11 +9,10 @@ import { useRecoilValue } from 'recoil';
 
 interface HeaderProps {
   selectedPerson: any;
-  setChatRoomPeopleManagement: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSearch: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleSection: (section: 'search' | 'peopleManagement') => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ selectedPerson, setChatRoomPeopleManagement, setShowSearch }) => {
+const Header: React.FC<HeaderProps> = ({ selectedPerson, toggleSection }) => {
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
 
   return (
@@ -36,14 +35,14 @@ const Header: React.FC<HeaderProps> = ({ selectedPerson, setChatRoomPeopleManage
           src={GraySearchIcon}
           className="SearchIcon"
           alt="GraySearchIcon"
-          onClick={() => setShowSearch(true)}
+          onClick={() => toggleSection('search')}
         />
         {selectedPerson && selectedRoomId !== -2 && (
           <img
             src={UserManagementIcon}
             className="UserManagementIcon"
             alt="UserManagementIcon"
-            onClick={() => setChatRoomPeopleManagement(prev => !prev)}
+            onClick={() => toggleSection('peopleManagement')}
           />
         )}
       </div>

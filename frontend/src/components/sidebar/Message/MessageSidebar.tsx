@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { PersonData } from "../../../services/person/PersonServices";
 import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
-import { userState, selectedPersonState, userStateMessage, selectedRoomIdState, NewChatModalstate } from "../../../recoil/atoms";
+import {
+  userState,
+  selectedPersonState,
+  userStateMessage,
+  selectedRoomIdState,
+  NewChatModalstate
+} from "../../../recoil/atoms";
+
 import {
   ChatTab,
   PersonTab,
@@ -49,7 +56,6 @@ const MessageSidebar: React.FC = () => {
   const user = useRecoilValue(userState);
   const setSelectedPerson = useSetRecoilState(selectedPersonState);
   const MsguserState = useRecoilValue(userStateMessage);
-
   const [newChatChosenUsers, setNewChatChosenUsers] = useState<Person[] | null>(
     null
   );
@@ -146,7 +152,7 @@ const MessageSidebar: React.FC = () => {
       socket.off('connect_error');
       socket.close();
     };
-  }, [user.userID]);
+  }, [user.userID, activeTab]);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -292,7 +298,7 @@ const MessageSidebar: React.FC = () => {
   const openModal = () => {
     setOpenchatModal((prevState) => ({
       ...prevState,
-      openState: false,
+      openState: true,
     }));
   };
 

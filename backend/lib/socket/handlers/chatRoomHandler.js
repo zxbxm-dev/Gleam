@@ -149,25 +149,6 @@ const createPrivateRoom = async (io, socket, data) => {
     // 사용자의 채팅방 목록을 클라이언트에게 전송
     await sendUserChatRooms(socket, userId);
 
-    // 전체 채팅방 목록을 클라이언트에 전송
-    const allChatRooms = await ChatRoom.findAll({
-      include: [{ model: ChatRoomParticipant }],
-    });
-
-    console.log("모든 채팅방 목록 전송:", allChatRooms.map(room => room.roomId));
-
-    io.emit("chatRooms", allChatRooms.map(room => {
-      const roomData = room.toJSON();
-      const userTitle = parseUserTitle(roomData.userTitle, userId);
-      const othertitle = getOthertitle(roomData, userTitle, userId);
-
-      return {
-        othertitle,
-        userTitle,
-        dataValues: roomData,
-      };
-    }));
-
     // 생성된 채팅방의 메시지 저장 및 전송
     if (content) {
       console.log(`새로운 메시지 전송: ${content}`);
