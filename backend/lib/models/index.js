@@ -71,14 +71,8 @@ db.EmailAttachment = emailAttachments(sequelize, Sequelize);
 
 // 모델 관계 설정
 // 프로젝트 관계 설정
-db.mainProject.hasMany(db.subProject, {
-  foreignKey: "mainprojectIndex",
-  onDelete: "cascade",
-});
-db.subProject.belongsTo(db.mainProject, {
-  foreignKey: "mainprojectIndex",
-  onDelete: "cascade",
-});
+db.mainProject.hasMany(db.subProject, {foreignKey: "mainprojectIndex", onDelete: "cascade" });
+db.subProject.belongsTo(db.mainProject, {foreignKey: "mainprojectIndex", onDelete: "cascade" });
 
 // 메신저 관계 설정
 // User와 Message 간의 관계 설정
@@ -100,6 +94,10 @@ db.ChatRoomParticipant.belongsTo(db.User, { foreignKey: "userId" });
 // ChatRoomParticipant와 Message 간의 관계 설정
 db.ChatRoomParticipant.hasMany(db.Message, { foreignKey: "userId" });
 db.Message.belongsTo(db.ChatRoomParticipant, { foreignKey: "userId", as: "Participant" });
+
+//Email 과 EmailAttachments 간의 관계설정 
+db.Email.hasMany(db.EmailAttachment, {foreignKey: "emailId",onDelete: "cascade" });
+db.EmailAttachment.belongsTo(db.Email, {foreignKey: "emailId", onDelete: "cascade" });
 
 
 module.exports = db;

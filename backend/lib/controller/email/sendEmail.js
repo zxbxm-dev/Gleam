@@ -7,7 +7,7 @@ const { QueueEmail, deleteQueueEmail} = require("../../controller/email/emailQue
 const shortid = require('shortid');
 
 //이메일 전송하기
-const sendMail = async (req, res ) => {
+const sendMail = async (req, res) => {
     const {
         Id,
         userId,
@@ -23,13 +23,43 @@ const sendMail = async (req, res ) => {
         folder,
     } = req.body;
 
-  
+    const attachments = req.files;
+
+    //임시저장 이메일 전송하기 
     if(folder === 'drafts'){
-        await sendDraftEmail(req,res,Id);
-        return;
+        console.log(`임시저장 된 이메일 :  ${Id}번 `);
+        const sendResult = await sendEmail(receiver, subject, body, userId, attachments);
+        console.log('임시저장 이메일 전송 완료:', sendResult);
+
+        // 전송 후 임시저장 이메일 삭제
+        await deleteDraftEmail(req, res, Id);
+        console.log(`${Id}번 임시저장 이메일이 삭제되었습니다.`);
+
+        // 전송된 이메일을 Sent 폴더에 저장
+        const newSentEmail = await Email.create({
+            userId,
+            messageId: shortid.generate(),
+            sender,
+            receiver,
+            referrer,
+            subject,
+            body,
+            sendAt,
+            receiveAt,
+            queueDate,
+            signature,
+            hasAttachments: attachments && attachments.length > 0,
+            folder: 'sent',
+        });
+
+        // 첨부파일이 있는 경우 처리
+        if (attachments && attachments.length > 0) {
+            await saveAttachments(attachments, newSentEmail.id);
+        }
+
+        return res.status(200).json({ message: "임시저장된 이메일이 성공적으로 전송되었습니다.", newSentEmail });
     }
-
-
+  
     // if(queueDate){
     //     await QueueEmail(req,res);
     //     return;
@@ -38,8 +68,8 @@ const sendMail = async (req, res ) => {
 
     console.log("요청 본문 받음 :", req.body);
     const to = receiver;
-    const attachments = req.files;
-    console.log("첨부파일 : ", attachments);
+   
+   
 
     try{
 
@@ -51,10 +81,9 @@ const sendMail = async (req, res ) => {
             contentType: file.mimetype,
         })) : [];
        
-        const hasAttachments = attachmentsInfo.length > 0;;
-
-
+        const hasAttachments = attachmentsInfo.length > 0;
         const sendResult = await sendEmail(to, subject, body, userId, attachmentsInfo);
+        
         console.log("전송한 이메일 : ", sendResult);
         // await deleteQueueEmail(req, res, Id);
 
@@ -87,59 +116,11 @@ const sendMail = async (req, res ) => {
         console.error("전송한 이메일을 저장하는 도중 오류 발생",error);
         return res.status(500).json({message: "전송한 이메일 저장 중 오류가 발생했습니다."});
     };
-
-
 };
 
 
-//임시저장 이메일 전송하기
-const sendDraftEmail = async ( req,res,Id) => {
-    const {
-        userId,
-        messageId,
-        sender,
-        receiver,
-        referrer,
-        subject,
-        body,
-        sendAt,
-        attachment,
-        receiveAt,
-        signature,
-    } = req.body;
 
-
-    console.log("요청 본문 받음 :", req.body);
-    const to = receiver;  //확인
-    try{
-        const draftSendResult = await sendEmail(receiver, subject, body, userId);
-        console.log("전송한 이메일 :", draftSendResult);
-        await  deleteDraftEmail(req, res, Id);
-       
-        const newDraftSentEmail = await Email.create({
-            userId: userId,
-            messageId,
-            sender,
-            receiver,
-            referrer,
-            subject,
-            body,
-            sendAt,
-            receiveAt,
-            signature,
-            attachment,
-            folder: 'sent'
-        })
-       return res.status(200).json({message: "임시저장 이메일 전송이 성공적으로 완료되었습니다.",newDraftSentEmail: newDraftSentEmail});
-       
-    }catch(error){
-        console.error("임시저장 이메일 전송 도중 오류 발생", error);
-        return res.status(500).json({message: "임시저장 이메일 전송 도중 오류가 발생했습니다."});
-    }
-};
-
-
-//예약이메일 전송하기
+// //예약이메일 전송하기
 // const sendQueueEmail = async(req, res) =>{
 //     const{
 //         Id,
@@ -192,7 +173,6 @@ const sendDraftEmail = async ( req,res,Id) => {
 
 module.exports = {
     sendMail,
-    sendDraftEmail,
 }
 
 
