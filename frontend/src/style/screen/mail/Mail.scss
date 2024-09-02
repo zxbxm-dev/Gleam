@@ -388,12 +388,33 @@
             }
 
             .sent_cancle_inactive {
+              position: relative;
               border: 1px solid #9E9E9E;
               background-color: #9E9E9E;
               border-radius: 3px;
               color: #fff;
               padding: 5px 8px;
               cursor: pointer;
+
+              .sent_cancle_inactive_tooltip {
+                position: absolute;
+                top: -30px;
+                left: 40px;
+                width: 137px;
+                height: 47px;
+                padding: 5px;
+                z-index: 100;
+                color: #323232;
+                background-color: #FFFFFF;
+                border-radius: 5px;
+                font-size: 8px;
+                box-shadow: 0px 1px 3px 1px #D9D9D9 !important;
+
+                div:nth-of-type(1) {
+                  font-size: 9px;
+                  color: #F45F5F;
+                }
+              }
             }
 
             .reserve_cancle {
@@ -541,7 +562,7 @@
                       height: auto;
                       background-color: #fff;
                       font-size: 11px;
-                      box-shadow: 0px 1px 3px 1px #a8a8a8 !important;
+                      box-shadow: 0px 1px 3px 1px #D9D9D9 !important;
                       z-index: 99;
 
                       .DownFile_list_content {
@@ -614,13 +635,14 @@
 
                   .recipient_list {
                     position: absolute;
-                    top: -80px;
+                    top: -95px;
                     left: 450px;
-                    max-width: 450px;
-                    max-height: 70px;
+                    max-width: 540px;
+                    height: auto;
                     padding: 10px;
                     background-color: #f9f9f9;
                     border: 1px solid #ddd;
+                    box-shadow: 0px 1px 3px 1px #D9D9D9 !important;
                   }
                 }
               }

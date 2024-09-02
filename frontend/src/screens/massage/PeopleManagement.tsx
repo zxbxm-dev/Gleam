@@ -66,7 +66,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
   const openModal = () => {
     setOpenchatModal((prevState) => ({
       ...prevState,
-      openState: false,
+      openState: true,
     }));
   };
 
