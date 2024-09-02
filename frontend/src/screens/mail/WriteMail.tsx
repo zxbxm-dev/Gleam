@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   White_Arrow,
   ModalCloseBtn,
+  mail_add_receiver,
+  mail_add_receiver_hover,
 } from "../../assets/images/index";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
@@ -49,6 +51,7 @@ const WriteMail = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [minuteDropdownOpen, setMinuteDropdownOpen] = useState(false);
   const [selectedMinute, setSelectedMinute] = useState('');
+  const [isAddReceiver, setIsAddReceiver] = useState(false);
   const generateTimeOptions = () => {
     const timeOptions = [];
     for (let hour = 0; hour <= 24; hour++) {
@@ -124,6 +127,15 @@ const WriteMail = () => {
       }
 
     } else {
+      const hour = selectedTime.replace('시', '').trim();
+      const minute = selectedMinute.replace('분', '').trim();
+
+      const formattedMonth = String(month).padStart(2, '0');
+      const formattedDate = String(date).padStart(2, '0');
+      const formattedHour = String(hour).padStart(2, '0');
+      const formattedMinute = String(minute).padStart(2, '0');
+      const formattedQueueDate = `${year}-${formattedMonth}-${formattedDate} ${formattedHour}:${formattedMinute}:00`;
+      
       const formData = new FormData();
       formData.append('userId', user.userID);
       formData.append('messageId', user.userID + new Date());
@@ -142,6 +154,7 @@ const WriteMail = () => {
         formData.append('attachment', file); 
       });
       formData.append('receiveAt', new Date().toISOString());
+      formData.append('queueDate', formattedQueueDate);
       formData.append('signature', String(false));
 
       try {
@@ -157,19 +170,25 @@ const WriteMail = () => {
   };
 
   const handleDraftEmail = async () => {
-    const formData = {
-      userId : user.userID,
-      messageId : user.userID + new Date(),
-      sender : user.usermail,
-      receiver : recipients,
-      referrer : referrers,
-      subject : mailTitle,
-      body : mailContent,
-      sendAt: new Date(),
-      attachment : attachments,
-      receiveAt : new Date(),
-      signature : false,
-    }
+    const formData = new FormData();
+      formData.append('userId', user.userID);
+      formData.append('messageId', user.userID + new Date());
+      formData.append('sender', user.usermail);
+      recipients.forEach((recipient, index) => {
+        formData.append(`receiver`, recipient);
+      });
+      
+      referrers.forEach((referrer, index) => {
+        formData.append(`referrer`, referrer);
+      });
+      formData.append('subject', mailTitle);
+      formData.append('body', mailContent);
+      formData.append('sendAt', new Date().toISOString());
+      attachments.forEach((file) => {
+        formData.append('attachment', file); 
+      });
+      formData.append('receiveAt', new Date().toISOString());
+      formData.append('signature', String(false));
 
     try {
       const response = await DraftEmail(formData);
@@ -515,7 +534,7 @@ const WriteMail = () => {
           <div className="write_mail_content_top">
             <div className="write_form">
               <div>받는사람</div>
-              <div className={`input_recipients ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
+              <div className={`input_recipients marginleft ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
                 {recipients?.map((email, index) => (
                   <div className="recipient" key={index}>
                     {email}
@@ -540,6 +559,13 @@ const WriteMail = () => {
                     ))}
                   </ul>
                 )}
+              </div>
+              <div className="add_receiver" onMouseEnter={() => setIsAddReceiver(true)} onMouseLeave={() => setIsAddReceiver(false)}>
+                {isAddReceiver ? 
+                  <img src={mail_add_receiver_hover} alt="mail_add_receiver_hover" />
+                  :
+                  <img src={mail_add_receiver} alt="mail_add_receiver" />
+                }
               </div>
             </div>
             <div className="write_form">
