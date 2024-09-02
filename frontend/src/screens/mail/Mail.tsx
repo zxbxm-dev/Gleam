@@ -50,6 +50,7 @@ const Mail = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectdMenuOption, setSelectedMenuOption] = useState('전체 메일');
   const [dueDateIsOpen, setDuedDateIsOpen] = useState(false);
+  const [headerTitle, setHeaderTitle] = useState("보낸 사람");
   const [selectdDueDateOption, setSelectedDueDateOption] = useState('전체');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -63,6 +64,7 @@ const Mail = () => {
   const [selectedMails, setSelectedMails] = useState<{ [key: number]: { messageId: any; selected: boolean } }>({});
 
   const [visibleAttachments, setVisibleAttachments] = useState(3);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const itemsPerPage = 10;
 
@@ -150,37 +152,46 @@ const Mail = () => {
     switch (selectdMenuOption) {
       case "전체 메일":
         setMails(originalMails?.filter((mail) => mail.folder !== 'junk'));
+        setHeaderTitle("보낸 사람");
         setPage(1);
         break;
       case "중요 메일":
         setMails(originalMails?.filter((mail) => mail.star === 'starred'));
+        setHeaderTitle("보낸 사람");
         setPage(1);
         break;
       case "받은 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'inbox'));
+        setHeaderTitle("보낸 사람");
         setPage(1);
         break;
       case "보낸 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'sent'));
+        setHeaderTitle("받은 사람");
         setPage(1);
         break;
       case "안 읽은 메일":
         setMails(originalMails?.filter((mail) => mail.folder === 'unread'));
+        setHeaderTitle("보낸 사람");
         setPage(1);
         break;
       case "임시 보관함":
         setMails(originalMails?.filter((mail) => mail.folder === 'drafts'));
+        setHeaderTitle("보낸 사람");
         setPage(1);
         break;
       case "스팸 메일함":
         setMails(originalMails?.filter((mail) => mail.folder === 'junk'));
+        setHeaderTitle("보낸 사람");
         setPage(1);
         break;
       default:
         setMails(originalMails);
+        setHeaderTitle("보낸 사람");
         setPage(1);
     }
   }, [selectdMenuOption, originalMails]);
+  
 
   const getStartOfPeriod = (period: string) => {
     const now = new Date();
@@ -292,7 +303,12 @@ const Mail = () => {
   };
 
   const showAllAttachments = (mail: any) => {
-    setVisibleAttachments(mail.attachments.length);
+    if (isExpanded) {
+      setVisibleAttachments(3);
+    } else {
+      setVisibleAttachments(mail.attachments.length);
+    }
+    setIsExpanded(!isExpanded);
   };
 
   const handlePreviewClick = (file: any) => {
@@ -430,7 +446,6 @@ const Mail = () => {
     });
   };
   
-  console.log('불러온메일', mails)
   return (
     <div className="content">
       <div className="mail_container">
@@ -558,7 +573,7 @@ const Mail = () => {
             <thead>
               <tr className="board_header">
                 <th></th>
-                <th>보낸 사람</th>
+                <th>{headerTitle}</th>
                 <th>제목</th>
                 <th></th>
                 <th></th>
@@ -581,14 +596,20 @@ const Mail = () => {
                         <span></span>
                         </label>
                       </td>
-                      <td>
-                        {mail.sender?.match(/"([^"]+)"/) // 따옴표 안에 있는 부분이 있는지 확인
-                          ? mail.sender.match(/"([^"]+)"/)[1] // 있으면 그 부분을 표시
-                          : mail.sender.match(/<([^>]+)>/) // 없으면 이메일 주소만 추출
-                          ? mail.sender.match(/<([^>]+)>/)[1] // 이메일 주소만 표시
-                          : mail.sender // 그냥 메일 주소만 있는 경우 그대로 표시
-                        }
-                      </td>
+                      {selectdMenuOption === '보낸 메일함' ?
+                        <td>
+                          {mail.recipient}
+                        </td>
+                      :
+                        <td>
+                          {mail.sender?.match(/"([^"]+)"/) // 따옴표 안에 있는 부분이 있는지 확인
+                            ? mail.sender.match(/"([^"]+)"/)[1] // 있으면 그 부분을 표시
+                            : mail.sender.match(/<([^>]+)>/) // 없으면 이메일 주소만 추출
+                            ? mail.sender.match(/<([^>]+)>/)[1] // 이메일 주소만 표시
+                            : mail.sender // 그냥 메일 주소만 있는 경우 그대로 표시
+                          }
+                        </td>
+                      }
                       <td>
                         <div>
                           <div onClick={() => handleMailStarring(mail.Id, mail.star)}>
@@ -678,11 +699,9 @@ const Mail = () => {
                                             </div>
                                           ))}
                                         </div>
-                                        {mail.attachments.length > 3 && visibleAttachments === 3 && (
-                                          <div className="DownFile_list_more" onClick={() => showAllAttachments(mail)}>
-                                            + 더 보기
-                                          </div>
-                                        )}
+                                        <div className="DownFile_list_more" onClick={() => showAllAttachments(mail)}>
+                                          {isExpanded ? "접기" : "+ 더 보기"}
+                                        </div>
                                       </div>
                                     )}
                                   </div>
