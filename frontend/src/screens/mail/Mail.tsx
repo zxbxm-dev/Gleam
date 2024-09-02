@@ -63,6 +63,7 @@ const Mail = () => {
   const [allSelected, setAllSelected] = useState(false);
   const [selectedMails, setSelectedMails] = useState<{ [key: number]: { messageId: any; selected: boolean } }>({});
 
+  const [isInactiveSendMail, setIsInActiveSendMail] = useState<Record<number, boolean>>({});
   const [visibleAttachments, setVisibleAttachments] = useState(3);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -311,6 +312,14 @@ const Mail = () => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleMouseEnter = (mailId: any) => {
+    setIsInActiveSendMail((prev: any) => ({ ...prev, [mailId]: true }));
+  };
+
+  const handleMouseLeave = (mailId: any) => {
+    setIsInActiveSendMail((prev: any) => ({ ...prev, [mailId]: false }));
+  };
+
   const handlePreviewClick = (file: any) => {
     const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
     const url = URL.createObjectURL(blob);
@@ -339,6 +348,8 @@ const Mail = () => {
   // 메일 세부내용 열기
   const toggleMailContent = (mailId: number) => {
     setIsDownFilevisible(false);
+    setIsExpanded(false);
+    setVisibleAttachments(3);
     const newVisibility = Object.fromEntries(
       Object.keys(mailContentVisibility).map((key) => [key, false])
     );
@@ -373,16 +384,18 @@ const Mail = () => {
 
   const toggleAllCheckboxes = () => {
     if (allSelected) {
-      setSelectedMails({});
+        setSelectedMails({});
     } else {
-      const newSelectedMails = filteredMails.reduce((acc, mail) => {
-        acc[mail.id] = true;
-        return acc;
-      }, {});
-      setSelectedMails(newSelectedMails);
+        const currentPageMails = filteredMails.slice((page - 1) * postPerPage, page * postPerPage);
+        const newSelectedMails = currentPageMails.reduce((acc, mail) => {
+            acc[mail.id] = true;
+            return acc;
+        }, {});
+        setSelectedMails(newSelectedMails);
     }
     setAllSelected(!allSelected);
   };
+
 
 
   // 메일 발송 취소
@@ -631,7 +644,18 @@ const Mail = () => {
                       </td>
                       <td>{mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div onClick={() => setIsReadMailListOpen(true)}>1/3 읽음</div> : null}</td>
                       <td>
-                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div className="sent_cancle_active" onClick={() => setIsSentCancleOpen(true)}>발송 취소</div> : mail.folder === 'reserved' ? <div onClick={() => setIsReserveCancleOpen(true)}>예약 취소</div> : null}
+                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? 
+                          <div className="sent_cancle_inactive" onMouseEnter={() => handleMouseEnter(mail.Id)} onMouseLeave={() => handleMouseLeave(mail.Id)} onClick={() => setIsSentCancleOpen(true)}>
+                            발송 취소
+                            {isInactiveSendMail[mail.Id] && (
+                              <div className="sent_cancle_inactive_tooltip">
+                                <div>발송 취소 불가</div>
+                                <div>수신자 1명 이상 메일을 읽었을 경우</div>
+                                <div>발송 취소 불가</div>
+                              </div>
+                            )}
+                          </div> 
+                          : mail.folder === 'reserved' ? <div onClick={() => setIsReserveCancleOpen(true)}>예약 취소</div> : null}
                       </td>
                       <td>
                         {formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}
@@ -699,9 +723,11 @@ const Mail = () => {
                                             </div>
                                           ))}
                                         </div>
-                                        <div className="DownFile_list_more" onClick={() => showAllAttachments(mail)}>
-                                          {isExpanded ? "접기" : "+ 더 보기"}
-                                        </div>
+                                        {mail.attachments?.length > 3 && 
+                                          <div className="DownFile_list_more" onClick={() => showAllAttachments(mail)}>
+                                            {isExpanded ? "접기" : "+ 더 보기"}
+                                          </div>
+                                        }
                                       </div>
                                     )}
                                   </div>
@@ -711,20 +737,22 @@ const Mail = () => {
                               </div>
                               <div>
                                 <div>받는 사람 :</div>
-                                <div>{Array.isArray(mail.receiver) ? mail.receiver?.join(', ') : [mail.receiver?.replace(/[\[\]"]+/g, '')]}</div>
+                                <div>{Array.isArray(mail.receiver) ? mail.receiver?.slice(0, 5).join(', ') : [mail.receiver?.replace(/[\[\]"]+/g, '')]}</div>
                                 <div
                                   className="recipient_hover"
                                   onMouseEnter={() => setIsRecipientHover(true)}
                                   onMouseLeave={() => setIsRecipientHover(false)}
                                 >
-                                  {mail.recipient?.length - 5 > 0 && `외 ${mail.recipient?.length - 5}명`}
+                                  {Array.isArray(mail.receiver) 
+                                  ? (mail.receiver.length - 5 > 0 ? ` 외 ${mail.receiver.length - 5}명` : '')
+                                  : ""}
                                 </div>
                                 {
                                   isRecipientHover && (
                                     <div
                                       className="recipient_list"
                                     >
-                                    {mail.recipient?.join(', ')}
+                                    {Array.isArray(mail.receiver) ? mail.receiver?.join(', ') : [mail.receiver?.replace(/[\[\]"]+/g, '')]}
                                   </div>
                                   )
                                 }
@@ -791,7 +819,7 @@ const Mail = () => {
         header={"수신 확인"}
         height="240px"
       >
-        <div className="body-container">
+        <div className="body-container custom_scroll">
           <div className="mail_read_list_header">
             <div>수신인</div>
             <div>열람 상태</div>
