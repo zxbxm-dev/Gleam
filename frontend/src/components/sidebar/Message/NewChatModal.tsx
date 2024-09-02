@@ -128,6 +128,10 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       name: null,
       invitedUserIds: isGroup ? targetIds : targetIds[0],
       hostUserId: user.userID, // 서버에서 설정
+      hostName:user.userName,
+      hostDepartment:user.department,
+      hostTeam:user.team,
+      hostPosition:user.position,
       isGroup,
       color: generateRandomColor(),
       title: chatTitle,
