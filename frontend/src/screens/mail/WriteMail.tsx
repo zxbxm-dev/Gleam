@@ -4,7 +4,6 @@ import {
   White_Arrow,
   ModalCloseBtn,
   mail_add_receiver,
-  mail_add_receiver_hover,
 } from "../../assets/images/index";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
@@ -12,18 +11,34 @@ import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
+import { NewChatModalstate } from '../../recoil/atoms';
+import AddReceiver from "./AddReceiver";
 import { PersonData } from '../../services/person/PersonServices';
 import { SendMail, DraftEmail } from "../../services/email/EmailService";
 import { useQuery } from 'react-query';
 import { isNull } from "mathjs";
+
+export interface Person {
+  userId: string;
+  username: string;
+  position: string;
+  department: string;
+  team: string;
+  phoneNumber?: string;
+  usermail?: string;
+  entering: Date;
+  attachment: string;
+  company: string;
+}
 
 
 const WriteMail = () => {
   let navigate = useNavigate();
   const location = useLocation();
   const user = useRecoilValue(userState);
+  const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
   const { mail, status } = location.state || {};
   const [persondata, setPersonData] = useState<any[]>([]);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -51,7 +66,9 @@ const WriteMail = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [minuteDropdownOpen, setMinuteDropdownOpen] = useState(false);
   const [selectedMinute, setSelectedMinute] = useState('');
-  const [isAddReceiver, setIsAddReceiver] = useState(false);
+  
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
   const generateTimeOptions = () => {
     const timeOptions = [];
     for (let hour = 0; hour <= 24; hour++) {
@@ -92,6 +109,66 @@ const WriteMail = () => {
       console.log(error);
     }
   })
+
+  const groupByDepartmentAndTeam = (data: Person[]) => {
+    const grouped: {
+      [company: string]: { [department: string]: { [team: string]: Person[] } };
+    } = {};
+
+    data.forEach((person) => {
+      if (!grouped[person.company]) {
+        grouped[person.company] = {};
+      }
+      if (!grouped[person.company][person.department]) {
+        grouped[person.company][person.department] = {};
+      }
+      if (!grouped[person.company][person.department][person.team]) {
+        grouped[person.company][person.department][person.team] = [];
+      }
+      grouped[person.company][person.department][person.team].push(person);
+    });
+
+    return grouped;
+  };
+
+  const groupedData = persondata ? groupByDepartmentAndTeam(persondata) : {};
+
+  const filterDataBySearchQuery = (data: {
+    [company: string]: { [department: string]: { [team: string]: Person[] } };
+  }) => {
+    if (!searchQuery) return data;
+    const filtered: {
+      [company: string]: { [department: string]: { [team: string]: Person[] } };
+    } = {};
+
+    Object.keys(data).forEach((companyName) => {
+      Object.keys(data[companyName]).forEach((departmentName) => {
+        Object.keys(data[companyName][departmentName]).forEach((teamName) => {
+          const filteredPersons = data[companyName][departmentName][
+            teamName
+          ].filter(
+            (person) =>
+              person.username.includes(searchQuery) ||
+              person.department.includes(searchQuery) ||
+              person.team.includes(searchQuery)
+          );
+          if (filteredPersons.length > 0) {
+            if (!filtered[companyName]) {
+              filtered[companyName] = {};
+            }
+            if (!filtered[companyName][departmentName]) {
+              filtered[companyName][departmentName] = {};
+            }
+            filtered[companyName][departmentName][teamName] = filteredPersons;
+          }
+        });
+      });
+    });
+
+    return filtered;
+  };
+
+  const filteredData = filterDataBySearchQuery(groupedData);
 
   const handleSendEmail = async () => {
     if(status === "DRAFTS") {
@@ -200,6 +277,22 @@ const WriteMail = () => {
     } catch (error) {
       console.log('이메일 임시저장 실패',error)
     }
+  };
+
+  const openModal = () => {
+    setOpenchatModal((prevState) => ({
+      ...prevState,
+      openState: true,
+    }));
+  };
+
+  const handleConfirm = (selectedUsers: Person[]) => {
+    const emails = selectedUsers
+    .map(user => user.usermail)
+    .filter((email): email is string => email !== undefined);
+
+    // recipients 상태를 업데이트
+    setRecipients(emails);
   };
 
   const toggleDropdown = () => {
@@ -535,7 +628,7 @@ const WriteMail = () => {
         <div className="write_mail_content">
           <div className="write_mail_content_top">
             <div className="write_form">
-              <div>받는사람</div>
+              <div className="write_form_title">받는사람</div>
               <div className={`input_recipients marginleft ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
                 {recipients?.map((email, index) => (
                   <div className="recipient" key={index}>
@@ -545,6 +638,7 @@ const WriteMail = () => {
                 ))}
                 <input
                   id="recipient_input_element"
+                  className="write_form_input"
                   type="text"
                   value={inputValue}
                   onChange={handleInputChange}
@@ -562,16 +656,13 @@ const WriteMail = () => {
                   </ul>
                 )}
               </div>
-              <div className="add_receiver" onMouseEnter={() => setIsAddReceiver(true)} onMouseLeave={() => setIsAddReceiver(false)}>
-                {isAddReceiver ? 
-                  <img src={mail_add_receiver_hover} alt="mail_add_receiver_hover" />
-                  :
-                  <img src={mail_add_receiver} alt="mail_add_receiver" />
-                }
+              <div className="add_receiver">
+                <img src={mail_add_receiver} onClick={openModal} alt="mail_add_receiver" />
+                <AddReceiver filteredData={filteredData} onConfirm={handleConfirm}/>
               </div>
             </div>
             <div className="write_form">
-              <div>참조</div>
+              <div className="write_form_title">참조</div>
               <div className={`input_recipients ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
                 {referrers?.map((email, index) => (
                   <div className="recipient" key={index}>
@@ -581,6 +672,7 @@ const WriteMail = () => {
                 ))}
                 <input
                   id="recipient_input_element"
+                  className="write_form_input"
                   type="text"
                   value={inputReferrerValue}
                   onChange={handleInputReferrerChange}
@@ -600,8 +692,8 @@ const WriteMail = () => {
               </div>
             </div>
             <div className="write_form">
-              <div>제목</div>
-              <input type="text" value={mailTitle} onChange={(e) => setMailTitle(e.target.value)}/>
+              <div className="write_form_title">제목</div>
+              <input className="write_form_input" type="text" value={mailTitle} onChange={(e) => setMailTitle(e.target.value)}/>
             </div>
             <div className="attach_form">
               <div>파일 첨부</div>
