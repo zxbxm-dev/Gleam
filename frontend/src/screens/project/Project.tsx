@@ -1217,25 +1217,26 @@ const Project = () => {
         isOpen={isAddPjtModalOpen}
         onClose={() => { setAddPjtModalOPen(false); resetForm(); }}
         header={'프로젝트 - 새 업무'}
+        headerTextColor="white"
         footer1={'저장'}
-        footer1Class="green-btn"
+        footer1Class="back-green-btn"
         onFooter1Click={() => { setAddPjtModalOPen(false); resetForm(); handleAddMainProject(); }}
-        width="500px"
-        height="550px"
+        width="430px"
+        height="510px"
       >
-        <div className="body-container">
+        <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
           <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트 명</div>
-            <input type="text" value={pjtTitle} onChange={(e) => setPjtTitle(e.target.value)}/>
+            <input type="text" className="input_project" value={pjtTitle} placeholder="프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)}/>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">팀리더</div>
+          <div className="body_container_content content_box">
             <input
               type="text"
+              className="input_box"
               value={teamLeader}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
+              placeholder="팀리더"
               ref={inputRef}
             />
             {inputteamLeader && (
@@ -1249,18 +1250,19 @@ const Project = () => {
               </ul>
             )}
           </div>
-
-          <div className="body_container_content">
-            <div className="body_container_content_title">전체 팀원</div>
+            
+          <div className="body_container_content member_list_box">
             <input
               type="text"
+              className="input_list"
               value={inputAllMember}
               onChange={handleInputAllMemberChange}
               onKeyDown={handleInputAllMemberKeyDown}
+              placeholder="전체 팀원"
               ref={inputRef}
             />
             {inputAllMember && (
-              <ul className="autocomplete_dropdown">
+              <ul className="autocomplete_dropdown_inbox">
                 {filteredAllmembersNames.map(person => (
                   <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
@@ -1269,8 +1271,7 @@ const Project = () => {
                 ))}
               </ul>
             )}
-          </div>
-          <div className="body_container_content">
+
             <div className="body_container_content_listbox">
               {allMembers.map((item: string) => (
                 <div className="listbox_content">
@@ -1281,17 +1282,18 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">참조자</div>
+          <div className="body_container_content member_list_box" style={{height: '110px'}}>
             <input
               type="text"
+              className="input_list"
               value={inputAllReferrer}
               onChange={handleInputAllReferrerChange}
               onKeyDown={handleInputAllReferrerKeyDown}
+              placeholder="참조자"
               ref={inputRef}
             />
             {inputAllReferrer && (
-              <ul className="autocomplete_dropdown">
+              <ul className="autocomplete_dropdown_inbox">
                 {filteredAllReferrersNames.map(person => (
                   <li key={person.username} onClick={() => handleAutoAllReferrersCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
@@ -1300,8 +1302,7 @@ const Project = () => {
                 ))}
               </ul>
             )}
-          </div>
-          <div className="body_container_content">
+
             <div className="body_container_content_listbox">
               {allReferrers.map((item: string) => (
                 <div className="listbox_content">
@@ -1312,8 +1313,10 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트<br />기간</div>
+          <div className="body_container_content content_box">
+            <div className="body_container_content_datepicker_title">
+              프로젝트 기간
+            </div>
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
@@ -1341,6 +1344,7 @@ const Project = () => {
               />
             </div>
           </div>
+
         </div>
       </CustomModal>
 
@@ -1349,27 +1353,26 @@ const Project = () => {
         isOpen={isAddSubPjtModalOpen}
         onClose={() => { setAddSubPjtModalOPen(false); resetForm(); }}
         header={rightclickedProjects?.projectName}
+        headerTextColor="white"
         footer1={'저장'}
         footer1Class="green-btn"
         onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(rightclickedProjects?.mainprojectIndex); }}
-        width="500px"
-        height="550px"
+        width="430px"
+        height="510px"
       >
-        <div className="body-container">
+        <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
           <div className="body_container_content">
-          </div>
-          <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트 명</div>
-            <input type="text" value={pjtTitle} onChange={(e) => setPjtTitle(e.target.value)}/>
+            <input type="text" className="input_project" value={pjtTitle} placeholder="서브 프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)}/>
           </div>
           
-          <div className="body_container_content">
-            <div className="body_container_content_title">팀리더</div>
+          <div className="body_container_content content_box">
             <input
               type="text"
+              className="input_box"
               value={teamLeader}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
+              placeholder="팀리더"
               ref={inputRef}
             />
             {inputteamLeader && (
@@ -1384,17 +1387,18 @@ const Project = () => {
             )}
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">담당 팀원</div>
+          <div className="body_container_content member_list_box">
             <input
               type="text"
+              className="input_list"
               value={inputAllMember}
               onChange={handleInputAllMemberChange}
               onKeyDown={handleInputAllMemberKeyDown}
+              placeholder="전체 팀원"
               ref={inputRef}
             />
             {inputAllMember && (
-              <ul className="autocomplete_dropdown">
+              <ul className="autocomplete_dropdown_inbox">
                 {filteredAllmembersNames.map(person => (
                   <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
@@ -1403,8 +1407,7 @@ const Project = () => {
                 ))}
               </ul>
             )}
-          </div>
-          <div className="body_container_content">
+
             <div className="body_container_content_listbox">
               {allMembers.map((item: string) => (
                 <div className="listbox_content">
@@ -1415,8 +1418,10 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">업무기간</div>
+          <div className="body_container_content content_box">
+            <div className="body_container_content_datepicker_title">
+              프로젝트 기간
+            </div>
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
@@ -1445,8 +1450,8 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트<br />내용</div>
+          <div className="body_container_content textarea_content">
+            <div className="textarea_content_title">프로젝트 내용</div>
             <textarea value={pjtMemo} onChange={(e) => setPjtMemo(e.target.value)}/>
           </div>
         </div>
@@ -1457,21 +1462,22 @@ const Project = () => {
         isOpen={isEditPjtModalOpen}
         onClose={() => { setEditPjtModalOpen(false); resetForm(); }}
         header={rightclickedProjects?.projectName}
+        headerTextColor="white"
         footer1={'편집'}
         footer1Class="green-btn"
         onFooter1Click={() => { setEditPjtModalOpen(false); handleEditProject(rightclickedProjects?.mainprojectIndex || 0)}}
         footer2={'삭제'}
         footer2Class="red-btn"
         onFooter2Click={() => { setEditPjtModalOpen(false); resetForm(); hanelDeleteMainPjt(rightclickedProjects?.mainprojectIndex || 0)}}
-        width="500px"
-        height="600px"
+        width="430px"
+        height="510px"
       >
-        <div className="body-container">
+        <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
           <div className="body_container_content">
             <div className="body_container_content_title">상태</div>
             <div className="pjt_status" onClick={togglePjtstate}>
-              {pjtStatus}
               <div className={pjtStatus === '진행 중' ? 'blue_circle' : pjtStatus === '진행 완료' ? 'brown_circle' : ''}></div>
+              {pjtStatus}
               {pjtstateIsOpen && (
                 <ul className="dropdown_menu_status">
                   {pjtstateOptions.map((option) => (
@@ -1486,17 +1492,17 @@ const Project = () => {
           </div>
 
           <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트 명</div>
-            <input type="text" value={pjtTitle} onChange={(e) => setPjtTitle(e.target.value)}/>
+            <input type="text" className="input_project" value={pjtTitle} placeholder="프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)}/>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">팀리더</div>
+          <div className="body_container_content content_box">
             <input
               type="text"
+              className="input_box"
               value={teamLeader}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
+              placeholder="팀리더"
               ref={inputRef}
             />
             {inputteamLeader && (
@@ -1511,17 +1517,18 @@ const Project = () => {
             )}
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">전체 팀원</div>
+          <div className="body_container_content member_list_box">
             <input
               type="text"
+              className="input_list"
               value={inputAllMember}
               onChange={handleInputAllMemberChange}
               onKeyDown={handleInputAllMemberKeyDown}
+              placeholder="전체 팀원"
               ref={inputRef}
             />
             {inputAllMember && (
-              <ul className="autocomplete_dropdown">
+              <ul className="autocomplete_dropdown_inbox">
                 {filteredAllmembersNames.map(person => (
                   <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
@@ -1530,8 +1537,7 @@ const Project = () => {
                 ))}
               </ul>
             )}
-          </div>
-          <div className="body_container_content">
+
             <div className="body_container_content_listbox">
               {allMembers.map((item: string) => (
                 <div className="listbox_content">
@@ -1542,17 +1548,18 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">참조자</div>
+          <div className="body_container_content member_list_box" style={{height: '110px'}}>
             <input
               type="text"
+              className="input_list"
               value={inputAllReferrer}
               onChange={handleInputAllReferrerChange}
               onKeyDown={handleInputAllReferrerKeyDown}
+              placeholder="참조자"
               ref={inputRef}
             />
             {inputAllReferrer && (
-              <ul className="autocomplete_dropdown">
+              <ul className="autocomplete_dropdown_inbox">
                 {filteredAllReferrersNames.map(person => (
                   <li key={person.username} onClick={() => handleAutoAllReferrersCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
@@ -1561,8 +1568,7 @@ const Project = () => {
                 ))}
               </ul>
             )}
-          </div>
-          <div className="body_container_content">
+
             <div className="body_container_content_listbox">
               {allReferrers.map((item: string) => (
                 <div className="listbox_content">
@@ -1573,8 +1579,10 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트<br />기간</div>
+          <div className="body_container_content content_box">
+            <div className="body_container_content_datepicker_title">
+              프로젝트 기간
+            </div>
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
@@ -1610,128 +1618,38 @@ const Project = () => {
         isOpen={isViewSubPjtModalOpen}
         onClose={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null);}}
         header={rightclickedProjects?.projectName}
+        headerTextColor="White"
         footer1={'편집'}
         footer1Class="green-btn"
         onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false);}}
         footer2={'삭제'}
         footer2Class="red-btn"
         onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
-        width="500px"
-        height="auto"
+        width="430px"
+        height="510px"
       >
-        <div className="body-container">
+        <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
           <div className="body_container_content">
             <div className="body_container_content_title">상태</div>
             <div className="view_div">
-              {pjtStatus}
               <div className={pjtStatus === '진행 중' ? 'blue_circle' : pjtStatus === '진행 완료' ? 'brown_circle' : ''}></div>
-            </div>
-          </div>
-
-          <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트 명</div>
-            <div className="view_div">{pjtTitle}</div>
-          </div>
-
-          <div className="body_container_content">
-            <div className="body_container_content_title">팀리더</div>
-            <div className="view_div">{teamLeader}</div>
-          </div>
-
-          <div className="body_container_content">
-            <div className="body_container_content_title">전체 팀원</div>
-            <div className="view_div">
-              {allMembers.map((item: string, index: number) => (
-                <div className="listbox_content" key={index}>
-                  {item}{index < allMembers.length - 1 && ','}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트<br />기간</div>
-            <div className="body_container_content_datepicker">
-              <DatePicker
-                selected={startDate}
-                onChange={() => {}}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
-                dateFormat="yyyy-MM-dd"
-                className="datepicker"
-                popperPlacement="top"
-                disabled={true}
-              />
-              <span className="timespan">~</span>
-              <DatePicker
-                selected={endDate}
-                onChange={() => {}}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
-                dateFormat="yyyy-MM-dd"
-                className="datepicker"
-                popperPlacement="top"
-                disabled={true}
-              />
-            </div>
-          </div>
-
-          <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트<br />내용</div>
-            <div className="view_div">{pjtMemo}</div>
-          </div>
-        </div>
-      </CustomModal>
-
-      <CustomModal
-        isOpen={isEditSubPjtModalOpen}
-        onClose={() => { setEditSubPjtModalOpen(false); resetForm(); }}
-        header={rightclickedProjects?.projectName}
-        footer1={'수정'}
-        footer1Class="green-btn"
-        onFooter1Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleEditSubProject(rightclickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
-        footer2={'취소'}
-        footer2Class="red-btn"
-        onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm(); }}
-        width="500px"
-        height="600px"
-      >
-        <div className="body-container">
-          <div className="body_container_content">
-            <div className="body_container_content_title">상태</div>
-            <div className="pjt_status" onClick={togglePjtstate}>
               {pjtStatus}
-              <div className={pjtStatus === '진행 중' ? 'blue_circle' : pjtStatus === '진행 완료' ? 'brown_circle' : ''}></div>
-              {pjtstateIsOpen && (
-                <ul className="dropdown_menu_status">
-                  {pjtstateOptions.map((option) => (
-                    <li key={option} onClick={() => handlePjtStateSelect(option)}>
-                      {option}
-                      <div className={option === '진행 중' ? 'blue_circle' : option === '진행 완료' ? 'brown_circle' : ''}></div>
-                    </li>
-                  ))}
-                </ul>
-              )}
             </div>
           </div>
-
+              
           <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트 명</div>
-            <input type="text" value={pjtTitle} onChange={(e) => setPjtTitle(e.target.value)}/>
+            <input type="text" readOnly className="input_project" value={pjtTitle} placeholder="서브 프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)} />
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">팀리더</div>
+          <div className="body_container_content content_box">
             <input
               type="text"
+              readOnly
+              className="input_box"
               value={teamLeader}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
+              placeholder="팀리더"
               ref={inputRef}
             />
             {inputteamLeader && (
@@ -1746,17 +1664,19 @@ const Project = () => {
             )}
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">전체 팀원</div>
+          <div className="body_container_content member_list_box">
             <input
               type="text"
+              readOnly
+              className="input_list"
               value={inputAllMember}
               onChange={handleInputAllMemberChange}
               onKeyDown={handleInputAllMemberKeyDown}
+              placeholder="담당 팀원"
               ref={inputRef}
             />
             {inputAllMember && (
-              <ul className="autocomplete_dropdown">
+              <ul className="autocomplete_dropdown_inbox">
                 {filteredAllmembersNames.map(person => (
                   <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
@@ -1765,20 +1685,20 @@ const Project = () => {
                 ))}
               </ul>
             )}
-          </div>
-          <div className="body_container_content">
+
             <div className="body_container_content_listbox">
               {allMembers.map((item: string) => (
                 <div className="listbox_content">
                   {item}
-                  <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트<br />기간</div>
+          <div className="body_container_content content_box">
+            <div className="body_container_content_datepicker_title">
+              업무 기간
+            </div>
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
@@ -1807,8 +1727,137 @@ const Project = () => {
             </div>
           </div>
 
+          <div className="body_container_content textarea_content">
+            <div className="textarea_content_title">프로젝트 내용</div>
+            <textarea readOnly value={pjtMemo} onChange={(e) => setPjtMemo(e.target.value)}/>
+          </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isEditSubPjtModalOpen}
+        onClose={() => { setEditSubPjtModalOpen(false); resetForm(); }}
+        header={rightclickedProjects?.projectName}
+        headerTextColor="White"
+        footer1={'수정'}
+        footer1Class="green-btn"
+        onFooter1Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleEditSubProject(rightclickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
+        footer2={'취소'}
+        footer2Class="red-btn"
+        onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm(); }}
+        width="430px"
+        height="510px"
+      >
+        <div className="body-container">
           <div className="body_container_content">
-            <div className="body_container_content_title">프로젝트<br />내용</div>
+            <div className="body_container_content_title">상태</div>
+            <div className="pjt_status" onClick={togglePjtstate}>
+              {pjtStatus}
+              <div className={pjtStatus === '진행 중' ? 'blue_circle' : pjtStatus === '진행 완료' ? 'brown_circle' : ''}></div>
+              {pjtstateIsOpen && (
+                <ul className="dropdown_menu_status">
+                  {pjtstateOptions.map((option) => (
+                    <li key={option} onClick={() => handlePjtStateSelect(option)}>
+                      {option}
+                      <div className={option === '진행 중' ? 'blue_circle' : option === '진행 완료' ? 'brown_circle' : ''}></div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          <div className="body_container_content">
+            <input type="text" className="input_project" value={pjtTitle} placeholder="서브 프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)}/>
+          </div>
+
+          <div className="body_container_content content_box">
+            <input
+              type="text"
+              className="input_box"
+              value={teamLeader}
+              onChange={handleInputChange}
+              onKeyDown={handleInputKeyDown}
+              placeholder="팀리더"
+              ref={inputRef}
+            />
+            {inputteamLeader && (
+              <ul className="autocomplete_dropdown">
+                {filteredNames.map(person => (
+                  <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
+                    {person.team ? person.team : person.department} &nbsp;
+                    {person.username}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="body_container_content member_list_box">
+            <input
+              type="text"
+              className="input_list"
+              value={inputAllMember}
+              onChange={handleInputAllMemberChange}
+              onKeyDown={handleInputAllMemberKeyDown}
+              placeholder="전체 팀원"
+              ref={inputRef}
+            />
+            {inputAllMember && (
+              <ul className="autocomplete_dropdown_inbox">
+                {filteredAllmembersNames.map(person => (
+                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
+                    {person.team ? person.team : person.department} &nbsp;
+                    {person.username}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div className="body_container_content_listbox">
+              {allMembers.map((item: string) => (
+                <div className="listbox_content">
+                  {item}
+                  <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="body_container_content content_box">
+            <div className="body_container_content_datepicker_title">
+              프로젝트 기간
+            </div>
+            <div className="body_container_content_datepicker">
+              <DatePicker
+                selected={startDate}
+                onChange={date => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                dateFormat="yyyy-MM-dd"
+                className="datepicker"
+                popperPlacement="top"
+              />
+              <span className="timespan">~</span>
+              <DatePicker
+                selected={endDate}
+                onChange={date => setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                dateFormat="yyyy-MM-dd"
+                className="datepicker"
+                popperPlacement="top"
+              />
+            </div>
+          </div>
+
+          <div className="body_container_content textarea_content">
+            <div className="textarea_content_title">프로젝트 내용</div>
             <textarea value={pjtMemo} onChange={(e) => setPjtMemo(e.target.value)}/>
           </div>
         </div>
