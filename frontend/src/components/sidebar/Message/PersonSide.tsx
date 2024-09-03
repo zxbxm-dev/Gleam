@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Person } from "./MessageSidebar";
+import { Person } from "../MemberSidebar";
 import {
   UserIcon_dark,
   MessageArrow_down,

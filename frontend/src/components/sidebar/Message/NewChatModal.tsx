@@ -13,19 +13,8 @@ import {
 } from "../../../assets/images/index";
 import CustomModal from "../../modal/CustomModal";
 import { createRoom } from "../../../services/message/MessageApi";
-
-export interface Person {
-  userId: string;
-  username: string;
-  position: string;
-  department: string;
-  team: string;
-  phoneNumber?: string;
-  usermail?: string;
-  entering: Date;
-  attachment: string;
-  company: string;
-}
+import { PersonData } from "../../../services/person/PersonServices";
+import { Person } from "../MemberSidebar";
 
 interface NewChatModalProps {
   filteredData: {
@@ -45,9 +34,25 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [chatTitle, setChatTitle] = useState<string>("");
   const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
-
+  const [personData, setPersonData] = useState<Person[] | null>(null);
   const user = useRecoilValue(userState);
   const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await PersonData();
+        const approveduser = response.data.filter((item: any) => item.status === 'approved');
+        const sortedData = approveduser.sort((a: Person, b: Person) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
+        setPersonData(sortedData);
+      } catch (err) {
+        console.error("Error fetching person data:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   useEffect(() => {
     if (ChatModalOpenState) {
@@ -56,9 +61,9 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
           Object.values(department).flat()
         )
       );
-  
+
       const initialSelectedUsers = allPersons.filter(person => person.username === user.username);
-  
+
       setSelectedUsers(prevSelected => {
         const newSelection = new Set(prevSelected);
         initialSelectedUsers.forEach(user => newSelection.add(user.userId));
@@ -121,20 +126,50 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       return;
     }
 
-    const isGroup = selectedUsers.size > 2;
     const targetIds = Array.from(selectedUsers);
 
+    // userTitle의 타입 정의
+    interface UserTitleType {
+      [userId: string]: {
+        userId: string;
+        username: string;
+        company: string | null;
+        department: string | null;
+        team: string | null;
+        position: string | null;
+        spot: string | null;
+        attachment: string | null;
+      };
+    }
+
+    // selectedUsers에서 각 userId를 personData에서 찾아 매칭하여 JSON 구조로 변환
+    const userTitle: UserTitleType = targetIds.reduce((acc: UserTitleType, userId: string) => {
+      const person = personData?.find(person => person.userId === userId);
+      if (person) {
+        acc[userId] = {
+          userId: person.userId,
+          username: person.username,
+          company: person.company,
+          department: person.department,
+          team: person.team,
+          position: person.position,
+          spot: person.spot,
+          attachment: person.attachment,
+        };
+      }
+      return acc;
+    }, {} as UserTitleType);
+
     const payload = {
-      name: null,
-      invitedUserIds: isGroup ? targetIds : targetIds[0],
-      hostUserId: user.userID, // 서버에서 설정
-      hostName:user.userName,
-      hostDepartment:user.department,
-      hostTeam:user.team,
-      hostPosition:user.position,
-      isGroup,
-      color: generateRandomColor(),
-      title: chatTitle,
+      roomId: null,
+      userTitle: JSON.stringify(userTitle),
+      hostUserId: user.userID,
+      hostName: user.username,
+      hostDepartment: user.department,
+      hostTeam: user.team,
+      hostPosition: user.position,
+      profileColor: generateRandomColor(),
+      title: chatTitle || null,
     };
 
     try {
@@ -146,9 +181,10 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     }
   };
 
+
   const handlePersonClick = (person: Person) => {
     if (person.username === user.username) return;
-    
+
     setSelectedUsers(prevSelected => {
       const newSelection = new Set(prevSelected);
       if (newSelection.has(person.userId)) {
@@ -159,11 +195,11 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       return newSelection;
     });
   };
-  
+
   const handleTeamClick = (teamName: string, companyName: string, departmentName: string) => {
     const teamMembers = filteredPersonsData[companyName][departmentName][teamName];
     const allMembersSelected = teamMembers.every(member => selectedUsers.has(member.userId));
-    
+
     setSelectedUsers(prevSelected => {
       const newSelection = new Set(prevSelected);
       if (allMembersSelected) {
@@ -174,9 +210,9 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       return newSelection;
     });
   };
-  
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  
+
   return (
     <CustomModal
       isOpen={ChatModalOpenState.openState}
@@ -385,7 +421,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
                     Object.values(department).flat()
                   )
                 ).find(person => person.userId === userId);
-                
+
                 return person && (
                   <div className="ChosenOne" key={userId}>
                     {person.username === user.username ? (

@@ -22,18 +22,7 @@ import NewChatModal from "./NewChatModal";
 import io, { Socket } from 'socket.io-client';
 import { useLocation } from "react-router-dom";
 import { ChatRoom } from "./ChatTab";
-export interface Person {
-  userId: string;
-  username: string;
-  position: string;
-  department: string;
-  team: string;
-  phoneNumber?: string;
-  usermail?: string;
-  entering: Date;
-  attachment: string;
-  company: string;
-}
+import { Person } from "../MemberSidebar";
 
 const MessageSidebar: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null); // Socket 타입 사용
