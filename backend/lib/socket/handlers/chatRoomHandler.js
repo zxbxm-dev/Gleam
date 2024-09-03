@@ -164,6 +164,7 @@ const createPrivateRoom = async (io, socket, data) => {
 // 채팅방 조회 후 클라이언트에게 파싱
 const sendUserChatRooms = async (socket, userId) => {
   try {
+    // 사용자가 참여한 채팅방 목록 조회
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
       include: [{ model: ChatRoom }],
@@ -174,23 +175,49 @@ const sendUserChatRooms = async (socket, userId) => {
       chatRooms.map((participant) => participant.ChatRoom.roomId)
     );
 
-    // 각 사용자가 참여한 채팅방의 userTitle을 파싱해서 각 사용자에게 맞는 제목을 설정
-    const roomsWithDetails = chatRooms.map((participant) => {
-      const room = participant.ChatRoom;
-      const roomData = room.toJSON();
-      const userTitle = parseUserTitle(roomData.userTitle, userId);
-      const othertitle = getOthertitle(roomData, userTitle, userId);
+    // 채팅방 ID와 관련된 참가자 정보를 담을 맵
+    const roomParticipantsMap = {};
 
-      return {
-        othertitle,
-        userTitle,
-        dataValues: roomData,
-      };
-    });
+    for (const participant of chatRooms) {
+      const roomId = participant.ChatRoom.roomId;
+      
+      // 채팅방의 참가자 목록을 조회
+      const participants = await ChatRoomParticipant.findAll({
+        where: { roomId },
+        attributes: ['userId']
+      });
 
-    // 채팅방 목록을 클라이언트에 전송합니다.
-    socket.emit("chatRooms", roomsWithDetails);
-    console.log("최종 채팅방 목록:", roomsWithDetails);
+      // 참가자가 여러 명일 경우
+      if (participants.length > 1) {
+        // 중복된 참가자가 있는지 체크
+        const participantCount = participants.reduce((countMap, p) => {
+          countMap[p.userId] = (countMap[p.userId] || 0) + 1;
+          return countMap;
+        }, {});
+
+        const hasDuplicates = Object.values(participantCount).some(count => count > 1);
+
+        // 중복된 참가자가 있는 채팅방은 제외
+        if (!hasDuplicates) {
+          if (!roomParticipantsMap[roomId]) {
+            const room = participant.ChatRoom;
+            const roomData = room.toJSON();
+            const userTitle = parseUserTitle(roomData.userTitle, userId);
+            const othertitle = getOthertitle(roomData, userTitle, userId);
+
+            roomParticipantsMap[roomId] = {
+              othertitle,
+              userTitle,
+              dataValues: roomData,
+            };
+          }
+        }
+      }
+    }
+
+    // 필터링된 채팅방 목록을 클라이언트에 전송합니다.
+    socket.emit("chatRooms", Object.values(roomParticipantsMap));
+    console.log("최종 채팅방 목록:", Object.values(roomParticipantsMap));
   } catch (error) {
     console.error("채팅방 조회 오류:", error);
     socket.emit("error", { message: "채팅방 조회 오류" });
