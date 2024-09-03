@@ -27,7 +27,7 @@ import Pagenation from "./Pagenation";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { useQuery } from 'react-query';
-import { CheckEmail, DeleteEmail, StarringEmail } from "../../services/email/EmailService";
+import { CheckEmail, DeleteEmail, cancleQueueEmail, StarringEmail } from "../../services/email/EmailService";
 
 const Mail = () => {
   let navigate = useNavigate();
@@ -39,6 +39,7 @@ const Mail = () => {
   const [isRecipientHover, setIsRecipientHover] = useState(false);
   const [isDownFileVisible, setIsDownFilevisible] = useState(false);
 
+  const [selectedMailId, setSelectedMailId] = useState<string | null>(null);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isSpamModalOpen, setSpamModalOpen] = useState(false);
   const [isReadMailListModalOpen, setIsReadMailListOpen] = useState(false);
@@ -479,6 +480,18 @@ const Mail = () => {
     });
   };
   
+  // 예약 메일 삭제
+  const handleDeleteQueueEmail = (mailId: any) => {
+    cancleQueueEmail(mailId)
+    .then(response => {
+      console.log('예약 이메일 삭제 성공', response);
+      refetchEmail();
+    })
+    .catch(error => {
+      console.log('예약 이메일 삭제 실패', error);
+    })
+  };
+
   return (
     <div className="content">
       <div className="mail_container">
@@ -675,7 +688,7 @@ const Mail = () => {
                               </div>
                             )}
                           </div> 
-                          : mail.folder === 'queue' ? <div className="sent_cancle_active" onClick={() => setIsReserveCancleOpen(true)}>예약 취소</div> : null}
+                          : mail.folder === 'queue' ? <div className="sent_cancle_active" onClick={() => {setIsReserveCancleOpen(true); setSelectedMailId(mail.Id);}}>예약 취소</div> : null}
                       </td>
                       <td>
                         {formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}
@@ -894,7 +907,7 @@ const Mail = () => {
         onClose={() => setIsReserveCancleOpen(false)}
         header={"알림"}
         footer1={"확인"}
-        onFooter1Click={() => setIsReserveCancleOpen(false)}
+        onFooter1Click={() => {setIsReserveCancleOpen(false); handleDeleteQueueEmail(selectedMailId);}}
         footer1Class="back-green-btn"
         footer2={"취소"}
         footer2Class="gray-btn"

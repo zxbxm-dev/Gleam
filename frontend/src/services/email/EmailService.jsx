@@ -15,8 +15,8 @@ const CheckEmail = (userId) => {
 }
 
 // 예약 취소
-const CancleReserveEmail = (mailId) => {
-  return api.delete(`/cancleReserveEmail/${mailId}`);
+const cancleQueueEmail = (Id) => {
+  return api.delete(`/cancleQueueEmail/${Id}`);
 }
 
 // 메일 삭제
@@ -34,4 +34,4 @@ const StarringEmail = (formData) => {
   return api.put("/starringEmail", formData);
 }
 
-export { SendMail, CheckEmail, CancleReserveEmail, DeleteEmail, DraftEmail, StarringEmail };
+export { SendMail, CheckEmail, cancleQueueEmail, DeleteEmail, DraftEmail, StarringEmail };
