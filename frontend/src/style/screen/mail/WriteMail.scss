@@ -211,11 +211,11 @@
         position: relative;
         margin: 10px 0;
 
-        div {
+        .write_form_title {
           width: 6%;
         }
 
-        input {
+        .write_form_input {
           width: 94%;
           height: 40px;
           background: none;
@@ -224,7 +224,7 @@
           border-bottom: solid 2px #aaaaaa;
         }
 
-        input:focus {
+        .write_form_input:focus {
           outline: none;
           border-bottom: solid 2px var(--primary-color);
         }

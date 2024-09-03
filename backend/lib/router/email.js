@@ -6,6 +6,7 @@ module.exports = (app) => {
     const getEmailController = require("../controller/email/checkEmail");
     const sendEmailController = require("../controller/email/sendEmail");
     const draftEmailController = require("../controller/email/draftEmail");
+    const QueueEmailController = require("../controller/email/emailQueue");
     const emailActionController = require("../controller/email/emailAction");
 
     const express = require("express");
@@ -21,6 +22,9 @@ module.exports = (app) => {
 
         //중요 이메일 등록하기 
         router.put("/starringEmail",emailActionController.starringEmail);
+
+        //예약 이메일 취소하기
+        router.delete("/cancleQueueEmail/:Id",QueueEmailController.deleteQueueEmail);
 
         app.use("/api", router);
 };
