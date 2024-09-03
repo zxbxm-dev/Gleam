@@ -5,18 +5,16 @@ const chatRoomData = models.ChatRoom;
 const createChatRoom = async (req, res) => {
   try {
     const {
-      name,
-      isGroup,
-      color,
-      title,
-      subContent,
-      profileColor,
+      roomId,
       hostUserId,
       hostName,
       hostDepartment,
       hostTeam,
       hostPosition,
-      invitedUserIds,
+      userTitle,
+      title,
+      profileColor,
+      // invitedUserIds
     } = req.body;
 
     let profileImage = null;
@@ -27,19 +25,18 @@ const createChatRoom = async (req, res) => {
     }
 
     const chatRoom = await chatRoomData.create({
-      name,
+      roomId,
       isGroup: true,
-      color,
-      title,
-      subContent,
-      profileColor,
-      profileImage,
       hostUserId,
       hostName,
       hostDepartment,
       hostTeam,
       hostPosition,
-      invitedUserIds, // 초대받은 사용자 설정
+      userTitle,
+      title,
+      profileColor,
+      profileImage,
+      // invitedUserIds, // 초대받은 사용자 설정
     });
 
     res.status(201).json(chatRoom);
