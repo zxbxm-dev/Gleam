@@ -41,17 +41,22 @@ const getAllEmail = async (req, res) => {
 
 //이메일 삭제하기
 const deleteEmail = async(req, res) => {
+    const{
+        Id,
+    } = req.params;
 
-    const emailId = req.params.Id
+    const emailId = Id;
 
     try{
         const deleteEmail = await Email.findByPk(emailId);
-        
+        //const userId = deleteEmail.userId;
+
         if(!deleteEmail){
             return res.status(404).json({ error: "이메일 정보를 찾을 수 없습니다."});
         }
-
+        
         await deleteEmail.destroy();
+        
         res.status(200).json({message: "이메일이 성공적으로 삭제되었습니다."});
     }catch(error) {
         console.error("이메일 삭제 중 오류 발생:", error);
