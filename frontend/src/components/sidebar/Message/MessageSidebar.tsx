@@ -102,7 +102,7 @@ const MessageSidebar: React.FC = () => {
     setSocket(socket);
 
     const userId = user.userID;
-    console.log("유저아이디 가져오기", userId);
+    // console.log("유저아이디 가져오기", userId);
 
     // 서버에 사용자 등록 요청
     socket.emit('registerUser', userId);
@@ -118,12 +118,12 @@ const MessageSidebar: React.FC = () => {
     // 채팅 방 데이터 수신
     socket.on('chatRooms', (data: ChatRoom[]) => {
       // Map data to match ChatRoom type
-      const updatedRooms = data.map((room: ChatRoom) => {
+      const updatedRooms = data.map((room: ChatRoom, index: number) => {
         const title = room.userTitle?.[userId]?.username || room.title;
-        return { ...room, title };
+        return { ...room, title, key: index };
       });
       setChatRooms(updatedRooms);
-      console.log("업데이트된 채팅 방:", updatedRooms);
+      // console.log("업데이트된 채팅 방:", updatedRooms);
     });
 
     socket.on('disconnect', () => {
