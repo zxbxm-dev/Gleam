@@ -2,6 +2,7 @@ const models = require("../../models");
 const Email = models.Email;
 const schedule = require("node-schedule");
 const moment = require("moment");
+const { sendEmail } = require("../../services/emailService");
 const { sendMail } = require("../email/sendEmail");
 const { saveAttachments } = require("../../controller/email/emailAttachments");
 
@@ -23,17 +24,41 @@ const QueueEmail = async (req , res) => {
     const attachments = req.files;
     console.log("요청 본문 받음", req.body);
 
-    const formattedDate = moment(queueDate).format('YYYY-MM-DD HH:mm:ss');
-    const date = new Date(queueDate);
+   const formattedDate = moment.tz(queueDate, 'YYYY-MM-DD HH:mm:ss', 'Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
+   const date = new Date(queueDate);
 
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>Original queueDate:", queueDate);
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>Formatted date:", formattedDate);
+   // Date 객체 유효성 확인
+   if (isNaN(date.getTime())) {
+       console.error("이메일 예약 설정에 유효하지않은 날짜:", date);
+       return res.status(400).json({ message: "이메일 예약 설정에 유효하지 않은 날짜입니다." });
+   }
 
-    // 예약한 시간에 이메일 전송 
-    schedule.scheduleJob(date, async () => {
+
+    try {
+        // 예약된 이메일을 데이터베이스에 저장
+        const newQueueEmail = await Email.create({
+            userId,
+            messageId,
+            sender,
+            receiver,
+            referrer,
+            subject,
+            body,
+            queueDate: formattedDate,
+            receiveAt,
+            signature,
+            attachments,
+            folder: 'queue', 
+        });
+     
+        res.status(200).json({ message: "이메일 전송예약이 완료되었습니다."});
+
+        // 예약한 시간에 이메일 전송 
+    schedule.scheduleJob(queueDate, async () => {
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> date44444:", queueDate)
         console.log(`예약된 시간에 이메일 전송: ${messageId}`);
         try {
-            const sendQueueEmail = await sendMail(receiver, subject, body, userId, attachments);
+            const sendQueueEmail =  await sendEmail(receiver, subject, body, userId, attachments);
             console.log("예약 이메일 전송 완료 :", sendQueueEmail);
 
             // 전송 후 예약 이메일 삭제
@@ -64,25 +89,6 @@ const QueueEmail = async (req , res) => {
             console.error("예약된 이메일 전송 중 오류 발생:", error);
         }
     });
-
-    try {
-        // 예약된 이메일을 데이터베이스에 저장
-        const newQueueEmail = await Email.create({
-            userId,
-            messageId,
-            sender,
-            receiver,
-            referrer,
-            subject,
-            body,
-            queueDate: formattedDate,
-            receiveAt,
-            signature,
-            attachments: JSON.stringify(attachments),
-            folder: 'queue', 
-        });
-     
-        res.status(200).json({ message: "이메일 전송예약이 완료되었습니다."});
 
     } catch (error) {
         console.error("이메일 발송을 예약하는 도중 에러 발생", error);
