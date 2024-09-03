@@ -650,7 +650,7 @@ const Mail = () => {
                           </div>
                           {mail.hasAttachments ? <img src={mail_attachment} alt="attachment" /> : <div className="Blank"></div>}
                         </div>
-                        <span>[{mail.folder === 'inbox' ? '받은 메일함' : mail.folder === 'sent' ? '보낸 메일함' : mail.folder === 'starred' ? '중요 메일함' : mail.folder === 'unread' ? '안 읽은 메일' : mail.folder === 'drafts' ? '임시 보관함' : mail.folder === 'junk' ? '스팸 메일함' : ''}]</span>
+                        <span>[{mail.folder === 'inbox' ? '받은 메일함' : mail.folder === 'sent' ? '보낸 메일함' : mail.folder === 'starred' ? '중요 메일함' : mail.folder === 'unread' ? '안 읽은 메일' : mail.folder === 'drafts' ? '임시 보관함' : mail.folder === 'junk' ? '스팸 메일함' : mail.folder === 'queue' ? '예약 메일함' : ''}]</span>
                         {mail.folder === 'drafts' ? 
                           <div onClick={() => navigate('/writeMail', { state: { mail, status: 'DRAFTS' }})}>
                             {mail?.subject}--{mail?.Id}
@@ -675,7 +675,7 @@ const Mail = () => {
                               </div>
                             )}
                           </div> 
-                          : mail.folder === 'reserved' ? <div onClick={() => setIsReserveCancleOpen(true)}>예약 취소</div> : null}
+                          : mail.folder === 'queue' ? <div className="sent_cancle_active" onClick={() => setIsReserveCancleOpen(true)}>예약 취소</div> : null}
                       </td>
                       <td>
                         {formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}
@@ -687,7 +687,7 @@ const Mail = () => {
                         <div className={`mail_detail_wrapper ${mailContentVisibility[mail.Id] ? 'visible' : ''}`}>
                           <div className="mail_detail_header">
                             <span>
-                              {mail.reservation && <span className="mail_reservation">예약</span>}
+                              {mail?.folder === 'queue' && <span className="mail_reservation">예약</span>}
                               <span>{mail?.subject}</span>
                             </span>
                             {mail.folder === 'inbox' && (
