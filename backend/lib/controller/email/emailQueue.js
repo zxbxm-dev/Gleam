@@ -5,12 +5,19 @@ const moment = require("moment");
 const { sendEmail } = require("../../services/emailService");
 const { sendMail } = require("../email/sendEmail");
 const { saveAttachments } = require("../../controller/email/emailAttachments");
+const shortid = require('shortid');
+
+
+//messageId 생성 함수
+function generateMessageId(domain = "gleam.im"){
+    const uniqueID = shortid.generate();
+    return `<${uniqueID}@${domain}`;
+};
 
 //이메일 예약설정하기
 const QueueEmail = async (req , res) => {
     const {
         userId,
-        messageId,
         sender,
         receiver,
         referrer,
@@ -33,7 +40,8 @@ const QueueEmail = async (req , res) => {
        return res.status(400).json({ message: "이메일 예약 설정에 유효하지 않은 날짜입니다." });
    }
 
-
+   const messageId = generateMessageId();
+    
     try {
         // 예약된 이메일을 데이터베이스에 저장
         const newQueueEmail = await Email.create({
@@ -50,13 +58,11 @@ const QueueEmail = async (req , res) => {
             attachments,
             folder: 'queue', 
         });
-     
+        console.log(">>>>>>>>예약 이메일 정보: ", newQueueEmail);
         res.status(200).json({ message: "이메일 전송예약이 완료되었습니다."});
 
         // 예약한 시간에 이메일 전송 
     schedule.scheduleJob(queueDate, async () => {
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> date44444:", queueDate)
-        console.log(`예약된 시간에 이메일 전송: ${messageId}`);
         try {
             const sendQueueEmail =  await sendEmail(receiver, subject, body, userId, attachments);
             console.log("예약 이메일 전송 완료 :", sendQueueEmail);
@@ -64,10 +70,10 @@ const QueueEmail = async (req , res) => {
             // 전송 후 예약 이메일 삭제
             await deleteQueueEmail(req, res, messageId);
 
-            // 전송된 이메일을 Sent 폴더에 저장
+            // 전송된 이메일을 저장
             const sentEmail = await Email.create({
                 userId,
-                messageId: shortid.generate(),
+                messageId,
                 sender,
                 receiver,
                 referrer,
@@ -97,15 +103,15 @@ const QueueEmail = async (req , res) => {
 };
 
 //발송예약한 이메일 전송 시 기존에 있던 레코드 삭제하기 
-const deleteQueueEmail = async (req, res, Id) => {
+const deleteQueueEmail = async (req, res, messageId) => {
     try{
         const emailOnQueue = await Email.findOne({
-            where:{ Id : Id }  
+            where:{ messageId : messageId }  
         });
 
         if(emailOnQueue){
             emailOnQueue.destroy()
-            console.log(`${Id}번 이메일의 발송예약이 성공적으로 처리되었습니다.`);
+            console.log(`${messageId} 예약 이메일이 전송되어 삭제처리되었습니다.`);
         }else{
             console.log("해당 이메일의 발송예약 정보를 찾을 수 없습니다.")
         };
@@ -116,15 +122,16 @@ const deleteQueueEmail = async (req, res, Id) => {
 };
 
 //예약메일 취소하기 
+const cancleQueueEmail = async( req,res ) => {
+    const { Id } = req.query;
 
-const cancleQueueEmail = async(req, res, Id) => {
     try{
         const emailOnQueue = await Email.findOne({
             where: { Id : Id},
         });
 
         if(emailOnQueue){
-            emailOnQueue.destroy()
+            await emailOnQueue.destroy()
             console.log(`예약 되어있던 ${Id}번 이메일의 예약이 취소되었습니다.`)
             res.status(200).json({message: "예약 이메일이 성공적으로 취소되었습니다."})
         }else{
@@ -135,7 +142,8 @@ const cancleQueueEmail = async(req, res, Id) => {
         console.error("발송 예약 이메일 취소 중 오류 발생", error);
         res.status(500).json({message: "발송 예약 이메일 취소 도중 오류가 발생했습니다."});
     }
-}
+};
+
 
 
 module.exports ={
