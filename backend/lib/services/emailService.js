@@ -3,7 +3,10 @@ const nodemailer = require("nodemailer")
 const { simpleParser } = require("mailparser");
 const models = require("../models");
 const Email = models.Email;
+const EmailAttachment = models.EmailAttachment;
 require('dotenv').config();
+const fs = require("fs-extra");
+const path = require("path");
 
 
 //IMAP 연결 설정 
@@ -19,15 +22,13 @@ async function connectIMAP(userId, password){
 }
 
 
-// IMAP 연결 설정 및 이메일 가져오기
+// 이메일 가져오기
 async function fetchMailcowEmails(userId) {
-
-
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
     const email = userId + "@gleam.im";
     const password = 'math123!!'
 
-    const imap = await connectIMAP(userId, password);
+    const imap = await connectIMAP(userId, password); //IMAP 연결
 
     imap.once('ready', () => {
         // imap.getBoxes((err, boxes) => {
@@ -81,7 +82,7 @@ async function fetchMailcowEmails(userId) {
     // 특정 메일함에서 이메일을 가져오는 함수
     function fetchEmails(imap, userId, folderName, callback) {
         const searchCriteria = ['UNSEEN'];
-        const fetchOptions = { bodies: '' };
+        const fetchOptions = { bodies: '', struct: true };
 
 
         imap.search(searchCriteria, (err, results) => {
@@ -101,6 +102,7 @@ async function fetchMailcowEmails(userId) {
             // 이메일 파싱
             f.on('message', (msg, seqno) => {
                 console.log('불러온 이메일 #%d', seqno);
+
                 msg.on('body', (stream) => {
                     simpleParser(stream, async (err, mail) => {
                         if (err) {
@@ -111,21 +113,24 @@ async function fetchMailcowEmails(userId) {
                             const checksavedEmail = await saveEmail(mail, userId, folderName);
                             if(checksavedEmail){
                                 console.log('저장된 이메일 Id:', checksavedEmail.Id);
+
+                                // 첨부파일이 있는 경우 저장
+                                if (mail.attachments && mail.attachments.length > 0) {
+                                    await saveAttachments(mail.attachments, checksavedEmail.Id);
+                                }
+
                             } 
-                        } catch (saveErr) {
+                      } catch (saveErr) {
                             console.error('이메일을 저장하는 도중 에러가 발생했습니다.');
+                            return;
                             //console.log('>>>>>>저장 실패한 이메일 제목: ', mail.Id);
                         }
                     });
                 });
             });
-
-
             f.once('error', (err) => {
                 console.error('이메일 불러오기 오류:', err);
             });
-
-
             f.once('end', () => {
                 callback();
             });
@@ -133,6 +138,44 @@ async function fetchMailcowEmails(userId) {
     }
 }
 
+    // 첨부파일 저장 함수
+    async function saveAttachments(attachments,emailId) {
+         try {
+
+            let hasAttachments = false;
+
+            for (const attachment of attachments) {
+                // 첨부파일 저장 경로
+                const uploadDir = path.join(__dirname, 'uploads', 'emailFile');
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+    
+                const attachmentPath = path.join(uploadDir, attachment.filename);
+                await fs.promises.writeFile(attachmentPath, attachment.content);
+    
+                // 이메일 첨부파일 데이터베이스에 저장
+                await EmailAttachment.create({
+                    emailId: emailId,
+                    fileName: attachment.filename,
+                    mimeType: attachment.contentType,
+                    type: 'file', 
+                    fileSize: attachment.size,
+                    fileData: attachment.content, 
+                });
+    
+                console.log(`첨부파일 저장 완료: ${attachment.filename}`);
+                hasAttachments = true;
+
+                if (hasAttachments) {
+                    await Email.update(
+                        { hasAttachments: true },
+                        { where: { Id: emailId } }
+                    );
+                }
+            }
+        } catch (err) {
+            console.error('첨부파일 저장 실패:', err);
+        }
+    };
 
 // 불러온 이메일 데이터베이스에 저장
 const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment) => {
@@ -169,11 +212,10 @@ const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment
             sendAt: mail.date || new Date(),
             receiveAt: new Date(),
             signature: mail.signature || '',
-            attachments: attachments,
-            hasAttachment,
+            attachments: JSON.stringify(attachments),
+            hasAttachment : false,
             folder: folderName
         };
-
 
         const savedEmail = await Email.create(emailData);
         return savedEmail;
