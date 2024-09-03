@@ -145,4 +145,7 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
+# Ignore email attachments
+backend/lib/services/uploads/emailFile/
+
 # End of https://www.toptal.com/developers/gitignore/api/node
