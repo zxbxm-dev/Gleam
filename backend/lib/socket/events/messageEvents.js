@@ -21,7 +21,7 @@ module.exports = (io, socket) => {
     await messageHandlers.getChatHistory(socket, roomId);
   });
 
-  // person 개인 메시지 기록 요청 처리
+  // 개인 메시지 기록 요청 처리
   socket.on('personCheckMsg', async ({ selectedUserId, userId }) => {
     try {
       console.log(`사용자의 채팅 기록을 가져오는 중 ${selectedUserId}`);
@@ -43,4 +43,15 @@ module.exports = (io, socket) => {
     }
   });
 
+  // 나와의 채팅방이 있을 때만 메시지를 보여주기 위한 이벤트 핸들러
+  socket.on("noChatRoomsForUser", () => {
+    // 나와의 채팅방이 없을 때 클라이언트에 알림
+    socket.emit("noChatRoomsForUser", { message: "자신과의 채팅방이 없습니다." });
+  });
+
+  // 다른 사용자의 채팅 기록을 가져올 때 공통 채팅방이 없을 경우
+  socket.on("noMutualChatRooms", () => {
+    // 공통 채팅방이 없을 때 클라이언트에 알림
+    socket.emit("noMutualChatRooms", { message: "공통 채팅방이 없습니다." });
+  });
 };
