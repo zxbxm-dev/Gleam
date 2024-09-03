@@ -24,7 +24,7 @@ module.exports = (app) => {
         router.put("/starringEmail",emailActionController.starringEmail);
 
         //예약 이메일 취소하기
-        router.delete("/cancleQueueEmail/:Id",QueueEmailController.deleteQueueEmail);
+        router.delete("/cancleQueueEmail/:Id",QueueEmailController.cancleQueueEmail);
 
         app.use("/api", router);
 };
