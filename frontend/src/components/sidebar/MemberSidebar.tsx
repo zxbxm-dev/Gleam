@@ -9,6 +9,8 @@ export interface Person {
   position: string;
   department: string;
   team: string;
+  spot : string;
+  company:string;
   phoneNumber?: string;
   usermail?: string;
   entering: Date;

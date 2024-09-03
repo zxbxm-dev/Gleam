@@ -6,7 +6,7 @@ import {
   UserIcon_dark,
 } from "../../../assets/images/index";
 import SetProfile from "./SetProfile";
-import { Person } from "./MessageSidebar";
+import { Person } from "../MemberSidebar";
 import { selectedRoomIdState, selectUserID } from "../../../recoil/atoms";
 import { useRecoilState } from "recoil";
 

@@ -21,6 +21,7 @@ module.exports = (io, socket) => {
 
   // 새 채팅방 생성 요청 처리
   socket.on("createPrivateRoom", async (data) => {
+    console.log("Received data:", data);
     try {
       if (!data || !data.userId || !data.content || !data.invitedUserIds) {
         throw new Error("필수 데이터가 누락되었습니다.");
