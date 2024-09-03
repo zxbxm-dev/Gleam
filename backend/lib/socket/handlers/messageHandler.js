@@ -46,7 +46,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
 
       // 동일한 ID를 가진 사용자가 두 명 이상인지 확인
       const sameIdUsers = await User.count({ where: { userId: requesterId } });
-      if (sameIdUsers < 2) {
+      if (sameIdUsers > 2) {
         socket.emit("noChatRoomsForUser"); // 동일한 ID를 가진 사용자가 두 명 이상이 아닐 경우
         return;
       }

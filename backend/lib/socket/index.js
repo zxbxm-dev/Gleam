@@ -8,7 +8,7 @@ console.log("객체상태 관리: ",connectedUsers)
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    console.log("새로운 사용자 연결:", socket.id);
+    // console.log("새로운 사용자 연결:", socket.id);
 
     // 사용자 ID를 클라이언트로부터 받기 위한 이벤트 처리
     socket.on("registerUser", (userId) => {

@@ -7,8 +7,8 @@ import {
 } from "../../../assets/images/index";
 import SetProfile from "./SetProfile";
 import { Person } from "../MemberSidebar";
-import { selectedRoomIdState, selectUserID } from "../../../recoil/atoms";
-import { useRecoilState } from "recoil";
+import { selectedRoomIdState, selectUserID, userState } from "../../../recoil/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 export interface ChatRoom {
   roomId: number;
@@ -91,6 +91,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [selectedUserIdstate, setSelectedUserIdstate] = useRecoilState(selectUserID);
+  const user = useRecoilValue(userState);
 
   const handleChatRoomClick = (chatRoom: ChatRoom) => {
     const title = chatRoom.othertitle ?? "";
@@ -161,8 +162,9 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             userPosition || "",
             userId || ""
           );
-          setSelectedRoomId(0);
+          setSelectedUserIdstate({userID:user.userID});
           setActiveItem(0);
+          setSelectedRoomId(0);
         }}
       >
         <div className="Border" style={{ border: borderColor }}>
@@ -186,7 +188,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           const attachment = PersonMatchData(chatRoom) || UserIcon_dark;
 
           return (
-            <div key={roomId}>
+            <div key={`${roomId}-${index}`}>
               <div
                 className={`ChatLog ${isActive ? "active" : ""}`}
                 onClick={() => handleChatRoomClick(chatRoom)}
