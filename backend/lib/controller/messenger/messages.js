@@ -11,7 +11,7 @@ const createChatRoom = async (req, res) => {
       hostDepartment,  //관리자 부서
       hostTeam,  //관리자 팀
       hostPosition,  //관리자 직책
-      userTitle,
+      userTitle, //초대된 사람 (JSON)
       title,  //단체방이름
       profileColor,  //단체방 프로필 색상
       // invitedUserIds

@@ -15,6 +15,7 @@ import CustomModal from "../../modal/CustomModal";
 import { createRoom } from "../../../services/message/MessageApi";
 import { PersonData } from "../../../services/person/PersonServices";
 import { Person } from "../MemberSidebar";
+import io from 'socket.io-client';
 
 interface NewChatModalProps {
   filteredData: {
@@ -173,14 +174,36 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     };
 
     try {
-      const response = await createRoom(payload);
-      console.log("Chat room created successfully:", response.data);
+      if (selectedUsers.size > 2) {
+        await createRoom(payload);
+      } else {
+        const socket = io('http://localhost:3001', { transports: ["websocket"] });
+
+        const targetIds = Array.from(selectedUsers);
+
+        const createPrivateRoomPayload = {
+          userId: user.userID,
+          content: "",
+          invitedUserIds: targetIds,
+          hostUserId: null,
+          name: null
+        };
+
+        socket.emit("createPrivateRoom", createPrivateRoomPayload);
+
+        console.log(createPrivateRoomPayload);
+
+
+        socket.on("roomCreated", (data) => {
+          console.log("Room Created:", data);
+        });
+      }
       closeModal();
+
     } catch (error) {
       console.error('Error creating chat room:', error);
     }
   };
-
 
   const handlePersonClick = (person: Person) => {
     if (person.username === user.username) return;
