@@ -1,7 +1,8 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant } = models;
+const { Op } = require('sequelize');
 
-// 사용자와 관련된 채팅방을 찾는 함수 . getChatHistoryForUser에 사용-------------------------------------------------------------
+// 특정 사용자가 포함된 채팅방을 찾는 함수 -------------------------------------------------------------
 const findChatRoomsForUser = async (userId) => {
   try {
     console.log(`findChatRoomsForUser 호출됨: userId=${userId}`);
@@ -21,53 +22,119 @@ const findChatRoomsForUser = async (userId) => {
   }
 };
 
-// 선택한 사용자와 관련된 채팅방의 과거 메시지를 조회하는 함수  -----------------------------------------------------------------------
+// 두 사용자가 공통으로 속한 채팅방을 찾는 함수 -------------------------------------------------------------
+const findMutualChatRoomsForUsers = async (userId1, userId2) => {
+  try {
+    console.log(`findMutualChatRoomsForUsers 호출됨: userId1=${userId1}, userId2=${userId2}`);
+
+    const [user1Rooms, user2Rooms] = await Promise.all([
+      findChatRoomsForUser(userId1),
+      findChatRoomsForUser(userId2),
+    ]);
+
+    const mutualRooms = user1Rooms.filter(roomId => user2Rooms.includes(roomId));
+
+    console.log(`공통으로 속한 채팅방 ID들: ${mutualRooms}`);
+    return mutualRooms;
+  } catch (error) {
+    console.error("공통 채팅방 조회 오류:", error.message);
+    throw new Error("공통 채팅방 조회 오류");
+  }
+};
+
+// 선택한 사용자와 관련된 채팅방의 과거 메시지를 조회하는 함수 -----------------------------------------------------------------------
 const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
   try {
     console.log(`getChatHistoryForUser 호출됨: selectedUserId=${selectedUserId}, requesterId=${requesterId}`);
-    
-    // 선택한 사용자와 관련된 채팅방 찾기
-    const chatRoomIds = await findChatRoomsForUser(selectedUserId);
 
-    if (chatRoomIds.length === 0) {
-      console.log(`선택한 사용자 ${selectedUserId}와 관련된 채팅방이 없음.`);
-      socket.emit("chatHistory", []);
-      return;
-    }
+    if (selectedUserId === requesterId) {
+      // 자신을 클릭한 경우 - 자신에게 보낸 메시지만 조회
+      const chatRoomIds = await findChatRoomsForUser(requesterId);
 
-    console.log(`선택한 사용자 ${selectedUserId}의 채팅방 ID들: ${chatRoomIds}`);
+      if (chatRoomIds.length === 0) {
+        console.log("자신과의 채팅방이 없습니다.");
+        socket.emit("chatHistory", []); // 채팅방이 없으면 빈 배열 전송
+        return;
+      }
 
-    // 메시지 조회
-    const messages = await Message.findAll({
-      where: { roomId: chatRoomIds },
-      include: [
-        {
-          model: User,
-          as: 'User',
-          attributes: ["userId", "username", "team"],
+      const selfMessages = await Message.findAll({
+        where: {
+          roomId: {
+            [Op.in]: chatRoomIds
+          },
+          userId: requesterId
         },
-      ],
-      order: [["createdAt", "ASC"]],
-    });
+        include: [
+          {
+            model: User,
+            as: 'User',
+            attributes: ["userId", "username", "team"],
+          },
+        ],
+        order: [["createdAt", "ASC"]],
+      });
 
-    const chatHistory = messages.map(message => ({
-      messageId: message.messageId,
-      content: message.content,
-      userId: message.User.userId,
-      username: `${message.User.team} ${message.User.username}`,
-      timestamp: message.createdAt,
-    }));
+      if (selfMessages.length === 0) {
+        console.log("자신에게 보낸 메시지가 없습니다.");
+        socket.emit("chatHistory", []); // 자신에게 보낸 메시지가 없으면 빈 배열 전송
+        return;
+      }
 
-    console.log(`채팅 기록 전송: ${chatHistory.length}개 메시지`);
-    // 클라이언트로 채팅 기록 전송
-    socket.emit("chatHistory", chatHistory);
+      const chatHistory = selfMessages.map(message => ({
+        messageId: message.messageId,
+        content: message.content,
+        userId: message.User.userId,
+        username: `${message.User.team} ${message.User.username}`,
+        timestamp: message.createdAt,
+      }));
+
+      console.log(`자신에게 보낸 메시지 기록 전송: ${chatHistory.length}개 메시지`);
+      socket.emit("chatHistory", chatHistory);
+
+    } else {
+      // 다른 사용자를 클릭한 경우
+      const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
+
+      if (mutualChatRoomIds.length === 0) {
+        console.log(`선택한 사용자 ${selectedUserId}와 관련된 채팅방이 없음.`);
+        socket.emit("chatHistory", []);
+        return;
+      }
+
+      const messages = await Message.findAll({
+        where: {
+          roomId: {
+            [Op.in]: mutualChatRoomIds
+          },
+        },
+        include: [
+          {
+            model: User,
+            as: 'User',
+            attributes: ["userId", "username", "team"],
+          },
+        ],
+        order: [["createdAt", "ASC"]],
+      });
+
+      const chatHistory = messages.map(message => ({
+        messageId: message.messageId,
+        content: message.content,
+        userId: message.User.userId,
+        username: `${message.User.team} ${message.User.username}`,
+        timestamp: message.createdAt,
+      }));
+
+      console.log(`다른 사용자와의 메시지 기록 전송: ${chatHistory.length}개 메시지`);
+      socket.emit("chatHistory", chatHistory);
+    }
   } catch (error) {
     console.error("채팅 기록 조회 오류:", error.message);
     socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });
   }
 };
 
-// 특정 채팅방의 과거 메시지를 조회하는 함수  -----------------------------------------------------------------------
+// 특정 채팅방의 과거 메시지를 조회하는 함수 -----------------------------------------------------------------------
 const getChatHistory = async (socket, roomId) => {
   try {
     console.log(`getChatHistory 호출됨: roomId=${roomId}`);
@@ -93,7 +160,6 @@ const getChatHistory = async (socket, roomId) => {
     }));
 
     console.log(`채팅 기록 전송: ${chatHistory.length}개 메시지`);
-    // 클라이언트로 채팅 기록 전송
     socket.emit("chatHistory", chatHistory);
   } catch (error) {
     console.error("채팅 기록 조회 오류:", error.message);
@@ -101,7 +167,7 @@ const getChatHistory = async (socket, roomId) => {
   }
 };
 
-// 채팅방의 모든 참가자에게 메시지를 전송하는 함수  -----------------------------------------------------------------------
+// 채팅방의 모든 참가자에게 메시지를 전송하는 함수 -----------------------------------------------------------------------
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
   try {
     console.log(`sendMessageToRoomParticipants 호출됨: roomId=${roomId}, content=${content}, senderId=${senderId}`);
@@ -123,9 +189,9 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
       roomId,
     });
 
-    // 저장된 메시지를 해당 채팅방의 참여자들에게 전송
     io.to(roomId.toString()).emit("message", {
-      ...savedMessage.toJSON(),
+      messageId: savedMessage.messageId,
+      content: savedMessage.content,
       userId: senderId,
       timestamp: savedMessage.createdAt,
     });
@@ -136,12 +202,11 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
   }
 };
 
-// 클라이언트로 새로운 메시지 전송을 위한 별도 함수  -----------------------------------------------------------------------
+// 클라이언트로 새로운 메시지 전송을 위한 별도 함수 -----------------------------------------------------------------------
 const broadcastNewMessage = (io, roomId, content, senderId) => {
   try {
     console.log(`broadcastNewMessage 호출됨: roomId=${roomId}, content=${content}, senderId=${senderId}`);
 
-    // 메시지를 데이터베이스에 저장하고 클라이언트에게 전송
     sendMessageToRoomParticipants(io, roomId, content, senderId);
   } catch (error) {
     console.error("새 메시지 방송 오류:", error);
