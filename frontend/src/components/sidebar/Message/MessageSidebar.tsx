@@ -123,7 +123,7 @@ const MessageSidebar: React.FC = () => {
         return { ...room, title, key: index };
       });
       setChatRooms(updatedRooms);
-      // console.log("업데이트된 채팅 방:", updatedRooms);
+      console.log("업데이트된 채팅 방:", updatedRooms);
     });
 
     socket.on('disconnect', () => {
