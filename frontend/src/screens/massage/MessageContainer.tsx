@@ -258,11 +258,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     // console.log("소켓 연결됨");
 
     const selectedUserId = personSideGetmsg.userID;
-    const userId = user.id;
+    const requesterId = user.id;
 
     if (selectedUserId) {
       // console.log("personCheckMsg 이벤트 전송:", { selectedUserId, userId });
-      socket.emit("personCheckMsg", { selectedUserId, userId });
+      socket.emit("personCheckMsg", { selectedUserId, requesterId });
     }
 
     socket.on("chatHistory", (data) => {

@@ -22,10 +22,10 @@ module.exports = (io, socket) => {
   });
 
   // 개인 메시지 기록 요청 처리
-  socket.on('personCheckMsg', async ({ selectedUserId, userId }) => {
+  socket.on('personCheckMsg', async ({ selectedUserId, requesterId }) => {
     try {
       console.log(`사용자의 채팅 기록을 가져오는 중 ${selectedUserId}`);
-      await messageHandlers.getChatHistoryForUser(socket, selectedUserId, userId);
+      await messageHandlers.getChatHistoryForUser(socket, selectedUserId, requesterId);
     } catch (error) {
       console.error("personCheckMsg 이벤트 처리 오류:", error.message);
       socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });

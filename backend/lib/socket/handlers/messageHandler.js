@@ -31,12 +31,41 @@ const findMutualChatRoomsForUsers = async (userId1, userId2) => {
   }
 };
 
+//나와의 데이터만 가져오기
+const findChatRoomsForMe = async (userId) => {
+  try {
+    const chatRooms = await ChatRoomParticipant.findAll({
+      where: { userId },
+      attributes: ['roomId'],
+    });
+
+    // 중복된 roomId 제거
+    const roomIds = [...new Set(chatRooms.map(participant => participant.roomId))];
+
+    // roomId와 userId가 같은 경우만 필터링
+    const validRoomIds = [];
+    for (const roomId of roomIds) {
+      const participants = await ChatRoomParticipant.findAll({ where: { roomId } });
+      if (participants.length > 1) { // 동일 roomId에 여러 사용자
+        const sameUserCount = participants.filter(p => p.userId === userId).length;
+        if (sameUserCount > 1) {
+          validRoomIds.push(roomId);
+        }
+      }
+    }
+
+    return validRoomIds;
+  } catch (error) {
+    throw new Error("채팅방 조회 오류");
+  }
+};
+
 // 나와의 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
   try {
     if (selectedUserId === requesterId) {
       // 자신을 클릭한 경우
-      const chatRoomIds = await findChatRoomsForUser(requesterId);
+      const chatRoomIds = await findChatRoomsForMe(requesterId);
 
       // 자신과 관련된 채팅방이 있는지 확인
       if (chatRoomIds.length === 0) {
