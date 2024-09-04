@@ -4,10 +4,9 @@ const JunkList = models.JunkList;
 
 //스팸 이메일 등록하기
 const junkController = async (req, res) => {
-    
     const {
         Id :emailId
-    } = req.query;
+    } = req.body;
 
     if(!emailId){
         return res.status(400).json({ message : "이메일 정보가 제공되지 않았습니다."});
@@ -50,7 +49,6 @@ const junkController = async (req, res) => {
         }
     });
 
-
     if(overlappedJunkList > 0){
         return res.status(409).json({message: "이미 스팸 등록된 주소입니다."});
     }
@@ -71,6 +69,10 @@ const junkController = async (req, res) => {
        return res.status(500).json({ message: "스팸 주소 등록에 실패했습니다."});
     };
    };
+
+   // 스팸 주소록 조회
+   const getAllJunkList = async( req, res ) => {
+   }
     
 module.exports= {
     junkController,
