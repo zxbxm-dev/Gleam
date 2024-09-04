@@ -11,6 +11,7 @@ import '@toast-ui/editor/dist/i18n/ko-kr';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CustomModal from "../../components/modal/CustomModal";
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { NewChatModalstate } from '../../recoil/atoms';
@@ -18,7 +19,6 @@ import AddReceiver from "./AddReceiver";
 import { PersonData } from '../../services/person/PersonServices';
 import { SendMail, DraftEmail } from "../../services/email/EmailService";
 import { useQuery } from 'react-query';
-import { isNull } from "mathjs";
 
 export interface Person {
   userId: string;
@@ -38,6 +38,9 @@ const WriteMail = () => {
   let navigate = useNavigate();
   const location = useLocation();
   const user = useRecoilValue(userState);
+
+  const [isExitWritePageModalOpen, setExitWritePageModalOpen] = useState(false);
+
   const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
   const { mail, status } = location.state || {};
   const [persondata, setPersonData] = useState<any[]>([]);
@@ -307,17 +310,11 @@ const WriteMail = () => {
     setSelectedMenuOption(option);
     setMenuIsOpen(false);
 
-    if (option === '전체 메일') {
-      if (isNull(recipients) || isNull(referrers) || isNull(mailTitle)) {
-        window.alert('작성된 사항은 저장되지 않습니다.');
-        navigate('/mail');
-      } else {
-        console.log('아무거도없음')
-        navigate('/mail');
-      }
+    if (option !== '메일 작성') {
+      setExitWritePageModalOpen(true);
     }
   };
-
+  
   const menuOptions = [
     '전체 메일',
     '중요 메일',
@@ -746,6 +743,22 @@ const WriteMail = () => {
           </div>
         </div>
       </div>
+
+      <CustomModal
+        isOpen={isExitWritePageModalOpen}
+        onClose={() => setExitWritePageModalOpen(false)}
+        header={"알림"}
+        headerTextColor="White"
+        footer1={"나가기"}
+        onFooter1Click={() => {setExitWritePageModalOpen(false); navigate('/mail')}}
+        footer1Class="back-green-btn"
+        footer2={"취소"}
+        footer2Class="red-btn"
+        onFooter2Click={() => setExitWritePageModalOpen(false)}
+      >
+        <div>이 페이지를 벗어나면 변경된 내용은</div>
+        <div>저장되지 않습니다.</div>
+      </CustomModal>
     </div>
   );
 };

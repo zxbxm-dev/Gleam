@@ -29,6 +29,7 @@ module.exports = (app) => {
 
         //스팸 이메일 등록하기
         router.put("/registerJunk",JunkController.junkController);
+        router.post("/addJunkList",JunkController.addJunkList);
 
         app.use("/api", router);
 };
