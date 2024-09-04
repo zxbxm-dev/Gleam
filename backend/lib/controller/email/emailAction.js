@@ -21,7 +21,7 @@ const starringEmail = async (req, res) => {
     } = req.body;
 
     if(!Id){
-        res.status(500).json({error:"이메일 정보를 찾을 수 없습니다."});
+        return res.status(500).json({error:"이메일 정보를 찾을 수 없습니다."});
     }
     console.log("요청 본문 받음 :", req.body);
 

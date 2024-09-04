@@ -1,3 +1,10 @@
+
+//삭제 예정 
+
+
+
+
+
 module.exports = (sequelize, DataTypes) => {
     const emailQueue = sequelize.define(
         'emailQueue',
