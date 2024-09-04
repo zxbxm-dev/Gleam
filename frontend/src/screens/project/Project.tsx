@@ -1251,7 +1251,7 @@ const Project = () => {
             )}
           </div>
             
-          <div className="body_container_content member_list_box">
+          <div className="body_container_content member_list_box" tabIndex={0}>
             <input
               type="text"
               className="input_list"
@@ -1282,7 +1282,7 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content member_list_box" style={{height: '110px'}}>
+          <div className="body_container_content member_list_box" style={{height: '110px', backgroundColor: '#F4F4F4'}}>
             <input
               type="text"
               className="input_list"
@@ -1313,7 +1313,7 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content content_box">
+          <div className="body_container_content content_box" tabIndex={0}>
             <div className="body_container_content_datepicker_title">
               프로젝트 기간
             </div>
@@ -1387,7 +1387,7 @@ const Project = () => {
             )}
           </div>
 
-          <div className="body_container_content member_list_box">
+          <div className="body_container_content member_list_box" tabIndex={0}>
             <input
               type="text"
               className="input_list"
@@ -1418,7 +1418,7 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content content_box">
+          <div className="body_container_content content_box" tabIndex={0}>
             <div className="body_container_content_datepicker_title">
               프로젝트 기간
             </div>
@@ -1517,7 +1517,7 @@ const Project = () => {
             )}
           </div>
 
-          <div className="body_container_content member_list_box">
+          <div className="body_container_content member_list_box" tabIndex={0}>
             <input
               type="text"
               className="input_list"
@@ -1579,7 +1579,7 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content content_box">
+          <div className="body_container_content content_box" tabIndex={0}>
             <div className="body_container_content_datepicker_title">
               프로젝트 기간
             </div>
@@ -1626,7 +1626,7 @@ const Project = () => {
         footer2Class="red-btn"
         onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
         width="430px"
-        height="510px"
+        height="520px"
       >
         <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
           <div className="body_container_content">
@@ -1695,7 +1695,7 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content content_box">
+          <div className="body_container_content content_box" tabIndex={0}>
             <div className="body_container_content_datepicker_title">
               업무 기간
             </div>
@@ -1710,6 +1710,7 @@ const Project = () => {
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
+                readOnly
               />
               <span className="timespan">~</span>
               <DatePicker
@@ -1723,6 +1724,7 @@ const Project = () => {
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
+                readOnly
               />
             </div>
           </div>
@@ -1746,7 +1748,7 @@ const Project = () => {
         footer2Class="red-btn"
         onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm(); }}
         width="430px"
-        height="510px"
+        height="520px"
       >
         <div className="body-container">
           <div className="body_container_content">
@@ -1793,7 +1795,7 @@ const Project = () => {
             )}
           </div>
 
-          <div className="body_container_content member_list_box">
+          <div className="body_container_content member_list_box" tabIndex={0}>
             <input
               type="text"
               className="input_list"
@@ -1824,7 +1826,7 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content content_box">
+          <div className="body_container_content content_box" tabIndex={0}>
             <div className="body_container_content_datepicker_title">
               프로젝트 기간
             </div>
@@ -1883,6 +1885,7 @@ const Project = () => {
         isOpen={ispjtModalOpen}
         onClose={() => setPjtModalOPen(false)}
         header={selectedEvent?.projectName}
+        headerTextColor="White"
         footer1={'확인'}
         footer1Class="red-btn"
         onFooter1Click={() => setPjtModalOPen(false)}

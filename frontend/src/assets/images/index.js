@@ -88,6 +88,7 @@ export { default as mail_important_active } from "./mail/mail_important_active.s
 export { default as mail_important } from "./mail/mail_important.svg";
 export { default as mail_setting } from "./mail/mail_setting.svg";
 export { default as mail_spam } from "./mail/mail_spam.svg";
+export { default as mail_spam_disable } from "./mail/mail_spam_disable.svg";
 export { default as mail_write } from "./mail/mail_write.svg";
 export { default as mail_attachment } from "./mail/mail_attachment.svg";
 export { default as mail_triangle } from "./mail/mail_triangle.svg";

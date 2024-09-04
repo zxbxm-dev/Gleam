@@ -39,4 +39,9 @@ const JunkEmail = (formData) => {
   return api.put("/registerJunk", formData);
 }
 
-export { SendMail, CheckEmail, cancleQueueEmail, DeleteEmail, DraftEmail, StarringEmail, JunkEmail };
+// 스팸 유저 등록
+const AddJunkList = (formData) => {
+  return api.post("/addJunkList", formData);
+}
+
+export { SendMail, CheckEmail, cancleQueueEmail, DeleteEmail, DraftEmail, StarringEmail, JunkEmail, AddJunkList };
