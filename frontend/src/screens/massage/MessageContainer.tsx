@@ -168,7 +168,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     } else {
       socket.emit("sendMessage", messageData);
       console.log(messageData);
-      
+
     }
   };
 
@@ -256,50 +256,66 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const PersonSideGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
     // console.log("소켓 연결됨");
-  
+
     const selectedUserId = personSideGetmsg.userID;
     const userId = user.id;
-  
+
     if (selectedUserId) {
       // console.log("personCheckMsg 이벤트 전송:", { selectedUserId, userId });
       socket.emit("personCheckMsg", { selectedUserId, userId });
     }
-  
+
     socket.on("chatHistory", (data) => {
       // console.log("chatHistory 데이터 수신:", data);
       if (Array.isArray(data)) {
         setServerMessages(data);
-      } else {
-        console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
+
+        console.log(data);
+
+      } else if (data) {
+        console.log("배열 아닌 데이터", data);
+      } else if (!data) {
+        console.error("받아오는 데이터가 없습니다.");
+        setServerMessages([]);
       }
-    }); 
-  
+    });
+
     socket.on("noChatRoomsForUser", (data) => {
       // console.log("사용자에게 채팅방 없음.", data);
     });
-  
+
     socket.on("chatHistoryForUser", (data) => {
       // console.log("chatHistoryForUser 데이터 수신:", data);
       if (Array.isArray(data)) {
         setServerMessages(data);
-      } else {
-        console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
+        console.log(data);
+
+      } else if (data) {
+        console.log("배열 아닌 데이터", data);
+      } else if (!data) {
+        console.error("받아오는 데이터가 없습니다.");
+        setServerMessages([]);
       }
     });
-  
+
     socket.on("chatHistoryForOthers", (data) => {
       // console.log("chatHistoryForOthers 데이터 수신:", data);
       if (Array.isArray(data)) {
         setServerMessages(data);
-      } else {
-        console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
+        console.log(data);
+
+      } else if (data) {
+        console.log("배열 아닌 데이터", data);
+      } else if (!data) {
+        console.error("받아오는 데이터가 없습니다.");
+        setServerMessages([]);
       }
     });
-  
+
     socket.on("error", (error) => {
       console.error("소켓 오류:", error.message);
     });
-  
+
     return () => {
       socket.off("chatHistory");
       socket.off("noChatRoomsForUser");
