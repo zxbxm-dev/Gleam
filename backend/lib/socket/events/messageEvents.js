@@ -7,12 +7,12 @@ module.exports = (io, socket) => {
   }
 
   // 서버에서 메시지 전송 이벤트 처리
-  socket.on("sendMessage", async ({ roomId, content }) => {
+  socket.on("sendMessage", async ({ roomId, content, senderId }) => {
     await messageHandlers.sendMessageToRoomParticipants(
       io,
       roomId,
       content,
-      socket.id
+      senderId
     );
   });
 
