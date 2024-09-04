@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const junk = sequelize.define(
-        'junk',
+    const Junk = sequelize.define(
+        'Junk',
         {
             //PK
             Id: {
@@ -56,5 +56,5 @@ module.exports = (sequelize, DataTypes) => {
             tableName: 'junk'
         }
     );
-    return junk;
+    return Junk;
 }

@@ -8,6 +8,7 @@ module.exports = (app) => {
     const draftEmailController = require("../controller/email/draftEmail");
     const QueueEmailController = require("../controller/email/emailQueue");
     const emailActionController = require("../controller/email/emailAction");
+    const JunkController = require("../controller/email/JunkEmail");
 
     const express = require("express");
     const router = express.Router();
@@ -25,6 +26,9 @@ module.exports = (app) => {
 
         //예약 이메일 취소하기
         router.delete("/cancleQueueEmail/:Id",QueueEmailController.cancleQueueEmail);
+
+        //스팸 이메일 등록하기
+        router.put("/registerJunk",JunkController.junkController);
 
         app.use("/api", router);
 };
