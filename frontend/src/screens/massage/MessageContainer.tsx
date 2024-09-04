@@ -32,14 +32,6 @@ interface MessageContainerProps {
   setFiles: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
-interface Messenger {
-  content: string;
-  messageId: number;
-  timestamp: string;
-  userId: string;
-  username: string;
-}
-
 const NoticeIcons: { [key: string]: string } = {
   Mail: MailIcon,
   WorkReport: WorkReportIcon,
@@ -123,6 +115,18 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           content: message,
           hostUserId: null,
           name: null
+        };
+      } else if (selectedPerson.userId === user.userID) {
+        messageData = {
+          roomId: null,
+          userId: user.id,
+          content: message,
+        };
+      } else if (selectedRoomId === 0) {
+        messageData = {
+          roomId: null,
+          userId: user.id,
+          content: message,
         };
       } else {
         messageData = {
@@ -216,7 +220,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
     socket.emit('getChatHistory', selectedRoomId);
-    console.log(selectedRoomId);
+    // console.log(selectedRoomId);
 
 
     socket.on('chatHistory', (messages: any[]) => {
@@ -249,29 +253,60 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // personSide에서 사람 이름 클릭 시 대화방 메시지 조회
   const PersonSideGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
-    console.log("Socket connected");
+    // console.log("소켓 연결됨");
+  
     const selectedUserId = personSideGetmsg.userID;
     const userId = user.id;
-
+  
     if (selectedUserId) {
-      console.log("Emitting personCheckMsg");
+      // console.log("personCheckMsg 이벤트 전송:", { selectedUserId, userId });
       socket.emit("personCheckMsg", { selectedUserId, userId });
-      console.log(selectedUserId, userId);
     }
-
+  
     socket.on("chatHistory", (data) => {
-      console.log("Received personDataResponse:", data);
+      // console.log("chatHistory 데이터 수신:", data);
       if (Array.isArray(data)) {
         setServerMessages(data);
       } else {
-        console.error('Received data is not an array of messages:', data);
+        console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
       }
     });
-
+  
+    socket.on("noChatRoomsForUser", (data) => {
+      // console.log("사용자에게 채팅방 없음.", data);
+    });
+  
+    socket.on("chatHistoryForUser", (data) => {
+      // console.log("chatHistoryForUser 데이터 수신:", data);
+      if (Array.isArray(data)) {
+        setServerMessages(data);
+      } else {
+        console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
+      }
+    });
+  
+    socket.on("chatHistoryForOthers", (data) => {
+      // console.log("chatHistoryForOthers 데이터 수신:", data);
+      if (Array.isArray(data)) {
+        setServerMessages(data);
+      } else {
+        console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
+      }
+    });
+  
+    socket.on("error", (error) => {
+      console.error("소켓 오류:", error.message);
+    });
+  
     return () => {
-      socket.off("personCheckMsg");
+      socket.off("chatHistory");
+      socket.off("noChatRoomsForUser");
+      socket.off("chatHistoryForUser");
+      socket.off("chatHistoryForOthers");
+      socket.off("error");
     };
-  }, [handleSendMessage]);
+  }, [personSideGetmsg.userID, user.id]);
+
 
   useEffect(() => {
     const timer = setTimeout(() => {

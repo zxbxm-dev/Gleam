@@ -32,7 +32,7 @@ const Message: React.FC = () => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');
     if (storedRoomId) {
       const roomId = Number(storedRoomId); // Convert to number
-      console.log("클라이언트 저장된 방 ID:", roomId);
+      // console.log("클라이언트 저장된 방 ID:", roomId);
       setSelectedRoomId(roomId);
     }
   }, [setSelectedRoomId]);
