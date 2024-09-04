@@ -6,6 +6,19 @@ import {
   mail_preview,
   mail_attachment_del,
   mail_attachment_hwp,
+  mail_attachment_word,
+  mail_attachment_xlsx,
+  mail_attachment_pdf,
+  mail_attachment_ppt,
+  mail_attachment_txt,
+  mail_attachment_jpg,
+  mail_attachment_png,
+  mail_attachment_gif,
+  mail_attachment_svg,
+  mail_attachment_zip,
+  mail_attachment_mp3,
+  mail_attachment_mp4,
+  mail_attachment_avi,
   mail_important,
   mail_important_active,
   mail_setting,
@@ -79,6 +92,49 @@ const Mail = () => {
     '임시 보관함',
     '스팸 메일함',
   ];
+
+  const getIconForMimeType = (mimeType: string) => {
+    switch (mimeType) {
+      case "text/plain":
+        return mail_attachment_txt;
+      case "image/jpeg":
+      case "image/jpg":
+        return mail_attachment_jpg;
+      case "image/png":
+        return mail_attachment_png;
+      case "image/gif":
+        return mail_attachment_gif;
+      case "image/svg+xml":
+        return mail_attachment_svg;
+      case "application/vnd.ms-excel":
+      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        return mail_attachment_xlsx;
+      case "application/pdf":
+        return mail_attachment_pdf;
+      case "application/vnd.ms-powerpoint":
+      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+        return mail_attachment_ppt;
+      case "application/msword":
+      case "application/haansoftdocx":
+      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        return mail_attachment_word;
+      case "application/haansoftpptx":
+        return mail_attachment_ppt;
+      case "application/haansofthwp":
+        return mail_attachment_hwp;
+      case "application/zip":
+        return mail_attachment_zip;
+      case "audio/mpeg":
+        return mail_attachment_mp3;
+      case "video/mp4":
+        return mail_attachment_mp4;
+      case "video/x-msvideo":
+      case "video/avi":
+        return mail_attachment_avi;
+      default:
+        return;
+    }
+  };
 
   const handleDateChange = (date: Date, isStart: boolean) => {
     if (isStart) {
@@ -749,7 +805,7 @@ const Mail = () => {
                                               <div className="DownFile_list_object_btn">
                                                 <div>{(file?.fileSize / 1024).toFixed(0)}KB</div>
                                                 <img src={mail_preview} alt="mail_preview" onClick={() => handlePreviewClick(file)}/>
-                                                <img src={mail_attachment_hwp} alt="mail_attachment_hwp" />
+                                                <img src={getIconForMimeType(file?.mimeType)} alt="mail_attachment_hwp" />
                                                 <img src={mail_download} alt="mail_download" onClick={() => handleDownloadClick(file)}/>
                                                 <img src={mail_attachment_del} alt="mail_attachment_del" />
                                               </div>
