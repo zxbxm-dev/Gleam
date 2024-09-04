@@ -23,6 +23,7 @@ import {
   mail_important_active,
   mail_setting,
   mail_spam,
+  mail_spam_disable,
   mail_write,
   mail_attachment,
   mail_triangle,
@@ -543,6 +544,26 @@ const Mail = () => {
       }
     });
   };
+
+  // 체크박스 스팸 처리
+  const handleJunkCheckboxEmail = (selectedMails: any) => {
+    Object.keys(selectedMails).forEach(mailId => {
+      const formData = {
+        Id: mailId,
+      }
+      
+      JunkEmail(formData)
+      .then(response => {
+        console.log('선택된 이메일 스팸 성공', response);
+        setSpamModalOpen(false);
+        setSelectedMails({});
+        refetchEmail();
+      })
+      .catch(error => {
+        console.log('선택된 이메일 스팸 실패', error);
+      });
+    });
+  };
   
   // 예약 메일 삭제
   const handleDeleteQueueEmail = (mailId: any) => {
@@ -569,10 +590,17 @@ const Mail = () => {
               <img src={mail_delete} alt="mail_delete" />
               {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
             </div>
-            <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={() => setSpamModalOpen(true)}>
-              <img src={mail_spam} alt="mail_spam" />
-              {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
-            </div>
+            {selectdMenuOption === '스팸 메일함' ?
+              <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={() => setSpamModalOpen(true)}>
+                <img src={mail_spam_disable} alt="mail_spam_disable" />
+                {hoverState === "spam" && <div className="tooltip">스팸 해제</div>}
+              </div>
+            :
+              <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={() => setSpamModalOpen(true)}>
+                <img src={mail_spam} alt="mail_spam" />
+                {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
+              </div>
+            }
             <div className="image-container" onMouseEnter={() => handleHover("write")} onMouseLeave={() => handleHover("")} onClick={() => { navigate("/writeMail") }}>
               <img src={mail_write} alt="mail_write" />
               {hoverState === "write" && <div className="tooltip">메일 작성</div>}
@@ -903,7 +931,7 @@ const Mail = () => {
         onClose={() => setSpamModalOpen(false)}
         header={"알림"}
         footer1={"예"}
-        onFooter1Click={() => setSpamModalOpen(false)}
+        onFooter1Click={() => {handleJunkCheckboxEmail(selectedMails)}}
         footer1Class="green-btn"
         footer2={"아니오"}
         footer2Class="red-btn"
