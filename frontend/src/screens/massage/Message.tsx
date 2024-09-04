@@ -26,7 +26,6 @@ const Message: React.FC = () => {
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [showSearch, setShowSearch] = useState(false);
-  const socket = io("http://localhost:3001", { transports: ["websocket"] });
 
   useEffect(() => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');
@@ -46,6 +45,8 @@ const Message: React.FC = () => {
   };
 
   useEffect(() => {
+    const socket = io("http://localhost:3001", { transports: ["websocket"] });
+
     socket.on("recMsg", handleIncomingMessage);
     return () => {
       socket.off("recMsg", handleIncomingMessage);
@@ -53,6 +54,8 @@ const Message: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const socket = io("http://localhost:3001", { transports: ["websocket"] });
+
     rooms.forEach((room) => {
       console.log("클라이언트에서 보낸 방에 방 번호:", room.roomId);
       socket.emit("joinRoom", room.roomId);
@@ -60,6 +63,8 @@ const Message: React.FC = () => {
   }, [rooms]);
 
   useEffect(() => {
+    const socket = io("http://localhost:3001", { transports: ["websocket"] });
+    
     if (selectedRoomId) {
       socket.emit("joinRoom", selectedRoomId);
     }

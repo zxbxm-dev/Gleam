@@ -272,7 +272,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       } else {
         console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
       }
-    });
+    }); 
   
     socket.on("noChatRoomsForUser", (data) => {
       // console.log("사용자에게 채팅방 없음.", data);
