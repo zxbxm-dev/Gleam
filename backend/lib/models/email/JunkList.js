@@ -23,14 +23,11 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
              },
-             //스팸등록된 날짜
-             registerAt:{
-                type: DataTypes.DATE,
-                allowNull: false,
-             },
         },
         {
-            tableName: "JunkList"
+            tableName: "JunkList",
+            timestamps: true,  
+            updatedAt: false
         },
     );
     return JunkList;

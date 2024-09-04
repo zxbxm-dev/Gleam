@@ -32,30 +32,31 @@ const junkController = async (req, res) => {
         console.error("스팸 등록/해제 처리 중 오류가 발생했습니다.", error);
         res.status(500).json({ message : "스팸 등록/해제 처리가 실패했습니다."});
    };
-
+};
    //스팸 주소록 추가
-   const registerJunkList = async (req, res) => {
+   const addJunkList = async (req, res) => {
+    const{ userId : createdBy } = req.query; 
     const{
-        createdBy,
         junkId,
+        registerAt,
     } = req.body;
     console.log("요청 본문 받음:", req.body);
 
     try{
     const overlappedJunkList = await JunkList.findAll({
-
         where :{
             createdBy,
             junkId
         }
     });
 
+
     if(overlappedJunkList > 0){
         return res.status(409).json({message: "이미 스팸 등록된 주소입니다."});
     }
     }catch(error){
         console.error("스팸 주소 등록 중 오류 발생:", error);
-        res.status(500).json({ message: "스팸 주소 등록 중 오류가 발생했습니다."});
+         return res.status(500).json({ message: "스팸 주소 등록 중 오류가 발생했습니다."});
     };
 
     try{
@@ -64,18 +65,14 @@ const junkController = async (req, res) => {
         junkId,
         registerAt,
       });
-      res.status(201).json({ message: "스팸 주소 등록이 완료되었습니다.", newJunkList});
+       return res.status(201).json({ message: "스팸 주소 등록이 완료되었습니다.", newJunkList});
     }catch(error){
         console.error("스팸 주소 등록 중 오류가 발생했습니다.", error);
-        res.status(500).json({ message: "스팸 주소 등록에 실패했습니다."});
+       return res.status(500).json({ message: "스팸 주소 등록에 실패했습니다."});
     };
-
-
-
-   }
+   };
     
-}
 module.exports= {
     junkController,
-
+    addJunkList,
 }
