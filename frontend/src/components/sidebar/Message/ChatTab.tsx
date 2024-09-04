@@ -162,7 +162,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             userPosition || "",
             userId || ""
           );
-          setSelectedUserIdstate({userID:user.userID});
+          setSelectedUserIdstate({ userID: user.userID });
           setActiveItem(0);
           setSelectedRoomId(0);
         }}
@@ -198,10 +198,15 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     <div className="Border" style={{ border: "2px solid red" }}>
                       <img className="My-attach" src={attachment} alt="User Icon" />
                     </div>
-                    <p className="FontName">
+                    {/* <p className="FontName">
                       {chatRoom.dataValues?.isGroup
                         ? `${chatRoom.othertitle}`
                         : chatRoom.othertitle}
+                    </p> */}
+                    <p className="FontName">
+                      {chatRoom.dataValues?.isGroup
+                        ? Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ')
+                        : Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ')}
                     </p>
                   </div>
                   <img

@@ -131,7 +131,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       } else {
         messageData = {
           roomId: selectedRoomId,
-          userId: user.id,
+          senderId: user.id,
           content: message,
         };
       }
@@ -166,7 +166,9 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     if (selectedRoomId === -1) {
       socket.emit("createPrivateRoom", messageData);
     } else {
-      socket.emit("sendMessageToRoom", messageData);
+      socket.emit("sendMessage", messageData);
+      console.log(messageData);
+      
     }
   };
 

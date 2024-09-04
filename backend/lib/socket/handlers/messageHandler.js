@@ -37,36 +37,24 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
     if (selectedUserId === requesterId) {
       // 자신을 클릭한 경우
       const chatRoomIds = await findChatRoomsForUser(requesterId);
+
       // 자신과 관련된 채팅방이 있는지 확인
       if (chatRoomIds.length === 0) {
-        // 자신과의 채팅방이 없으면 별도의 이벤트 전송
-        socket.emit("noChatRoomsForUser");
+        socket.emit("noChatRoomsForUser"); // 자신과의 채팅방이 없으면 별도의 이벤트 전송
         return;
       }
 
-      // 동일한 roomId에서 동일한 userId를 가진 사용자가 두 명 이상 있는지 확인
-      const selfChatRooms = await ChatRoomParticipant.findAll({
-        where: {
-          roomId: {
-            [Op.in]: chatRoomIds
-          },
-          userId: requesterId,
-        },
-        group: ['roomId'],
-        having: sequelize.literal('COUNT(*) > 1'),
-      });
-
-      if (selfChatRooms.length === 0) {
-        socket.emit("noChatRoomsForUser");
+      // 동일한 ID를 가진 사용자가 두 명 이상인지 확인
+      const sameIdUsers = await User.count({ where: { userId: requesterId } });
+      if (sameIdUsers > 2) {
+        socket.emit("noChatRoomsForUser"); // 동일한 ID를 가진 사용자가 두 명 이상이 아닐 경우
         return;
       }
-
-      const roomIds = selfChatRooms.map(room => room.roomId);
 
       const selfMessages = await Message.findAll({
         where: {
           roomId: {
-            [Op.in]: roomIds
+            [Op.in]: chatRoomIds
           },
           userId: requesterId
         },
@@ -81,7 +69,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       });
 
       if (selfMessages.length === 0) {
-        socket.emit("noChatRoomsForUser");
+        socket.emit("noChatRoomsForUser"); // 자신에게 보낸 메시지가 없으면 별도의 이벤트 전송
         return;
       }
 
@@ -93,18 +81,14 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         timestamp: message.createdAt,
       }));
 
-      // 클라이언트에게 채팅 기록을 전송
-      socket.emit("chatHistoryForUser", chatHistory);
-
-      // 자기 자신에게 보낸 메시지가 있다고 로그 추가
-      console.log(`User ${requesterId} has sent messages to themselves in rooms: ${roomIds.join(', ')}`);
+      socket.emit("chatHistoryForUser", chatHistory); // 나와의 채팅방 메시지 전송
 
     } else {
       // 다른 사용자를 클릭한 경우
       const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
       if (mutualChatRoomIds.length === 0) {
-        socket.emit("chatHistory");
+        socket.emit("chatHistory"); // 공통 채팅방이 없으면 별도의 이벤트 전송
         return;
       }
 
@@ -132,14 +116,12 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         timestamp: message.createdAt,
       }));
 
-      socket.emit("chatHistoryForOthers", chatHistory);
+      socket.emit("chatHistoryForOthers", chatHistory); // 다른 사용자와의 채팅방 메시지 전송
     }
   } catch (error) {
     socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });
-    console.error("채팅 기록 조회 오류:", error);
   }
 };
-
 
 // 특정 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistory = async (socket, roomId) => {
