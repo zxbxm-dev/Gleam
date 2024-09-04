@@ -34,4 +34,9 @@ const StarringEmail = (formData) => {
   return api.put("/starringEmail", formData);
 }
 
-export { SendMail, CheckEmail, cancleQueueEmail, DeleteEmail, DraftEmail, StarringEmail };
+// 스팸 메일 등록
+const JunkEmail = (formData) => {
+  return api.put("/registerJunk", formData);
+}
+
+export { SendMail, CheckEmail, cancleQueueEmail, DeleteEmail, DraftEmail, StarringEmail, JunkEmail };

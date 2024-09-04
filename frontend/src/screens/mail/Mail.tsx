@@ -40,7 +40,7 @@ import Pagenation from "./Pagenation";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { useQuery } from 'react-query';
-import { CheckEmail, DeleteEmail, cancleQueueEmail, StarringEmail } from "../../services/email/EmailService";
+import { CheckEmail, DeleteEmail, cancleQueueEmail, StarringEmail, JunkEmail } from "../../services/email/EmailService";
 
 const Mail = () => {
   let navigate = useNavigate();
@@ -459,6 +459,21 @@ const Mail = () => {
     })
   };
 
+  const handleJunkEmail = (mailId: number) => {
+    const formData = {
+      Id: mailId,
+    }
+    
+    JunkEmail(formData)
+    .then((response) => {
+      console.log('스팸 메일 등록 성공', response);
+      refetchEmail();
+    })
+    .catch((error) => {
+      console.log('스팸 메일 등록 실패', error);
+    })
+  };
+
   const toggleAllCheckboxes = () => {
     if (allSelected) {
         setSelectedMails({});
@@ -472,13 +487,6 @@ const Mail = () => {
     }
     setAllSelected(!allSelected);
   };
-
-
-
-  // 메일 발송 취소
-  const handleSendCancle = () => {
-    window.alert("발송을 취소하면 수신자의 메일함에서 메일이 삭제됩니다.\n발송을 취소하시겠습니까?")
-  }
 
   const toggleMailSelection = (mailId: number, messageId: any) => {
     setSelectedMails(prevSelectedMails => ({
@@ -761,7 +769,7 @@ const Mail = () => {
                             </span>
                             {mail.folder === 'inbox' && (
                               <span className="button_wrap">
-                                <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={handleSendCancle}>
+                                <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={() => handleJunkEmail(mail.Id)}>
                                   <img src={mail_spam} alt="mail_spam" />
                                   {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
                                 </div>
