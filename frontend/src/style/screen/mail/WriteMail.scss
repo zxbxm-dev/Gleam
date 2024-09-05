@@ -388,3 +388,12 @@
     }
   }
 }
+
+
+@include laptop {
+  .write_mail_content {
+    .write_mail_content_top {
+      gap: 0;
+    }
+  }
+}

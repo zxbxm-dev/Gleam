@@ -31,6 +31,7 @@ module.exports = (app) => {
         router.put("/registerJunk/:Id",JunkController.junkController);
         router.post("/addJunkList",JunkController.addJunkList);
         router.get("/getJunkList",JunkController.getAllJunkList);
+        router.delete("/removeJunklist/:junkId",JunkController.removeFromJunkList);
 
         app.use("/api", router);
 };
