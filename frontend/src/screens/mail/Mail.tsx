@@ -460,12 +460,8 @@ const Mail = () => {
     })
   };
 
-  const handleJunkEmail = (mailId: number) => {
-    const formData = {
-      Id: mailId,
-    }
-    
-    JunkEmail(formData)
+  const handleJunkEmail = (mailId: number) => {    
+    JunkEmail(mailId)
     .then((response) => {
       console.log('스팸 메일 등록 성공', response);
       refetchEmail();
@@ -547,12 +543,8 @@ const Mail = () => {
 
   // 체크박스 스팸 처리
   const handleJunkCheckboxEmail = (selectedMails: any) => {
-    Object.keys(selectedMails).forEach(mailId => {
-      const formData = {
-        Id: mailId,
-      }
-      
-      JunkEmail(formData)
+    Object.keys(selectedMails).forEach(mailId => {      
+      JunkEmail(mailId)
       .then(response => {
         console.log('선택된 이메일 스팸 성공', response);
         setSpamModalOpen(false);
@@ -767,9 +759,9 @@ const Mail = () => {
                           </div>
                         }
                       </td>
-                      <td>{mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div onClick={() => setIsReadMailListOpen(true)}>1/3 읽음</div> : null}</td>
+                      <td>{mail.folder === 'inbox' ? null : mail.folder === 'sent' ? <div onClick={() => setIsReadMailListOpen(true)}></div> : null}</td>
                       <td>
-                        {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? 
+                        {/* {mail.folder === 'inbox' ? null : mail.folder === 'sent' ? 
                           <div className="sent_cancle_inactive" onMouseEnter={() => handleMouseEnter(mail.Id)} onMouseLeave={() => handleMouseLeave(mail.Id)} onClick={() => setIsSentCancleOpen(true)}>
                             발송 취소
                             {isInactiveSendMail[mail.Id] && (
@@ -780,7 +772,7 @@ const Mail = () => {
                               </div>
                             )}
                           </div> 
-                          : mail.folder === 'queue' ? <div className="sent_cancle_active" onClick={() => {setIsReserveCancleOpen(true); setSelectedMailId(mail.Id);}}>예약 취소</div> : null}
+                          : mail.folder === 'queue' ? <div className="sent_cancle_active" onClick={() => {setIsReserveCancleOpen(true); setSelectedMailId(mail.Id);}}>예약 취소</div> : null} */}
                       </td>
                       <td>
                         {formatDate(mail.folder === 'inbox' ? mail.receiveAt : mail.sendAt)}
@@ -843,7 +835,7 @@ const Mail = () => {
                                                 <img src={mail_preview} alt="mail_preview" onClick={() => handlePreviewClick(file)}/>
                                                 <img src={getIconForMimeType(file?.mimeType)} alt="mail_attachment_hwp" />
                                                 <img src={mail_download} alt="mail_download" onClick={() => handleDownloadClick(file)}/>
-                                                <img src={mail_attachment_del} alt="mail_attachment_del" />
+                                                {/* <img src={mail_attachment_del} alt="mail_attachment_del" /> */}
                                               </div>
                                             </div>
                                           ))}
