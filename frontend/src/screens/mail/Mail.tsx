@@ -42,6 +42,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { useQuery } from 'react-query';
 import { CheckEmail, DeleteEmail, cancleQueueEmail, StarringEmail, JunkEmail } from "../../services/email/EmailService";
+import { AddJunkList, CheckJunkList, RemoveJunkList } from "../../services/email/EmailService";
 
 const Mail = () => {
   let navigate = useNavigate();
@@ -56,6 +57,8 @@ const Mail = () => {
   const [selectedMailId, setSelectedMailId] = useState<string | null>(null);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isSpamModalOpen, setSpamModalOpen] = useState(false);
+  const [isUnSpamModalOpen, setUnSpamModalOpen] = useState(false);
+  const [isSpamListChecked, setIsSpamListChecked] = useState(false);
   const [isReadMailListModalOpen, setIsReadMailListOpen] = useState(false);
   const [isSentCancleModalOpen, setIsSentCancleOpen] = useState(false);
   const [isReserveCancleModalOpen, setIsReserveCancleOpen] = useState(false);
@@ -76,7 +79,7 @@ const Mail = () => {
   const [mails, setMails] = useState<any[]>([]);
   const [clickedMails, setClickedMails] = useState<{ [key: number]: boolean }>({});
   const [allSelected, setAllSelected] = useState(false);
-  const [selectedMails, setSelectedMails] = useState<{ [key: number]: { messageId: any; selected: boolean } }>({});
+  const [selectedMails, setSelectedMails] = useState<{ [key: number]: { messageId: any; selected: boolean; sender: any; } }>({});
 
   const [isInactiveSendMail, setIsInActiveSendMail] = useState<Record<number, boolean>>({});
   const [visibleAttachments, setVisibleAttachments] = useState(3);
@@ -485,12 +488,13 @@ const Mail = () => {
     setAllSelected(!allSelected);
   };
 
-  const toggleMailSelection = (mailId: number, messageId: any) => {
+  const toggleMailSelection = (mailId: number, messageId: any, sender: any) => {
     setSelectedMails(prevSelectedMails => ({
       ...prevSelectedMails,
       [mailId]: {
         messageId,
-        selected: !prevSelectedMails[mailId]?.selected
+        selected: !prevSelectedMails[mailId]?.selected,
+        sender,
       }
     }));
   };
@@ -527,6 +531,7 @@ const Mail = () => {
     Object.keys(selectedMails).forEach(mailId => {
       if (selectedMails[mailId]?.selected) {
         const { messageId } = selectedMails[mailId];
+        const { sender } = selectedMails[mailId];
         DeleteEmail(mailId, messageId)
           .then(response => {
             console.log('선택된 이메일 삭제 성공', response);
@@ -543,17 +548,53 @@ const Mail = () => {
 
   // 체크박스 스팸 처리
   const handleJunkCheckboxEmail = (selectedMails: any) => {
-    Object.keys(selectedMails).forEach(mailId => {      
-      JunkEmail(mailId)
-      .then(response => {
-        console.log('선택된 이메일 스팸 성공', response);
-        setSpamModalOpen(false);
-        setSelectedMails({});
-        refetchEmail();
-      })
-      .catch(error => {
-        console.log('선택된 이메일 스팸 실패', error);
-      });
+    Object.keys(selectedMails).forEach(async (mailId) => {
+      if (selectedMails[mailId]?.selected) {
+        const { sender } = selectedMails[mailId];
+        
+        try {
+          // isSpamListChecked가 true일 때만 handleAddJunkList 호출
+          if (isSpamListChecked) {
+            await handleAddJunkList(sender);
+            
+          }
+          
+          // JunkEmail 호출
+          const response = await JunkEmail(mailId);
+          setSpamModalOpen(false);
+          setIsSpamListChecked(false);
+          setSelectedMails({});
+          refetchEmail();
+          console.log('선택된 이메일 스팸 성공', response);
+        } catch (error) {
+          console.log('선택된 이메일 스팸 실패', error);
+        }
+      }
+    });
+  };
+
+  const handleDisalbeJunkCheckboxEmail = (selectedMails: any) => {
+    Object.keys(selectedMails).forEach(async (mailId) => {
+      if (selectedMails[mailId]?.selected) {
+        const { sender } = selectedMails[mailId];
+        
+        try {
+          // isSpamListChecked가 true일 때만 handleAddJunkList 호출
+          if (isSpamListChecked) {
+            await handleRemoveJunkList(sender);
+          }
+          
+          // JunkEmail 호출
+          const response = await JunkEmail(mailId);
+          setUnSpamModalOpen(false);
+          setIsSpamListChecked(false);
+          setSelectedMails({});
+          refetchEmail();
+          console.log('선택된 이메일 스팸 성공', response);
+        } catch (error) {
+          console.log('선택된 이메일 스팸 실패', error);
+        }
+      }
     });
   };
   
@@ -569,6 +610,31 @@ const Mail = () => {
     })
   };
 
+  // 스팸 등록 
+  const handleAddJunkList = async (sender: any) => {
+    const formData = new FormData();
+    formData.append('createdBy', user?.userID);
+    formData.append('junkId', sender);
+    formData.append('registerAt', new Date().toISOString());
+
+    try {
+      const response = await AddJunkList(formData);
+      console.log('스팸 이메일 등록 성공', response);
+    } catch (error) {
+      console.log('스팸 이메일 등록 실패', error);
+    }
+  };
+
+  // 스팸 해제
+  const handleRemoveJunkList = async (junkId: any) => {
+    try {
+      const response = await RemoveJunkList(junkId, user?.userID);
+      console.log('스팸 이메일 해제 성공', response);
+    } catch (error) {
+      console.log('스팸 이메일 해제 실패', error);
+    }
+  };
+
   return (
     <div className="content">
       <div className="mail_container">
@@ -578,17 +644,44 @@ const Mail = () => {
               <input type="checkbox" id="check1" checked={allSelected} onChange={toggleAllCheckboxes} />
               <span></span>
             </label>
-            <div className="image-container" onMouseEnter={() => handleHover("delete")} onMouseLeave={() => handleHover("")} onClick={() => setDeleteModalOpen(true)}>
+            <div
+              className={`image-container ${Object.keys(selectedMails).length > 0 ? '' : 'disabled'}`}
+              onMouseEnter={() => handleHover("delete")}
+              onMouseLeave={() => handleHover("")}
+              onClick={() => {
+                if (Object.keys(selectedMails).length > 0) {
+                  setDeleteModalOpen(true);
+                }
+              }}
+            >
               <img src={mail_delete} alt="mail_delete" />
               {hoverState === "delete" && <div className="tooltip">메일 삭제</div>}
             </div>
             {selectdMenuOption === '스팸 메일함' ?
-              <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={() => setSpamModalOpen(true)}>
+              <div
+                className={`image-container ${Object.keys(selectedMails).length > 0 ? '' : 'disabled'}`}
+                onMouseEnter={() => handleHover("spam")}
+                onMouseLeave={() => handleHover("")}
+                onClick={() => {
+                  if (Object.keys(selectedMails).length > 0) {
+                    setUnSpamModalOpen(true);
+                  }
+                }}
+              >
                 <img src={mail_spam_disable} alt="mail_spam_disable" />
                 {hoverState === "spam" && <div className="tooltip">스팸 해제</div>}
               </div>
             :
-              <div className="image-container" onMouseEnter={() => handleHover("spam")} onMouseLeave={() => handleHover("")} onClick={() => setSpamModalOpen(true)}>
+            <div
+              className={`image-container ${Object.keys(selectedMails).length > 0 ? '' : 'disabled'}`}
+              onMouseEnter={() => handleHover("spam")}
+              onMouseLeave={() => handleHover("")}
+              onClick={() => {
+                if (Object.keys(selectedMails).length > 0) {
+                  setSpamModalOpen(true);
+                }
+              }}
+            >
                 <img src={mail_spam} alt="mail_spam" />
                 {hoverState === "spam" && <div className="tooltip">스팸 차단</div>}
               </div>
@@ -721,7 +814,7 @@ const Mail = () => {
                         <input
                           type="checkbox"
                           checked={allSelected ? allSelected : selectedMails[mail.Id]?.selected || false}
-                          onChange={() => toggleMailSelection(mail.Id, mail.messageId)}
+                          onChange={() => toggleMailSelection(mail.Id, mail.messageId, mail.sender)}
                         />
                         <span></span>
                         </label>
@@ -922,15 +1015,56 @@ const Mail = () => {
         isOpen={isSpamModalOpen}
         onClose={() => setSpamModalOpen(false)}
         header={"알림"}
-        footer1={"예"}
+        footer1={"차단"}
+        headerTextColor="White"
         onFooter1Click={() => {handleJunkCheckboxEmail(selectedMails)}}
-        footer1Class="green-btn"
-        footer2={"아니오"}
+        footer1Class="back-green-btn"
+        footer2={"취소"}
         footer2Class="red-btn"
         onFooter2Click={() => setSpamModalOpen(false)}
+        height="200px"
       >
-        <div>선택한 메일이 스팸 메일함으로 이동하였습니다.</div>
-        <div>수신 차단 하시겠습니까?</div>
+        <div className="spam_container">
+          <div>스팸 차단된 메일은 스팸 메일함으로 이동됩니다.</div>
+          <div className="spam_check">
+            <input
+              type="checkbox"
+              id="spam-check"
+              checked={isSpamListChecked}
+              onChange={(e) => setIsSpamListChecked(e.target.checked)}
+            />
+            <label htmlFor="spam-check">해당 메일 주소 수신 차단하기</label>
+          </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isUnSpamModalOpen}
+        onClose={() => setUnSpamModalOpen(false)}
+        header={"알림"}
+        footer1={"해제"}
+        headerTextColor="White"
+        onFooter1Click={() => {handleDisalbeJunkCheckboxEmail(selectedMails)}}
+        footer1Class="back-green-btn"
+        footer2={"취소"}
+        footer2Class="red-btn"
+        onFooter2Click={() => setUnSpamModalOpen(false)}
+        height="250px"
+      >
+        <div className="spam_container">
+          <div>스팸 해제된 메일은 받은 메일함으로 이동되며 <br/>
+          해당 메일 주소를 수신 허용할 수 있습니다.
+          </div>
+          <div className="spam_check">
+            <input
+              type="checkbox"
+              id="spam-check"
+              checked={isSpamListChecked}
+              onChange={(e) => setIsSpamListChecked(e.target.checked)}
+            />
+            <label htmlFor="spam-check">해당 메일 주소 수신 허용하기</label>
+          </div>
+        </div>
       </CustomModal>
       
       <CustomModal

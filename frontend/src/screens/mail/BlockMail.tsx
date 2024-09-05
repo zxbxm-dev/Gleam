@@ -21,9 +21,9 @@ const BlockMail: React.FC<Block> = ({ isSpamSettingModal, setIsSpamSettingModal 
   const handleAddJunkList = async () => {
     if (!junkEmail.trim()) {
       alert("스팸 등록할 이메일을 입력해주세요.");
-      return;
+      return; // 이메일이 비어 있으면 함수를 중단
     }
-
+    
     const formData = new FormData();
     formData.append('createdBy', user?.userID);
     formData.append('junkId', junkEmail);
@@ -81,9 +81,10 @@ const BlockMail: React.FC<Block> = ({ isSpamSettingModal, setIsSpamSettingModal 
   });
 
   useEffect(() => {
-    // 페이지 첫 렌더링 시 스팸 리스트 데이터를 가져옴
-    refetchJunkList();
-  }, []);
+    if (isSpamSettingModal) {
+      refetchJunkList(); // 모달이 열릴 때 스팸 리스트를 새로 고침
+    }
+  }, [isSpamSettingModal]);
 
   const handleCheckboxChange = (junkId: string) => {
     setSelectedJunk((prev) =>
@@ -93,7 +94,6 @@ const BlockMail: React.FC<Block> = ({ isSpamSettingModal, setIsSpamSettingModal 
     );
   };
 
-  console.log('가져온 스팸 리스트', junkList)
   return (
     <div>
       <CustomModal
