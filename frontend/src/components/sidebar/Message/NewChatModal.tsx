@@ -63,7 +63,10 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
         )
       );
 
-      const initialSelectedUsers = allPersons.filter(person => person.username === user.username);
+      const initialSelectedUsers = allPersons.filter(person =>
+        person.username === user.username ||
+        ChatModalOpenState.joinUser.includes(person.userId)
+      );
 
       setSelectedUsers(prevSelected => {
         const newSelection = new Set(prevSelected);
@@ -73,7 +76,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       setSearchQuery("");
       setIsWholeMemberChecked(false);
     }
-  }, [ChatModalOpenState, filteredData, user.username]);
+  }, [ChatModalOpenState, filteredData, user.username, ChatModalOpenState.joinUser]);
 
   const filterDataBySearchQuery = (data: typeof filteredData) => {
     if (!searchQuery) return data;
@@ -198,6 +201,11 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
           console.log("Room Created:", data);
         });
       }
+
+      setSelectedUsers(new Set());
+      setChatTitle("");
+      setIsWholeMemberChecked(false);
+      setSearchQuery("");
       closeModal();
 
     } catch (error) {

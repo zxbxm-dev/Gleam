@@ -113,3 +113,4 @@ export { default as AdminIcon } from "./Message/AdminIcon.svg";
 export { default as FileIcon } from "./Message/FileIcon.svg";
 export { default as GraySearchIcon } from "./Message/GraySearchIcon.svg";
 export { default as GoToBottomIcon } from "./Message/GotoBottom.svg";
+export { default as RoomAdmin } from "./Message/RoomAdmin.svg";

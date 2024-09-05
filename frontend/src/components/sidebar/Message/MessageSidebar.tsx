@@ -277,7 +277,9 @@ const MessageSidebar: React.FC = () => {
     //   status: MsguserState.state,
     //   borderColor
     // });
-    socket.emit('userStatus', { status: MsguserState.state, borderColor });
+    const userId = user.userID;
+    
+    socket.emit('userStatus', { status: MsguserState.state, borderColor, userId });
 
     return () => {
       socket.disconnect();

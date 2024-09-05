@@ -84,10 +84,11 @@ export const selectUserID = atom({
 
 
 export const NewChatModalstate = atom({
-  key: 'NewChatModalState',
+  key: 'NewChatModalstate',
   default: {
     openState: false,
-    joinUser: []
+    joinUser: [""],
+    hostId:"",
   },
 });
 
