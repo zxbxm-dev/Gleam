@@ -1,8 +1,10 @@
 const models = require("../../models");
 const { fetchMailcowEmails } = require("../../services/emailService");
 const { getAttachmentsByEmailId } = require("./emailAttachments");
+const { JunkFilter } = require("./JunkEmail");
 const Email = models.Email;
 const User = models.User
+const JunkList = models.JunkList;
 
 //모든 이메일 조회하기
 const getAllEmail = async (req, res) => {
@@ -11,15 +13,14 @@ const getAllEmail = async (req, res) => {
         userId,
     } = req.params;
 
+    await JunkFilter(req, res, userId); //스팸필터링
+
     if(userId){
 
         const user = await User.findByPk(userId);
         if(!user) {
             return res.status(404).json({message: "사용자를 찾을 수 없습니다."});
         }
-
-        const usermail = user.usermail;
-        const password = user.password;
 
     try{
         await fetchMailcowEmails( userId );        

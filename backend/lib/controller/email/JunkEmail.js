@@ -1,4 +1,5 @@
 const models = require("../../models");
+const { fetchMailcowEmails } = require("../../services/emailService");
 const Email = models.Email;
 const JunkList = models.JunkList; 
 
@@ -110,10 +111,44 @@ const junkController = async (req, res) => {
         res.status(500).json({error:"스팸 주소 해제에 실패했습니다."});
     }
    };
+
+   //스팸 이메일 필터링
+   const JunkFilter = async ( req, res, userId ) => {
+
+    try {
+        await fetchMailcowEmails(userId);
+        //이메일을 조회하는 user의 모든 이메일 
+        const emails = await Email.findAll({
+            where: {userId: userId},
+        });
+        //user의 차단 목록 
+        
+        const junkList = await JunkList.findAll({
+            where :{ 
+                createdBy : userId,
+            }
+        })
+        
+        const junkEmails = junkList.map(junk => junk.junkId);
+      
+            for(const email of emails){
+               if(junkEmails.includes(email.sender)){
+                email.folder = 'junk';
+                await email.save();
+               }
+            };
+            console.log("스팸 처리 완료");
+            
+            }catch(error){
+                console.log("스팸 처리 중 오류가 발생했습니다.", error);
+
+    }
+}
     
 module.exports= {
     junkController,
     addJunkList,
     getAllJunkList,
-    removeFromJunkList
+    removeFromJunkList,
+    JunkFilter
 }

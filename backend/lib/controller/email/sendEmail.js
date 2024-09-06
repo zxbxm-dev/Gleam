@@ -6,6 +6,8 @@ const { saveAttachments } = require("../../controller/email/emailAttachments");
 const { QueueEmail} = require("../../controller/email/emailQueue");
 const shortid = require('shortid');
 
+
+
 //이메일 전송하기
 const sendMail = async (req, res) => {
     const {
@@ -24,11 +26,14 @@ const sendMail = async (req, res) => {
     } = req.body;
 
     const attachments = req.files;
+    const cc = referrer;
+    const messageId = shortid.generate();
+
 
     //임시저장 이메일 전송하기 
     if(folder === 'drafts'){
         console.log(`임시저장 된 이메일 :  ${Id}번 `);
-        const sendResult = await sendEmail(receiver, subject, body, userId, attachments);
+        const sendResult = await sendEmail(receiver, subject, body, userId, attachments,messageId,cc);
         console.log('임시저장 이메일 전송 완료:', sendResult);
 
         // 전송 후 임시저장 이메일 삭제
@@ -38,7 +43,7 @@ const sendMail = async (req, res) => {
         // 전송된 이메일을 저장
         const newSentEmail = await Email.create({
             userId,
-            messageId: shortid.generate(),
+            messageId,
             sender,
             receiver,
             referrer,
@@ -70,7 +75,7 @@ const sendMail = async (req, res) => {
 
     console.log("요청 본문 받음 :", req.body);
     const to = receiver;
-
+    
     try{
         //첨부파일 설정
         const attachmentsInfo= attachments ? attachments.map(file =>({
@@ -78,15 +83,17 @@ const sendMail = async (req, res) => {
             path: file.path,
             contentType: file.mimetype,
         })) : [];
-       
+
+        const cc = referrer;
+        const messageId = shortid.generate();
         const hasAttachments = attachmentsInfo.length > 0;
-        const sendResult = await sendEmail(to, subject, body, userId, attachmentsInfo);
+        const sendResult = await sendEmail(to, subject, body, userId, attachmentsInfo, messageId, cc);
         
         console.log("전송한 이메일 : ", sendResult);
 
         const newSentEmail = await Email.create({
             userId: userId,
-            messageId: shortid.generate(),
+            messageId,
             sender,
             receiver,
             referrer,
