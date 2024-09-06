@@ -2,18 +2,6 @@ const models = require("../../models");
 const Email = models.Email;
 const EmailAction = models.EmailAction;
 
-
-//이메일 로그 기록 
-
-
-
-
-//이메일 로그 삭제
-
-
-
-
-
 //이메일 중요메일로 등록하기
 const starringEmail = async (req, res) => {
     const {
