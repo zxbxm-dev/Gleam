@@ -469,15 +469,19 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 <div className="MsgTimeBox">
                   {messageMetadata.userInfo[index] &&
                     <div className={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
-                      <div className='WhiteBox'>
-                        {/* 서버에서 받아온 파일이 있을 경우로 바꾸기 */}
-                        {files && <img src={getFileIcon(files.name)} alt="File Icon" />}
-                      </div>
+                      {files &&
+                        <div className='WhiteBox'>
+                          {/* 서버에서 받아온 파일이 있을 경우로 바꾸기 */}
+                          <img src={getFileIcon(files.name)} alt="File Icon" />
+                        </div>
+                      }
                       <div>{msg.content || ""}</div>
                       {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
-                      <div className='FileDown'>
-                        {files && <img src={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />}
-                      </div>
+                      {files &&
+                        <div className='FileDown'>
+                          <img src={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />
+                        </div>
+                      }
                     </div>
                   }
                   <div className="MsgTime">
