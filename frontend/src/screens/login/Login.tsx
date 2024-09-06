@@ -43,7 +43,8 @@ const handleLogin = async () => {
       question2: userData.ques2,
       entering: enteringDateString,
       attachment:userData.attachment,
-      Sign:userData.Sign
+      Sign:userData.Sign,
+      MobileCard: "사용 안함",
     };
 
     setUserState(userStateData);
