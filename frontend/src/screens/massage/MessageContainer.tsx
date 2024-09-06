@@ -285,7 +285,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
 
 
-  
+
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
@@ -305,7 +305,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           joinUser: data.joinIds,
           hostId: data.hostId
         }));
-        
+
 
       } else {
         console.error('Received data is not an array of messages:', data);
@@ -349,13 +349,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     socket.on("chatHistory", (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
       console.log("chatHistory 데이터 수신:", data);
-      if (Array.isArray(data)) {
-        setServerMessages(data);
+      if (data) {
+        setServerMessages(data.chatHistory);
 
-        console.log(data);
-
-      } else if (data) {
-        console.log("배열 아닌 데이터", data);
+        setModelPlusJoinId(prevState => ({
+          ...prevState,
+          joinUser: data.joinIds,
+          hostId: data.hostId
+        }));
       } else if (!data) {
         console.error("받아오는 데이터가 없습니다.");
         setServerMessages([]);
@@ -368,12 +369,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     socket.on("chatHistoryForUser", (data) => {
       // console.log("chatHistoryForUser 데이터 수신:", data);
-      if (Array.isArray(data)) {
-        setServerMessages(data);
-        console.log(data);
+      if (data) {
+        setServerMessages(data.chatHistory);
 
-      } else if (data) {
-        console.log("배열 아닌 데이터", data);
+        setModelPlusJoinId(prevState => ({
+          ...prevState,
+          joinUser: data.joinIds,
+          hostId: data.hostId
+        }));
       } else if (!data) {
         console.error("받아오는 데이터가 없습니다.");
         setServerMessages([]);
@@ -382,12 +385,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     socket.on("chatHistoryForOthers", (data) => {
       // console.log("chatHistoryForOthers 데이터 수신:", data);
-      if (Array.isArray(data)) {
-        setServerMessages(data);
-        console.log(data);
+      if (data) {
+        setServerMessages(data.chatHistory);
 
-      } else if (data) {
-        console.log("배열 아닌 데이터", data);
+        setModelPlusJoinId(prevState => ({
+          ...prevState,
+          joinUser: data.joinIds,
+          hostId: data.hostId
+        }));
       } else if (!data) {
         console.error("받아오는 데이터가 없습니다.");
         setServerMessages([]);
