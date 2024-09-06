@@ -101,6 +101,9 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         return;
       }
 
+      const joinIds = requesterId;
+      const hostId = requesterId;
+
       const chatHistory = selfMessages.map((message) => ({
         messageId: message.messageId,
         content: message.content,
@@ -109,7 +112,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         timestamp: message.createdAt,
       }));
       // 나와의 채팅방 메시지 전송
-      socket.emit("chatHistoryForUser", chatHistory);
+      socket.emit("chatHistoryForUser", { chatHistory, joinIds, hostId });
     } else {
       // 다른 사용자를 클릭한 경우
       const mutualChatRoomIds = await findMutualChatRoomsForUsers(
@@ -122,6 +125,30 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         socket.emit("chatHistory");
         return;
       }
+
+      //각자의 roomId 찾기
+      const requesterChatRooms = await ChatRoomParticipant.findAll({
+        attributes: ['roomId'],
+        where: { userId: requesterId }
+      });
+
+      const selectedUserChatRooms = await ChatRoomParticipant.findAll({
+        attributes: ['roomId'],
+        where: { userId: selectedUserId }
+      });
+
+      const requesterRoomIds = requesterChatRooms.map(participant => participant.roomId);
+      const selectedUserRoomIds = selectedUserChatRooms.map(participant => participant.roomId);
+
+      const roomId = requesterRoomIds.filter(roomId => selectedUserRoomIds.includes(roomId));
+
+      console.log('Common chat room IDs:', roomId);
+
+      const joinIds = [requesterId, selectedUserId];
+
+      // 호스트 정보 조회
+      const chatRoom = await ChatRoom.findOne({ where: { roomId } });
+      const hostId = chatRoom ? chatRoom.hostUserId : null;
 
       const messages = await Message.findAll({
         where: {
@@ -147,7 +174,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         timestamp: message.createdAt,
       }));
       // 다른 사용자와의 채팅방 메시지 전송
-      socket.emit("chatHistoryForOthers", chatHistory);
+      socket.emit("chatHistoryForOthers", { chatHistory, joinIds, hostId });
     }
   } catch (error) {
     socket.emit("error", {
