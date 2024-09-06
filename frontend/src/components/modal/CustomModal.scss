@@ -103,38 +103,47 @@
         &.ProfileSetting {
           gap: 5px !important;
           justify-content: center;
-        }
 
-        .AddTitle {
-          display: flex;
-
-          .div {
+          .ProfileAndPalette {
             display: flex;
-            align-items: center;
-            flex-direction: row-reverse;
-            width: 60px;
-            height: 33px;
-            font-size: 14px;
-            color: #929292;
-            font-weight: 300;
-            font-family: var(--font-family-Noto-M);
-            margin-right: 5px;
-            padding-right: 5px;
-          }
+            width: 210px;
+            justify-content: center;
+            flex-direction: row;
+            gap: 10px;
+            margin-bottom: 15px;
 
-          .employ_div {
-            display: flex;
-            align-items: center;
-            flex-direction: row-reverse;
-            width: 70px;
-            font-size: 14px;
-            color: #929292;
-            font-family: var(--font-family-Noto-M);
-            margin-right: 10px;
+            .Profile {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 24px;
+              color: #fff;
+              background-color: #ff8181;
+              border-radius: 50%;
+              height: 50px;
+              width: 50px;
+              border: 1px solid #dc5a31;
+              box-sizing: border-box;
+            }
+
+            .Palette {
+              width: 150px;
+              height: 50px;
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              gap: 1px;
+
+              div {
+                box-sizing: border-box;
+                height: 100%;
+                width: 100%;
+                cursor: pointer;
+              }
+            }
           }
 
           .TextInputCon {
-            width: 90%;
+            width: 100%;
             height: 33px;
             border: 1px solid #dcdcdc;
             border-radius: 5px;
@@ -164,6 +173,35 @@
 
           .TextInputCon2:focus {
             outline: none;
+          }
+        }
+
+        .AddTitle {
+          display: flex;
+
+          .div {
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse;
+            width: 60px;
+            height: 33px;
+            font-size: 14px;
+            color: #929292;
+            font-weight: 300;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 5px;
+            padding-right: 5px;
+          }
+
+          .employ_div {
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse;
+            width: 70px;
+            font-size: 14px;
+            color: #929292;
+            font-family: var(--font-family-Noto-M);
+            margin-right: 10px;
           }
         }
 
@@ -538,48 +576,13 @@
             }
           }
 
-          .ProfileAndPalette {
-            display: flex;
-            width: 210px;
-            justify-content: center;
-            flex-direction: row;
-            gap: 10px;
-            margin-bottom: 15px;
-
-            .Profile {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              font-size: 24px;
-              color: #fff;
-              background-color: #ff8181;
-              border-radius: 50%;
-              height: 50px;
-              width: 50px;
-              border: 1px solid #dc5a31;
-              box-sizing: border-box;
-            }
-
-            .Palette {
-              width: 150px;
-              height: 50px;
-              display: grid;
-              grid-template-columns: repeat(5, 1fr);
-              gap: 1px;
-
-              div {
-                box-sizing: border-box;
-                height: 100%;
-                width: 100%;
-                cursor: pointer;
-              }
-            }
-          }
+   
         }
 
         .ProfileSetting {
           display: flex;
           justify-content: center;
+          
         }
 
         .PeopleSearchCon {
