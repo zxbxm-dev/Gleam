@@ -14,7 +14,7 @@ async function getAttachmentsByEmailId(emailId){
     }catch(error){
         console.error("해당 이메일의 첨부파일을 조회하는 중 오류가 발생했습니다.:",error);
     }
-}
+};
 
 //이메일 첨부파일 저장 
 async function saveAttachments(attachments, emailId) {
@@ -30,7 +30,7 @@ async function saveAttachments(attachments, emailId) {
         });
         
     }));
-}
+};
 
 
 module.exports = { 

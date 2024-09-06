@@ -80,7 +80,7 @@ const junkController = async (req, res) => {
                 createdBy : userId,
             }
         })
-        res.status(200).json({message: "스팸주소록 조회가 완료되었습니다."});
+        res.status(200).json({message: "스팸주소록 조회가 완료되었습니다.", data : getAllJunkList });
     }catch(error){
         console.log(error)
         res.status(500).json({error : "스팸 주소록 조회에 실패했습니다."});
