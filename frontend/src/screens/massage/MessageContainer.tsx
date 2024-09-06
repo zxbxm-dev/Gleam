@@ -110,8 +110,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const ClickMsgSearch = useRecoilValue(SearchClickMsg);
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
-  const [joinUserData, setJoinUserdata] = useState<string[]>([]);
-  const [RoomhostId, setRoomHostId] = useState("");
   const [files, setFiles] = useState<File | null>(null);
 
   //메신저 보내기 Socket
@@ -286,14 +284,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   }, [personData, serverMessages]);
 
 
-  const setJoinUser = () => {
-    setModelPlusJoinId((prevState) => ({
-      ...prevState,
-      joinUser: joinUserData,
-      hostId: RoomhostId
-    }));
-  }
 
+  
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
@@ -306,9 +298,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     socket.on('chatHistory', (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
       if (Array.isArray(data.chatHistory)) {
         setServerMessages(data.chatHistory);
-        setJoinUserdata(data.joinIds);
-        setRoomHostId(data.hostId);
-        setJoinUser();
+        console.log(data.joinIds);
+
+        setModelPlusJoinId(prevState => ({
+          ...prevState,
+          joinUser: data.joinIds,
+          hostId: data.hostId
+        }));
+        
 
       } else {
         console.error('Received data is not an array of messages:', data);
