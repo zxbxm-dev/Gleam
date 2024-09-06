@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import CustomModal from "../../modal/CustomModal";
+import { useRecoilValue } from "recoil";
+import { selectedRoomIdState } from "../../../recoil/atoms";
+import { changeRoomData } from "../../../services/message/MessageApi";
 
 interface SetProfileProps {
     openProfile: boolean;
@@ -22,24 +25,34 @@ const ProfilePalette = [
 const SetProfile: React.FC<SetProfileProps> = ({ openProfile, setOpenProfile }) => {
     const [paletteIndex, setPaletteIndex] = useState<number | null>(null);
     const [profileName, setProfileName] = useState<string>("");
+    const selectedRoomId = useRecoilValue(selectedRoomIdState);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setProfileName(e.target.value);
     };
 
-    const handleSubmit = () => {
-        if (!profileName) {
-            alert("프로필 이름을 입력해주세요.");
+    const handleSubmit = async () => {
+        if (!profileName.trim() || paletteIndex === null) {
+            alert("대화방 이름과 프로필 색상을 모두 입력해주세요.");
             return;
         }
 
         const payload = {
-            colorIndex: paletteIndex,
-            title: profileName,
+            roomId: selectedRoomId,
+            othertitle: profileName,
+            profileColor: ProfilePalette[paletteIndex].color
         };
 
-        console.log("페이로드 >>", payload);
-        setOpenProfile(false);
+        console.log("Sending payload:", payload);
+
+        try {
+            await changeRoomData(payload.roomId, payload.othertitle, payload.profileColor);
+
+            handleCloseModal();
+        } catch (error) {
+            console.error("프로필 업데이트 실패:", error);
+            alert("프로필 업데이트에 실패했습니다. 다시 시도해주세요.");
+        }
     };
 
     const handleCloseModal = () => {

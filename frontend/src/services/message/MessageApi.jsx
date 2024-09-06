@@ -15,4 +15,13 @@ const changeAdminApi = (roomId, newAdminId, currentAdminId) => {
   });
 };
 
-export { createRoom, changeAdminApi };
+//단체방 프로필 수정
+const changeRoomData = (roomId, othertitle, profileColor) => {
+  return api.put("/putProfileData", {
+    roomId,
+    othertitle,
+    profileColor,
+  });
+};
+
+export { createRoom, changeAdminApi, changeRoomData };

@@ -122,7 +122,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
               <div className="No-Left">
                 <div
                   className="Border"
-                  style={{ border: "2px solid red" }}
+                  // style={{ border: "2px solid red" }}
                 >
                   <img
                     src={person.attachment ? person.attachment : UserIcon_dark}
@@ -173,7 +173,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                             <div className="No-Left">
                               <div
                                 className="Border"
-                                style={{ border: "2px solid red" }}
+                                // style={{ border: "2px solid red" }}
                               >
                                 <img
                                   src={person.attachment ? person.attachment : UserIcon_dark}
@@ -225,7 +225,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 <div className="No-Left">
                                   <div
                                     className="Border"
-                                    style={{ border: "2px solid red" }}
+                                    // style={{ border: "2px solid red" }}
                                   >
                                     <img
                                       src={person.attachment ? person.attachment : UserIcon_dark}
@@ -284,7 +284,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                     <div className="No-Left">
                       <div
                         className="Border"
-                        style={{ border: "2px solid red" }}
+                        // style={{ border: "2px solid red" }}
                       >
                         <img
                           src={person.attachment ? person.attachment : UserIcon_dark}

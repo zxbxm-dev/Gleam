@@ -249,6 +249,16 @@
           display: flex;
           align-items: center;
 
+          .Group-attach {
+            width: 35px;
+            height: 35px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+          }
+
           .Border {
             border-radius: 50px;
             margin-right: 10px;
@@ -367,6 +377,13 @@
   position: absolute;
   right: 24px;
   margin-top: 35px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+
+  span{
+    text-align: center;
+  }
 
   .ProfileChange {
     cursor: pointer;
