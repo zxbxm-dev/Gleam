@@ -9,6 +9,7 @@ import SetProfile from "./SetProfile";
 import { Person } from "../MemberSidebar";
 import { selectedRoomIdState, selectUserID, userState } from "../../../recoil/atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
+import io from 'socket.io-client';
 
 export interface ChatRoom {
   roomId: number;
@@ -126,8 +127,17 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     };
   }, []);
 
+
+  //채팅방 나가기
   const handleLeaveRoom = (roomId: number) => {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
+  
+    const userId = user.userID;
+  
     console.log(`Leaving room with id ${roomId}`);
+    socket.emit("exitRoom", roomId, userId);
     setVisiblePopoverIndex(null);
   };
 
@@ -140,7 +150,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 
   return (
     <div className="chat-data-tab">
-      <li
+      {/* <li
         className={`Noti-bar ${activeItem === -2 ? "active" : ""}`}
         onClick={() => {
           setSelectedChatRoom(-2);
@@ -151,7 +161,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
       >
         <img className="Noti-Icon" src={NotiIcon} alt="Notification Icon" />
         <div>통합 알림</div>
-      </li>
+      </li> */}
       <li
         className={`My-bar ${activeItem === 0 ? "active" : ""}`}
         onClick={() => {

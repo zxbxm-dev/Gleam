@@ -8,13 +8,14 @@ import {
   ScheduleIcon
 } from "../../assets/images/index";
 import io from 'socket.io-client';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import {
   selectedRoomIdState,
   userState,
   SearchClickMsg,
   selectUserID,
-  selectedPersonState
+  selectedPersonState,
+  NewChatModalstate
 } from '../../recoil/atoms';
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
@@ -100,7 +101,9 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const personSideGetmsg = useRecoilValue(selectUserID);
   const ClickMsgSearch = useRecoilValue(SearchClickMsg);
   const selectedPerson = useRecoilValue(selectedPersonState);
-
+  const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
+  const [joinUserData, setJoinUserdata] = useState<string[]>([]);
+const [RoomhostId, setRoomHostId] = useState("");
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
@@ -218,25 +221,41 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   }, [personData, serverMessages]);
 
 
+  const setJoinUser = () => {
+    setModelPlusJoinId((prevState) => ({
+      ...prevState,
+      joinUser: joinUserData,
+      hostId:RoomhostId
+    }));
+  }
+
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
+
+
+    // 채팅 기록 요청
     socket.emit('getChatHistory', selectedRoomId);
-    // console.log(selectedRoomId);
 
+    // chatHistory와 joinIds를 처리
+    socket.on('chatHistory', (data: { chatHistory: any[], joinIds: string[], hostId:string; }) => {
+      if (Array.isArray(data.chatHistory)) {
+        setServerMessages(data.chatHistory);
+        setJoinUserdata(data.joinIds);
+        setRoomHostId(data.hostId)
+        setJoinUser();
 
-    socket.on('chatHistory', (messages: any[]) => {
-      if (Array.isArray(messages)) {
-        setServerMessages(messages);
       } else {
-        console.error('Received data is not an array of messages:', messages);
+        console.error('Received data is not an array of messages:', data);
       }
     });
 
+    // 새 메시지 수신
     socket.on('message', (newMessage: any) => {
       setServerMessages(prevMessages => [...prevMessages, ...(Array.isArray(newMessage) ? newMessage : [newMessage])]);
     });
 
+    // 오류 처리
     socket.on('error', (error) => {
       console.error('Error fetching messages:', error);
     });
@@ -244,8 +263,9 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     return () => {
       socket.disconnect();
     };
-  }, [handleSendMessage]);
+  }, [selectedRoomId]);
 
+  // 메시지 컨테이너 스크롤
   useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
@@ -265,8 +285,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       socket.emit("personCheckMsg", { selectedUserId, requesterId });
     }
 
-    socket.on("chatHistory", (data) => {
-      // console.log("chatHistory 데이터 수신:", data);
+    socket.on("chatHistory", (data: { chatHistory: any[], joinIds: string[], hostId:string; }) => {
+      console.log("chatHistory 데이터 수신:", data);
       if (Array.isArray(data)) {
         setServerMessages(data);
 

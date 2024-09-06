@@ -265,9 +265,11 @@ const joinRoom = async (socket, roomId) => {
 };
 
 // 채팅방에서 나가기
-const exitRoom = (socket, roomId) => {
+const exitRoom = (socket, roomId, userId) => {
   socket.leave(roomId.toString());
-  console.log(`User ${socket.userId} left room ${roomId}`);
+  console.log(userId);
+  
+  console.log(`User ${userId} left room ${roomId}`);
 };
 
 module.exports = {
