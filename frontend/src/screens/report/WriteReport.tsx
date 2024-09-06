@@ -358,6 +358,9 @@ const WriteReport = () => {
       case '워크숍 신청서':
         newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
         break;
+      case '출장비내역서':
+        newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
+        break;
       case '지출내역서':
         newApprovalLines = user.company === '본사' ? SupportLines() : RDWriteLines();
         break;

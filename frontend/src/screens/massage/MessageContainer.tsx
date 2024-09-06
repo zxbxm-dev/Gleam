@@ -104,6 +104,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [joinUserData, setJoinUserdata] = useState<string[]>([]);
 const [RoomhostId, setRoomHostId] = useState("");
+
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
@@ -242,7 +243,7 @@ const [RoomhostId, setRoomHostId] = useState("");
       if (Array.isArray(data.chatHistory)) {
         setServerMessages(data.chatHistory);
         setJoinUserdata(data.joinIds);
-        setRoomHostId(data.hostId)
+        setRoomHostId(data.hostId);
         setJoinUser();
 
       } else {
@@ -364,6 +365,26 @@ const [RoomhostId, setRoomHostId] = useState("");
 
   // console.log(typeof ClickMsgSearch.messenger);
   // console.log(ClickMsgSearch.messenger.content);
+
+    // 메시지가 읽혔을 때 호출되는 함수
+    const handleReadMessage = useCallback((messageId: string) => {
+      
+      const socket = io('http://localhost:3001', { transports: ["websocket"] });
+
+      console.log(`읽은 메시지 ID: ${messageId}`); // 읽은 메시지 ID를 콘솔에 출력
+      socket.emit('messageRead', { messageId, userId: user.id });
+    }, [user.id]);
+  
+    // 메시지가 화면에 나타나면 읽은 것으로 간주
+    useEffect(() => {
+      if (serverMessages.length > 0) {
+        serverMessages.forEach((msg) => {
+          if (msg.userId !== user.id) {
+            handleReadMessage(msg.messageId); // 상대방의 메시지를 읽었을 때만 처리
+          }
+        });
+      }
+    }, [serverMessages, handleReadMessage, user.id]);
 
   return (
     <div

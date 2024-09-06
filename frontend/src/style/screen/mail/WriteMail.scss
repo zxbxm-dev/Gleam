@@ -391,9 +391,11 @@
 
 
 @include laptop {
-  .write_mail_content {
-    .write_mail_content_top {
-      gap: 0;
+  .write_mail_container {
+    .write_mail_content {
+      .write_mail_content_top {
+        gap: 0;
+      }
     }
   }
 }
