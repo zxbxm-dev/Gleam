@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Popover, PopoverTrigger, Portal, PopoverContent } from "@chakra-ui/react";
 import {
   XIcon,
   MessageMenu,
-  UserIcon_dark
+  UserIcon_dark,
+  RoomAdmin
 } from "../../assets/images/index";
 import { NewChatModalstate } from '../../recoil/atoms';
 import { useRecoilState } from 'recoil';
+import { Person } from '../../components/sidebar/MemberSidebar';
+import { PersonData } from '../../services/person/PersonServices';
 
 interface PeopleManagementProps {
   chatRoomPeopleManagement: boolean;
@@ -15,51 +18,45 @@ interface PeopleManagementProps {
 
 const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManagement, setChatRoomPeopleManagement }) => {
   const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
+  const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
+  const [personData, setPersonData] = useState<Person[] | null>(null);
+  const [chatModalUser, setChatModalUser] = useState<{ name: string; isHost: boolean; attachment: string | null }[]>([]);
 
-  const DummyPeoples = [
-    {
-      userId: "qwe1234c",
-      username: "테스트1",
-      usermail: "qwe1234@four-chains.com",
-      phoneNumber: "0101234324",
-      company: "본사",
-      department: "개발부",
-      team: "개발 1팀",
-      position: "사원",
-      spot: "사원",
-      question1: "1",
-      question2: "1",
-      attachment: null,
-      Sign: null,
-      status: "approved",
-      entering: "2024-07-29T00:00:00.000Z",
-      leavedate: null,
-      createdAt: "2024-07-29T11:29:54.000Z",
-      updatedAt: "2024-07-29T11:29:54.000Z",
-      isAdmin: false,
-    },
-    {
-      userId: "qwe12345d",
-      username: "테스트2",
-      usermail: "qwewq4e2@four-chains.com",
-      phoneNumber: "01012344444",
-      company: "본사",
-      department: "개발부",
-      team: "개발 1팀",
-      position: "사원",
-      spot: "사원",
-      question1: "1",
-      question2: "1",
-      attachment: null,
-      Sign: null,
-      status: "approved",
-      entering: "2024-07-29T00:00:00.000Z",
-      leavedate: null,
-      createdAt: "2024-07-29T11:30:34.000Z",
-      updatedAt: "2024-07-29T11:30:34.000Z",
-      isAdmin: false,
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await PersonData();
+        const approvedUser = response.data.filter((item: any) => item.status === 'approved');
+        const sortedData = approvedUser.sort((a: Person, b: Person) => new Date(a.entering).getTime() - new Date(b.entering).getTime());
+        setPersonData(sortedData);
+        
+        const userIds = Array.isArray(ChatModalOpenState.joinUser) ? ChatModalOpenState.joinUser : [ChatModalOpenState.joinUser];
+
+        const filteredData = sortedData.filter((person: Person) => userIds.includes(person.userId));
+        
+        const userTeams = filteredData.map((person: Person) => person.team ? person.team : person.department);
+        const userNames = filteredData.map((person: Person) => person.username);
+        const userAttachments = filteredData.map((person: Person) => person.attachment);
+        
+        const dataTeamDept = userTeams;
+
+        const updatedUsers = dataTeamDept.map((data: any, index: any) => {
+          const userName = userNames[index];
+          const userId = filteredData[index].userId;
+          const isHost = userId === ChatModalOpenState.hostId;
+          const attachment = userAttachments[index];
+          return { name: `${data} ${userName}`, isHost, attachment };
+        });
+
+        setChatModalUser(updatedUsers);
+        
+      } catch (err) {
+        console.error("Error fetching person data:", err);
+      }
+    };
+
+    fetchData();
+  }, [ChatModalOpenState.joinUser, ChatModalOpenState.hostId]);
 
   if (!chatRoomPeopleManagement) return null;
 
@@ -85,17 +82,19 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
         onClick={() => openModal()}
       >+ 인원 추가하기</div>
       <div className="ChatRoom-Members">
-        {DummyPeoples.map((onePerson, index) => (
+        {chatModalUser.map((user, index) => (
           <Popover key={index} placement="left-start">
             <div className="OneMember">
               <div className="AttachWithName">
                 <img
-                  src={UserIcon_dark}
+                  src={user.attachment?user.attachment:UserIcon_dark}
                   alt="UserIcon_dark"
                   className="AttachIcon"
                 />
-                <span>{onePerson.team} {onePerson.username}</span>
-                {onePerson.isAdmin && <div className="AdminIcon">admin</div>}
+                <div className='RommUserData'>
+                  {user.name}
+                  {user.isHost && <img src={RoomAdmin} alt="Admin Icon" />}
+                </div>
               </div>
               <PopoverTrigger>
                 <img

@@ -458,12 +458,14 @@ justify-content: space-between;
             margin-right: 10px;
             width: 30px;
             height: 30px;
+            border-radius: 50px;
           }
 
-          span {
+          .RommUserData {
             justify-content: center;
             align-items: center;
             display: flex;
+            gap: 5px;
           }
 
           .AdminIcon {
