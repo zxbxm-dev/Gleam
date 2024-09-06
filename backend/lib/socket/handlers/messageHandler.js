@@ -1,17 +1,19 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom } = models;
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 // 특정 사용자가 포함된 채팅방을 찾는 함수
 const findChatRoomsForUser = async (userId) => {
   try {
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
-      attributes: ['roomId'],
+      attributes: ["roomId"],
     });
 
     // 중복된 roomId 제거
-    const roomIds = [...new Set(chatRooms.map(participant => participant.roomId))];
+    const roomIds = [
+      ...new Set(chatRooms.map((participant) => participant.roomId)),
+    ];
     return roomIds;
   } catch (error) {
     throw new Error("채팅방 조회 오류");
@@ -24,8 +26,8 @@ const findMutualChatRoomsForUsers = async (userId1, userId2) => {
     const [user1Rooms, user2Rooms] = await Promise.all([
       findChatRoomsForUser(userId1),
       findChatRoomsForUser(userId2),
-    ]); 
-    return user1Rooms.filter(roomId => user2Rooms.includes(roomId));
+    ]);
+    return user1Rooms.filter((roomId) => user2Rooms.includes(roomId));
   } catch (error) {
     throw new Error("공통 채팅방 조회 오류");
   }
@@ -36,16 +38,22 @@ const findChatRoomsForMe = async (userId) => {
   try {
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
-      attributes: ['roomId'],
+      attributes: ["roomId"],
     });
 
-    const roomIds = [...new Set(chatRooms.map(participant => participant.roomId))];
+    const roomIds = [
+      ...new Set(chatRooms.map((participant) => participant.roomId)),
+    ];
 
     // 자신과의 채팅방 필터링 (참여자가 자기 자신인 방만 조회)
     const validRoomIds = [];
     for (const roomId of roomIds) {
-      const participants = await ChatRoomParticipant.findAll({ where: { roomId } });
-      const sameUserCount = participants.filter(p => p.userId === userId).length;
+      const participants = await ChatRoomParticipant.findAll({
+        where: { roomId },
+      });
+      const sameUserCount = participants.filter(
+        (p) => p.userId === userId
+      ).length;
 
       if (sameUserCount === participants.length) {
         validRoomIds.push(roomId);
@@ -80,7 +88,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         include: [
           {
             model: User,
-            as: 'User',
+            as: "User",
             attributes: ["userId", "username", "team"],
           },
         ],
@@ -93,7 +101,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         return;
       }
 
-      const chatHistory = selfMessages.map(message => ({
+      const chatHistory = selfMessages.map((message) => ({
         messageId: message.messageId,
         content: message.content,
         userId: message.User.userId,
@@ -104,7 +112,10 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       socket.emit("chatHistoryForUser", chatHistory);
     } else {
       // 다른 사용자를 클릭한 경우
-      const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
+      const mutualChatRoomIds = await findMutualChatRoomsForUsers(
+        requesterId,
+        selectedUserId
+      );
 
       if (mutualChatRoomIds.length === 0) {
         // 공통 채팅방이 없으면 별도의 이벤트 전송
@@ -121,14 +132,14 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         include: [
           {
             model: User,
-            as: 'User',
+            as: "User",
             attributes: ["userId", "username", "team"],
           },
         ],
         order: [["createdAt", "ASC"]],
       });
 
-      const chatHistory = messages.map(message => ({
+      const chatHistory = messages.map((message) => ({
         messageId: message.messageId,
         content: message.content,
         userId: message.User.userId,
@@ -139,7 +150,9 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       socket.emit("chatHistoryForOthers", chatHistory);
     }
   } catch (error) {
-    socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });
+    socket.emit("error", {
+      message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요.",
+    });
   }
 };
 
@@ -152,7 +165,7 @@ const getChatHistory = async (socket, roomId) => {
       include: [
         {
           model: User,
-          as: 'User',
+          as: "User",
           attributes: ["userId", "username", "team"],
         },
       ],
@@ -162,30 +175,36 @@ const getChatHistory = async (socket, roomId) => {
     // 채팅방 참가자 정보 조회
     const participants = await ChatRoomParticipant.findAll({
       where: { roomId },
-      attributes: ["userId", "username", "department", "team", "position"],
+      include: [
+        {
+          model: User,
+          as: "User",
+          attributes: ["userId", "username", "department", "team", "position"],
+        },
+      ],
     });
 
     // 참가자 정보를 빠르게 조회할 수 있도록 객체로 변환
     const participantMap = participants.reduce((acc, participant) => {
-      acc[participant.userId] = participant;
+      acc[participant.User.userId] = participant.User; // 올바르게 User 객체를 매핑
       return acc;
     }, {});
 
     // 참가자의 userId를 joinIds로 설정
-    const joinIds = participants.map(participant => participant.userId);
+    const joinIds = participants.map((participant) => participant.User.userId);
 
-    // 호스트 정보 조회 (여기서 ChatRoom이 데이터베이스에서 호스트 정보를 조회하는 부분을 구현해야 합니다)
+    // 호스트 정보 조회
     const chatRoom = await ChatRoom.findOne({ where: { roomId } });
     const hostId = chatRoom ? chatRoom.hostUserId : null;
 
     // 메시지와 참가자 정보를 합치기
-    const chatHistory = messages.map(message => {
+    const chatHistory = messages.map((message) => {
       const participant = participantMap[message.User.userId];
       return {
         messageId: message.messageId,
         content: message.content,
         userId: message.User.userId,
-        username: `${participant?.team || ''} ${participant?.username || ''}`,
+        username: `${participant?.team || ""} ${participant?.username || ""}`,
         timestamp: message.createdAt,
       };
     });
@@ -194,10 +213,11 @@ const getChatHistory = async (socket, roomId) => {
     socket.emit("chatHistory", { chatHistory, joinIds, hostId });
   } catch (error) {
     console.error("채팅 기록 조회 오류:", error);
-    socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });
+    socket.emit("error", {
+      message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요.",
+    });
   }
 };
-
 
 // 채팅방의 모든 참가자에게 메시지를 전송하는 함수
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
@@ -205,21 +225,24 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
     let room = await ChatRoom.findOne({ where: { roomId } });
 
     if (!room) {
-      console.error(`방 ${roomId}이 존재하지 않습니다. 새로운 방을 생성합니다.`);
+      console.error(
+        `방 ${roomId}이 존재하지 않습니다. 새로운 방을 생성합니다.`
+      );
       room = await ChatRoom.create({
         roomId,
         isGroup: false,
         hostUserId: senderId,
-        hostName: '시스템',
-        hostDepartment: '시스템',
-        hostTeam: '시스템',
-        hostPosition: '시스템',
-        title: '새로운 방',
+        hostName: "시스템",
+        hostDepartment: "시스템",
+        hostTeam: "시스템",
+        hostPosition: "시스템",
+        title: "새로운 방",
       });
     }
 
     const participants = await ChatRoomParticipant.findAll({
       where: { roomId },
+      attributes: ["userId", "username", "department", "team", "position"],
     });
 
     if (participants.length === 0) {
@@ -253,7 +276,6 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
   }
 };
 
-
 // 클라이언트로 새로운 메시지 전송을 위한 별도 함수
 const broadcastNewMessage = (io, roomId, content, senderId) => {
   try {
@@ -269,5 +291,5 @@ module.exports = {
   sendMessageToRoomParticipants,
   broadcastNewMessage,
   findMutualChatRoomsForUsers,
-  findChatRoomsForMe
+  findChatRoomsForMe,
 };
