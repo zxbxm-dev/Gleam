@@ -242,7 +242,7 @@ const [RoomhostId, setRoomHostId] = useState("");
       if (Array.isArray(data.chatHistory)) {
         setServerMessages(data.chatHistory);
         setJoinUserdata(data.joinIds);
-        setRoomHostId(data.hostId)
+        setRoomHostId(data.hostId);
         setJoinUser();
 
       } else {
