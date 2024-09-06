@@ -145,7 +145,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         timestamp: message.createdAt,
       }));
 
-      socket.emit("chatHistoryForOthers", {chatHistory, joinIds, hostId}); // 다른 사용자와의 채팅방 메시지 전송
+      socket.emit("chatHistoryForOthers", chatHistory); // 다른 사용자와의 채팅방 메시지 전송
     }
   } catch (error) {
     socket.emit("error", { message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요." });
