@@ -843,11 +843,11 @@ const Mail = () => {
                         <span>[{mail.folder === 'inbox' ? '받은 메일함' : mail.folder === 'sent' ? '보낸 메일함' : mail.folder === 'starred' ? '중요 메일함' : mail.folder === 'unread' ? '안 읽은 메일' : mail.folder === 'drafts' ? '임시 보관함' : mail.folder === 'junk' ? '스팸 메일함' : mail.folder === 'queue' ? '예약 메일함' : ''}]</span>
                         {mail.folder === 'drafts' ? 
                           <div onClick={() => navigate('/writeMail', { state: { mail, status: 'DRAFTS' }})}>
-                            {mail?.subject}--{mail?.Id}
+                            {mail?.subject}
                           </div>
                         :
                           <div className={`${clickedMails[mail.Id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.Id)}>
-                            {mail?.subject}--{mail?.Id}
+                            {mail?.subject}
                             <img src={mail_triangle} alt="mail_triangle" />
                           </div>
                         }
