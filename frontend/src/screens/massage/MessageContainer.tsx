@@ -5,7 +5,23 @@ import {
   FileIcon,
   MailIcon,
   WorkReportIcon,
-  ScheduleIcon
+  ScheduleIcon,
+  mail_attachment_hwp,
+  mail_attachment_word,
+  mail_attachment_xlsx,
+  mail_attachment_pdf,
+  mail_attachment_ppt,
+  mail_attachment_txt,
+  mail_attachment_jpg,
+  mail_attachment_png,
+  mail_attachment_gif,
+  mail_attachment_svg,
+  mail_attachment_zip,
+  mail_attachment_mp3,
+  mail_attachment_mp4,
+  mail_attachment_avi,
+  FileUserDown,
+  FileMyDown
 } from "../../assets/images/index";
 import io from 'socket.io-client';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -26,11 +42,7 @@ interface MessageContainerProps {
   selectedPerson: any;
   isAtBottom: boolean;
   scrollToBottom: () => void;
-  handleFileDrop: (event: React.DragEvent<HTMLDivElement>) => void;
   handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
-  handleInput: (e: React.FormEvent<HTMLDivElement>) => void;
-  files: File | null;
-  setFiles: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 const NoticeIcons: { [key: string]: string } = {
@@ -80,11 +92,7 @@ const formatTime = (timestamp: string): string => {
 const MessageContainer: React.FC<MessageContainerProps> = ({
   isAtBottom,
   scrollToBottom,
-  handleFileDrop,
   handleDragOver,
-  handleInput,
-  files,
-  setFiles,
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const [serverMessages, setServerMessages] = useState<any[]>([]);
@@ -104,77 +112,133 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [joinUserData, setJoinUserdata] = useState<string[]>([]);
   const [RoomhostId, setRoomHostId] = useState("");
+  const [files, setFiles] = useState<File | null>(null);
 
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
-    if (inputElement && inputElement.innerHTML.trim() !== "") {
-      const message = inputElement.innerHTML.trim();
+    let messageContent: string;
 
-      let messageData;
-      if (selectedRoomId === -1) {
-        messageData = {
-          invitedUserIds: [selectedPerson.userId],
-          userId: user.id,
-          content: message,
-          hostUserId: null,
-          name: null
-        };
-      } else if (selectedPerson.userId === user.userID) {
-        messageData = {
-          roomId: null,
-          userId: user.id,
-          content: message,
-        };
-      } else if (selectedRoomId === 0) {
-        messageData = {
-          roomId: null,
-          userId: user.id,
-          content: message,
-        };
-      } else {
-        messageData = {
-          roomId: selectedRoomId,
-          senderId: user.id,
-          content: message,
-        };
-      }
-      console.log(messageData);
-
-      emitMessage(messageData);
-      setMessages(prevMessages => [
-        ...prevMessages,
-        {
-          name: user.username,
-          id: user.id,
-          msg: message,
-          team: user.team || "",
-          department: user.department || "",
-          position: user.position || "",
-        }
-      ]);
-
-      setFiles(null);
-      inputElement.innerHTML = "";
-
-      setTimeout(() => {
-        ChatTabGetMessage();
-        PersonSideGetMessage();
-      }, 200);
+    if (files) {
+      messageContent = files.name;
+    } else if (inputElement && inputElement.innerHTML.trim() !== "") {
+      messageContent = inputElement.innerHTML.trim();
+    } else {
+      return;
     }
-  }, [selectedRoomId, selectedPerson, user]);
+
+    let messageData;
+    if (selectedRoomId === -1) {
+      messageData = {
+        invitedUserIds: [selectedPerson.userId],
+        userId: user.id,
+        content: messageContent,
+        hostUserId: null,
+        name: null,
+      };
+    } else if (selectedPerson.userId === user.userID) {
+      messageData = {
+        roomId: null,
+        userId: user.id,
+        content: messageContent,
+      };
+    } else if (selectedRoomId === 0) {
+      messageData = {
+        roomId: null,
+        userId: user.id,
+        content: messageContent,
+      };
+    } else {
+      messageData = {
+        roomId: selectedRoomId,
+        senderId: user.id,
+        content: messageContent,
+      };
+    }
+    console.log(messageData);
+
+    emitMessage(messageData);
+    setMessages(prevMessages => [
+      ...prevMessages,
+      {
+        name: user.username,
+        id: user.id,
+        msg: messageContent,
+        team: user.team || "",
+        department: user.department || "",
+        position: user.position || "",
+      }
+    ]);
+
+    setFiles(null);
+    inputElement.innerHTML = "";
+
+    setTimeout(() => {
+      ChatTabGetMessage();
+      PersonSideGetMessage();
+    }, 200);
+  }, [selectedRoomId, selectedPerson, user, files]);
 
 
   const emitMessage = (messageData: any) => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
+
+    if (messageData.file) {
+      const formData = new FormData();
+      formData.append('file', messageData.file);
+      formData.append('fileName', messageData.fileName);
+      formData.append('userId', messageData.userId);
+      formData.append('roomId', messageData.roomId);
+
+      socket.emit('uploadFile', formData);
+    }
+
     if (selectedRoomId === -1) {
       socket.emit("createPrivateRoom", messageData);
     } else {
       socket.emit("sendMessage", messageData);
       console.log(messageData);
-
     }
   };
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const inputElement = e.target as HTMLDivElement;
+    if (inputElement.innerText.trim() === "" && inputElement.childNodes.length === 1 && inputElement.childNodes[0].nodeName === "BR") {
+      inputElement.innerHTML = "";
+    }
+  };
+
+  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setFiles(event.dataTransfer.files[0]);
+  };
+
+  const fileIcons: { [key: string]: string } = {
+    hwp: mail_attachment_hwp,
+    doc: mail_attachment_word,
+    docx: mail_attachment_word,
+    xls: mail_attachment_xlsx,
+    xlsx: mail_attachment_xlsx,
+    pdf: mail_attachment_pdf,
+    ppt: mail_attachment_ppt,
+    pptx: mail_attachment_ppt,
+    txt: mail_attachment_txt,
+    jpg: mail_attachment_jpg,
+    jpeg: mail_attachment_jpg,
+    png: mail_attachment_png,
+    gif: mail_attachment_gif,
+    svg: mail_attachment_svg,
+    zip: mail_attachment_zip,
+    mp3: mail_attachment_mp3,
+    mp4: mail_attachment_mp4,
+    avi: mail_attachment_avi,
+  };
+
+  const getFileIcon = (fileName: string): string => {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    return fileIcons[extension || ''] || mail_attachment_txt;
+  };
+
 
   const handleInputKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -405,8 +469,15 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 <div className="MsgTimeBox">
                   {messageMetadata.userInfo[index] &&
                     <div className={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
-                      {msg.content || ""}
+                      <div className='WhiteBox'>
+                        {/* 서버에서 받아온 파일이 있을 경우로 바꾸기 */}
+                        {files && <img src={getFileIcon(files.name)} alt="File Icon" />}
+                      </div>
+                      <div>{msg.content || ""}</div>
                       {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
+                      <div className='FileDown'>
+                        {files && <img src={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />}
+                      </div>
                     </div>
                   }
                   <div className="MsgTime">
@@ -452,7 +523,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 onInput={handleInput}
                 onKeyDown={handleInputKeyPress}
                 data-placeholder="메시지를 입력하세요. (Enter로 전송 / Shift + Enter로 개행)"
-              />
+              >
+                {files ? files.name : ""}
+              </div>
+
               <div className='InputRight'>
                 <div className="underIcons">
                   <label htmlFor="file-upload" style={{ cursor: "pointer", display: "flex" }}>
@@ -460,7 +534,12 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                       id="file-upload"
                       type="file"
                       accept="*"
-                      onChange={(event) => setFiles(event.target.files ? event.target.files[0] : null)}
+                      onChange={(event) => {
+                        const file = event.target.files ? event.target.files[0] : null;
+                        if (file) {
+                          setFiles(file);
+                        }
+                      }}
                       style={{ display: "none" }}
                     />
                     <div className="fileIconBox">
