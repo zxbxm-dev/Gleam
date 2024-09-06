@@ -133,9 +133,9 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const socket = io('http://localhost:3001', {
       transports: ['websocket'],
     });
-  
+
     const userId = user.userID;
-  
+
     console.log(`Leaving room with id ${roomId}`);
     socket.emit("exitRoom", roomId, userId);
     setVisiblePopoverIndex(null);
@@ -214,9 +214,9 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                         : chatRoom.othertitle}
                     </p> */}
                     <p className="FontName">
-                      {chatRoom.dataValues?.isGroup
+                      {chatRoom.dataValues?.isGroup && chatRoom.othertitle
                         ? Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ')
-                        : Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ')}
+                        : chatRoom.othertitle ? Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ') : "No Title"}
                     </p>
                   </div>
                   <img
