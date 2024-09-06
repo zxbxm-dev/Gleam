@@ -231,44 +231,35 @@ const sendUserChatRooms = async (socket, userId) => {
 
     for (const participant of chatRooms) {
       const roomId = participant.ChatRoom.roomId;
+      const room = participant.ChatRoom;
 
-      // 채팅방의 참가자 목록을 조회
-      const participants = await ChatRoomParticipant.findAll({
-        where: { roomId },
-        attributes: ["userId"],
-      });
+      // // 채팅방의 참가자 목록을 조회
+      // const participants = await ChatRoomParticipant.findAll({
+      //   where: { roomId },
+      //   attributes: ["userId"],
+      // });
 
-      // 참가자가 여러 명일 경우
-      if (participants.length > 1) {
-        // 중복된 참가자가 있는지 체크
-        const participantCount = participants.reduce((countMap, p) => {
-          countMap[p.userId] = (countMap[p.userId] || 0) + 1;
-          return countMap;
-        }, {});
+      if (!roomParticipantsMap[roomId]) {
+        const roomData = room.toJSON();
+        const userTitle = parseUserTitle(roomData.userTitle, userId);
 
-        const hasDuplicates = Object.values(participantCount).some(
-          (count) => count > 1
-        );
-
-        // 중복된 참가자가 있는 채팅방은 제외
-        if (!hasDuplicates) {
-          if (!roomParticipantsMap[roomId]) {
-            const room = participant.ChatRoom;
-            const roomData = room.toJSON();
-            const userTitle = parseUserTitle(roomData.userTitle, userId);
-            const othertitle = getOthertitle(roomData, userTitle, userId);
-
-            roomParticipantsMap[roomId] = {
-              othertitle,
-              userTitle,
-              dataValues: roomData,
-            };
-          }
+        // 단체방인 경우 ChatRoom의 title을 사용
+        let othertitle;
+        if (roomData.isGroup) {
+          othertitle = roomData.title; // 단체방 제목 사용
+        } else {
+          othertitle = getOthertitle(roomData, userTitle, userId); // 개인방은 기존 방식대로 처리
         }
+
+        roomParticipantsMap[roomId] = {
+          othertitle,
+          userTitle,
+          dataValues: roomData,
+        };
       }
     }
 
-    // 필터링된 채팅방 목록을 클라이언트에 전송합니다.
+    // 필터링된 채팅방 목록을 클라이언트에 전송
     socket.emit("chatRooms", Object.values(roomParticipantsMap));
     console.log("최종 채팅방 목록:", Object.values(roomParticipantsMap));
   } catch (error) {
