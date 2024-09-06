@@ -21,7 +21,7 @@ const Message: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] = useState<boolean>(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
-  const [files, setFiles] = useState<File | null>(null);
+
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
@@ -69,18 +69,6 @@ const Message: React.FC = () => {
       socket.emit("joinRoom", selectedRoomId);
     }
   }, [selectedRoomId]);
-
-  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
-    const inputElement = e.target as HTMLDivElement;
-    if (inputElement.innerText.trim() === "" && inputElement.childNodes.length === 1 && inputElement.childNodes[0].nodeName === "BR") {
-      inputElement.innerHTML = "";
-    }
-  };
-
-  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setFiles(event.dataTransfer.files[0]);
-  };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -138,11 +126,7 @@ const Message: React.FC = () => {
         selectedPerson={selectedPerson}
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
-        handleFileDrop={handleFileDrop}
         handleDragOver={handleDragOver}
-        handleInput={handleInput}
-        files={files}
-        setFiles={setFiles}
       />
       <PeopleManagement
         chatRoomPeopleManagement={chatRoomPeopleManagement}

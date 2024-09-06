@@ -183,12 +183,48 @@
               background-color: rgba(69, 197, 82, 0.75);
               padding: 12px 15px;
               border-radius: 0px 5px 5px 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              .WhiteBox{
+                width: 40px;
+                height: 40px;
+                border-radius: 15px;
+                background-color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 10px;
+              }
+              .FileDown{
+                margin-left: 10px;
+                cursor: pointer;
+              }
             }
 
             .userMsgBox {
               background-color: #EFEFEF;
               padding: 12px 15px;
               border-radius: 0px 5px 5px 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              .WhiteBox{
+                width: 40px;
+                height: 40px;
+                border-radius: 15px;
+                background-color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 10px;
+              }
+              .FileDown{
+                margin-left: 10px;
+                cursor: pointer;
+              }
             }
 
             .MsgTime {
