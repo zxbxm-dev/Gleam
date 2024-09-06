@@ -3,7 +3,7 @@ import CustomModal from "../../components/modal/CustomModal";
 import {
   FourchainsLogo,
 } from "../../assets/images/index";
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
 
 interface Mobile {
@@ -13,13 +13,19 @@ interface Mobile {
 
 
 const MobileCard: React.FC<Mobile> = ({ isMobileCardModal, setIsMobileCardModal }) => {
-  const user = useRecoilValue(userState);
-  const [isMobileCard, setIsMobileCard] = useState("사용 함");
+  const [user, setUserState] = useRecoilState(userState);
+  const [isMobileCard, setIsMobileCard] = useState(user?.MobileCard);
 
   const handleUseMoileCard = (e: any) => {
     const selectedCompany = e.target.value;
     setIsMobileCard(selectedCompany);
+
+    const updatedUserState = { ...user, MobileCard: selectedCompany };
+    setUserState(updatedUserState);
+
+    localStorage.setItem('userState', JSON.stringify(updatedUserState));
   };
+  
   return (
     <div>
       <CustomModal
@@ -33,19 +39,19 @@ const MobileCard: React.FC<Mobile> = ({ isMobileCardModal, setIsMobileCardModal 
           <div className="mobile_card_wrap">
             <fieldset className="Field" onChange={handleUseMoileCard}>
               <label className="custom-radio">
-                <input type="radio" name="MobileCard" value="사용 함" checked={isMobileCard === '사용 함'}/>
+                <input type="radio" name="MobileCard" value="사용 함" checked={isMobileCard === "사용 함"}/>
                 <span>사용 함</span>
                 <span className="checkmark"></span>
               </label>
               <label className="custom-radio">
-                <input type="radio" name="MobileCard" value="사용 안함" checked={isMobileCard === '사용 안함'}/>
+                <input type="radio" name="MobileCard" value="사용 안함" checked={isMobileCard === "사용 안함"}/>
                 <span>사용 안함</span>
                 <span className="checkmark"></span>
               </label>
             </fieldset>
           </div>
 
-          {isMobileCard === '사용 함' &&
+          {isMobileCard ==='사용 함' &&
             <div className="mobile_card_content">
               <div>
                 예시 이메일 데이터입니다. <br/>
