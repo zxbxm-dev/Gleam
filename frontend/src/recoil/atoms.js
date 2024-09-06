@@ -30,6 +30,7 @@ const getUserStateFromLocalStorage = () => {
         entering: "",
         attachment: "",
         Sign: "",
+        MobileCard: "사용 안함",
       };
 };
 

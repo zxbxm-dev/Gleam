@@ -4,6 +4,7 @@ import {
   White_Arrow,
   ModalCloseBtn,
   mail_add_receiver,
+  FourchainsLogo,
 } from "../../assets/images/index";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
@@ -528,6 +529,27 @@ const WriteMail = () => {
       }
     }
   }, [mail, status, user]);
+
+  useEffect(() => {
+    if (user?.MobileCard === '사용 함') {
+      if (editorRef.current) {
+        const customContent = `
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <span><img src="${FourchainsLogo}" alt="FourchainsLogo"/></span>
+          <div><span style='font-size: 11px; font-weight: bold'>${user?.username}</span> <span style='font-size: 10px; color: #494949'>${user?.team ? user?.team : user?.department ? user?.department : '포체인스'} / ${user?.position}</span></div>
+          <div><span style='font-size: 11px; font-weight: bold'>Tel</span> <span style='font-size: 10px; color: #494949'>+82 ${user?.phoneNumber}</span></div>
+          <div><span style='font-size: 11px; font-weight: bold'>Mobile</span> <span style='font-size: 10px; color: #494949'>+82 ${user?.phoneNumber}</span></div>
+          <div><span style='font-size: 11px; font-weight: bold'>Email</span> <span style='font-size: 10px; color: #494949'>${user?.usermail}</span></div>
+          <div><span style='font-size: 10px; color: #494949'>경기 고양시 일산서구 킨텍스로 217-59 오피스동 703호</span></div>
+        `;
+  
+        editorRef.current.getInstance().setHTML(customContent);
+      }
+    }
+  }, []);
 
   return(
     <div className="content">
