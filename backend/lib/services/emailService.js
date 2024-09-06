@@ -41,7 +41,7 @@ async function fetchMailcowEmails(userId) {
             if(err) throw err;
 
             // 읽지 않은 메일만 검색
-            imap.search(['UNSEEN'], (err, results) => {
+            imap.search(['ALL'], (err, results) => {
                 if (err) throw err;
 
 
@@ -259,7 +259,7 @@ function saveSentMail(imap, mailOptions) {
 }
 
 // SMTP를 통한 이메일 전송 함수 추가
-async function sendEmail(to, subject, body,userId, attachments = [], messageId,) {
+async function sendEmail(to, subject, body,userId, attachments = [], messageId, cc) {
 
 
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
@@ -284,6 +284,7 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId,)
         userId: userId,
         from: email,
         to: to,
+        cc: cc,
         subject: subject,
         text: body,
         html: body,
