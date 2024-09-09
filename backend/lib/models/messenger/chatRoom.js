@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      isSelfChat: {  // 개인 채팅방
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       hostUserId: {
         type: DataTypes.STRING,
         allowNull: false,
