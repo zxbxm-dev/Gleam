@@ -9,16 +9,10 @@ module.exports = (sequelize, DataTypes) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
-            //email 테이블 emailId 외래키 설정
-            emailId:{
-                type: DataTypes.INTEGER,
+            messageId: {
+                type:DataTypes.STRING,
                 allowNull: false,
-                references:{
-                    model: 'email',
-                    key: "Id",
-                },
-                ondelete: 'CASCADE',
-                onupdate: 'CASCADE'
+                unique: true,
             },
             //user테이블 userId 외래키 설정
             userId: {

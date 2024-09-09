@@ -1,6 +1,7 @@
 const Imap = require("node-imap");
 const nodemailer = require("nodemailer")
 const { simpleParser } = require("mailparser");
+
 const models = require("../models");
 const Email = models.Email;
 const EmailAttachment = models.EmailAttachment;
@@ -28,20 +29,21 @@ async function fetchMailcowEmails(userId) {
     const email = userId + "@gleam.im";
     const password = 'math123!!'
 
+
     const imap = await connectIMAP(userId, password); //IMAP 연결
 
-    imap.once('ready', () => {
+    imap.once('ready', async () => {
         // imap.getBoxes((err, boxes) => {
         //     if (err) throw err;
         //     console.log('>>>>>>>사용 가능한 폴더 목록:', boxes);
         // });
 
 
-        imap.openBox('INBOX', true, (err, box) => {
+        imap.openBox('INBOX', true, async (err, box) => {
             if(err) throw err;
 
             // 읽지 않은 메일만 검색
-            imap.search(['ALL'], (err, results) => {
+            imap.search(['ALL'],  async (err, results) => {
                 if (err) throw err;
 
 
@@ -50,7 +52,6 @@ async function fetchMailcowEmails(userId) {
                     imap.end();
                     return;
                 }
-
 
                 fetchEmails(imap, userId, 'inbox', () => {
                     imap.openBox('Sent', true, (err, box) => {
