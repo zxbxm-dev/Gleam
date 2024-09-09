@@ -33,7 +33,25 @@ const starringEmail = async (req, res) => {
     };
 };
 
+//이메일 삭제한 로그 등록
+const deletedLog = async(req, res, emailId, userId, messageId) => {
+    const actionTimeStamp = new Date();
+    const newDeletedLog = await EmailAction.create({
+        emailId,
+        messageId,
+        userId,
+        action: 'deleted',
+        actionTimeStamp,
+    });
+
+    return res.status(200).json({ message: '이메일 삭제 로그가 성공적으로 작성되었습니다.', newDeleteLog: newDeletedLog});
+
+}
+
+
 
 module.exports = {
     starringEmail,
+    deletedLog,
+
 }
