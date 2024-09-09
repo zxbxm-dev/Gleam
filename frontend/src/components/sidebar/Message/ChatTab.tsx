@@ -18,6 +18,7 @@ export interface ChatRoom {
   invitedUserIds: string[];
   title: string;
   othertitle: string;
+  isSelfChat: boolean;
   userTitle?: {
     [userId: string]: {
       userId: string;
@@ -69,9 +70,9 @@ interface ChatDataTabProps {
   chatRooms: ChatRoom[];
   setIsNotibarActive: React.Dispatch<React.SetStateAction<boolean | null>>;
   borderColor: string;
-  handleLeaveRoom:(roomId: number) => void;
-  visiblePopoverIndex:number | null;
-  setVisiblePopoverIndex:Dispatch<SetStateAction<number | null>>;
+  handleLeaveRoom: (roomId: number) => void;
+  visiblePopoverIndex: number | null;
+  setVisiblePopoverIndex: Dispatch<SetStateAction<number | null>>;
 }
 
 const ChatDataTab: React.FC<ChatDataTabProps> = ({
@@ -108,11 +109,18 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const roomId = chatRoom.dataValues?.roomId ?? -1;
 
     setSelectedRoomId(roomId);
-    onPersonClick("", chatRoom.othertitle ?? "", "", position, chatRoom.hostUserId);
+
+    if (chatRoom.isSelfChat) {
+      onPersonClick(user.username ?? "", user.team, user.department, user.position, user.userID);
+    } else {
+      onPersonClick("", chatRoom.othertitle ?? "", "", position, chatRoom.hostUserId);
+    }
+
     setIsNotibarActive(false);
     setActiveItem(roomId);
     setSelectedUserIdstate({ userID: "" });
   };
+
 
   const handleMessageMenuClick = (index: number, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -156,7 +164,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
         <img className="Noti-Icon" src={NotiIcon} alt="Notification Icon" />
         <div>통합 알림</div>
       </li> */}
-      <li
+      {/* <li
         className={`My-bar ${activeItem === 0 ? "active" : ""}`}
         onClick={() => {
           onPersonClick(
@@ -184,9 +192,14 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           {userTeam ? `${userTeam}` : `${userDepartment}`} {userName}
         </div>
         <img className="Message-Me" src={MessageMe} alt="Message Me" />
-      </li>
+      </li> */}
       {chatRooms
-        .sort((a, b) => new Date(b.upt).getTime() - new Date(a.upt).getTime())
+        .sort((a, b) => {
+          if (a.isSelfChat && !b.isSelfChat) return -1;
+          if (!a.isSelfChat && b.isSelfChat) return 1;
+
+          return new Date(b.upt).getTime() - new Date(a.upt).getTime();
+        })
         .map((chatRoom, index) => {
           const roomId = chatRoom.dataValues?.roomId ?? -1;
           const isPopoverVisible = visiblePopoverIndex === index;
@@ -197,37 +210,38 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           return (
             <div key={`${roomId}-${index}`}>
               <div
-                className={`ChatLog ${isActive ? "active" : ""}`}
+                className={`ChatLog ${isActive ? "active" : ""} ${chatRoom.isSelfChat ? "MyLog" : ""}`}
                 onClick={() => handleChatRoomClick(chatRoom)}
               >
                 <div className="LogBox">
                   <div className="Left">
-                    {chatRoom.dataValues?.isGroup ?
-                      <div className="Group-attach"
+                    {chatRoom.dataValues?.isGroup ? (
+                      <div
+                        className="Group-attach"
                         style={{
                           backgroundColor: chatRoom.dataValues?.profileColor || "gray"
                         }}
                       >
                         {firstLetter}
                       </div>
-                      :
-                      <div
-                        className="Border"
-                      // style={{ border: "2px solid red" }}
-                      >
+                    ) : (
+                      <div className="Border">
                         <img className="My-attach" src={attachment} alt="User Icon" />
                       </div>
-                    }
-
-                    {/* <p className="FontName">
-                      {chatRoom.dataValues?.isGroup
-                        ? `${chatRoom.othertitle}`
-                        : chatRoom.othertitle}
-                    </p> */}
+                    )}
                     <p className="FontName">
-                      {chatRoom.dataValues?.isGroup && chatRoom.othertitle
-                        ? Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ')
-                        : chatRoom.othertitle ? Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ') : "No Title"}
+                      {chatRoom.isSelfChat ? (
+                        <div className="NameFlex">
+                          {user.team ? user.team : user.department} {user.username}{' '}
+                          <img className="Message-Me" src={MessageMe} alt="Message Me" />
+                        </div>
+                      ) : chatRoom.dataValues?.isGroup && chatRoom.othertitle ? (
+                        Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ')
+                      ) : chatRoom.othertitle ? (
+                        Array.from(new Set(chatRoom.othertitle.split(' '))).join(' ')
+                      ) : (
+                        "No Title"
+                      )}
                     </p>
                   </div>
                   <img
@@ -236,19 +250,21 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     alt="Message Menu"
                     onClick={(e) => handleMessageMenuClick(index, e)}
                   />
-{isPopoverVisible && (
-  <>
-    <div
-      className="ChatRoomSide_popover"
-      ref={(el) => (popoverRefs.current[index] = el)}
-    >
-      <span onClick={() => handleLeaveRoom(roomId)}>대화 나가기</span>
-      {chatRoom.dataValues?.isGroup && (
-        <span onClick={() => setOpenProfile(true)}>대화방 프로필 설정</span>
-      )}
-    </div>
-  </>
-)}
+                  {isPopoverVisible && (
+                    <>
+                      <div
+                        className="ChatRoomSide_popover"
+                        ref={(el) => (popoverRefs.current[index] = el)}
+                      >
+                        <span onClick={() => handleLeaveRoom(roomId)}>대화 나가기</span>
+                        {chatRoom.dataValues?.isGroup && (
+                          <span onClick={() => setOpenProfile(true)}>
+                            대화방 프로필 설정
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

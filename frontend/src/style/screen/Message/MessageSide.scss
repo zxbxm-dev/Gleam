@@ -89,7 +89,11 @@
         align-items: center;
         font-size: 14px;
 
-        .Border{
+        .Message-Me {
+          margin-left: 5px;
+        }
+
+        .Border {
           border-radius: 50px;
           margin-right: 10px;
           width: 35px;
@@ -99,12 +103,12 @@
           justify-content: center;
           margin-right: 10px;
 
-        img {
-          width: 33px;
-          height: 33px;
-          border-radius: 50px;
+          img {
+            width: 33px;
+            height: 33px;
+            border-radius: 50px;
+          }
         }
-      }
       }
 
       &:hover {
@@ -232,6 +236,10 @@
       cursor: pointer;
     }
 
+    .MyLog {
+      border-bottom: 1px solid #E2E2E2;
+    }
+
     .ChatLog {
 
       &.active {
@@ -277,6 +285,16 @@
 
           .FontName {
             font-size: 14px;
+
+            .NameFlex {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              .Message-Me {
+                margin-left: 5px;
+              }
+            }
           }
         }
 
@@ -381,7 +399,7 @@
   flex-direction: column-reverse;
   gap: 10px;
 
-  span{
+  span {
     text-align: center;
   }
 
