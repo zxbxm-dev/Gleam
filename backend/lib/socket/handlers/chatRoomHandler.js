@@ -361,11 +361,29 @@ const joinRoom = async (socket, roomId) => {
 };
 
 // 채팅방에서 나가기
-const exitRoom = (socket, roomId, userId) => {
-  socket.leave(roomId.toString());
-  console.log(userId);
+const exitRoom = async (socket, roomId, userId) => {
+  try {
+    // 사용자를 해당 채팅방에서 떠나게 함
+    socket.leave(roomId.toString());
+    console.log(`User ${userId} left room ${roomId}`);
 
-  console.log(`User ${userId} left room ${roomId}`);
+    // DB에서 ChatRoomParticipant에서 userId 삭제
+    const result = await ChatRoomParticipant.destroy({
+      where: {
+        roomId: roomId,
+        userId: userId,
+      },
+    });
+
+    if (result) {
+      console.log(`Participant with userId ${userId} removed from room ${roomId}`);
+    } else {
+      console.log(`No participant found with userId ${userId} in room ${roomId}`);
+    }
+  } catch (error) {
+    console.error("Error while removing participant from the room:", error);
+    socket.emit("error", { message: "방에서 나가는 중 오류가 발생했습니다." });
+  }
 };
 
 module.exports = {

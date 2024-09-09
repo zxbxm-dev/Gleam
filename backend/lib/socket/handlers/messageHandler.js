@@ -243,6 +243,7 @@ const getChatHistory = async (socket, roomId) => {
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
   try {
     let room = await ChatRoom.findOne({ where: { roomId } });
+console.log("aaaa",content);
 
     if (!room) {
       console.error(

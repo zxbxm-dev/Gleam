@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname, "public"))); // 정적 파일 제공
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:8080"],
     methods: ["GET", "POST", "OPTIONS"],
     credentials: true,
   })

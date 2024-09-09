@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const Models = require("../../models");
 const signupUser = Models.User;
 const quitter = Models.Quitter;
+const axios = require('axios');
+require('dotenv').config();
 
 // 회원가입
 const createUser = async (req, res) => {
@@ -123,6 +125,29 @@ const approveUser = async (req, res) => {
 
     user.status = "approved";
     await user.save();
+    
+    const mailcowAddAccount = await axios.post('http://119.193.90.123:8080/api/v1/add/mailbox',
+      {
+        "local_part": user.userId,
+        "domain": "gleam.im",
+        "name": user.username,
+        "quota": "0",
+        "password": "math123!!",
+        "password2": "math123!!",
+        "active": "1",
+        "force_pw_update": "0",
+        "tls_enforce_in": "0",
+        "tls_enforce_out": "0"
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': process.env.Mail_API
+        }
+      }
+    );
+
+    console.log('Mailbox created:', mailcowAddAccount.data);
 
     res.status(200).json({ success: "승인 처리가 완료되었습니다.", user });
   } catch (error) {
@@ -184,6 +209,20 @@ const userleaves = async (req, res) => {
 
     // 회원 데이터베이스에서 삭제
     await signupUser.destroy({ where: { userID } });
+
+    const mailcowDelAccount = await axios.post('http://119.193.90.123:8080/api/v1/delete/mailbox',
+      [
+        `${userID}@gleam.im`,
+      ],
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': process.env.Mail_API
+        }
+      }
+    );
+
+    console.log('Mailbox created:', mailcowDelAccount.data);
 
     return res
       .status(200)
