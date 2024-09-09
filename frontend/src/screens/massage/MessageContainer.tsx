@@ -298,7 +298,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     socket.on('chatHistory', (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
       if (Array.isArray(data.chatHistory)) {
         setServerMessages(data.chatHistory);
-        console.log(data.joinIds);
+        console.log(data);
 
         setModelPlusJoinId(prevState => ({
           ...prevState,

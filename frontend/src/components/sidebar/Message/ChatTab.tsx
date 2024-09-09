@@ -177,7 +177,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           setSelectedRoomId(0);
         }}
       >
-        <div className="Border" style={{ border: borderColor }}>
+        <div
+          className="Border"
+        // style={{ border: borderColor }}
+        >
           <img
             className="My-attach"
             src={userAttachment || UserIcon_dark}
@@ -196,6 +199,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           const isPopoverVisible = visiblePopoverIndex === index;
           const isActive = activeItem === roomId;
           const attachment = PersonMatchData(chatRoom) || UserIcon_dark;
+          const firstLetter = chatRoom.othertitle ? chatRoom.othertitle.charAt(0) : "";
 
           return (
             <div key={`${roomId}-${index}`}>
@@ -205,9 +209,23 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
               >
                 <div className="LogBox">
                   <div className="Left">
-                    <div className="Border" style={{ border: "2px solid red" }}>
-                      <img className="My-attach" src={attachment} alt="User Icon" />
-                    </div>
+                    {chatRoom.dataValues?.isGroup ?
+                      <div className="Group-attach"
+                        style={{
+                          backgroundColor: chatRoom.dataValues?.profileColor || "gray"
+                        }}
+                      >
+                        {firstLetter}
+                      </div>
+                      :
+                      <div
+                        className="Border"
+                      // style={{ border: "2px solid red" }}
+                      >
+                        <img className="My-attach" src={attachment} alt="User Icon" />
+                      </div>
+                    }
+
                     {/* <p className="FontName">
                       {chatRoom.dataValues?.isGroup
                         ? `${chatRoom.othertitle}`
@@ -225,15 +243,19 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                     alt="Message Menu"
                     onClick={(e) => handleMessageMenuClick(index, e)}
                   />
-                  {isPopoverVisible && (
-                    <div
-                      className="ChatRoomSide_popover"
-                      ref={(el) => (popoverRefs.current[index] = el)}
-                      onClick={() => handleLeaveRoom(roomId)}
-                    >
-                      대화 나가기
-                    </div>
-                  )}
+{isPopoverVisible && (
+  <>
+    <div
+      className="ChatRoomSide_popover"
+      ref={(el) => (popoverRefs.current[index] = el)}
+    >
+      <span onClick={() => handleLeaveRoom(roomId)}>대화 나가기</span>
+      {chatRoom.dataValues?.isGroup && (
+        <span onClick={() => setOpenProfile(true)}>대화방 프로필 설정</span>
+      )}
+    </div>
+  </>
+)}
                 </div>
               </div>
             </div>
