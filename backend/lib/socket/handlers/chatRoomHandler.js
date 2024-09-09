@@ -63,21 +63,24 @@ const createPrivateRoom = async (io, socket, data) => {
   try {
     console.log("서버에서 수신한 데이터:", data);
 
-    const { userId, content, invitedUserIds } = data;
+    let { userId, content, invitedUserIds } = data;
 
     if (!userId || !invitedUserIds || invitedUserIds.length === 0) {
       console.error("userId 또는 invitedUserIds가 정의되지 않았습니다.");
       return socket.emit("error", { message: "잘못된 데이터입니다" });
     }
 
-    // 자신에게 메시지를 보내는 경우
-    if (invitedUserIds.length === 1 && invitedUserIds[0] === userId) {
+    // 초대된 사용자 목록에서 호스트 사용자 제외
+    invitedUserIds = invitedUserIds.filter(id => id !== userId);
+
+    if (invitedUserIds.length === 0) {
+      // 자신에게 메시지를 보내는 경우
       console.log("자신에게 메시지를 보냅니다.");
       const chatRoomIds = await findChatRoomsForMe(userId);
       
       let chatRoom;
       if (chatRoomIds.length > 0) {
-        chatRoom = await ChatRoom.findOne({ where: { roomId: chatRoomIds[0] } });
+        chatRoom = await ChatRoom.findOne({ where: { roomId: chatRoomIds[0], isGroup: false } });
       } else {
         const nextRoomId = await getNextRoomId();
         chatRoom = await ChatRoom.create({
@@ -117,33 +120,37 @@ const createPrivateRoom = async (io, socket, data) => {
       return;
     }
 
-    const user = await getUserById(userId);
-    const targets = await getUsersByIds(invitedUserIds);
+    // 개인 채팅방은 정확히 한 명의 사용자만 초대하도록 제한
+    if (invitedUserIds.length !== 1) {
+      console.error("개인 채팅방은 정확히 한 명의 사용자만 초대할 수 있습니다.");
+      return socket.emit("error", { message: "개인 채팅방은 한 명만 초대할 수 있습니다" });
+    }
 
-    if (!user || targets.length !== invitedUserIds.length) {
+    const invitedUserId = invitedUserIds[0];
+    const user = await getUserById(userId);
+    const targetUser = await getUserById(invitedUserId);
+
+    if (!user || !targetUser) {
       console.error("사용자 또는 초대된 사용자를 찾을 수 없습니다.");
       return socket.emit("error", { message: "사용자를 찾을 수 없습니다" });
     }
 
-    const invitedUsers = targets.map((target) => ({
-      userId: target.userId,
-      username: target.username,
-      company: target.company || null,
-      department: target.department || null,
-      team: target.team || null,
-      position: target.position || null,
-      spot: target.spot || null,
-      attachment: target.attachment || null,
-    }));
-
-    const mutualChatRoomIds = await findMutualChatRoomsForUsers(userId, invitedUserIds[0]);
+    // 상호 채팅방 검색 시 isGroup: false 필터링 추가
+    const mutualChatRoomIds = await findMutualChatRoomsForUsers(userId, invitedUserId);
 
     let chatRoom;
     let created = false;
 
     if (mutualChatRoomIds.length > 0) {
-      chatRoom = await ChatRoom.findOne({ where: { roomId: mutualChatRoomIds[0] } });
-    } else {
+      // 이미 존재하는 개인 채팅방 사용
+      chatRoom = await ChatRoom.findOne({ where: { roomId: mutualChatRoomIds[0], isGroup: false } });
+      if (!chatRoom) {
+        // 만약 기존 채팅방이 그룹 채팅방이라면 새로 생성
+        mutualChatRoomIds.shift(); // 첫 번째 결과가 그룹 채팅방인 경우 제거
+      }
+    }
+
+    if (!chatRoom) {
       const nextRoomId = await getNextRoomId();
       chatRoom = await ChatRoom.create({
         roomId: nextRoomId,
@@ -165,38 +172,43 @@ const createPrivateRoom = async (io, socket, data) => {
             spot: user.spot || null,
             attachment: user.attachment || null,
           },
-          ...invitedUsers.reduce(
-            (acc, invitedUser) => ({
-              ...acc,
-              [invitedUser.userId]: invitedUser,
-            }),
-            {}
-          ),
+          [invitedUserId]: {
+            userId: invitedUserId,
+            username: targetUser.username,
+            company: targetUser.company || null,
+            department: targetUser.department || null,
+            team: targetUser.team || null,
+            position: targetUser.position || null,
+            spot: targetUser.spot || null,
+            attachment: targetUser.attachment || null,
+          },
         }),
       });
       created = true;
+      console.log(`새로운 개인 채팅방 생성: Room ID ${chatRoom.roomId}`);
     }
 
     if (created) {
-      const participants = [
-        ...invitedUsers.map((invitedUser) => ({
-          roomId: chatRoom.roomId,
-          userId: invitedUser.userId,
-          username: invitedUser.username,
-          department: invitedUser.department,
-          team: invitedUser.team,
-          position: invitedUser.position,
-        })),
+      await ChatRoomParticipant.bulkCreate([
         {
           roomId: chatRoom.roomId,
-          userId,
+          userId: userId,
           username: user.username,
           department: user.department,
           team: user.team,
           position: user.position,
         },
-      ];
-      await ChatRoomParticipant.bulkCreate(participants);
+        {
+          roomId: chatRoom.roomId,
+          userId: invitedUserId,
+          username: targetUser.username,
+          department: targetUser.department,
+          team: targetUser.team,
+          position: targetUser.position,
+        },
+      ], { ignoreDuplicates: true });
+
+      console.log(`채팅방 참가자 추가: ${userId}, ${invitedUserId}`);
     }
 
     await sendUserChatRooms(socket, userId);
