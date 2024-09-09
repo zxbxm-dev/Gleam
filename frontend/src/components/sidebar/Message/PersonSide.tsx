@@ -4,6 +4,7 @@ import {
   UserIcon_dark,
   MessageArrow_down,
   MessageArrow_right,
+  MessageMe
 } from "../../../assets/images/index";
 import { selectedRoomIdState, userState, selectUserID } from "../../../recoil/atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -122,7 +123,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
               <div className="No-Left">
                 <div
                   className="Border"
-                  // style={{ border: "2px solid red" }}
+                // style={{ border: "2px solid red" }}
                 >
                   <img
                     src={person.attachment ? person.attachment : UserIcon_dark}
@@ -130,6 +131,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                   />
                 </div>
                 {person.username} &nbsp;|&nbsp; {person.position}
+                {user.userID === person.userId &&
+                  <img className="Message-Me" src={MessageMe} alt="Message Me" />
+                }
               </div>
             </li>
           ))}
@@ -173,7 +177,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                             <div className="No-Left">
                               <div
                                 className="Border"
-                                // style={{ border: "2px solid red" }}
+                              // style={{ border: "2px solid red" }}
                               >
                                 <img
                                   src={person.attachment ? person.attachment : UserIcon_dark}
@@ -181,6 +185,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 />
                               </div>
                               {person.username} &nbsp;|&nbsp; {person.position}
+                              {user.userID === person.userId &&
+                                <img className="Message-Me" src={MessageMe} alt="Message Me" />
+                              }
                             </div>
                           </li>
                         )
@@ -225,7 +232,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                 <div className="No-Left">
                                   <div
                                     className="Border"
-                                    // style={{ border: "2px solid red" }}
+                                  // style={{ border: "2px solid red" }}
                                   >
                                     <img
                                       src={person.attachment ? person.attachment : UserIcon_dark}
@@ -233,6 +240,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     />
                                   </div>
                                   {person.username} &nbsp;|&nbsp; {person.position}
+                                  {user.userID === person.userId &&
+                                    <img className="Message-Me" src={MessageMe} alt="Message Me" />
+                                  }
                                 </div>
                               </li>
                             )
@@ -284,7 +294,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                     <div className="No-Left">
                       <div
                         className="Border"
-                        // style={{ border: "2px solid red" }}
+                      // style={{ border: "2px solid red" }}
                       >
                         <img
                           src={person.attachment ? person.attachment : UserIcon_dark}
@@ -292,6 +302,9 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                         />
                       </div>
                       {person.username} &nbsp;|&nbsp; {person.position}
+                      {user.userID === person.userId &&
+                        <img className="Message-Me" src={MessageMe} alt="Message Me" />
+                      }
                     </div>
                   </li>
                 ))}
