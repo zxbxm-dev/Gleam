@@ -53,6 +53,7 @@ const MessageSidebar: React.FC = () => {
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const setUserStatetoServer = useSetRecoilState(userStateMessage);
   const location = useLocation();
+  const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -94,6 +95,19 @@ const MessageSidebar: React.FC = () => {
     }));
   };
 
+//채팅방 나가기
+    const handleLeaveRoom = (roomId: number) => {
+      const socket = io('http://localhost:3001', {
+        transports: ['websocket'],
+      });
+  
+      const userId = user.userID;
+  
+      console.log(`Leaving room with id ${roomId}`);
+      socket.emit("exitRoom", roomId, userId);
+      setVisiblePopoverIndex(null);
+    };
+    
   //chatTab - socket 채팅방 목록 조회
   useEffect(() => {
     const socket = io('http://localhost:3001', {
@@ -340,6 +354,9 @@ const MessageSidebar: React.FC = () => {
           setIsNotibarActive={setIsNotibarActive}
           chatRooms={chatRooms}
           borderColor={borderColor}
+          handleLeaveRoom={handleLeaveRoom}
+          visiblePopoverIndex={visiblePopoverIndex}
+          setVisiblePopoverIndex={setVisiblePopoverIndex}
         />
       ) : (
         // const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);
