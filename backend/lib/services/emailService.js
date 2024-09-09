@@ -25,19 +25,10 @@ async function connectIMAP(userId, password){
 
 // 이메일 가져오기
 async function fetchMailcowEmails(userId) {
-    // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
-    const email = userId + "@gleam.im";
     const password = 'math123!!'
-
-
     const imap = await connectIMAP(userId, password); //IMAP 연결
 
     imap.once('ready', async () => {
-        // imap.getBoxes((err, boxes) => {
-        //     if (err) throw err;
-        //     console.log('>>>>>>>사용 가능한 폴더 목록:', boxes);
-        // });
-
 
         imap.openBox('INBOX', true, async (err, box) => {
             if(err) throw err;
@@ -45,8 +36,6 @@ async function fetchMailcowEmails(userId) {
             // 읽지 않은 메일만 검색
             imap.search(['ALL'],  async (err, results) => {
                 if (err) throw err;
-
-
                 if (results.length === 0) {
                     console.log('읽지 않은 메일이 없습니다.');
                     imap.end();
@@ -54,55 +43,41 @@ async function fetchMailcowEmails(userId) {
                 }
 
                 fetchEmails(imap, userId, 'inbox', () => {
-                    imap.openBox('Sent', true, (err, box) => {
-                        if (err) throw err;
-                        fetchEmails(imap, userId, 'sent', () => {
                             console.log('모든 이메일 불러오기 완료.');
                             imap.end();
                         });
-                    });
-                });
             });
         });
     });
-
 
     imap.once('error', (err) => {
         console.error('IMAP 연결 에러:', err);
     });
 
-
+    
     imap.once('end', () => {
         console.log('IMAP 연결이 종료되었습니다');
     });
 
-
     imap.connect();
-
 
     // 특정 메일함에서 이메일을 가져오는 함수
     function fetchEmails(imap, userId, folderName, callback) {
-        const searchCriteria = ['UNSEEN'];
+        const searchCriteria = ['ALL'];
         const fetchOptions = { bodies: '', struct: true };
-
 
         imap.search(searchCriteria, (err, results) => {
             if (err) throw err;
-
-
             if (!results || results.length === 0) {
                 console.log('조회되는 이메일이 존재하지 않습니다.');
                 callback();
                 return;
             }
-
-
             const f = imap.fetch(results, fetchOptions);
 
-
-            // 이메일 파싱
+          // 이메일 파싱
             f.on('message', (msg, seqno) => {
-                console.log('불러온 이메일 #%d', seqno);
+                //console.log('불러온 이메일 #%d', seqno);
 
                 msg.on('body', (stream) => {
                     simpleParser(stream, async (err, mail) => {
@@ -113,7 +88,7 @@ async function fetchMailcowEmails(userId) {
                         try {
                             const checksavedEmail = await saveEmail(mail, userId, folderName);
                             if(checksavedEmail){
-                                console.log('저장된 이메일 Id:', checksavedEmail.Id);
+                                //console.log('저장된 이메일 Id:', checksavedEmail.Id);
 
                                 // 첨부파일이 있는 경우 저장
                                 if (mail.attachments && mail.attachments.length > 0) {
@@ -124,7 +99,6 @@ async function fetchMailcowEmails(userId) {
                       } catch (saveErr) {
                             console.error('이메일을 저장하는 도중 에러가 발생했습니다.');
                             return;
-                            //console.log('>>>>>>저장 실패한 이메일 제목: ', mail.Id);
                         }
                     });
                 });
