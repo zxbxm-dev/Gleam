@@ -111,6 +111,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [files, setFiles] = useState<File | null>(null);
+console.log(selectedRoomId);
 
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
@@ -146,6 +147,9 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         userId: user.id,
         content: messageContent,
       };
+
+      console.log(messageData);
+      
     } else {
       messageData = {
         roomId: selectedRoomId,

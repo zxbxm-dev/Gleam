@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import {
   MessageMe,
   MessageMenu,
@@ -69,6 +69,9 @@ interface ChatDataTabProps {
   chatRooms: ChatRoom[];
   setIsNotibarActive: React.Dispatch<React.SetStateAction<boolean | null>>;
   borderColor: string;
+  handleLeaveRoom:(roomId: number) => void;
+  visiblePopoverIndex:number | null;
+  setVisiblePopoverIndex:Dispatch<SetStateAction<number | null>>;
 }
 
 const ChatDataTab: React.FC<ChatDataTabProps> = ({
@@ -84,11 +87,13 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   setIsNotibarActive,
   chatRooms,
   borderColor,
+  handleLeaveRoom,
+  visiblePopoverIndex,
+  setVisiblePopoverIndex
 }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<number | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
-  const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [selectedUserIdstate, setSelectedUserIdstate] = useRecoilState(selectUserID);
@@ -128,18 +133,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   }, []);
 
 
-  //채팅방 나가기
-  const handleLeaveRoom = (roomId: number) => {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
 
-    const userId = user.userID;
-
-    console.log(`Leaving room with id ${roomId}`);
-    socket.emit("exitRoom", roomId, userId);
-    setVisiblePopoverIndex(null);
-  };
 
   const PersonMatchData = (chatRoom: ChatRoom) => {
     const title = chatRoom.othertitle ?? "";
@@ -174,7 +168,6 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
           );
           setSelectedUserIdstate({ userID: user.userID });
           setActiveItem(0);
-          setSelectedRoomId(0);
         }}
       >
         <div
