@@ -33,7 +33,7 @@ const findMutualChatRoomsForUsers = async (userId1, userId2) => {
   }
 };
 
-//나와의 데이터만 가져오기
+// 나와의 데이터만 가져오기
 const findChatRoomsForMe = async (userId) => {
   try {
     const chatRooms = await ChatRoomParticipant.findAll({

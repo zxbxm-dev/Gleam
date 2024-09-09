@@ -1,7 +1,11 @@
 const models = require("../../models");
 const { User, ChatRoom, ChatRoomParticipant } = models;
 const { Op, Sequelize } = require("sequelize");
-const { sendMessageToRoomParticipants, findMutualChatRoomsForUsers, findChatRoomsForMe  } = require("./messageHandler");
+const {
+  sendMessageToRoomParticipants,
+  findMutualChatRoomsForUsers,
+  findChatRoomsForMe,
+} = require("./messageHandler");
 
 // 사용자 조회 함수
 const getUserById = async (userId) => User.findOne({ where: { userId } });
@@ -45,11 +49,14 @@ const getNextRoomId = async () => {
   try {
     // 현재 최대 roomId 조회
     const maxRoom = await ChatRoom.findOne({
-      attributes: [[Sequelize.fn('MAX', Sequelize.col('roomId')), 'maxRoomId']],
+      attributes: [[Sequelize.fn("MAX", Sequelize.col("roomId")), "maxRoomId"]],
     });
 
     // 새로운 roomId 생성
-    const nextRoomId = (maxRoom && maxRoom.dataValues.maxRoomId) ? maxRoom.dataValues.maxRoomId + 1 : 1;
+    const nextRoomId =
+      maxRoom && maxRoom.dataValues.maxRoomId
+        ? maxRoom.dataValues.maxRoomId + 1
+        : 1;
 
     return nextRoomId;
   } catch (error) {
@@ -83,33 +90,42 @@ const createPrivateRoom = async (io, socket, data) => {
         chatRoom = await ChatRoom.findOne({ where: { roomId: chatRoomIds[0], isGroup: false } });
       } else {
         const nextRoomId = await getNextRoomId();
+        const user = await getUserById(userId);
+
         chatRoom = await ChatRoom.create({
           roomId: nextRoomId,
           isGroup: false,
+          isSelfChat: true,  // 자신과의 채팅인 경우
           hostUserId: userId,
-          hostName: (await getUserById(userId)).username,
-          hostDepartment: null,
-          hostTeam: null,
-          hostPosition: null,
+          hostName: user.username,
+          hostDepartment: user.department || null,
+          hostTeam: user.team || null,
+          hostPosition: user.position || null,
           title: null,
           userTitle: JSON.stringify({
             [userId]: {
               userId,
-              username: (await getUserById(userId)).username,
-              company: null,
-              department: null,
-              team: null,
-              position: null,
-              spot: null,
-              attachment: null,
+              username: user.username,
+              company: user.company || null,
+              department: user.department || null,
+              team: user.team || null,
+              position: user.position || null,
+              spot: user.spot || null,
+              attachment: user.attachment || null,
             },
           }),
         });
       }
-      
-      // 채팅방 참가자 추가
+
+      // 자신의 채팅방 참가자 추가
       await ChatRoomParticipant.findOrCreate({
         where: { roomId: chatRoom.roomId, userId },
+        defaults: {
+          username: (await getUserById(userId)).username,
+          department: (await getUserById(userId)).department || null,
+          team: (await getUserById(userId)).team || null,
+          position: (await getUserById(userId)).position || null,
+        }
       });
       
       // 메시지 저장
@@ -117,6 +133,16 @@ const createPrivateRoom = async (io, socket, data) => {
         console.log(`새로운 메시지 전송: ${content}`);
         await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
       }
+      
+      // 클라이언트에게 채팅 방 정보 전송
+      socket.emit("chatRoomCreated", {
+        roomId: chatRoom.roomId,
+        isSelfChat: chatRoom.isSelfChat,
+        title: chatRoom.title,
+        profileColor: chatRoom.profileColor,
+        profileImage: chatRoom.profileImage,
+      });
+      
       return;
     }
 
@@ -155,6 +181,7 @@ const createPrivateRoom = async (io, socket, data) => {
       chatRoom = await ChatRoom.create({
         roomId: nextRoomId,
         isGroup: false,
+        isSelfChat: false,  // 개인 채팅방인 경우
         hostUserId: userId,
         hostName: user.username,
         hostDepartment: user.department,
@@ -194,17 +221,17 @@ const createPrivateRoom = async (io, socket, data) => {
           roomId: chatRoom.roomId,
           userId: userId,
           username: user.username,
-          department: user.department,
-          team: user.team,
-          position: user.position,
+          department: user.department || null,
+          team: user.team || null,
+          position: user.position || null,
         },
         {
           roomId: chatRoom.roomId,
           userId: invitedUserId,
           username: targetUser.username,
-          department: targetUser.department,
-          team: targetUser.team,
-          position: targetUser.position,
+          department: targetUser.department || null,
+          team: targetUser.team || null,
+          position: targetUser.position || null,
         },
       ], { ignoreDuplicates: true });
 
@@ -217,12 +244,21 @@ const createPrivateRoom = async (io, socket, data) => {
       console.log(`새로운 메시지 전송: ${content}`);
       await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
     }
+    
+    // 클라이언트에게 채팅 방 정보 전송
+    socket.emit("chatRoomCreated", {
+      roomId: chatRoom.roomId,
+      isSelfChat: chatRoom.isSelfChat,
+      title: chatRoom.title,
+      profileColor: chatRoom.profileColor,
+      profileImage: chatRoom.profileImage,
+    });
+
   } catch (error) {
     console.error("채팅방 생성 및 메시지 저장 오류:", error);
     socket.emit("error", { message: "채팅 생성 서버 오류" });
   }
 };
-
 
 // 채팅방 조회 후 클라이언트에게 파싱
 const sendUserChatRooms = async (socket, userId) => {
@@ -245,28 +281,32 @@ const sendUserChatRooms = async (socket, userId) => {
       const roomId = participant.ChatRoom.roomId;
       const room = participant.ChatRoom;
 
-      // // 채팅방의 참가자 목록을 조회
-      // const participants = await ChatRoomParticipant.findAll({
-      //   where: { roomId },
-      //   attributes: ["userId"],
-      // });
-
       if (!roomParticipantsMap[roomId]) {
         const roomData = room.toJSON();
         const userTitle = parseUserTitle(roomData.userTitle, userId);
 
         // 단체방인 경우 ChatRoom의 title을 사용
         let othertitle;
+        let isSelfChat = false;
         if (roomData.isGroup) {
           othertitle = roomData.title; // 단체방 제목 사용
         } else {
           othertitle = getOthertitle(roomData, userTitle, userId); // 개인방은 기존 방식대로 처리
+
+          // 개인 (나와의 채팅) 여부 판단
+          const participants = await ChatRoomParticipant.findAll({
+            where: { roomId },
+          });
+          if (participants.length === 1 && participants[0].userId === userId) {
+            isSelfChat = true;
+          }
         }
 
         roomParticipantsMap[roomId] = {
           othertitle,
           userTitle,
           dataValues: roomData,
+          isSelfChat,
         };
       }
     }
