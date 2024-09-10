@@ -31,7 +31,7 @@ const subProject = require("./pjschedule/subProject");
 //채팅방
 const chatRoom = require("./messenger/chatRoom");
 const message = require("./messenger/message");
-const chatRoomParticipant = require("./messenger/ChatRoomParticipant");
+const chatRoomParticipant = require("./messenger/chatRoomParticipant");
 //이메일
 const email = require("./email/email");
 const emailAttachments= require("./email/emailAttachments");  
@@ -40,16 +40,13 @@ const emailAction = require("./email/emailAction");
 
 const db = {};
 
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
-);
+// 모델 정의 및 관계 설정
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+// 모델 로드
 db.User = userData(sequelize, Sequelize);
 db.Quitter = quitterUser(sequelize, Sequelize);
 db.Expenses = expenses(sequelize, Sequelize);
@@ -75,8 +72,8 @@ db.EmailAction = emailAction(sequelize, Sequelize);
 
 // 모델 관계 설정
 // 프로젝트 관계 설정
-db.mainProject.hasMany(db.subProject, {foreignKey: "mainprojectIndex", onDelete: "cascade" });
-db.subProject.belongsTo(db.mainProject, {foreignKey: "mainprojectIndex", onDelete: "cascade" });
+db.mainProject.hasMany(db.subProject, { foreignKey: "mainprojectIndex", onDelete: "cascade" });
+db.subProject.belongsTo(db.mainProject, { foreignKey: "mainprojectIndex", onDelete: "cascade" });
 
 // 메신저 관계 설정
 // User와 Message 간의 관계 설정
@@ -100,8 +97,8 @@ db.ChatRoomParticipant.hasMany(db.Message, { foreignKey: "userId" });
 db.Message.belongsTo(db.ChatRoomParticipant, { foreignKey: "userId", as: "Participant" });
 
 //Email 과 EmailAttachments 간의 관계설정 
-db.Email.hasMany(db.EmailAttachment, {foreignKey: "emailId",onDelete: "cascade" });
-db.EmailAttachment.belongsTo(db.Email, {foreignKey: "emailId", onDelete: "cascade" });
+db.Email.hasMany(db.EmailAttachment, { foreignKey: "emailId", onDelete: "cascade" });
+db.EmailAttachment.belongsTo(db.Email, { foreignKey: "emailId", onDelete: "cascade" });
 
 
 module.exports = db;
