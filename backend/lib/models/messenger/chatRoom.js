@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-      isSelfChat: {  // 개인 채팅방
+      isSelfChat: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      userTitle: { // 사용자별 제목 저장
+      userTitle: {
         type: DataTypes.JSON,
         allowNull: true,
       },
@@ -65,20 +65,19 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'chatroom',
+      tableName: 'chatroom',  // 소문자
     }
   );
 
   ChatRoom.associate = (models) => {
-
     ChatRoom.hasMany(models.ChatRoomParticipant, {
       foreignKey: 'roomId',
-      as: 'participants',
+      as: 'ChatRoomParticipants',  // 대문자
     });
 
     ChatRoom.hasMany(models.Message, {
       foreignKey: 'roomId',
-      as: 'messages',
+      as: 'ChatRoomMessages',  // 대문자
     });
   };
 
