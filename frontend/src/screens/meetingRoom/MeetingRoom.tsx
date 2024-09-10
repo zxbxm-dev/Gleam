@@ -624,7 +624,7 @@ const MeetingRoom = () => {
             setMemo('');
             setSelectedTwoTime('');
           }}
-        height="570px"
+        height="500px"
         width="625px"
       >
         <div className="body-container">
@@ -887,7 +887,7 @@ const MeetingRoom = () => {
             setMemo('');
             setSelectedTwoTime('');
           }}
-        height="570px"
+        height="500px"
         width="625px"
       >
         <div className="body-container">
