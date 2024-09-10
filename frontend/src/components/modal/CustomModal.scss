@@ -179,6 +179,39 @@
         .AddTitle {
           display: flex;
 
+          .TextInputCon {
+            width: 100%;
+            height: 33px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 10px;
+          }
+
+          .TextInputCon::placeholder {
+            font-size: 14px;
+            font-weight: 400;
+            color: #d9d9d9;
+          }
+
+          .TextInputCon:focus {
+            outline: none;
+          }
+          
+          .TextInputCon2 {
+            width: 90%;
+            height: 84px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 10px;
+            resize: none;
+          }
+
+          .TextInputCon2:focus {
+            outline: none;
+          }
+
           .div {
             display: flex;
             align-items: center;
