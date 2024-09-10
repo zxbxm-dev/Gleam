@@ -48,7 +48,7 @@
 
       &:nth-child(1) {
         .project_content_section_list {
-          @include custom-scrollbar($trackColor: #fdfdfd);
+          @include custom-scrollbar($trackColor: #FBFBFB);
           display: flex;
           flex-direction: column;
           gap: 10px;
@@ -60,7 +60,7 @@
 
       &:nth-child(2) {
         .project_content_section_list {
-          @include custom-scrollbar($trackColor: #fdfdfd);
+          @include custom-scrollbar($trackColor: #FBFBFB);
           display: flex;
           flex-direction: column;
           gap: 10px;
@@ -74,7 +74,7 @@
 
       &:nth-child(3) {
         .project_content_section_list {
-          @include custom-scrollbar($trackColor: #fdfdfd);
+          @include custom-scrollbar($trackColor: #FBFBFB);
           display: flex;
           flex-direction: column;
           gap: 10px;
