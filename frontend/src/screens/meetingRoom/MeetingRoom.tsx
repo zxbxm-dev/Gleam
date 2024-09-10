@@ -330,7 +330,11 @@ const MeetingRoom = () => {
     setTitle(selectedEvent?.origintitle || '');
     setRecipients(selectedEvent?.meetpeople || []);
     setCompany(selectedEvent?.company || '');
-    setLocation(selectedEvent?.place || '');
+    if (selectedEvent?.company === '기타') {
+      setOtherLocation(selectedEvent?.place || '');
+    } else {
+      setLocation(selectedEvent?.place || '');
+    }
     setMemo(selectedEvent?.memo || '');
     setEventModalOPen(false);
     setEditEventModalOPen(true);
@@ -405,7 +409,7 @@ const MeetingRoom = () => {
       meetpeople: recipients,
       startDate: formattedStartDate,
       endDate: formattedEndDate,
-      place: location === '기타' ? otherLocation : location,
+      place: (location === '기타' || company === '기타') ? otherLocation : location,
       memo,
       startTime: isOn ? "10:00" : selectedTime,
       endTime: isOn ? "17:00" : selectedTwoTime,
@@ -624,7 +628,7 @@ const MeetingRoom = () => {
             setMemo('');
             setSelectedTwoTime('');
           }}
-        height="570px"
+        height="500px"
         width="625px"
       >
         <div className="body-container">
@@ -682,7 +686,7 @@ const MeetingRoom = () => {
                 popperPlacement="top"
               />
               <div className="timeoption" onClick={toggleSelect}>
-              {selectedTime}
+              <input type="text" className="time_input" value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
               {isOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -715,7 +719,7 @@ const MeetingRoom = () => {
               popperPlacement="top"
             />
             <div className="timeoption" onClick={toggleTwoSelect}>
-              {selectedTwoTime || '00:00'}
+            <input type="text" className="time_input" value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTwoTime(e.target.value)} />
               {isTwoOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -754,34 +758,50 @@ const MeetingRoom = () => {
                   <span>R&D</span>
                   <span className="checkmark"></span>
                 </label>
+                <label className="custom-radio">
+                  <input type="radio" name="company" value="기타" checked={company === '기타'}/>
+                  <span>기타</span>
+                  <span className="checkmark"></span>
+                </label>
               </fieldset>
-              <div className="SelectRoom_wrap">
-                <select className="SelectRoom" value={location} onChange={handleLocationChange}>
-                  <option value="">회의실 선택</option>
-                  {company === "본사" && (
-                    <>
-                      <option value="미팅룸">미팅룸</option>
-                      <option value="라운지">라운지</option>
-                      <option value="기타">기타</option>
-                    </>
-                  )}
-                  {company === "R&D" && (
-                    <>
-                      <option value="연구총괄실">연구총괄실</option>
-                      <option value="기타">기타</option>
-                    </>
-                  )}
-                </select>
+              {company !== '기타' ? (
+                <div className="SelectRoom_wrap">
+                  <select className="SelectRoom" value={location} onChange={handleLocationChange}>
+                    <option value="">회의실 선택</option>
+                    {company === "본사" && (
+                      <>
+                        <option value="미팅룸">미팅룸</option>
+                        <option value="라운지">라운지</option>
+                        <option value="기타">기타</option>
+                      </>
+                    )}
+                    {company === "R&D" && (
+                      <>
+                        <option value="연구총괄실">연구총괄실</option>
+                        <option value="기타">기타</option>
+                      </>
+                    )}
+                  </select>
 
-                {isOtherLocation && (
-                  <input 
-                    className="write_selectRoom"
-                    placeholder="장소를 입력해주세요."
-                    value={otherLocation}
-                    onChange={handleOtherLocationChange}
-                  />
-                )}
-              </div>
+                  {isOtherLocation && (
+                    <input 
+                      className="write_selectRoom"
+                      placeholder="장소를 입력해주세요."
+                      value={otherLocation}
+                      onChange={handleOtherLocationChange}
+                    />
+                  )}
+                </div>
+              ):
+              (
+                <input 
+                  className="other_place_input"
+                  placeholder="장소를 입력해주세요."
+                  value={otherLocation}
+                  onChange={handleOtherLocationChange}
+                />
+              )
+              }
             </div>
           </div>
           <div className="AddTitle">
@@ -887,7 +907,7 @@ const MeetingRoom = () => {
             setMemo('');
             setSelectedTwoTime('');
           }}
-        height="570px"
+        height="500px"
         width="625px"
       >
         <div className="body-container">
@@ -945,7 +965,7 @@ const MeetingRoom = () => {
                 popperPlacement="top"
               />
               <div className="timeoption" onClick={toggleSelect}>
-              {selectedTime}
+              <input type="text" className="time_input" value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
               {isOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -978,7 +998,7 @@ const MeetingRoom = () => {
               popperPlacement="top"
             />
             <div className="timeoption" onClick={toggleTwoSelect}>
-              {selectedTwoTime || '00:00'}
+            <input type="text" className="time_input" value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTime(e.target.value)} />
               {isTwoOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -1017,34 +1037,50 @@ const MeetingRoom = () => {
                   <span>R&D</span>
                   <span className="checkmark"></span>
                 </label>
+                <label className="custom-radio">
+                  <input type="radio" name="company" value="기타" checked={company === '기타'}/>
+                  <span>기타</span>
+                  <span className="checkmark"></span>
+                </label>
               </fieldset>
-              <div className="SelectRoom_wrap">
-                <select className="SelectRoom" value={location} onChange={handleLocationChange}>
-                  <option value="">회의실 선택</option>
-                  {company === "본사" && (
-                    <>
-                      <option value="미팅룸">미팅룸</option>
-                      <option value="라운지">라운지</option>
-                      <option value="기타">기타</option>
-                    </>
-                  )}
-                  {company === "R&D" && (
-                    <>
-                      <option value="연구총괄실">연구총괄실</option>
-                      <option value="기타">기타</option>
-                    </>
-                  )}
-                </select>
+              {company !== '기타' ? (
+                <div className="SelectRoom_wrap">
+                  <select className="SelectRoom" value={location} onChange={handleLocationChange}>
+                    <option value="">회의실 선택</option>
+                    {company === "본사" && (
+                      <>
+                        <option value="미팅룸">미팅룸</option>
+                        <option value="라운지">라운지</option>
+                        <option value="기타">기타</option>
+                      </>
+                    )}
+                    {company === "R&D" && (
+                      <>
+                        <option value="연구총괄실">연구총괄실</option>
+                        <option value="기타">기타</option>
+                      </>
+                    )}
+                  </select>
 
-                {isOtherLocation && (
-                  <input 
-                    className="write_selectRoom"
-                    placeholder="장소를 입력해주세요."
-                    value={otherLocation}
-                    onChange={handleOtherLocationChange}
-                  />
-                )}
-              </div>
+                  {isOtherLocation && (
+                    <input 
+                      className="write_selectRoom"
+                      placeholder="장소를 입력해주세요."
+                      value={otherLocation}
+                      onChange={handleOtherLocationChange}
+                    />
+                  )}
+                </div>
+              ):
+              (
+                <input 
+                  className="other_place_input"
+                  placeholder="장소를 입력해주세요."
+                  value={otherLocation}
+                  onChange={handleOtherLocationChange}
+                />
+              )
+              }
             </div>
           </div>
           <div className="AddTitle">
