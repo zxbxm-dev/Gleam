@@ -1889,7 +1889,7 @@ const Project = () => {
         footer1={'확인'}
         footer1Class="red-btn"
         onFooter1Click={() => setPjtModalOPen(false)}
-        width="496px"
+        width="auto"
         height="auto"
       >
         <div className="body-container">
