@@ -197,7 +197,7 @@
           .TextInputCon:focus {
             outline: none;
           }
-          
+
           .TextInputCon2 {
             width: 90%;
             height: 84px;
@@ -296,6 +296,25 @@
                 font-weight: 400;
                 color: #d9d9d9;
               }
+            }
+
+            .other_place_input {
+              width: 100%;
+              height: 32px;
+              padding: 0px 10px;
+              font-size: 14px;
+              border: 1px solid #dcdcdc;
+              border-radius: 5px;
+            }
+
+            .other_place_input:focus {
+              outline: none;
+            }
+
+            .other_place_input::placeholder {
+              font-size: 14px;
+              font-weight: 400;
+              color: #d9d9d9;
             }
           }
         }
@@ -478,6 +497,23 @@
               position: relative;
               margin-left: 5px;
               cursor: pointer;
+            }
+
+            .time_input {
+              width: 45px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+
+            .time_input::placeholder {
+              font-size: 14px;
+              font-weight: 400;
+              color: #d9d9d9;
+            }
+
+            .time_input:focus {
+              outline: none;
             }
           }
 
