@@ -35,6 +35,21 @@ interface ProjectData {
   subProject?: ProjectData[];
 };
 
+interface GoogleCalendarEvent {
+  start: {
+    date?: string;
+    dateTime?: string;
+  };
+  summary: string;
+}
+
+interface Holiday {
+  title: string;
+  start: string;
+  end?: string;
+  color?: string;
+}
+
 
 const Project = () => {
   const user = useRecoilValue(userState);
@@ -463,58 +478,49 @@ const Project = () => {
     return result;
   };
 
-  const holidays = [
-    { date: '2024-01-01', name: '새해 첫날' },
-    { date: '2024-02-09', name: '설날 연휴' },
-    { date: '2024-02-10', name: '설날' },
-    { date: '2024-02-11', name: '설날 연휴' },
-    { date: '2024-02-12', name: '대체공휴일(설날)' },
-    { date: '2024-03-01', name: '삼일절' },
-    { date: '2024-04-10', name: '22대 국회의원선거' },
-    { date: '2024-05-05', name: '어린이날' },
-    { date: '2024-05-06', name: '대체공휴일(어린이날)' },
-    { date: '2024-05-15', name: '부처님 오신 날' },
-    { date: '2024-06-06', name: '현충일' },
-    { date: '2024-08-15', name: '광복절' },
-    { date: '2024-09-16', name: '추석 연휴' },
-    { date: '2024-09-17', name: '추석' },
-    { date: '2024-09-18', name: '추석 연휴' },
-    { date: '2024-10-01', name: '임시공휴일' },
-    { date: '2024-10-03', name: '개천절' },
-    { date: '2024-10-09', name: '한글날' },
-    { date: '2024-12-25', name: '성탄절' },
-  ];
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
 
-  const dayCellContent = (info: any) => {
-    var number = document.createElement("span");
-    number.classList.add("fc-daygrid-day-number-content");
-    number.innerHTML = info.dayNumberText.replace("일", "");
+  useEffect(() => {
+    const fetchGoogleHolidays = async () => {
+      const apiKey = "AIzaSyBB-X6Uc-1EnRlFTXs36cKK6gAQ0VAPpC0";
+      const calendarId = 'ko.south_korea.official%23holiday%40group.v.calendar.google.com';
+      const timeMin = new Date().toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${timeMin}&singleEvents=true&orderBy=startTime`;
 
-    const dateStr = info.date.toLocaleDateString('en-CA');
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const holidays = data.items.map((item: GoogleCalendarEvent) => ({
+          title: item.summary,
+          start: item.start.date,
+          allDay: true,
+          color: 'red',
+        }));
+        setHolidays(holidays);
+      } catch (error) {
+        console.error("Error fetching Google Calendar holidays:", error);
+      }
+    };
 
-    const holiday = holidays.find(
-      (holiday) => holiday.date === dateStr
+    fetchGoogleHolidays();
+  }, []);
+
+  const dayCellContent = (arg: any) => {
+    const date = new Date(arg.date.getFullYear(), arg.date.getMonth(), arg.date.getDate());
+    const formattedDateStr = date.toISOString().split('T')[0];
+    const holiday = holidays.find(holiday => {
+      const holidayDate = new Date(holiday.start);
+      holidayDate.setHours(0, 0, 0, 0);
+      const holidayDateStr = holidayDate.toISOString().split('T')[0];
+      return holidayDateStr === formattedDateStr;
+    });
+
+    return (
+      <div className="day-cell-content">
+        <div className={`date-text ${holiday ? 'holiday-date' : ''}`}>{date.getDate()}</div>
+        {holiday && <div className="holiday-title">{holiday.title}</div>}
+      </div>
     );
-
-    var container = document.createElement("div");
-    container.style.display = 'flex';
-    container.style.alignItems = 'center';
-
-    if (holiday) {
-      var holidayName = document.createElement("span");
-      holidayName.innerHTML = holiday.name;
-      holidayName.style.color = 'red';
-      holidayName.style.width = '100%';
-      holidayName.style.textAlign = 'right';
-      number.style.color = 'red';
-
-      container.appendChild(number);
-      container.appendChild(holidayName);
-    } else {
-      container.appendChild(number);
-    }
-
-    return { domNodes: [container] };
   };
 
   const { refetch: refetchProject } = useQuery("Project", fetchProject, {
@@ -835,7 +841,7 @@ const Project = () => {
     isMemberIncluded ||
     isReferrerIncluded
   );
-  
+
   return (
     <div className="content">
       <div className="content_container">

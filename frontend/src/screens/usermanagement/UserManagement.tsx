@@ -8,8 +8,12 @@ import CustomModal from "../../components/modal/CustomModal";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { ArrowDown, ArrowUp } from "../../assets/images/index";
 
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { userState } from '../../recoil/atoms';
 import { useQueryClient, useQuery } from "react-query";
 import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement, EditChainLinker } from "../../services/usermanagement/UserManagementServices";
+import { RegisterEditServices } from "../../services/login/RegisterServices";
+
 
 interface SelectedOptions {
   company: string;
@@ -22,6 +26,8 @@ interface SelectedOptions {
 }
 
 const UserManagement = () => {
+  const [user, setUser] = useRecoilState(userState);
+  const setUserState = useSetRecoilState(userState);
   const [page, setPage] = useState<number>(1);
   const queryClient = useQueryClient();
   const [pendingusermanages, setPendingUserManages] = useState<any[]>([]);
@@ -136,18 +142,18 @@ const UserManagement = () => {
 
 
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({
-    company: '',
+    company: '본사',
     department: '',
     team: '',
     spot: '',
     position: '',
     phoneNumber: '',
     password: ''
-});
-const [isDepart, setIsDepart] = useState(false);
-const [isTeam, setIsTeam] = useState(false);
-const [isSpot, setIsSpot] = useState(false);
-const [isPosition, setIsPosition] = useState(false);
+  });
+  const [isDepart, setIsDepart] = useState(false);
+  const [isTeam, setIsTeam] = useState(false);
+  const [isSpot, setIsSpot] = useState(false);
+  const [isPosition, setIsPosition] = useState(false);
 
   const handleOptionClick = (optionName: any, optionValue: any) => {
     setSelectedOptions(prevState => ({
@@ -169,86 +175,131 @@ const [isPosition, setIsPosition] = useState(false);
     setIsDepart(false);
     setIsSpot(false);
     setIsPosition(false);
-};
-const toggleSelect = (dropdownIndex: any) => {
-  switch (dropdownIndex) {
-      case 1:
-          setIsDepart(!isDepart);
-          setIsTeam(false);
-          setIsSpot(false);
-          setIsPosition(false);
-          break;
-      case 2:
-          setIsTeam(!isTeam);
-          setIsDepart(false);
-          setIsSpot(false);
-          setIsPosition(false);
-          break;
-      case 3:
-          setIsSpot(!isSpot);
-          setIsDepart(false);
-          setIsTeam(false);
-          setIsPosition(false);
-          break;
-      case 4:
-          setIsPosition(!isPosition);
-          setIsDepart(false);
-          setIsTeam(false);
-          setIsSpot(false);
-          break;
-      default:
-          break;
-  }
-};
+  };
+  const toggleSelect = (dropdownIndex: any) => {
+    switch (dropdownIndex) {
+        case 1:
+            setIsDepart(!isDepart);
+            setIsTeam(false);
+            setIsSpot(false);
+            setIsPosition(false);
+            break;
+        case 2:
+            setIsTeam(!isTeam);
+            setIsDepart(false);
+            setIsSpot(false);
+            setIsPosition(false);
+            break;
+        case 3:
+            setIsSpot(!isSpot);
+            setIsDepart(false);
+            setIsTeam(false);
+            setIsPosition(false);
+            break;
+        case 4:
+            setIsPosition(!isPosition);
+            setIsDepart(false);
+            setIsTeam(false);
+            setIsSpot(false);
+            break;
+        default:
+            break;
+    }
+  };
 
-const renderTeams = () => {
-  switch (selectedOptions.department) {
-      case '알고리즘 연구실':
-          return (
-              <>
-                  <div className="op" onClick={() => handleOptionClick('team', '암호 연구팀')}>암호 연구팀</div>
-                  <div className="op" onClick={() => handleOptionClick('team', 'AI 연구팀')}>AI 연구팀</div>
-              </>
-          );
-      case '동형분석 연구실':
-          return (
-              <>
-                  <div className="op" onClick={() => handleOptionClick('team', '동형분석 연구팀')}>동형분석 연구팀</div>
-              </>
-          );
-      case '블록체인 연구실':
-          return (
-              <>
-                  <div className="op" onClick={() => handleOptionClick('team', '크립토 블록체인 연구팀')}>크립토 블록체인 연구팀</div>
-                  <div className="op" onClick={() => handleOptionClick('team', 'API 개발팀')}>API 개발팀</div>
-              </>
-          );
-      case '개발부':
-          return (
-              <>
-                  <div className="op" onClick={() => handleOptionClick('team', '개발 1팀')}>개발 1팀</div>
-                  <div className="op" onClick={() => handleOptionClick('team', '개발 2팀')}>개발 2팀</div>
-              </>
-          );
-      case '관리부':
-          return (
-              <>
-                  <div className="op" onClick={() => handleOptionClick('team', '관리팀')}>관리팀</div>
-                  <div className="op" onClick={() => handleOptionClick('team', '지원팀')}>지원팀</div>
-                  <div className="op" onClick={() => handleOptionClick('team', '시설팀')}>시설팀</div>
-              </>
-          );
-      case '마케팅부':
-          return (
-              <>
-                  <div className="op" onClick={() => handleOptionClick('team', '디자인팀')}>디자인팀</div>
-                  <div className="op" onClick={() => handleOptionClick('team', '기획팀')}>기획팀</div>
-              </>
-          );
-      default:
-          return null;
-  }
-};
+  const renderTeams = () => {
+    switch (selectedOptions.department) {
+        case '알고리즘 연구실':
+            return (
+                <>
+                    <div className="op" onClick={() => handleOptionClick('team', '암호 연구팀')}>암호 연구팀</div>
+                    <div className="op" onClick={() => handleOptionClick('team', 'AI 연구팀')}>AI 연구팀</div>
+                </>
+            );
+        case '동형분석 연구실':
+            return (
+                <>
+                    <div className="op" onClick={() => handleOptionClick('team', '동형분석 연구팀')}>동형분석 연구팀</div>
+                </>
+            );
+        case '블록체인 연구실':
+            return (
+                <>
+                    <div className="op" onClick={() => handleOptionClick('team', '크립토 블록체인 연구팀')}>크립토 블록체인 연구팀</div>
+                    <div className="op" onClick={() => handleOptionClick('team', 'API 개발팀')}>API 개발팀</div>
+                </>
+            );
+        case '개발부':
+            return (
+                <>
+                    <div className="op" onClick={() => handleOptionClick('team', '개발 1팀')}>개발 1팀</div>
+                    <div className="op" onClick={() => handleOptionClick('team', '개발 2팀')}>개발 2팀</div>
+                </>
+            );
+        case '관리부':
+            return (
+                <>
+                    <div className="op" onClick={() => handleOptionClick('team', '관리팀')}>관리팀</div>
+                    <div className="op" onClick={() => handleOptionClick('team', '지원팀')}>지원팀</div>
+                    <div className="op" onClick={() => handleOptionClick('team', '시설팀')}>시설팀</div>
+                </>
+            );
+        case '마케팅부':
+            return (
+                <>
+                    <div className="op" onClick={() => handleOptionClick('team', '디자인팀')}>디자인팀</div>
+                    <div className="op" onClick={() => handleOptionClick('team', '기획팀')}>기획팀</div>
+                </>
+            );
+        default:
+            return null;
+    }
+  };
+
+  const updateUserStateAndLocalStorage = (updatedUser: any) => {
+    setUser(updatedUser);
+    localStorage.setItem('userState', JSON.stringify(updatedUser));
+  };
+
+  const handleSubmit = () => {
+    const modifiedData: { [key: string]: string } = {};
+
+    for (const key in selectedOptions) {
+        if (selectedOptions.hasOwnProperty(key) && selectedOptions[key as keyof SelectedOptions] !== selectedOptions[key as keyof SelectedOptions]) {
+            modifiedData[key as keyof SelectedOptions] = selectedOptions[key as keyof SelectedOptions];
+        }
+    }
+
+    modifiedData.userID = user.id;
+
+    // FormData 생성
+    const formDataToSend = new FormData();
+    for (const key in modifiedData) {
+        if (modifiedData.hasOwnProperty(key)) {
+            formDataToSend.append(key, modifiedData[key]);
+        }
+    }
+    console.log('보내는 값', formDataToSend)
+    // API 호출
+    RegisterEditServices(formDataToSend)
+        .then((res) => {
+            if (res) {
+                const updatedUser = {
+                    ...user,
+                    ...modifiedData,
+                };
+
+                updateUserStateAndLocalStorage(updatedUser);
+                setUserState(updatedUser);
+
+            } else {
+                console.log('회원정보 수정 실패');
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+  };
 
   return (
     <div className="content">
@@ -356,6 +407,14 @@ const renderTeams = () => {
                                 onClick={() => {
                                   setEditModalOpen(true);
                                   setClickIdx(usermanage.userId);
+                                  setSelectedOptions(prevOptions => ({
+                                    ...prevOptions,
+                                    company: usermanage.company,
+                                    department: usermanage.department,
+                                    team: usermanage.team,
+                                    position: usermanage.position,
+                                    spot: usermanage.spot,
+                                  }));
                                 }}
                               >
                                 수정
@@ -490,7 +549,7 @@ const renderTeams = () => {
         header={'회원수정'}
         footer1={'확인'}
         footer1Class="red-btn"
-        onFooter1Click={() => setEditModalOpen(false)}
+        onFooter1Click={handleSubmit}
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => setEditModalOpen(false)}
@@ -502,17 +561,18 @@ const renderTeams = () => {
             <span className="FlexSpan">회사</span>
             <fieldset>
                 <label>
-                    <input type="radio" name="company" value="R&D" onClick={() => handleOptionClick('company', 'R&D')} />
+                    <input type="radio" name="company" value="R&D" checked={selectedOptions.company === 'R&D'} onClick={() => handleOptionClick('company', 'R&D')} />
                     <span>R&D</span>
                 </label>
 
                 <label>
-                    <input type="radio" name="company" value="본사" onClick={() => handleOptionClick('company', '본사')} />
+                    <input type="radio" name="company" value="본사" checked={selectedOptions.company === '본사'} onClick={() => handleOptionClick('company', '본사')} />
                     <span>본사</span>
                 </label>
             </fieldset>
-        </div>
-        <div className="flexbox">
+          </div>
+
+          <div className="flexbox">
             <span className="FlexSpan">부서</span>
             <div className="custom-select">
                 <div className="select-header" onClick={() => toggleSelect(1)}>
@@ -536,7 +596,6 @@ const renderTeams = () => {
                         )}
                     </div>
                 )}
-
             </div>
         </div>
         <div className="flexbox">
