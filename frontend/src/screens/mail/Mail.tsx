@@ -41,8 +41,8 @@ import Pagenation from "./Pagenation";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { useQuery } from 'react-query';
-import { CheckEmail, DeleteEmail, cancleQueueEmail, StarringEmail, JunkEmail } from "../../services/email/EmailService";
-import { AddJunkList, CheckJunkList, RemoveJunkList } from "../../services/email/EmailService";
+import { CheckEmail, DeleteEmail, ReadEmail, cancleQueueEmail, StarringEmail, JunkEmail } from "../../services/email/EmailService";
+import { AddJunkList, RemoveJunkList } from "../../services/email/EmailService";
 
 const Mail = () => {
   let navigate = useNavigate();
@@ -445,6 +445,22 @@ const Mail = () => {
       [mailId]: true,
     }));
   };
+  
+  // 메일 읽음 처리
+  const handleReadEmail = (mailId: number) => {
+    const formData = {
+      Id: mailId,
+    }
+
+    ReadEmail(formData)
+    .then((response) => {
+      console.log('메일 읽음 처리 성공', response);
+      refetchEmail();
+    })
+    .catch((error) => {
+      console.log('메일 읽음 처리 실패', error);
+    })
+  };
 
   // 중요 메일
   const handleMailStarring = (mailId: number, star: string) => {
@@ -846,7 +862,7 @@ const Mail = () => {
                             {mail?.subject}
                           </div>
                         :
-                          <div className={`${clickedMails[mail.Id] ? "" : "clicked"}`} onClick={() => toggleMailContent(mail.Id)}>
+                          <div className={mail.read === 'read' ? "" : "clicked"} onClick={() => {toggleMailContent(mail.Id); handleReadEmail(mail.Id)}}>
                             {mail?.subject}
                             <img src={mail_triangle} alt="mail_triangle" />
                           </div>
