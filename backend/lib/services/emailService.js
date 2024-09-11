@@ -33,7 +33,7 @@ async function fetchMailcowEmails(userId) {
         imap.openBox('INBOX', true, async (err, box) => {
             if(err) throw err;
 
-            // 읽지 않은 메일만 검색
+            // 모든 이메일 검색
             imap.search(['ALL'],  async (err, results) => {
                 if (err) throw err;
                 if (results.length === 0) {
@@ -68,11 +68,11 @@ async function fetchMailcowEmails(userId) {
 
         imap.search(searchCriteria, (err, results) => {
             if (err) throw err;
-            if (!results || results.length === 0) {
-                console.log('조회되는 이메일이 존재하지 않습니다.');
-                callback();
-                return;
-            }
+            // if (!results || results.length === 0) {
+            //     console.log('조회되는 이메일이 존재하지 않습니다.');
+            //     callback();
+            //     return;
+            // }
             const f = imap.fetch(results, fetchOptions);
 
           // 이메일 파싱
@@ -88,7 +88,6 @@ async function fetchMailcowEmails(userId) {
                         try {
                             const checksavedEmail = await saveEmail(mail, userId, folderName);
                             if(checksavedEmail){
-                                //console.log('저장된 이메일 Id:', checksavedEmail.Id);
 
                                 // 첨부파일이 있는 경우 저장
                                 if (mail.attachments && mail.attachments.length > 0) {
@@ -194,44 +193,10 @@ const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment
 
         const savedEmail = await Email.create(emailData);
         return savedEmail;
-
-
     } catch (error) {
         //console.error('이메일 저장실패');
     }
 };
-
-
-// 보낸 메일을 Sent 메일박스에 저장
-function saveSentMail(imap, mailOptions) {
-    return new Promise((resolve, reject) => {
-
-        const rawEmail = [
-            `From: ${mailOptions.from}`,
-            `To: ${mailOptions.to}`,
-            `Subject: ${mailOptions.subject}`,
-            '',
-            mailOptions.text || mailOptions.html
-        ].join('\n');
-    
-        imap.openBox('Sent', false, function(err, box) {
-            if (err) throw err;
-    
-            imap.append(rawEmail, { mailbox: 'Sent' }, function(err) {
-                if (err) {
-                    console.error('보낸 메일을 Sent 폴더에 저장하는 도중 오류 발생:', err);
-                    imap.end();
-                    return reject(err);
-                } else {
-                    console.log('보낸 메일이 Sent 폴더에 저장되었습니다.');
-                }
-                imap.end();
-                resolve();
-            });
-        });
-    })
-    
-}
 
 // SMTP를 통한 이메일 전송 함수 추가
 async function sendEmail(to, subject, body,userId, attachments = [], messageId, cc) {
@@ -271,9 +236,6 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
     try {
         const info = await transporter.sendMail(mailOptions);
         const imap = await connectIMAP(userId, password);
-       imap.once('ready', function() {
-           saveSentMail(imap, mailOptions);  // 보낸 메일을 Sent 폴더에 저장
-       });
 
        imap.once('error', function(err) {
            console.error('IMAP 연결 에러:', err);
