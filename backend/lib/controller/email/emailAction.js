@@ -72,8 +72,7 @@ const deletedLog = async(req, res, emailId, userId, messageId) => {
         action: 'deleted',
         actionTimeStamp,
     });
-
-    return res.status(200).json({ message: '이메일 삭제 로그가 성공적으로 작성되었습니다.', newDeleteLog: newDeletedLog});
+    console.log("이메일 삭제 로그 작성완료")
 };
 
 

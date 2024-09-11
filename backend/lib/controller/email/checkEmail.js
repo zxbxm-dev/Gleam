@@ -64,10 +64,10 @@ const deleteEmail = async(req, res) => {
 
         deletedLog(req, res, Id, userId, messageId);
         await deleteEmail.destroy();
-        console.log("이메일이 성공적으로 삭제되었습니다.")
+        res.status(200).json({ message: "이메일이 성공적으로 삭제되었습니다.", deleteEmail : deleteEmail.Id });
     }catch(error) {
         console.error("이메일 삭제 중 오류 발생:", error);
-         return res.status(500).json({ error : "이메일 삭제에 실패했습니다."})
+         return res.status(500).json({ error : "이메일 삭제에 실패했습니다." });
     }
 }
 
