@@ -446,16 +446,23 @@ const Calendar = () => {
   }, []);
 
   const dayCellContent = (arg: any) => {
-    const formattedDateStr = arg.date.toISOString().split('T')[0];
-    const holiday = holidays.find(holiday => holiday.start === formattedDateStr);
+    const date = new Date(arg.date.getFullYear(), arg.date.getMonth(), arg.date.getDate());
+    const formattedDateStr = date.toISOString().split('T')[0];
+    const holiday = holidays.find(holiday => {
+      const holidayDate = new Date(holiday.start);
+      holidayDate.setHours(0, 0, 0, 0);
+      const holidayDateStr = holidayDate.toISOString().split('T')[0];
+      return holidayDateStr === formattedDateStr;
+    });
 
     return (
       <div className="day-cell-content">
-        <div className={`date-text ${holiday ? 'holiday-date' : ''}`}>{arg.date.getDate()}</div>
+        <div className={`date-text ${holiday ? 'holiday-date' : ''}`}>{date.getDate()}</div>
         {holiday && <div className="holiday-title">{holiday.title}</div>}
       </div>
     );
   };
+
   return (
     <div className="content" style={{ padding: '0px 20px' }}>
       <div className="content_container">
