@@ -37,6 +37,20 @@ type User = {
   team: string;
 };
 
+interface GoogleCalendarEvent {
+  start: {
+    date?: string;
+    dateTime?: string;
+  };
+  summary: string;
+}
+
+interface Holiday {
+  title: string;
+  start: string;
+  end?: string;
+  color?: string;
+}
 
 const Calendar = () => {
   const user = useRecoilValue(userState);
@@ -138,7 +152,7 @@ const Calendar = () => {
     setuserDropdown(false);
   };
 
-  const filteredName = persondata.filter(person => 
+  const filteredName = persondata.filter(person =>
     person.username.toLowerCase().includes(title.toLowerCase())
   );
 
@@ -157,7 +171,7 @@ const Calendar = () => {
       const adjustedDate = new Date(date.getTime() - (offset * 60 * 1000));
       return adjustedDate.toISOString().substring(0, 10);
     };
-    
+
     const finduser = persondata.find(person => person.username === title.split(' ')[0])
     const isoStartDate = getLocalISODateString(startDate);
     const isoEndDate = getLocalISODateString(endDate);
@@ -187,7 +201,7 @@ const Calendar = () => {
       .catch(error => {
         console.error('Error adding event:', error);
       });
-      
+
     resetForm();
     setAddEventModalOPen(false);
   };
@@ -299,7 +313,7 @@ const Calendar = () => {
       userID: userID,
       startDate: startDate,
       endDate: endDate,
-      backgroundColor:selectedColor,
+      backgroundColor: selectedColor,
       dateType: title.split(' ').pop() || "",
       title,
       memo
@@ -350,60 +364,98 @@ const Calendar = () => {
   const events1 = transformEvents(calendar.filter(event => event.company === '본사'));
   const events2 = transformEvents(calendar.filter(event => event.company === 'R&D'));
 
-  const holidays = [
-    { date: '2024-01-01', name: '새해 첫날' },
-    { date: '2024-02-09', name: '설날 연휴' },
-    { date: '2024-02-10', name: '설날' },
-    { date: '2024-02-11', name: '설날 연휴' },
-    { date: '2024-02-12', name: '대체공휴일(설날)' },
-    { date: '2024-03-01', name: '삼일절' },
-    { date: '2024-04-10', name: '22대 국회의원선거' },
-    { date: '2024-05-05', name: '어린이날' },
-    { date: '2024-05-06', name: '대체공휴일(어린이날)' },
-    { date: '2024-05-15', name: '부처님 오신 날' },
-    { date: '2024-06-06', name: '현충일' },
-    { date: '2024-08-15', name: '광복절' },
-    { date: '2024-09-16', name: '추석 연휴' },
-    { date: '2024-09-17', name: '추석' },
-    { date: '2024-09-18', name: '추석 연휴' },
-    { date: '2024-10-01', name: '임시공휴일' },
-    { date: '2024-10-03', name: '개천절' },
-    { date: '2024-10-09', name: '한글날' },
-    { date: '2024-12-25', name: '성탄절' },
-  ];
+  // const holidays = [
+  //   { date: '2024-01-01', name: '새해 첫날' },
+  //   { date: '2024-02-09', name: '설날 연휴' },
+  //   { date: '2024-02-10', name: '설날' },
+  //   { date: '2024-02-11', name: '설날 연휴' },
+  //   { date: '2024-02-12', name: '대체공휴일(설날)' },
+  //   { date: '2024-03-01', name: '삼일절' },
+  //   { date: '2024-04-10', name: '22대 국회의원선거' },
+  //   { date: '2024-05-05', name: '어린이날' },
+  //   { date: '2024-05-06', name: '대체공휴일(어린이날)' },
+  //   { date: '2024-05-15', name: '부처님 오신 날' },
+  //   { date: '2024-06-06', name: '현충일' },
+  //   { date: '2024-08-15', name: '광복절' },
+  //   { date: '2024-09-16', name: '추석 연휴' },
+  //   { date: '2024-09-17', name: '추석' },
+  //   { date: '2024-09-18', name: '추석 연휴' },
+  //   { date: '2024-10-01', name: '임시공휴일' },
+  //   { date: '2024-10-03', name: '개천절' },
+  //   { date: '2024-10-09', name: '한글날' },
+  //   { date: '2024-12-25', name: '성탄절' },
+  // ];
 
-  const dayCellContent = (info: any) => {
-    var number = document.createElement("span");
-    number.classList.add("fc-daygrid-day-number-content");
-    number.innerHTML = info.dayNumberText.replace("일", "");
+  // const dayCellContent = (info: any) => {
+  //   var number = document.createElement("span");
+  //   number.classList.add("fc-daygrid-day-number-content");
+  //   number.innerHTML = info.dayNumberText.replace("일", "");
 
-    const dateStr = info.date.toLocaleDateString('en-CA');
+  //   const dateStr = info.date.toLocaleDateString('en-CA');
 
-    const holiday = holidays.find(
-      (holiday) => holiday.date === dateStr
+  //   const holiday = holidays.find(
+  //     (holiday) => holiday.date === dateStr
+  //   );
+
+  //   var container = document.createElement("div");
+  //   container.style.display = 'flex';
+  //   container.style.alignItems = 'center';
+
+  //   if (holiday) {
+  //     var holidayName = document.createElement("span");
+  //     holidayName.innerHTML = holiday.name;
+  //     holidayName.style.color = 'red';
+  //     holidayName.style.width = '100%';
+  //     holidayName.style.textAlign = 'right';
+  //     number.style.color = 'red';
+
+  //     container.appendChild(number);
+  //     container.appendChild(holidayName);
+  //   } else {
+  //     container.appendChild(number);
+  //   }
+
+  //   return { domNodes: [container] };
+  // };
+
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+
+  useEffect(() => {
+    const fetchGoogleHolidays = async () => {
+      const apiKey = "AIzaSyBB-X6Uc-1EnRlFTXs36cKK6gAQ0VAPpC0";
+      const calendarId = 'ko.south_korea.official%23holiday%40group.v.calendar.google.com';
+      const timeMin = new Date().toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${timeMin}&singleEvents=true&orderBy=startTime`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const holidays = data.items.map((item: GoogleCalendarEvent) => ({
+          title: item.summary,
+          start: item.start.date,
+          allDay: true,
+          color: 'red',
+        }));
+        setHolidays(holidays);
+      } catch (error) {
+        console.error("Error fetching Google Calendar holidays:", error);
+      }
+    };
+
+    fetchGoogleHolidays();
+  }, []);
+
+  const dayCellContent = (arg: any) => {
+    const formattedDateStr = arg.date.toISOString().split('T')[0];
+    const holiday = holidays.find(holiday => holiday.start === formattedDateStr);
+
+    return (
+      <div className="day-cell-content">
+        <div className={`date-text ${holiday ? 'holiday-date' : ''}`}>{arg.date.getDate()}</div>
+        {holiday && <div className="holiday-title">{holiday.title}</div>}
+      </div>
     );
-
-    var container = document.createElement("div");
-    container.style.display = 'flex';
-    container.style.alignItems = 'center';
-
-    if (holiday) {
-      var holidayName = document.createElement("span");
-      holidayName.innerHTML = holiday.name;
-      holidayName.style.color = 'red';
-      holidayName.style.width = '100%';
-      holidayName.style.textAlign = 'right';
-      number.style.color = 'red';
-
-      container.appendChild(number);
-      container.appendChild(holidayName);
-    } else {
-      container.appendChild(number);
-    }
-
-    return { domNodes: [container] };
   };
-
   return (
     <div className="content" style={{ padding: '0px 20px' }}>
       <div className="content_container">
@@ -421,7 +473,6 @@ const Calendar = () => {
                   ref={calendarRef1}
                   plugins={[dayGridPlugin]}
                   initialView="dayGridMonth"
-                  dayCellContent={dayCellContent}
                   height="100%"
                   customButtons={{
                     Addschedule: {
@@ -441,12 +492,13 @@ const Calendar = () => {
                   buttonText={{ today: '오늘' }}
                   locale='kr'
                   fixedWeekCount={false}
-                  events={events1}
+                  events={[...events1]}
                   eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
                   dayMaxEventRows={true}
                   eventDisplay="block"
                   eventClick={handleEventClick}
                   moreLinkText='개 일정 더보기'
+                  dayCellContent={dayCellContent}
                 />
               </div>
             </TabPanel>
@@ -473,15 +525,6 @@ const Calendar = () => {
                   }}
                   dayHeaderFormat={{ weekday: 'long' }}
                   titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-                  dayCellContent={(info) => {
-                    var number = document.createElement("a");
-                    number.classList.add("fc-daygrid-day-number");
-                    number.innerHTML = info.dayNumberText.replace("일", "");
-                    if (info.view.type === "dayGridMonth") {
-                      return { html: number.outerHTML };
-                    }
-                    return { domNodes: [] };
-                  }}
                   buttonText={{ today: '오늘' }}
                   locale='kr'
                   fixedWeekCount={false}
@@ -491,6 +534,7 @@ const Calendar = () => {
                   eventDisplay="block"
                   eventClick={handleEventClick}
                   moreLinkText='개 일정 더보기'
+                  dayCellContent={dayCellContent}
                 />
               </div>
             </TabPanel>
@@ -500,14 +544,14 @@ const Calendar = () => {
 
       <CustomModal
         isOpen={isAddeventModalOpen}
-        onClose={() => { setAddEventModalOPen(false); resetForm();}}
+        onClose={() => { setAddEventModalOPen(false); resetForm(); }}
         header={'일정 등록하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
         onFooter1Click={handleAddEvent}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => { setAddEventModalOPen(false); resetForm();}}
+        onFooter2Click={() => { setAddEventModalOPen(false); resetForm(); }}
         height="320px"
       >
         <div className="body-container">
@@ -550,10 +594,10 @@ const Calendar = () => {
             </div>
             <div className="content-right">
               <div className="event_title_input">
-                <input 
-                  className="textinput" 
-                  type="text" 
-                  placeholder='ex) OOO 반차' 
+                <input
+                  className="textinput"
+                  type="text"
+                  placeholder='ex) OOO 반차'
                   onChange={handleTitleChange}
                   onKeyDown={handleInputKeyDown}
                   value={title}
@@ -711,14 +755,14 @@ const Calendar = () => {
 
       <CustomModal
         isOpen={isEditeventModalOpen}
-        onClose={() => { setEditEventModalOPen(false); resetForm();}}
+        onClose={() => { setEditEventModalOPen(false); resetForm(); }}
         header={'일정 수정하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
         onFooter1Click={handleCalenEdit}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => { setEditEventModalOPen(false); resetForm();}}
+        onFooter2Click={() => { setEditEventModalOPen(false); resetForm(); }}
         height="320px"
       >
         <div className="body-container">
