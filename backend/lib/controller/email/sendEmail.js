@@ -7,7 +7,6 @@ const { QueueEmail} = require("../../controller/email/emailQueue");
 const shortid = require('shortid');
 
 
-
 //이메일 전송하기
 const sendMail = async (req, res) => {
     const {
@@ -55,6 +54,7 @@ const sendMail = async (req, res) => {
             signature,
             hasAttachments: attachments && attachments.length > 0,
             folder: 'sent',
+            read: "read"
         });
 
         // 첨부파일이 있는 경우 처리
@@ -67,13 +67,11 @@ const sendMail = async (req, res) => {
   
     //예약 이메일 전송하기
     if (queueDate) {
-        console.log(`이메일 예약 설정: ${Id}번`);
+
         // 예약 이메일 설정
         await QueueEmail(req, res);
         return;
     };
-
-    console.log("요청 본문 받음 :", req.body);
     const to = receiver;
     
     try{
@@ -104,7 +102,8 @@ const sendMail = async (req, res) => {
             queueDate,
             signature,
             hasAttachments: hasAttachments,
-            folder: 'sent'
+            folder: 'sent',
+            read: "read"
         })
 
 

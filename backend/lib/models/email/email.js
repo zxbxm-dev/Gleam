@@ -1,5 +1,3 @@
-
-
 module.exports = (sequelize, DataTypes) => {
     const Email = sequelize.define(
         "Email",
@@ -81,7 +79,12 @@ module.exports = (sequelize, DataTypes) => {
             star : {
                 type: DataTypes.STRING,
                 allowNull: true,
-            }
+            },
+            read: {
+                type: DataTypes.STRING,
+                allowNUll: true,
+                defaultValue: "unread"
+            },
         },
         {
             tableName: "email"

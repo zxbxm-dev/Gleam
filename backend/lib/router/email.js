@@ -17,6 +17,7 @@ module.exports = (app) => {
         router.get("/checkEmail/:userId",getEmailController.getAllEmail);
         router.post("/sendEmail",multerMiddleware.array('attachment'),sendEmailController.sendMail);
         router.delete("/deleteEmail/:Id/:messageId",getEmailController.deleteEmail);
+        router.put("/readEmail",emailActionController.readEmail);
         
         //이메일 임시저장하기
         router.post("/draftEmail",draftEmailController.draftEmails);

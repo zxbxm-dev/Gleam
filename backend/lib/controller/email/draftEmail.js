@@ -35,7 +35,7 @@ const draftEmails = async (req, res) => {
             folder: 'drafts'
         })
         console.log(`이메일 임시저장 완료`);
-        return res.status(200).json({message:"이메일 임시저장이 성공적으로 완료되었습니다.",newDraftEmail:newDraftEmail});
+        return res.status(200).json({message:"이메일 임시저장이 성공적으로 완료되었습니다.",newDraftEmail:newDraftEmail.Id});
   
     }catch(error){
         console.error("이메일을 임시저장 하는 도중 에러 발생",error);
@@ -53,7 +53,6 @@ const deleteDraftEmail = async (req, res, Id) => {
 
     if(draftedEmail){
     draftedEmail.destroy()
-    console.log(`${Id}번 임시저장 이메일이 성공적으로 삭제되었습니다.`);
     }else{
     console.log(`임시저장 이메일 정보를 찾을 수 없습니다.`);
     };

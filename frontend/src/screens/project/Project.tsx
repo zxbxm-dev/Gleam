@@ -35,6 +35,21 @@ interface ProjectData {
   subProject?: ProjectData[];
 };
 
+interface GoogleCalendarEvent {
+  start: {
+    date?: string;
+    dateTime?: string;
+  };
+  summary: string;
+}
+
+interface Holiday {
+  title: string;
+  start: string;
+  end?: string;
+  color?: string;
+}
+
 
 const Project = () => {
   const user = useRecoilValue(userState);
@@ -71,6 +86,7 @@ const Project = () => {
   const [pjtstateIsOpen, setPjtStateIsOpen] = useState(false);
 
   const [projects, setProjects] = useState<any[]>([]);
+  const [myprojects, setMyProjects] = useState<any[]>([]);
   const [subprojects, setSubProjects] = useState<any[]>([]);
   const [projectEvent, setProjectEvent] = useState<any[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<ProjectData | null>(null);
@@ -462,11 +478,55 @@ const Project = () => {
     return result;
   };
 
-  const { refetch : refetchProject } = useQuery("Project", fetchProject, {
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+
+  useEffect(() => {
+    const fetchGoogleHolidays = async () => {
+      const apiKey = "AIzaSyBB-X6Uc-1EnRlFTXs36cKK6gAQ0VAPpC0";
+      const calendarId = 'ko.south_korea.official%23holiday%40group.v.calendar.google.com';
+      const timeMin = new Date().toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${timeMin}&singleEvents=true&orderBy=startTime`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const holidays = data.items.map((item: GoogleCalendarEvent) => ({
+          title: item.summary,
+          start: item.start.date,
+          allDay: true,
+          color: 'red',
+        }));
+        setHolidays(holidays);
+      } catch (error) {
+        console.error("Error fetching Google Calendar holidays:", error);
+      }
+    };
+
+    fetchGoogleHolidays();
+  }, []);
+
+  const dayCellContent = (arg: any) => {
+    const date = new Date(arg.date.getFullYear(), arg.date.getMonth(), arg.date.getDate());
+    const formattedDateStr = date.toISOString().split('T')[0];
+    const holiday = holidays.find(holiday => {
+      const holidayDate = new Date(holiday.start);
+      holidayDate.setHours(0, 0, 0, 0);
+      const holidayDateStr = holidayDate.toISOString().split('T')[0];
+      return holidayDateStr === formattedDateStr;
+    });
+
+    return (
+      <div className="day-cell-content">
+        <div className={`date-text ${holiday ? 'holiday-date' : ''}`}>{date.getDate()}</div>
+        {holiday && <div className="holiday-title">{holiday.title}</div>}
+      </div>
+    );
+  };
+
+  const { refetch: refetchProject } = useQuery("Project", fetchProject, {
     enabled: false,
     onSuccess: (data) => {
-
-       // 각 mainproject에 subprojects를 추가
+      // Process and sort the main projects
       const mainprojects = data.mainprojects.map((mainproject: ProjectData) => {
         ProjectVisibilityInitial(mainproject?.mainprojectIndex);
         const subProjects = data.subprojects.filter(
@@ -474,15 +534,14 @@ const Project = () => {
         );
         return { ...mainproject, subProjects };
       });
-      // pinnedProjects 상태를 업데이트
+  
       const newPinnedProjects = mainprojects.reduce((acc: { [key: number]: number }, mainproject: ProjectData) => {
         acc[mainproject.mainprojectIndex] = mainproject.pinned;
         return acc;
       }, {});
-
+  
       setPinnedProjects(newPinnedProjects);
-      
-      // pinned 값을 기준으로 정렬 (pinned가 true인 항목을 앞으로)
+  
       const sortedMainProjects = mainprojects.sort((a: ProjectData, b: ProjectData) => {
         if (a.pinned && !b.pinned) {
           return -1;
@@ -492,8 +551,18 @@ const Project = () => {
           return b.mainprojectIndex - a.mainprojectIndex;
         }
       });
-
-      setProjects(sortedMainProjects)
+  
+      const userUsername = user?.username.trim();
+  
+      const filteredSortedProjects = sortedMainProjects.filter((mainproject: ProjectData) => {
+        const isLeader = userUsername === mainproject?.Leader?.split(' ').pop();
+        const isMember = mainproject?.members?.some(member => member.includes(userUsername));
+        const isReferrer = mainproject?.referrer?.some(referrer => referrer.includes(userUsername));
+        return isLeader || isMember || isReferrer;
+      });
+  
+      setMyProjects(filteredSortedProjects);
+      setProjects(sortedMainProjects);
       setSubProjects(mainprojects);
       setProjectEvent(transformProjectData(mainprojects));
     },
@@ -501,6 +570,7 @@ const Project = () => {
       console.log(error);
     }
   });
+  
   
   // 메인 프로젝트 추가
   const handleAddMainProject = async () => {
@@ -758,6 +828,20 @@ const Project = () => {
     refetchProject();
   }, [refetchProject]);
 
+  const userUsername = user?.username.trim();
+  const members = rightclickedProjects?.members ?? [];
+  const referrer = rightclickedProjects?.referrer ?? [];
+
+  const isMemberIncluded = members.some(member => member.includes(userUsername));
+  const isReferrerIncluded = referrer.some(ref => ref.includes(userUsername));
+
+  const canEdit = (
+    user.username === rightclickedProjects?.Leader?.split(' ').pop() || 
+    user.userID === rightclickedProjects?.userId ||
+    isMemberIncluded ||
+    isReferrerIncluded
+  );
+
   return (
     <div className="content">
       <div className="content_container">
@@ -805,7 +889,7 @@ const Project = () => {
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(projects) ? projects.filter(project => project.status === 'notstarted') : []).map((project, index) => (
+                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'notstarted') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
                       <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
@@ -840,7 +924,8 @@ const Project = () => {
                         <div className="project_box_content">
                           {dropdownOpen && (
                             <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                              {(canEdit
+                              ) && (
                                 <div className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -911,7 +996,7 @@ const Project = () => {
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(projects) ? projects.filter(project => project.status === 'inprogress') : []).map((project, index) => (
+                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'inprogress') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
                       <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
@@ -946,7 +1031,8 @@ const Project = () => {
                         <div className="project_box_content">
                           {dropdownOpen && (
                             <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                              {(canEdit
+                              ) && (
                                 <div className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -1017,7 +1103,7 @@ const Project = () => {
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(projects) ? projects.filter(project => project.status === 'done') : []).map((project, index) => (
+                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'done') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
                       <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
@@ -1052,7 +1138,8 @@ const Project = () => {
                         <div className="project_box_content">
                           {dropdownOpen && (
                             <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                              {(canEdit
+                              ) && (
                                 <div className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -1127,6 +1214,7 @@ const Project = () => {
               ref={calendarRef}
               plugins={[dayGridPlugin]}
               initialView="dayGridMonth"
+              dayCellContent={dayCellContent}
               height="100%"
               headerToolbar={{
                 start: 'prev title next',
@@ -1135,15 +1223,6 @@ const Project = () => {
               }}
               dayHeaderFormat={{ weekday: 'long' }}
               titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-              dayCellContent={(info) => {
-                var number = document.createElement("a");
-                number.classList.add("fc-daygrid-day-number");
-                number.innerHTML = info.dayNumberText.replace("일", "");
-                if (info.view.type === "dayGridMonth") {
-                  return { html: number.outerHTML };
-                }
-                return { domNodes: [] };
-              }}
               locale='kr'
               fixedWeekCount={false}
               events={projectEvent}

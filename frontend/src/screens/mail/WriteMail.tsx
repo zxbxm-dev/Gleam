@@ -496,8 +496,8 @@ const WriteMail = () => {
   
   useEffect(() => {
     if (status === 'DRAFTS') {
-      setRecipients(Array.isArray(mail?.receiver) ? mail?.receiver : []);
-      setReferrers(Array.isArray(mail?.referrer) ? mail?.referrer : []);
+      setRecipients(mail?.receiver ? (Array.isArray(mail?.receiver) ? [...mail.receiver] : [mail.receiver]) : []);
+      setReferrers(mail?.referrer ? (Array.isArray(mail?.referrer) ? [...mail.referrer] : [mail.referrer]) : []);
       setMailTitle(mail?.subject);
     
       if (editorRef.current && mail?.body) {

@@ -37,6 +37,20 @@ type User = {
   team: string;
 };
 
+interface GoogleCalendarEvent {
+  start: {
+    date?: string;
+    dateTime?: string;
+  };
+  summary: string;
+}
+
+interface Holiday {
+  title: string;
+  start: string;
+  end?: string;
+  color?: string;
+}
 
 const Calendar = () => {
   const user = useRecoilValue(userState);
@@ -138,7 +152,7 @@ const Calendar = () => {
     setuserDropdown(false);
   };
 
-  const filteredName = persondata.filter(person => 
+  const filteredName = persondata.filter(person =>
     person.username.toLowerCase().includes(title.toLowerCase())
   );
 
@@ -157,7 +171,7 @@ const Calendar = () => {
       const adjustedDate = new Date(date.getTime() - (offset * 60 * 1000));
       return adjustedDate.toISOString().substring(0, 10);
     };
-    
+
     const finduser = persondata.find(person => person.username === title.split(' ')[0])
     const isoStartDate = getLocalISODateString(startDate);
     const isoEndDate = getLocalISODateString(endDate);
@@ -187,7 +201,7 @@ const Calendar = () => {
       .catch(error => {
         console.error('Error adding event:', error);
       });
-      
+
     resetForm();
     setAddEventModalOPen(false);
   };
@@ -299,7 +313,7 @@ const Calendar = () => {
       userID: userID,
       startDate: startDate,
       endDate: endDate,
-      backgroundColor:selectedColor,
+      backgroundColor: selectedColor,
       dateType: title.split(' ').pop() || "",
       title,
       memo
@@ -350,6 +364,51 @@ const Calendar = () => {
   const events1 = transformEvents(calendar.filter(event => event.company === '본사'));
   const events2 = transformEvents(calendar.filter(event => event.company === 'R&D'));
 
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+
+  useEffect(() => {
+    const fetchGoogleHolidays = async () => {
+      const apiKey = "AIzaSyBB-X6Uc-1EnRlFTXs36cKK6gAQ0VAPpC0";
+      const calendarId = 'ko.south_korea.official%23holiday%40group.v.calendar.google.com';
+      const timeMin = new Date().toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${timeMin}&singleEvents=true&orderBy=startTime`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const holidays = data.items.map((item: GoogleCalendarEvent) => ({
+          title: item.summary,
+          start: item.start.date,
+          allDay: true,
+          color: 'red',
+        }));
+        setHolidays(holidays);
+      } catch (error) {
+        console.error("Error fetching Google Calendar holidays:", error);
+      }
+    };
+
+    fetchGoogleHolidays();
+  }, []);
+
+  const dayCellContent = (arg: any) => {
+    const date = new Date(arg.date.getFullYear(), arg.date.getMonth(), arg.date.getDate());
+    const formattedDateStr = date.toISOString().split('T')[0];
+    const holiday = holidays.find(holiday => {
+      const holidayDate = new Date(holiday.start);
+      holidayDate.setHours(0, 0, 0, 0);
+      const holidayDateStr = holidayDate.toISOString().split('T')[0];
+      return holidayDateStr === formattedDateStr;
+    });
+
+    return (
+      <div className="day-cell-content">
+        <div className={`date-text ${holiday ? 'holiday-date' : ''}`}>{date.getDate()}</div>
+        {holiday && <div className="holiday-title">{holiday.title}</div>}
+      </div>
+    );
+  };
+
   return (
     <div className="content" style={{ padding: '0px 20px' }}>
       <div className="content_container">
@@ -383,24 +442,16 @@ const Calendar = () => {
                   }}
                   dayHeaderFormat={{ weekday: 'long' }}
                   titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-                  dayCellContent={(info) => {
-                    var number = document.createElement("a");
-                    number.classList.add("fc-daygrid-day-number");
-                    number.innerHTML = info.dayNumberText.replace("일", "");
-                    if (info.view.type === "dayGridMonth") {
-                      return { html: number.outerHTML };
-                    }
-                    return { domNodes: [] };
-                  }}
                   buttonText={{ today: '오늘' }}
                   locale='kr'
                   fixedWeekCount={false}
-                  events={events1}
+                  events={[...events1]}
                   eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
                   dayMaxEventRows={true}
                   eventDisplay="block"
                   eventClick={handleEventClick}
                   moreLinkText='개 일정 더보기'
+                  dayCellContent={dayCellContent}
                 />
               </div>
             </TabPanel>
@@ -427,15 +478,6 @@ const Calendar = () => {
                   }}
                   dayHeaderFormat={{ weekday: 'long' }}
                   titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-                  dayCellContent={(info) => {
-                    var number = document.createElement("a");
-                    number.classList.add("fc-daygrid-day-number");
-                    number.innerHTML = info.dayNumberText.replace("일", "");
-                    if (info.view.type === "dayGridMonth") {
-                      return { html: number.outerHTML };
-                    }
-                    return { domNodes: [] };
-                  }}
                   buttonText={{ today: '오늘' }}
                   locale='kr'
                   fixedWeekCount={false}
@@ -445,6 +487,7 @@ const Calendar = () => {
                   eventDisplay="block"
                   eventClick={handleEventClick}
                   moreLinkText='개 일정 더보기'
+                  dayCellContent={dayCellContent}
                 />
               </div>
             </TabPanel>
@@ -454,14 +497,14 @@ const Calendar = () => {
 
       <CustomModal
         isOpen={isAddeventModalOpen}
-        onClose={() => { setAddEventModalOPen(false); resetForm();}}
+        onClose={() => { setAddEventModalOPen(false); resetForm(); }}
         header={'일정 등록하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
         onFooter1Click={handleAddEvent}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => { setAddEventModalOPen(false); resetForm();}}
+        onFooter2Click={() => { setAddEventModalOPen(false); resetForm(); }}
         height="320px"
       >
         <div className="body-container">
@@ -504,10 +547,10 @@ const Calendar = () => {
             </div>
             <div className="content-right">
               <div className="event_title_input">
-                <input 
-                  className="textinput" 
-                  type="text" 
-                  placeholder='ex) OOO 반차' 
+                <input
+                  className="textinput"
+                  type="text"
+                  placeholder='ex) OOO 반차'
                   onChange={handleTitleChange}
                   onKeyDown={handleInputKeyDown}
                   value={title}
@@ -665,14 +708,14 @@ const Calendar = () => {
 
       <CustomModal
         isOpen={isEditeventModalOpen}
-        onClose={() => { setEditEventModalOPen(false); resetForm();}}
+        onClose={() => { setEditEventModalOPen(false); resetForm(); }}
         header={'일정 수정하기'}
         footer1={'등록'}
         footer1Class="back-green-btn"
         onFooter1Click={handleCalenEdit}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => { setEditEventModalOPen(false); resetForm();}}
+        onFooter2Click={() => { setEditEventModalOPen(false); resetForm(); }}
         height="320px"
       >
         <div className="body-container">

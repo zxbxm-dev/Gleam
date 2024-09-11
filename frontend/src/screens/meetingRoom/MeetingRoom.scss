@@ -3,6 +3,21 @@
   background-color: #FBFBFB;
   padding: 0 20px;
 
+  .day-cell-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .holiday-title{
+    color: #E84848;
+    font-size: 14.5px;
+  }
+
+  .holiday-date {
+    color: #E84848;
+  }
+
   .fc {
     .fc-toolbar.fc-header-toolbar {
       flex-direction: row;
@@ -31,7 +46,8 @@
     }
 
     .fc-daygrid-day-frame {
-
+      height: 100px;
+      
       &:hover {
         box-shadow: 0 0 0 3px #45C552 inset;
       }
@@ -46,6 +62,10 @@
       flex-direction: row;
       font-family: var(--font-family-Noto-M);
       color: #969696;
+
+      .fc-daygrid-day-number {
+        width: 100%;
+      }
     }
 
     .fc-popover {

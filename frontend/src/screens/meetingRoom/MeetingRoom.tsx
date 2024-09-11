@@ -49,6 +49,21 @@ interface ColorScheme {
   borderColor: string;
 }
 
+interface GoogleCalendarEvent {
+  start: {
+    date?: string;
+    dateTime?: string;
+  };
+  summary: string;
+}
+
+interface Holiday {
+  title: string;
+  start: string;
+  end?: string;
+  color?: string;
+}
+
 const formatDate = (date: Date): string => {
   const year = date.getFullYear().toString().slice(-2); // 연도의 마지막 2자리
   const month = String(date.getMonth() + 1).padStart(2, '0'); // 월
@@ -545,6 +560,51 @@ const MeetingRoom = () => {
     return user.username === selectedEvent?.username || meetpeopleNames?.includes(user.username);
   };
 
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+
+  useEffect(() => {
+    const fetchGoogleHolidays = async () => {
+      const apiKey = "AIzaSyBB-X6Uc-1EnRlFTXs36cKK6gAQ0VAPpC0";
+      const calendarId = 'ko.south_korea.official%23holiday%40group.v.calendar.google.com';
+      const timeMin = new Date().toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${timeMin}&singleEvents=true&orderBy=startTime`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const holidays = data.items.map((item: GoogleCalendarEvent) => ({
+          title: item.summary,
+          start: item.start.date,
+          allDay: true,
+          color: 'red',
+        }));
+        setHolidays(holidays);
+      } catch (error) {
+        console.error("Error fetching Google Calendar holidays:", error);
+      }
+    };
+
+    fetchGoogleHolidays();
+  }, []);
+
+  const dayCellContent = (arg: any) => {
+    const date = new Date(arg.date.getFullYear(), arg.date.getMonth(), arg.date.getDate());
+    const formattedDateStr = date.toISOString().split('T')[0];
+    const holiday = holidays.find(holiday => {
+      const holidayDate = new Date(holiday.start);
+      holidayDate.setHours(0, 0, 0, 0);
+      const holidayDateStr = holidayDate.toISOString().split('T')[0];
+      return holidayDateStr === formattedDateStr;
+    });
+
+    return (
+      <div className="day-cell-content">
+        <div className={`date-text ${holiday ? 'holiday-date' : ''}`}>{date.getDate()}</div>
+        {holiday && <div className="holiday-title">{holiday.title}</div>}
+      </div>
+    );
+  };
+  
   useEffect(() => {
     refetchMeeting(); // 첫 렌더링 시 목록 조회 호출
   }, [refetchMeeting]);
@@ -573,15 +633,6 @@ const MeetingRoom = () => {
             }}
             dayHeaderFormat={{ weekday: 'long' }}
             titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-            dayCellContent={(info) => {
-              var number = document.createElement("a");
-              number.classList.add("fc-daygrid-day-number");
-              number.innerHTML = info.dayNumberText.replace("일", "");
-              if (info.view.type === "dayGridMonth") {
-                return { html: number.outerHTML };
-              }
-              return { domNodes: [] };
-            }}
             locale='kr'
             fixedWeekCount={false}
             events={meetingEvent}
@@ -590,6 +641,7 @@ const MeetingRoom = () => {
             eventDisplay="block"
             eventClick={handleEventClick}
             moreLinkText='개 일정 더보기'
+            dayCellContent={dayCellContent}
           />
         </div>
       </div>
@@ -686,7 +738,7 @@ const MeetingRoom = () => {
                 popperPlacement="top"
               />
               <div className="timeoption" onClick={toggleSelect}>
-              <input type="text" className="time_input" value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
+              <input type="text" className="time_input" maxLength={5} value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
               {isOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -719,7 +771,7 @@ const MeetingRoom = () => {
               popperPlacement="top"
             />
             <div className="timeoption" onClick={toggleTwoSelect}>
-            <input type="text" className="time_input" value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTwoTime(e.target.value)} />
+            <input type="text" className="time_input" maxLength={5} value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTwoTime(e.target.value)} />
               {isTwoOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -965,7 +1017,7 @@ const MeetingRoom = () => {
                 popperPlacement="top"
               />
               <div className="timeoption" onClick={toggleSelect}>
-              <input type="text" className="time_input" value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
+              <input type="text" className="time_input" maxLength={5} value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
               {isOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -998,7 +1050,7 @@ const MeetingRoom = () => {
               popperPlacement="top"
             />
             <div className="timeoption" onClick={toggleTwoSelect}>
-            <input type="text" className="time_input" value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTime(e.target.value)} />
+            <input type="text" className="time_input" maxLength={5} value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTwoTime(e.target.value)} />
               {isTwoOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {

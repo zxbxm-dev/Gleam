@@ -24,6 +24,10 @@ const DeleteEmail = (mailId, messageId) => {
   return api.delete(`/deleteEmail/${mailId}/${messageId}`);
 };
 
+const ReadEmail = (formData) => {
+  return api.put("/readEmail", formData);
+};
+
 // 메일 임시 저장
 const DraftEmail = (formData) => {
   return api.post("/draftEmail", formData);
@@ -57,4 +61,4 @@ const RemoveJunkList = (junkId, userId) => {
   });
 };
 
-export { SendMail, CheckEmail, cancleQueueEmail, DeleteEmail, DraftEmail, StarringEmail, JunkEmail, AddJunkList, CheckJunkList, RemoveJunkList };
+export { SendMail, CheckEmail, cancleQueueEmail, DeleteEmail, ReadEmail, DraftEmail, StarringEmail, JunkEmail, AddJunkList, CheckJunkList, RemoveJunkList };
