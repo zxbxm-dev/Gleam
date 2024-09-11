@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       roomId: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'ChatRoom',
+          model: 'ChatRoom',  // 대문자
           key: 'roomId',
         },
         allowNull: false,
@@ -32,18 +32,18 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'chatroom_participant',
+      tableName: 'chatroom_participant',  // 소문자
     }
   );
   
   ChatRoomParticipant.associate = (models) => {
     ChatRoomParticipant.belongsTo(models.ChatRoom, {
       foreignKey: 'roomId',
-      as: 'chatRoom',
+      as: 'ChatRoom',  // 대문자
     });
     ChatRoomParticipant.belongsTo(models.User, {
       foreignKey: 'userId',
-      as: 'User'
+      as: 'User',
     });
   };
 

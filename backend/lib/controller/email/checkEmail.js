@@ -98,7 +98,7 @@ const deletedFilter = async (req, res, userId) => {
                     where: { messageId: email.messageId },
                     force: true
                 });
-                console.log(`이메일 삭제 완료: ${email.messageId}`);
+                //console.log(`이메일 삭제 완료: ${email.messageId}`);
             }
         }
         console.log("삭제된 이메일 필터링 완료");
