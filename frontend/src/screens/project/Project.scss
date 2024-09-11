@@ -381,6 +381,10 @@
       flex-direction: row;
       font-family: var(--font-family-Noto-M);
       color: #969696;
+
+      .fc-daygrid-day-number {
+        width: 100%;
+      }
     }
 
     .fc-popover {

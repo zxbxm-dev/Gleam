@@ -545,6 +545,61 @@ const MeetingRoom = () => {
     return user.username === selectedEvent?.username || meetpeopleNames?.includes(user.username);
   };
 
+  const holidays = [
+    { date: '2024-01-01', name: '새해 첫날' },
+    { date: '2024-02-09', name: '설날 연휴' },
+    { date: '2024-02-10', name: '설날' },
+    { date: '2024-02-11', name: '설날 연휴' },
+    { date: '2024-02-12', name: '대체공휴일(설날)' },
+    { date: '2024-03-01', name: '삼일절' },
+    { date: '2024-04-10', name: '22대 국회의원선거' },
+    { date: '2024-05-05', name: '어린이날' },
+    { date: '2024-05-06', name: '대체공휴일(어린이날)' },
+    { date: '2024-05-15', name: '부처님 오신 날' },
+    { date: '2024-06-06', name: '현충일' },
+    { date: '2024-08-15', name: '광복절' },
+    { date: '2024-09-16', name: '추석 연휴' },
+    { date: '2024-09-17', name: '추석' },
+    { date: '2024-09-18', name: '추석 연휴' },
+    { date: '2024-10-01', name: '임시공휴일' },
+    { date: '2024-10-03', name: '개천절' },
+    { date: '2024-10-09', name: '한글날' },
+    { date: '2024-12-25', name: '성탄절' },
+  ];
+
+  const dayCellContent = (info: any) => {
+    var number = document.createElement("span");
+    number.classList.add("fc-daygrid-day-number-content");
+    number.innerHTML = info.dayNumberText.replace("일", "");
+
+    const dateStr = info.date.toLocaleDateString('en-CA');
+
+    const holiday = holidays.find(
+      (holiday) => holiday.date === dateStr
+    );
+
+    var container = document.createElement("div");
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+
+    if (holiday) {
+      var holidayName = document.createElement("span");
+      holidayName.innerHTML = holiday.name;
+      holidayName.style.color = 'red';
+      holidayName.style.width = '100%';
+      holidayName.style.textAlign = 'right';
+      number.style.color = 'red';
+
+      container.appendChild(number);
+      container.appendChild(holidayName);
+    } else {
+      container.appendChild(number);
+    }
+
+    return { domNodes: [container] };
+  };
+
+
   useEffect(() => {
     refetchMeeting(); // 첫 렌더링 시 목록 조회 호출
   }, [refetchMeeting]);
@@ -557,6 +612,7 @@ const MeetingRoom = () => {
             ref={calendarRef1}
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
+            dayCellContent={dayCellContent}
             height="100%"
             customButtons={{
               Addschedule: {
@@ -573,15 +629,6 @@ const MeetingRoom = () => {
             }}
             dayHeaderFormat={{ weekday: 'long' }}
             titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-            dayCellContent={(info) => {
-              var number = document.createElement("a");
-              number.classList.add("fc-daygrid-day-number");
-              number.innerHTML = info.dayNumberText.replace("일", "");
-              if (info.view.type === "dayGridMonth") {
-                return { html: number.outerHTML };
-              }
-              return { domNodes: [] };
-            }}
             locale='kr'
             fixedWeekCount={false}
             events={meetingEvent}
@@ -686,7 +733,7 @@ const MeetingRoom = () => {
                 popperPlacement="top"
               />
               <div className="timeoption" onClick={toggleSelect}>
-              <input type="text" className="time_input" value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
+              <input type="text" className="time_input" maxLength={5} value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
               {isOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -719,7 +766,7 @@ const MeetingRoom = () => {
               popperPlacement="top"
             />
             <div className="timeoption" onClick={toggleTwoSelect}>
-            <input type="text" className="time_input" value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTwoTime(e.target.value)} />
+            <input type="text" className="time_input" maxLength={5} value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTwoTime(e.target.value)} />
               {isTwoOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -965,7 +1012,7 @@ const MeetingRoom = () => {
                 popperPlacement="top"
               />
               <div className="timeoption" onClick={toggleSelect}>
-              <input type="text" className="time_input" value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
+              <input type="text" className="time_input" maxLength={5} value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} />
               {isOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
@@ -998,7 +1045,7 @@ const MeetingRoom = () => {
               popperPlacement="top"
             />
             <div className="timeoption" onClick={toggleTwoSelect}>
-            <input type="text" className="time_input" value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTime(e.target.value)} />
+            <input type="text" className="time_input" maxLength={5} value={selectedTwoTime || '00:00'} onChange={(e) => setSelectedTwoTime(e.target.value)} />
               {isTwoOpen && (
                 <div className="options">
                   {[...Array(16)].map((_, index) => {
