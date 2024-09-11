@@ -104,7 +104,8 @@ const sendMail = async (req, res) => {
             queueDate,
             signature,
             hasAttachments: hasAttachments,
-            folder: 'sent'
+            folder: 'sent',
+            read: "read"
         })
 
 

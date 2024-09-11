@@ -62,9 +62,8 @@ const deleteEmail = async(req, res) => {
             return res.status(404).json({ error: "이메일 정보를 찾을 수 없습니다."});
         }
 
-        await deletedLog(req, res, Id, userId, messageId);
+        deletedLog(req, res, Id, userId, messageId);
         await deleteEmail.destroy();
-        deletedFilter(req,res,userId);
         console.log("이메일이 성공적으로 삭제되었습니다.")
     }catch(error) {
         console.error("이메일 삭제 중 오류 발생:", error);
