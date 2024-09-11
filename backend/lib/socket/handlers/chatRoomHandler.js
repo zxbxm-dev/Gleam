@@ -96,6 +96,7 @@ const createPrivateRoom = async (io, socket, data) => {
           roomId: nextRoomId,
           isGroup: false,
           isSelfChat: true,  // 자신과의 채팅인 경우
+          participant: true, // 참여 상태를 true로 설정
           hostUserId: userId,
           hostName: user.username,
           hostDepartment: user.department || null,
@@ -125,6 +126,8 @@ const createPrivateRoom = async (io, socket, data) => {
           department: (await getUserById(userId)).department || null,
           team: (await getUserById(userId)).team || null,
           position: (await getUserById(userId)).position || null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         }
       });
       
@@ -182,6 +185,7 @@ const createPrivateRoom = async (io, socket, data) => {
         roomId: nextRoomId,
         isGroup: false,
         isSelfChat: false,  // 개인 채팅방인 경우
+        participant: true, // 참여 상태를 true로 설정
         hostUserId: userId,
         hostName: user.username,
         hostDepartment: user.department,
@@ -224,6 +228,8 @@ const createPrivateRoom = async (io, socket, data) => {
           department: user.department || null,
           team: user.team || null,
           position: user.position || null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           roomId: chatRoom.roomId,
@@ -232,6 +238,8 @@ const createPrivateRoom = async (io, socket, data) => {
           department: targetUser.department || null,
           team: targetUser.team || null,
           position: targetUser.position || null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ], { ignoreDuplicates: true });
 
@@ -373,7 +381,7 @@ const exitRoom = async (io, socket, data) => {
       return;
     }
 
-    // 1. 자신과의 채팅 (Self Chat) 처리
+    // 1. 자신과의 채팅 (Self Chat) 처리 --------------------------------------------------------
     if (chatRoom.isSelfChat) {
       // 채팅방과 관련된 모든 정보 삭제 (채팅방, 참가자, 메시지)
       await ChatRoomParticipant.destroy({ where: { roomId } });
@@ -381,28 +389,42 @@ const exitRoom = async (io, socket, data) => {
       await ChatRoom.destroy({ where: { roomId } });
 
       // 자신과의 채팅방 삭제 알림을 클라이언트에 보냄
-      socket.emit('chatRoomDeleted', { roomId });
+      socket.emit('chatRoomDeleted', { message: `${roomId}의 채팅방이 삭제 되었습니다` });
       return;
     }
 
-    // 참가자 목록 가져오기
-    const participants = await ChatRoomParticipant.findAll({ where: { roomId } });
+// 참가자 목록 가져오기
+const participants = await ChatRoomParticipant.findAll({ where: { roomId } });
 
-    // 2. 개인 채팅 (1:1 채팅)
-    if (!chatRoom.isGroup && participants.length === 2) {
-      // 나가는 사용자만 참가자 목록에서 제거
-      await ChatRoomParticipant.destroy({ where: { roomId, userId } });
+// 2. 개인 채팅 (1:1 채팅)  --------------------------------------------------------
+if (!chatRoom.isGroup && participants.length === 2) {
+  if (participants.some(participant => participant.userId === userId)) {
+    // 개인 채팅방의 경우 참가자 상태를 false로 업데이트
+    const [updatedCount] = await ChatRoomParticipant.update(
+      { participant: false },
+      { where: { roomId, userId } }
+    );
 
-      // 해당 사용자에게 채팅방 나가기 알림
-      socket.emit('leftChatRoom', { roomId });
+    // 업데이트가 정상적으로 이루어졌는지 확인
+    if (updatedCount > 0) {
+      // 나간 사용자에게 채팅방 나가기 알림
+      socket.emit('leftChatRoom', { message: `${roomId} 해당 채팅방을 나갔습니다.` });
 
-      // 남아있는 상대방에게는 나간 사용자를 알림
-      socket.broadcast.to(roomId.toString()).emit('userLeftChatRoom', { userId });
-
-      return;
+      // 남아 있는 상대방에게 나간 사용자를 알림
+      const remainingParticipant = participants.find(participant => participant.userId !== userId);
+      if (remainingParticipant) {
+        socket.broadcast.to(roomId.toString()).emit('userLeftChatRoom', { message: `${userId}님이 채팅방을 나갔습니다.` });
+      }
+    } else {
+      // 업데이트가 이루어지지 않았을 때의 처리
+      console.error("참가자 상태 업데이트 실패");
     }
 
-    // 3. 단체 채팅방 (Group Chat)
+    return;
+  }
+}
+
+    // 3. 단체 채팅방 (Group Chat)  --------------------------------------------------------
     if (chatRoom.isGroup || participants.length > 2) {
       // 나가는 사용자만 참가자 목록에서 제거
       await ChatRoomParticipant.destroy({ where: { roomId, userId } });

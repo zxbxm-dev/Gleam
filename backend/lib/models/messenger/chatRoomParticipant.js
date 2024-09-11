@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      participant: { // 메신저 참여자 상태
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       username: {
         type: DataTypes.STRING,
         allowNull: true,
