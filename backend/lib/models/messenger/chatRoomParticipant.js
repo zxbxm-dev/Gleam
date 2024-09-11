@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
   ChatRoomParticipant.associate = (models) => {
     ChatRoomParticipant.belongsTo(models.ChatRoom, {
       foreignKey: 'roomId',
-      as: 'ChatRoom',  // 대문자
+      as: 'chatroom',
     });
     ChatRoomParticipant.belongsTo(models.User, {
       foreignKey: 'userId',
