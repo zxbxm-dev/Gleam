@@ -1,5 +1,5 @@
 const models = require("../../models");
-const { User, ChatRoom, ChatRoomParticipant } = models;
+const { Message, User, ChatRoomParticipant, ChatRoom } = models;
 const { Op, Sequelize } = require("sequelize");
 const {
   sendMessageToRoomParticipants,
@@ -360,29 +360,65 @@ const joinRoom = async (socket, roomId) => {
   }
 };
 
-// 채팅방에서 나가기
-const exitRoom = async (socket, roomId, userId) => {
+// 채팅방에서 나가기 (진행중 오류 있음)-----------------------------------------------------------------------------------------------------
+const exitRoom = async (io, socket, data) => {
+  const { roomId, userId } = data;  // 클라이언트로부터 roomId와 userId를 받음
+
   try {
-    // 사용자를 해당 채팅방에서 떠나게 함
-    socket.leave(roomId.toString());
-    console.log(`User ${userId} left room ${roomId}`);
+    // 채팅방 정보 가져오기
+    const chatRoom = await ChatRoom.findByPk(roomId);
 
-    // DB에서 ChatRoomParticipant에서 userId 삭제
-    const result = await ChatRoomParticipant.destroy({
-      where: {
-        roomId: roomId,
-        userId: userId,
-      },
-    });
-
-    if (result) {
-      console.log(`Participant with userId ${userId} removed from room ${roomId}`);
-    } else {
-      console.log(`No participant found with userId ${userId} in room ${roomId}`);
+    if (!chatRoom) {
+      socket.emit('error', { message: '채팅방을 찾을 수 없습니다.' });
+      return;
     }
+
+    // 1. 자신과의 채팅 (Self Chat) 처리
+    if (chatRoom.isSelfChat) {
+      // 채팅방과 관련된 모든 정보 삭제 (채팅방, 참가자, 메시지)
+      await ChatRoomParticipant.destroy({ where: { roomId } });
+      await Message.destroy({ where: { roomId } });
+      await ChatRoom.destroy({ where: { roomId } });
+
+      // 자신과의 채팅방 삭제 알림을 클라이언트에 보냄
+      socket.emit('chatRoomDeleted', { roomId });
+      return;
+    }
+
+    // 참가자 목록 가져오기
+    const participants = await ChatRoomParticipant.findAll({ where: { roomId } });
+
+    // 2. 개인 채팅 (1:1 채팅)
+    if (!chatRoom.isGroup && participants.length === 2) {
+      // 나가는 사용자만 참가자 목록에서 제거
+      await ChatRoomParticipant.destroy({ where: { roomId, userId } });
+
+      // 해당 사용자에게 채팅방 나가기 알림
+      socket.emit('leftChatRoom', { roomId });
+
+      // 남아있는 상대방에게는 나간 사용자를 알림
+      socket.broadcast.to(roomId.toString()).emit('userLeftChatRoom', { userId });
+
+      return;
+    }
+
+    // 3. 단체 채팅방 (Group Chat)
+    if (chatRoom.isGroup || participants.length > 2) {
+      // 나가는 사용자만 참가자 목록에서 제거
+      await ChatRoomParticipant.destroy({ where: { roomId, userId } });
+
+      // 해당 사용자에게 채팅방 나가기 알림
+      socket.emit('leftChatRoom', { roomId });
+
+      // 나머지 사용자에게 나간 사용자 정보를 전송
+      socket.broadcast.to(roomId.toString()).emit('userLeftChatRoom', { userId });
+
+      return;
+    }
+
   } catch (error) {
-    console.error("Error while removing participant from the room:", error);
-    socket.emit("error", { message: "방에서 나가는 중 오류가 발생했습니다." });
+    console.error('채팅방 나가기 오류:', error);
+    socket.emit('error', { message: '채팅방 나가기 실패' });
   }
 };
 

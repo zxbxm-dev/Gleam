@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       roomId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "ChatRoom",
+          model: "ChatRoom",  // 대문자
           key: "roomId",
         },
         allowNull: false,
@@ -38,17 +38,15 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Message.associate = function(models) {
-    // User와 Message 간의 관계 설정
     Message.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
-      as: 'User'
+      as: 'User',
     });
-    // ChatRoom과 Message 간의 관계 설정
     Message.belongsTo(models.ChatRoom, {
       foreignKey: 'roomId',
       onDelete: 'CASCADE',
-      as: 'ChatRoom'
+      as: 'ChatRoom',
     });
   };
 
