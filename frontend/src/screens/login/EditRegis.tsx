@@ -426,7 +426,27 @@ const EditRegis = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flexbox">
+                    <div className="MinimBox">
+                        <span>회사 구분</span>
+                        <div className="localinput">{user.company}</div>
+                    </div>
+                    <div className="MinimBox">
+                        <span>부서</span>
+                        <div className="localinput">{user.department}</div>
+                    </div>
+                    <div className="MinimBox">
+                        <span>팀</span>
+                        <div className="localinput">{user.team}</div>
+                    </div>
+                    <div className="MinimBox">
+                        <span>직위</span>
+                        <div className="localinput">{user.position}</div>
+                    </div>
+                    <div className="MinimBox">
+                        <span>직책</span>
+                        <div className="localinput">{user.spot}</div>
+                    </div>
+                    {/* <div className="flexbox">
                         <span className="FlexSpan">회사 구분</span>
                         <fieldset>
                             <label>
@@ -528,7 +548,7 @@ const EditRegis = () => {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="ResBtnBox">
