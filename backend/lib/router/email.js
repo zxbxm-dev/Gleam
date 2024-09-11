@@ -25,9 +25,6 @@ module.exports = (app) => {
         //중요 이메일 등록하기 
         router.put("/starringEmail",emailActionController.starringEmail);
 
-        //예약 이메일 취소하기
-        router.delete("/cancleQueueEmail/:Id",QueueEmailController.cancleQueueEmail);
-
         //스팸 이메일
         router.put("/registerJunk/:Id",JunkController.junkController);
         router.post("/addJunkList",JunkController.addJunkList);

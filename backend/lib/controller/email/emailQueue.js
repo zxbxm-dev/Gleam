@@ -3,7 +3,6 @@ const Email = models.Email;
 const schedule = require("node-schedule");
 const moment = require("moment");
 const { sendEmail } = require("../../services/emailService");
-const { sendMail } = require("../email/sendEmail");
 const { saveAttachments } = require("../../controller/email/emailAttachments");
 const shortid = require('shortid');
 
@@ -57,11 +56,12 @@ const QueueEmail = async (req , res) => {
             signature,
             attachments,
             folder: 'queue', 
+            read : "read",
         });
         console.log(">>>>>>>>예약 이메일 정보: ", newQueueEmail);
         res.status(200).json({ message: "이메일 전송예약이 완료되었습니다."});
 
-        // 예약한 시간에 이메일 전송 
+        // 예약한 시간에 이메일 전송
     schedule.scheduleJob(queueDate, async () => {
         try {
             const sendQueueEmail =  await sendEmail(receiver, subject, body, userId, attachments);
@@ -85,6 +85,7 @@ const QueueEmail = async (req , res) => {
                 signature,
                 hasAttachments: attachments && attachments.length > 0,
                 folder: 'sent',
+                read: "read",
             });
 
             // 첨부파일이 있는 경우 처리
@@ -121,33 +122,8 @@ const deleteQueueEmail = async (req, res, messageId) => {
     }
 };
 
-//예약메일 취소하기 
-const cancleQueueEmail = async( req,res ) => {
-    const { Id } = req.query;
-
-    try{
-        const emailOnQueue = await Email.findOne({
-            where: { Id : Id},
-        });
-
-        if(emailOnQueue){
-            await emailOnQueue.destroy()
-            console.log(`예약 되어있던 ${Id}번 이메일의 예약이 취소되었습니다.`)
-            res.status(200).json({message: "예약 이메일이 성공적으로 취소되었습니다."})
-        }else{
-            console.log("해당 이메일의 발송예약 정보를 찾을 수 없습니다.");
-        };
-
-    }catch(error){
-        console.error("발송 예약 이메일 취소 중 오류 발생", error);
-        res.status(500).json({message: "발송 예약 이메일 취소 도중 오류가 발생했습니다."});
-    }
-};
-
-
 
 module.exports ={
     QueueEmail,
     deleteQueueEmail,
-    cancleQueueEmail,
 }
