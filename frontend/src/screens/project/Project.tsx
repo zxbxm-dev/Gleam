@@ -71,6 +71,7 @@ const Project = () => {
   const [pjtstateIsOpen, setPjtStateIsOpen] = useState(false);
 
   const [projects, setProjects] = useState<any[]>([]);
+  const [myprojects, setMyProjects] = useState<any[]>([]);
   const [subprojects, setSubProjects] = useState<any[]>([]);
   const [projectEvent, setProjectEvent] = useState<any[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<ProjectData | null>(null);
@@ -516,11 +517,10 @@ const Project = () => {
     return { domNodes: [container] };
   };
 
-  const { refetch : refetchProject } = useQuery("Project", fetchProject, {
+  const { refetch: refetchProject } = useQuery("Project", fetchProject, {
     enabled: false,
     onSuccess: (data) => {
-
-       // 각 mainproject에 subprojects를 추가
+      // Process and sort the main projects
       const mainprojects = data.mainprojects.map((mainproject: ProjectData) => {
         ProjectVisibilityInitial(mainproject?.mainprojectIndex);
         const subProjects = data.subprojects.filter(
@@ -528,15 +528,14 @@ const Project = () => {
         );
         return { ...mainproject, subProjects };
       });
-      // pinnedProjects 상태를 업데이트
+  
       const newPinnedProjects = mainprojects.reduce((acc: { [key: number]: number }, mainproject: ProjectData) => {
         acc[mainproject.mainprojectIndex] = mainproject.pinned;
         return acc;
       }, {});
-
+  
       setPinnedProjects(newPinnedProjects);
-      
-      // pinned 값을 기준으로 정렬 (pinned가 true인 항목을 앞으로)
+  
       const sortedMainProjects = mainprojects.sort((a: ProjectData, b: ProjectData) => {
         if (a.pinned && !b.pinned) {
           return -1;
@@ -546,8 +545,18 @@ const Project = () => {
           return b.mainprojectIndex - a.mainprojectIndex;
         }
       });
-
-      setProjects(sortedMainProjects)
+  
+      const userUsername = user?.username.trim();
+  
+      const filteredSortedProjects = sortedMainProjects.filter((mainproject: ProjectData) => {
+        const isLeader = userUsername === mainproject?.Leader?.split(' ').pop();
+        const isMember = mainproject?.members?.some(member => member.includes(userUsername));
+        const isReferrer = mainproject?.referrer?.some(referrer => referrer.includes(userUsername));
+        return isLeader || isMember || isReferrer;
+      });
+  
+      setMyProjects(filteredSortedProjects);
+      setProjects(sortedMainProjects);
       setSubProjects(mainprojects);
       setProjectEvent(transformProjectData(mainprojects));
     },
@@ -555,6 +564,7 @@ const Project = () => {
       console.log(error);
     }
   });
+  
   
   // 메인 프로젝트 추가
   const handleAddMainProject = async () => {
@@ -812,6 +822,20 @@ const Project = () => {
     refetchProject();
   }, [refetchProject]);
 
+  const userUsername = user?.username.trim();
+  const members = rightclickedProjects?.members ?? [];
+  const referrer = rightclickedProjects?.referrer ?? [];
+
+  const isMemberIncluded = members.some(member => member.includes(userUsername));
+  const isReferrerIncluded = referrer.some(ref => ref.includes(userUsername));
+
+  const canEdit = (
+    user.username === rightclickedProjects?.Leader?.split(' ').pop() || 
+    user.userID === rightclickedProjects?.userId ||
+    isMemberIncluded ||
+    isReferrerIncluded
+  );
+  
   return (
     <div className="content">
       <div className="content_container">
@@ -859,7 +883,7 @@ const Project = () => {
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(projects) ? projects.filter(project => project.status === 'notstarted') : []).map((project, index) => (
+                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'notstarted') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
                       <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
@@ -894,7 +918,8 @@ const Project = () => {
                         <div className="project_box_content">
                           {dropdownOpen && (
                             <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                              {(canEdit
+                              ) && (
                                 <div className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -965,7 +990,7 @@ const Project = () => {
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(projects) ? projects.filter(project => project.status === 'inprogress') : []).map((project, index) => (
+                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'inprogress') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
                       <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
@@ -1000,7 +1025,8 @@ const Project = () => {
                         <div className="project_box_content">
                           {dropdownOpen && (
                             <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                              {(canEdit
+                              ) && (
                                 <div className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -1071,7 +1097,7 @@ const Project = () => {
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(projects) ? projects.filter(project => project.status === 'done') : []).map((project, index) => (
+                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'done') : []).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
                       <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
                         style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
@@ -1106,7 +1132,8 @@ const Project = () => {
                         <div className="project_box_content">
                           {dropdownOpen && (
                             <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(user.username === rightclickedProjects?.Leader?.split(' ').pop() || user.userID === rightclickedProjects?.userId) && (
+                              {(canEdit
+                              ) && (
                                 <div className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
