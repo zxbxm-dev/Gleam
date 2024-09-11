@@ -333,6 +333,21 @@
     }
   }
 
+  .day-cell-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .holiday-title{
+    color: #E84848;
+    font-size: 14.5px;
+  }
+
+  .holiday-date {
+    color: #E84848;
+  }
+  
   .fc {
     .fc-toolbar.fc-header-toolbar {
       flex-direction: row;
@@ -365,6 +380,7 @@
     }
 
     .fc-daygrid-day-frame {
+      height: 100px;
       background-color: #fff;
 
       &:hover {
