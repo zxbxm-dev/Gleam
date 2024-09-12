@@ -233,7 +233,7 @@ const Mail = () => {
         setPage(1);
         break;
       case "안 읽은 메일":
-        setMails(originalMails?.filter((mail) => mail.folder === 'unread'));
+        setMails(originalMails?.filter((mail) => mail.read === 'unread'));
         setHeaderTitle("보낸 사람");
         setPage(1);
         break;
