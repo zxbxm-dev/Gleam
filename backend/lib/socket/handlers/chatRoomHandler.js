@@ -1,6 +1,6 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom } = models;
-const { Sequelize } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const {
   sendMessageToRoomParticipants,
   findMutualChatRoomsForUsers,
@@ -9,6 +9,8 @@ const {
 
 // 사용자 조회 함수
 const getUserById = async (userId) => User.findOne({ where: { userId } });
+const getUsersByIds = async (userIds) =>
+  User.findAll({ where: { userId: userIds } });
 
 // 사용자 제목 파싱 함수
 const parseUserTitle = (userTitle, userId) => {
@@ -287,7 +289,7 @@ const createPrivateRoom = async (io, socket, data) => {
 // 채팅방 조회 후 클라이언트에게 파싱
 const sendUserChatRooms = async (socket, userId) => {
   try {
-    // 참여 중인 채팅방만 조회
+    // 사용자가 참여한 채팅방 목록 조회
     const chatRooms = await ChatRoomParticipant.findAll({
       where: {
         userId,
@@ -316,10 +318,11 @@ const sendUserChatRooms = async (socket, userId) => {
         let othertitle;
         let isSelfChat = false;
         if (roomData.isGroup) {
-          othertitle = roomData.title;
+          othertitle = roomData.title; // 단체방 제목 사용
         } else {
-          othertitle = getOthertitle(roomData, userTitle, userId);
+          othertitle = getOthertitle(roomData, userTitle, userId); // 개인방은 기존 방식대로 처리
 
+          // 개인 (나와의 채팅) 여부 판단
           const participants = await ChatRoomParticipant.findAll({
             where: { roomId },
           });
@@ -337,6 +340,7 @@ const sendUserChatRooms = async (socket, userId) => {
       }
     }
 
+    // 필터링된 채팅방 목록을 클라이언트에 전송
     socket.emit("chatRooms", Object.values(roomParticipantsMap));
     console.log("최종 채팅방 목록:", Object.values(roomParticipantsMap));
   } catch (error) {
@@ -390,13 +394,18 @@ const exitRoom = async (io, socket, data) => {
   const { roomId, userId } = data; // 클라이언트로부터 roomId와 userId를 받음
 
   try {
+    // 채팅방 정보 가져오기
     const chatRoom = await ChatRoom.findByPk(roomId);
 
     if (!chatRoom) {
       socket.emit("error", { message: "채팅방을 찾을 수 없습니다." });
       return;
     }
-    const participants = await ChatRoomParticipant.findAll({ where: { roomId } });
+
+    // 참가자 정보 가져오기
+    const participants = await ChatRoomParticipant.findAll({
+      where: { roomId },
+    });
 
     // 1. 자신과의 채팅 (Self Chat) 처리 --------------------------------------------------------
     if (chatRoom.isSelfChat) {
