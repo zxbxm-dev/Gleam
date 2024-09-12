@@ -34,6 +34,9 @@ export interface Person {
   company: string;
 }
 
+interface CustomFile extends File {
+  fileName?: string;
+}
 
 const WriteMail = () => {
   let navigate = useNavigate();
@@ -55,7 +58,7 @@ const WriteMail = () => {
   const [inputValue, setInputValue] = useState('');
   const [inputReferrerValue, setInputReferrerValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachments, setAttachments] = useState<CustomFile[]>([]);
   const [isClicked, setIsClicked] = useState(false);
 
   const reservationRef = useRef<HTMLDivElement>(null);
@@ -495,10 +498,32 @@ const WriteMail = () => {
   }, [timeRef]);
   
   useEffect(() => {
+    const handleAttachments = async () => {
+      if (mail?.attachments) {
+        const filePromises = mail.attachments.map(async (attachment: any) => {
+          if (attachment instanceof File) {
+            return attachment; // 이미 File 객체면 그대로 반환
+          }
+  
+          // 파일 URL을 사용해 File 객체로 변환
+          const response = await fetch(attachment.url);
+          const blob = await response.blob();
+          return new File([blob], attachment.fileName || attachment.name, { type: blob.type });
+        });
+  
+        const files = await Promise.all(filePromises);
+        setAttachments(files); // File[] 타입으로 상태 업데이트
+      } else {
+        setAttachments([]);
+      }
+    };
+
     if (status === 'DRAFTS') {
-      setRecipients(mail?.receiver ? (Array.isArray(mail?.receiver) ? [...mail.receiver] : [mail.receiver]) : []);
+      setRecipients(mail?.receiver === ' ' ? [] : mail?.receiver ? (Array.isArray(mail?.receiver) ? [...mail.receiver] : [mail.receiver]) : []);
       setReferrers(mail?.referrer ? (Array.isArray(mail?.referrer) ? [...mail.referrer] : [mail.referrer]) : []);
       setMailTitle(mail?.subject);
+      
+       handleAttachments();
     
       if (editorRef.current && mail?.body) {
         editorRef.current.getInstance().setHTML(mail.body);
@@ -550,7 +575,7 @@ const WriteMail = () => {
       }
     }
   }, []);
-
+  console.log('첨부파일', attachments)
   return(
     <div className="content">
       <div className="write_mail_container">
@@ -729,7 +754,7 @@ const WriteMail = () => {
                     {attachments?.map((file, index) => (
                       <div key={index} className="attachment_item">
                         <button onClick={(e) => handleRemoveFile(file.name, e)}>×</button>
-                        <span>{file.name}</span>
+                        <span>{file.name ? file.name : file.fileName}</span>
                       </div>
                     ))}
                   </div>
