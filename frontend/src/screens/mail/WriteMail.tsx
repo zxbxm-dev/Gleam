@@ -724,7 +724,7 @@ const WriteMail = () => {
                   multiple
                   style={{ display: 'none' }}
                 />
-                {attachments.length > 0 ? (
+                {attachments ? (
                   <div className="attachment_list">
                     {attachments?.map((file, index) => (
                       <div key={index} className="attachment_item">

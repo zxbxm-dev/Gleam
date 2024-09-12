@@ -30,7 +30,11 @@ const ReadEmail = (formData) => {
 
 // 메일 임시 저장
 const DraftEmail = (formData) => {
-  return api.post("/draftEmail", formData);
+  return api.post("/draftEmail", formData , {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 };
 
 // 중요 메일 등록
