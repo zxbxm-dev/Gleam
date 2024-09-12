@@ -17,7 +17,7 @@ module.exports = (io, socket) => {
   });
 
   // 특정 채팅방의 과거 메시지 요청 처리
-  socket.on("getChatHistory", async (roomId) => {
+  socket.on("getChatHistory", async (roomId, requesterId) => {
     await messageHandlers.getChatHistory(socket, roomId, requesterId);
   });
 
