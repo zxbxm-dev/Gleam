@@ -505,7 +505,7 @@ const Calendar = () => {
         footer2={'취소'}
         footer2Class="gray-btn"
         onFooter2Click={() => { setAddEventModalOPen(false); resetForm(); }}
-        height="320px"
+        height="auto"
       >
         <div className="body-container">
           <div className="body-content">

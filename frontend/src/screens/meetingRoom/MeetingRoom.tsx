@@ -99,6 +99,7 @@ const MeetingRoom = () => {
   const [isTwoOpen, setIsTwoOpen] = useState(false);
   const [selectedTwoTime, setSelectedTwoTime] = useState("");
   const [title, setTitle] = useState<string>("");
+  const [selectedIndex, setSelectedIndex] = useState(-1); // 현재 선택된 인덱스를 관리
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [recipients, setRecipients] = useState<string[]>([]);
@@ -140,6 +141,24 @@ const MeetingRoom = () => {
       if (trimmedValue && !recipients.includes(trimmedValue)) {
         setRecipients([...recipients, trimmedValue]);
         setInputValue('');
+      }
+    }
+  };
+
+  // 키보드 이벤트 핸들러
+  const handleKeyDown = (e:any) => {
+    if (e.key === "ArrowDown") {
+      setSelectedIndex((prevIndex) =>
+        prevIndex < filteredEmails.length - 1 ? prevIndex + 1 : prevIndex
+      );
+    } else if (e.key === "ArrowUp") {
+      setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : -1));
+    } else if (e.key === "Enter") {
+      if (selectedIndex >= 0 && selectedIndex < filteredEmails.length) {
+        handleAutoCompleteClick(
+          `${filteredEmails[selectedIndex].team ? filteredEmails[selectedIndex].team : filteredEmails[selectedIndex].department} ${filteredEmails[selectedIndex].username}`
+        );
+        setSelectedIndex(-1);
       }
     }
   };
@@ -216,8 +235,18 @@ const MeetingRoom = () => {
     }
   };
 
+  const addHoursToTime = (time: any, hoursToAdd: any) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setHours(date.getHours() + hoursToAdd);
+    return date.toTimeString().slice(0, 5);
+  };
+
   const handleTimeSelect = (time: any) => {
     setSelectedTime(time);
+    setSelectedTwoTime(addHoursToTime(time, 1));
     setIsOpen(false);
   };
 
@@ -230,6 +259,16 @@ const MeetingRoom = () => {
     setIsTwoOpen(false);
   };
 
+  const handleStartDateChange = (date: any) => {
+    setStartDate(date);
+    if (!endDate || date > endDate) {
+      setEndDate(date);
+    }
+  };
+
+  const handleEndDateChange = (date: any) => {
+    setEndDate(date);
+  };
 
   const handleCompanyChange = (e: any) => {
     const selectedCompany = e.target.value;
@@ -290,11 +329,11 @@ const MeetingRoom = () => {
     } else {
       if (isAllDay(startDate, endDate)) {
         mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ~ ${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')} (${days[endDate.getDay()]}) (종일)`;
-    } else {
-        mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ~ ${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')} (${days[endDate.getDay()]}) ${formatTime(startDate)} ~ ${formatTime(endDate)}`;
+      } else {
+          mergeDate = `${startDate.getFullYear()}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${String(startDate.getDate()).padStart(2, '0')} (${days[startDate.getDay()]}) ~ ${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')} (${days[endDate.getDay()]}) ${formatTime(startDate)} ~ ${formatTime(endDate)}`;
+      }
     }
-    }
-    console.log(info.event.extendedProps)
+
     setSelectedEvent({
         id: info.event.extendedProps.meetingId,
         username: info.event.extendedProps.username,
@@ -606,9 +645,16 @@ const MeetingRoom = () => {
   };
   
   useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedIndex, filteredEmails]);
+
+  useEffect(() => {
     refetchMeeting(); // 첫 렌더링 시 목록 조회 호출
   }, [refetchMeeting]);
-  
+
   return (
     <div className="content">
       <div className="content_container">
@@ -698,14 +744,14 @@ const MeetingRoom = () => {
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
-                onKeyDown={handleInputKeyDown}
                 ref={inputRef}
               />
               {inputValue && (
                 <ul className="autocomplete_dropdown">
-                  {filteredEmails.map(person => (
+                  {filteredEmails.map((person, index) => (
                     <li
                       key={person.username}
+                      className={index === selectedIndex ? "selected" : ""}
                       onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
                     >
                       {person.team ? person.team : person.department} {person.username}
@@ -728,7 +774,7 @@ const MeetingRoom = () => {
             <div className="Date">
               <DatePicker
                 selected={startDate}
-                onChange={date => setStartDate(date)}
+                onChange={handleStartDateChange}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
@@ -760,7 +806,7 @@ const MeetingRoom = () => {
           <div className="Date">
             <DatePicker
               selected={endDate}
-              onChange={date => setEndDate(date)}
+              onChange={handleEndDateChange}
               selectsEnd
               startDate={startDate}
               endDate={endDate}
@@ -977,14 +1023,14 @@ const MeetingRoom = () => {
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
-                onKeyDown={handleInputKeyDown}
                 ref={inputRef}
               />
               {inputValue && (
                 <ul className="autocomplete_dropdown">
-                  {filteredEmails.map(person => (
+                  {filteredEmails.map((person, index) => (
                     <li
                       key={person.username}
+                      className={index === selectedIndex ? "selected" : ""}
                       onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
                     >
                       {person.team ? person.team : person.department} {person.username}
@@ -1157,6 +1203,7 @@ const MeetingRoom = () => {
           삭제하시겠습니까?
         </div>
       </CustomModal>
+      
       <CustomModal
         isOpen={isMeetingModalOpen}
         onClose={() => setMeetingModalOPen(false)}
