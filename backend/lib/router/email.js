@@ -20,7 +20,7 @@ module.exports = (app) => {
         router.put("/readEmail",emailActionController.readEmail);
         
         //이메일 임시저장하기
-        router.post("/draftEmail",draftEmailController.draftEmails);
+        router.post("/draftEmail",multerMiddleware.array('attachment'),draftEmailController.draftEmails);
 
         //중요 이메일 등록하기 
         router.put("/starringEmail",emailActionController.starringEmail);
