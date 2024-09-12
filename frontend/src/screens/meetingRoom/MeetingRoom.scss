@@ -95,6 +95,10 @@
         flex-direction: column;
         gap: 5px;
         overflow-y: auto;
+
+        .fc-more-popover-misc {
+          display: none;
+        }
       }
       .fc-popover-body::-webkit-scrollbar-corner {
         background-color: none;

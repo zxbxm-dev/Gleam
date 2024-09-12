@@ -374,6 +374,7 @@
             }
 
             .autocomplete_dropdown {
+              @include custom-scrollbar;
               position: absolute;
               border-radius: 5px;
               top: 33px;
@@ -391,11 +392,12 @@
               li {
                 font-size: 14px;
                 padding: 5px 10px;
-              }
-
-              li:hover {
                 cursor: pointer;
-                background-color: #e2e2e2;
+                transition: background-color 0.2s;
+            
+                &.selected {
+                  background-color: #e2e2e2;
+                }
               }
             }
 
@@ -877,9 +879,10 @@
             .event_title_input {
               position: relative;
               width: 100%;
+              margin-left: 18px;
 
               .textinput {
-                width: 100%;
+                width: 108%;
                 height: 28px;
                 border: 1px solid #dcdcdc;
                 border-radius: 5px;
