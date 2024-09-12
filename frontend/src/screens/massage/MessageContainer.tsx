@@ -98,10 +98,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [serverMessages, setServerMessages] = useState<any[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [messageMetadata, setMessageMetadata] = useState<{ createdAt: string[]; userInfo: string[]; usersAttachment: string[]; }>({
-    createdAt: [],
-    userInfo: [],
+  const [messageMetadata, setMessageMetadata] = useState<{
+    usersAttachment: string[];
+    userInfo: string[];
+    createdAt: string[]
+  }>({
     usersAttachment: [],
+    userInfo: [],
+    createdAt: []
   });
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [personData, setPersonData] = useState<Person[] | null>(null);
@@ -249,7 +253,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   };
 
-
   const fetchPersonData = useCallback(async () => {
     try {
       const response = await PersonData();
@@ -266,7 +269,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   }, [fetchPersonData]);
 
   useEffect(() => {
-    if (personData && serverMessages.length > 0) {
+    if (Array.isArray(personData) && personData.length > 0 && Array.isArray(serverMessages) && serverMessages.length > 0) {
       // userId를 사용자 정보(팀/부서 + 사용자 이름)로 매핑
       const userToInfoMap = personData.reduce((map, person) => {
         map.set(person.userId, `${person.team ? person.team : person.department} ${person.username}`);
@@ -288,14 +291,12 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   }, [personData, serverMessages]);
 
 
-
-
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
     const requesterId = user.userID;
-const roomId = selectedRoomId;
+    const roomId = selectedRoomId;
 
     // 채팅 기록 요청
     socket.emit('getChatHistory', { roomId, requesterId });
@@ -451,7 +452,7 @@ const roomId = selectedRoomId;
 
   // 메시지가 화면에 나타나면 읽은 것으로 간주
   useEffect(() => {
-    if (serverMessages.length > 0) {
+    if (Array.isArray(serverMessages) && serverMessages.length > 0) {
       serverMessages.forEach((msg) => {
         if (msg.userId !== user.id) {
           handleReadMessage(msg.messageId); // 상대방의 메시지를 읽었을 때만 처리
@@ -459,6 +460,8 @@ const roomId = selectedRoomId;
       });
     }
   }, [serverMessages, handleReadMessage, user.id]);
+
+  const ensureArray = (arr: any) => Array.isArray(arr) ? arr : [];
 
   return (
     <div
@@ -468,39 +471,46 @@ const roomId = selectedRoomId;
       onDragOver={handleDragOver}
     >
       {selectedRoomId !== -2 ? (
-        serverMessages.map((msg, index) => (
-          <div key={index} className="Message">
-            <img src={messageMetadata.usersAttachment[index]} className='userCircleIcon' alt="User Icon" />
-            <div className='CountBox'>
-              <div className="RightBox">
-                <div>{messageMetadata.userInfo[index]}</div>
-                <div className="MsgTimeBox">
-                  {messageMetadata.userInfo[index] &&
-                    <div className={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
-                      {files &&
-                        <div className='WhiteBox'>
-                          {/* 서버에서 받아온 파일이 있을 경우로 바꾸기 */}
-                          <img src={getFileIcon(files.name)} alt="File Icon" />
-                        </div>
-                      }
-                      <div>{msg.content || ""}</div>
-                      {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
-                      {files &&
-                        <div className='FileDown'>
-                          <img src={messageMetadata.userInfo[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />
-                        </div>
-                      }
+        Array.isArray(serverMessages) && serverMessages.length > 0 ? (
+          serverMessages.map((msg, index) => (
+            <div key={index} className="Message">
+              <img
+                src={(ensureArray(messageMetadata.usersAttachment)[index]) || UserIcon_dark}
+                className='userCircleIcon'
+                alt="User Icon"
+              />
+              <div className='CountBox'>
+                <div className="RightBox">
+                  <div>{(ensureArray(messageMetadata.userInfo)[index]) || "Unknown User"}</div>
+                  <div className="MsgTimeBox">
+                    {ensureArray(messageMetadata.userInfo)[index] &&
+                      <div className={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
+                        {files &&
+                          <div className='WhiteBox'>
+                            <img src={getFileIcon(files.name)} alt="File Icon" />
+                          </div>
+                        }
+                        <div>{msg.content || ""}</div>
+                        {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
+                        {files &&
+                          <div className='FileDown'>
+                            <img src={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />
+                          </div>
+                        }
+                      </div>
+                    }
+                    <div className="MsgTime">
+                      {ensureArray(messageMetadata.createdAt)[index] || "시간 미정"}
                     </div>
-                  }
-                  <div className="MsgTime">
-                    {messageMetadata.createdAt[index]}
                   </div>
                 </div>
+                <div className="ViewCount">1</div>
               </div>
-              <div className="ViewCount">1</div>
             </div>
-          </div>
-        ))
+          ))
+        ) : (
+          <div></div>
+        )
       ) : (
         DummyNotice.map((notice, index) => (
           <div key={index} className="Message">
