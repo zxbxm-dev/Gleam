@@ -295,9 +295,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
     const requesterId = user.userID;
+const roomId = selectedRoomId;
 
     // 채팅 기록 요청
-    socket.emit('getChatHistory', selectedRoomId, requesterId);
+    socket.emit('getChatHistory', { roomId, requesterId });
 
     // chatHistory와 joinIds를 처리
     socket.on('chatHistory', (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
