@@ -1,6 +1,6 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom } = models;
-const { Op, Sequelize } = require("sequelize");
+const { Sequelize } = require("sequelize");
 const {
   sendMessageToRoomParticipants,
   findMutualChatRoomsForUsers,
@@ -9,8 +9,6 @@ const {
 
 // 사용자 조회 함수
 const getUserById = async (userId) => User.findOne({ where: { userId } });
-const getUsersByIds = async (userIds) =>
-  User.findAll({ where: { userId: userIds } });
 
 // 사용자 제목 파싱 함수
 const parseUserTitle = (userTitle, userId) => {
