@@ -19,7 +19,9 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch }) => {
     useEffect(() => {
         const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
-        socket.emit('getChatHistory', selectedRoomId);
+        const requesterId = user.userID;
+        
+        socket.emit('getChatHistory', selectedRoomId, requesterId);
 
         socket.on('chatHistory', (messages: any[]) => {
             if (Array.isArray(messages)) {

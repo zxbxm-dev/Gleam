@@ -111,7 +111,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [files, setFiles] = useState<File | null>(null);
-console.log(selectedRoomId);
+  console.log(selectedRoomId);
 
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
@@ -149,7 +149,7 @@ console.log(selectedRoomId);
       };
 
       console.log(messageData);
-      
+
     } else {
       messageData = {
         roomId: selectedRoomId,
@@ -294,9 +294,10 @@ console.log(selectedRoomId);
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
+    const requesterId = user.userID;
 
     // 채팅 기록 요청
-    socket.emit('getChatHistory', selectedRoomId);
+    socket.emit('getChatHistory', selectedRoomId, requesterId);
 
     // chatHistory와 joinIds를 처리
     socket.on('chatHistory', (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
