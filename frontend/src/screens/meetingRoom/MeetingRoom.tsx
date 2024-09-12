@@ -473,6 +473,17 @@ const MeetingRoom = () => {
       const response = await writeMeeting(eventDetails);
       console.log("회의 일정 추가 성공:", response.data);
       refetchMeeting();
+      setTitle('');
+      setRecipients([]);
+      setStartDate(new Date());
+      setEndDate(new Date());
+      setCompany('');
+      setLocation('');
+      setOtherLocation('');
+      setMemo('');
+      setSelectedTwoTime('');
+      setIsOn(false);
+      setAddEventModalOPen(false);
     } catch (error: any) {
       console.error("회의 일정 추가 실패:", error);
       if (error.response) {
@@ -491,17 +502,6 @@ const MeetingRoom = () => {
         }
       }
     }
-    setTitle('');
-    setRecipients([]);
-    setStartDate(new Date());
-    setEndDate(new Date());
-    setCompany('');
-    setLocation('');
-    setOtherLocation('');
-    setMemo('');
-    setSelectedTwoTime('');
-    setIsOn(false);
-    setAddEventModalOPen(false);
   };
 
   // 회의실 예약 수정
@@ -519,7 +519,7 @@ const MeetingRoom = () => {
       meetpeople: recipients,
       startDate: formattedStartDate,
       endDate: formattedEndDate,
-      place: location === '기타' ? otherLocation : location,
+      place: (location === '기타' || company === '기타') ? otherLocation : location,
       memo,
       startTime: selectedTime,
       endTime: selectedTwoTime,
@@ -650,7 +650,34 @@ const MeetingRoom = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedIndex, filteredEmails]);
+  
+  useEffect(() => {
+    // fc-popover의 위치를 조정
+    const adjustPopoverTop = () => {
+      const popovers = document.querySelectorAll('.fc-popover');
+      popovers.forEach((popover) => {
+        const popoverElement = popover as HTMLElement;
+        const currentTop = parseFloat(popoverElement.style.top);
+        if (!isNaN(currentTop)) {
+          popoverElement.style.top = `${currentTop - 50}px`;
+        }
+      });
+    };
 
+    const observer = new MutationObserver(() => {
+      adjustPopoverTop();
+    });
+
+    const calendarContainer = document.querySelector('.fc') as HTMLElement;
+    if (calendarContainer) {
+      observer.observe(calendarContainer, { childList: true, subtree: true });
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+  
   useEffect(() => {
     refetchMeeting(); // 첫 렌더링 시 목록 조회 호출
   }, [refetchMeeting]);
@@ -753,6 +780,7 @@ const MeetingRoom = () => {
                       key={person.username}
                       className={index === selectedIndex ? "selected" : ""}
                       onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onMouseEnter={() => setSelectedIndex(index)}
                     >
                       {person.team ? person.team : person.department} {person.username}
                     </li>
@@ -1053,7 +1081,7 @@ const MeetingRoom = () => {
             <div className="Date">
               <DatePicker
                 selected={startDate}
-                onChange={date => setStartDate(date)}
+                onChange={handleStartDateChange}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
@@ -1085,7 +1113,7 @@ const MeetingRoom = () => {
           <div className="Date">
             <DatePicker
               selected={endDate}
-              onChange={date => setEndDate(date)}
+              onChange={handleEndDateChange}
               selectsEnd
               startDate={startDate}
               endDate={endDate}
