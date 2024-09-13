@@ -113,10 +113,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       socket.emit("chatHistoryForUser", { chatHistory, joinIds, hostId });
     } else {
       // 다른 사용자를 클릭한 경우
-      const mutualChatRoomIds = await findMutualChatRoomsForUsers(
-        requesterId,
-        selectedUserId
-      );
+      const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
       if (mutualChatRoomIds.length === 0) {
         socket.emit("noChatRooms");
@@ -166,9 +163,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       }));
 
       const joinIds = [requesterId, selectedUserId];
-      const chatRoom = await ChatRoom.findOne({
-        where: { roomId: validRoomIds[0] },
-      });
+      const chatRoom = await ChatRoom.findOne({ where: { roomId: validRoomIds[0] } });
       const hostId = chatRoom ? chatRoom.hostUserId : null;
 
       socket.emit("chatHistoryForOthers", { chatHistory, joinIds, hostId });
@@ -180,51 +175,22 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
   }
 };
 
+
 // 특정 채팅방의 과거 메시지를 조회하는 함수
-const getChatHistory = async (socket, roomId, requesterId) => {
+const getChatHistory = async (socket, roomId) => {
   try {
-    // 해당 채팅방에서 요청자의 참여 정보 가져오기
-    const participant = await ChatRoomParticipant.findOne({
-      where: { roomId, userId: requesterId },
-    });
-
-    if (!participant) {
-      socket.emit("error", { message: "참여 정보를 찾을 수 없습니다." });
-      return;
-    }
-
-    // 메시지 조회 (나갔던 사용자는 나간 이후의 메시지만 조회)
-    let messages;
-    if (participant.participant === false) {
-      // 나간 시점 이후의 메시지만 조회
-      messages = await Message.findAll({
-        where: {
-          roomId,
-          createdAt: { [Op.gt]: participant.updatedAt }, // 나간 시점 이후의 메시지 조회
+    // 메시지 조회
+    const messages = await Message.findAll({
+      where: { roomId },
+      include: [
+        {
+          model: User,
+          as: "User",
+          attributes: ["userId", "username", "team"],
         },
-        include: [
-          {
-            model: User,
-            as: "User",
-            attributes: ["userId", "username", "team"],
-          },
-        ],
-        order: [["createdAt", "ASC"]],
-      });
-    } else {
-      // 나가지 않은 사용자는 모든 메시지 조회
-      messages = await Message.findAll({
-        where: { roomId },
-        include: [
-          {
-            model: User,
-            as: "User",
-            attributes: ["userId", "username", "team"],
-          },
-        ],
-        order: [["createdAt", "ASC"]],
-      });
-    }
+      ],
+      order: [["createdAt", "ASC"]],
+    });
 
     // 채팅방 참가자 정보 조회
     const participants = await ChatRoomParticipant.findAll({
@@ -237,12 +203,10 @@ const getChatHistory = async (socket, roomId, requesterId) => {
         },
       ],
     });
-    // 참가자 데이터 확인
-    console.log("Participants:", participants);
 
-    // 참가자 정보를 객체로 변환
+    // 참가자 정보를 빠르게 조회할 수 있도록 객체로 변환
     const participantMap = participants.reduce((acc, participant) => {
-      acc[participant.User.userId] = participant.User;
+      acc[participant.User.userId] = participant.User; // 올바르게 User 객체를 매핑
       return acc;
     }, {});
 
@@ -265,7 +229,7 @@ const getChatHistory = async (socket, roomId, requesterId) => {
       };
     });
 
-    // 클라이언트에게 chatHistory, joinIds, hostId 전송
+    // chatHistory와 joinIds, hostId 객체 형태로 전송
     socket.emit("chatHistory", { chatHistory, joinIds, hostId });
   } catch (error) {
     console.error("채팅 기록 조회 오류:", error);
@@ -279,7 +243,7 @@ const getChatHistory = async (socket, roomId, requesterId) => {
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
   try {
     let room = await ChatRoom.findOne({ where: { roomId } });
-    console.log("aaaa", content);
+console.log("aaaa",content);
 
     if (!room) {
       console.error(
