@@ -299,7 +299,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     const roomId = selectedRoomId;
 
     // 채팅 기록 요청
-    socket.emit('getChatHistory', { roomId, requesterId });
+    socket.emit('getChatHistory', roomId, requesterId);
 
     // chatHistory와 joinIds를 처리
     socket.on('chatHistory', (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
@@ -350,7 +350,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     const requesterId = user.id;
 
     if (selectedUserId) {
-      // console.log("personCheckMsg 이벤트 전송:", { selectedUserId, userId });
+      console.log("personCheckMsg 이벤트 전송:", { selectedUserId, requesterId });
       socket.emit("personCheckMsg", { selectedUserId, requesterId });
     }
 
@@ -375,7 +375,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     });
 
     socket.on("chatHistoryForUser", (data) => {
-      // console.log("chatHistoryForUser 데이터 수신:", data);
+      console.log("chatHistoryForUser 데이터 수신:", data);
       if (data) {
         setServerMessages(data.chatHistory);
 
@@ -391,7 +391,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     });
 
     socket.on("chatHistoryForOthers", (data) => {
-      // console.log("chatHistoryForOthers 데이터 수신:", data);
+      console.log("chatHistoryForOthers 데이터 수신:", data);
       if (data) {
         setServerMessages(data.chatHistory);
 
