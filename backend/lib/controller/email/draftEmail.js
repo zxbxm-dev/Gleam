@@ -27,14 +27,15 @@ const draftEmails = async (req, res) => {
     }
 
     try{
-
+        
         const attachmentsInfo = attachments ? attachments.map(file => ({
             filename : file.originalname,
             path : file.path,
-            contentType : file.mimeType,
-            url : file.url,
+            mimetype : file.mimetype,
+            url : file.destination,
             size: file.size,
         })) : [];
+     
 
         const hasAttachments = attachmentsInfo.length > 0;
         const newDraftEmail = await Email.create({
