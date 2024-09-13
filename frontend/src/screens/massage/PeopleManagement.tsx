@@ -11,6 +11,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { Person } from '../../components/sidebar/MemberSidebar';
 import { PersonData } from '../../services/person/PersonServices';
 import { changeAdminApi } from '../../services/message/MessageApi';
+import io from 'socket.io-client';
 
 interface PeopleManagementProps {
   chatRoomPeopleManagement: boolean;
@@ -82,6 +83,15 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
     }));
   };
 
+  //채팅방 내보내기
+  const handleResignRoom = (roomId: number, resignId: string) => {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
+
+    socket.emit("resignroom", { roomId, resignId });
+  };
+
   return (
     <div className="PeopleManagementCon">
       <div className="Management-header">
@@ -141,6 +151,17 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
                             }}
                           >
                             관리자 변경
+                          </div>
+                        </div>
+                        <div className="Message-OnClick-Menu">
+                          <div
+                            className="ChangeAdmin"
+                            onClick={() => {
+                              onClose();
+                              handleResignRoom(selectedRoomId, joinuser.id);
+                            }}
+                          >
+                            내보내기
                           </div>
                         </div>
                       </PopoverContent>
