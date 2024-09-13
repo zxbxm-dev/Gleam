@@ -59,7 +59,7 @@ const sendMail = async (req, res) => {
 
         // 첨부파일이 있는 경우 처리
         if (attachments && attachments.length > 0) {
-            await saveAttachments(attachments, newSentEmail.id);
+            await saveAttachments(attachments, newSentEmail.Id);
         }
 
         return res.status(200).json({ message: "임시저장된 이메일이 성공적으로 전송되었습니다.", newSentEmail });

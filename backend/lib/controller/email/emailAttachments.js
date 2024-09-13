@@ -3,11 +3,11 @@ const models = require('../../models');
 
 
 //이메일 첨부파일 조회
-async function getAttachmentsByEmailId(Id){
+async function getAttachmentsByEmailId(emailId){
     try{
         const attachments = await models.EmailAttachment.findAll({
             where:{
-                Id :Id 
+                emailId : emailId 
             }
         });
         return attachments;
@@ -33,7 +33,8 @@ async function saveAttachments(attachments, emailId) {
             type: 'file',
             fileSize: fs.statSync(file.path).size,
             fileData: fs.readFileSync(file.path),
-            url : fileUrl
+            //배포할 때 file.path -> fileUrl 로 수정해주세요.
+            url : file.path
         });
         
     }));
