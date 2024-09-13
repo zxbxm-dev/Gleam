@@ -29,7 +29,7 @@ async function saveAttachments(attachments, emailId) {
         return models.EmailAttachment.create({
             emailId: emailId,
             fileName: fileName,
-            mimeType: file.contentType,
+            mimetype: file.contentType,
             type: 'file',
             fileSize: fs.statSync(file.path).size,
             fileData: fs.readFileSync(file.path),

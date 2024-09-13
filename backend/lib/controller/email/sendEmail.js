@@ -80,6 +80,8 @@ const sendMail = async (req, res) => {
             filename : file.originalname,
             path: file.path,
             contentType: file.mimetype,
+            url: file.url,
+            size: file.size,
         })) : [];
 
         const cc = referrer;
