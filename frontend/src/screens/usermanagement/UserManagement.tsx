@@ -11,8 +11,7 @@ import { ArrowDown, ArrowUp } from "../../assets/images/index";
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { useQueryClient, useQuery } from "react-query";
-import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement, EditChainLinker } from "../../services/usermanagement/UserManagementServices";
-import { RegisterEditServices } from "../../services/login/RegisterServices";
+import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement, EditChainLinker, EditUserInfoManagement } from "../../services/usermanagement/UserManagementServices";
 
 
 interface SelectedOptions {
@@ -21,8 +20,6 @@ interface SelectedOptions {
   team: string;
   spot: string;
   position: string;
-  phoneNumber: string;
-  password: string;
 }
 
 const UserManagement = () => {
@@ -147,8 +144,6 @@ const UserManagement = () => {
     team: '',
     spot: '',
     position: '',
-    phoneNumber: '',
-    password: ''
   });
   const [isDepart, setIsDepart] = useState(false);
   const [isTeam, setIsTeam] = useState(false);
@@ -262,43 +257,21 @@ const UserManagement = () => {
   };
 
   const handleSubmit = () => {
-    const modifiedData: { [key: string]: string } = {};
-
-    for (const key in selectedOptions) {
-        if (selectedOptions.hasOwnProperty(key) && selectedOptions[key as keyof SelectedOptions] !== selectedOptions[key as keyof SelectedOptions]) {
-            modifiedData[key as keyof SelectedOptions] = selectedOptions[key as keyof SelectedOptions];
-        }
-    }
-
-    modifiedData.userID = user.id;
-
-    // FormData 생성
-    const formDataToSend = new FormData();
-    for (const key in modifiedData) {
-        if (modifiedData.hasOwnProperty(key)) {
-            formDataToSend.append(key, modifiedData[key]);
-        }
-    }
-    console.log('보내는 값', formDataToSend)
+    const formData = new FormData();
+    formData.append('company', selectedOptions.company);
+    formData.append('department', selectedOptions.department);
+    formData.append('team', selectedOptions.team);
+    formData.append('spot', selectedOptions.spot);
+    formData.append('position', selectedOptions.position);
+    
     // API 호출
-    RegisterEditServices(formDataToSend)
-        .then((res) => {
-            if (res) {
-                const updatedUser = {
-                    ...user,
-                    ...modifiedData,
-                };
-
-                updateUserStateAndLocalStorage(updatedUser);
-                setUserState(updatedUser);
-
-            } else {
-                console.log('회원정보 수정 실패');
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+    EditUserInfoManagement(clickIdx, formData)
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   };
 
   return (

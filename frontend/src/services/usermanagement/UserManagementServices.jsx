@@ -20,10 +20,15 @@ const EditChainLinker = (userID) => {
   return api.post(`/editchainlinker`, { userID });
 }
 
+// 회원 직무 변경
+const EditUserInfoManagement = (userID, formData) => {
+  return api.patch(`/editUserInfoManagement/${userID}`, { data: formData})
+}
 
 export {
   CheckUserManagement,
   ApproveUserManagement,
   DeleteUserManagement,
   EditChainLinker,
+  EditUserInfoManagement,
 };
