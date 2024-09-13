@@ -76,7 +76,7 @@ const QueueEmail = async (req , res) => {
             await saveAttachments(attachmentsInfo, newQueueEmail.Id);
         }
 
-        console.log(">>>>>>>>예약 이메일 정보: ", newQueueEmail);
+        console.log("예약 이메일 정보: ", newQueueEmail);
         res.status(200).json({ message: "이메일 전송예약이 완료되었습니다."});
 
         // 예약한 시간에 이메일 전송
@@ -105,10 +105,10 @@ const QueueEmail = async (req , res) => {
                 folder: 'sent',
                 read: "read",
             });
-
+       
             // 첨부파일이 있는 경우 처리
             if (attachments && attachments.length > 0) {
-                await saveAttachments(attachments, sentEmail.id);
+                await saveAttachments(attachments, sentEmail.Id);
             }
         } catch (error) {
             console.error("예약된 이메일 전송 중 오류 발생:", error);

@@ -1,13 +1,13 @@
 const Imap = require("node-imap");
 const nodemailer = require("nodemailer")
 const { simpleParser } = require("mailparser");
-
 const models = require("../models");
 const Email = models.Email;
 const EmailAttachment = models.EmailAttachment;
 require('dotenv').config();
 const fs = require("fs-extra");
 const path = require("path");
+const schedule = require("node-schedule");
 
 
 //IMAP 연결 설정 
@@ -130,13 +130,13 @@ async function fetchMailcowEmails(userId) {
                 await EmailAttachment.create({
                     emailId: emailId,
                     fileName: attachment.filename,
-                    mimeType: attachment.contentType,
+                    mimetype: attachment.contentType,
                     type: 'file', 
                     fileSize: attachment.size,
                     fileData: attachment.content, 
                 });
     
-                console.log(`첨부파일 저장 완료: ${attachment.filename}`);
+                //console.log(`첨부파일 저장 완료: ${attachment.filename}`);
                 hasAttachments = true;
 
                 if (hasAttachments) {
@@ -219,6 +219,14 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
         tls: {rejectUnauthorized: false}
     });
 
+    const attachmentsInfo = attachments ? attachments.map(file => ({
+        filename : file.originalname,
+        path : file.path,
+        mimetype : file.mimetype,
+        url : file.destination,
+        size: file.size,
+    })) : [];
+
 
     const mailOptions = {
         userId: userId,
@@ -229,7 +237,7 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
         text: body,
         html: body,
         messageId : messageId,
-        attachments: attachments
+        attachments: attachmentsInfo
     };
 
 
@@ -250,9 +258,24 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
     }
 }
 
+//node-schedule 설정 
+const startScheduler = () => 
+    schedule.schedule("* * * * * *", async ()=> {
+        console.log("⏰ :: 스케줄링 작업 실행...");
+        
+        //DB에서 예약 이메일이 있는지 확인 
+        const queue = await Email.findMany({
+            where: {
+                folder: "queue",
+            }
+        });
+
+    });
+
 module.exports = {
     connectIMAP,
     fetchMailcowEmails,
     saveEmail,
     sendEmail,
+    startScheduler,
 };
