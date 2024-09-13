@@ -47,11 +47,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             url: {
                 type: DataTypes.STRING,
-                allowNull: true, // 링크 타입을 위한 필드
-            },
-            textContent: {
-                type: DataTypes.TEXT,
-                allowNull: true, // 텍스트 데이터를 위한 필드
+                allowNull: true, 
             },
             createdAt: {
                 type: DataTypes.DATE,
@@ -59,7 +55,10 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         {
-            tableName: "emailAttachment"
+            tableName: "emailAttachment",
+            timestamps : true,
+            updatedAt : false,
+
         }
     );
 
