@@ -79,7 +79,7 @@ const sendMail = async (req, res) => {
         const attachmentsInfo= attachments ? attachments.map(file =>({
             filename : file.originalname,
             path: file.path,
-            contentType: file.mimetype,
+            mimetype: file.mimetype,
             url: file.url,
             size: file.size,
         })) : [];
