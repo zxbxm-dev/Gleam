@@ -257,6 +257,7 @@ const WriteMail = () => {
 
   const handleDraftEmail = async () => {
     const formData = new FormData();
+      formData.append('Id', mail?.Id);
       formData.append('userId', user.userID);
       formData.append('messageId', user.userID + new Date());
       formData.append('sender', user.usermail);
