@@ -527,22 +527,22 @@ const Project = () => {
     enabled: false,
     onSuccess: (data) => {
       // Process and sort the main projects
-      const mainprojects = data.mainprojects.map((mainproject: ProjectData) => {
+      const mainprojects = data?.mainprojects?.map((mainproject: ProjectData) => {
         ProjectVisibilityInitial(mainproject?.mainprojectIndex);
-        const subProjects = data.subprojects.filter(
+        const subProjects = data?.subprojects?.filter(
           (subproject: ProjectData) => subproject.mainprojectIndex === mainproject.mainprojectIndex
         );
         return { ...mainproject, subProjects };
       });
   
-      const newPinnedProjects = mainprojects.reduce((acc: { [key: number]: number }, mainproject: ProjectData) => {
+      const newPinnedProjects = mainprojects?.reduce((acc: { [key: number]: number }, mainproject: ProjectData) => {
         acc[mainproject.mainprojectIndex] = mainproject.pinned;
         return acc;
       }, {});
   
       setPinnedProjects(newPinnedProjects);
   
-      const sortedMainProjects = mainprojects.sort((a: ProjectData, b: ProjectData) => {
+      const sortedMainProjects = mainprojects?.sort((a: ProjectData, b: ProjectData) => {
         if (a.pinned && !b.pinned) {
           return -1;
         } else if (!a.pinned && b.pinned) {
@@ -554,7 +554,7 @@ const Project = () => {
   
       const userUsername = user?.username.trim();
   
-      const filteredSortedProjects = sortedMainProjects.filter((mainproject: ProjectData) => {
+      const filteredSortedProjects = sortedMainProjects?.filter((mainproject: ProjectData) => {
         const isLeader = userUsername === mainproject?.Leader?.split(' ').pop();
         const isMember = mainproject?.members?.some(member => member.includes(userUsername));
         const isReferrer = mainproject?.referrer?.some(referrer => referrer.includes(userUsername));
