@@ -5,17 +5,19 @@ const { Op } = require("sequelize");
 // 특정 사용자가 포함된 채팅방을 찾는 함수
 const findChatRoomsForUser = async (userId) => {
   try {
+    console.log(`사용자의 채팅방을 찾았습니다: ${userId}`);
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
       attributes: ["roomId"],
     });
 
-    // 중복된 roomId 제거
     const roomIds = [
       ...new Set(chatRooms.map((participant) => participant.roomId)),
     ];
+    console.log(`사용자의 채팅방을 찾았습니다 ${userId}: ${roomIds}`);
     return roomIds;
   } catch (error) {
+    console.error("채팅방 조회 오류:", error);
     throw new Error("채팅방 조회 오류");
   }
 };
@@ -23,12 +25,16 @@ const findChatRoomsForUser = async (userId) => {
 // 두 사용자가 공통으로 속한 채팅방을 찾는 함수
 const findMutualChatRoomsForUsers = async (userId1, userId2) => {
   try {
+    console.log(`사용자 실제 채팅방 ${userId1} 의 ${userId2}`);
     const [user1Rooms, user2Rooms] = await Promise.all([
       findChatRoomsForUser(userId1),
       findChatRoomsForUser(userId2),
     ]);
-    return user1Rooms.filter((roomId) => user2Rooms.includes(roomId));
+    const mutualRooms = user1Rooms.filter((roomId) => user2Rooms.includes(roomId));
+    console.log(`사용자 실제 채팅방 ${userId1} 의 ${userId2}: ${mutualRooms}`);
+    return mutualRooms;
   } catch (error) {
+    console.error("공통 채팅방 조회 오류:", error);
     throw new Error("공통 채팅방 조회 오류");
   }
 };
@@ -36,6 +42,7 @@ const findMutualChatRoomsForUsers = async (userId1, userId2) => {
 // 나와의 데이터만 가져오기
 const findChatRoomsForMe = async (userId) => {
   try {
+    console.log(`사용자의 셀프 채팅방 찾기: ${userId}`);
     const chatRooms = await ChatRoomParticipant.findAll({
       where: { userId },
       attributes: ["roomId"],
@@ -45,7 +52,6 @@ const findChatRoomsForMe = async (userId) => {
       ...new Set(chatRooms.map((participant) => participant.roomId)),
     ];
 
-    // 자신과의 채팅방 필터링 (참여자가 자기 자신인 방만 조회)
     const validRoomIds = [];
     for (const roomId of roomIds) {
       const participants = await ChatRoomParticipant.findAll({
@@ -60,8 +66,10 @@ const findChatRoomsForMe = async (userId) => {
       }
     }
 
+    console.log(`사용자의 셀프 채팅방을 찾았습니다. ${userId}: ${validRoomIds}`);
     return validRoomIds;
   } catch (error) {
+    console.error("채팅방 조회 오류:", error);
     throw new Error("채팅방 조회 오류");
   }
 };
@@ -69,11 +77,13 @@ const findChatRoomsForMe = async (userId) => {
 // 나와의 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
   try {
+    console.log(`요청자의 채팅 기록을 가져오는 중: ${requesterId}, 발신자: ${selectedUserId}`);
     if (selectedUserId === requesterId) {
-      // 자신을 클릭한 경우
+      console.log(`사용자의 자체 채팅 기록을 가져오는 중: ${requesterId}`);
       const chatRoomIds = await findChatRoomsForMe(requesterId);
 
       if (chatRoomIds.length === 0) {
+        console.log("사용자 자신의 채팅 기록이 없습니다.");
         socket.emit("noChatRoomsForUser");
         return;
       }
@@ -96,6 +106,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       });
 
       if (selfMessages.length === 0) {
+        console.log("셀프 채팅방에 메시지가 없습니다");
         socket.emit("noChatRoomsForUser");
         return;
       }
@@ -112,15 +123,15 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       }));
       socket.emit("chatHistoryForUser", { chatHistory, joinIds, hostId });
     } else {
-      // 다른 사용자를 클릭한 경우
+      console.log(`사용자의 채팅 기록을 가져오는 중: ${requesterId} 그리고 ${selectedUserId}`);
       const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
       if (mutualChatRoomIds.length === 0) {
+        console.log("채팅방을 찾을 수 없습니다");
         socket.emit("noChatRooms");
         return;
       }
 
-      // 각 방의 참가자 수 확인 (개인 채팅: 2명, 단체 채팅: 2명 이상)
       const validRoomIds = [];
       for (const roomId of mutualChatRoomIds) {
         const participants = await ChatRoomParticipant.findAll({
@@ -128,12 +139,12 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         });
 
         if (participants.length === 2) {
-          // 개인 채팅
           validRoomIds.push(roomId);
         }
       }
 
       if (validRoomIds.length === 0) {
+        console.log("1:1 대화방을 찾을 수 없습니다");
         socket.emit("noChatRooms");
         return;
       }
@@ -169,19 +180,23 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       socket.emit("chatHistoryForOthers", { chatHistory, joinIds, hostId });
     }
   } catch (error) {
+    console.error("채팅 기록 조회 오류:", error);
     socket.emit("error", {
       message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요.",
     });
   }
 };
 
-
 // 특정 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistory = async (socket, roomId) => {
   try {
-    // 메시지 조회
+    // roomId가 객체로 들어왔을 경우, 올바르게 추출
+    const actualRoomId = roomId.roomId || roomId;
+
+    console.log(`채팅방 채팅 기록을 가져오는 중: ${actualRoomId}`);
+
     const messages = await Message.findAll({
-      where: { roomId },
+      where: { roomId: actualRoomId }, // roomId를 실제 값으로 전달
       include: [
         {
           model: User,
@@ -192,9 +207,8 @@ const getChatHistory = async (socket, roomId) => {
       order: [["createdAt", "ASC"]],
     });
 
-    // 채팅방 참가자 정보 조회
     const participants = await ChatRoomParticipant.findAll({
-      where: { roomId },
+      where: { roomId: actualRoomId },
       include: [
         {
           model: User,
@@ -204,20 +218,16 @@ const getChatHistory = async (socket, roomId) => {
       ],
     });
 
-    // 참가자 정보를 빠르게 조회할 수 있도록 객체로 변환
     const participantMap = participants.reduce((acc, participant) => {
-      acc[participant.User.userId] = participant.User; // 올바르게 User 객체를 매핑
+      acc[participant.User.userId] = participant.User;
       return acc;
     }, {});
 
-    // 참가자의 userId를 joinIds로 설정
     const joinIds = participants.map((participant) => participant.User.userId);
 
-    // 호스트 정보 조회
-    const chatRoom = await ChatRoom.findOne({ where: { roomId } });
+    const chatRoom = await ChatRoom.findOne({ where: { roomId: actualRoomId } });
     const hostId = chatRoom ? chatRoom.hostUserId : null;
 
-    // 메시지와 참가자 정보를 합치기
     const chatHistory = messages.map((message) => {
       const participant = participantMap[message.User.userId];
       return {
@@ -229,7 +239,6 @@ const getChatHistory = async (socket, roomId) => {
       };
     });
 
-    // chatHistory와 joinIds, hostId 객체 형태로 전송
     socket.emit("chatHistory", { chatHistory, joinIds, hostId });
   } catch (error) {
     console.error("채팅 기록 조회 오류:", error);
@@ -239,11 +248,12 @@ const getChatHistory = async (socket, roomId) => {
   }
 };
 
+
 // 채팅방의 모든 참가자에게 메시지를 전송하는 함수
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
   try {
+    console.log(`방에 메시지 보내는 중: ${roomId}, 발신자: ${senderId}, 내용: ${content}`);
     let room = await ChatRoom.findOne({ where: { roomId } });
-console.log("aaaa",content);
 
     if (!room) {
       console.error(
@@ -271,35 +281,33 @@ console.log("aaaa",content);
       return;
     }
 
-    const savedMessage = await Message.create({
-      content,
-      userId: senderId,
+    const newMessage = await Message.create({
       roomId,
+      userId: senderId,
+      content,
     });
 
-    if (participants.length === 1 && participants[0].userId === senderId) {
-      io.to(senderId.toString()).emit("message", {
-        messageId: savedMessage.messageId,
-        content: savedMessage.content,
-        userId: senderId,
-        timestamp: savedMessage.createdAt,
-      });
-    } else {
-      io.to(roomId.toString()).emit("message", {
-        messageId: savedMessage.messageId,
-        content: savedMessage.content,
-        userId: senderId,
-        timestamp: savedMessage.createdAt,
-      });
-    }
+    const messageData = {
+      messageId: newMessage.messageId,
+      content: newMessage.content,
+      roomId: newMessage.roomId,
+      senderId: newMessage.userId,
+      timestamp: newMessage.createdAt,
+    };
+
+    participants.forEach((participant) => {
+      io.to(participant.userId).emit("newMessage", messageData);
+    });
   } catch (error) {
     console.error("메시지 전송 오류:", error);
+    throw new Error("메시지 전송 오류 발생");
   }
 };
 
 // 클라이언트로 새로운 메시지 전송을 위한 별도 함수
 const broadcastNewMessage = (io, roomId, content, senderId) => {
   try {
+    console.log(`새 메시지를 방에 브로드캐스트하는 중: ${roomId}, 발신자: ${senderId}`);
     sendMessageToRoomParticipants(io, roomId, content, senderId);
   } catch (error) {
     console.error("새 메시지 방송 오류:", error);
