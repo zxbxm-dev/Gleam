@@ -31,7 +31,9 @@ const draftEmails = async (req, res) => {
         const attachmentsInfo = attachments ? attachments.map(file => ({
             filename : file.originalname,
             path : file.path,
-            contentType : file.mimetype,
+            contentType : file.mimeType,
+            url : file.url,
+            size: file.size,
         })) : [];
 
         const hasAttachments = attachmentsInfo.length > 0;

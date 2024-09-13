@@ -3,11 +3,11 @@ const models = require('../../models');
 
 
 //이메일 첨부파일 조회
-async function getAttachmentsByEmailId(emailId){
+async function getAttachmentsByEmailId(Id){
     try{
         const attachments = await models.EmailAttachment.findAll({
             where:{
-                emailId: emailId 
+                Id: Id 
             }
         });
         return attachments;
@@ -16,9 +16,15 @@ async function getAttachmentsByEmailId(emailId){
     }
 };
 
+// 파일 URL 생성
+function generateFileUrl(filePath) {
+    return `https://gleam.im/uploads/${filePath}`;
+}
+
 //이메일 첨부파일 저장 
 async function saveAttachments(attachments, emailId) {
     return Promise.all(attachments.map(async (file)=>{
+        const fileUrl = generateFileUrl(file.path);
         const fileName = Buffer.from(file.filename, 'latin1').toString('utf8');
         return models.EmailAttachment.create({
             emailId: emailId,
@@ -26,7 +32,8 @@ async function saveAttachments(attachments, emailId) {
             mimeType: file.contentType,
             type: 'file',
             fileSize: fs.statSync(file.path).size,
-            fileData: fs.readFileSync(file.path), 
+            fileData: fs.readFileSync(file.path),
+            url : fileUrl
         });
         
     }));
