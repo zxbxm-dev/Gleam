@@ -78,7 +78,9 @@ const findChatRoomsForMe = async (userId) => {
 const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
   try {
     console.log(`요청자의 채팅 기록을 가져오는 중: ${requesterId}, 발신자: ${selectedUserId}`);
+    
     if (selectedUserId === requesterId) {
+      // 자신과의 채팅 기록을 가져오는 경우
       console.log(`사용자의 자체 채팅 기록을 가져오는 중: ${requesterId}`);
       const chatRoomIds = await findChatRoomsForMe(requesterId);
 
@@ -123,7 +125,26 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       }));
       socket.emit("chatHistoryForUser", { chatHistory, joinIds, hostId });
     } else {
+      // 다른 사용자와의 채팅 기록을 가져오는 경우
       console.log(`사용자의 채팅 기록을 가져오는 중: ${requesterId} 그리고 ${selectedUserId}`);
+      
+      // 유저의 상태를 확인하여 participant가 true인지 false인지 확인
+      const participant = await ChatRoomParticipant.findOne({
+        where: {
+          userId: selectedUserId,
+          RoomId: {
+            [Op.in]: await findMutualChatRoomsForUsers(requesterId, selectedUserId),
+          },
+        },
+        attributes: ['participant', 'updatedAt'],
+      });
+
+      if (!participant) {
+        console.log(`사용자 ${selectedUserId}는 현재 채팅방에 참여 중이 아닙니다.`);
+        socket.emit("noChatRooms");
+        return;
+      }
+
       const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
       if (mutualChatRoomIds.length === 0) {
@@ -149,11 +170,17 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         return;
       }
 
+      // 유저의 상태에 따라 메시지 필터링
       const messages = await Message.findAll({
         where: {
           roomId: {
             [Op.in]: validRoomIds,
           },
+          ...(participant.participant ? {} : {
+            createdAt: {
+              [Op.gt]: participant.updatedAt
+            }
+          })
         },
         include: [
           {
@@ -165,6 +192,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         order: [["createdAt", "ASC"]],
       });
 
+      // 채팅 나가지 않은 유저 기존 메시지를 볼 수 있도록 처리
       const chatHistory = messages.map((message) => ({
         messageId: message.messageId,
         content: message.content,
@@ -247,7 +275,6 @@ const getChatHistory = async (socket, roomId) => {
     });
   }
 };
-
 
 // 채팅방의 모든 참가자에게 메시지를 전송하는 함수
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {

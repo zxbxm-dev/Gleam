@@ -193,6 +193,18 @@ const createPrivateRoom = async (io, socket, data) => {
         // 만약 기존 채팅방이 그룹 채팅방이라면 새로 생성
         mutualChatRoomIds.shift(); // 첫 번째 결과가 그룹 채팅방인 경우 제거
       }
+
+      if (chatRoom) {
+        // 기존 채팅방의 참가자 상태를 false로 업데이트
+        await ChatRoomParticipant.update(
+          { participant: false },
+          { where: { roomId: chatRoom.roomId, userId: userId } }
+        );
+        await ChatRoomParticipant.update(
+          { participant: false },
+          { where: { roomId: chatRoom.roomId, userId: invitedUserId } }
+        );
+      }
     }
 
     if (!chatRoom) {
@@ -232,15 +244,15 @@ const createPrivateRoom = async (io, socket, data) => {
         }),
       });
       created = true;
-      console.log(`새로운 개인 채팅방 생성: Room ID ${chatRoom.roomId}`);
     }
 
+    // 채팅방 참가자 추가
     if (created) {
       await ChatRoomParticipant.bulkCreate(
         [
           {
             roomId: chatRoom.roomId,
-            userId: userId,
+            userId,
             username: user.username,
             department: user.department || null,
             team: user.team || null,
@@ -259,30 +271,35 @@ const createPrivateRoom = async (io, socket, data) => {
             updatedAt: new Date(),
           },
         ],
-        { ignoreDuplicates: true }
+        { updateOnDuplicate: ["roomId", "userId"] }
       );
-
-      console.log(`채팅방 참가자 추가: ${userId}, ${invitedUserId}`);
     }
-
-    await sendUserChatRooms(socket, userId);
-
+    // await sendUserChatRooms(socket, userId);
+    
+    // 메시지 전송
     if (content) {
       console.log(`새로운 메시지 전송: ${content}`);
       await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
     }
 
-    // 클라이언트에게 채팅 방 정보 전송
+    // 채팅방 제목 설정
+    const othertitle = getOthertitle(
+      chatRoom,
+      parseUserTitle(chatRoom.userTitle, userId),
+      userId
+    );
+
+    // 클라이언트에게 채팅방 생성 이벤트 전송
     socket.emit("chatRoomCreated", {
       roomId: chatRoom.roomId,
       isSelfChat: chatRoom.isSelfChat,
-      title: chatRoom.title,
+      title: othertitle,
       profileColor: chatRoom.profileColor,
       profileImage: chatRoom.profileImage,
     });
   } catch (error) {
-    console.error("채팅방 생성 및 메시지 저장 오류:", error);
-    socket.emit("error", { message: "채팅 생성 서버 오류" });
+    console.error("채팅방 생성 오류:", error);
+    socket.emit("error", { message: "채팅방 생성 중 오류 발생" });
   }
 };
 
