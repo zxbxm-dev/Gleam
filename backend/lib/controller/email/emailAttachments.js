@@ -7,7 +7,7 @@ async function getAttachmentsByEmailId(Id){
     try{
         const attachments = await models.EmailAttachment.findAll({
             where:{
-                emailId: emailId 
+                Id :Id 
             }
         });
         return attachments;
