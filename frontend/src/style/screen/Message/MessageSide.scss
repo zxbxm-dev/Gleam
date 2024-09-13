@@ -374,11 +374,19 @@
   &.Management {
     font-family: var(--font-family-Noto-M);
     font-size: 12px;
-    height: 34px !important;
+    height: 64px !important;
     width: 98px !important;
+    padding-left: 0;
 
     .OutOfChat {
       margin-bottom: 10px;
+    }
+
+    .Message-OnClick-Menu{
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
