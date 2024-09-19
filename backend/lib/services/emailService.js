@@ -260,16 +260,70 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
 
 //node-schedule 설정 
 const startScheduler = () => 
-    schedule.schedule("* * * * * *", async ()=> {
+    schedule.scheduleJob(" 5 * * * *", async ()=> {
         console.log("⏰ :: 스케줄링 작업 실행...");
-        
+        try{
         //DB에서 예약 이메일이 있는지 확인 
-        const queue = await Email.findMany({
+        const queue = await Email.findAll({
             where: {
                 folder: "queue",
             }
         });
 
+        for(const email of queue){
+            console.log(" >>>>>>>> 예약된 이메일 : ", email.Id);
+        }
+            queue.forEach(email => { 
+                const queueDate = new Date(email.queueDate);
+
+                 // Date 객체 유효성 확인
+                if (!isNaN(queueDate.getTime())) {
+                    schedule.scheduleJob(queueDate, async () => {
+                        try {
+                            const sendQueueEmail =  await sendEmail(queue.receiver, queue.subject, queue.body, queue.userId, queue.attachments);
+                            console.log("예약 이메일 전송 완료 :", sendQueueEmail);
+                
+                            // 전송 후 예약 이메일 삭제
+                            await deleteQueueEmail(req, res, messageId);
+                
+                            // 전송된 이메일을 저장
+                            const sentEmail = await Email.create({
+                                userId,
+                                messageId,
+                                sender,
+                                receiver,
+                                referrer,
+                                subject,
+                                body,
+                                sendAt: new Date(),
+                                receiveAt,
+                                queueDate,
+                                signature,
+                                hasAttachments: attachments && attachments.length > 0,
+                                folder: 'sent',
+                                read: "read",
+                            });
+                       
+                            // 첨부파일이 있는 경우 처리
+                            if (attachments && attachments.length > 0) {
+                                await saveAttachments(attachments, sentEmail.Id);
+                            }
+
+                            console.log("예약된 이메일 재스케줄링 완료");
+                        } catch (error) {
+                            console.error("예약된 이메일 전송 중 오류 발생:", error);
+                        }
+                    })
+                }else{
+                    console.error("이메일 예약 설정에 유효하지않은 날짜:", queueDate);
+                    return res.status(400).json({ message: "이메일 예약 설정에 유효하지 않은 날짜입니다." });
+                }
+
+            })
+       
+    }catch(error){
+        console.log("스케줄러를 재실행 중 오류가 발생했습니다." );
+    }
     });
 
 module.exports = {
