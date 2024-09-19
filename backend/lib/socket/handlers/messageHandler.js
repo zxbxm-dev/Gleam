@@ -153,34 +153,11 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         return;
       }
 
-      const validRoomIds = [];
-      for (const roomId of mutualChatRoomIds) {
-        const participants = await ChatRoomParticipant.findAll({
-          where: { roomId },
-        });
-
-        if (participants.length === 2) {
-          validRoomIds.push(roomId);
-        }
-      }
-
-      if (validRoomIds.length === 0) {
-        console.log("1:1 대화방을 찾을 수 없습니다");
-        socket.emit("noChatRooms");
-        return;
-      }
-
-      // 유저의 상태에 따라 메시지 필터링
-      const messages = await Message.findAll({
+        const messages = await Message.findAll({
         where: {
           roomId: {
-            [Op.in]: validRoomIds,
+            [Op.in]: mutualChatRoomIds,
           },
-          ...(participant.participant ? {} : {
-            createdAt: {
-              [Op.gt]: participant.updatedAt
-            }
-          })
         },
         include: [
           {
@@ -192,7 +169,6 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         order: [["createdAt", "ASC"]],
       });
 
-      // 채팅 나가지 않은 유저 기존 메시지를 볼 수 있도록 처리
       const chatHistory = messages.map((message) => ({
         messageId: message.messageId,
         content: message.content,
@@ -201,16 +177,22 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         timestamp: message.createdAt,
       }));
 
-      const joinIds = [requesterId, selectedUserId];
-      const chatRoom = await ChatRoom.findOne({ where: { roomId: validRoomIds[0] } });
+      const chatRoom = await ChatRoom.findOne({ where: { roomId: mutualChatRoomIds[0] } });
       const hostId = chatRoom ? chatRoom.hostUserId : null;
 
-      socket.emit("chatHistoryForOthers", { chatHistory, joinIds, hostId });
+      // 상대방과의 모든 채팅 기록을 클라이언트에 발신
+      socket.emit("chatHistoryForOthers", { chatHistory, joinIds: [requesterId, selectedUserId], hostId });
+      
+      // 메시지가 없을 경우 noChatHistory 이벤트 발신
+      if (chatHistory.length === 0) {
+        socket.emit("noChatHistory", { joinIds: [requesterId, selectedUserId] });
+      }
     }
   } catch (error) {
     console.error("채팅 기록 조회 오류:", error);
     socket.emit("error", {
       message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요.",
+      details: error.message,
     });
   }
 };
