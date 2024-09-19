@@ -200,13 +200,11 @@ const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment
 
 // SMTP를 통한 이메일 전송 함수 추가
 async function sendEmail(to, subject, body,userId, attachments = [], messageId, cc) {
-
+    logFunctionCall
 
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
     const email = userId + "@gleam.im";
     const password = 'math123!!'
-
-
     const transporter = nodemailer.createTransport({
         host: 'mail.gleam.im',
         port: 587,
@@ -260,7 +258,7 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
 
 //node-schedule 설정 
 const startScheduler = () => 
-    schedule.scheduleJob(" 5 * * * *", async ()=> {
+    schedule.scheduleJob("*/30 * * * * *", async ()=> {
         console.log("⏰ :: 스케줄링 작업 실행...");
         try{
         //DB에서 예약 이메일이 있는지 확인 
@@ -280,7 +278,7 @@ const startScheduler = () =>
                 if (!isNaN(queueDate.getTime())) {
                     schedule.scheduleJob(queueDate, async () => {
                         try {
-                            const sendQueueEmail =  await sendEmail(queue.receiver, queue.subject, queue.body, queue.userId, queue.attachments);
+                            const sendQueueEmail =  await sendEmail(email.receiver, email.subject, email.body, email.userId, email.attachments);
                             console.log("예약 이메일 전송 완료 :", sendQueueEmail);
                 
                             // 전송 후 예약 이메일 삭제
@@ -317,7 +315,7 @@ const startScheduler = () =>
                 }else{
                     console.error("이메일 예약 설정에 유효하지않은 날짜:", queueDate);
                     return res.status(400).json({ message: "이메일 예약 설정에 유효하지 않은 날짜입니다." });
-                }
+                }     
 
             })
        
