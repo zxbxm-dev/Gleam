@@ -335,13 +335,13 @@
 
   .day-cell-content{
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     align-items: center;
   }
   
   .holiday-title{
     color: #E84848;
-    font-size: 14.5px;
+    font-size: 15px;
   }
 
   .holiday-date {
