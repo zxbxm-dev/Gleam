@@ -1,6 +1,7 @@
 const models = require("../../models");
 const Email = models.Email;
 const { sendEmail } = require("../../services/emailService");
+const { sendSavedEmail } = require("../../services/emailService");
 const { deleteDraftEmail } = require("../../controller/email/draftEmail");
 const { saveAttachments } = require("../../controller/email/emailAttachments");
 const { QueueEmail} = require("../../controller/email/emailQueue");
@@ -31,7 +32,6 @@ const sendMail = async (req, res) => {
 
     //임시저장 이메일 전송하기 
     if(folder === 'drafts'){
-        console.log(`임시저장 된 이메일 :  ${Id}번 `);
         const sendResult = await sendEmail(receiver, subject, body, userId, attachments,messageId,cc);
         console.log('임시저장 이메일 전송 완료:', sendResult);
 
