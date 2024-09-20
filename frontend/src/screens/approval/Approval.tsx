@@ -276,8 +276,15 @@ const Approval = () => {
                     return (
                       <tr key={approvaling.id} className="board_content">
                         <td>
-                          {approvalings?.length -
-                              ((page - 1) * postPerPage + index)}
+                          {idSortOrder === 'asc' ? 
+                            (
+                              approvalings.length - ((page - 1) * postPerPage + index)
+                            )
+                            :
+                            (
+                              (page - 1) * postPerPage + index + 1
+                            )
+                          }
                         </td>
                         <td style={{ textAlign: 'center' }}>{approvaling.selectForm}</td>
                         <td>{formattedSendDate}</td>
@@ -388,8 +395,15 @@ const Approval = () => {
                     return (
                       <tr key={inProgres.id} className="board_content">
                         <td>
-                          {inProgress?.length -
-                              ((page - 1) * postPerPage + index)}
+                          {idSortOrder === 'asc' ? 
+                            (
+                              inProgress.length - ((page - 1) * postPerPage + index)
+                            )
+                            :
+                            (
+                              (page - 1) * postPerPage + index + 1
+                            )
+                          }
                         </td>
                         <td style={{ textAlign: 'center' }}>{inProgres.selectForm}</td>
                         <td>{formattedSendDate}</td>
@@ -501,8 +515,15 @@ const Approval = () => {
                     return (
                       <tr key={rejected.id} className="board_content">
                         <td>
-                          {rejecteds?.length -
-                              ((page - 1) * postPerPage + index)}
+                          {idSortOrder === 'asc' ? 
+                            (
+                              rejecteds.length - ((page - 1) * postPerPage + index)
+                            )
+                            :
+                            (
+                              (page - 1) * postPerPage + index + 1
+                            )
+                          }
                         </td>
                         <td style={{ textAlign: 'center' }}>{rejected.selectForm}</td>
                         <td>{formattedSendDate}</td>
@@ -614,8 +635,15 @@ const Approval = () => {
                     return (
                       <tr key={compledocument.id} className="board_content">
                         <td>
-                          {compleDocuments?.length -
-                              ((page - 1) * postPerPage + index)}
+                          {idSortOrder === 'asc' ? 
+                            (
+                              compleDocuments.length - ((page - 1) * postPerPage + index)
+                            )
+                            :
+                            (
+                              (page - 1) * postPerPage + index + 1
+                            )
+                          }
                         </td>
                         <td style={{ textAlign: 'center' }}>{compledocument.selectForm}</td>
                         <td>{formattedSendDate}</td>
@@ -736,8 +764,15 @@ const Approval = () => {
                     return (
                       <tr key={mydocument.id} className="board_content">
                         <td>
-                          {mydocuments?.length -
-                            ((page - 1) * postPerPage + index)}
+                          {idSortOrder === 'asc' ? 
+                            (
+                              mydocuments.length - ((page - 1) * postPerPage + index)
+                            )
+                            :
+                            (
+                              (page - 1) * postPerPage + index + 1
+                            )
+                          }
                         </td>
                         <td style={{ textAlign: 'center' }}>{mydocument.selectForm}</td>
                         <td>{formattedSendDate}</td>
