@@ -8,6 +8,9 @@ require('dotenv').config();
 const fs = require("fs-extra");
 const path = require("path");
 const schedule = require("node-schedule");
+const {deleteQueueEmail} = require("../controller/email/emailQueue");
+const { getAttachmentsByEmailId } = require("../controller/email/emailAttachments");
+const shortid = require('shortid');
 
 
 //IMAP 연결 설정 
@@ -198,9 +201,14 @@ const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment
     }
 };
 
+//messageId 생성 함수
+function generateMessageId(domain = "gleam.im"){
+    const uniqueID = shortid.generate();
+    return `<${uniqueID}@${domain}`;
+};
+
 // SMTP를 통한 이메일 전송 함수 추가
 async function sendEmail(to, subject, body,userId, attachments = [], messageId, cc) {
-    logFunctionCall
 
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
     const email = userId + "@gleam.im";
@@ -218,11 +226,12 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
     });
 
     const attachmentsInfo = attachments ? attachments.map(file => ({
-        filename : file.originalname,
-        path : file.path,
+        filename : Buffer.from(file.filename, 'latin1').toString('utf8'),
+        path : file.url,
         mimetype : file.mimetype,
         url : file.destination,
         size: file.size,
+        encoding: 'utf-8'
     })) : [];
 
 
@@ -255,7 +264,68 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
         throw error;
     }
 }
+ // SMTP를 통한 저장된 이메일 전송 함수 추가
+ async function sendSavedEmail(to, subject, body,userId, attachments = [], messageId, cc) {
+    
+    // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
+    const email = userId + "@gleam.im";
+    const password = 'math123!!'
+    const transporter = nodemailer.createTransport({
+        host: 'mail.gleam.im',
+        port: 587,
+        secure: false,
+        auth: {
+           user: email,
+           pass : password
+        },
+        // 추후 TLS/SSL 인증서 등 신뢰 가능한 인증서로 설정해야 합니다.
+        tls: {rejectUnauthorized: false}
+    });
 
+     // Attachments 데이터 확인
+     const attachmentsInfo = attachments.map(file => {
+        if (!file.fileData || !file.fileName) {
+            console.error('유효하지 않은 첨부파일:', file);
+            throw new Error('첨부파일이 유효하지 않습니다.');
+        }
+        
+        return {
+            filename: file.fileName,
+            path: file.url,
+            content: file.fileData,  
+            contentType: file.mimetype,
+        };
+    });
+
+    const mailOptions = {
+        userId: userId,
+        from: email,
+        to: to,
+        cc: cc,
+        subject: subject,
+        text: body,
+        html: body,
+        messageId : messageId,
+        attachments: attachmentsInfo
+    };
+
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        const imap = await connectIMAP(userId, password);
+
+       imap.once('error', function(err) {
+           console.error('IMAP 연결 에러:', err);
+       });
+
+       imap.connect();
+        console.log('이메일이 성공적으로 전송되었습니다: ', info.response);
+        return info;
+    } catch (error) {
+        console.error('이메일 전송 중 오류가 발생했습니다: ', error);
+        throw error;
+    }
+}
 //node-schedule 설정 
 const startScheduler = () => 
     schedule.scheduleJob("*/30 * * * * *", async ()=> {
@@ -269,7 +339,7 @@ const startScheduler = () =>
         });
 
         for(const email of queue){
-            console.log(" >>>>>>>> 예약된 이메일 : ", email.Id);
+            console.log(" 예약 이메일 : ", email.Id)
         }
             queue.forEach(email => { 
                 const queueDate = new Date(email.queueDate);
@@ -277,35 +347,37 @@ const startScheduler = () =>
                  // Date 객체 유효성 확인
                 if (!isNaN(queueDate.getTime())) {
                     schedule.scheduleJob(queueDate, async () => {
-                        try {
-                            const sendQueueEmail =  await sendEmail(email.receiver, email.subject, email.body, email.userId, email.attachments);
+                        try {   
+                            const messageId = generateMessageId();
+                            const attachments = await getAttachmentsByEmailId(email.Id);
+                            const sendQueueEmail =  await sendSavedEmail(email.receiver, email.subject, email.body, email.userId, attachments );
                             console.log("예약 이메일 전송 완료 :", sendQueueEmail);
-                
-                            // 전송 후 예약 이메일 삭제
-                            await deleteQueueEmail(req, res, messageId);
                 
                             // 전송된 이메일을 저장
                             const sentEmail = await Email.create({
-                                userId,
-                                messageId,
-                                sender,
-                                receiver,
-                                referrer,
-                                subject,
-                                body,
+                                userId : email.userId,
+                                messageId : messageId,
+                                sender : email.sender,
+                                receiver : email.receiver,
+                                referrer : email.referrer,
+                                subject : email.subject,
+                                body : email.body,
                                 sendAt: new Date(),
-                                receiveAt,
-                                queueDate,
-                                signature,
+                                receiveAt : email.receiveAt,
+                                queueDate : email.queueDate,
+                                signature : email.signature,
                                 hasAttachments: attachments && attachments.length > 0,
                                 folder: 'sent',
                                 read: "read",
                             });
-                       
+
+                             // 전송 후 예약 이메일 삭제
+                             await deleteQueueEmail(email.messageId);
+
                             // 첨부파일이 있는 경우 처리
                             if (attachments && attachments.length > 0) {
                                 await saveAttachments(attachments, sentEmail.Id);
-                            }
+                                }
 
                             console.log("예약된 이메일 재스케줄링 완료");
                         } catch (error) {
@@ -317,10 +389,10 @@ const startScheduler = () =>
                     return res.status(400).json({ message: "이메일 예약 설정에 유효하지 않은 날짜입니다." });
                 }     
 
-            })
-       
+            });
+
     }catch(error){
-        console.log("스케줄러를 재실행 중 오류가 발생했습니다." );
+        console.log("스케줄러를 재실행 중 오류가 발생했습니다.", error);
     }
     });
 
@@ -329,5 +401,6 @@ module.exports = {
     fetchMailcowEmails,
     saveEmail,
     sendEmail,
+    sendSavedEmail,
     startScheduler,
 };
