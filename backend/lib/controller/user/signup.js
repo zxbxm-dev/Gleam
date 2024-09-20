@@ -147,7 +147,42 @@ const approveUser = async (req, res) => {
       }
     );
 
+    const mailcowAddSyncjob = await axios.post('http://119.193.90.123:8080/api/v1/add/syncjob',
+    {
+      "username": `${user.userId}@gleam.im`,
+      "host1":"mail.gleam.im",
+      "port1":"993",
+      "user1":user.userId,
+      "password1":"math123!!",
+      "enc1":"SSL",
+      "mins_interval":"20",
+      "subfolder2":"External",
+      "maxage":"0",
+      "maxbytespersecond":"0",
+      "timeout1":"600",
+      "timeout2":"600",
+      "exclude":"(?i)spam|(?i)junk",
+      "custom_params":"",
+      "delete2duplicates":"1",
+      "delete1":"1",
+      "delete2":"0",
+      "automap":"1",
+      "skipcrossduplicates":"0",
+      "subscribeall":"1",
+      "active":"1",
+
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': process.env.Mail_API
+      }
+
+    }
+  );
+
     console.log('Mailbox created:', mailcowAddAccount.data);
+    console.log('Syncjob success:', mailcowAddSyncjob.data);
 
     res.status(200).json({ success: "승인 처리가 완료되었습니다.", user });
   } catch (error) {
@@ -221,8 +256,18 @@ const userleaves = async (req, res) => {
         }
       }
     );
+    const mailcowDelSyncjob = await axios.post('http://119.193.90.123:8080/api/v1/delete/syncjob',[
 
-    console.log('Mailbox created:', mailcowDelAccount.data);
+    ],
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': process.env.Mail_API
+      }
+    })
+
+    console.log('Mailbox deleted:', mailcowDelAccount.data);
+    console.log('Syncjob deleted:', mailcowDelSyncjob.data);
 
     return res
       .status(200)

@@ -6,6 +6,7 @@ const logger = require("morgan");
 const secure = require("express-force-https");
 const cors = require("cors");
 const http = require("http");
+const { startScheduler } = require("./lib/services/emailService");
 
 // 모델
 const { sequelize } = require("./lib/models");
@@ -25,6 +26,8 @@ sequelize
   .sync({ force: false })
   .then(() => {
     console.log("데이터베이스 연결 성공");
+
+    startScheduler(); //예약 이메일 스케줄러 재실행 
   })
   .catch((err) => {
     console.error("데이터베이스 연결 실패:", err);
