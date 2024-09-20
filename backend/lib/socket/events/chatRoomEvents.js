@@ -23,7 +23,8 @@ module.exports = (io, socket) => {
   socket.on("createPrivateRoom", async (data) => {
     console.log("Received data:", data);
     try {
-      if (!data || !data.userId || !data.content || !data.invitedUserIds) {
+      if (!data || !data.userId || typeof data.content !== 'string' || !data.invitedUserIds) {
+
         throw new Error("필수 데이터가 누락되었습니다.");
       }
       await chatRoomHandlers.createPrivateRoom(io, socket, data);
