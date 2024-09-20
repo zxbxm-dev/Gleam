@@ -28,6 +28,8 @@ import {
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { submitReport } from '../../services/report/ReportServices';
+import { PersonData } from '../../services/person/PersonServices';
+import { Person } from '../../components/sidebar/MemberSidebar';
 
 type Member = [string, string, string, string];
 
@@ -58,6 +60,62 @@ const WriteReport = () => {
 
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [personData, setPersonData] = useState<Person[] | null>(null);  //전체데이터
+  const [headOffice, setHeadOffice] = useState<Person[] | null>(null);  //본사데이터
+  const [RDOffice, setRDOffice] = useState<Person[] | null>(null);  //R&D데이터
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await PersonData();
+        const approvedUsers = response.data.filter((item: any) => item.status === 'approved');
+
+        const formatUserData = (user: Person) => {
+          let department = user.department;
+
+          if (user.position === '대표이사' || user.position === '이사') {
+            department = '포체인스 주식회사';
+          } else if (user.position === '센터장') {
+            department = '연구 총괄';
+          }
+
+          return [
+            user.username,
+            department,
+            user.team || '',
+            user.position
+          ];
+        };
+
+        const formattedApprovedUsers = approvedUsers.map(formatUserData);
+        setPersonData(formattedApprovedUsers);
+
+        const headOfficeUsers = approvedUsers.filter((item: any) =>
+          !item.company || item.company === '본사'
+        );
+        const sortedHeadOfficeData = headOfficeUsers
+          .map(formatUserData)
+          .sort((a: string[], b: string[]) => new Date(a[3]).getTime() - new Date(b[3]).getTime());
+        setHeadOffice(sortedHeadOfficeData);
+
+        const rdOfficeUsers = approvedUsers.filter((item: any) =>
+          !item.company || item.company === 'R&D'
+        );
+        const sortedRDOfficeData = rdOfficeUsers
+          .map(formatUserData)
+          .sort((a: string[], b: string[]) => new Date(a[3]).getTime() - new Date(b[3]).getTime());
+        setRDOffice(sortedRDOfficeData);
+
+      } catch (err) {
+        console.error("Error fetching person data:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+console.log(headOffice);
+
 
   useEffect(() => {
     if (reportName) {
@@ -190,6 +248,7 @@ const WriteReport = () => {
     updateApprovalLines(report);
   };
 
+  // const approvalFixed = headOffice ? headOffice.find(member => member.position === '대표이사') : null;
   const approvalFixed = members.find(member => member[0] === '이정훈') || null;
   const ManagementFixed = members.find(member => member[0] === '김효은') || null;
   const SupportFixed = members.find(member => member[0] === '한지희') || null;
@@ -758,8 +817,8 @@ const WriteReport = () => {
                                     {line.selectedMembers.map((member, index) => (
                                       <div key={index} className='approval_small_name'>
                                         <div className='NameFlex'>
-                                        <div className='name_text'>{member[0]}</div>
-                                        <div className='position_text'>{member[3]}</div>
+                                          <div className='name_text'>{member[0]}</div>
+                                          <div className='position_text'>{member[3]}</div>
                                         </div>
                                         <img src={NewCloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
                                       </div>
