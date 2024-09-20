@@ -195,7 +195,6 @@ const createPrivateRoom = async (io, socket, data) => {
       }
 
       if (chatRoom) {
-        // 기존 채팅방의 참가자 상태를 false로 업데이트
         await ChatRoomParticipant.update(
           { participant: false },
           { where: { roomId: chatRoom.roomId, userId: userId } }
@@ -204,7 +203,7 @@ const createPrivateRoom = async (io, socket, data) => {
           { participant: false },
           { where: { roomId: chatRoom.roomId, userId: invitedUserId } }
         );
-      }
+    }
     }
 
     if (!chatRoom) {
@@ -406,7 +405,7 @@ const joinRoom = async (socket, roomId) => {
   }
 };
 
-// 채팅방에서 나가기 (진행중 오류 있음)-----------------------------------------------------------------------------------------------------
+// 채팅방에서 나가기 -----------------------------------------------------------------------------------------------------
 const exitRoom = async (io, socket, data) => {
   const { roomId, userId } = data; // 클라이언트로부터 roomId와 userId를 받음
 
