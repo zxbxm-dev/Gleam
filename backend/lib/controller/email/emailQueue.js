@@ -27,7 +27,7 @@ const QueueEmail = async (req , res) => {
         signature,
     } = req.body;
 
-    const attachments = req.files;
+    const attachments = req.files || getAttachmentsByEmailId(Id);;
     console.log("요청 본문 받음", req.body);
 
    const formattedDate = moment.tz(queueDate, 'YYYY-MM-DD HH:mm:ss', 'Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
@@ -42,6 +42,17 @@ const QueueEmail = async (req , res) => {
    const messageId = generateMessageId();
     
     try {
+        //첨부파일 설정
+        const attachmentsInfo = attachments ? attachments.map(file => ({
+            filename : file.originalname,
+            path : file.path,
+            mimetype : file.mimetype,
+            url : file.destination,
+            size: file.size,
+        })) : [];
+    
+        const hasAttachments = attachmentsInfo.length > 0;
+
         // 예약된 이메일을 데이터베이스에 저장
         const newQueueEmail = await Email.create({
             userId,
@@ -55,20 +66,27 @@ const QueueEmail = async (req , res) => {
             receiveAt,
             signature,
             attachments,
+            hasAttachments: hasAttachments,
             folder: 'queue', 
             read : "read",
         });
-        console.log(">>>>>>>>예약 이메일 정보: ", newQueueEmail);
+
+        // 첨부파일이 있는 경우 저장
+        if (hasAttachments) {
+            await saveAttachments(attachmentsInfo, newQueueEmail.Id);
+        }
+
+        console.log("예약 이메일 정보: ", newQueueEmail);
         res.status(200).json({ message: "이메일 전송예약이 완료되었습니다."});
 
         // 예약한 시간에 이메일 전송
     schedule.scheduleJob(queueDate, async () => {
-        try {
+        try {        
             const sendQueueEmail =  await sendEmail(receiver, subject, body, userId, attachments);
             console.log("예약 이메일 전송 완료 :", sendQueueEmail);
 
             // 전송 후 예약 이메일 삭제
-            await deleteQueueEmail(req, res, messageId);
+            await deleteQueueEmail(messageId);
 
             // 전송된 이메일을 저장
             const sentEmail = await Email.create({
@@ -87,10 +105,10 @@ const QueueEmail = async (req , res) => {
                 folder: 'sent',
                 read: "read",
             });
-
+       
             // 첨부파일이 있는 경우 처리
             if (attachments && attachments.length > 0) {
-                await saveAttachments(attachments, sentEmail.id);
+                await saveAttachments(attachments, sentEmail.Id);
             }
         } catch (error) {
             console.error("예약된 이메일 전송 중 오류 발생:", error);
@@ -104,7 +122,7 @@ const QueueEmail = async (req , res) => {
 };
 
 //발송예약한 이메일 전송 시 기존에 있던 레코드 삭제하기 
-const deleteQueueEmail = async (req, res, messageId) => {
+const deleteQueueEmail = async (messageId) => {
     try{
         const emailOnQueue = await Email.findOne({
             where:{ messageId : messageId }  

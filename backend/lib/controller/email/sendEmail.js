@@ -1,6 +1,7 @@
 const models = require("../../models");
 const Email = models.Email;
 const { sendEmail } = require("../../services/emailService");
+const { sendSavedEmail } = require("../../services/emailService");
 const { deleteDraftEmail } = require("../../controller/email/draftEmail");
 const { saveAttachments } = require("../../controller/email/emailAttachments");
 const { QueueEmail} = require("../../controller/email/emailQueue");
@@ -24,14 +25,13 @@ const sendMail = async (req, res) => {
         folder,
     } = req.body;
 
-    const attachments = req.files;
+    const attachments = req.files ||  getAttachmentsByEmailId(Id);
     const cc = referrer;
     const messageId = shortid.generate();
 
 
     //임시저장 이메일 전송하기 
     if(folder === 'drafts'){
-        console.log(`임시저장 된 이메일 :  ${Id}번 `);
         const sendResult = await sendEmail(receiver, subject, body, userId, attachments,messageId,cc);
         console.log('임시저장 이메일 전송 완료:', sendResult);
 
@@ -59,7 +59,7 @@ const sendMail = async (req, res) => {
 
         // 첨부파일이 있는 경우 처리
         if (attachments && attachments.length > 0) {
-            await saveAttachments(attachments, newSentEmail.id);
+            await saveAttachments(attachments, newSentEmail.Id);
         }
 
         return res.status(200).json({ message: "임시저장된 이메일이 성공적으로 전송되었습니다.", newSentEmail });
@@ -79,7 +79,9 @@ const sendMail = async (req, res) => {
         const attachmentsInfo= attachments ? attachments.map(file =>({
             filename : file.originalname,
             path: file.path,
-            contentType: file.mimetype,
+            mimetype: file.mimetype,
+            url: file.url,
+            size: file.size,
         })) : [];
 
         const cc = referrer;

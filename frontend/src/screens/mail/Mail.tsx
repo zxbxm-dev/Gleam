@@ -97,8 +97,8 @@ const Mail = () => {
     '스팸 메일함',
   ];
 
-  const getIconForMimeType = (mimeType: string) => {
-    switch (mimeType) {
+  const getIconForMimeType = (mimetype: string) => {
+    switch (mimetype) {
       case "text/plain":
         return mail_attachment_txt;
       case "image/jpeg":
@@ -196,6 +196,7 @@ const Mail = () => {
   const { refetch : refetchEmail } = useQuery("Email", fetchEmail, {
     enabled: false,
     onSuccess: (data) => {
+      console.log(data)
       const reversedEmails = data?.emails.reverse();
       setOriginalMails(reversedEmails);
       setMails(reversedEmails);
@@ -382,7 +383,7 @@ const Mail = () => {
   };
 
   const handlePreviewClick = (file: any) => {
-    const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
+    const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimetype });
     const url = URL.createObjectURL(blob);
   
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -412,7 +413,7 @@ const Mail = () => {
   };
   
   const handleDownloadClick = (file: any) => {
-    const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimeType });
+    const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimetype });
     const url = URL.createObjectURL(blob);
   
     const link = document.createElement('a');
@@ -942,7 +943,7 @@ const Mail = () => {
                                               <div className="DownFile_list_object_btn">
                                                 <div>{(file?.fileSize / 1024).toFixed(0)}KB</div>
                                                 <img src={mail_preview} alt="mail_preview" onClick={() => handlePreviewClick(file)}/>
-                                                <img src={getIconForMimeType(file?.mimeType)} alt="mail_attachment_hwp" />
+                                                <img src={getIconForMimeType(file?.mimetype)} alt="mail_attachment_hwp" />
                                                 <img src={mail_download} alt="mail_download" onClick={() => handleDownloadClick(file)}/>
                                                 {/* <img src={mail_attachment_del} alt="mail_attachment_del" /> */}
                                               </div>

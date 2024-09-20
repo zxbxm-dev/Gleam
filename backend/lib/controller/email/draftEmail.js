@@ -27,12 +27,15 @@ const draftEmails = async (req, res) => {
     }
 
     try{
-
+        
         const attachmentsInfo = attachments ? attachments.map(file => ({
             filename : file.originalname,
             path : file.path,
-            contentType : file.mimetype,
+            mimetype : file.mimetype,
+            url : file.destination,
+            size: file.size,
         })) : [];
+     
 
         const hasAttachments = attachmentsInfo.length > 0;
         const newDraftEmail = await Email.create({
@@ -47,7 +50,6 @@ const draftEmails = async (req, res) => {
             sendAt,
             receiveAt,
             signature,
-            attachments : attachments || null,
             hasAttachments: hasAttachments,
             folder: 'drafts',
             read: "read",
@@ -109,8 +111,10 @@ const editDraftEmail = async ( req, res, Id ) => {
     //첨부파일 설정 
     const attachmentsInfo = attachments ? attachments.map(file => ({
         filename : file.originalname,
-        path : file.path,
-        contentType : file.mimetype,
+        path: file.path,
+        mimetype: file.mimetype,
+        url: file.url,
+        size: file.size,
     })) : [];
 
     const hasAttachments = attachmentsInfo.length > 0;

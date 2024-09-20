@@ -193,6 +193,17 @@ const createPrivateRoom = async (io, socket, data) => {
         // 만약 기존 채팅방이 그룹 채팅방이라면 새로 생성
         mutualChatRoomIds.shift(); // 첫 번째 결과가 그룹 채팅방인 경우 제거
       }
+
+      if (chatRoom) {
+        await ChatRoomParticipant.update(
+          { participant: false },
+          { where: { roomId: chatRoom.roomId, userId: userId } }
+        );
+        await ChatRoomParticipant.update(
+          { participant: false },
+          { where: { roomId: chatRoom.roomId, userId: invitedUserId } }
+        );
+    }
     }
 
     if (!chatRoom) {
@@ -232,15 +243,15 @@ const createPrivateRoom = async (io, socket, data) => {
         }),
       });
       created = true;
-      console.log(`새로운 개인 채팅방 생성: Room ID ${chatRoom.roomId}`);
     }
 
+    // 채팅방 참가자 추가
     if (created) {
       await ChatRoomParticipant.bulkCreate(
         [
           {
             roomId: chatRoom.roomId,
-            userId: userId,
+            userId,
             username: user.username,
             department: user.department || null,
             team: user.team || null,
@@ -259,30 +270,35 @@ const createPrivateRoom = async (io, socket, data) => {
             updatedAt: new Date(),
           },
         ],
-        { ignoreDuplicates: true }
+        { updateOnDuplicate: ["roomId", "userId"] }
       );
-
-      console.log(`채팅방 참가자 추가: ${userId}, ${invitedUserId}`);
     }
-
-    await sendUserChatRooms(socket, userId);
-
+    // await sendUserChatRooms(socket, userId);
+    
+    // 메시지 전송
     if (content) {
       console.log(`새로운 메시지 전송: ${content}`);
       await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
     }
 
-    // 클라이언트에게 채팅 방 정보 전송
+    // 채팅방 제목 설정
+    const othertitle = getOthertitle(
+      chatRoom,
+      parseUserTitle(chatRoom.userTitle, userId),
+      userId
+    );
+
+    // 클라이언트에게 채팅방 생성 이벤트 전송
     socket.emit("chatRoomCreated", {
       roomId: chatRoom.roomId,
       isSelfChat: chatRoom.isSelfChat,
-      title: chatRoom.title,
+      title: othertitle,
       profileColor: chatRoom.profileColor,
       profileImage: chatRoom.profileImage,
     });
   } catch (error) {
-    console.error("채팅방 생성 및 메시지 저장 오류:", error);
-    socket.emit("error", { message: "채팅 생성 서버 오류" });
+    console.error("채팅방 생성 오류:", error);
+    socket.emit("error", { message: "채팅방 생성 중 오류 발생" });
   }
 };
 
@@ -342,9 +358,7 @@ const sendUserChatRooms = async (socket, userId) => {
 
     // 필터링된 채팅방 목록을 클라이언트에 전송
     socket.emit("chatRooms", Object.values(roomParticipantsMap));
-    console.log("최종 채팅방 목록:", Object.values(roomParticipantsMap));
   } catch (error) {
-    console.error("채팅방 조회 오류:", error);
     socket.emit("error", { message: "채팅방 조회 오류" });
   }
 };
@@ -389,9 +403,9 @@ const joinRoom = async (socket, roomId) => {
   }
 };
 
-// 채팅방에서 나가기 (진행중 오류 있음)-----------------------------------------------------------------------------------------------------
+// 채팅방에서 나가기 -----------------------------------------------------------------------------------------------------
 const exitRoom = async (io, socket, data) => {
-  const { roomId, userId } = data; // 클라이언트로부터 roomId와 userId를 받음
+  const { roomId, userId } = data;
 
   try {
     // 채팅방 정보 가져오기
@@ -407,66 +421,84 @@ const exitRoom = async (io, socket, data) => {
       where: { roomId },
     });
 
-    // 1. 자신과의 채팅 (Self Chat) 처리 --------------------------------------------------------
+    // 1. 자신과의 채팅 (Self Chat) 처리
     if (chatRoom.isSelfChat) {
-      // 채팅방과 관련된 모든 정보 삭제 (채팅방, 참가자, 메시지)
+      // 모든 관련 정보 삭제 (채팅방, 참가자, 메시지)
       await ChatRoomParticipant.destroy({ where: { roomId } });
       await Message.destroy({ where: { roomId } });
       await ChatRoom.destroy({ where: { roomId } });
 
-      // 자신과의 채팅방 삭제 알림을 클라이언트에 보냄
+      // 삭제 알림 전송
       socket.emit("chatRoomDeleted", {
-        message: `${roomId}의 채팅방이 삭제 되었습니다`,
+        message: `${roomId}의 채팅방이 삭제되었습니다.`,
       });
       return;
     }
 
-    // 2. 개인 채팅 (1:1 채팅)  --------------------------------------------------------
+    // 2. 개인 채팅 (1:1 채팅) 처리
     if (!chatRoom.isGroup && participants.length === 2) {
-      // 나가는 사용자의 상태를 업데이트 (참여 여부 false로 설정)
+      // 나가는 사용자의 상태를 업데이트
       await ChatRoomParticipant.update(
         { participant: true },
         { where: { roomId, userId } }
       );
 
-      console.log(`개인채팅 사용자 아이디: ${userId} 개인채팅 방 번호: ${roomId}`);
-
-      socket.emit("leftRoom", { roomId });
-
-      // 남은 사용자가 혼자 있는 경우
+      // 나간 후 남은 사용자에게 알림
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
-        socket
-          .to(roomId)
-          .emit("roomUpdated", {
-            roomId,
-            message: `${userId}님이 방을 나갔습니다.`,
-          });
+        socket.to(roomId).emit("roomUpdated", {
+          roomId,
+          message: `${userId}님이 방을 나갔습니다.`,
+        });
+      }
+
+      // 모든 참가자가 나간 경우 방과 메시지 삭제
+      const updatedParticipants = await ChatRoomParticipant.findAll({
+        where: { roomId, participant: true },
+      });
+
+      if (updatedParticipants.length === participants.length) {
+        await ChatRoomParticipant.destroy({ where: { roomId } });
+        await Message.destroy({ where: { roomId } });
+        await ChatRoom.destroy({ where: { roomId } });
+        
+        socket.emit("chatRoomDeleted", {
+          message: `${roomId}의 채팅방이 삭제되었습니다.`,
+        });
       }
       return;
     }
 
-    // 3. 단체 채팅방 (Group Chat)  --------------------------------------------------------
+    // 3. 단체 채팅방 (Group Chat) 처리
     if (chatRoom.isGroup) {
-      // 나가는 사용자의 상태를 업데이트 (참여 여부 false로 설정)
+      // 나가는 사용자의 상태를 업데이트
       await ChatRoomParticipant.update(
-        { participant: true },
+        { participant: false },
         { where: { roomId, userId } }
       );
 
-      console.log(`단체방 나가는 유저 아이디: ${userId} 단채체팅 방 번호: ${roomId}`);
-
-      socket.emit("groupRoom", { roomId });
-
-      // 남은 사용자가 혼자 있는 경우
+      // 남은 사용자에게 알림
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
-        socket
-          .to(roomId)
-          .emit("roomUpdated", {
-            roomId,
-            message: `${userId}님이 방을 나갔습니다.`,
-          });
+        socket.to(roomId).emit("roomUpdated", {
+          roomId,
+          message: `${userId}님이 방을 나갔습니다.`,
+        });
+      }
+
+      // 모든 참가자가 나간 경우 방과 메시지 삭제
+      const updatedParticipants = await ChatRoomParticipant.findAll({
+        where: { roomId, participant: false },
+      });
+
+      if (updatedParticipants.length === participants.length) {
+        await ChatRoomParticipant.destroy({ where: { roomId } });
+        await Message.destroy({ where: { roomId } });
+        await ChatRoom.destroy({ where: { roomId } });
+
+        socket.emit("chatRoomDeleted", {
+          message: `${roomId}의 채팅방이 삭제되었습니다.`,
+        });
       }
       return;
     }

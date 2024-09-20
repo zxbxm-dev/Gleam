@@ -189,6 +189,7 @@ console.log(headOffice);
     ['장현지', '개발부', '개발 1팀', '팀장'],
     ['구민석', '개발부', '개발 1팀', '사원'],
     ['윤재원', '개발부', '개발 1팀', '사원'],
+    ['김민기', '개발부', '개발 1팀', '사원'],
     ['변도일', '개발부', '개발 2팀', '팀장'],
     ['이로운', '개발부', '개발 2팀', '사원'],
     ['김현지', '마케팅부', '', '부서장'],
@@ -224,6 +225,7 @@ console.log(headOffice);
     ['장현지', '개발부', '개발 1팀', '팀장'],
     ['구민석', '개발부', '개발 1팀', '사원'],
     ['윤재원', '개발부', '개발 1팀', '사원'],
+    ['김민기', '개발부', '개발 1팀', '사원'],
     ['변도일', '개발부', '개발 2팀', '팀장'],
     ['이로운', '개발부', '개발 2팀', '사원'],
     ['김현지', '마케팅부', '', '부서장'],
@@ -318,6 +320,7 @@ console.log(headOffice);
 
     function SupportLines() {
       return [
+        
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },

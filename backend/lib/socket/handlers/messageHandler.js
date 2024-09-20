@@ -10,10 +10,7 @@ const findChatRoomsForUser = async (userId) => {
       attributes: ["roomId"],
     });
 
-    // 중복된 roomId 제거
-    const roomIds = [
-      ...new Set(chatRooms.map((participant) => participant.roomId)),
-    ];
+    const roomIds = [...new Set(chatRooms.map((participant) => participant.roomId))];
     return roomIds;
   } catch (error) {
     throw new Error("채팅방 조회 오류");
@@ -41,36 +38,28 @@ const findChatRoomsForMe = async (userId) => {
       attributes: ["roomId"],
     });
 
-    const roomIds = [
-      ...new Set(chatRooms.map((participant) => participant.roomId)),
-    ];
-
-    // 자신과의 채팅방 필터링 (참여자가 자기 자신인 방만 조회)
+    const roomIds = [...new Set(chatRooms.map((participant) => participant.roomId))];
     const validRoomIds = [];
+
     for (const roomId of roomIds) {
-      const participants = await ChatRoomParticipant.findAll({
-        where: { roomId },
-      });
-      const sameUserCount = participants.filter(
-        (p) => p.userId === userId
-      ).length;
+      const participants = await ChatRoomParticipant.findAll({ where: { roomId } });
+      const sameUserCount = participants.filter((p) => p.userId === userId).length;
 
       if (sameUserCount === participants.length) {
         validRoomIds.push(roomId);
       }
     }
-
     return validRoomIds;
   } catch (error) {
     throw new Error("채팅방 조회 오류");
   }
 };
 
-// 나와의 채팅방의 과거 메시지를 조회하는 함수
+// 나와 상대방의 채팅 기록을 조회하고 전송하는 함수
 const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
   try {
     if (selectedUserId === requesterId) {
-      // 자신을 클릭한 경우
+      // 자신과의 채팅 기록을 가져오는 경우
       const chatRoomIds = await findChatRoomsForMe(requesterId);
 
       if (chatRoomIds.length === 0) {
@@ -112,7 +101,22 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       }));
       socket.emit("chatHistoryForUser", { chatHistory, joinIds, hostId });
     } else {
-      // 다른 사용자를 클릭한 경우
+
+      const participant = await ChatRoomParticipant.findOne({
+        where: {
+            userId: requesterId,
+            roomId: {
+                [Op.in]: await findMutualChatRoomsForUsers(requesterId, selectedUserId),
+            },
+        },
+    });
+
+      // participant 값이 1일 경우(나간 사용자) 메시지를 숨김
+      if (participant && participant.participant === true) {
+        socket.emit("noChatRooms");
+        return;
+      }
+
       const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
       if (mutualChatRoomIds.length === 0) {
@@ -120,39 +124,20 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         return;
       }
 
-      // 각 방의 참가자 수 확인 (개인 채팅: 2명, 단체 채팅: 2명 이상)
-      const validRoomIds = [];
-      for (const roomId of mutualChatRoomIds) {
-        const participants = await ChatRoomParticipant.findAll({
-          where: { roomId },
-        });
-
-        if (participants.length === 2) {
-          // 개인 채팅
-          validRoomIds.push(roomId);
-        }
-      }
-
-      if (validRoomIds.length === 0) {
-        socket.emit("noChatRooms");
-        return;
-      }
-
-      const messages = await Message.findAll({
-        where: {
-          roomId: {
-            [Op.in]: validRoomIds,
-          },
-        },
-        include: [
-          {
-            model: User,
-            as: "User",
-            attributes: ["userId", "username", "team"],
-          },
-        ],
-        order: [["createdAt", "ASC"]],
-      });
+// 참가자 상태와 관계없이 메시지 조회
+const messages = await Message.findAll({
+  where: {
+      roomId: {
+          [Op.in]: mutualChatRoomIds,
+      },
+  },
+  include: [{
+      model: User,
+      as: "User",
+      attributes: ["userId", "username", "team"],
+  }],
+  order: [["createdAt", "ASC"]],
+});
 
       const chatHistory = messages.map((message) => ({
         messageId: message.messageId,
@@ -162,26 +147,39 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         timestamp: message.createdAt,
       }));
 
-      const joinIds = [requesterId, selectedUserId];
-      const chatRoom = await ChatRoom.findOne({ where: { roomId: validRoomIds[0] } });
+      const chatRoom = await ChatRoom.findOne({ where: { roomId: mutualChatRoomIds[0] } });
       const hostId = chatRoom ? chatRoom.hostUserId : null;
 
-      socket.emit("chatHistoryForOthers", { chatHistory, joinIds, hostId });
+      if (participant && participant.participant) {
+        socket.emit("chatHistoryForOthers", { chatHistory, joinIds: [requesterId, selectedUserId], hostId });
+    } else {
+        socket.emit("chatHistoryForOthers", { chatHistory, joinIds: [requesterId, selectedUserId], hostId });
+    }
+
+      // 메시지가 없을 경우 noChatHistory 이벤트 발신
+      if (chatHistory.length === 0) {
+        socket.emit("noChatHistory", { joinIds: [requesterId, selectedUserId] });
+      }
     }
   } catch (error) {
+    console.error("채팅 기록 조회 오류:", error);
     socket.emit("error", {
       message: "채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요.",
+      details: error.message,
     });
   }
 };
 
-
 // 특정 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistory = async (socket, roomId) => {
   try {
-    // 메시지 조회
+    // roomId가 객체로 들어왔을 경우, 올바르게 추출
+    const actualRoomId = roomId.roomId || roomId;
+
+    console.log(`채팅방 채팅 기록을 가져오는 중: ${actualRoomId}`);
+
     const messages = await Message.findAll({
-      where: { roomId },
+      where: { roomId: actualRoomId },
       include: [
         {
           model: User,
@@ -192,9 +190,8 @@ const getChatHistory = async (socket, roomId) => {
       order: [["createdAt", "ASC"]],
     });
 
-    // 채팅방 참가자 정보 조회
     const participants = await ChatRoomParticipant.findAll({
-      where: { roomId },
+      where: { roomId: actualRoomId },
       include: [
         {
           model: User,
@@ -204,20 +201,16 @@ const getChatHistory = async (socket, roomId) => {
       ],
     });
 
-    // 참가자 정보를 빠르게 조회할 수 있도록 객체로 변환
     const participantMap = participants.reduce((acc, participant) => {
-      acc[participant.User.userId] = participant.User; // 올바르게 User 객체를 매핑
+      acc[participant.User.userId] = participant.User;
       return acc;
     }, {});
 
-    // 참가자의 userId를 joinIds로 설정
     const joinIds = participants.map((participant) => participant.User.userId);
 
-    // 호스트 정보 조회
-    const chatRoom = await ChatRoom.findOne({ where: { roomId } });
+    const chatRoom = await ChatRoom.findOne({ where: { roomId: actualRoomId } });
     const hostId = chatRoom ? chatRoom.hostUserId : null;
 
-    // 메시지와 참가자 정보를 합치기
     const chatHistory = messages.map((message) => {
       const participant = participantMap[message.User.userId];
       return {
@@ -229,7 +222,6 @@ const getChatHistory = async (socket, roomId) => {
       };
     });
 
-    // chatHistory와 joinIds, hostId 객체 형태로 전송
     socket.emit("chatHistory", { chatHistory, joinIds, hostId });
   } catch (error) {
     console.error("채팅 기록 조회 오류:", error);
@@ -243,23 +235,6 @@ const getChatHistory = async (socket, roomId) => {
 const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
   try {
     let room = await ChatRoom.findOne({ where: { roomId } });
-console.log("aaaa",content);
-
-    if (!room) {
-      console.error(
-        `방 ${roomId}이 존재하지 않습니다. 새로운 방을 생성합니다.`
-      );
-      room = await ChatRoom.create({
-        roomId,
-        isGroup: false,
-        hostUserId: senderId,
-        hostName: "시스템",
-        hostDepartment: "시스템",
-        hostTeam: "시스템",
-        hostPosition: "시스템",
-        title: "새로운 방",
-      });
-    }
 
     const participants = await ChatRoomParticipant.findAll({
       where: { roomId },
@@ -271,29 +246,25 @@ console.log("aaaa",content);
       return;
     }
 
-    const savedMessage = await Message.create({
-      content,
-      userId: senderId,
+    const newMessage = await Message.create({
       roomId,
+      userId: senderId,
+      content,
     });
 
-    if (participants.length === 1 && participants[0].userId === senderId) {
-      io.to(senderId.toString()).emit("message", {
-        messageId: savedMessage.messageId,
-        content: savedMessage.content,
-        userId: senderId,
-        timestamp: savedMessage.createdAt,
-      });
-    } else {
-      io.to(roomId.toString()).emit("message", {
-        messageId: savedMessage.messageId,
-        content: savedMessage.content,
-        userId: senderId,
-        timestamp: savedMessage.createdAt,
-      });
-    }
+    const messageData = {
+      messageId: newMessage.messageId,
+      content: newMessage.content,
+      roomId: newMessage.roomId,
+      senderId: newMessage.userId,
+      timestamp: newMessage.createdAt,
+    };
+
+    participants.forEach((participant) => {
+      io.to(participant.userId).emit("newMessage", messageData);
+    });
   } catch (error) {
-    console.error("메시지 전송 오류:", error);
+    throw new Error("메시지 전송 오류 발생");
   }
 };
 

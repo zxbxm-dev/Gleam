@@ -370,7 +370,7 @@ const Calendar = () => {
     const fetchGoogleHolidays = async () => {
       const apiKey = "AIzaSyBB-X6Uc-1EnRlFTXs36cKK6gAQ0VAPpC0";
       const calendarId = 'ko.south_korea.official%23holiday%40group.v.calendar.google.com';
-      const timeMin = new Date().toISOString();
+      const timeMin = new Date('2020-01-01').toISOString();
       const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${timeMin}&singleEvents=true&orderBy=startTime`;
 
       try {
