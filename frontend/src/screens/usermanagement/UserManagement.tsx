@@ -7,9 +7,6 @@ import Pagination from "react-js-pagination";
 import CustomModal from "../../components/modal/CustomModal";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { ArrowDown, ArrowUp } from "../../assets/images/index";
-
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { userState } from '../../recoil/atoms';
 import { useQueryClient, useQuery } from "react-query";
 import { CheckUserManagement, ApproveUserManagement, DeleteUserManagement, EditChainLinker, EditUserInfoManagement } from "../../services/usermanagement/UserManagementServices";
 
@@ -23,8 +20,6 @@ interface SelectedOptions {
 }
 
 const UserManagement = () => {
-  const [user, setUser] = useRecoilState(userState);
-  const setUserState = useSetRecoilState(userState);
   const [page, setPage] = useState<number>(1);
   const queryClient = useQueryClient();
   const [pendingusermanages, setPendingUserManages] = useState<any[]>([]);
@@ -32,6 +27,7 @@ const UserManagement = () => {
   const [isSignModalOpen, setSignModalOpen] = useState(false);
   const [isDelModalOpen, setDelModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isEditCompleModalOpen, setEditCompleModalOpen] = useState(false);
   const [postPerPage, setPostPerPage] = useState<number>(10);
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({0: '41px', 1: '35px', 2: '35px'});
@@ -251,11 +247,6 @@ const UserManagement = () => {
     }
   };
 
-  const updateUserStateAndLocalStorage = (updatedUser: any) => {
-    setUser(updatedUser);
-    localStorage.setItem('userState', JSON.stringify(updatedUser));
-  };
-
   const handleSubmit = () => {
     const formData = new FormData();
     formData.append('company', selectedOptions.company);
@@ -267,10 +258,14 @@ const UserManagement = () => {
     // API 호출
     EditUserInfoManagement(clickIdx, formData)
     .then((res) => {
-      console.log(res)
+      console.log(res);
+      setEditModalOpen(false);
+      setEditCompleModalOpen(true);
     })
     .catch((err) => {
       console.log(err);
+      setEditModalOpen(false);
+      setEditCompleModalOpen(true);
     });
   };
 
@@ -280,7 +275,7 @@ const UserManagement = () => {
         <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
           <TabList>
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>가입승인</Tab>
-            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>회원수정</Tab>
+            <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>직무변경</Tab>
             <Tab _selected={{ bg: '#FFFFFF', fontFamily: 'var(--font-family-Noto-B)' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[2]} marginTop={tabMargins[2]}>회원관리</Tab>
           </TabList>
 
@@ -361,7 +356,7 @@ const UserManagement = () => {
                         <th>부서</th>
                         <th>직위/직책</th>
                         <th>입사일</th>
-                        <th>회원수정</th>
+                        <th>직무 변경</th>
                       </tr>
                     </thead>
                     <tbody className="board_container">
@@ -390,7 +385,7 @@ const UserManagement = () => {
                                   }));
                                 }}
                               >
-                                수정
+                                변경
                               </button>
                             </td>
                           </tr>
@@ -519,13 +514,11 @@ const UserManagement = () => {
       <CustomModal
         isOpen={isEditModalOpen}
         onClose={() => setEditModalOpen(false)}
-        header={'회원수정'}
-        footer1={'확인'}
-        footer1Class="red-btn"
+        header={'직무 변경'}
+        headerTextColor="White"
+        footer1={'변경'}
+        footer1Class="back-green-btn"
         onFooter1Click={handleSubmit}
-        footer2={'취소'}
-        footer2Class="gray-btn"
-        onFooter2Click={() => setEditModalOpen(false)}
         width="auto"
         height="auto"
       >
@@ -633,6 +626,20 @@ const UserManagement = () => {
                 )}
             </div>
         </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isEditCompleModalOpen}
+        onClose={() => setEditCompleModalOpen(false)}
+        header={'직무 변경 완료'}
+        headerTextColor="White"
+        footer1={'확인'}
+        footer1Class="back-green-btn"
+        onFooter1Click={() => setEditCompleModalOpen(false)}
+      >
+        <div className="text-center">
+          <span>직무 변경이 완료되었습니다.</span>
         </div>
       </CustomModal>
     </div>
