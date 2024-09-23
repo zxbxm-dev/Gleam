@@ -81,12 +81,12 @@ const QueueEmail = async (req , res) => {
 
         // 예약한 시간에 이메일 전송
     schedule.scheduleJob(queueDate, async () => {
-        try {
+        try {        
             const sendQueueEmail =  await sendEmail(receiver, subject, body, userId, attachments);
             console.log("예약 이메일 전송 완료 :", sendQueueEmail);
 
             // 전송 후 예약 이메일 삭제
-            await deleteQueueEmail(req, res, messageId);
+            await deleteQueueEmail(messageId);
 
             // 전송된 이메일을 저장
             const sentEmail = await Email.create({
@@ -122,7 +122,7 @@ const QueueEmail = async (req , res) => {
 };
 
 //발송예약한 이메일 전송 시 기존에 있던 레코드 삭제하기 
-const deleteQueueEmail = async (req, res, messageId) => {
+const deleteQueueEmail = async (messageId) => {
     try{
         const emailOnQueue = await Email.findOne({
             where:{ messageId : messageId }  
