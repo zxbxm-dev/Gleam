@@ -16,7 +16,7 @@ module.exports = (io, socket) => {
     await statusHandlers.getReadStatus(socket, messageId);
   });
 
-  // 읽지 않은 메시지 개수 요청 이벤트 처리 (추가)
+  // 읽지 않은 메시지 개수 요청 이벤트 처리
   socket.on("countUnreadMessages", async ({ userId, roomId }) => {
     await statusHandlers.countUnreadMessages(socket, userId, roomId);
   });
