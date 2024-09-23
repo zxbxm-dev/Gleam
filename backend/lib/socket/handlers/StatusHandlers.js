@@ -39,7 +39,7 @@ const getReadStatus = async (socket, messageId) => {
   }
 };
 
-// 읽지 않은 메신저 갯수 확인 --------------------------------------------------------------
+// 읽지 않은 메신저 갯수 확인 함수 --------------------------------------------------------------
 const countUnreadMessages = async (socket, userId, roomId) => {
   try {
     // 사용자가 읽지 않은 메시지의 ID를 가져오기
