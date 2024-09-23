@@ -23,7 +23,8 @@ module.exports = (io, socket) => {
   socket.on("createPrivateRoom", async (data) => {
     console.log("Received data:", data);
     try {
-      if (!data || !data.userId || !data.content || !data.invitedUserIds) {
+      if (!data || !data.userId || typeof data.content !== 'string' || !data.invitedUserIds) {
+
         throw new Error("필수 데이터가 누락되었습니다.");
       }
       await chatRoomHandlers.createPrivateRoom(io, socket, data);
@@ -39,7 +40,7 @@ module.exports = (io, socket) => {
       if (!roomId) {
         throw new Error("방 ID가 제공되지 않았습니다.");
       }
-      await chatRoomHandlers.joinRoom(socket, roomId);
+      await chatRoomHandlers.joinRoom(io, socket, roomId);
     } catch (error) {
       console.error("채팅방 참여 요청 처리 오류:", error);
       socket.emit("error", { message: "채팅방 참여 중 오류가 발생했습니다." });

@@ -364,7 +364,7 @@ const sendUserChatRooms = async (socket, userId) => {
 };
 
 // 채팅방에 참여
-const joinRoom = async (socket, roomId) => {
+const joinRoom = async (io, socket, roomId) => {
   try {
     if (!roomId || roomId <= 0) {
       throw new Error("유효하지 않은 방 ID입니다.");
@@ -376,7 +376,6 @@ const joinRoom = async (socket, roomId) => {
       const userId = socket.userId;
 
       if (!userId) {
-        // console.error("유저 ID가 정의되지 않았습니다.");
         return socket.emit("error", {
           message: "유저 ID가 정의되지 않았습니다.",
         });
@@ -386,19 +385,46 @@ const joinRoom = async (socket, roomId) => {
         where: { roomId, userId },
       });
 
-      if (isMember) {
-        socket.join(roomId.toString()); // 채팅방에 참여
-        // console.log(`합류한 유저: ${socket.userId} 합류한 방: ${roomId}`);
-      } else {
-        // console.error("이 방에 참여할 권한이 없습니다.", { roomId, userId });
-        socket.emit("error", { message: "이 방에 참여할 권한이 없습니다." });
+      if (!isMember) {
+        // 사용자가 이미 멤버가 아니라면 방에 참가자로 추가
+        await ChatRoomParticipant.create({
+          roomId,
+          userId,
+          username: (await getUserById(userId)).username,
+          department: (await getUserById(userId)).department || null,
+          team: (await getUserById(userId)).team || null,
+          position: (await getUserById(userId)).position || null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
       }
+
+      socket.join(roomId.toString()); // 방에 참여
+
+      // 1:1 채팅인지 확인
+      const participantsCount = await ChatRoomParticipant.count({
+        where: { roomId },
+      });
+
+      if (participantsCount === 2 && !chatRoom.isGroup) {
+        // 개인 채팅방이면 createPrivateRoom 호출
+        const invitedUserId = (await ChatRoomParticipant.findAll({
+          where: { roomId, userId: { [Op.ne]: userId } },
+        })).map(participant => participant.userId)[0];
+
+        if (invitedUserId) {
+          await createPrivateRoom(io, socket, {
+            userId,
+            invitedUserIds: [invitedUserId],
+          });
+        }
+      }
+
+      socket.emit("roomJoined", { roomId });
     } else {
-      // console.error("방을 찾을 수 없습니다:", roomId);
       socket.emit("error", { message: "방을 찾을 수 없습니다" });
     }
   } catch (error) {
-    // console.error("채팅방에 참여하는 중에 오류가 발생했습니다.:", error);
     socket.emit("error", { message: "채팅방 참여 서버 오류" });
   }
 };
