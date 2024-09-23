@@ -32,6 +32,7 @@ const subProject = require("./pjschedule/subProject");
 const chatRoom = require("./messenger/chatRoom");
 const message = require("./messenger/message");
 const chatRoomParticipant = require("./messenger/chatRoomParticipant");
+const messageRead = require("./messenger/messageRead");
 //이메일
 const email = require("./email/email");
 const emailAttachments= require("./email/emailAttachments");  
@@ -65,6 +66,7 @@ db.subProject = subProject(sequelize, Sequelize);
 db.ChatRoom = chatRoom(sequelize, Sequelize);
 db.ChatRoomParticipant = chatRoomParticipant(sequelize, Sequelize);
 db.Message = message(sequelize, Sequelize);
+db.MessageRead = messageRead(sequelize, Sequelize);
 db.Email = email(sequelize, Sequelize);
 db.EmailAttachment = emailAttachments(sequelize, Sequelize);
 db.JunkList = junkList(sequelize, Sequelize);
@@ -99,6 +101,14 @@ db.Message.belongsTo(db.ChatRoomParticipant, { foreignKey: "userId", as: "Partic
 //Email 과 EmailAttachments 간의 관계설정 
 db.Email.hasMany(db.EmailAttachment, { foreignKey: "emailId", onDelete: "cascade" });
 db.EmailAttachment.belongsTo(db.Email, { foreignKey: "emailId", onDelete: "cascade" });
+
+// 메신저 읽음 상태 표시 관계설정
+db.Message.hasMany(db.MessageRead, { foreignKey: "messageId", as: "reads" });
+db.MessageRead.belongsTo(db.Message, { foreignKey: "messageId", as: "message" });
+
+// User와 MessageRead 간의 관계 설정
+db.User.hasMany(db.MessageRead, { foreignKey: "userId", as: "reads" });
+db.MessageRead.belongsTo(db.User, { foreignKey: "userId", as: "user" });
 
 
 module.exports = db;
