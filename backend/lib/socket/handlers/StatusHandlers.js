@@ -1,16 +1,74 @@
-const models = require('../../models');
-const User = models.User;
+const models = require("../../models");
+const { MessageRead, Message, User } = models;
 
-// 사용자 정보를 조회하는 함수
-const getUserDetails = async (userId) => {
+// 특정 메시지를 읽은 것으로 표시 함수 --------------------------------------------------------------
+const markMessageAsRead = async (socket, messageId, userId) => {
   try {
-    return await User.findOne({ where: { userId } });
+    // 메시지가 존재하는지 확인
+    const message = await Message.findOne({ where: { id: messageId } });
+    if (!message) {
+      socket.emit("error", { message: "메시지를 찾을 수 없습니다." });
+      return;
+    }
+
+    // 이미 읽은 메시지인지 확인
+    const existingRead = await MessageRead.findOne({
+      where: { messageId, userId },
+    });
+
+    if (!existingRead) {
+      // 읽은 상태로 메시지 기록 생성
+      await MessageRead.create({ messageId, userId });
+      socket.emit("messageRead", { messageId, userId });
+    }
   } catch (error) {
-    console.error('사용자 조회 오류:', error);
-    throw new Error('사용자 조회 오류');
+    console.error("메시지 읽음 처리 오류:", error);
+    socket.emit("error", { message: "메시지 읽음 처리 오류 발생." });
+  }
+};
+
+// 특정 메시지의 읽음 상태를 조회, 읽은 사용자 확인 함수 --------------------------------------------------------------
+const getReadStatus = async (socket, messageId) => {
+  try {
+    const reads = await MessageRead.findAll({ where: { messageId } });
+    const readUserIds = reads.map(read => read.userId);
+    socket.emit("readStatus", { messageId, readUserIds });
+  } catch (error) {
+    console.error("읽음 상태 조회 오류:", error);
+    socket.emit("error", { message: "읽음 상태 조회 오류 발생." });
+  }
+};
+
+// 읽지 않은 메신저 갯수 확인 함수 --------------------------------------------------------------
+const countUnreadMessages = async (socket, userId, roomId) => {
+  try {
+    // 사용자가 읽지 않은 메시지의 ID를 가져오기
+    const unreadMessages = await Message.findAll({
+      where: {
+        roomId, // 특정 방의 메시지를 필터링
+      },
+      include: [{
+        model: MessageRead,
+        required: false,
+        where: { userId }, 
+      }],
+    });
+
+    // 읽지 않은 메시지 카운트
+    const unreadCount = unreadMessages.filter(message => 
+      !message.MessageReads || message.MessageReads.length === 0
+    ).length;
+
+    // 클라이언트에 읽지 않은 메시지 개수 전송
+    socket.emit("unreadMessageCount", { count: unreadCount });
+  } catch (error) {
+    console.error("읽지 않은 메시지 개수 조회 오류:", error);
+    socket.emit("error", { message: "읽지 않은 메시지 개수 조회 오류 발생." });
   }
 };
 
 module.exports = {
-  getUserDetails
+  markMessageAsRead,
+  getReadStatus,
+  countUnreadMessages,
 };

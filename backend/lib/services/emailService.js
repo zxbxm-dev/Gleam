@@ -11,6 +11,7 @@ const schedule = require("node-schedule");
 const {deleteQueueEmail} = require("../controller/email/emailQueue");
 const { getAttachmentsByEmailId } = require("../controller/email/emailAttachments");
 const shortid = require('shortid');
+const { error } = require("console");
 
 
 //IMAP 연결 설정 
@@ -92,14 +93,14 @@ async function fetchMailcowEmails(userId) {
                             const checksavedEmail = await saveEmail(mail, userId, folderName);
                             if(checksavedEmail){
 
-                                // 첨부파일이 있는 경우 저장
-                                if (mail.attachments && mail.attachments.length > 0) {
-                                    await saveAttachments(mail.attachments, checksavedEmail.Id);
-                                }
+                            // 첨부파일이 있는 경우 저장
+                            if (mail.attachments && mail.attachments.length > 0) {
+                                await saveAttachments(mail.attachments, checksavedEmail.Id);
+                            }
 
                             } 
                       } catch (saveErr) {
-                            console.error('이메일을 저장하는 도중 에러가 발생했습니다.');
+                            console.error('이메일을 저장하는 도중 에러가 발생했습니다.',error);
                             return;
                         }
                     });
@@ -115,7 +116,7 @@ async function fetchMailcowEmails(userId) {
     }
 }
 
-    // 첨부파일 저장 함수
+    // 이메일 수신 시 첨부파일 저장 함수
     async function saveAttachments(attachments,emailId) {
          try {
 
@@ -138,8 +139,6 @@ async function fetchMailcowEmails(userId) {
                     fileSize: attachment.size,
                     fileData: attachment.content, 
                 });
-    
-                //console.log(`첨부파일 저장 완료: ${attachment.filename}`);
                 hasAttachments = true;
 
                 if (hasAttachments) {
@@ -155,7 +154,7 @@ async function fetchMailcowEmails(userId) {
     };
 
 // 불러온 이메일 데이터베이스에 저장
-const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment) => {
+const saveEmail = async (mail, userId, folderName, attachments =[]) => {
     if (!mail || !mail.subject) {
         console.error('Error: mail 객체가 존재하지 않거나 제목이 존재하지 않습니다.');
         return;
@@ -170,12 +169,10 @@ const saveEmail = async (mail, userId, folderName, attachments =[],hasAttachment
             }
         });
 
-
         if (existingEmails) {
             console.log(`중복된 이메일이 이미 저장되어 있습니다. Message-ID: ${mail.messageId}`);
             return null;
         }
-
 
         // 중복확인 후 이메일 저장
         const emailData = {
@@ -326,9 +323,13 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
         throw error;
     }
 }
+
+const scheduledEmail = new Set();
+
 //node-schedule 설정 
 const startScheduler = () => 
-    schedule.scheduleJob("*/30 * * * * *", async ()=> {
+
+    schedule.scheduleJob("*/10 * * * * *", async ()=> {
         console.log("⏰ :: 스케줄링 작업 실행...");
         try{
         //DB에서 예약 이메일이 있는지 확인 
@@ -339,13 +340,19 @@ const startScheduler = () =>
         });
 
         for(const email of queue){
-            console.log(" 예약 이메일 : ", email.Id)
+            if(scheduledEmail.has(email.Id)){
+            console.log(`이메일 ${email.Id}는 이미 스케줄링 된 이메일입니다.`);
+            continue;
+        }
+        console.log("예약 이메일 : ", email.Id);
         }
             queue.forEach(email => { 
                 const queueDate = new Date(email.queueDate);
 
                  // Date 객체 유효성 확인
                 if (!isNaN(queueDate.getTime())) {
+
+                    scheduledEmail.add(email.Id); //스케줄링 한 이메일을 ScheduledEmail 리스트에 추가하여 중복 방지
                     schedule.scheduleJob(queueDate, async () => {
                         try {   
                             const messageId = generateMessageId();
@@ -379,6 +386,8 @@ const startScheduler = () =>
                                 await saveAttachments(attachments, sentEmail.Id);
                                 }
 
+                                scheduledEmail.add(email.Id);
+
                             console.log("예약된 이메일 재스케줄링 완료");
                         } catch (error) {
                             console.error("예약된 이메일 전송 중 오류 발생:", error);
@@ -399,8 +408,8 @@ const startScheduler = () =>
 module.exports = {
     connectIMAP,
     fetchMailcowEmails,
-    saveEmail,
     sendEmail,
+    saveEmail,
     sendSavedEmail,
     startScheduler,
 };
