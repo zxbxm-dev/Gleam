@@ -60,11 +60,89 @@ const WriteReport = () => {
 
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [personData, setPersonData] = useState<Person[] | null>(null);  //전체데이터
-  const [headOffice, setHeadOffice] = useState<Person[] | null>(null);  //본사데이터
-  const [RDOffice, setRDOffice] = useState<Person[] | null>(null);  //R&D데이터
+  const [personData, setPersonData] = useState<Member[]>([]);  //전체데이터
+  const [headOffice, setHeadOffice] = useState<Member[]>([]);  //본사데이터
+  const [RDOffice, setRDOffice] = useState<Member[]>([]);  //R&D데이터
 
   useEffect(() => {
+    const allMemberdeparmentOrder = ['포체인스 주식회사', '연구 총괄', '관리부', '개발부', '마케팅부', '알고리즘 연구실', '동형분석 연구실', '블록체인 연구실']
+    const HeaddepartmentOrder = ['포체인스 주식회사', '관리부', '개발부', '마케팅부'];
+    const RDdepartmentOrder = ['포체인스 주식회사', '연구 총괄', '알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
+
+    const sortByAllDepartment = (a: string, b: string) => {
+      const indexA = allMemberdeparmentOrder.indexOf(a[1]);
+      const indexB = allMemberdeparmentOrder.indexOf(b[1]);
+
+      if (indexA !== indexB) {
+        return indexA - indexB;
+      }
+
+      if (!a[2] && b[2]) {
+        return -1;
+      }
+      if (a[2] && !b[2]) {
+        return 1;
+      }
+
+      const hireDateA = new Date(a[4]);
+      const hireDateB = new Date(b[4]);
+
+      if (hireDateA < hireDateB) {
+        return -1;
+      }
+      if (hireDateA > hireDateB) {
+        return 1;
+      }
+
+      return 0;
+    };
+
+    const sortByHeadDepartment = (a: string, b: string) => {
+      const indexA = HeaddepartmentOrder.indexOf(a[1]);
+      const indexB = HeaddepartmentOrder.indexOf(b[1]);
+
+      if (indexA !== indexB) {
+        return indexA - indexB;
+      }
+
+      if (!a[2] && b[2]) {
+        return -1;
+      }
+      if (a[2] && !b[2]) {
+        return 1;
+      }
+
+      const hireDateA = new Date(a[4]);
+      const hireDateB = new Date(b[4]);
+
+      if (hireDateA < hireDateB) {
+        return -1;
+      }
+      if (hireDateA > hireDateB) {
+        return 1;
+      }
+
+      return 0;
+    };
+
+    const sortByRdDepartment = (a: string, b: string) => {
+      const indexA = RDdepartmentOrder.indexOf(a[1]);
+      const indexB = RDdepartmentOrder.indexOf(b[1]);
+
+      if (indexA !== indexB) {
+        return indexA - indexB;
+      }
+
+      if (!a[2] && b[2]) {
+        return -1;
+      }
+      if (a[2] && !b[2]) {
+        return 1;
+      }
+
+      return 0;
+    };
+
     const fetchData = async () => {
       try {
         const response = await PersonData();
@@ -83,11 +161,12 @@ const WriteReport = () => {
             user.username,
             department,
             user.team || '',
-            user.position
+            user.position,
+            user.entering,
           ];
         };
 
-        const formattedApprovedUsers = approvedUsers.map(formatUserData);
+        const formattedApprovedUsers = approvedUsers.map(formatUserData).sort(sortByAllDepartment);
         setPersonData(formattedApprovedUsers);
 
         const headOfficeUsers = approvedUsers.filter((item: any) =>
@@ -95,7 +174,7 @@ const WriteReport = () => {
         );
         const sortedHeadOfficeData = headOfficeUsers
           .map(formatUserData)
-          .sort((a: string[], b: string[]) => new Date(a[3]).getTime() - new Date(b[3]).getTime());
+          .sort(sortByHeadDepartment);
         setHeadOffice(sortedHeadOfficeData);
 
         const rdOfficeUsers = approvedUsers.filter((item: any) =>
@@ -103,7 +182,7 @@ const WriteReport = () => {
         );
         const sortedRDOfficeData = rdOfficeUsers
           .map(formatUserData)
-          .sort((a: string[], b: string[]) => new Date(a[3]).getTime() - new Date(b[3]).getTime());
+          .sort(sortByRdDepartment);
         setRDOffice(sortedRDOfficeData);
 
       } catch (err) {
@@ -114,15 +193,12 @@ const WriteReport = () => {
     fetchData();
   }, []);
 
-console.log(headOffice);
-
-
   useEffect(() => {
     if (reportName) {
       setSelectedReport(reportName);
       updateApprovalLines(reportName);
     }
-  }, [reportName]);
+  }, [reportName, headOffice]);
 
   const sendDate = new Date();
   const approvalValue = 0;
@@ -176,105 +252,37 @@ console.log(headOffice);
       })
   };
 
-
-  const members: Member[] = [
-    ['이정훈', '포체인스 주식회사', '', '대표이사'],
-    ['안후상', '포체인스 주식회사', '', '이사'],
-    ['이정열', '관리부', '', '부서장'],
-    ['김효은', '관리부', '관리팀', '팀장'],
-    ['우현지', '관리부', '관리팀', '사원'],
-    ['염승희', '관리부', '관리팀', '사원'],
-    ['한지희', '관리부', '지원팀', '사원'],
-    ['진유빈', '개발부', '', '부서장'],
-    ['장현지', '개발부', '개발 1팀', '팀장'],
-    ['구민석', '개발부', '개발 1팀', '사원'],
-    ['윤재원', '개발부', '개발 1팀', '사원'],
-    ['김민기', '개발부', '개발 1팀', '사원'],
-    ['변도일', '개발부', '개발 2팀', '팀장'],
-    ['이로운', '개발부', '개발 2팀', '사원'],
-    ['김현지', '마케팅부', '', '부서장'],
-    ['전아름', '마케팅부', '기획팀', '팀장'],
-    ['함다슬', '마케팅부', '기획팀', '사원'],
-    ['전규미', '마케팅부', '기획팀', '사원'],
-    ['서주희', '마케팅부', '디자인팀', '사원'],
-  ];
-
-  const membersRD: Member[] = [
-    ['이정훈', '포체인스 주식회사', '', '대표이사'],
-    ['안후상', '포체인스 주식회사', '', '이사'],
-    ['이유정', '연구 총괄', '', '센터장'],
-    ['심민지', '알고리즘 연구실', '', '연구실장'],
-    ['임지현', '알고리즘 연구실', 'AI 연구팀', '연구원'],
-    ['김희진', '알고리즘 연구실', 'AI 연구팀', '연구원'],
-    ['윤민지', '동형분석 연구실', '', '연구실장'],
-    ['이채영', '동형분석 연구실', '동형분석 연구팀', '연구원'],
-    ['공석', '블록체인 연구실', '', ''],
-    ['박소연', '블록체인 연구실', 'API 개발팀', '연구원'],
-    ['김경현', '블록체인 연구실', 'API 개발팀', '연구원'],
-  ]
-
-  const allmembers: Member[] = [
-    ['이정훈', '포체인스 주식회사', '', '대표이사'],
-    ['안후상', '포체인스 주식회사', '', '이사'],
-    ['이정열', '관리부', '', '부서장'],
-    ['김효은', '관리부', '관리팀', '팀장'],
-    ['우현지', '관리부', '관리팀', '사원'],
-    ['염승희', '관리부', '관리팀', '사원'],
-    ['한지희', '관리부', '지원팀', '사원'],
-    ['진유빈', '개발부', '', '부서장'],
-    ['장현지', '개발부', '개발 1팀', '팀장'],
-    ['구민석', '개발부', '개발 1팀', '사원'],
-    ['윤재원', '개발부', '개발 1팀', '사원'],
-    ['김민기', '개발부', '개발 1팀', '사원'],
-    ['변도일', '개발부', '개발 2팀', '팀장'],
-    ['이로운', '개발부', '개발 2팀', '사원'],
-    ['김현지', '마케팅부', '', '부서장'],
-    ['전아름', '마케팅부', '기획팀', '팀장'],
-    ['함다슬', '마케팅부', '기획팀', '사원'],
-    ['전규미', '마케팅부', '기획팀', '사원'],
-    ['서주희', '마케팅부', '디자인팀', '사원'],
-    ['이유정', '연구 총괄', '', '센터장'],
-    ['심민지', '알고리즘 연구실', '', '연구실장'],
-    ['임지현', '알고리즘 연구실', 'AI 연구팀', '연구원'],
-    ['김희진', '알고리즘 연구실', 'AI 연구팀', '연구원'],
-    ['윤민지', '동형분석 연구실', '', '연구실장'],
-    ['이채영', '동형분석 연구실', '동형분석 연구팀', '연구원'],
-    ['공석', '블록체인 연구실', '', ''],
-    ['박소연', '블록체인 연구실', 'API 개발팀', '연구원'],
-    ['김경현', '블록체인 연구실', 'API 개발팀', '연구원'],
-  ]
-
   const SelectOptions = (report: string) => {
     setSelectedReport(report);
     setSelectOpen(false);
     updateApprovalLines(report);
   };
 
-  // const approvalFixed = headOffice ? headOffice.find(member => member.position === '대표이사') : null;
-  const approvalFixed = members.find(member => member[0] === '이정훈') || null;
-  const ManagementFixed = members.find(member => member[0] === '김효은') || null;
-  const SupportFixed = members.find(member => member[0] === '한지희') || null;
-  const vacationFixed = members.find(member => member[0] === '우현지') || null;
+  const approvalFixed = headOffice ? headOffice.find(member => member[0] === '이정훈') || null : null;
+  // const approvalFixed = members.find(member => member[0] === '이정훈') || null;
+  const ManagementFixed = headOffice ? headOffice.find(member => member[0] === '김효은') || null : null;
+  const SupportFixed = headOffice ? headOffice.find(member => member[0] === '한지희') || null : null;
+  const vacationFixed = headOffice ? headOffice.find(member => member[0] === '우현지') || null : null;
 
   const departmentDirector = (user.department === '개발부')
-    ? members.find(member => member[0] === '진유빈') || null
+    ? headOffice ? headOffice.find(member => member[0] === '진유빈') || null : null
     : (user.department === '관리부')
       ? null
       : (user.department === '마케팅부')
-        ? members.find(member => member[0] === '김현지') || null
+        ? headOffice ? headOffice.find(member => member[0] === '김현지') || null : null
         : (user.department === '')
           ? null
           : null;
 
 
   const teamLeader = (user.team === '개발 1팀')
-    ? members.find(member => member[0] === '장현지') || null
+    ? headOffice ? headOffice.find(member => member[0] === '장현지') || null : null
     : (user.team === '개발 2팀')
-      ? members.find(member => member[0] === '변도일') || null
+      ? headOffice ? headOffice.find(member => member[0] === '변도일') || null : null
       : (user.team === '기획팀')
-        ? members.find(member => member[0] === '전아름') || null
+        ? headOffice ? headOffice.find(member => member[0] === '전아름') || null : null
         : (user.team === '관리팀')
-          ? members.find(member => member[0] === '김효은') || null
+          ? headOffice ? headOffice.find(member => member[0] === '김효은') || null : null
           : (user.team === '지원팀')
             ? null
             : (user.team === '디자인팀')
@@ -284,16 +292,16 @@ console.log(headOffice);
                 : null;
 
 
-  const writer = members.find(member => member[0] === user.username) || null
-  const writerRD = membersRD.find(member => member[0] === user.username) || null
+  const writer = headOffice ? headOffice.find(member => member[0] === user.username) || null : null;
+  const writerRD = RDOffice ? RDOffice.find(member => member[0] === user.username) || null : null;
 
-  const RDLead = membersRD.find(member => member[0] === '이유정') || null;
+  const RDLead = RDOffice ? RDOffice.find(member => member[0] === '이유정') || null : null;
   const RDTeamLead = (user.department === '동형분석 연구실')
-    ? membersRD.find(member => member[0] === '윤민지') || null
+    ? RDOffice ? RDOffice.find(member => member[0] === '윤민지') || null : null
     : (user.department === '알고리즘 연구실')
-      ? membersRD.find(member => member[0] === '심민지') || null
+      ? RDOffice ? RDOffice.find(member => member[0] === '심민지') || null : null
       : (user.department === '블록체인 연구실')
-        ? membersRD.find(member => member[0] === '심민지') || null
+        ? RDOffice ? RDOffice.find(member => member[0] === '심민지') || null : null
         : null;
 
   const updateApprovalLines = (report: string) => {
@@ -730,11 +738,11 @@ console.log(headOffice);
                     <PopoverBody className="approval_popover_body">
                       <div className="approval_popover_memberside">
                         {user.company === '본사' ? (
-                          <HrSidebar members={members} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                          <HrSidebar members={headOffice} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
                         ) : user.company === 'R&D' ? (
-                          <HrSidebar members={membersRD} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                          <HrSidebar members={RDOffice} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
                         ) : (
-                          <HrSidebar members={allmembers} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
+                          <HrSidebar members={personData} onClickMember={(name, dept, team, position) => handleMemberClick(name, dept, team, position, selectedApproval)} />
                         )
                         }
                       </div>
