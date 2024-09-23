@@ -96,6 +96,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const [serverMessages, setServerMessages] = useState<any[]>([]);
+  const [serverisGroup, setServerIsGroup] = useState<any[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
 
   const [messageMetadata, setMessageMetadata] = useState<{
@@ -115,7 +116,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [files, setFiles] = useState<File | null>(null);
-  console.log(selectedRoomId);
 
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
@@ -290,49 +290,58 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [personData, serverMessages]);
 
-
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
-
+    
     const requesterId = user.userID;
     const roomId = selectedRoomId;
-
-    // 채팅 기록 요청
-    socket.emit('getChatHistory', roomId, requesterId);
-
-    // chatHistory와 joinIds를 처리
-    socket.on('chatHistory', (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
+  
+    // 채팅 이력 요청
+    const emitChatHistoryRequest = () => {
+      if (serverisGroup.length >= 3) {
+        socket.emit('getGroupChatHistory', roomId);
+      } else {
+        socket.emit('getChatHistory', roomId, requesterId);
+      }
+    };
+  
+    // 채팅 이력 수신 처리
+    socket.on('chatHistory', (data) => {
       if (Array.isArray(data.chatHistory)) {
         setServerMessages(data.chatHistory);
-        console.log(data);
-
+        setServerIsGroup(data.joinIds);
+  
         setModelPlusJoinId(prevState => ({
           ...prevState,
           joinUser: data.joinIds,
           hostId: data.hostId
         }));
-
-
       } else {
-        console.error('Received data is not an array of messages:', data);
+        console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
       }
     });
-
+  
     // 새 메시지 수신
-    socket.on('message', (newMessage: any) => {
-      setServerMessages(prevMessages => [...prevMessages, ...(Array.isArray(newMessage) ? newMessage : [newMessage])]);
+    socket.on('message', (newMessage) => {
+      setServerMessages(prevMessages => [
+        ...prevMessages,
+        ...(Array.isArray(newMessage) ? newMessage : [newMessage])
+      ]);
     });
-
+  
     // 오류 처리
     socket.on('error', (error) => {
-      console.error('Error fetching messages:', error);
+      console.error('메시지 가져오는 중 오류 발생:', error);
     });
-
+  
+    emitChatHistoryRequest();
+  
     return () => {
       socket.disconnect();
     };
-  }, [selectedRoomId]);
+  }, [selectedRoomId, user.userID]);
+  
 
   // 메시지 컨테이너 스크롤
   useEffect(() => {

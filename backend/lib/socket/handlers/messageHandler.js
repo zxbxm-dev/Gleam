@@ -122,6 +122,7 @@ const getGroupChatHistory = async (socket, roomId) => {
         timestamp: message.createdAt,
       };
     });
+console.log(chatHistory);
 
     sendGroupChatHistoryToClient(socket, chatHistory, joinIds, hostId);
   } catch (error) {
