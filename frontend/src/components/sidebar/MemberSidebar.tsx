@@ -15,6 +15,7 @@ export interface Person {
   usermail?: string;
   entering: Date;
   attachment: string;
+  status:string;
 }
 
 interface Props {
