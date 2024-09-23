@@ -258,6 +258,7 @@
 }
 
 .hrsidebar {
+  overflow-x: hidden;
   font-family: var(--font-family-Noto-M);
 
   .department {
@@ -280,7 +281,7 @@
     background-color: #EEEEEE;
     border-bottom: 1px solid #DCDCDC;
     gap: 10px;
-padding: 3px 8px 4px 15px;
+    padding: 3px 8px 4px 15px;
     font-size: 9px;
     justify-content: space-between;
   }
