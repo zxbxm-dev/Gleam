@@ -12,23 +12,23 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         references: {
           model: "Message",
-          key: "id",
+          key: "messageId",
         },
         onDelete: "CASCADE",
       },
       userId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
           model: "User",
-          key: "id",
+          key: "userId",
         },
         onDelete: "CASCADE",
       },
       readAt: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW, // 메시지를 읽은 시간
+        defaultValue: DataTypes.NOW,
       },
     },
     {
