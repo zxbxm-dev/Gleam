@@ -57,7 +57,7 @@ const MessageSidebar: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setSelectedRoomId(-2);
+      setSelectedRoomId({ roomId: -2, isGroup: false });
     }, 300);
 
     return () => clearTimeout(timer);
@@ -134,7 +134,11 @@ const MessageSidebar: React.FC = () => {
       // Map data to match ChatRoom type
       const updatedRooms = data.map((room: ChatRoom, index: number) => {
         const title = room.userTitle?.[userId]?.username || room.title;
-        return { ...room, title, key: index };
+        return { 
+          ...room, 
+          title, 
+          key: index
+        };
       });
       setChatRooms(updatedRooms);
       console.log("업데이트된 채팅 방:", updatedRooms);

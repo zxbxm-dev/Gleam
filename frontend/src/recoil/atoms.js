@@ -59,7 +59,10 @@ export const selectedPersonState = atom({
 
 export const selectedRoomIdState = atom({
   key: 'selectedRoomIdState',
-  default: -2,
+  default: {
+    roomId: -2,
+    isGroup:false
+  },
 });
 
 /**

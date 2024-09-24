@@ -57,7 +57,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
       if (matchingRoom) {
         console.log(`match ID : ${selectedUserId}`);
         console.log(`roomID값 : ${matchingRoom.roomId}`);
-        setSelectedRoomId(Number(matchingRoom.roomId));
+        setSelectedRoomId({
+          roomId: Number(matchingRoom.roomId),
+          isGroup: matchingRoom.isGroup
+      });
       }
     }
   }, [selectedUserId]);
@@ -117,7 +120,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 );
                 setSelectedUserId(person.userId);
                 setSelectedUserIdstate({ userID: person.userId });
-                setSelectedRoomId(-1);
+                setSelectedRoomId({
+                  roomId: -1,
+                  isGroup: false
+              });
               }}
             >
               <div className="No-Left">
@@ -171,7 +177,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                               );
                               setSelectedUserId(person.userId);
                               setSelectedUserIdstate({ userID: person.userId });
-                              setSelectedRoomId(-1);
+                              setSelectedRoomId({
+                                roomId: -1,
+                                isGroup: false
+                            });
                             }}
                           >
                             <div className="No-Left">
@@ -226,7 +235,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                   );
                                   setSelectedUserId(person.userId);
                                   setSelectedUserIdstate({ userID: person.userId });
-                                  setSelectedRoomId(-1);
+                                  setSelectedRoomId({
+                                    roomId: -1,
+                                    isGroup: false
+                                });
                                 }}
                               >
                                 <div className="No-Left">
@@ -288,7 +300,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                       );
                       setSelectedUserId(person.userId);
                       setSelectedUserIdstate({ userID: person.userId });
-                      setSelectedRoomId(-1);
+                      setSelectedRoomId({
+                        roomId: -1,
+                        isGroup: false
+                    });
                     }}
                   >
                     <div className="No-Left">

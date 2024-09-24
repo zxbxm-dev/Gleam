@@ -15,32 +15,32 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch }) => {
     const [filteredMessages, setFilteredMessages] = useState<any[]>([]);
     const user = useRecoilValue(userState);
     const [clickMessage, setClickMessage] = useRecoilState(SearchClickMsg);
-    const [serverisGroup, setServerIsGroup] = useState<any[]>([]);
 
     useEffect(() => {
         const socket = io('http://localhost:3001', { transports: ["websocket"] });
-    
+  
         const requesterId = user.userID;
         const roomId = selectedRoomId;
       
-        // 채팅 이력 요청
-        const emitChatHistoryRequest = () => {
-          if (serverisGroup.length >= 3) {
-            socket.emit('getGroupChatHistory', roomId);
-          } else {
-            socket.emit('getChatHistory', roomId, requesterId);
-          }
-        };
-      
-        // 채팅 이력 수신 처리
-        socket.on('chatHistory', (data) => {
+        const handleChatHistory = (data:any) => {
           if (Array.isArray(data.chatHistory)) {
             setServerMessages(data.chatHistory);
-            setServerIsGroup(data.joinIds);
+            console.log(data);
+
           } else {
             console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
           }
-        });
+        };
+      
+        // 채팅 이력 요청
+        const emitChatHistoryRequest = () => {
+          const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
+          socket.emit(event, roomId, requesterId);
+        };
+      
+        // 채팅 이력 수신 처리
+        socket.on('groupChatHistory', handleChatHistory);
+        socket.on('chatHistory', handleChatHistory);
       
         // 새 메시지 수신
         socket.on('message', (newMessage) => {
