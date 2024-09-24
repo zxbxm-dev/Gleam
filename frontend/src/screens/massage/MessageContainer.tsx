@@ -296,7 +296,7 @@ console.log(selectedRoomId.roomId);
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
   
     const requesterId = user.userID;
-    const roomId = selectedRoomId;
+    const roomId = selectedRoomId.roomId;
   
     const handleChatHistory = (data:any) => {
       if (Array.isArray(data.chatHistory)) {
@@ -436,7 +436,7 @@ console.log(selectedRoomId.roomId);
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [selectedRoomId]);
+  }, [selectedRoomId.roomId]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

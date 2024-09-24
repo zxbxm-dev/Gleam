@@ -20,7 +20,7 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch }) => {
         const socket = io('http://localhost:3001', { transports: ["websocket"] });
   
         const requesterId = user.userID;
-        const roomId = selectedRoomId;
+        const roomId = selectedRoomId.roomId;
       
         const handleChatHistory = (data:any) => {
           if (Array.isArray(data.chatHistory)) {
