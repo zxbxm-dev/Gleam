@@ -38,7 +38,7 @@ const SetProfile: React.FC<SetProfileProps> = ({ openProfile, setOpenProfile }) 
         }
 
         const payload = {
-            roomId: selectedRoomId,
+            roomId: selectedRoomId.roomId,
             othertitle: profileName,
             profileColor: ProfilePalette[paletteIndex].color
         };

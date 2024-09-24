@@ -64,7 +64,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
 
   const changeAdmin = async (newAdminId: string) => {
     try {
-      const roomId = selectedRoomId;
+      const roomId = selectedRoomId.roomId;
       const currentAdminId = ChatModalOpenState.hostId;
 
       await changeAdminApi(roomId, newAdminId, currentAdminId);
