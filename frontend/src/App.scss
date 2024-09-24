@@ -94,10 +94,12 @@ ul {
 }
 
 .content-wrapper {
-  position: relative;
+  position: fixed;
   top: 60px;
+  left: 0;
+  right: 0;
   background-color: var(--background-color);
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   transition: margin-left 0.3s ease;
 }
 
