@@ -2,7 +2,8 @@ const models = require("../../models");
 const Email = models.Email;
 const schedule = require("node-schedule");
 const moment = require("moment");
-const { sendEmail } = require("../../services/emailService");
+const { sendSavedEmail } = require("../../services/emailService");
+const { saveQueueAttachments } = require("../../services/emailService");
 const { saveAttachments } = require("../../controller/email/emailAttachments");
 const shortid = require('shortid');
 
@@ -75,14 +76,12 @@ const QueueEmail = async (req , res) => {
         if (hasAttachments) {
             await saveAttachments(attachmentsInfo, newQueueEmail.Id);
         }
-
-        console.log("예약 이메일 정보: ", newQueueEmail);
         res.status(200).json({ message: "이메일 전송예약이 완료되었습니다."});
-
+        
         // 예약한 시간에 이메일 전송
     schedule.scheduleJob(queueDate, async () => {
         try {        
-            const sendQueueEmail =  await sendEmail(receiver, subject, body, userId, attachments);
+            const sendQueueEmail =  await sendSavedEmail(receiver, subject, body, userId, attachments);
             console.log("예약 이메일 전송 완료 :", sendQueueEmail);
 
             // 전송 후 예약 이메일 삭제
@@ -108,7 +107,7 @@ const QueueEmail = async (req , res) => {
        
             // 첨부파일이 있는 경우 처리
             if (attachments && attachments.length > 0) {
-                await saveAttachments(attachments, sentEmail.Id);
+                await saveQueueAttachments(attachments, sentEmail.Id);
             }
         } catch (error) {
             console.error("예약된 이메일 전송 중 오류 발생:", error);

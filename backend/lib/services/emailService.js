@@ -153,6 +153,51 @@ async function fetchMailcowEmails(userId) {
         }
     };
 
+//예약 이메일 첨부파일 저장
+async function saveQueueAttachments(attachments, emailId) {
+    try {
+        let hasAttachments = false;
+
+        for (const attachment of attachments) {
+            if (!attachment.fileName || !attachment.fileData) {
+                console.error('유효하지 않은 첨부파일:', attachment);
+                continue; 
+            }
+
+            // 첨부파일 저장 경로
+            const uploadDir = path.join(__dirname, 'uploads', 'emailFile');
+            const relativeDir = path.join("uploads","emailFile");
+            await fs.promises.mkdir(uploadDir, { recursive: true });
+
+            const relativeAttachmentPath = path.join(relativeDir, attachment.fileName);
+            const attachmentPath = path.join(uploadDir, attachment.fileName);
+            await fs.promises.writeFile(attachmentPath, attachment.fileData);
+
+            // 이메일 첨부파일 데이터베이스에 저장
+            await EmailAttachment.create({
+                emailId: emailId,
+                fileName: attachment.fileName,
+                mimetype: attachment.mimetype,
+                type: 'file',
+                fileSize: attachment.fileSize,
+                fileData: attachment.fileData,
+                url: relativeAttachmentPath,
+            });
+            hasAttachments = true;
+
+            if (hasAttachments) {
+                await Email.update(
+                    { hasAttachments: true },
+                    { where: { Id: emailId } }
+                );
+            }
+        }
+    } catch (err) {
+        console.error('첨부파일 저장 실패:', err);
+    }
+}
+
+
 // 불러온 이메일 데이터베이스에 저장
 const saveEmail = async (mail, userId, folderName, attachments =[]) => {
     if (!mail || !mail.subject) {
@@ -204,7 +249,7 @@ function generateMessageId(domain = "gleam.im"){
     return `<${uniqueID}@${domain}`;
 };
 
-// SMTP를 통한 이메일 전송 함수 추가
+//일반 이메일 전송
 async function sendEmail(to, subject, body,userId, attachments = [], messageId, cc) {
 
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
@@ -261,7 +306,9 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
         throw error;
     }
 }
- // SMTP를 통한 저장된 이메일 전송 함수 추가
+
+
+ //예약 , 임시저장 이메일 전송
  async function sendSavedEmail(to, subject, body,userId, attachments = [], messageId, cc) {
     
     // 도메인을 four-chains.com으로 변경하게 되면 email = email 로 사용하면 됩니다.
@@ -279,7 +326,6 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
         tls: {rejectUnauthorized: false}
     });
 
-     // Attachments 데이터 확인
      const attachmentsInfo = attachments.map(file => {
         if (!file.fileData || !file.fileName) {
             console.error('유효하지 않은 첨부파일:', file);
@@ -291,6 +337,8 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
             path: file.url,
             content: file.fileData,  
             contentType: file.mimetype,
+            url : file.destination,
+            size: file.size,
         };
     });
 
@@ -387,7 +435,7 @@ const startScheduler = async () => {
 
                         // 첨부파일이 있는 경우 처리
                         if (attachments && attachments.length > 0) {
-                            await saveAttachments(attachments, sentEmail.Id);
+                            await saveQueueAttachments(attachments, sentEmail.Id);
                         }
 
                         // 작업 완료 후 스케줄 삭제
@@ -416,4 +464,7 @@ module.exports = {
     saveEmail,
     sendSavedEmail,
     startScheduler,
+    saveAttachments,
+    saveQueueAttachments
+
 };
