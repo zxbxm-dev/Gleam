@@ -2,6 +2,7 @@
   background-color: #fff;
   width: 100vw;
   height: 100vh;
+  max-height: 100vh;
 
   .Message-header {
     padding-left: 23px;
@@ -63,6 +64,10 @@
       align-items: flex-start;
       font-family: var(--font-family-Noto-M);
       margin-bottom: 30px;
+
+      &.highlighted-message {
+        background-color: rgb(247, 247, 190);
+      }
 
       .userCircleIcon {
         width: 40px;
@@ -562,12 +567,13 @@ justify-content: space-between;
       gap: 15px;
 
       .message-item{
+        cursor: pointer;
 
         .Namestamp{
           display: flex;
           justify-content: space-between;
           align-items: center;
-margin-bottom: 4px;
+          margin-bottom: 4px;
 
           .Name{
             font-size: 10px;

@@ -406,7 +406,7 @@ const startScheduler = async () => {
                     try {
                         const messageId = generateMessageId();
                         const attachments = await getAttachmentsByEmailId(email.Id);
-                        const sendQueueEmail = await sendSavedEmail(email.receiver, email.subject, email.body, email.userId, attachments);
+                        const sendQueueEmail = await sendSavedEmail(email.receiver, email.subject, email.body, email.userId, attachments,email.messageId, email.referrer);
                         console.log("예약 이메일 전송 완료 :", sendQueueEmail);
 
                         // 전송된 이메일을 저장
@@ -426,6 +426,7 @@ const startScheduler = async () => {
                             read: "read",
                         });
 
+                       
                         // 전송 후 예약 이메일 삭제
                         await deleteQueueEmail(email.messageId);
 

@@ -60,7 +60,7 @@ const QueueEmail = async (req , res) => {
             messageId,
             sender,
             receiver,
-            referrer,
+            referrer : referrer,
             subject,
             body,
             queueDate: formattedDate,
@@ -78,10 +78,11 @@ const QueueEmail = async (req , res) => {
         }
         res.status(200).json({ message: "이메일 전송예약이 완료되었습니다."});
         
+
         // 예약한 시간에 이메일 전송
     schedule.scheduleJob(queueDate, async () => {
         try {        
-            const sendQueueEmail =  await sendSavedEmail(receiver, subject, body, userId, attachments);
+            const sendQueueEmail =  await sendSavedEmail(receiver, subject, body, userId, attachments,messageId,referrer);
             console.log("예약 이메일 전송 완료 :", sendQueueEmail);
 
             // 전송 후 예약 이메일 삭제
