@@ -95,7 +95,7 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
                 <img
                     src={XIcon}
                     alt="XIcon"
-                    onClick={() => setShowSearch(false)}
+                    onClick={() => {setShowSearch(false); setTargetMessageId(null)}}
                 />
             </div>
             <input

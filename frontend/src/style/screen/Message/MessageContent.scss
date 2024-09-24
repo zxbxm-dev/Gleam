@@ -32,8 +32,7 @@
   }
 
   .Message-container {
-    padding: 24px 30px 20px 30px;
-    margin: 5px 5px 0 0;
+    padding: 24px 0px 20px 0px;
     position: relative;
     height: calc(100vh - 170px);
     overflow-y: auto;
@@ -63,7 +62,8 @@
       display: flex;
       align-items: flex-start;
       font-family: var(--font-family-Noto-M);
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+      padding: 10px 30px;
 
       &.highlighted-message {
         background-color: rgb(247, 247, 190);
