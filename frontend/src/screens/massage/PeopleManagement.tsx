@@ -158,7 +158,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
                             className="ChangeAdmin"
                             onClick={() => {
                               onClose();
-                              handleResignRoom(selectedRoomId, joinuser.id);
+                              handleResignRoom(selectedRoomId.roomId, joinuser.id);
                             }}
                           >
                             내보내기

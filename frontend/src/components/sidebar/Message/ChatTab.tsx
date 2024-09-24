@@ -107,9 +107,13 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const person = personData?.find((person) => person.username === lastWord);
     const position = person ? person.position : "";
     const roomId = chatRoom.dataValues?.roomId ?? -1;
+    const isGroup = chatRoom.dataValues?.isGroup ?? false;
 
-    setSelectedRoomId(roomId);
-
+    setSelectedRoomId({
+      roomId: roomId,
+      isGroup: isGroup
+  });
+    
     if (chatRoom.isSelfChat) {
       onPersonClick(user.username ?? "", user.team, user.department, user.position, user.userID);
     } else {

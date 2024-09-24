@@ -32,7 +32,10 @@ const Message: React.FC = () => {
     if (storedRoomId) {
       const roomId = Number(storedRoomId); // Convert to number
       // console.log("클라이언트 저장된 방 ID:", roomId);
-      setSelectedRoomId(roomId);
+      setSelectedRoomId({
+        roomId:roomId,
+        isGroup:false
+      });
     }
   }, [setSelectedRoomId]);
 

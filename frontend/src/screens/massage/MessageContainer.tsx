@@ -131,7 +131,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
 
     let messageData;
-    if (selectedRoomId === -1) {
+    if (selectedRoomId.roomId === -1) {
       messageData = {
         invitedUserIds: [selectedPerson.userId],
         userId: user.id,
@@ -145,7 +145,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         userId: user.id,
         content: messageContent,
       };
-    } else if (selectedRoomId === 0) {
+    } else if (selectedRoomId.roomId === 0) {
       messageData = {
         roomId: null,
         userId: user.id,
@@ -185,7 +185,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }, 200);
   }, [selectedRoomId, selectedPerson, user, files]);
 
-
   const emitMessage = (messageData: any) => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
@@ -199,7 +198,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       socket.emit('uploadFile', formData);
     }
 
-    if (selectedRoomId === -1) {
+    if (selectedRoomId.roomId === -1) {
       socket.emit("createPrivateRoom", messageData);
     } else {
       socket.emit("sendMessage", messageData);
@@ -293,25 +292,15 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
-    
+  
     const requesterId = user.userID;
     const roomId = selectedRoomId;
   
-    // 채팅 이력 요청
-    const emitChatHistoryRequest = () => {
-      if (serverisGroup.length >= 3) {
-        socket.emit('getGroupChatHistory', roomId);
-      } else {
-        socket.emit('getChatHistory', roomId, requesterId);
-      }
-    };
-  
-    // 채팅 이력 수신 처리
-    socket.on('chatHistory', (data) => {
+    const handleChatHistory = (data:any) => {
       if (Array.isArray(data.chatHistory)) {
         setServerMessages(data.chatHistory);
-        setServerIsGroup(data.joinIds);
-  
+        console.log(data);
+        
         setModelPlusJoinId(prevState => ({
           ...prevState,
           joinUser: data.joinIds,
@@ -320,7 +309,17 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       } else {
         console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
       }
-    });
+    };
+  
+    // 채팅 이력 요청
+    const emitChatHistoryRequest = () => {
+      const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
+      socket.emit(event, roomId, requesterId);
+    };
+  
+    // 채팅 이력 수신 처리
+    socket.on('groupChatHistory', handleChatHistory);
+    socket.on('chatHistory', handleChatHistory);
   
     // 새 메시지 수신
     socket.on('message', (newMessage) => {
@@ -479,7 +478,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       onDrop={handleFileDrop}
       onDragOver={handleDragOver}
     >
-      {selectedRoomId !== -2 ? (
+      {selectedRoomId.roomId !== -2 ? (
         Array.isArray(serverMessages) && serverMessages.length > 0 ? (
           serverMessages.map((msg, index) => (
             <div key={index} className="Message">
@@ -537,7 +536,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           </div>
         ))
       )}
-      {selectedRoomId !== -2 && (
+      {selectedRoomId.roomId !== -2 && (
         <div className="Message-Input">
           <img
             className={`GoToBottom ${isAtBottom ? "hidden" : ""}`}
