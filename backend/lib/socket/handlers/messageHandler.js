@@ -10,9 +10,7 @@ const findChatRoomsForUser = async (userId) => {
       attributes: ["roomId"],
     });
 
-    const roomIds = [
-      ...new Set(chatRooms.map((participant) => participant.roomId)),
-    ];
+    const roomIds = [...new Set(chatRooms.map((participant) => participant.roomId))];
     return roomIds;
   } catch (error) {
     throw new Error("채팅방 조회 오류");
@@ -40,18 +38,14 @@ const findChatRoomsForMe = async (userId) => {
       attributes: ["roomId"],
     });
 
-    const roomIds = [
-      ...new Set(chatRooms.map((participant) => participant.roomId)),
-    ];
+    const roomIds = [...new Set(chatRooms.map((participant) => participant.roomId))];
     const validRoomIds = [];
 
     for (const roomId of roomIds) {
       const participants = await ChatRoomParticipant.findAll({
         where: { roomId },
       });
-      const sameUserCount = participants.filter(
-        (p) => p.userId === userId
-      ).length;
+      const sameUserCount = participants.filter((p) => p.userId === userId).length;
 
       if (sameUserCount === participants.length) {
         validRoomIds.push(roomId);
@@ -69,6 +63,12 @@ const getGroupChatHistory = async (socket, roomId) => {
     const actualRoomId = roomId.roomId || roomId;
 
     console.log(`그룹 채팅방 채팅 기록을 가져오는 중: ${actualRoomId}`);
+
+    const sendNotAGroupChatError = (socket) => {
+      socket.emit("error", {
+        message: "그룹 채팅방이 아닙니다.",
+      });
+    };
 
     // 해당 채팅방이 그룹 채팅방인지 확인
     const chatRoom = await ChatRoom.findOne({
@@ -122,16 +122,23 @@ const getGroupChatHistory = async (socket, roomId) => {
         timestamp: message.createdAt,
       };
     });
-console.log(chatHistory);
+
+    const sendGroupChatHistoryToClient = (socket, chatHistory, joinIds, hostId) => {
+      socket.emit("groupChatHistory", { chatHistory, joinIds, hostId });
+    };
 
     sendGroupChatHistoryToClient(socket, chatHistory, joinIds, hostId);
   } catch (error) {
     console.error("그룹 채팅 기록 조회 오류:", error);
-    sendErrorToClient(
-      socket,
-      "그룹 채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요.",
-      error.message
-    );
+
+    const sendErrorToClient = (socket, message, details) => {
+      socket.emit("error", {
+        message,
+        details,
+      });
+    };
+
+    sendErrorToClient(socket, "그룹 채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요.", error.message);
   }
 };
 
@@ -139,7 +146,6 @@ console.log(chatHistory);
 const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
   try {
     if (selectedUserId === requesterId) {
-      // 자신과의 채팅 기록을 가져오는 경우
       const chatRoomIds = await findChatRoomsForMe(requesterId);
 
       if (chatRoomIds.length === 0) {
@@ -185,31 +191,23 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         where: {
           userId: requesterId,
           roomId: {
-            [Op.in]: await findMutualChatRoomsForUsers(
-              requesterId,
-              selectedUserId
-            ),
+            [Op.in]: await findMutualChatRoomsForUsers(requesterId, selectedUserId),
           },
         },
       });
 
-      // participant 값이 1일 경우(나간 사용자) 메시지를 숨김
       if (participant && participant.participant === true) {
         socket.emit("noChatRooms");
         return;
       }
 
-      const mutualChatRoomIds = await findMutualChatRoomsForUsers(
-        requesterId,
-        selectedUserId
-      );
+      const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
       if (mutualChatRoomIds.length === 0) {
         socket.emit("noChatRooms");
         return;
       }
 
-      // 참가자 상태와 관계없이 메시지 조회
       const messages = await Message.findAll({
         where: {
           roomId: {
@@ -253,7 +251,6 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         });
       }
 
-      // 메시지가 없을 경우 noChatHistory 이벤트 발신
       if (chatHistory.length === 0) {
         socket.emit("noChatHistory", {
           joinIds: [requesterId, selectedUserId],
@@ -272,7 +269,6 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
 // 특정 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistory = async (socket, roomId) => {
   try {
-    // roomId가 객체로 들어왔을 경우, 올바르게 추출
     const actualRoomId = roomId.roomId || roomId;
 
     console.log(`채팅방 채팅 기록을 가져오는 중: ${actualRoomId}`);
