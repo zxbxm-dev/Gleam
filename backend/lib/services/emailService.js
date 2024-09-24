@@ -327,11 +327,7 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
     });
 
      const attachmentsInfo = attachments.map(file => {
-        if (!file.fileData || !file.fileName) {
-            console.error('유효하지 않은 첨부파일:', file);
-            throw new Error('첨부파일이 유효하지 않습니다.');
-        }
-        
+ 
         return {
             filename: file.fileName,
             path: file.url,
@@ -466,5 +462,4 @@ module.exports = {
     startScheduler,
     saveAttachments,
     saveQueueAttachments
-
 };
