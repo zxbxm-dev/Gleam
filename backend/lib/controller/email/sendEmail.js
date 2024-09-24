@@ -5,6 +5,7 @@ const { sendSavedEmail } = require("../../services/emailService");
 const { deleteDraftEmail } = require("../../controller/email/draftEmail");
 const { saveAttachments } = require("../../controller/email/emailAttachments");
 const { QueueEmail} = require("../../controller/email/emailQueue");
+const { getAttachmentsByEmailId } = require("../../controller/email/emailAttachments");
 const shortid = require('shortid');
 
 
