@@ -43,6 +43,7 @@ interface MessageContainerProps {
   isAtBottom: boolean;
   scrollToBottom: () => void;
   handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
+  targetMessageId: string | null;
 }
 
 const NoticeIcons: { [key: string]: string } = {
@@ -93,8 +94,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   isAtBottom,
   scrollToBottom,
   handleDragOver,
+  targetMessageId,
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const messageRefs = useRef<Record<string, HTMLDivElement | null>>({}); 
   const [serverMessages, setServerMessages] = useState<any[]>([]);
   const [serverisGroup, setServerIsGroup] = useState<any[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -471,6 +474,15 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   const ensureArray = (arr: any) => Array.isArray(arr) ? arr : [];
 
+  useEffect(() => {
+    if (targetMessageId && messageRefs.current[targetMessageId]) {
+      messageRefs.current[targetMessageId]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [targetMessageId]);
+
   return (
     <div
       className="Message-container"
@@ -480,8 +492,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     >
       {selectedRoomId.roomId !== -2 ? (
         Array.isArray(serverMessages) && serverMessages.length > 0 ? (
-          serverMessages.map((msg, index) => (
-            <div key={index} className="Message">
+          serverMessages.map((msg: any, index) => (
+            <div key={index} className={msg.messageId === targetMessageId ? 'Message highlighted-message' : 'Message'}>
               <img
                 src={(ensureArray(messageMetadata.usersAttachment)[index]) || UserIcon_dark}
                 className='userCircleIcon'
@@ -498,7 +510,12 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                             <img src={getFileIcon(files.name)} alt="File Icon" />
                           </div>
                         }
-                        <div>{msg.content || ""}</div>
+                        <div 
+                          key={msg.messageId}
+                          ref={(el) => (messageRefs.current[msg.messageId] = el)}
+                        >
+                          {msg.content || ""}
+                        </div>
                         {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
                         {files &&
                           <div className='FileDown'>

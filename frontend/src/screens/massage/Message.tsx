@@ -27,6 +27,8 @@ const Message: React.FC = () => {
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [showSearch, setShowSearch] = useState(false);
 
+  const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
+
   useEffect(() => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');
     if (storedRoomId) {
@@ -130,15 +132,18 @@ const Message: React.FC = () => {
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
         handleDragOver={handleDragOver}
+        targetMessageId={targetMessageId}
       />
       <PeopleManagement
         chatRoomPeopleManagement={chatRoomPeopleManagement}
         setChatRoomPeopleManagement={setChatRoomPeopleManagement}
+        
       />
 
-{showSearch && <MessageSearch
+      {showSearch && <MessageSearch
         setShowSearch={setShowSearch}
-/>} 
+        setTargetMessageId={setTargetMessageId}
+      />}
     </div>
   );
 };

@@ -6,9 +6,10 @@ import io from 'socket.io-client';
 
 interface SearchProps {
     setShowSearch: React.Dispatch<React.SetStateAction<boolean>>;
+    setTargetMessageId : React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const MessageSearch: React.FC<SearchProps> = ({ setShowSearch }) => {
+const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageId }) => {
     const selectedRoomId = useRecoilValue(selectedRoomIdState);
     const [serverMessages, setServerMessages] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -84,11 +85,8 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch }) => {
     };
 
     const handleMessageClick = (message: any) => {
-        // setClickMessage({ content: message });
+        setTargetMessageId(message.messageId);
     };
-
-    // console.log(filteredMessages);
-    
 
     return (
         <div className="PeopleManagementCon">
