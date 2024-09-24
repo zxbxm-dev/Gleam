@@ -119,6 +119,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [files, setFiles] = useState<File | null>(null);
+console.log(selectedRoomId.roomId);
 
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
@@ -159,12 +160,13 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     } else {
       messageData = {
-        roomId: selectedRoomId,
+        roomId: selectedRoomId.roomId,
         senderId: user.id,
         content: messageContent,
       };
+      console.log("aaaaa",messageData);
     }
-    console.log(messageData);
+
 
     emitMessage(messageData);
     setMessages(prevMessages => [
@@ -297,7 +299,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
   
     const requesterId = user.userID;
-    const roomId = selectedRoomId;
+    const roomId = selectedRoomId.roomId;
   
     const handleChatHistory = (data:any) => {
       if (Array.isArray(data.chatHistory)) {
@@ -437,7 +439,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [selectedRoomId]);
+  }, [selectedRoomId.roomId]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

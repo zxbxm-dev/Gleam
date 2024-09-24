@@ -71,9 +71,9 @@ const Message: React.FC = () => {
     const socket = io("http://localhost:3001", { transports: ["websocket"] });
     
     if (selectedRoomId) {
-      socket.emit("joinRoom", selectedRoomId);
+      socket.emit("joinRoom", selectedRoomId.roomId);
     }
-  }, [selectedRoomId]);
+  }, [selectedRoomId.roomId]);
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
