@@ -324,86 +324,90 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
     }
 }
 
-const scheduledEmail = new Set();
+var list = schedule.scheduledJobs;
 
 //node-schedule 설정 
-const startScheduler = () => 
+const startScheduler = async () => {
+    console.log("⏰ :: 스케줄링 작업 실행...");
 
-    schedule.scheduleJob("*/10 * * * * *", async ()=> {
-        console.log("⏰ :: 스케줄링 작업 실행...");
-        try{
+    try {
         //DB에서 예약 이메일이 있는지 확인 
         const queue = await Email.findAll({
             where: {
                 folder: "queue",
-            }
+            },
         });
 
-        for(const email of queue){
-            if(scheduledEmail.has(email.Id)){
-            console.log(`이메일 ${email.Id}는 이미 스케줄링 된 이메일입니다.`);
-            continue;
+        for (const email of queue) {
+            console.log(" 예약 이메일 : ", email.Id);
         }
-        console.log("예약 이메일 : ", email.Id);
-        }
-            queue.forEach(email => { 
-                const queueDate = new Date(email.queueDate);
 
-                 // Date 객체 유효성 확인
-                if (!isNaN(queueDate.getTime())) {
+        queue.forEach(email => {
+            const queueDate = new Date(email.queueDate);
 
-                    scheduledEmail.add(email.Id); //스케줄링 한 이메일을 ScheduledEmail 리스트에 추가하여 중복 방지
-                    schedule.scheduleJob(queueDate, async () => {
-                        try {   
-                            const messageId = generateMessageId();
-                            const attachments = await getAttachmentsByEmailId(email.Id);
-                            const sendQueueEmail =  await sendSavedEmail(email.receiver, email.subject, email.body, email.userId, attachments );
-                            console.log("예약 이메일 전송 완료 :", sendQueueEmail);
-                
-                            // 전송된 이메일을 저장
-                            const sentEmail = await Email.create({
-                                userId : email.userId,
-                                messageId : messageId,
-                                sender : email.sender,
-                                receiver : email.receiver,
-                                referrer : email.referrer,
-                                subject : email.subject,
-                                body : email.body,
-                                sendAt: new Date(),
-                                receiveAt : email.receiveAt,
-                                queueDate : email.queueDate,
-                                signature : email.signature,
-                                hasAttachments: attachments && attachments.length > 0,
-                                folder: 'sent',
-                                read: "read",
-                            });
+            //jobName 생성
+            const jobName = `${email.subject}`;
 
-                             // 전송 후 예약 이메일 삭제
-                             await deleteQueueEmail(email.messageId);
+            //스케줄링 중복 확인
+            if (schedule.scheduledJobs[jobName]) {
+                console.log(`이메일 ${email.Id}는 이미 스케줄링 되어 있습니다.`);
+                return; 
+            }
 
-                            // 첨부파일이 있는 경우 처리
-                            if (attachments && attachments.length > 0) {
-                                await saveAttachments(attachments, sentEmail.Id);
-                                }
+            // Date 객체 유효성 확인
+            if (!isNaN(queueDate.getTime())) {
 
-                                scheduledEmail.add(email.Id);
+                // 스케줄링 실행
+                schedule.scheduleJob(jobName, queueDate, async () => {
+                    try {
+                        const messageId = generateMessageId();
+                        const attachments = await getAttachmentsByEmailId(email.Id);
+                        const sendQueueEmail = await sendSavedEmail(email.receiver, email.subject, email.body, email.userId, attachments);
+                        console.log("예약 이메일 전송 완료 :", sendQueueEmail);
 
-                            console.log("예약된 이메일 재스케줄링 완료");
-                        } catch (error) {
-                            console.error("예약된 이메일 전송 중 오류 발생:", error);
+                        // 전송된 이메일을 저장
+                        const sentEmail = await Email.create({
+                            userId: email.userId,
+                            messageId: messageId,
+                            sender: email.sender,
+                            receiver: email.receiver,
+                            referrer: email.referrer,
+                            subject: email.subject,
+                            body: email.body,
+                            sendAt: new Date(),
+                            receiveAt: email.receiveAt,
+                            signature: email.signature,
+                            hasAttachments: attachments && attachments.length > 0,
+                            folder: 'sent',
+                            read: "read",
+                        });
+
+                        // 전송 후 예약 이메일 삭제
+                        await deleteQueueEmail(email.messageId);
+
+                        // 첨부파일이 있는 경우 처리
+                        if (attachments && attachments.length > 0) {
+                            await saveAttachments(attachments, sentEmail.Id);
                         }
-                    })
-                }else{
-                    console.error("이메일 예약 설정에 유효하지않은 날짜:", queueDate);
-                    return res.status(400).json({ message: "이메일 예약 설정에 유효하지 않은 날짜입니다." });
-                }     
 
-            });
+                        // 작업 완료 후 스케줄 삭제
+                        schedule.scheduledJobs[jobName]?.cancel();
+                        console.log(`스케줄링 완료 및 작업 취소: ${jobName}`);
 
-    }catch(error){
-        console.log("스케줄러를 재실행 중 오류가 발생했습니다.", error);
+                    } catch (error) {
+                        console.error("예약된 이메일 전송 중 오류 발생:", error);
+                    }
+                });
+            } else {
+                console.error("이메일 예약 설정에 유효하지 않은 날짜:", queueDate);
+                return res.status(400).json({ message: "이메일 예약 설정에 유효하지 않은 날짜입니다." });
+            }
+        });
+    } catch (error) {
+        console.log("스케줄러를 실행 중 오류가 발생했습니다.", error);
     }
-    });
+};
+
 
 module.exports = {
     connectIMAP,
