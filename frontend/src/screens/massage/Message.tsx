@@ -109,7 +109,12 @@ const Message: React.FC = () => {
 
   const toggleSection = (section: 'search' | 'peopleManagement') => {
     if (section === 'search') {
-      setShowSearch(true);
+      if (showSearch) {
+        setShowSearch(false);
+        setTargetMessageId(null);
+      } else {
+        setShowSearch(true);
+      }
       setChatRoomPeopleManagement(false);
     } else if (section === 'peopleManagement') {
       setShowSearch(false);
