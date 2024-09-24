@@ -27,7 +27,7 @@ const sendMail = async (req, res) => {
         folder,
     } = req.body;
 
-    const attachments = req.files ||  getAttachmentsByEmailId(Id);
+    const attachments = req.files;
     const cc = referrer;
     const messageId = shortid.generate();
 

@@ -269,7 +269,7 @@ async function sendEmail(to, subject, body,userId, attachments = [], messageId, 
 
     const attachmentsInfo = attachments ? attachments.map(file => ({
         filename : Buffer.from(file.filename, 'latin1').toString('utf8'),
-        path : file.url,
+        path : file.path,
         mimetype : file.mimetype,
         url : file.destination,
         size: file.size,
