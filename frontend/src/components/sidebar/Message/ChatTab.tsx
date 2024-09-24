@@ -144,9 +144,6 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     };
   }, []);
 
-
-
-
   const PersonMatchData = (chatRoom: ChatRoom) => {
     const title = chatRoom.othertitle ?? "";
     const lastWord = title.trim().split(" ").pop();
