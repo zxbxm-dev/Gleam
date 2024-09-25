@@ -5,7 +5,8 @@ const { MessageRead, Message, User } = models;
 const markMessageAsRead = async (socket, messageId, userId) => {
   try {
     // 메시지가 존재하는지 확인
-    const message = await Message.findOne({ where: { id: messageId } });
+    // const message = await Message.findOne({ where: { id: messageId } });
+    const message = await Message.findOne({ where: { messageId: messageId } });
     if (!message) {
       socket.emit("error", { message: "메시지를 찾을 수 없습니다." });
       return;
