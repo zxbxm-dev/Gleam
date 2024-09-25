@@ -97,7 +97,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   targetMessageId,
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
-  const messageRefs = useRef<Record<string, HTMLDivElement | null>>({}); 
+  const messageRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [serverMessages, setServerMessages] = useState<any[]>([]);
   const [serverisGroup, setServerIsGroup] = useState<any[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -154,7 +154,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         senderId: user.id,
         content: messageContent,
       };
-      console.log("aaaaa",messageData);
+      console.log("aaaaa", messageData);
     }
 
 
@@ -287,15 +287,15 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
-  
+
     const requesterId = user.userID;
     const roomId = selectedRoomId.roomId;
-  
-    const handleChatHistory = (data:any) => {
+
+    const handleChatHistory = (data: any) => {
       if (Array.isArray(data.chatHistory)) {
         setServerMessages(data.chatHistory);
         console.log(data);
-        
+
         setModelPlusJoinId(prevState => ({
           ...prevState,
           joinUser: data.joinIds,
@@ -305,17 +305,17 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
       }
     };
-  
+
     // 채팅 이력 요청
     const emitChatHistoryRequest = () => {
       const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
       socket.emit(event, roomId, requesterId);
     };
-  
+
     // 채팅 이력 수신 처리
     socket.on('groupChatHistory', handleChatHistory);
     socket.on('chatHistory', handleChatHistory);
-  
+
     // 새 메시지 수신
     socket.on('message', (newMessage) => {
       setServerMessages(prevMessages => [
@@ -323,19 +323,19 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         ...(Array.isArray(newMessage) ? newMessage : [newMessage])
       ]);
     });
-  
+
     // 오류 처리
     socket.on('error', (error) => {
       console.error('메시지 가져오는 중 오류 발생:', error);
     });
-  
+
     emitChatHistoryRequest();
-  
+
     return () => {
       socket.disconnect();
     };
   }, [selectedRoomId, user.userID]);
-  
+
 
   // 메시지 컨테이너 스크롤
   useEffect(() => {
@@ -440,9 +440,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     return () => clearTimeout(timer);
   }, [selectedPerson]);
 
-  // console.log(typeof ClickMsgSearch.messenger);
-  // console.log(ClickMsgSearch.messenger.content);
-
   // 메시지가 읽혔을 때 호출되는 함수
   const handleReadMessage = useCallback((messageId: string) => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
@@ -503,15 +500,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                             <img src={getFileIcon(files.name)} alt="File Icon" />
                           </div>
                         }
-                        <div 
+                        <div
                           key={msg.messageId}
                           ref={(el) => (messageRefs.current[msg.messageId] = el)}
                         >
-                          {serverMessages.length === 0 ? (
-    <p>대화가 없습니다.</p>
-  ) : (
-    msg.content || ""
-  )}
+                          {msg.content || ""}
                         </div>
                         {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
                         {files &&
