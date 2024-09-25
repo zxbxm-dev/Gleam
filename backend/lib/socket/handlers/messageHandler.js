@@ -151,7 +151,6 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       if (chatRoomIds.length === 0) {
         socket.emit("noChatRoomsForUser");
         console.log("채팅방 없다");
-        
         return;
       }
 
@@ -168,6 +167,11 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
             as: "User",
             attributes: ["userId", "username", "team"],
           },
+          {
+            model: MessageRead,
+            required: false,
+            attributes: ["userId"], // 읽은 사용자
+          },
         ],
         order: [["createdAt", "ASC"]],
       });
@@ -183,17 +187,17 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         userId: message.User.userId,
         username: `${message.User.team} ${message.User.username}`,
         timestamp: message.createdAt,
+        readBy: message.MessageReads.map((read) => read.userId), // 읽은 사용자들
       }));
       socket.emit("chatHistoryForUser", { chatHistory, joinIds: [requesterId], hostId: requesterId });
     } else {
       const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
-      // 두 사용자가 참여하는 방만 필터링
       const filteredChatRoomIds = await Promise.all(mutualChatRoomIds.map(async (roomId) => {
         const participants = await ChatRoomParticipant.count({
           where: { roomId }
         });
-        return participants === 2 ? roomId : null; // 두 명만 참여하는 방
+        return participants === 2 ? roomId : null;
       }));
 
       if (filteredChatRoomIds.length === 0) {
@@ -220,6 +224,11 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
             as: "User",
             attributes: ["userId", "username", "team"],
           },
+          {
+            model: MessageRead,
+            required: false,
+            attributes: ["userId"],
+          },
         ],
         order: [["createdAt", "ASC"]],
       });
@@ -230,6 +239,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         userId: message.User.userId,
         username: `${message.User.team} ${message.User.username}`,
         timestamp: message.createdAt,
+        readBy: message.MessageReads.map((read) => read.userId),
       }));
 
       const chatRoom = await ChatRoom.findOne({
@@ -274,6 +284,11 @@ const getChatHistory = async (socket, roomId) => {
           as: "User",
           attributes: ["userId", "username", "team"],
         },
+        {
+          model: MessageRead,
+          required: false,
+          attributes: ["userId"], // 읽은 사용자
+        },
       ],
       order: [["createdAt", "ASC"]],
     });
@@ -309,6 +324,7 @@ const getChatHistory = async (socket, roomId) => {
         userId: message.User.userId,
         username: `${participant?.team || ""} ${participant?.username || ""}`,
         timestamp: message.createdAt,
+        readBy: message.MessageReads.map((read) => read.userId), // 읽은 사용자들
       };
     });
 
