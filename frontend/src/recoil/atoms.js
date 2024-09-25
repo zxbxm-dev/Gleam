@@ -106,3 +106,9 @@ export const SearchClickMsg = atom({
       username: ''
     }
 });
+
+
+export const PeopleModalState = atom({
+  key: 'PeopleModalState',
+  default: false
+});

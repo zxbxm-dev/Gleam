@@ -6,7 +6,7 @@ import {
   UserIcon_dark,
   RoomAdmin
 } from "../../assets/images/index";
-import { NewChatModalstate, userState, selectedRoomIdState } from '../../recoil/atoms';
+import { NewChatModalstate, userState, selectedRoomIdState, PeopleModalState } from '../../recoil/atoms';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { Person } from '../../components/sidebar/MemberSidebar';
 import { PersonData } from '../../services/person/PersonServices';
@@ -25,6 +25,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
   const [chatModalUser, setChatModalUser] = useState<{ id: string; name: string; isHost: boolean; attachment: string | null }[]>([]);
   const user = useRecoilValue(userState);
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
+  const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,7 +105,10 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
       </div>
       <div
         className="AddPerson-tab"
-        onClick={() => openModal()}
+        onClick={() => {
+          openModal();
+          setPeopleState(true);
+        }}
       >+ 인원 추가하기</div>
       <div className="ChatRoom-Members">
         {chatModalUser.map((joinuser, index) => (

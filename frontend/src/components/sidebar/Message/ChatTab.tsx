@@ -230,7 +230,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                         <img className="My-attach" src={attachment} alt="User Icon" />
                       </div>
                     )}
-                    <p className="FontName">
+                    <div className="FontName">
                       {chatRoom.isSelfChat ? (
                         <div className="NameFlex">
                           {user.team ? user.team : user.department} {user.username}{' '}
@@ -243,7 +243,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                       ) : (
                         "No Title"
                       )}
-                    </p>
+                    </div>
                   </div>
                   <img
                     className="Message-Menu"
