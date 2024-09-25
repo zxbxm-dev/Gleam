@@ -612,6 +612,7 @@ const Calendar = () => {
         isOpen={isControleventModalOpen}
         onClose={() => setControlEventModalOPen(false)}
         header={'일정 확인'}
+        headerTextColor="White"
         footer1={'삭제'}
         footer1Class="red_button"
         onFooter1Click={handleDeleteEventModal}
@@ -621,14 +622,11 @@ const Calendar = () => {
         footer3={'확인'}
         footer3Class="cancle_button"
         onFooter3Click={() => setControlEventModalOPen(false)}
-        width="360px"
-        height="300px"
+        width="350px"
+        height="310px"
       >
         <div className="body-container">
           <div className="body-content">
-            <div className="content-left">
-              타입
-            </div>
             <div className="content-right">
               <div className="content-type">
                 {selectedEvent?.title}
@@ -636,24 +634,28 @@ const Calendar = () => {
             </div>
           </div>
           <div className="body-content">
-            <div className="content-left content-center">
-              기간
-            </div>
             <div className="content-right">
               <div className="content-date">
-                <span> {selectedEvent?.startDate}</span>
-                <span>-</span>
-                <span> {selectedEvent?.endDate}</span>
+                <div className="content-date-name">
+                  기간
+                </div>
+                <div>
+                  <span> {selectedEvent?.startDate}</span>
+                  <span> -</span>
+                  <span> {selectedEvent?.endDate}</span>
+                </div>
               </div>
             </div>
           </div>
           <div className="body-content">
-            <div className="content-left">
-              메모
-            </div>
             <div className="content-right">
-              <div className="content-memo">
-                {selectedEvent?.memo}
+              <div className="content-memo-container">
+                <div className="content-memo-text">
+                  메모
+                </div>
+                <div className="content-memo">
+                  <textarea className="textareainput" value={selectedEvent?.memo} />
+                </div>
               </div>
             </div>
           </div>
@@ -664,17 +666,16 @@ const Calendar = () => {
         isOpen={iseventModalOpen}
         onClose={() => setEventModalOPen(false)}
         header={'일정 확인'}
+        headerTextColor="White"
         footer3={'확인'}
         footer3Class="cancle_button"
         onFooter3Click={() => setEventModalOPen(false)}
-        width="360px"
-        height="300px"
+        width="350px"
+        height="310px"
+
       >
         <div className="body-container">
           <div className="body-content">
-            <div className="content-left">
-              타입
-            </div>
             <div className="content-right">
               <div className="content-type">
                 {selectedEvent?.title}
@@ -682,24 +683,28 @@ const Calendar = () => {
             </div>
           </div>
           <div className="body-content">
-            <div className="content-left content-center">
-              기간
-            </div>
             <div className="content-right">
               <div className="content-date">
-                <span> {selectedEvent?.startDate}</span>
-                <span>-</span>
-                <span> {selectedEvent?.endDate}</span>
+                <div className="content-date-name">
+                  기간
+                </div>
+                <div>
+                  <span> {selectedEvent?.startDate}</span>
+                  <span> -</span>
+                  <span> {selectedEvent?.endDate}</span>
+                </div>
               </div>
             </div>
           </div>
           <div className="body-content">
-            <div className="content-left">
-              메모
-            </div>
             <div className="content-right">
-              <div className="content-memo">
-                {selectedEvent?.memo}
+              <div className="content-memo-container">
+                <div className="content-memo-text">
+                  메모
+                </div>
+                <div className="content-memo">
+                  <textarea className="textareainput" value={selectedEvent?.memo} />
+                </div>
               </div>
             </div>
           </div>

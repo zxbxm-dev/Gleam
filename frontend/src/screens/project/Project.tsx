@@ -1966,50 +1966,43 @@ const Project = () => {
         header={selectedEvent?.projectName}
         headerTextColor="White"
         footer1={'확인'}
-        footer1Class="red-btn"
+        footer1Class="back-green-btn"
         onFooter1Click={() => setPjtModalOPen(false)}
-        width="auto"
-        height="auto"
+        width="400px"
+        height="320px"
       >
         <div className="body-container">
           <div className="body-content">
-            <div className="content-left">
-              상태
-            </div>
             <div className="content-right">
-              <div className="content-type">
-                {selectedEvent?.status === 'notstarted' ? '진행 예정' : selectedEvent?.status === 'inprogress' ? '진행 중' : '진행 완료'}
-                <div className={selectedEvent?.status === 'notstarted' ? '' : selectedEvent?.status === 'inprogress' ? 'blue_circle' : 'brown_circle'}></div>
+              <div className="content-teamLead">
+                <span className="content-teamLead-name">팀리더</span>
+                <span>{selectedEvent?.Leader}</span>
               </div>
             </div>
           </div>
           <div className="body-content">
-            <div className="content-left content-center">
-              팀리더
+            <div className="content-right">
+              <div className="content-member-container">
+                <div className="content-member-text">
+                  담당 팀원
+                </div>
+                <div className="content-member">
+                  {selectedEvent?.members.map(person => (
+                    <div className="content-member-box">{person}</div>
+                  ))}
+                </div>
+              </div>
             </div>
+          </div>
+          <div className="body-content">
             <div className="content-right">
               <div className="content-date">
-                {selectedEvent?.Leader}
-              </div>
-            </div>
-          </div>
-          <div className="body-content">
-            <div className="content-left">
-              담당 팀원
-            </div>
-            <div className="content-right">
-              <div className="content-memo">
-                {selectedEvent?.members.join(", ")}
-              </div>
-            </div>
-          </div>
-          <div className="body-content">
-            <div className="content-left">
-              프로젝트 기간
-            </div>
-            <div className="content-right">
-              <div className="content-memo">
-                {selectedEvent?.startDate ? new Date(selectedEvent.startDate).getFullYear() + '-' +  String(new Date(selectedEvent.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(selectedEvent.startDate).getDate()).padStart(2, '0') + ' ~ ' + new Date(selectedEvent.endDate).getFullYear() + '-' +  String(new Date(selectedEvent.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(selectedEvent.endDate).getDate()).padStart(2, '0') : 'No start date available'}
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                  <span className="content-date-name">프로젝트 기간</span>
+                  <div className={selectedEvent?.status === 'notstarted' ? 'green_arrow' : selectedEvent?.status === 'inprogress' ? 'blue_arrow' : 'brown_arrow'}>{selectedEvent?.status === 'notstarted' ? '진행 예정' : selectedEvent?.status === 'inprogress' ? '진행 중' : '진행 완료'}</div>
+                  <div className={selectedEvent?.status === 'notstarted' ? 'green_arrow_triangle' : selectedEvent?.status === 'inprogress' ? 'blue_arrow_triangle' : 'brown_arrow_triangle'}></div>
+                </div>
+                {selectedEvent?.startDate ? new Date(selectedEvent.startDate).getFullYear() + '.' +  String(new Date(selectedEvent.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(selectedEvent.startDate).getDate()).padStart(2, '0') + '　 ~ 　' + new Date(selectedEvent.endDate).getFullYear() + '.' +  String(new Date(selectedEvent.endDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(selectedEvent.endDate).getDate()).padStart(2, '0') : 'No start date available'}
               </div>
             </div>
           </div>
