@@ -940,7 +940,8 @@ const MeetingRoom = () => {
       <CustomModal
         isOpen={iseventModalOpen}
         onClose={() => setEventModalOPen(false)}
-        header={selectedEvent?.origintitle}
+        header={'회의실'}
+        headerTextColor="White"
         footer1={userIsAuthorized() ? '편집' : null}
         footer1Class="gray-btn"
         onFooter1Click={handleEditEvent}
@@ -955,42 +956,51 @@ const MeetingRoom = () => {
       >
         <div className="body-container">
           <div className="body-content">
-            <div className="content-left content-center">
-              시간
+            <div className="content-right">
+              <div className="content-type">
+                {selectedEvent?.origintitle}
+              </div>
             </div>
+          </div>
+          <div className="body-content">
             <div className="content-right">
               <div className="content-date">
+                <span className="content-date-name">시간</span>
                 <span>{selectedEvent?.mergeDate}</span>
               </div>
             </div>
           </div>
           <div className="body-content">
-            <div className="content-left content-center">
-              장소
-            </div>
             <div className="content-right">
               <div className="content-date">
+                <span className="content-date-name">장소</span>
                 <span>{selectedEvent?.place}</span>
               </div>
             </div>
           </div>
           <div className="body-content">
-            <div className="content-left content-center">
-              인원
-            </div>
             <div className="content-right">
-              <div className="content-memo">
-                {selectedEvent?.meetpeople.join(", ")}
+              <div className="content-member-container">
+                <div className="content-member-text">
+                  인원
+                </div>
+                <div className="content-member">
+                  {selectedEvent?.meetpeople.map(person => (
+                    <div className="content-member-box">{person}</div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
           <div className="body-content">
-            <div className="content-left content-center">
-              메모
-            </div>
             <div className="content-right">
-              <div className="content-memo">
-                {selectedEvent?.memo}
+              <div className="content-memo-container">
+                <div className="content-memo-text">
+                  메모
+                </div>
+                <div className="content-memo" style={{height: '100px'}}>
+                  <textarea className="textareainput" value={selectedEvent?.memo} />
+                </div>
               </div>
             </div>
           </div>

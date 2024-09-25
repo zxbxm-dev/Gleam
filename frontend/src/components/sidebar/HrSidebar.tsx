@@ -52,11 +52,15 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                     <img src={expandedTeams.includes(team) ? MenuArrow_Up : MenuArrow_down} alt="Arrow" />
                   </div>
                 ) : ( // 팀 이름이 비어있는 경우
-                  <div className="team-placeholder">
+                  <div className="placeholder">
                     <ul>
                       {members.map(({ name, position }, index) => (
                         <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
-                          <span className="name_text">{name}</span>
+                          {(dept === '포체인스 주식회사' || dept === '연구 총괄') ? 
+                            <span className="name_text">{name}</span>
+                            :
+                            <span className="name_text">{dept} {name}</span>
+                          }
                           <span className="position_text">{position}</span>
                         </li>
                       ))}
@@ -67,7 +71,7 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                   <ul>
                     {members.map(({ name, position }, index) => (
                       <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
-                        <span className="name_text">{name}</span>
+                        <span className="name_text">{team} {name}</span>
                         <span className="position_text">{position}</span>
                       </li>
                     ))}

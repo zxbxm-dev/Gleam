@@ -812,7 +812,7 @@ const WriteReport = () => {
                                 id="chk"
                                 style={{ cursor: 'pointer' }}
                               />
-                              <label htmlFor="chk" style={{ cursor: 'pointer' }}>{line.name}</label>
+                              <label htmlFor="chk" style={{ cursor: 'pointer' }}>{line.name}&nbsp;({line.selectedMembers?.length})</label>
                             </div>
                             {line.checked ? (
                               line.selectedMember ? (
@@ -828,8 +828,8 @@ const WriteReport = () => {
                                     {line.selectedMembers.map((member, index) => (
                                       <div key={index} className='approval_small_name'>
                                         <div className='NameFlex'>
+                                          <div className='position_text'>{member[2] || member[1]}</div>
                                           <div className='name_text'>{member[0]}</div>
-                                          <div className='position_text'>{member[3]}</div>
                                         </div>
                                         <img src={NewCloseIcon} alt="CloseIcon" className='close_btn' onClick={() => handleRemoveMember(index)} />
                                       </div>

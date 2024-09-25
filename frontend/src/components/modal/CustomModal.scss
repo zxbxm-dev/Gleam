@@ -87,7 +87,7 @@
       .body-container {
         width: 100%;
         height: 100%;
-        padding: 5%;
+        padding: 15px 20px;
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -874,7 +874,7 @@
           .content-right {
             display: flex;
             align-items: center;
-            width: 70%;
+            width: 100%;
             font-size: 14px;
 
             .event_title_input {
@@ -990,33 +990,138 @@
               display: flex;
               align-items: center;
               width: 100%;
-              gap: 10px;
+              padding: 5px 10px;
+              border-bottom: 1px solid #CACACA;
+
+              .green_circle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 20px;
+                background-color: #009544;
+                color: #ffffff;
+                font-size: 10px;
+                font-family: var(--font-family-Noto-R);
+                border-radius: 15px;
+              }
 
               .blue_circle {
-                width: 7px;
-                height: 7px;
-                background-color: #000aff;
-                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 20px;
+                background-color: #3870FF;
+                color: #ffffff;
+                font-size: 10px;
+                font-family: var(--font-family-Noto-R);
+                border-radius: 15px;
               }
 
               .brown_circle {
-                width: 7px;
-                height: 7px;
-                background-color: #0c6605;
-                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 20px;
+                background-color: #717171;
+                color: #ffffff;
+                font-size: 10px;
+                font-family: var(--font-family-Noto-R);
+                border-radius: 15px;
+              }
+            }
+
+            .content-teamLead {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              width: 100%;
+              padding: 0 10px;
+              height: 37px;
+              border-radius: 5px;
+              font-size: 12px;
+              border: 1px solid #EEEEEE;
+              border-radius: 5px;
+
+              .content-teamLead-name {
+                color: #929292;
               }
             }
 
             .content-date {
               display: flex;
               align-items: center;
+              justify-content: space-between;
               gap: 7px;
-              width: 300px;
-              height: 28px;
+              width: 100%;
+              padding: 0 10px;
+              height: 37px;
+              background-color: #F4F4F4;
+              border-radius: 5px;
+              font-size: 12px;
+
+              .content-date-name {
+                color: #929292;
+              }
             }
 
-            .content-memo {
-              width: 300px;
+            .content-member-container {
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              height: 110px;
+              font-size: 12px;
+              border: 1px solid #EEEEEE;
+              border-radius: 5px;
+              padding: 10px 5px;
+
+              .content-member-text {
+                color: #929292;
+                border-bottom: 1px solid #CACACA;
+                padding-bottom: 5px;
+                padding-left: 5px;
+              }
+
+              .content-member {
+                @include custom-scrollbar;
+                display: flex;
+                flex-wrap: wrap;
+                overflow-y: auto;
+                width: 100%;
+                height: 100%;
+                padding: 5px;
+
+                .content-member-box {
+                  width: 48%;
+                  height: 25px;
+                }
+              }
+            }
+
+            .content-memo-container {
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              
+              .content-memo-text {
+                color: #929292;
+                font-size: 12px;
+                padding: 0 10px;
+                margin-bottom: 3px;
+              }
+
+              .content-memo {
+                width: 100%;
+                height: 83px;
+                border-radius: 5px;
+
+                textarea {
+                  @include custom-scrollbar;
+                  height: inherit;
+                }
+              }
             }
           }
         }
