@@ -374,7 +374,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     });
 
     socket.on("noChatRoomsForUser", (data) => {
-      // console.log("사용자에게 채팅방 없음.", data);
+      console.log("사용자에게 채팅방 없음.", data);
+      setServerMessages([]);
     });
 
     socket.on("chatHistoryForUser", (data) => {
@@ -387,7 +388,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           joinUser: data.joinIds,
           hostId: data.hostId
         }));
-      } else if (!data) {
+      } else {
         console.error("받아오는 데이터가 없습니다.");
         setServerMessages([]);
       }
@@ -403,7 +404,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           joinUser: data.joinIds,
           hostId: data.hostId
         }));
-      } else if (!data) {
+      } else {
         console.error("받아오는 데이터가 없습니다.");
         setServerMessages([]);
       }
@@ -506,7 +507,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                           key={msg.messageId}
                           ref={(el) => (messageRefs.current[msg.messageId] = el)}
                         >
-                          {msg.content || ""}
+                          {serverMessages.length === 0 ? (
+    <p>대화가 없습니다.</p>
+  ) : (
+    msg.content || ""
+  )}
                         </div>
                         {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
                         {files &&

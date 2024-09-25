@@ -150,6 +150,8 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
 
       if (chatRoomIds.length === 0) {
         socket.emit("noChatRoomsForUser");
+        console.log("채팅방 없다");
+        
         return;
       }
 
@@ -175,9 +177,6 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         return;
       }
 
-      const joinIds = requesterId;
-      const hostId = requesterId;
-
       const chatHistory = selfMessages.map((message) => ({
         messageId: message.messageId,
         content: message.content,
@@ -185,25 +184,26 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         username: `${message.User.team} ${message.User.username}`,
         timestamp: message.createdAt,
       }));
-      socket.emit("chatHistoryForUser", { chatHistory, joinIds, hostId });
+      socket.emit("chatHistoryForUser", { chatHistory, joinIds: [requesterId], hostId: requesterId });
     } else {
-      const participant = await ChatRoomParticipant.findOne({
-        where: {
-          userId: requesterId,
-          roomId: {
-            [Op.in]: await findMutualChatRoomsForUsers(requesterId, selectedUserId),
-          },
-        },
-      });
+      const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
-      if (participant && participant.participant === true) {
-        socket.emit("noChatRooms");
+      // 두 사용자가 참여하는 방만 필터링
+      const filteredChatRoomIds = await Promise.all(mutualChatRoomIds.map(async (roomId) => {
+        const participants = await ChatRoomParticipant.count({
+          where: { roomId }
+        });
+        return participants === 2 ? roomId : null; // 두 명만 참여하는 방
+      }));
+
+      if (filteredChatRoomIds.length === 0) {
+        socket.emit("noChatRoomsForUser");
         return;
       }
 
-      const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
+      const validChatRoomIds = filteredChatRoomIds.filter(Boolean);
 
-      if (mutualChatRoomIds.length === 0) {
+      if (validChatRoomIds.length === 0) {
         socket.emit("noChatRooms");
         return;
       }
@@ -211,7 +211,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       const messages = await Message.findAll({
         where: {
           roomId: {
-            [Op.in]: mutualChatRoomIds,
+            [Op.in]: validChatRoomIds,
           },
         },
         include: [
@@ -233,23 +233,15 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       }));
 
       const chatRoom = await ChatRoom.findOne({
-        where: { roomId: mutualChatRoomIds[0] },
+        where: { roomId: validChatRoomIds[0] },
       });
       const hostId = chatRoom ? chatRoom.hostUserId : null;
 
-      if (participant && participant.participant) {
-        socket.emit("chatHistoryForOthers", {
-          chatHistory,
-          joinIds: [requesterId, selectedUserId],
-          hostId,
-        });
-      } else {
-        socket.emit("chatHistoryForOthers", {
-          chatHistory,
-          joinIds: [requesterId, selectedUserId],
-          hostId,
-        });
-      }
+      socket.emit("chatHistoryForOthers", {
+        chatHistory,
+        joinIds: [requesterId, selectedUserId],
+        hostId,
+      });
 
       if (chatHistory.length === 0) {
         socket.emit("noChatHistory", {
@@ -265,6 +257,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
     });
   }
 };
+
 
 // 특정 채팅방의 과거 메시지를 조회하는 함수
 const getChatHistory = async (socket, roomId) => {
