@@ -443,12 +443,36 @@ justify-content: space-between;
       }
     }
 
-    .searchInput{
+    .searchInput_container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       height: 40px;
-      padding-left: 25px;
+      padding: 0 25px;
       border-top: 1px solid #e2e2e2;
       border-bottom: 1px solid #e2e2e2;
       font-size: 14px;
+
+      img {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .searchDate {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+      padding: 0 25px;
+      border-bottom: 1px solid #e2e2e2;
+      font-size: 14px;
+      
+      img {
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+      }
     }
 
     .searchInput:focus{

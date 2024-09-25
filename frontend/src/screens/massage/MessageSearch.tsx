@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { XIcon } from "../../assets/images/index";
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { selectedRoomIdState, userState, SearchClickMsg, selectUserID } from '../../recoil/atoms';
 import io from 'socket.io-client';
+import {
+    XIcon,
+    GrayArrowDown,
+    GraySearchIcon,
+  } from "../../assets/images/index";
 
 interface SearchProps {
     setShowSearch: React.Dispatch<React.SetStateAction<boolean>>;
@@ -165,13 +169,22 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
                     onClick={() => {setShowSearch(false); setTargetMessageId(null)}}
                 />
             </div>
-            <input
-                className='searchInput'
-                type='text'
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="검색어를 입력해 주세요."
-            />
+            <div className='searchInput_container'>
+                <input
+                    className='searchInput'
+                    type='text'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="검색어를 입력해 주세요."
+                />
+                <img src={GraySearchIcon} alt="down" />
+            </div>
+            <div className='searchDate'>
+                <div>
+                    1년
+                </div>
+                <img src={GrayArrowDown} alt="down" />
+            </div>
             <div className="SearchItems">
                 {searchQuery ? (
                     filteredMessages.length > 0 ? (

@@ -499,6 +499,7 @@ const Calendar = () => {
         isOpen={isAddeventModalOpen}
         onClose={() => { setAddEventModalOPen(false); resetForm(); }}
         header={'일정 등록하기'}
+        headerTextColor="White"
         footer1={'등록'}
         footer1Class="back-green-btn"
         onFooter1Click={handleAddEvent}
