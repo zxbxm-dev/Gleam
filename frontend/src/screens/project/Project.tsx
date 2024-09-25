@@ -1963,15 +1963,23 @@ const Project = () => {
       <CustomModal
         isOpen={ispjtModalOpen}
         onClose={() => setPjtModalOPen(false)}
-        header={selectedEvent?.projectName}
+        header={'프로젝트'}
         headerTextColor="White"
         footer1={'확인'}
         footer1Class="back-green-btn"
         onFooter1Click={() => setPjtModalOPen(false)}
         width="400px"
-        height="320px"
+        height="360px"
       >
         <div className="body-container">
+          <div className="body-content">
+            <div className="content-right">
+              <div className="content-type" style={{justifyContent: 'space-between'}}>
+                <span>{selectedEvent?.projectName}</span>
+                <div className={selectedEvent?.status === 'notstarted' ? 'green_circle' : selectedEvent?.status === 'inprogress' ? 'blue_circle' : 'brown_circle'}>{selectedEvent?.status === 'notstarted' ? '진행 예정' : selectedEvent?.status === 'inprogress' ? '진행 중' : '진행 완료'}</div>
+              </div>
+            </div>
+          </div>
           <div className="body-content">
             <div className="content-right">
               <div className="content-teamLead">
@@ -1999,8 +2007,6 @@ const Project = () => {
               <div className="content-date">
                 <div style={{display: 'flex', alignItems: 'center'}}>
                   <span className="content-date-name">프로젝트 기간</span>
-                  <div className={selectedEvent?.status === 'notstarted' ? 'green_arrow' : selectedEvent?.status === 'inprogress' ? 'blue_arrow' : 'brown_arrow'}>{selectedEvent?.status === 'notstarted' ? '진행 예정' : selectedEvent?.status === 'inprogress' ? '진행 중' : '진행 완료'}</div>
-                  <div className={selectedEvent?.status === 'notstarted' ? 'green_arrow_triangle' : selectedEvent?.status === 'inprogress' ? 'blue_arrow_triangle' : 'brown_arrow_triangle'}></div>
                 </div>
                 {selectedEvent?.startDate ? new Date(selectedEvent.startDate).getFullYear() + '.' +  String(new Date(selectedEvent.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(selectedEvent.startDate).getDate()).padStart(2, '0') + '　 ~ 　' + new Date(selectedEvent.endDate).getFullYear() + '.' +  String(new Date(selectedEvent.endDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(selectedEvent.endDate).getDate()).padStart(2, '0') : 'No start date available'}
               </div>
