@@ -611,7 +611,7 @@ const Calendar = () => {
       <CustomModal
         isOpen={isControleventModalOpen}
         onClose={() => setControlEventModalOPen(false)}
-        header={'일정 확인'}
+        header={'휴가'}
         headerTextColor="White"
         footer1={'삭제'}
         footer1Class="red_button"
@@ -665,7 +665,7 @@ const Calendar = () => {
       <CustomModal
         isOpen={iseventModalOpen}
         onClose={() => setEventModalOPen(false)}
-        header={'일정 확인'}
+        header={'휴가'}
         headerTextColor="White"
         footer3={'확인'}
         footer3Class="cancle_button"

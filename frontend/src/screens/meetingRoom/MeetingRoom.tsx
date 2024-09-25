@@ -940,7 +940,7 @@ const MeetingRoom = () => {
       <CustomModal
         isOpen={iseventModalOpen}
         onClose={() => setEventModalOPen(false)}
-        header={selectedEvent?.origintitle}
+        header={'회의실'}
         headerTextColor="White"
         footer1={userIsAuthorized() ? '편집' : null}
         footer1Class="gray-btn"
@@ -955,6 +955,13 @@ const MeetingRoom = () => {
         height="auto"
       >
         <div className="body-container">
+          <div className="body-content">
+            <div className="content-right">
+              <div className="content-type">
+                {selectedEvent?.origintitle}
+              </div>
+            </div>
+          </div>
           <div className="body-content">
             <div className="content-right">
               <div className="content-date">
