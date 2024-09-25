@@ -493,14 +493,22 @@ const Mail = () => {
 
   const toggleAllCheckboxes = () => {
     if (allSelected) {
-        setSelectedMails({});
+      setSelectedMails({});
     } else {
-        const currentPageMails = filteredMails.slice((page - 1) * postPerPage, page * postPerPage);
-        const newSelectedMails = currentPageMails.reduce((acc, mail) => {
-            acc[mail.id] = true;
-            return acc;
-        }, {});
-        setSelectedMails(newSelectedMails);
+      const currentPageMails = filteredMails.slice((page - 1) * postPerPage, page * postPerPage);
+      const newSelectedMails = currentPageMails.reduce((acc, mail) => {
+        if (mail.Id) {
+          acc[mail.Id] = {
+            messageId: mail.messageId,
+            selected: true,
+            sender: mail.sender,
+          };
+        } else {
+          console.error("Mail object is missing id:", mail);
+        }
+        return acc;
+      }, {});
+      setSelectedMails(newSelectedMails);
     }
     setAllSelected(!allSelected);
   };
@@ -651,7 +659,7 @@ const Mail = () => {
       console.log('스팸 이메일 해제 실패', error);
     }
   };
-
+  console.log(selectedMails)
   return (
     <div className="content">
       <div className="mail_container">
