@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { userState, NewChatModalstate } from "../../../recoil/atoms";
+import { userState, NewChatModalstate, PeopleModalState } from "../../../recoil/atoms";
 import {
   SearchIcon,
   CheckBox,
@@ -25,19 +25,25 @@ interface NewChatModalProps {
       };
     };
   };
+  setSelectedUsers:Dispatch<SetStateAction<Set<string>>>;
+  selectedUsers:Set<string>;
 }
 
 const NewChatModal: React.FC<NewChatModalProps> = ({
   filteredData,
+  setSelectedUsers,
+  selectedUsers
 }) => {
   const [isWholeMemberChecked, setIsWholeMemberChecked] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+
   const [chatTitle, setChatTitle] = useState<string>("");
   const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const user = useRecoilValue(userState);
   const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
+  const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
+  const UsePeopleState = useRecoilValue(PeopleModalState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,30 +60,49 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     fetchData();
   }, []);
 
-
   useEffect(() => {
-    if (ChatModalOpenState) {
+    if (ChatModalOpenState && UsePeopleState) {
       const allPersons = Object.values(filteredData).flatMap(company =>
         Object.values(company).flatMap(department =>
           Object.values(department).flat()
         )
       );
-
+  
       const initialSelectedUsers = allPersons.filter(person =>
         person.username === user.username ||
         ChatModalOpenState.joinUser.includes(person.userId)
       );
-
+  
       setSelectedUsers(prevSelected => {
         const newSelection = new Set(prevSelected);
         initialSelectedUsers.forEach(user => newSelection.add(user.userId));
-        return newSelection;
+        return newSelection.size !== prevSelected.size ? newSelection : prevSelected;
       });
+  
+      setSearchQuery("");
+      setIsWholeMemberChecked(false);
+    } else {
+      const allPersons = Object.values(filteredData).flatMap(company =>
+        Object.values(company).flatMap(department =>
+          Object.values(department).flat()
+        )
+      );
+  
+      const initialSelectedUsers = allPersons.filter(person =>
+        person.username === user.username
+      );
+  
+      setSelectedUsers(prevSelected => {
+        const newSelection = new Set(prevSelected);
+        initialSelectedUsers.forEach(user => newSelection.add(user.userId));
+        return newSelection.size !== prevSelected.size ? newSelection : prevSelected;
+      });
+  
       setSearchQuery("");
       setIsWholeMemberChecked(false);
     }
   }, [ChatModalOpenState, filteredData, user.username, ChatModalOpenState.joinUser]);
-
+  
   const filterDataBySearchQuery = (data: typeof filteredData) => {
     if (!searchQuery) return data;
 
@@ -247,15 +272,24 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   return (
     <CustomModal
       isOpen={ChatModalOpenState.openState}
-      onClose={() => closeModal()}
+      onClose={() => {
+        closeModal();
+        setSelectedUsers(new Set());
+      }}
       header="새 대화방 생성"
       headerTextColor="white"
       footer1="확인"
       footer1Class="back-green-btn"
-      onFooter1Click={handleSubmit}
+      onFooter1Click={()=>{
+        handleSubmit();
+        setSelectedUsers(new Set());
+      }}
       footer2="취소"
       footer2Class="gray-btn"
-      onFooter2Click={() => closeModal()}
+      onFooter2Click={() => {
+        closeModal();
+        setSelectedUsers(new Set());
+      }}
       width="400px"
       height="460px"
     >

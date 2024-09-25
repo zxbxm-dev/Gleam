@@ -6,7 +6,8 @@ import {
   selectedPersonState,
   userStateMessage,
   selectedRoomIdState,
-  NewChatModalstate
+  NewChatModalstate,
+  PeopleModalState
 } from "../../../recoil/atoms";
 
 import {
@@ -28,7 +29,7 @@ const MessageSidebar: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null); // Socket 타입 사용
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
-
+  const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const [expandedDepartments, setExpandedDepartments] = useState<{
     [key: string]: boolean;
@@ -54,6 +55,8 @@ const MessageSidebar: React.FC = () => {
   const setUserStatetoServer = useSetRecoilState(userStateMessage);
   const location = useLocation();
   const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
+  const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -375,11 +378,15 @@ const MessageSidebar: React.FC = () => {
           setNewChatChosenUsers(null);
           setIsWholeMemeberChecked(false);
           openModal();
+          setSelectedUsers(new Set());
+          setPeopleState(false);
         }}
       />
 
       <NewChatModal
         filteredData={filteredData}
+        setSelectedUsers={setSelectedUsers}
+        selectedUsers={selectedUsers}
       />
     </div>
   );
