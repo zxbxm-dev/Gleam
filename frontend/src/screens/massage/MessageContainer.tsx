@@ -447,7 +447,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     const userId = user.userID;
 
     console.log(`읽은 메시지 ID: ${messageId}`); // 읽은 메시지 ID를 콘솔에 출력
-    socket.emit('messageRead', { messageId, userId });
+    socket.emit('markMessageAsRead', { messageId, userId });
 
   }, [user.id]);
 
