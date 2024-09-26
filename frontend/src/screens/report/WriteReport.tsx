@@ -65,7 +65,8 @@ const WriteReport = () => {
   const [RDOffice, setRDOffice] = useState<Member[]>([]);  //R&D데이터
 
   useEffect(() => {
-    const allMemberdeparmentOrder = ['포체인스 주식회사', '연구 총괄', '관리부', '개발부', '마케팅부', '알고리즘 연구실', '동형분석 연구실', '블록체인 연구실']
+    const allMemberdeparmentOrder = ['포체인스 주식회사', '연구 총괄', '관리부', '개발부', '마케팅부', '알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
+    const allMemberTeamOrder = ['개발 2팀', '개발 1팀'];
     const HeaddepartmentOrder = ['포체인스 주식회사', '관리부', '개발부', '마케팅부'];
     const RDdepartmentOrder = ['포체인스 주식회사', '연구 총괄', '알고리즘 연구실', '동형분석 연구실', '블록체인 연구실'];
 
@@ -73,8 +74,15 @@ const WriteReport = () => {
       const indexA = allMemberdeparmentOrder.indexOf(a[1]);
       const indexB = allMemberdeparmentOrder.indexOf(b[1]);
 
+      const indexC = allMemberTeamOrder.indexOf(a[2]);
+      const indexD = allMemberTeamOrder.indexOf(a[2]);
+
       if (indexA !== indexB) {
         return indexA - indexB;
+      }
+
+      if (indexC !== indexD) {
+        return indexC - indexD;
       }
 
       if (!a[2] && b[2]) {
