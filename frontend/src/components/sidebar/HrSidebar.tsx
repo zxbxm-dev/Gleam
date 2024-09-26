@@ -59,7 +59,7 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                           {(dept === '포체인스 주식회사' || dept === '연구 총괄') ? 
                             <span className="name_text">{name}</span>
                             :
-                            <span className="name_text">{dept} {name}</span>
+                            <span className="name_text">{name}</span>
                           }
                           <span className="position_text">{position}</span>
                         </li>
@@ -71,7 +71,7 @@ const HrSidebar: React.FC<Props> = ({ members, onClickMember }) => {
                   <ul>
                     {members.map(({ name, position }, index) => (
                       <li key={index} className="name" onClick={() => handleMemberClick(name, dept, team, position)}>
-                        <span className="name_text">{team} {name}</span>
+                        <span className="name_text">{name}</span>
                         <span className="position_text">{position}</span>
                       </li>
                     ))}
