@@ -1352,8 +1352,8 @@ const Project = () => {
             )}
 
             <div className="body_container_content_listbox">
-              {allMembers.map((item: string) => (
-                <div className="listbox_content">
+              {allMembers.map((item: string, index: number) => (
+                <div key={index} className="listbox_content">
                   {item}
                   <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
                 </div>
@@ -1488,8 +1488,8 @@ const Project = () => {
             )}
 
             <div className="body_container_content_listbox">
-              {allMembers.map((item: string) => (
-                <div className="listbox_content">
+              {allMembers.map((item: string, index: number) => (
+                <div key={index} className="listbox_content">
                   {item}
                   <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
                 </div>
@@ -1618,8 +1618,8 @@ const Project = () => {
             )}
 
             <div className="body_container_content_listbox">
-              {allMembers.map((item: string) => (
-                <div className="listbox_content">
+              {allMembers.map((item: string, index: number) => (
+                <div key={index} className="listbox_content">
                   {item}
                   <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
                 </div>
@@ -1766,8 +1766,8 @@ const Project = () => {
             )}
 
             <div className="body_container_content_listbox">
-              {allMembers.map((item: string) => (
-                <div className="listbox_content">
+              {allMembers.map((item: string, index: number) => (
+                <div key={index} className="listbox_content">
                   {item}
                 </div>
               ))}
@@ -1896,8 +1896,8 @@ const Project = () => {
             )}
 
             <div className="body_container_content_listbox">
-              {allMembers.map((item: string) => (
-                <div className="listbox_content">
+              {allMembers.map((item: string, index: number) => (
+                <div key={index} className="listbox_content">
                   {item}
                   <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
                 </div>
@@ -1995,8 +1995,8 @@ const Project = () => {
                   담당 팀원
                 </div>
                 <div className="content-member">
-                  {selectedEvent?.members.map(person => (
-                    <div className="content-member-box">{person}</div>
+                  {selectedEvent?.members.map((person:any, index: number) => (
+                    <div key={index} className="content-member-box">{person}</div>
                   ))}
                 </div>
               </div>

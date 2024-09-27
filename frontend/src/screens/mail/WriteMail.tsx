@@ -368,7 +368,6 @@ const WriteMail = () => {
   };
 
   const handleAutoCompleteClick = (email: string) => {
-    console.log(email)
     setRecipients([...recipients, email]);
     setInputValue('');
   };
@@ -436,7 +435,6 @@ const WriteMail = () => {
     }
   };
   
-  console.log(attachments)
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
@@ -580,6 +578,21 @@ const WriteMail = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const confirmationMessage = '변경사항이 저장되지 않을 수 있습니다.';
+
+      event.preventDefault();
+      return confirmationMessage;
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  },[]);
 
   return(
     <div className="content">
