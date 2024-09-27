@@ -13,6 +13,7 @@ lerna-debug.log*
 public
 build
 package-lock.json
+.env
 
 /uploads
 

@@ -5,7 +5,6 @@ const { MessageRead, Message, User } = models;
 const markMessageAsRead = async (socket, messageId, userId) => {
   try {
     // 메시지가 존재하는지 확인
-    // const message = await Message.findOne({ where: { id: messageId } });
     const message = await Message.findOne({ where: { messageId: messageId } });
     if (!message) {
       socket.emit("error", { message: "메시지를 찾을 수 없습니다." });
@@ -19,8 +18,20 @@ const markMessageAsRead = async (socket, messageId, userId) => {
 
     if (!existingRead) {
       // 읽은 상태로 메시지 기록 생성
-      await MessageRead.create({ messageId, userId });
+      await MessageRead.create({
+        messageId,
+        userId,
+        readAt: new Date(), // 현재 시간을 기록
+        isRead: true, // 읽음 상태
+      });
       socket.emit("messageRead", { messageId, userId });
+    } else {
+      // 이미 읽은 메시지인 경우, 읽은 시간만 업데이트
+      await MessageRead.update(
+        { readAt: new Date() },
+        { where: { messageId, userId } }
+      );
+      socket.emit("messageAlreadyRead", { messageId, userId });
     }
   } catch (error) {
     console.error("메시지 읽음 처리 오류:", error);
