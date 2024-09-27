@@ -519,7 +519,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="ViewCount">1</div>
+                <div className="ViewCount">{msg.isReadOther === 1 ? "1" : msg.isReadOther === true ? "" : "1"}</div>
               </div>
             </div>
           ))
