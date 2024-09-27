@@ -359,20 +359,6 @@ const WriteMail = () => {
     }
   };
 
-  const handleBlurRecipients = () => {
-    if (inputValue.trim()) {
-      setRecipients([...recipients, inputValue.trim()]);
-      setInputValue('');
-    }
-  };
-
-  const handleBlurReferrer = () => {
-    if (inputReferrerValue.trim()) {
-      setReferrers([...referrers, inputReferrerValue.trim()]);
-      setInputReferrerValue('');
-    }
-  };
-
   const handleRecipientRemove = (email: string) => {
     setRecipients(recipients.filter(recipient => recipient !== email));
   };
@@ -382,6 +368,7 @@ const WriteMail = () => {
   };
 
   const handleAutoCompleteClick = (email: string) => {
+    console.log(email)
     setRecipients([...recipients, email]);
     setInputValue('');
   };
@@ -436,6 +423,23 @@ const WriteMail = () => {
     }
   };
   
+  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const droppedFiles = event.dataTransfer.files;
+  
+    if (droppedFiles.length > 0) {
+      const newAttachments: CustomFile[] = Array.from(droppedFiles).map(file => {
+        return Object.assign(file, { fileName: file.name }) as CustomFile; 
+      });
+  
+      setAttachments(prevAttachments => [...prevAttachments, ...newAttachments]);
+    }
+  };
+  
+  console.log(attachments)
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
 
   const handleRemoveFile = (fileName: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -576,7 +580,7 @@ const WriteMail = () => {
       }
     }
   }, []);
-  console.log('첨부파일', attachments)
+
   return(
     <div className="content">
       <div className="write_mail_container">
@@ -688,7 +692,6 @@ const WriteMail = () => {
                   value={inputValue}
                   onChange={handleInputChange}
                   onKeyDown={handleInputKeyDown}
-                  onBlur={handleBlurRecipients}
                   ref={inputRef}
                 />
                 {inputValue && (
@@ -722,7 +725,6 @@ const WriteMail = () => {
                   value={inputReferrerValue}
                   onChange={handleInputReferrerChange}
                   onKeyDown={handleReferrerInputKeyDown}
-                  onBlur={handleBlurReferrer}
                   ref={inputRef}
                 />
                 {inputReferrerValue && (
@@ -740,9 +742,9 @@ const WriteMail = () => {
               <div className="write_form_title">제목</div>
               <input className="write_form_input" type="text" value={mailTitle} onChange={(e) => setMailTitle(e.target.value)}/>
             </div>
-            <div className="attach_form">
+            <div className="attach_form" onDrop={handleFileDrop} onDragOver={handleDragOver}>
               <div>파일 첨부</div>
-              <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }}>
+              <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', gap: '5px' }} >
                 <input
                   id="file-upload"
                   type="file"
@@ -750,7 +752,7 @@ const WriteMail = () => {
                   multiple
                   style={{ display: 'none' }}
                 />
-                {attachments ? (
+                {attachments?.length !== 0 ? (
                   <div className="attachment_list">
                     {attachments?.map((file, index) => (
                       <div key={index} className="attachment_item">
@@ -760,10 +762,10 @@ const WriteMail = () => {
                     ))}
                   </div>
                 ) : (
-                  <>
+                  <div className="label_drop_container">
                     <span>파일 첨부하기 +</span>
                     <span>클릭 후 파일 선택이나 드래그로 파일 첨부 가능합니다.</span>
-                  </>
+                  </div>
                 )}
               </label>
             </div>

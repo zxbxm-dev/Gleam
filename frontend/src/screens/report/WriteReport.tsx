@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
   FileUploadIcon,
-  UserIcon_dark,
   NewCloseIcon,
   SelectArrow,
   Approval_Plus,
-  Approval_Plus_green,
   Approval_Minus,
   SelectDownArrow
 } from "../../assets/images/index";
@@ -21,7 +19,6 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverBody,
-  PopoverCloseButton,
   Portal,
   useDisclosure,
 } from '@chakra-ui/react';

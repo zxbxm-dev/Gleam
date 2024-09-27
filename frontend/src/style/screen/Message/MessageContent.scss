@@ -1,3 +1,5 @@
+@import "../../Common/scrollbar.scss";
+
 .Message-contents {
   background-color: #fff;
   width: 100vw;
@@ -419,7 +421,6 @@ justify-content: space-between;
     display: flex;
     flex-direction: column;
     width: 300px;
-    height: calc(100vh - 116px);
     box-shadow: -4px 0px 10px rgba(0, 0, 0, 0.07);
     position: fixed;
     top: 116px;
@@ -473,6 +474,77 @@ justify-content: space-between;
         height: 14px;
         cursor: pointer;
       }
+    }
+
+    .searchDate_Noborder {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+      padding: 0 25px;
+      font-size: 14px;
+      cursor: pointer;
+      
+      &:hover{
+        background-color: #F2F2F2;
+      }
+
+      img {
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+      }
+    }
+
+    .dueDate_container {
+      height: 115px;
+      border-bottom: 1px solid #e2e2e2;
+
+      .dueDate_select_content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 40px;
+        padding: 0 25px;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover{
+          background-color: #F2F2F2;
+        }
+      }
+
+      .dueDate_wirte_content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 75px;
+        padding: 0 25px;
+        font-size: 14px;
+        gap: 10px;
+
+        &:hover{
+          background-color: #F2F2F2;
+        }
+
+        .dueDate_datepicker {
+          display: flex;
+          gap: 10px;
+
+          .dueDate_datepicker_box {
+            width: 100px;
+            height: 20px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .react-datepicker__input-container input {
+      width: 100px;
+      height: inherit;
+      font-size: 12px;
+      border: 1px solid #D9D9D9;
     }
 
     .searchInput:focus{
@@ -583,8 +655,10 @@ justify-content: space-between;
       }
     }
     .SearchItems{
+      @include custom-scrollbar($trackColor: #F2F2F2);
+      overflow-y: auto;
       background-color: #F2F2F2;
-      height: calc(100vh - 215px);
+      height: calc(100vh - 255px);
       padding: 20px 15px 20px 15px;
       display: flex;
       flex-direction: column;

@@ -659,7 +659,7 @@ const Mail = () => {
       console.log('스팸 이메일 해제 실패', error);
     }
   };
-  console.log(selectedMails)
+
   return (
     <div className="content">
       <div className="mail_container">
