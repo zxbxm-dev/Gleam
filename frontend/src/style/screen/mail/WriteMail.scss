@@ -350,7 +350,18 @@
           span:nth-of-type(2) {
             font-size: 14px;
           }
+
+          .label_drop_container {
+            width: inherit;
+            height: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
         }
+
+        
         input:focus { outline: none; }
 
         .attachment_list {
