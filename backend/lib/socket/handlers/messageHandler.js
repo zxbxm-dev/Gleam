@@ -62,8 +62,6 @@ const getGroupChatHistory = async (socket, roomId) => {
   try {
     const actualRoomId = roomId.roomId || roomId;
 
-    console.log(`그룹 채팅방 채팅 기록을 가져오는 중: ${actualRoomId}`);
-
     const sendNotAGroupChatError = (socket) => {
       socket.emit("error", {
         message: "그룹 채팅방이 아닙니다.",
@@ -87,6 +85,11 @@ const getGroupChatHistory = async (socket, roomId) => {
           model: User,
           as: "User",
           attributes: ["userId", "username", "team"],
+        },
+        {
+          model: MessageRead,
+          as: "reads",
+          attributes: ["userId", "isRead"],
         },
       ],
       order: [["createdAt", "ASC"]],
@@ -114,14 +117,21 @@ const getGroupChatHistory = async (socket, roomId) => {
 
     const chatHistory = messages.map((message) => {
       const participant = participantMap[message.User.userId];
+
+      // 메시지를 읽지 않은 사용자들 조회
+      const unreadCount = participants.length - message.reads.filter(read => read.isRead).length - 1;
+
       return {
         messageId: message.messageId,
         content: message.content,
         userId: message.User.userId,
         username: `${participant?.team || ""} ${participant?.username || ""}`,
         timestamp: message.createdAt,
+        unreadCount
       };
     });
+
+    console.log("단체방 클라이언트 전달 데이터", chatHistory)
 
     const sendGroupChatHistoryToClient = (socket, chatHistory, joinIds, hostId) => {
       socket.emit("groupChatHistory", { chatHistory, joinIds, hostId });
