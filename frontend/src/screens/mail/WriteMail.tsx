@@ -576,7 +576,7 @@ const WriteMail = () => {
       }
     }
   }, []);
-  console.log('첨부파일', attachments)
+
   return(
     <div className="content">
       <div className="write_mail_container">
