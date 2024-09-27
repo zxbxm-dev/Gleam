@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { selectedRoomIdState, userState, SearchClickMsg, selectUserID } from '../../recoil/atoms';
 import io from 'socket.io-client';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import {
     XIcon,
     GrayArrowDown,
+    GrayArrowUp,
     GraySearchIcon,
+    GrayCalendar,
   } from "../../assets/images/index";
 
 interface SearchProps {
@@ -20,7 +24,12 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
     const [filteredMessages, setFilteredMessages] = useState<any[]>([]);
     const user = useRecoilValue(userState);
     const personSideGetmsg = useRecoilValue(selectUserID);
-    const [clickMessage, setClickMessage] = useRecoilState(SearchClickMsg);
+
+    const [searchDueDate, setSearchDueDate] = useState('1년');
+    const [DueDateVisivle, setDueDateVisivle] = useState(false);
+
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
 
     useEffect(() => {
         const socket = io('http://localhost:3001', { transports: ["websocket"] });
@@ -179,12 +188,68 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
                 />
                 <img src={GraySearchIcon} alt="down" />
             </div>
-            <div className='searchDate'>
-                <div>
-                    1년
+            {DueDateVisivle ? (
+                <div className='searchDate_Noborder' onClick={() => {setDueDateVisivle(false); setSearchDueDate('1년');}}>
+                    <div>
+                        1년
+                    </div>
+                    {DueDateVisivle ? (
+                        <img src={GrayArrowUp} alt="down" onClick={() => setDueDateVisivle(false)}/>
+                    ) : (
+                        <img src={GrayArrowDown} alt="down" onClick={() => setDueDateVisivle(true)}/>
+                    )}
                 </div>
-                <img src={GrayArrowDown} alt="down" />
-            </div>
+            ) : (
+                <div className='searchDate'>
+                    <div>
+                        {searchDueDate}
+                    </div>
+                    {DueDateVisivle ? (
+                        <img src={GrayArrowUp} alt="down" onClick={() => setDueDateVisivle(false)}/>
+                    ) : (
+                        <img src={GrayArrowDown} alt="down" onClick={() => setDueDateVisivle(true)}/>
+                    )}
+                </div>
+            )}
+            {DueDateVisivle && (
+                <div className='dueDate_container'>
+                    <div className='dueDate_select_content' onClick={() => {setDueDateVisivle(false); setSearchDueDate('1개월');}}>
+                        1개월
+                     </div>   
+                    <div className='dueDate_wirte_content'>
+                        <div>직접입력</div>
+                        <div className='dueDate_datepicker'>
+                            <img src={GrayCalendar} alt="GrayCalendar" />
+                            <div className='dueDate_datepicker_box'>
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={date => setStartDate(date)}
+                                    selectsStart
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    placeholderText={new Date().toLocaleDateString('ko-KR')}
+                                    dateFormat="yyyy-MM-dd"
+                                    className="datepicker"
+                                />
+                            </div>
+                            <div>~</div>
+                            <div className='dueDate_datepicker_box'>
+                                <DatePicker
+                                    selected={endDate}
+                                    onChange={date => setEndDate(date)}
+                                    selectsEnd
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    minDate={startDate}
+                                    placeholderText={new Date().toLocaleDateString('ko-KR')}
+                                    dateFormat="yyyy-MM-dd"
+                                    className="datepicker"
+                                />
+                            </div>
+                        </div>
+                     </div>   
+                </div>
+            )}
             <div className="SearchItems">
                 {searchQuery ? (
                     filteredMessages.length > 0 ? (
