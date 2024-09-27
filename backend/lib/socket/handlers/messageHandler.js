@@ -1,5 +1,5 @@
 const models = require("../../models");
-const { Message, User, ChatRoomParticipant, ChatRoom } = models;
+const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
 const { Op } = require("sequelize");
 
 // 특정 사용자가 포함된 채팅방을 찾는 함수
@@ -137,7 +137,6 @@ const getGroupChatHistory = async (socket, roomId) => {
         details,
       });
     };
-
     sendErrorToClient(socket, "그룹 채팅 기록 조회 오류 발생. 나중에 다시 시도해 주세요.", error.message);
   }
 };
@@ -150,7 +149,6 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
 
       if (chatRoomIds.length === 0) {
         socket.emit("noChatRoomsForUser");
-        console.log("채팅방 없다");
         return;
       }
 
@@ -167,11 +165,6 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
             as: "User",
             attributes: ["userId", "username", "team"],
           },
-          {
-            model: MessageRead,
-            required: false,
-            attributes: ["userId"], // 읽은 사용자
-          },
         ],
         order: [["createdAt", "ASC"]],
       });
@@ -187,12 +180,13 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         userId: message.User.userId,
         username: `${message.User.team} ${message.User.username}`,
         timestamp: message.createdAt,
-        readBy: message.MessageReads.map((read) => read.userId), // 읽은 사용자들
+        isRead: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 1, // 읽음 상태 기본값 설정
       }));
       socket.emit("chatHistoryForUser", { chatHistory, joinIds: [requesterId], hostId: requesterId });
     } else {
       const mutualChatRoomIds = await findMutualChatRoomsForUsers(requesterId, selectedUserId);
 
+      // 두 사용자가 참여하는 방만 필터링
       const filteredChatRoomIds = await Promise.all(mutualChatRoomIds.map(async (roomId) => {
         const participants = await ChatRoomParticipant.count({
           where: { roomId }
@@ -226,8 +220,10 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
           },
           {
             model: MessageRead,
+            as: "reads",
+            where: { userId: selectedUserId },
             required: false,
-            attributes: ["userId"],
+            attributes: ["isRead"],
           },
         ],
         order: [["createdAt", "ASC"]],
@@ -239,13 +235,15 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         userId: message.User.userId,
         username: `${message.User.team} ${message.User.username}`,
         timestamp: message.createdAt,
-        readBy: message.MessageReads.map((read) => read.userId),
+        isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
       }));
 
       const chatRoom = await ChatRoom.findOne({
         where: { roomId: validChatRoomIds[0] },
       });
       const hostId = chatRoom ? chatRoom.hostUserId : null;
+
+      console.log("상대방 채팅 데이터 전달" , chatHistory);
 
       socket.emit("chatHistoryForOthers", {
         chatHistory,
@@ -273,9 +271,6 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
 const getChatHistory = async (socket, roomId) => {
   try {
     const actualRoomId = roomId.roomId || roomId;
-
-    console.log(`채팅방 채팅 기록을 가져오는 중: ${actualRoomId}`);
-
     const messages = await Message.findAll({
       where: { roomId: actualRoomId },
       include: [
@@ -286,8 +281,8 @@ const getChatHistory = async (socket, roomId) => {
         },
         {
           model: MessageRead,
-          required: false,
-          attributes: ["userId"], // 읽은 사용자
+          as: "reads",
+          attributes: ["isRead"],
         },
       ],
       order: [["createdAt", "ASC"]],
@@ -324,9 +319,11 @@ const getChatHistory = async (socket, roomId) => {
         userId: message.User.userId,
         username: `${participant?.team || ""} ${participant?.username || ""}`,
         timestamp: message.createdAt,
-        readBy: message.MessageReads.map((read) => read.userId), // 읽은 사용자들
+        isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
       };
     });
+
+    console.log ("특정 채팅방 데이터 전달",chatHistory);
 
     socket.emit("chatHistory", { chatHistory, joinIds, hostId });
   } catch (error) {
