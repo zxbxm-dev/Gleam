@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   mail_delete,
@@ -196,7 +196,6 @@ const Mail = () => {
   const { refetch : refetchEmail } = useQuery("Email", fetchEmail, {
     enabled: false,
     onSuccess: (data) => {
-      console.log(data)
       const reversedEmails = data?.emails.reverse();
       setOriginalMails(reversedEmails);
       setMails(reversedEmails);
@@ -851,8 +850,8 @@ const Mail = () => {
             <tbody className="board_container">
               {filteredMails
                 ?.slice((page - 1) * postPerPage, page * postPerPage)
-                .map((mail) => (
-                  <>
+                .map((mail: any) => (
+                  <React.Fragment key={mail.Id}>
                     <tr key={mail.Id} className="board_content">
                       <td>
                         <label className="custom-checkbox">
@@ -1036,7 +1035,7 @@ const Mail = () => {
                         </div>
                       </td>
                     </tr>
-                  </>
+                  </React.Fragment>
                 ))}
             </tbody>
           </table>

@@ -875,17 +875,17 @@ const MeetingRoom = () => {
             <div className="MeetingRoom">
               <fieldset className="Field" onChange={handleCompanyChange}>
                 <label className="custom-radio">
-                  <input type="radio" name="company" value="본사" checked={company === '본사'}/>
+                  <input type="radio" name="company" value="본사" checked={company === '본사'} readOnly/>
                   <span>본사</span>
                   <span className="checkmark"></span>
                 </label>
                 <label className="custom-radio">
-                  <input type="radio" name="company" value="R&D" checked={company === 'R&D'}/>
+                  <input type="radio" name="company" value="R&D" checked={company === 'R&D'} readOnly/>
                   <span>R&D</span>
                   <span className="checkmark"></span>
                 </label>
                 <label className="custom-radio">
-                  <input type="radio" name="company" value="기타" checked={company === '기타'}/>
+                  <input type="radio" name="company" value="기타" checked={company === '기타'} readOnly/>
                   <span>기타</span>
                   <span className="checkmark"></span>
                 </label>
@@ -985,8 +985,8 @@ const MeetingRoom = () => {
                   인원
                 </div>
                 <div className="content-member">
-                  {selectedEvent?.meetpeople.map(person => (
-                    <div className="content-member-box">{person}</div>
+                  {selectedEvent?.meetpeople.map((person: any, index: number) => (
+                    <div key={index} className="content-member-box">{person}</div>
                   ))}
                 </div>
               </div>
@@ -999,7 +999,7 @@ const MeetingRoom = () => {
                   메모
                 </div>
                 <div className="content-memo" style={{height: '100px'}}>
-                  <textarea className="textareainput" value={selectedEvent?.memo} />
+                  <textarea className="textareainput" value={selectedEvent?.memo} readOnly/>
                 </div>
               </div>
             </div>
