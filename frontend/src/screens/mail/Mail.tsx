@@ -412,6 +412,26 @@ const Mail = () => {
     }
   };
   
+  const handleMultipleDownload = async (attachments: any) => {
+    for (const file of attachments) {
+      if (file?.fileData && file?.mimetype) {
+          const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimetype });
+          const url = URL.createObjectURL(blob);
+
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = file.fileName;
+          document.body.appendChild(link);
+          link.click();
+
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+      }
+    }
+  };
+
+
+
   const handleDownloadClick = (file: any) => {
     const blob = new Blob([new Uint8Array(file.fileData.data)], { type: file.mimetype });
     const url = URL.createObjectURL(blob);
@@ -940,7 +960,7 @@ const Mail = () => {
                                       <img src={Down_Arrow} alt="Down_Arrow" onClick={toggleDownFile} />
                                     }
                                     <span>첨부파일</span><span className="DownFile_count">{mail.attachments?.length}</span>
-                                    <img src={mail_download} alt="mail_download" />
+                                    <img src={mail_download} alt="mail_download" onClick={() => handleMultipleDownload(mail?.attachments)}/>
 
                                     {isDownFileVisible && (
                                       <div className="DownFile_list">
