@@ -331,10 +331,14 @@
 
           td:nth-of-type(2) {
             text-align: left;
-            padding-left: 20px;
+            padding: 0 20px;
             font-size: 14px;
+            max-width: 200px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
-
+        
           td:nth-of-type(3) {
             height: 44.3px;
             display: flex;
