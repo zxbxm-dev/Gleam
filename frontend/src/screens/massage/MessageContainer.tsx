@@ -519,7 +519,19 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="ViewCount">{msg.isReadOther === 1 ? "1" : msg.isReadOther === true ? "" : "1"}</div>
+                <div className="ViewCount">
+                  {
+                    selectedRoomId.isGroup
+                      ? (msg.unreadCount === 0 ? "" : msg.unreadCount)
+                      : (msg.isReadOther === 1
+                        ? "1"
+                        : (msg.isReadOther === true
+                          ? ""
+                          : "1"
+                        )
+                      )
+                  }
+                </div>
               </div>
             </div>
           ))
