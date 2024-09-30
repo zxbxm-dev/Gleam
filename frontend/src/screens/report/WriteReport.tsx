@@ -265,6 +265,7 @@ const WriteReport = () => {
 
   const approvalFixed = headOffice ? headOffice.find(member => member[0] === '이정훈') || null : null;
   // const approvalFixed = members.find(member => member[0] === '이정훈') || null;
+  const ManagementHeadFixed = headOffice ? headOffice.find(member => member[0] === '이정열') || null : null;
   const ManagementFixed = headOffice ? headOffice.find(member => member[0] === '김효은') || null : null;
   const SupportFixed = headOffice ? headOffice.find(member => member[0] === '한지희') || null : null;
   const vacationFixed = headOffice ? headOffice.find(member => member[0] === '우현지') || null : null;
@@ -272,7 +273,7 @@ const WriteReport = () => {
   const departmentDirector = (user.department === '개발부')
     ? headOffice ? headOffice.find(member => member[0] === '진유빈') || null : null
     : (user.department === '관리부')
-      ? null
+      ? headOffice ? headOffice.find(member => member[0] === '이정열') || null : null
       : (user.department === '마케팅부')
         ? headOffice ? headOffice.find(member => member[0] === '김현지') || null : null
         : (user.department === '')
@@ -336,6 +337,7 @@ const WriteReport = () => {
         
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
+        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
@@ -347,6 +349,7 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
+        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
         { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
@@ -359,6 +362,7 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: true, selectedMembers: vacationFixed ? [vacationFixed] : [] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
+        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
         { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
@@ -379,6 +383,7 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
+        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
       ]
     }
@@ -386,6 +391,7 @@ const WriteReport = () => {
     function supportTeamLast() {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
+        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
@@ -421,6 +427,9 @@ const WriteReport = () => {
       case '시말서':
         newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
         break;
+      case '경위서':
+          newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
+          break;
       case '진급추천서':
         newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
         break;
@@ -687,6 +696,9 @@ const WriteReport = () => {
                     <div className="Option" onClick={() => SelectOptions('시말서')}>
                       <span>시말서</span>
                     </div>
+                    <div className="Option" onClick={() => SelectOptions('경위서')}>
+                      <span>경위서</span>
+                    </div>
                     <div className="Option" onClick={() => SelectOptions('진급추천서')}>
                       <span>진급추천서</span>
                     </div>
@@ -700,6 +712,9 @@ const WriteReport = () => {
                     </div>
                     <div className="Option" onClick={() => SelectOptions('출장 보고서')}>
                       <span>출장 보고서</span>
+                    </div>
+                    <div className="Option" onClick={() => SelectOptions('출장비내역서')}>
+                      <span>출장비내역서</span>
                     </div>
                     <div className="Option" onClick={() => SelectOptions('자기개발비 신청서')}>
                       <span>자기개발비 신청서</span>

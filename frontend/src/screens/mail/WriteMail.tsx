@@ -593,6 +593,36 @@ const WriteMail = () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   },[]);
+  
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = ''; // Chrome에서 경고 창을 표시하게 함
+    };
+
+    if (location.pathname === '/writeMail') {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [location]);
+
+  useEffect(() => {
+    const previousPath = location.pathname;
+    console.log('이전 경로',previousPath)
+    console.log('현재 경로',location.pathname)
+    return () => {
+      // writeMail에서 다른 경로로 이동할 때만 실행되도록 조건 추가
+      if (previousPath === '/writeMail' && location.pathname !== '/writeMail') {
+        const confirmation = window.confirm('저장하지 않고 페이지를 나가시겠습니까?');
+        if (!confirmation) {
+          navigate('/writeMail'); // 경로를 writeMail로 다시 설정하여 이동 방지
+        }
+      }
+    };
+  }, [location, navigate]);
 
   return(
     <div className="content">
