@@ -1,5 +1,5 @@
 const models = require("../../models");
-const { Message, User, ChatRoomParticipant, ChatRoom } = models;
+const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
 const { Op, Sequelize } = require("sequelize");
 const {
   sendMessageToRoomParticipants,
@@ -203,7 +203,7 @@ const createPrivateRoom = async (io, socket, data) => {
           { participant: false },
           { where: { roomId: chatRoom.roomId, userId: invitedUserId } }
         );
-    }
+      }
     }
 
     if (!chatRoom) {
@@ -274,7 +274,7 @@ const createPrivateRoom = async (io, socket, data) => {
       );
     }
     // await sendUserChatRooms(socket, userId);
-    
+
     // 메시지 전송
     if (content) {
       console.log(`새로운 메시지 전송: ${content}`);
@@ -330,7 +330,6 @@ const sendUserChatRooms = async (socket, userId) => {
         const roomData = room.toJSON();
         const userTitle = parseUserTitle(roomData.userTitle, userId);
 
-        // 단체방인 경우 ChatRoom의 title을 사용
         let othertitle;
         let isSelfChat = false;
         if (roomData.isGroup) {
@@ -347,21 +346,52 @@ const sendUserChatRooms = async (socket, userId) => {
           }
         }
 
+        // 읽지 않은 메시지 개수 계산
+        const unreadCount = await countUnreadMessages(roomId, userId);
+
         roomParticipantsMap[roomId] = {
           othertitle,
           userTitle,
           dataValues: roomData,
           isSelfChat,
+          unreadCount, // 읽지 않은 메시지 개수 추가
         };
       }
     }
 
+    const roomDataToSend = Object.values(roomParticipantsMap);
+    // 추후 로그 삭제할것
+    console.log("클라이언트로 전달될 채팅방 데이터: ", roomDataToSend);
     // 필터링된 채팅방 목록을 클라이언트에 전송
-    socket.emit("chatRooms", Object.values(roomParticipantsMap));
+    socket.emit("chatRooms", roomDataToSend);
   } catch (error) {
+    console.error("채팅방 조회 오류:", error);
     socket.emit("error", { message: "채팅방 조회 오류" });
   }
 };
+
+// ----------------------------------------------------------------------------------
+const countUnreadMessages = async (roomId, userId) => {
+  try {
+    // 상대방이 보낸 메시지 개수 조회 (내가 보낸 메시지는 제외)
+    const unreadMessagesCount = await Message.count({
+      where: {
+        roomId,
+        userId: { [Op.ne]: userId },
+        messageId: {
+          [Op.notIn]: Sequelize.literal(`(SELECT messageId FROM messageRead WHERE userId = '${userId}')`), // 읽은 메시지 제외
+        },
+      },
+    });
+
+    return unreadMessagesCount; // 읽지 않은 메시지 개수 반환
+  } catch (error) {
+    console.error("읽지 않은 메시지 개수 조회 오류:", error);
+    throw error;
+  }
+};
+// ----------------------------------------------------------------------------------
+
 
 // 채팅방에 참여
 const joinRoom = async (io, socket, roomId) => {
@@ -408,9 +438,11 @@ const joinRoom = async (io, socket, roomId) => {
 
       if (participantsCount === 2 && !chatRoom.isGroup) {
         // 개인 채팅방이면 createPrivateRoom 호출
-        const invitedUserId = (await ChatRoomParticipant.findAll({
-          where: { roomId, userId: { [Op.ne]: userId } },
-        })).map(participant => participant.userId)[0];
+        const invitedUserId = (
+          await ChatRoomParticipant.findAll({
+            where: { roomId, userId: { [Op.ne]: userId } },
+          })
+        ).map((participant) => participant.userId)[0];
 
         if (invitedUserId) {
           await createPrivateRoom(io, socket, {
@@ -487,7 +519,7 @@ const exitRoom = async (io, socket, data) => {
         await ChatRoomParticipant.destroy({ where: { roomId } });
         await Message.destroy({ where: { roomId } });
         await ChatRoom.destroy({ where: { roomId } });
-        
+
         socket.emit("chatRoomDeleted", {
           message: `${roomId}의 채팅방이 삭제되었습니다.`,
         });
