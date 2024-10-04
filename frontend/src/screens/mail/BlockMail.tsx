@@ -100,24 +100,28 @@ const BlockMail: React.FC<Block> = ({ isSpamSettingModal, setIsSpamSettingModal 
         isOpen={isSpamSettingModal}
         onClose={() => setIsSpamSettingModal(false)}
         header={'스팸 설정'}
-        width="380px"
-        height="360px"
+        headerTextColor="White"
+        footer1={'확인'}
+        footer1Class="back-green-btn"
+        onFooter1Click={() => setIsSpamSettingModal(false)}
+        width="355px"
+        height="300px"
       >
-        <div className="body-container">
+        <div className="body-container" style={{padding: '15px 20px 0px 20px'}}>
           <div className="modal_container_wrap">
-            <span>차단 등록</span>
             <div>
               <input
                 type="text"
                 value={junkEmail}
                 onChange={(e) => setJunkEmail(e.target.value)}
+                placeholder="메일 주소 추가"
               />
             </div>
             <button onClick={handleAddJunkList}>확인</button>
           </div>
-          <div className="modal_container_wrap">
+          <div className="modal_container_wrap" style={{marginTop: '10px'}}>
             <span>수신 차단 목록</span>
-            <button onClick={handleRemoveJunkList}>해제</button>
+            <span className="spam_del_btn" onClick={handleRemoveJunkList}>차단 해제</span>
           </div>
           
           <div className="modal_spamlist_wrap">

@@ -798,30 +798,46 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 5px;
+  font-family: var(--font-family-Noto-M);
 
   span {
-    font-size: 16px;
+    font-size: 12px;
+    color: #929292;
+  }
+
+  .spam_del_btn {
+    font-size: 10px;
+    cursor: pointer;
+    font-family: var(--font-family-Noto-R);
+    text-decoration: underline;
   }
 
   button {
     @include report-button;
-    padding: 3px 12px;
-    background-color: #E9E9E9;
-    color: #545454;
-    border: 1px solid #E3E3E3;
+    padding: 6px 20px;
+    background-color: #FFFFFF;
+    color: #45C552;
+    border: 1px solid #45C552;
+    font-family: var(--font-family-Noto-M);
   }
 
   input {
-    width: 200px;
+    width: 240px;
+    height: 35px;
     background: none;
-    border: none;
+    border: 1px solid #EEEEEE;
+    border-radius: 5px;
     outline: none;
-    border-bottom: solid 1px #D1D1D1;
     font-size: 12px;
+    padding: 10px;
   }
   input:focus {
     outline: none;
-    border-bottom: solid 1px var(--primary-color);
+    border: solid 1px var(--primary-color);
+  }
+  input::placeholder {
+    font-family: var(--font-family-Noto-R)
   }
 }
 
@@ -844,46 +860,67 @@
   }
 }
 
-.mobile_card_wrap {
-  display: flex;
-  justify-content: center;
-}
+.mobile_card_container {
+  position: relative;
+  width: inherit;
+  height: inherit;
 
-.mobile_card_content {
-  display: flex;
-  flex-direction: column;
-  width: 345px;
-  height: 255px;
-  border: 1px solid #C9C9C9;
-  border-radius: 5px;
-  padding: 20px;
-  gap: 10px;
-
-  div {
-    font-size: 12px;
-  }
-
-  .mobile_user_info {
+  .mobile_card_wrap {
+    position: absolute;
+    bottom: -10px;
+    left: 40px;
     display: flex;
-    flex-direction: column; 
-
+    justify-content: center;
+    margin-top: 15px;
+  
+    .Field {
+      gap: 25px;
+      display: flex;
+    }
+  }
+  
+  .mobile_card_title {
+    font-size: 9px;
+    font-family: var(--font-family-Noto-R);
+    margin-bottom: 5px;
+  }
+  
+  .mobile_card_content {
+    display: flex;
+    flex-direction: column;
+    width: 310px;
+    height: 180px;
+    border: 1px solid #C9C9C9;
+    border-radius: 5px;
+    padding: 20px;
+    gap: 10px;
+  
     div {
-      font-size: 8px;
-      font-family: var(--font-family-Noto-R);
-
-      .mobile_user_info_bold {
-        font-size: 9px;
-        font-family: var(--font-family-Noto-B);
-      }
-
-      .mobile_user_info_mid {
+      font-size: 12px;
+    }
+  
+    .mobile_user_info {
+      display: flex;
+      flex-direction: column; 
+  
+      div {
         font-size: 8px;
-        font-family: var(--font-family-Noto-M);
-      }
-
-      .mobile_user_info_Reg {
-        font-size: 7px;
         font-family: var(--font-family-Noto-R);
+  
+        .mobile_user_info_bold {
+          font-size: 9px;
+          font-family: var(--font-family-Noto-B);
+        }
+  
+        .mobile_user_info_mid {
+          font-size: 8px;
+          font-family: var(--font-family-Noto-M);
+        }
+  
+        .mobile_user_info_Reg {
+          font-size: 7px;
+          font-family: var(--font-family-Noto-R);
+        }
       }
     }
   }
