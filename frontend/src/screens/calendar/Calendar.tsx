@@ -704,7 +704,7 @@ const Calendar = () => {
                   메모
                 </div>
                 <div className="content-memo">
-                  <textarea className="textareainput" value={selectedEvent?.memo} />
+                  <textarea className="textareainput" value={selectedEvent?.memo} readOnly />
                 </div>
               </div>
             </div>

@@ -1120,6 +1120,8 @@
                 textarea {
                   @include custom-scrollbar;
                   height: inherit;
+                  font-size: 12px;
+                  font-family: var(--font-family-Noto-R);
                 }
               }
             }
