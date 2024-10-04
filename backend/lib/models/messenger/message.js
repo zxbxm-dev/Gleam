@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       roomId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "ChatRoom",  // 대문자
+          model: "chatRoom",
           key: "roomId",
         },
         allowNull: false,
@@ -41,12 +41,12 @@ module.exports = (sequelize, DataTypes) => {
     Message.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
-      as: 'User',
+      as: 'user',
     });
     Message.belongsTo(models.ChatRoom, {
       foreignKey: 'roomId',
       onDelete: 'CASCADE',
-      as: 'ChatRoom',
+      as: 'chatRoom',
     });
   };
 
