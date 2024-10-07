@@ -180,6 +180,24 @@
         .AddTitle {
           display: flex;
 
+          .MeetingRoom_Title {
+            width: 100%;
+            height: 40px;
+            border-bottom: 1px solid #CACACA;
+            font-size: 20px;
+            padding: 5px;
+            font-family: var(--font-family-Noto-M);
+          }
+
+          .MeetingRoom_Title:focus {
+            outline: none;
+          }
+
+          .MeetingRoom_Title::placeholder {
+            font-size: 20px;
+            color: #929292;
+          }
+
           .TextInputCon {
             width: 100%;
             height: 33px;
@@ -199,19 +217,32 @@
             outline: none;
           }
 
-          .TextInputCon2 {
-            width: 90%;
-            height: 84px;
-            border: 1px solid #dcdcdc;
-            border-radius: 5px;
-            font-size: 14px;
-            padding: 10px;
-            resize: none;
-          }
+          .MeetingRoom_memo {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
 
-          .TextInputCon2:focus {
-            outline: none;
+            .MeetingRoom_memo_title {
+              font-size: 12px;
+              color: #929292;
+              padding-left: 11px;
+            }
+
+            .TextInputCon2 {
+              width: 100%;
+              height: 84px;
+              border: 1px solid #EEEEEE;
+              border-radius: 5px;
+              font-size: 14px;
+              padding: 10px;
+              resize: none;
+            }
+  
+            .TextInputCon2:focus {
+              outline: none;
+            }
           }
+          
 
           .div {
             display: flex;
@@ -242,7 +273,7 @@
         .AddPeoples {
           display: flex;
           width: 100%;
-
+          
           .div {
             display: flex;
             flex-direction: row-reverse;
@@ -261,18 +292,32 @@
             flex-direction: column;
             width: 100%;
             gap: 10px;
+            margin-top: 5px;
+
+            .MeetingRoom_place {
+              display: flex;
+              justify-content: space-between;
+              padding: 0 11px;
+
+              .MeetingRoom_place_title {
+                font-size: 12px;
+                color: #929292;
+                font-family: var(--font-family-Noto-M);
+              }
+            }
 
             .SelectRoom_wrap {
               display: flex;
               gap: 10px;
+              color: #929292;
 
               .SelectRoom {
                 padding: 0px 10px;
                 font-size: 14px;
-                width: 250px;
+                width: 100%;
                 height: 32px;
                 cursor: pointer;
-                border: 1px solid #dcdcdc;
+                border: 1px solid #EEEEEE;
                 border-radius: 5px;
               }
 
@@ -284,8 +329,9 @@
                 padding: 0px 10px;
                 font-size: 14px;
                 width: 235px;
-                border: 1px solid #dcdcdc;
+                border: 1px solid #EEEEEE;
                 border-radius: 5px;
+                font-family: var(--font-family-Noto-M);
               }
 
               .write_selectRoom:focus {
@@ -294,7 +340,6 @@
 
               .write_selectRoom::placeholder {
                 font-size: 14px;
-                font-weight: 400;
                 color: #d9d9d9;
               }
             }
@@ -306,6 +351,7 @@
               font-size: 14px;
               border: 1px solid #dcdcdc;
               border-radius: 5px;
+              font-family: var(--font-family-Noto-M);
             }
 
             .other_place_input:focus {
@@ -314,7 +360,6 @@
 
             .other_place_input::placeholder {
               font-size: 14px;
-              font-weight: 400;
               color: #d9d9d9;
             }
           }
@@ -323,6 +368,21 @@
         .AddPeople {
           display: flex;
           width: 100%;
+
+          &.Meeting_border {
+            display: flex;
+            align-items: center;
+            border: 1px solid #EEEEEE;
+            border-radius: 5px;
+            padding: 0 10px;
+            font-family: var(--font-family-Noto-M);
+
+            .Meeting_border_title {
+              font-size: 12px;
+              color: #929292;
+              margin-right: 80px;
+            }
+          }
 
           .div {
             display: flex;
@@ -353,20 +413,24 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            gap: 8px;
+            height: 130px;
+            border: 1px solid #A2E2A9;
+            border-radius: 5px;
             position: relative;
 
             .AddInputCon {
-              width: 100%;
-              height: 33px;
-              border-bottom: 1px solid #dcdcdc;
+              display: flex;
+              width: 98%;
+              margin-left: 1%;
+              height: 35px;
+              border-bottom: 1px solid #CACACA;
               font-size: 14px;
               padding: 10px;
+              font-family: var(--font-family-Noto-M);
             }
 
             .AddInputCon::placeholder {
               font-size: 14px;
-              font-weight: 400;
               color: #d9d9d9;
             }
 
@@ -377,7 +441,6 @@
             .autocomplete_dropdown {
               @include custom-scrollbar;
               position: absolute;
-              border-radius: 5px;
               top: 33px;
               left: 0;
               z-index: 1000;
@@ -404,31 +467,28 @@
 
             .AddsInputCon {
               width: 100%;
-              height: 77px;
-              border: 1px solid #dcdcdc;
+              height: 90px;
               border-radius: 5px;
               font-size: 14px;
-              padding: 6px 10px;
+              padding: 5px 15px;
               overflow-y: scroll;
               flex-wrap: wrap;
               display: flex;
-              gap: 10px;
 
               .recipient {
-                flex: 1 0 calc(50% - 10px);
+                flex: 1 0 calc(100%);
                 max-width: calc(50% - 5px);
                 box-sizing: border-box;
-                background-color: #f0f0f0;
-                height: 35px;
+                height: 23px;
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
-                padding: 0px 10px;
-                border: 1px solid #ccc;
+                font-family: var(--font-family-Noto-R);
 
                 .remove {
-                  margin-left: 5px;
                   cursor: pointer;
+                  margin-left: 5px;
+                  color: #A2A2A2;
+                  font-size: 10px;
                 }
               }
             }
@@ -466,7 +526,8 @@
           }
 
           .timespan {
-            margin: 0 10px;
+            margin-left: 15px;
+            margin-right: 10px;
             display: flex;
             align-items: center;
           }
@@ -474,13 +535,13 @@
           .Date {
             display: flex;
             align-items: center;
-            width: 155px;
+            width: 120px;
             padding: 0 5px;
 
             .datepicker {
               font-size: 14px;
               font-family: var(--font-family-Noto-M);
-              width: 100px;
+              width: 75px;
               height: 27px;
             }
 
@@ -489,12 +550,12 @@
             }
 
             .react-datepicker-wrapper {
-              width: 100px;
+              width: 75px;
               padding-bottom: 2px;
             }
 
             .timeoption {
-              width: 55px;
+              width: 40px;
               font-size: 14px;
               font-family: var(--font-family-Noto-M);
               position: relative;
@@ -503,7 +564,7 @@
             }
 
             .time_input {
-              width: 45px;
+              width: 40px;
               display: flex;
               justify-content: center;
               align-items: center;
@@ -522,19 +583,20 @@
 
           .All_day_button {
             display: flex;
+            align-items: center;
 
             span {
               color: #45c552;
               font-family: var(--font-family-Noto-M);
-              font-size: 14px;
-              width: 40px;
-              margin-left: 30px;
+              font-size: 12px;
+              width: 30px;
+              margin-left: 20px;
             }
 
             .switch {
               position: relative;
-              width: 51px;
-              height: 22px;
+              width: 30px;
+              height: 16px;
               background-color: #fff;
               border: 1px solid #45c552;
               border-radius: 34px;
@@ -548,17 +610,17 @@
 
             .slider {
               position: absolute;
-              top: 3px;
-              left: 5px;
-              width: 14px;
-              height: 14px;
+              top: 2px;
+              left: 3px;
+              width: 10px;
+              height: 10px;
               background-color: #45c552;
               border-radius: 50%;
               transition: transform 0.3s;
             }
 
             .switch.on .slider {
-              transform: translateX(26px);
+              transform: translateX(12px);
               background-color: #fff;
             }
           }
@@ -1213,10 +1275,11 @@
   z-index: 999;
   height: 150px;
   overflow-y: scroll;
-  left: -10px;
+  left: -5px;
   background-color: #fff;
   border: 1px solid #45c552;
   border-radius: 5px;
+  font-size: 12px;
 
   .optionselect {
     padding: 5px;
@@ -1251,12 +1314,12 @@
 
 .optionselect:hover {
   background-color: #d9d9d9;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
 }
 
 .Field {
-  gap: 50px;
+  gap: 20px;
   display: flex;
 }
 
@@ -1267,7 +1330,7 @@
   position: relative;
   padding-left: 20px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   user-select: none;
 
   input {
