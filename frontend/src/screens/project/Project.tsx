@@ -1235,7 +1235,7 @@ const Project = () => {
 
               <div className="project_slide_container">
               <div className={`project_slide ${slideVisible ? 'visible' : ''}`} onClick={toggleSlide}>
-                <span>진행 중인 프로젝트 일정</span>
+                <span className="additional_content_title">진행 중인 프로젝트 일정</span>
                 {slideVisible ? (
                   <img src={White_Arrow} alt="White_Arrow" className="img_rotate" />
                 ) : (
@@ -1259,23 +1259,25 @@ const Project = () => {
                             <span className="project_name">{projectData.projectName}</span>
                           </div>
                           <div className="name_right">
-                            <span className="project_state">
+                            <div className="project_state">
                               {projectData.status === 'notstarted' ? '진행 예정' :
                               projectData.status === 'inprogress' ? '진행 중' : '진행 완료'}
-                            </span>
-                            <div className={
-                              projectData.status === 'notstarted' ? '' :
-                              projectData.status === 'inprogress' ? 'blue_circle' : 'brown_circle'}
-                            ></div>
+                            </div>
                           </div>
                         </div>
                         {projectVisible[projectData.mainprojectIndex] && (
                           (Array.isArray(projectData.subProjects) ? projectData.subProjects : []).map((subprojectData: any, subIndex: number) => (
                             <React.Fragment key={subprojectData.subprojectIndex}>
                               <div className="project_content_container">
-                                <div>{subprojectData.subprojectIndex?.split('-')[1] + ' | ' + subprojectData?.projectName}</div>
-                                <div>팀리더 : {subprojectData.Leader}</div>
-                                <div>프로젝트 기간 : {new Date(subprojectData.startDate).getFullYear() + '-' + String(new Date(subprojectData.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subprojectData.startDate).getDate()).padStart(2, '0')} ~ {new Date(subprojectData.endDate).getFullYear() + '-' + String(new Date(subprojectData.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subprojectData.endDate).getDate()).padStart(2, '0')}</div>
+                                <div>
+                                  <span className="project_content_div_title_medium">{subprojectData.subprojectIndex?.split('-')[1]}</span> &nbsp; <span>{subprojectData?.projectName}</span>
+                                </div>
+                                <div>
+                                  <span className="project_content_div_title">팀리더</span> &nbsp; <span>{subprojectData.Leader}</span>
+                                </div>
+                                <div>
+                                  <span className="project_content_div_title">프로젝트 기간 </span> &nbsp; <span>  {new Date(subprojectData.startDate).getFullYear() + '-' + String(new Date(subprojectData.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subprojectData.startDate).getDate()).padStart(2, '0')} ~ {new Date(subprojectData.endDate).getFullYear() + '-' + String(new Date(subprojectData.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subprojectData.endDate).getDate()).padStart(2, '0')}</span>
+                                </div>
                               </div>
                             </React.Fragment>
                           ))
