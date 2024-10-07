@@ -12,7 +12,7 @@ const updateGreetingCard = async (req, res) => {
         fileUrl: req.file.path,
         fileName: req.file.filename,
       }
-    : null;
+    : null;    
 
   try {
     // 기존 인사정보 조회
@@ -29,10 +29,10 @@ const updateGreetingCard = async (req, res) => {
       return res.status(404).json({ error: "해당 인사정보를 찾을 수 없습니다." });
     }
 
-    // 이전 파일 삭제
-    if (management.pdffile && req.file) {
-      await fs_promises.unlink(path.join(__dirname, "../../../", management.pdffile));
-    }
+    // // 이전 파일 삭제
+    // if (management.pdffile && req.file) {
+    //   await fs_promises.unlink(path.join(__dirname, "../../../", management.pdffile));
+    // }
 
     // 인사정보 업데이트
     management.team = team || management.team;
