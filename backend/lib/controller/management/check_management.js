@@ -39,7 +39,6 @@ const updateGreetingCard = async (req, res) => {
     management.dept = dept || management.dept;
     management.TabData = TabData || management.TabData;
     management.attachment = req.file ? attachment : management.attachment;
-    console.log("인사정보파일 수정됨")
     management.pdffile = req.file ? req.file.path : management.pdffile;
 
     // 변경 사항 저장
