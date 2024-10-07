@@ -45,10 +45,12 @@ const addProject = async (req, res) => {
             if(subStartDate<mainStartDate) { return res.status(418).json({message:"메인프로젝트 시작일정보다 빠른 일정은 등록 할 수 없습니다." });}    
            
             // 프로젝트 등록 날짜와 시작날짜 비교 
-            if(startDate<=today){
-                status = "inprogress";
+            if(endDate <= today){
+                 status = "done";
+            }else if(startDate<=today){
+                status = "inprogress"
             }else{
-                status = "notstarted";
+                 status = "notstarted";
             };         
             
             //신규 서브프로젝트 DB에 저장

@@ -21,7 +21,9 @@ const { Op } = require('sequelize');
     };
 }
 
-//서브 프로젝트 status 관리
+
+
+//서브 프로젝트 status 관리 - mainPj가 완료일 때 subPj도 완료로 상태변경
 const subStatusController = async (req, res) => {
     try{
         const completeMainPj = await project.findAll({
@@ -45,7 +47,6 @@ const subStatusController = async (req, res) => {
         console.error("서브 프로젝트 상태 업데이트 중 오류 발생:", error);
     };
 }
-
  module.exports = {
     statusController,
     subStatusController,
