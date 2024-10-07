@@ -735,38 +735,22 @@ const MeetingRoom = () => {
           setSelectedTwoTime('');
         }}
         header={'회의실 예약'}
-        footer1={'등록'}
+        headerTextColor="White"
+        footer1={'저장'}
         footer1Class="back-green-btn"
         onFooter1Click={handleAddEvent}
-        footer2={'취소'}
-        footer2Class="gray-btn"
-        onFooter2Click={() => 
-          { setAddEventModalOPen(false); 
-            setTitle(''); 
-            setRecipients([]); 
-            setStartDate(new Date()); 
-            setEndDate(new Date());
-            setCompany('');
-            setLocation('');
-            setOtherLocation('');
-            setIsOn(false);
-            setMemo('');
-            setSelectedTwoTime('');
-          }}
-        height="500px"
-        width="625px"
+        height="525px"
+        width="530px"
       >
         <div className="body-container">
           <div className="AddTitle">
-            <div className="div">제목</div>
-            <input className="TextInputCon" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목을 입력해 주세요." />
+            <input className="MeetingRoom_Title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목" />
           </div>
           <div className="AddPeople">
-            <div className="div">참여인원</div>
             <div className="InputContainer">
               <input
                 id="recipient_input_element"
-                placeholder="인원을 입력해 주세요."
+                placeholder="전체 팀원"
                 className="AddInputCon"
                 type="text"
                 value={inputValue}
@@ -797,8 +781,8 @@ const MeetingRoom = () => {
               </div>
             </div>
           </div>
-          <div className="AddPeople">
-            <div className="div2">시간</div>
+          <div className="AddPeople Meeting_border">
+            <span className="Meeting_border_title">시간</span>
             <div className="Date">
               <DatePicker
                 selected={startDate}
@@ -871,25 +855,27 @@ const MeetingRoom = () => {
           </div>
         </div>
         <div className="AddPeoples">
-          <div className="div">장소</div>
             <div className="MeetingRoom">
-              <fieldset className="Field" onChange={handleCompanyChange}>
-                <label className="custom-radio">
-                  <input type="radio" name="company" value="본사" checked={company === '본사'} readOnly/>
-                  <span>본사</span>
-                  <span className="checkmark"></span>
-                </label>
-                <label className="custom-radio">
-                  <input type="radio" name="company" value="R&D" checked={company === 'R&D'} readOnly/>
-                  <span>R&D</span>
-                  <span className="checkmark"></span>
-                </label>
-                <label className="custom-radio">
-                  <input type="radio" name="company" value="기타" checked={company === '기타'} readOnly/>
-                  <span>기타</span>
-                  <span className="checkmark"></span>
-                </label>
-              </fieldset>
+              <div className="MeetingRoom_place">
+                <span className="MeetingRoom_place_title">장소</span>
+                <fieldset className="Field" onChange={handleCompanyChange}>
+                  <label className="custom-radio">
+                    <input type="radio" name="company" value="본사" checked={company === '본사'} readOnly/>
+                    <span>본사</span>
+                    <span className="checkmark"></span>
+                  </label>
+                  <label className="custom-radio">
+                    <input type="radio" name="company" value="R&D" checked={company === 'R&D'} readOnly/>
+                    <span>R&D</span>
+                    <span className="checkmark"></span>
+                  </label>
+                  <label className="custom-radio">
+                    <input type="radio" name="company" value="기타" checked={company === '기타'} readOnly/>
+                    <span>기타</span>
+                    <span className="checkmark"></span>
+                  </label>
+                </fieldset>
+              </div>
               {company !== '기타' ? (
                 <div className="SelectRoom_wrap">
                   <select className="SelectRoom" value={location} onChange={handleLocationChange}>
@@ -931,8 +917,10 @@ const MeetingRoom = () => {
             </div>
           </div>
           <div className="AddTitle">
-            <div className="div">메모</div>
-            <textarea className="TextInputCon2" value={memo} onChange={handleMemoChange}/>
+            <div className="MeetingRoom_memo">
+              <div className="MeetingRoom_memo_title">메모</div>
+              <textarea className="TextInputCon2" value={memo} onChange={handleMemoChange}/>
+            </div>
           </div>
         </div>
       </CustomModal>
@@ -1024,6 +1012,7 @@ const MeetingRoom = () => {
             setSelectedTwoTime('');
           }}
         header={'일정 수정하기'}
+        headerTextColor="White"
         footer1={'수정'}
         footer1Class="back-green-btn"
         onFooter1Click={handleEidtMeeting}
@@ -1043,20 +1032,18 @@ const MeetingRoom = () => {
             setMemo('');
             setSelectedTwoTime('');
           }}
-        height="500px"
-        width="625px"
+        height="525px"
+        width="530px"
       >
         <div className="body-container">
           <div className="AddTitle">
-            <div className="div">제목</div>
-            <input className="TextInputCon" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목을 입력해 주세요." />
+            <input className="MeetingRoom_Title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목" />
           </div>
           <div className="AddPeople">
-            <div className="div">참여인원</div>
             <div className="InputContainer">
               <input
                 id="recipient_input_element"
-                placeholder="인원을 입력해 주세요."
+                placeholder="전체 팀원"
                 className="AddInputCon"
                 type="text"
                 value={inputValue}
@@ -1070,6 +1057,7 @@ const MeetingRoom = () => {
                       key={person.username}
                       className={index === selectedIndex ? "selected" : ""}
                       onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onMouseEnter={() => setSelectedIndex(index)}
                     >
                       {person.team ? person.team : person.department} {person.username}
                     </li>
@@ -1086,8 +1074,8 @@ const MeetingRoom = () => {
               </div>
             </div>
           </div>
-          <div className="AddPeople">
-            <div className="div2">시간</div>
+          <div className="AddPeople Meeting_border">
+            <span className="Meeting_border_title">시간</span>
             <div className="Date">
               <DatePicker
                 selected={startDate}
@@ -1160,25 +1148,27 @@ const MeetingRoom = () => {
           </div>
         </div>
         <div className="AddPeoples">
-          <div className="div">장소</div>
             <div className="MeetingRoom">
-              <fieldset className="Field" onChange={handleCompanyChange}>
-                <label className="custom-radio">
-                  <input type="radio" name="company" value="본사" checked={company === '본사'}/>
-                  <span>본사</span>
-                  <span className="checkmark"></span>
-                </label>
-                <label className="custom-radio">
-                  <input type="radio" name="company" value="R&D" checked={company === 'R&D'}/>
-                  <span>R&D</span>
-                  <span className="checkmark"></span>
-                </label>
-                <label className="custom-radio">
-                  <input type="radio" name="company" value="기타" checked={company === '기타'}/>
-                  <span>기타</span>
-                  <span className="checkmark"></span>
-                </label>
-              </fieldset>
+              <div className="MeetingRoom_place">
+                <span className="MeetingRoom_place_title">장소</span>
+                <fieldset className="Field" onChange={handleCompanyChange}>
+                  <label className="custom-radio">
+                    <input type="radio" name="company" value="본사" checked={company === '본사'} readOnly/>
+                    <span>본사</span>
+                    <span className="checkmark"></span>
+                  </label>
+                  <label className="custom-radio">
+                    <input type="radio" name="company" value="R&D" checked={company === 'R&D'} readOnly/>
+                    <span>R&D</span>
+                    <span className="checkmark"></span>
+                  </label>
+                  <label className="custom-radio">
+                    <input type="radio" name="company" value="기타" checked={company === '기타'} readOnly/>
+                    <span>기타</span>
+                    <span className="checkmark"></span>
+                  </label>
+                </fieldset>
+              </div>
               {company !== '기타' ? (
                 <div className="SelectRoom_wrap">
                   <select className="SelectRoom" value={location} onChange={handleLocationChange}>
@@ -1220,8 +1210,10 @@ const MeetingRoom = () => {
             </div>
           </div>
           <div className="AddTitle">
-            <div className="div">메모</div>
-            <textarea className="TextInputCon2" value={memo} onChange={handleMemoChange}/>
+            <div className="MeetingRoom_memo">
+              <div className="MeetingRoom_memo_title">메모</div>
+              <textarea className="TextInputCon2" value={memo} onChange={handleMemoChange}/>
+            </div>
           </div>
         </div>
       </CustomModal>
