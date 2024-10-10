@@ -1,6 +1,6 @@
 import "./App.scss";
 import "./style/index.scss";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import BaseLayout from "./layout/BaseLayout";
 import { useRecoilValue } from 'recoil';
 import { userState } from './recoil/atoms';
@@ -55,95 +55,90 @@ function App() {
   const isOperating = user.team === '지원팀' || user.position === '대표이사'; // 운영비관리
   const isAuthorized = user.team === '관리팀' || user.position === '대표이사'; // 회원관리
 
-  return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/*" element={<PageNotFound />} />
-          <Route path="/notAuth" element={<PageNotAuth />} />
+  const router = createBrowserRouter([
+    { path: "*", element: <PageNotFound /> },
+    { path: "/notAuth", element: <PageNotAuth /> },
+    {
+      element: <PublicRoute isAllowed={isLogin} redirectPath="/" />,
+      children: [
+        { path: "/login", element: <Login /> },
+        { path: "/register", element: <Register /> },
+        { path: "/findId", element: <FindID /> },
+        { path: "/resetpw", element: <ResetPw /> },
+      ],
+    },
+    {
+      element: <ChatLayout />,
+      children: [
+        { path: "/message", element: <Message /> },
+      ],
+    },
+    {
+      element: <PrivateRoute isAllowed={isLogin} />,
+      children: [
+        { path: "/editres", element: <EditRegis /> },
+        {
+          element: <BaseLayout />,
+          children: [
+            { path: "/", element: <Announcement /> },
+            { path: "/mail", element: <Mail /> },
+            { path: "/writeMail", element: <WriteMail /> },
+            { path: "/writeAnnounce", element: <WriteAnnounce /> },
+            { path: "/detailAnnounce/:id", element: <DetailAnnounce /> },
+            { path: "/orgchart", element: <OrgChart /> },
+            { path: "/meetingroom", element: <MeetingRoom /> },
+            { path: "/project", element: <Project /> },
+            { path: "/regulations", element: <Regulations /> },
+            { path: "/writeRegulation", element: <WriteRegulation /> },
+            { path: "/detailRegulation/:id", element: <DetailRegulation /> },
+            { path: "/calendar", element: <Calendar /> },
+            { path: "/report", element: <Report /> },
+            { path: "/writeReport", element: <WriteReport /> },
+            { path: "/approval", element: <Approval /> },
+            { path: "/detailApproval/:id", element: <DetailApproval /> },
+            { path: "/detailDocument/:id", element: <DetailDocument /> },
+            { path: "/employment", element: <Employment /> },
+            { path: "/submit-perform", element: <SubmitPerform /> },
+            { path: "/detailSubmit", element: <DetailSubmit /> },
+            {
+              element: <ProtectedRoute isAllowed={isPerformance} redirectPath="/notAuth" />,
+              children: [
+                { path: "/manage-perform", element: <ManagePerform /> },
+                { path: "/detail-manage-perform", element: <DetailManagePerform /> },
+              ],
+            },
+            {
+              element: <ProtectedRoute isAllowed={isAttendance} redirectPath="/notAuth" />,
+              children: [
+                { path: "/annual-manage", element: <AnnualManage /> },
+                { path: "/attendance-regist", element: <AttendanceRegist /> },
+              ],
+            },
+            {
+              element: <ProtectedRoute isAllowed={isHumanResources} redirectPath="/notAuth" />,
+              children: [
+                { path: "/human-resources", element: <HumanResource /> },
+              ],
+            },
+            {
+              element: <ProtectedRoute isAllowed={isOperating} redirectPath="/notAuth" />,
+              children: [
+                { path: "/operating-manage", element: <Operating /> },
+              ],
+            },
+            {
+              element: <ProtectedRoute isAllowed={isAuthorized} redirectPath="/notAuth" />,
+              children: [
+                { path: "/user-management", element: <UserManagement /> },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ]);
 
-          <Route element={<PublicRoute isAllowed={isLogin} redirectPath="/" />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/findId" element={<FindID />} />
-            <Route path="/resetpw" element={<ResetPw />} />
-          </Route>
-
-          <Route element={<ChatLayout />} >
-            {/* 메신저 */}
-            <Route path="/message" element={<Message />} />
-          </Route>
-          
-          <Route element={<PrivateRoute isAllowed={isLogin} />}>
-            <Route path="/editres" element={<EditRegis />} />
-            <Route element={<BaseLayout />}>
-              <Route path="/" element={<Announcement />} />
-
-              {/* 메일 */}
-              <Route path="/mail" element={<Mail />} />
-              <Route path="/writeMail" element={<WriteMail />} />
-
-              {/* 조직문화 */}
-              <Route path="/writeAnnounce" element={<WriteAnnounce />} />
-              <Route path="/detailAnnounce/:id" element={<DetailAnnounce />} />
-
-              <Route path="/orgchart" element={<OrgChart />} />
-              <Route path="/meetingroom" element={<MeetingRoom />} />
-              <Route path="/project" element={<Project />} />
-
-              <Route path="/regulations" element={<Regulations />} />
-              <Route path="/writeRegulation" element={<WriteRegulation />} />
-              <Route path="/detailRegulation/:id" element={<DetailRegulation />} />
-
-              {/* 휴가 관리 */}
-              <Route path="/calendar" element={<Calendar />} />
-
-              {/* 보고서 */}
-              <Route path="/report" element={<Report />} />
-              <Route path="/writeReport" element={<WriteReport />} />
-
-              {/* 보고서 결재 */}
-              <Route path="/approval" element={<Approval />} />
-              <Route path="/detailApproval/:id" element={<DetailApproval />} />
-              <Route path="/detailDocument/:id" element={<DetailDocument />} />
-
-              {/* 채용공고 */}
-              <Route path="/employment" element={<Employment />} />
-
-              {/* 인사평가 */}
-              <Route path="/submit-perform" element={<SubmitPerform />} />
-              <Route path="/detailSubmit" element={<DetailSubmit />} />
-              <Route element={<ProtectedRoute isAllowed={isPerformance} redirectPath="/notAuth" />}>
-                <Route path="/manage-perform" element={<ManagePerform />} />
-                <Route path="/detail-manage-perform" element={<DetailManagePerform />} />
-              </Route>
-
-              <Route element={<ProtectedRoute isAllowed={isAttendance} redirectPath="/notAuth" />}>
-                {/* 근태 관리 */}
-                <Route path="/annual-manage" element={<AnnualManage />} />
-                <Route path="/attendance-regist" element={<AttendanceRegist />} />
-              </Route>
-
-              <Route element={<ProtectedRoute isAllowed={isHumanResources} redirectPath="/notAuth" />}>
-                {/* 인사 정보 관리 */}
-                <Route path="/human-resources" element={<HumanResource />} />
-              </Route>
-
-              <Route element={<ProtectedRoute isAllowed={isOperating} redirectPath="/notAuth" />}>
-                {/* 운영비 관리 */}
-                <Route path="/operating-manage" element={<Operating />} />
-              </Route>
-
-              <Route element={<ProtectedRoute isAllowed={isAuthorized} redirectPath="/notAuth" />}>
-                {/* 회원 관리 */}
-                <Route path="/user-management" element={<UserManagement />} />
-              </Route>
-            </Route>
-          </Route>
-        </Routes>
-      </Router>
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
