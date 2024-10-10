@@ -1,5 +1,5 @@
 import React , { useState, useRef, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useBlocker } from "react-router-dom";
 import {
   White_Arrow,
   ModalCloseBtn,
@@ -76,6 +76,14 @@ const WriteMail = () => {
   
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+
+  const blocker = useBlocker(
+    ({currentLocation, nextLocation}) =>
+      (inputValue !== '' || inputReferrerValue !== '' || recipients.length !== 0 || referrers.length !== 0 || mailTitle !== '' || attachments.length !== 0 || mailContent !== '') &&
+      currentLocation.pathname !== nextLocation.pathname
+  );
+
   const generateTimeOptions = () => {
     const timeOptions = [];
     for (let hour = 0; hour <= 24; hour++) {
@@ -87,7 +95,7 @@ const WriteMail = () => {
     }
     return timeOptions;
   };
-  
+
   const timeOptions = generateTimeOptions();
   const minuteOptions = ['00분', '30분'];
 
@@ -256,6 +264,7 @@ const WriteMail = () => {
   };
 
   const handleDraftEmail = async () => {
+    setIsSavingDraft(true);
     const formData = new FormData();
       formData.append('Id', mail?.Id);
       formData.append('userId', user.userID);
@@ -284,6 +293,8 @@ const WriteMail = () => {
       navigate('/mail');
     } catch (error) {
       console.log('이메일 임시저장 실패',error)
+    } finally {
+      setIsSavingDraft(true);
     }
   };
 
@@ -316,7 +327,7 @@ const WriteMail = () => {
     setMenuIsOpen(false);
 
     if (option !== '메일 작성') {
-      setExitWritePageModalOpen(true);
+      navigate('/mail');
     }
   };
   
@@ -594,6 +605,13 @@ const WriteMail = () => {
     };
   },[]);
 
+  useEffect(() => {
+    if (blocker.state === 'blocked' && !isSavingDraft) {
+      setExitWritePageModalOpen(true);
+    } else if (blocker.state === 'blocked' && isSavingDraft) {
+      navigate('/mail');
+    }
+  }, [blocker.state, isSavingDraft]);
 
   return(
     <div className="content">
@@ -808,21 +826,23 @@ const WriteMail = () => {
         </div>
       </div>
 
-      <CustomModal
-        isOpen={isExitWritePageModalOpen}
-        onClose={() => setExitWritePageModalOpen(false)}
-        header={"알림"}
-        headerTextColor="White"
-        footer1={"나가기"}
-        onFooter1Click={() => {setExitWritePageModalOpen(false); navigate('/mail')}}
-        footer1Class="back-green-btn"
-        footer2={"취소"}
-        footer2Class="red-btn"
-        onFooter2Click={() => setExitWritePageModalOpen(false)}
-      >
-        <div>이 페이지를 벗어나면 변경된 내용은</div>
-        <div>저장되지 않습니다.</div>
-      </CustomModal>
+      {blocker.state === 'blocked' && (
+        <CustomModal
+          isOpen={isExitWritePageModalOpen}
+          onClose={() => setExitWritePageModalOpen(false)}
+          header={"알림"}
+          headerTextColor="White"
+          footer1={"나가기"}
+          onFooter1Click={() => {setExitWritePageModalOpen(false); blocker.proceed()}}
+          footer1Class="back-green-btn"
+          footer2={"취소"}
+          footer2Class="red-btn"
+          onFooter2Click={() => {setExitWritePageModalOpen(false); blocker.reset()}}
+        >
+          <div>이 페이지를 벗어나면 변경된 내용은</div>
+          <div>저장되지 않습니다.</div>
+        </CustomModal>
+      )}
     </div>
   );
 };
