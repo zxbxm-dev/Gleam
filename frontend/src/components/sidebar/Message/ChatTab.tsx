@@ -19,6 +19,7 @@ export interface ChatRoom {
   title: string;
   othertitle: string;
   isSelfChat: boolean;
+  unreadCount: number;
   userTitle?: {
     [userId: string]: {
       userId: string;
@@ -112,8 +113,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     setSelectedRoomId({
       roomId: roomId,
       isGroup: isGroup
-  });
-    
+    });
+
     if (chatRoom.isSelfChat) {
       onPersonClick(user.username ?? "", user.team, user.department, user.position, user.userID);
     } else {
@@ -245,12 +246,19 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                       )}
                     </div>
                   </div>
-                  <img
-                    className="Message-Menu"
-                    src={MessageMenu}
-                    alt="Message Menu"
-                    onClick={(e) => handleMessageMenuClick(index, e)}
-                  />
+                  <div className="Right">
+                    {chatRoom.unreadCount === 0 ? "" :
+                      <div className="UnRead">
+                        {chatRoom.unreadCount}
+                      </div>
+                    }
+                    <img
+                      className="Message-Menu"
+                      src={MessageMenu}
+                      alt="Message Menu"
+                      onClick={(e) => handleMessageMenuClick(index, e)}
+                    />
+                  </div>
                   {isPopoverVisible && (
                     <>
                       <div
