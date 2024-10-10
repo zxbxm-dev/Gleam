@@ -77,6 +77,7 @@ const WriteMail = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const blocker = useBlocker(
     ({currentLocation, nextLocation}) =>
@@ -186,6 +187,8 @@ const WriteMail = () => {
   const filteredData = filterDataBySearchQuery(groupedData);
 
   const handleSendEmail = async () => {
+    setIsLoading(true);
+    setIsSavingDraft(true);
     if(status === "DRAFTS") {
       const formData = new FormData();
       formData.append('Id', mail?.Id);
@@ -216,6 +219,9 @@ const WriteMail = () => {
         navigate('/mail');
       } catch (error) {
         console.log('이메일 전송 실패',error)
+      } finally {
+        setIsSavingDraft(true);
+        setIsLoading(false);
       }
 
     } else {
@@ -259,6 +265,9 @@ const WriteMail = () => {
         navigate('/mail');
       } catch (error) {
         console.log('이메일 전송 실패',error)
+      } finally {
+        setIsSavingDraft(true);
+        setIsLoading(false);
       }
     }
   };
@@ -618,7 +627,7 @@ const WriteMail = () => {
       <div className="write_mail_container">
         <div className="write_mail_header">
           <div className="mail_header_left">
-            <button className="send_button" onClick={handleSendEmail}>보내기</button>
+            {isLoading ? <button className="send_button">전송 중...</button> : <button className="send_button" onClick={handleSendEmail}>보내기</button>}
             <button className="basic_button" onClick={handleDraftEmail}>임시 저장</button>
             <button className="basic_button" onClick={toggleReservation}>
               발송 예약
