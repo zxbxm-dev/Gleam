@@ -766,7 +766,7 @@ const WriteMail = () => {
                 {inputValue && (
                   <ul className="autocomplete_dropdown">
                     {filteredEmails?.map(person => (
-                      <li key={person.usermail} onClick={() => handleAutoCompleteClick(person.usermail)}>
+                      <li key={person.usermail}  onMouseDown={(e) => e.preventDefault()} onClick={() => handleAutoCompleteClick(person.usermail)}>
                         {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
                     ))}
@@ -781,12 +781,15 @@ const WriteMail = () => {
             <div className="write_form">
               <div className="write_form_title">참조</div>
               <div className={`input_recipients ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
-                {referrers?.map((email, index) => (
-                  <div className="recipient" key={index}>
-                    {email}
-                    <span className="remove" onClick={() => handleReferrerRemove(email)}>×</span>
-                  </div>
-                ))}
+                {referrers?.map((email, index) => {
+                  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                  return (
+                    <div className={isValidEmail ? "recipient" : "notrecipient"} key={index}>
+                      {email}
+                      <span className="remove" onClick={() => handleReferrerRemove(email)}>×</span>
+                    </div>
+                  );
+                })}
                 <input
                   id="recipient_input_element"
                   className="write_form_input"
@@ -800,7 +803,7 @@ const WriteMail = () => {
                 {inputReferrerValue && (
                   <ul className="autocomplete_dropdown">
                     {filteredReferrerEmails?.map(person => (
-                      <li key={person.usermail} onClick={() => handleReferrerAutoCompleteClick(person.usermail)}>
+                      <li key={person.usermail} onMouseDown={(e) => e.preventDefault()} onClick={() => handleReferrerAutoCompleteClick(person.usermail)}>
                         {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
                     ))}
