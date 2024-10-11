@@ -275,14 +275,17 @@ const EditRegis = () => {
             <span className="ResText">회원정보 수정</span>
 
             <div className="RegistorBox">
-                <div className="LeftFlex">
-                    <div className="MiniBox">
-                        <span>아이디 입력</span>
-                        <span className="localinput">{user.id}</span>
+                <div className="LeftFlex LeftFlex_nogap">
+                    <div className="LeftFlex_container">
+                        <div className="LeftFlex_container_title">아이디</div>
+                        <div className="LeftFlex_container_content">{user.id}</div>
                     </div>
-                    <div className="MiniphoneBox">
-                        <div className="Phone">
-                            <span>패스워드 설정</span>
+
+                    <div className="LeftFlex_container">
+                        <div className="LeftFlex_container_title">
+                            패스워드 설정
+                        </div>
+                        <div className="LeftFlex_container_content LeftFlex_container_content_column">
                             {passwordError ?
                                 <input
                                     type="password"
@@ -301,14 +304,17 @@ const EditRegis = () => {
                                     onChange={(event) => handleInputChange(event, 'password')}
                                 />
                             }
-                        </div>
-                        <div className="ErrorMessageBox">
-                            {passwordError && <div className="ErrorMessage">{passwordError}</div>}
+                            <div className="ErrorMessageBox">
+                                {passwordError && <div className="ErrorMessage">{passwordError}</div>}
+                            </div>
                         </div>
                     </div>
-                    <div className="MiniphoneBox">
-                        <div className="Phone">
-                            <span>패스워드 재입력</span>
+
+                    <div className="LeftFlex_container">
+                        <div className="LeftFlex_container_title">
+                            패스워드 재입력
+                        </div>
+                        <div className="LeftFlex_container_content LeftFlex_container_content_column">
                             {confirmPasswordError ?
                                 <input
                                     type="password"
@@ -326,35 +332,42 @@ const EditRegis = () => {
                                     value={confirmPassword}
                                     onChange={(event) => handleInputChange(event, 'confirmPassword')}
                                 />}
-                        </div>
-                        <div className="ErrorMessageBox">
-                            {confirmPasswordError && <div className="ErrorMessage">{confirmPasswordError}</div>}
+                            <div className="ErrorMessageBox">
+                                {confirmPasswordError && <div className="ErrorMessage">{confirmPasswordError}</div>}
+                            </div>
                         </div>
                     </div>
-                    <div className="MinisBox">
-                        <span>
+                    
+                    <div className="LeftFlex_container LeftFlex_tow_container">
+                        <div className="LeftFlex_container_title">
                             패스워드 재설정<br />
-                            본인 확인용 질문<br />
+                            본인확인용 질문<br />
                             (2개 다 입력)
-                        </span>
-                        <div className="Question">
+                        </div>
+                        <div className="LeftFlex_container_content LeftFlex_container_content_display">
                             <div className="Ques">
-                                <span>어머니의 성은 무엇입니까?</span>
-                                <span className="localinput">{user.question1}</span>
+                                <div>어머니의 성은 무엇입니까?</div>
+                                <div className="localinput">{user.question1}</div>
                             </div>
                             <div className="Ques">
-                                <span>졸업한 초등학교는 어디입니까?</span>
-                                <span className="localinput">{user.question2}</span>
+                                <div>졸업한 초등학교는 어디입니까?</div>
+                                <div className="localinput">{user.question2}</div>
                             </div>
                         </div>
                     </div>
-                    <div className="MiniBox">
-                        <span>성명 입력</span>
-                        <span className="localinput">{user.username}</span>
+
+                    <div className="LeftFlex_container">
+                        <div className="LeftFlex_container_title">
+                            성명
+                        </div>
+                        <div className="LeftFlex_container_content">{user.username}</div>
                     </div>
-                    <div className="MiniphoneBox">
-                        <div className="Phone">
-                            <span>휴대폰 번호 입력</span>
+
+                    <div className="LeftFlex_container">
+                        <div className="LeftFlex_container_title">
+                            휴대폰 번호 입력
+                        </div>
+                        <div className="LeftFlex_container_content LeftFlex_container_content_column">
                             {phoneNumberError ?
                                 <input
                                     type="text"
@@ -373,24 +386,27 @@ const EditRegis = () => {
                                     onChange={(event) => handleInputChange(event, 'phoneNumber')}
                                 />
                             }
-                        </div>
-                        <div className="ErrorMessageBox">
-                            {phoneNumberError && <div className="ErrorMessage">{phoneNumberError}</div>}
+                            <div className="ErrorMessageBox">
+                                {phoneNumberError && <div className="ErrorMessage">{phoneNumberError}</div>}
+                            </div>
                         </div>
                     </div>
-                    <div className="MinimBox">
-                        <span>메일 입력</span>
-                        <div className="localinput">{user.usermail}</div>
+
+                    <div className="LeftFlex_container LeftFlex_border_bottom">
+                        <div className="LeftFlex_container_title">메일 입력</div>
+                        <div className="LeftFlex_container_content">{user.usermail}</div>
                     </div>
                 </div>
-                <div className="RightFlex">
-                    <div className="MinimBox">
-                        <span>입사일자</span>
-                        <div className="localinput">{user.entering}</div>
+
+                <div className="RightFlex RightFlex_nogap">
+                    <div className="RightFlex_container">
+                        <div className="RightFlex_container_title">입사일자</div>
+                        <div className="RightFlex_container_content">{user.entering}</div>
                     </div>
-                    <div className="UploadBox">
-                        <span>증명사진 업로드</span>
-                        <div className="attachment_content">
+
+                    <div className="RightFlex_container">
+                        <div className="RightFlex_container_title">증명사진 업로드</div>
+                        <div className="RightFlex_container_content RightFlex_attachment_content">
                             <label htmlFor="fileInput" className="primary_button">
                                 <img src={FileUploadIcon} alt="FileUploadIcon" />
                                 파일 첨부하기
@@ -407,9 +423,10 @@ const EditRegis = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="UploadBox">
-                        <span>서명 업로드</span>
-                        <div className="attachment_content">
+
+                    <div className="RightFlex_container">
+                        <div className="RightFlex_container_title">서명 업로드</div>
+                        <div className="RightFlex_container_content RightFlex_attachment_content">
                             <label htmlFor="signfileInput" className="primary_button">
                                 <img src={FileUploadIcon} alt="FileUploadIcon" />
                                 파일 첨부하기
@@ -426,25 +443,32 @@ const EditRegis = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="MinimBox">
-                        <span>회사 구분</span>
-                        <div className="localinput">{user.company}</div>
+
+                    <div className="RightFlex_container RightFlex_small_container">
+                        <div className="RightFlex_container_title">회사 구분</div>
+                        <div className="RightFlex_container_content">{user.company}</div>
                     </div>
-                    <div className="MinimBox">
-                        <span>부서</span>
-                        <div className="localinput">{user.department}</div>
+                    <div className="RightFlex_container RightFlex_small_container RightFlex_no_border">
+                        <div className="RightFlex_container_title">부서</div>
+                        <div className="RightFlex_container_content">{user.department}</div>
                     </div>
-                    <div className="MinimBox">
-                        <span>팀</span>
-                        <div className="localinput">{user.team}</div>
+                    <div className="RightFlex_container RightFlex_small_container RightFlex_no_border">
+                        <div className="RightFlex_container_title">팀</div>
+                        <div className="RightFlex_container_content">{user.team}</div>
                     </div>
-                    <div className="MinimBox">
-                        <span>직위</span>
-                        <div className="localinput">{user.position}</div>
+
+                    <div className="RightFlex_container RightFlex_medium_container">
+                        <div className="RightFlex_container_title">직위</div>
+                        <div className="RightFlex_container_content">{user.position}</div>
                     </div>
-                    <div className="MinimBox">
-                        <span>직책</span>
-                        <div className="localinput">{user.spot}</div>
+
+                    <div className="RightFlex_container RightFlex_medium_container">
+                        <div className="RightFlex_container_title">직책</div>
+                        <div className="RightFlex_container_content">{user.spot}</div>
+                    </div>
+
+                    <div className="RightFlex_container RightFlex_btn_content">
+                        <button className="RightFlex_Edit_button" onClick={handleSubmit}>수정</button>
                     </div>
                     {/* <div className="flexbox">
                         <span className="FlexSpan">회사 구분</span>
@@ -551,9 +575,7 @@ const EditRegis = () => {
                     </div> */}
                 </div>
             </div>
-            <div className="ResBtnBox">
-                <button className="ResBtn" onClick={handleSubmit}>회원정보 수정</button>
-            </div>
+            
 
             <CustomModal
                 isOpen={isAddModalOpen}
