@@ -78,6 +78,8 @@ const WriteMail = () => {
 
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasInvalidEmail, setHasInvalidEmail] = useState(false);
+
 
   const blocker = useBlocker(
     ({currentLocation, nextLocation}) =>
@@ -369,6 +371,14 @@ const WriteMail = () => {
     }
   };
 
+  const handleMouseLeaveOn = (e: any) => {
+    e.preventDefault();
+    if (inputValue.trim()) {
+      setRecipients([...recipients, inputValue.trim()]);
+      setInputValue('');
+    }
+  };
+
   const handleReferrerInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
@@ -378,6 +388,13 @@ const WriteMail = () => {
       }
     }
   };
+
+  const handleReferrerMouseLeaveOn = () => {
+    if (inputReferrerValue.trim()) {
+      setReferrers([...referrers, inputReferrerValue.trim()]);
+      setInputReferrerValue('');
+    }
+  }
 
   const handleRecipientRemove = (email: string) => {
     setRecipients(recipients.filter(recipient => recipient !== email));
@@ -622,12 +639,19 @@ const WriteMail = () => {
     }
   }, [blocker.state, isSavingDraft]);
 
+  useEffect(() => {
+    const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const anyInvalidEmail = recipients.some(email => !isValidEmail(email));
+    setHasInvalidEmail(anyInvalidEmail);
+  }, [recipients]);
+
+  
   return(
     <div className="content">
       <div className="write_mail_container">
         <div className="write_mail_header">
           <div className="mail_header_left">
-            {isLoading ? <button className="send_button">전송 중...</button> : <button className="send_button" onClick={handleSendEmail}>보내기</button>}
+            {isLoading ? <button className="send_button">전송 중...</button> : hasInvalidEmail ? <button className="disabled_send_button">보내기</button> : <button className="send_button" onClick={handleSendEmail}>보내기</button>}
             <button className="basic_button" onClick={handleDraftEmail}>임시 저장</button>
             <button className="basic_button" onClick={toggleReservation}>
               발송 예약
@@ -720,12 +744,15 @@ const WriteMail = () => {
             <div className="write_form">
               <div className="write_form_title">받는사람</div>
               <div className={`input_recipients marginleft ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
-                {recipients?.map((email, index) => (
-                  <div className="recipient" key={index}>
-                    {email}
-                    <span className="remove" onClick={() => handleRecipientRemove(email)}>×</span>
-                  </div>
-                ))}
+                {recipients?.map((email, index) => {
+                  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                  return (
+                    <div className={isValidEmail ? "recipient" : "notrecipient"} key={index}>
+                      {email}
+                      <span className="remove" onClick={() => handleRecipientRemove(email)}>×</span>
+                    </div>
+                  );
+                })}
                 <input
                   id="recipient_input_element"
                   className="write_form_input"
@@ -733,12 +760,13 @@ const WriteMail = () => {
                   value={inputValue}
                   onChange={handleInputChange}
                   onKeyDown={handleInputKeyDown}
+                  onBlur={handleMouseLeaveOn}
                   ref={inputRef}
                 />
                 {inputValue && (
                   <ul className="autocomplete_dropdown">
                     {filteredEmails?.map(person => (
-                      <li key={person.usermail} onClick={() => handleAutoCompleteClick(person.usermail)}>
+                      <li key={person.usermail}  onMouseDown={(e) => e.preventDefault()} onClick={() => handleAutoCompleteClick(person.usermail)}>
                         {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
                     ))}
@@ -753,12 +781,15 @@ const WriteMail = () => {
             <div className="write_form">
               <div className="write_form_title">참조</div>
               <div className={`input_recipients ${isClicked ? 'clicked' : ''}`} onClick={handleClick} onMouseLeave={() => setIsClicked(false)}>
-                {referrers?.map((email, index) => (
-                  <div className="recipient" key={index}>
-                    {email}
-                    <span className="remove" onClick={() => handleReferrerRemove(email)}>×</span>
-                  </div>
-                ))}
+                {referrers?.map((email, index) => {
+                  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                  return (
+                    <div className={isValidEmail ? "recipient" : "notrecipient"} key={index}>
+                      {email}
+                      <span className="remove" onClick={() => handleReferrerRemove(email)}>×</span>
+                    </div>
+                  );
+                })}
                 <input
                   id="recipient_input_element"
                   className="write_form_input"
@@ -766,12 +797,13 @@ const WriteMail = () => {
                   value={inputReferrerValue}
                   onChange={handleInputReferrerChange}
                   onKeyDown={handleReferrerInputKeyDown}
+                  onBlur={handleReferrerMouseLeaveOn}
                   ref={inputRef}
                 />
                 {inputReferrerValue && (
                   <ul className="autocomplete_dropdown">
                     {filteredReferrerEmails?.map(person => (
-                      <li key={person.usermail} onClick={() => handleReferrerAutoCompleteClick(person.usermail)}>
+                      <li key={person.usermail} onMouseDown={(e) => e.preventDefault()} onClick={() => handleReferrerAutoCompleteClick(person.usermail)}>
                         {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
                     ))}
