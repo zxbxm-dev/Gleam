@@ -36,6 +36,7 @@ import {
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 import { Message } from './Message';
+import { messageFile, getFile } from '../../services/message/MessageApi';
 
 interface MessageContainerProps {
   messages: Message[];
@@ -120,20 +121,67 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [files, setFiles] = useState<File | null>(null);
 
+  const MessageGetFile = (messageId: number, msg: any) => {
+    console.log("Message content:", msg);
+    getFile(messageId)
+      .then(response => {
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${messageId}${msg.content}`);
+
+        document.body.appendChild(link);
+        link.click();
+
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(error => {
+        console.error("Error downloading file:", error);
+      });
+  };
+
+  const MessagePostFile = () => {
+    if (!files) {
+      console.error("No file selected.");
+      return;
+    }
+
+    const userId = user.id;
+    const roomId = selectedRoomId.roomId;
+    const content = files.name;
+
+    // 파일과 함께 메시지를 전송합니다.
+    messageFile(content, userId, roomId, files)
+      .then(response => {
+        console.log("File uploaded:", response.data);
+        setServerMessages(response.data.content);
+      })
+      .catch(error => {
+        console.error("Error uploading file:", error);
+      });
+  };
+
+
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
     let messageContent: string;
 
+    // 메시지 내용 설정
     if (files) {
-      messageContent = files.name;
+      messageContent = files.name; // 파일이 있는 경우 파일 이름을 메시지로 설정
     } else if (inputElement && inputElement.innerHTML.trim() !== "") {
-      messageContent = inputElement.innerHTML.trim();
+      messageContent = inputElement.innerHTML.trim(); // 텍스트 입력이 있을 경우 그 값을 메시지로 설정
     } else {
-      return;
+      return; // 아무 내용이 없으면 전송하지 않음
     }
 
     let messageData;
+
+    // 채팅방 ID에 따라 메시지 데이터 구성
     if (selectedRoomId.roomId === -1) {
       messageData = {
         invitedUserIds: [selectedPerson.userId],
@@ -154,11 +202,18 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         senderId: user.id,
         content: messageContent,
       };
-      console.log("aaaaa", messageData);
     }
 
+    // 파일이 있는 경우 POST 요청으로 파일 전송
+    if (files) {
+      MessagePostFile();
 
-    emitMessage(messageData);
+    } else {
+      // 파일이 없는 경우 소켓을 통해 메시지 전송
+      emitMessage(messageData);
+    }
+
+    // 클라이언트 쪽 메시지 추가
     setMessages(prevMessages => [
       ...prevMessages,
       {
@@ -171,9 +226,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       }
     ]);
 
+    // 입력 필드 및 파일 초기화
     setFiles(null);
     inputElement.innerHTML = "";
 
+    // 일정 시간 후 메시지 목록 갱신
     setTimeout(() => {
       ChatTabGetMessage();
       PersonSideGetMessage();
@@ -361,7 +418,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       console.log("chatHistory 데이터 수신:", data);
       if (data) {
         setServerMessages(data.chatHistory);
-
         setModelPlusJoinId(prevState => ({
           ...prevState,
           joinUser: data.joinIds,
@@ -495,11 +551,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                   <div className="MsgTimeBox">
                     {ensureArray(messageMetadata.userInfo)[index] &&
                       <div className={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
-                        {files &&
+                        {msg.fileValue === 1 && ( // 현재 인덱스의 파일 값 확인
                           <div className='WhiteBox'>
-                            <img src={getFileIcon(files.name)} alt="File Icon" />
+                            <img src={getFileIcon(msg.content)} alt="File Icon" />
                           </div>
-                        }
+                        )}
                         <div
                           key={msg.messageId}
                           ref={(el) => (messageRefs.current[msg.messageId] = el)}
@@ -507,11 +563,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                           {msg.content || ""}
                         </div>
                         {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
-                        {files &&
-                          <div className='FileDown'>
+                        {msg.fileValue === 1 && (
+                          <div className='FileDown' onClick={() => MessageGetFile(msg.messageId, msg)}>
                             <img src={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />
                           </div>
-                        }
+                        )}
                       </div>
                     }
                     <div className="MsgTime">
