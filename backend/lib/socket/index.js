@@ -1,6 +1,5 @@
 const chatRoomEvents = require("./events/chatRoomEvents");
 const messageEvents = require("./events/messageEvents");
-const statusEvents = require("./events/statusEvents");
 
 // 사용자 소켓 관리 객체
 const connectedUsers = {};
@@ -32,7 +31,6 @@ module.exports = (io) => {
     try {
       chatRoomEvents(io, socket);
       messageEvents(io, socket);
-      statusEvents(io, socket);
     } catch (error) {
       console.error("이벤트 처리 중 오류 발생:", error);
       socket.emit("error", { message: "이벤트 처리 서버 오류" });

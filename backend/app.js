@@ -73,6 +73,11 @@ routers.forEach((route) => {
   require(`./lib/router/${route}`)(app);
 });
 
+// messageRouter를 직접 추가
+const uploadRouter = require('./lib/socket/fileDownload/uploadRouter');
+// 파일 업로드 관련 라우터 설정
+app.use('/upload', uploadRouter);
+
 // 404 에러 핸들러
 app.use((req, res, next) => {
   next(createError(404));

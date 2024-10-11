@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       },
+      filePath: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
