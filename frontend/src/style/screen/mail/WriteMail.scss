@@ -21,6 +21,13 @@
         color: #000;
       }
 
+      .disabled_send_button {
+        @include report-button;
+        background-color: #FF8181;
+        color: #000;
+        cursor: default;
+      }
+
       .basic_button {
         @include report-button;
         display: flex;
@@ -252,6 +259,23 @@
             flex: 0 1 auto;
             width: auto;
             background-color: var(--primary-color);
+            border-radius: 15px;
+            padding: 5px 10px;
+            margin-bottom: 3px;
+            font-size: 12px;
+
+            .remove {
+              cursor: pointer;
+              margin-left: 5px;
+            }
+          }
+
+          .notrecipient {
+            display: flex;
+            align-items: center;
+            flex: 0 1 auto;
+            width: auto;
+            background-color: #FF8181;
             border-radius: 15px;
             padding: 5px 10px;
             margin-bottom: 3px;
