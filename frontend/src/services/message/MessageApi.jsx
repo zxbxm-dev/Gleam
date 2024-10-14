@@ -24,4 +24,25 @@ const changeRoomData = (roomId, othertitle, profileColor) => {
   });
 };
 
-export { createRoom, changeAdminApi, changeRoomData };
+//메신저 첨부파일 전송
+const messageFile = (content, userId, roomId, file) => {
+  return api.post("/messenger_upload", {
+    content,
+    userId,
+    roomId,
+    file
+  }, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+};
+
+const getFile = (messageId) => {
+  return api.get(`/messenger_download/${messageId}`, {
+    responseType: 'blob',
+  });
+};
+
+
+export { createRoom, changeAdminApi, changeRoomData, messageFile, getFile };

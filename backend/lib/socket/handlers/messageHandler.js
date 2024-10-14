@@ -246,6 +246,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         username: `${message.User.team} ${message.User.username}`,
         timestamp: message.createdAt,
         isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
+        fileValue: message.filePath ? 1 : 0,
       }));
 
       const chatRoom = await ChatRoom.findOne({
@@ -330,6 +331,7 @@ const getChatHistory = async (socket, roomId) => {
         username: `${participant?.team || ""} ${participant?.username || ""}`,
         timestamp: message.createdAt,
         isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
+        fileValue: message.filePath ? 1 : 0,
       };
     });
 

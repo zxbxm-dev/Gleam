@@ -1,6 +1,10 @@
-const { Message } = require('../../models/messenger/message');
+// const { Message } = require('../../models/messenger/message');
+const db = require('../../models');
+const { Message } = db;
 
 exports.sendMessage = async (req, res) => {
+  console.log('Message:', Message);
+
   try {
     const { content, userId, roomId } = req.body;
     let filePath = null;
@@ -16,10 +20,14 @@ exports.sendMessage = async (req, res) => {
       filePath,
     });
 
-    res.status(200).json({ message });
+    // FileValue 설정
+    const FileValue = filePath ? 1 : 0;
+
+    // 응답에 FileValue 추가
+    res.status(200).json({ message, FileValue });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: '파일 업로드를 실패 하였습니다.' });
+    console.error("Error in sendMessage:", error);
+    res.status(500).json({ error: '파일 업로드를 실패 하였습니다.', details: error.message });
   }
 };
 
