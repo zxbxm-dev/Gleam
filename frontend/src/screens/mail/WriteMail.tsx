@@ -80,6 +80,8 @@ const WriteMail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasInvalidEmail, setHasInvalidEmail] = useState(false);
 
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [selectedReferrerIndex, setSelectedReferrerIndex] = useState(-1);
 
   const blocker = useBlocker(
     ({currentLocation, nextLocation}) =>
@@ -361,12 +363,66 @@ const WriteMail = () => {
     setInputReferrerValue(e.target.value);
   };
 
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',' || e.key === 'Tab') {
+  const handleKeyDown = (e: any) => {
+    e.stopPropagation();
+
+    if (e.key === 'ArrowDown') {
+      setSelectedIndex((prevIndex) =>
+        prevIndex < filteredEmails.length - 1 ? prevIndex + 1 : prevIndex
+      );
+    } else if (e.key === 'ArrowUp') {
+      setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : -1));
+    } else if (e.key === 'Enter') {
       e.preventDefault();
+  
+      // 선택된 이메일 항목이 있는 경우 자동완성 처리
+      if (selectedIndex >= 0 && selectedIndex < filteredEmails.length) {
+        handleAutoCompleteClick(filteredEmails[selectedIndex].usermail);
+        setSelectedIndex(-1);
+      } 
+      // 선택된 항목이 없으면 수신자 추가
+      else if (inputValue.trim()) {
+        setRecipients([...recipients, inputValue.trim()]);
+        setInputValue('');
+      }
+    } else if (e.key === ',' || e.key === 'Tab') {
+      e.preventDefault();
+  
       if (inputValue.trim()) {
         setRecipients([...recipients, inputValue.trim()]);
         setInputValue('');
+      }
+    }
+  };
+  
+  const handleKeyDownReferrer = (e: any) => {
+    e.stopPropagation();
+
+    if (e.key === 'ArrowDown') {
+      setSelectedReferrerIndex((prevIndex) =>
+        prevIndex < filteredReferrerEmails.length - 1 ? prevIndex + 1 : prevIndex
+      );
+    } else if (e.key === 'ArrowUp') {
+      setSelectedReferrerIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : -1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+  
+      // 선택된 이메일 항목이 있는 경우 자동완성 처리
+      if (selectedReferrerIndex >= 0 && selectedReferrerIndex < filteredReferrerEmails.length) {
+        handleReferrerAutoCompleteClick(filteredReferrerEmails[selectedReferrerIndex].usermail);
+        setSelectedReferrerIndex(-1);
+      } 
+      // 선택된 항목이 없으면 수신자 추가
+      else if (inputReferrerValue.trim()) {
+        setReferrers([...referrers, inputReferrerValue.trim()]);
+        setInputReferrerValue('');
+      }
+    } else if (e.key === ',' || e.key === 'Tab') {
+      e.preventDefault();
+  
+      if (inputReferrerValue.trim()) {
+        setReferrers([...referrers, inputReferrerValue.trim()]);
+        setInputReferrerValue('');
       }
     }
   };
@@ -645,6 +701,21 @@ const WriteMail = () => {
     setHasInvalidEmail(anyInvalidEmail);
   }, [recipients]);
 
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedIndex, filteredEmails]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDownReferrer);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDownReferrer);
+    };
+  }, [selectedReferrerIndex, filteredReferrerEmails]);
+
+
   
   return(
     <div className="content">
@@ -759,14 +830,14 @@ const WriteMail = () => {
                   type="text"
                   value={inputValue}
                   onChange={handleInputChange}
-                  onKeyDown={handleInputKeyDown}
+                  onKeyDown={handleKeyDown}
                   onBlur={handleMouseLeaveOn}
                   ref={inputRef}
                 />
                 {inputValue && (
                   <ul className="autocomplete_dropdown">
-                    {filteredEmails?.map(person => (
-                      <li key={person.usermail}  onMouseDown={(e) => e.preventDefault()} onClick={() => handleAutoCompleteClick(person.usermail)}>
+                    {filteredEmails?.map((person, index) => (
+                      <li key={person.usermail} className={index === selectedIndex ? "selected" : ""} onMouseDown={(e) => e.preventDefault()} onClick={() => handleAutoCompleteClick(person.usermail)} onMouseEnter={() => setSelectedIndex(index)}>
                         {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
                     ))}
@@ -796,14 +867,14 @@ const WriteMail = () => {
                   type="text"
                   value={inputReferrerValue}
                   onChange={handleInputReferrerChange}
-                  onKeyDown={handleReferrerInputKeyDown}
+                  onKeyDown={handleKeyDownReferrer}
                   onBlur={handleReferrerMouseLeaveOn}
                   ref={inputRef}
                 />
                 {inputReferrerValue && (
                   <ul className="autocomplete_dropdown">
-                    {filteredReferrerEmails?.map(person => (
-                      <li key={person.usermail} onMouseDown={(e) => e.preventDefault()} onClick={() => handleReferrerAutoCompleteClick(person.usermail)}>
+                    {filteredReferrerEmails?.map((person, index) => (
+                      <li key={person.usermail} className={index === selectedReferrerIndex ? "selected" : ""} onMouseDown={(e) => e.preventDefault()} onClick={() => handleReferrerAutoCompleteClick(person.usermail)} onMouseEnter={() => setSelectedReferrerIndex(index)}>
                         {person.usermail} - {person.team ? person.team : person.department} {person.username}
                       </li>
                     ))}

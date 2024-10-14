@@ -161,6 +161,7 @@ const MeetingRoom = () => {
         setSelectedIndex(-1);
       }
     }
+    console.log(filteredEmails)
   };
 
   const handleAutoCompleteClick = (userData: string) => {
