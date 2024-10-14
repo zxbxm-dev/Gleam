@@ -31,7 +31,8 @@ import {
   SearchClickMsg,
   selectUserID,
   selectedPersonState,
-  NewChatModalstate
+  NewChatModalstate,
+  MsgOptionState
 } from '../../recoil/atoms';
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
@@ -118,8 +119,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const personSideGetmsg = useRecoilValue(selectUserID);
   const ClickMsgSearch = useRecoilValue(SearchClickMsg);
   const selectedPerson = useRecoilValue(selectedPersonState);
+  const [MsgOptionsState, setMsgOptionsState] = useRecoilState(MsgOptionState);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [files, setFiles] = useState<File | null>(null);
+  const [readMsg, setReadMsg] = useState("");
+  console.log(readMsg);
 
   const MessageGetFile = (messageId: number, msg: any) => {
     console.log("Message content:", msg);
@@ -391,8 +395,15 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     return () => {
       socket.disconnect();
     };
-  }, [selectedRoomId, user.userID]);
+  }, [selectedRoomId, user.userID, readMsg]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ChatTabGetMessage();
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [readMsg, ChatTabGetMessage]);
 
   // 메시지 컨테이너 스크롤
   useEffect(() => {
@@ -499,13 +510,17 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // 메시지가 읽혔을 때 호출되는 함수
   const handleReadMessage = useCallback((messageId: string) => {
     const socket = io('http://localhost:3001', { transports: ["websocket"] });
-
     const userId = user.userID;
-
     console.log(`읽은 메시지 ID: ${messageId}`); // 읽은 메시지 ID를 콘솔에 출력
     socket.emit('markMessageAsRead', { messageId, userId });
+    setMsgOptionsState(true);
+    setReadMsg(messageId);
 
-  }, [user.id]);
+    setTimeout(() => {
+      setMsgOptionsState(false);
+    }, 1000);
+
+  }, [user.id, readMsg]);
 
   // 메시지가 화면에 나타나면 읽은 것으로 간주
   useEffect(() => {
@@ -579,7 +594,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                   {
                     selectedRoomId.isGroup
                       ? (msg.unreadCount === 0 ? "" : msg.unreadCount)
-                      : (msg.isReadOther === 1
+                      : (msg.isReadOther === 0
                         ? "1"
                         : (msg.isReadOther === true
                           ? ""

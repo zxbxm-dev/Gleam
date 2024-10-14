@@ -112,3 +112,9 @@ export const PeopleModalState = atom({
   key: 'PeopleModalState',
   default: false
 });
+
+//메시지 목록 옵션
+export const MsgOptionState = atom({
+  key: 'MsgOptionState',
+  default: false
+});
