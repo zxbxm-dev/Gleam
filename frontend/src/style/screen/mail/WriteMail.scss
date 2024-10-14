@@ -333,6 +333,10 @@
             padding: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            
+            &.selected {
+              background-color: #e2e2e2;
+            }
           }
 
           li:hover {
