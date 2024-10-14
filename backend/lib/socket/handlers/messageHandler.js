@@ -127,7 +127,8 @@ const getGroupChatHistory = async (socket, roomId) => {
         userId: message.User.userId,
         username: `${participant?.team || ""} ${participant?.username || ""}`,
         timestamp: message.createdAt,
-        unreadCount
+        unreadCount,
+        fileValue: message.filePath ? 1 : 0,
       };
     });
 
@@ -190,6 +191,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         userId: message.User.userId,
         username: `${message.User.team} ${message.User.username}`,
         timestamp: message.createdAt,
+        fileValue: message.filePath ? 1 : 0,
         isRead: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 1, // 읽음 상태 기본값 설정
       }));
       socket.emit("chatHistoryForUser", { chatHistory, joinIds: [requesterId], hostId: requesterId });
@@ -238,17 +240,21 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         ],
         order: [["createdAt", "ASC"]],
       });
+  
+      const chatHistory = messages.map((message) => {
+        console.log("메시지 데이터:", message);
+        // console.log("reads 배열:", messageRead.reads);
 
-      const chatHistory = messages.map((message) => ({
-        messageId: message.messageId,
-        content: message.content,
-        userId: message.User.userId,
-        username: `${message.User.team} ${message.User.username}`,
-        timestamp: message.createdAt,
-        isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
-        fileValue: message.filePath ? 1 : 0,
-      }));
-
+        return {
+          messageId: message.messageId,
+          content: message.content,
+          userId: message.User.userId,
+          username: `${message.User.team} ${message.User.username}`,
+          timestamp: message.createdAt,
+          isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
+          fileValue: message.filePath ? 1 : 0,
+        };
+      });
       const chatRoom = await ChatRoom.findOne({
         where: { roomId: validChatRoomIds[0] },
       });
@@ -373,6 +379,7 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
       roomId: newMessage.roomId,
       senderId: newMessage.userId,
       timestamp: newMessage.createdAt,
+      fileValue: message.filePath ? 1 : 0,
     };
 
     participants.forEach((participant) => {

@@ -488,8 +488,15 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       socket.off("chatHistoryForOthers");
       socket.off("error");
     };
-  }, [personSideGetmsg.userID, user.id]);
+  }, [personSideGetmsg.userID, user.id, readMsg]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      PersonSideGetMessage();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [readMsg, PersonSideGetMessage]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
