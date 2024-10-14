@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { userState, NewChatModalstate, PeopleModalState } from "../../../recoil/atoms";
+import { userState, NewChatModalstate, PeopleModalState, MsgOptionState } from "../../../recoil/atoms";
 import {
   SearchIcon,
   CheckBox,
@@ -25,8 +25,8 @@ interface NewChatModalProps {
       };
     };
   };
-  setSelectedUsers:Dispatch<SetStateAction<Set<string>>>;
-  selectedUsers:Set<string>;
+  setSelectedUsers: Dispatch<SetStateAction<Set<string>>>;
+  selectedUsers: Set<string>;
 }
 
 const NewChatModal: React.FC<NewChatModalProps> = ({
@@ -44,6 +44,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
   const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
   const UsePeopleState = useRecoilValue(PeopleModalState);
+  const [MsgOptionsState, setMsgOptionsState] = useRecoilState(MsgOptionState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,18 +68,18 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
           Object.values(department).flat()
         )
       );
-  
+
       const initialSelectedUsers = allPersons.filter(person =>
         person.username === user.username ||
         ChatModalOpenState.joinUser.includes(person.userId)
       );
-  
+
       setSelectedUsers(prevSelected => {
         const newSelection = new Set(prevSelected);
         initialSelectedUsers.forEach(user => newSelection.add(user.userId));
         return newSelection.size !== prevSelected.size ? newSelection : prevSelected;
       });
-  
+
       setSearchQuery("");
       setIsWholeMemberChecked(false);
     } else {
@@ -87,22 +88,22 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
           Object.values(department).flat()
         )
       );
-  
+
       const initialSelectedUsers = allPersons.filter(person =>
         person.username === user.username
       );
-  
+
       setSelectedUsers(prevSelected => {
         const newSelection = new Set(prevSelected);
         initialSelectedUsers.forEach(user => newSelection.add(user.userId));
         return newSelection.size !== prevSelected.size ? newSelection : prevSelected;
       });
-  
+
       setSearchQuery("");
       setIsWholeMemberChecked(false);
     }
   }, [ChatModalOpenState, filteredData, user.username, ChatModalOpenState.joinUser]);
-  
+
   const filterDataBySearchQuery = (data: typeof filteredData) => {
     if (!searchQuery) return data;
 
@@ -204,6 +205,11 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     try {
       if (selectedUsers.size > 2) {
         await createRoom(payload);
+        setMsgOptionsState(true);
+
+        setTimeout(() => {
+          setMsgOptionsState(false);
+        }, 1000);
       } else {
         const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
@@ -280,7 +286,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       headerTextColor="white"
       footer1="확인"
       footer1Class="back-green-btn"
-      onFooter1Click={()=>{
+      onFooter1Click={() => {
         handleSubmit();
         setSelectedUsers(new Set());
       }}

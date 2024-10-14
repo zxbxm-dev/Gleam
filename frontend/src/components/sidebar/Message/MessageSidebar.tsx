@@ -7,7 +7,8 @@ import {
   userStateMessage,
   selectedRoomIdState,
   NewChatModalstate,
-  PeopleModalState
+  PeopleModalState,
+  MsgOptionState
 } from "../../../recoil/atoms";
 
 import {
@@ -53,6 +54,7 @@ const MessageSidebar: React.FC = () => {
   const [borderColor, setBorderColor] = useState<string>("");
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const setUserStatetoServer = useSetRecoilState(userStateMessage);
+  const msgOptionState = useRecoilValue(MsgOptionState);
   const location = useLocation();
   const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
@@ -162,7 +164,7 @@ const MessageSidebar: React.FC = () => {
       socket.off('connect_error');
       socket.close();
     };
-  }, [user.userID, activeTab]);
+  }, [user.userID, activeTab, msgOptionState]);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
