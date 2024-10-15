@@ -38,7 +38,7 @@ const MessageSidebar: React.FC = () => {
   const [expandedTeams, setExpandedTeams] = useState<{
     [key: string]: boolean;
   }>({});
-  const [activeTab, setActiveTab] = useState("personData");
+  const [activeTab, setActiveTab] = useState("ChatData");
   const [isWholeMemberChecked, setIsWholeMemeberChecked] =
     useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
