@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       roomId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "chatRoom",
+          model: "chatroom",
           key: "roomId",
         },
         allowNull: false,
