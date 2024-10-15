@@ -55,9 +55,9 @@ const NoticeIcons: { [key: string]: string } = {
 };
 
 const NoticeNameList: { [key: string]: string } = {
-  Mail: "Mail - Notification",
-  WorkReport: "Work Report - Notification",
-  Schedule: "Schedule - Notification",
+  // Mail: "Mail - Notification",
+  // WorkReport: "Work Report - Notification",
+  // Schedule: "Schedule - Notification",
 };
 
 const DummyNotice = [
@@ -619,7 +619,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       ) : (
         DummyNotice.map((notice, index) => (
           <div key={index} className="Message">
-            <img src={NoticeIcons[notice.classify]} alt="Notice Icon" />
+            {/* <img src={NoticeIcons[notice.classify]} alt="Notice Icon" />
             <div className="RightBox">
               <div className="NoticeName">{NoticeNameList[notice.classify]}</div>
               <div className="MsgTimeBox">
@@ -629,9 +629,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 </div>
                 <div className="MsgTime">오후 4:30</div>
               </div>
-            </div>
+            </div> */}
           </div>
-        ))
+        )
+      )
       )}
       {selectedRoomId.roomId !== -2 && (
         <div className="Message-Input">

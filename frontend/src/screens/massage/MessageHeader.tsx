@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ selectedPerson, toggleSection }) => {
         </div>
         :
         <div>
-          통합 알림
+          {/* 통합 알림 */}
         </div>
       }
       <div className="UpperIconBar">
