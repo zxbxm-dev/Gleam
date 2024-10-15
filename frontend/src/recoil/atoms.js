@@ -49,7 +49,7 @@ const latestChat = JSON.parse(localStorage.getItem("latestChat"));
 export const selectedPersonState = atom({
   key: "selectedPersonState",
   default: {
-    username: latestChat ? latestChat.username : "통합 알림",
+    username: latestChat ? latestChat.username : "",
     team: latestChat ? latestChat.team : "",
     department: latestChat ? latestChat.department : "",
     position: latestChat ? latestChat.position : "",
