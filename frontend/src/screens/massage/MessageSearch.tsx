@@ -22,6 +22,7 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
     const [serverMessages, setServerMessages] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredMessages, setFilteredMessages] = useState<any[]>([]);
+    const [periodfilterdMessages, setPeriodFilteredMessages] = useState<any[]>([]);
     const user = useRecoilValue(userState);
     const personSideGetmsg = useRecoilValue(selectUserID);
 
@@ -147,26 +148,79 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
                 message.content.toLowerCase().includes(lowercasedQuery);
         });
         setFilteredMessages(filtered);
+        setPeriodFilteredMessages(filtered)
     }, [searchQuery, serverMessages]);
 
     const formatTimestamp = (timestamp: string) => {
         const date = new Date(timestamp);
 
-        const day = String(date.getUTCDate()).padStart(2, '0');
-        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-        const year = String(date.getUTCFullYear()).slice(2);
-        const hours = String(date.getUTCHours()).padStart(2, '0');
-        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(2);
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
 
-        return `${day}.${month}.${year} ${hours}:${minutes}`;
+        return `${year}.${month}.${day} ${hours}:${minutes}`;
     };
 
     const handleMessageClick = (message: any) => {
         setTargetMessageId(message.messageId);
     };
 
-    // console.log(filteredMessages);
+    console.log(periodfilterdMessages);
 
+    const filterMessagesByDate = (period: string) => {
+        const now = new Date();
+        let pastDate: Date;
+    
+        if (period === '1년') {
+            pastDate = new Date();
+            pastDate.setFullYear(now.getFullYear() - 1);
+        } else if (period === '1개월') {
+            pastDate = new Date();
+            pastDate.setMonth(now.getMonth() - 1);
+        }
+    
+        // 날짜 필터링은 serverMessages에서 직접 필터링
+        const dateFilteredMessages = filteredMessages.filter((message: any) => {
+            const messageDate = new Date(message.timestamp);
+            return messageDate >= pastDate && messageDate <= now;
+        });
+
+        // 검색어에 맞는 메시지들 중에서 날짜에 맞는 것만 필터링
+        const finalFilteredMessages = dateFilteredMessages.filter((message: any) => {
+            return filteredMessages.some(filteredMessage => filteredMessage.messageId === message.messageId);
+        });
+    
+        setPeriodFilteredMessages(finalFilteredMessages);
+    };
+    
+    const filterMessagesByCustomDate = () => {
+        if (startDate && endDate) {
+            const customFilteredMessages = filteredMessages.filter((message: any) => {
+                const messageDate = new Date(message.timestamp);
+                return messageDate >= startDate && messageDate <= endDate;
+            });
+
+            // 검색어 필터링된 메시지와 사용자 기간 필터링을 결합
+            const finalFilteredMessages = customFilteredMessages.filter((message: any) => {
+                return filteredMessages.some(filteredMessage => filteredMessage.messageId === message.messageId);
+            });
+
+            setPeriodFilteredMessages(finalFilteredMessages);
+        }
+    };
+
+    useEffect(() => {
+        console.log('검색 기간 바뀜');
+        if (searchDueDate === '1년') {
+            filterMessagesByDate('1년');
+        } else if (searchDueDate === '1개월') {
+            filterMessagesByDate('1개월');
+        } else {
+            filterMessagesByCustomDate();
+        }
+    }, [searchDueDate, startDate, endDate, serverMessages]);
 
     return (
         <div className="PeopleManagementCon">
@@ -252,8 +306,8 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
             )}
             <div className="SearchItems">
                 {searchQuery ? (
-                    filteredMessages.length > 0 ? (
-                        filteredMessages.map((message, index) => (
+                    periodfilterdMessages.length > 0 ? (
+                        periodfilterdMessages.map((message, index) => (
                             <div
                                 key={index}
                                 className="message-item"

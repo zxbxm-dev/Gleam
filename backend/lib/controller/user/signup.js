@@ -181,8 +181,27 @@ const approveUser = async (req, res) => {
     }
   );
 
+  const mailcowAddAppPwd = await axios.post('https://mailcow.host/api/v1/add/app-passwd',
+    {
+      
+        "username": `${user.userId}@gleam.im`,
+        "app_name": "gleam",
+        "app_passwd": "math123!!",
+        "app_passwd2": "math123!!",
+        "active": "1"
+      
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': process.env.Mail_API
+      }
+    }
+  )
+
     console.log('Mailbox created:', mailcowAddAccount.data);
     console.log('Syncjob success:', mailcowAddSyncjob.data);
+    console.log('AppPwd created', mailcowAddAppPwd.data);
 
     res.status(200).json({ success: "승인 처리가 완료되었습니다.", user });
   } catch (error) {
@@ -264,10 +283,23 @@ const userleaves = async (req, res) => {
         'Content-Type': 'application/json',
         'X-API-Key': process.env.Mail_API
       }
-    })
+    }
+  );
+
+  const mailcowDelAppPwd = await axios.post('https://mailcow.host/api/v1/delete/app-passwd',[
+
+  ],
+  {
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': process.env.Mail_API
+    }
+  }
+);
 
     console.log('Mailbox deleted:', mailcowDelAccount.data);
     console.log('Syncjob deleted:', mailcowDelSyncjob.data);
+    console.log('AppPwd deleted:', mailcowDelAppPwd.data);
 
     return res
       .status(200)
