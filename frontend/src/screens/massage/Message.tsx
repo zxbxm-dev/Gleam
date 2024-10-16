@@ -58,22 +58,22 @@ const Message: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const socket = io("http://localhost:3001", { transports: ["websocket"] });
+  // useEffect(() => {
+  //   const socket = io("http://localhost:3001", { transports: ["websocket"] });
 
-    rooms.forEach((room) => {
-      console.log("클라이언트에서 보낸 방에 방 번호:", room.roomId);
-      socket.emit("joinRoom", room.roomId);
-    });
-  }, [rooms]);
+  //   rooms.forEach((room) => {
+  //     console.log("클라이언트에서 보낸 방에 방 번호:", room.roomId);
+  //     socket.emit("joinRoom", room.roomId);
+  //   });
+  // }, [rooms]);
 
-  useEffect(() => {
-    const socket = io("http://localhost:3001", { transports: ["websocket"] });
+  // useEffect(() => {
+  //   const socket = io("http://localhost:3001", { transports: ["websocket"] });
     
-    if (selectedRoomId) {
-      socket.emit("joinRoom", selectedRoomId.roomId);
-    }
-  }, [selectedRoomId.roomId]);
+  //   if (selectedRoomId) {
+  //     socket.emit("joinRoom", selectedRoomId.roomId);
+  //   }
+  // }, [selectedRoomId.roomId]);
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();

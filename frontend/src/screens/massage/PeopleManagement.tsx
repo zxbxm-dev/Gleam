@@ -26,6 +26,8 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
   const user = useRecoilValue(userState);
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
+  const [joinUserNumber, setJoinUserNumber] = useState(1);
+console.log(openchatModal);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +56,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
         });
 
         setChatModalUser(updatedUsers);
-
+        setJoinUserNumber(chatModalUser.length);
       } catch (err) {
         console.error("Error fetching person data:", err);
       }
@@ -107,7 +109,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
         className="AddPerson-tab"
         onClick={() => {
           openModal();
-          setPeopleState(true);
+          setPeopleState({ state: true, joinNumber: joinUserNumber });
         }}
       >+ 인원 추가하기</div>
       <div className="ChatRoom-Members">

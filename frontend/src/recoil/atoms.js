@@ -86,7 +86,13 @@ export const selectUserID = atom({
   },
 });
 
+//새 대화방 생성 모달
+export const SideChatModalstate = atom({
+  key: 'SideChatModalstate',
+  default: false
+});
 
+//인원관리 인원추가
 export const NewChatModalstate = atom({
   key: 'NewChatModalstate',
   default: {
@@ -107,10 +113,12 @@ export const SearchClickMsg = atom({
     }
 });
 
-
 export const PeopleModalState = atom({
   key: 'PeopleModalState',
-  default: false
+  default: {
+    state:false,
+    joinNumber:1
+  }
 });
 
 //메시지 목록 옵션

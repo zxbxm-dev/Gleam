@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { userState, NewChatModalstate, PeopleModalState, MsgOptionState, selectedRoomIdState } from "../../../recoil/atoms";
+import { userState, SideChatModalstate, PeopleModalState, MsgOptionState, selectedRoomIdState } from "../../../recoil/atoms";
 import {
   SearchIcon,
   CheckBox,
@@ -29,19 +29,19 @@ interface NewChatModalProps {
   selectedUsers: Set<string>;
 }
 
-const NewChatModal: React.FC<NewChatModalProps> = ({
+const SideChatModal: React.FC<NewChatModalProps> = ({
   filteredData,
   setSelectedUsers,
   selectedUsers
 }) => {
   const [isWholeMemberChecked, setIsWholeMemberChecked] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+
   const [chatTitle, setChatTitle] = useState<string>("");
-  const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
+  const [openchatModal, setOpenchatModal] = useRecoilState(SideChatModalstate);
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const user = useRecoilValue(userState);
-  const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
-  const UsePeopleState = useRecoilValue(PeopleModalState);
+  const [SideModalOpenState] = useRecoilState(SideChatModalstate);
   const [MsgOptionsState, setMsgOptionsState] = useRecoilState(MsgOptionState);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   }, []);
 
   useEffect(() => {
-    if (ChatModalOpenState && UsePeopleState) {
+    if (SideModalOpenState) {
       const allPersons = Object.values(filteredData).flatMap(company =>
         Object.values(company).flatMap(department =>
           Object.values(department).flat()
@@ -68,8 +68,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       );
 
       const initialSelectedUsers = allPersons.filter(person =>
-        person.username === user.username ||
-        ChatModalOpenState.joinUser.includes(person.userId)
+        person.username === user.username
       );
 
       setSelectedUsers(prevSelected => {
@@ -100,7 +99,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       setSearchQuery("");
       setIsWholeMemberChecked(false);
     }
-  }, [ChatModalOpenState, filteredData, user.username, ChatModalOpenState.joinUser]);
+  }, [SideModalOpenState, filteredData, user.username]);
 
   const filterDataBySearchQuery = (data: typeof filteredData) => {
     if (!searchQuery) return data;
@@ -130,10 +129,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   };
 
   const closeModal = () => {
-    setOpenchatModal((prevState) => ({
-      ...prevState,
-      openState: false,
-    }));
+    setOpenchatModal(false);
   };
 
   const filteredPersonsData = filterDataBySearchQuery(filteredData);
@@ -202,7 +198,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     };
 
     try {
-      if (selectedUsers.size > 2 && UsePeopleState.joinNumber <= 2) {
+      if (selectedUsers.size > 2) {
         await createRoom(payload);
         setMsgOptionsState(true);
 
@@ -276,7 +272,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
 
   return (
     <CustomModal
-      isOpen={ChatModalOpenState.openState}
+      isOpen={SideModalOpenState}
       onClose={() => {
         closeModal();
         setSelectedUsers(new Set());
@@ -518,4 +514,4 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   );
 };
 
-export default NewChatModal;
+export default SideChatModal;
