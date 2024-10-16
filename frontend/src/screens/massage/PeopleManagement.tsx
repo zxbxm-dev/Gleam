@@ -27,7 +27,6 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
   const [joinUserNumber, setJoinUserNumber] = useState(1);
-console.log(openchatModal);
 
   useEffect(() => {
     const fetchData = async () => {

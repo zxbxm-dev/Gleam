@@ -35,12 +35,12 @@ module.exports = (io, socket) => {
   });
 
   // 채팅방 참여 요청 처리
-  socket.on("joinRoom", async (roomId) => {
+  socket.on("joinRoom", async (roomId, userIds) => {
     try {
       if (!roomId) {
         throw new Error("방 ID가 제공되지 않았습니다.");
       }
-      await chatRoomHandlers.joinRoom(io, socket, roomId);
+      await chatRoomHandlers.joinRoom(io, socket, roomId, userIds);
     } catch (error) {
       console.error("채팅방 참여 요청 처리 오류:", error);
       socket.emit("error", { message: "채팅방 참여 중 오류가 발생했습니다." });

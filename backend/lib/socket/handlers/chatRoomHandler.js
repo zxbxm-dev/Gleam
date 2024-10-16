@@ -155,17 +155,7 @@ const createPrivateRoom = async (io, socket, data) => {
 
       return;
     }
-
-    // 개인 채팅방은 정확히 한 명의 사용자만 초대하도록 제한
-    if (invitedUserIds.length !== 1) {
-      console.error(
-        "개인 채팅방은 정확히 한 명의 사용자만 초대할 수 있습니다."
-      );
-      return socket.emit("error", {
-        message: "개인 채팅방은 한 명만 초대할 수 있습니다",
-      });
-    }
-
+    
     const invitedUserId = invitedUserIds[0];
     const user = await getUserById(userId);
     const targetUser = await getUserById(invitedUserId);
@@ -394,70 +384,45 @@ const countUnreadMessages = async (roomId, userId) => {
 
 
 // 채팅방에 참여
-const joinRoom = async (io, socket, roomId) => {
+const joinRoom = async (io, socket, roomId, userIds) => {
   try {
-    if (!roomId || roomId <= 0) {
-      throw new Error("유효하지 않은 방 ID입니다.");
-    }
-
-    const chatRoom = await ChatRoom.findOne({ where: { roomId } });
-
-    if (chatRoom) {
-      const userId = socket.userId;
-
-      if (!userId) {
-        return socket.emit("error", {
-          message: "유저 ID가 정의되지 않았습니다.",
-        });
+      if (!roomId || roomId <= 0) {
+          throw new Error("유효하지 않은 방 ID입니다.");
       }
 
-      const isMember = await ChatRoomParticipant.findOne({
-        where: { roomId, userId },
-      });
+      const chatRoom = await ChatRoom.findOne({ where: { roomId } });
 
-      if (!isMember) {
-        // 사용자가 이미 멤버가 아니라면 방에 참가자로 추가
-        await ChatRoomParticipant.create({
-          roomId,
-          userId,
-          username: (await getUserById(userId)).username,
-          department: (await getUserById(userId)).department || null,
-          team: (await getUserById(userId)).team || null,
-          position: (await getUserById(userId)).position || null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
+      if (chatRoom) {
+          for (const userId of userIds) {
+              const isMember = await ChatRoomParticipant.findOne({
+                  where: { roomId, userId },
+              });
+
+              if (!isMember) {
+                  // 사용자가 이미 멤버가 아니라면 방에 참가자로 추가
+                  const user = await getUserById(userId);
+                  await ChatRoomParticipant.create({
+                      roomId,
+                      userId,
+                      username: user.username,
+                      department: user.department || null,
+                      team: user.team || null,
+                      position: user.position || null,
+                      createdAt: new Date(),
+                      updatedAt: new Date(),
+                  });
+              }
+          }
+
+          socket.join(roomId.toString()); // 방에 참여
+
+          socket.emit("roomJoined", { roomId });
+      } else {
+          socket.emit("error", { message: "방을 찾을 수 없습니다" });
       }
-
-      socket.join(roomId.toString()); // 방에 참여
-
-      // 1:1 채팅인지 확인
-      const participantsCount = await ChatRoomParticipant.count({
-        where: { roomId },
-      });
-
-      if (participantsCount === 2 && !chatRoom.isGroup) {
-        // 개인 채팅방이면 createPrivateRoom 호출
-        const invitedUserId = (
-          await ChatRoomParticipant.findAll({
-            where: { roomId, userId: { [Op.ne]: userId } },
-          })
-        ).map((participant) => participant.userId)[0];
-
-        if (invitedUserId) {
-          await createPrivateRoom(io, socket, {
-            userId,
-            invitedUserIds: [invitedUserId],
-          });
-        }
-      }
-
-      socket.emit("roomJoined", { roomId });
-    } else {
-      socket.emit("error", { message: "방을 찾을 수 없습니다" });
-    }
   } catch (error) {
-    socket.emit("error", { message: "채팅방 참여 서버 오류" });
+      console.error("채팅방 참여 오류:", error);
+      socket.emit("error", { message: "채팅방 참여 서버 오류" });
   }
 };
 

@@ -60,46 +60,37 @@ const SideChatModal: React.FC<NewChatModalProps> = ({
   }, []);
 
   useEffect(() => {
-    if (SideModalOpenState) {
-      const allPersons = Object.values(filteredData).flatMap(company =>
-        Object.values(company).flatMap(department =>
-          Object.values(department).flat()
-        )
-      );
-
-      const initialSelectedUsers = allPersons.filter(person =>
-        person.username === user.username
-      );
-
-      setSelectedUsers(prevSelected => {
-        const newSelection = new Set(prevSelected);
-        initialSelectedUsers.forEach(user => newSelection.add(user.userId));
-        return newSelection.size !== prevSelected.size ? newSelection : prevSelected;
+    if (!SideModalOpenState) return; // Exit early if the modal is not open
+  
+    const allPersons = Object.values(filteredData).flatMap(company =>
+      Object.values(company).flatMap(department =>
+        Object.values(department).flat()
+      )
+    );
+  
+    const initialSelectedUsers = allPersons.filter(person =>
+      person.username === user.username
+    );
+  
+    // Set selected users only if there’s a change
+    setSelectedUsers(prevSelected => {
+      const newSelection = new Set(prevSelected);
+      let isUpdated = false;
+  
+      initialSelectedUsers.forEach(user => {
+        if (!newSelection.has(user.userId)) {
+          newSelection.add(user.userId);
+          isUpdated = true; // Mark that an update occurred
+        }
       });
-
-      setSearchQuery("");
-      setIsWholeMemberChecked(false);
-    } else {
-      const allPersons = Object.values(filteredData).flatMap(company =>
-        Object.values(company).flatMap(department =>
-          Object.values(department).flat()
-        )
-      );
-
-      const initialSelectedUsers = allPersons.filter(person =>
-        person.username === user.username
-      );
-
-      setSelectedUsers(prevSelected => {
-        const newSelection = new Set(prevSelected);
-        initialSelectedUsers.forEach(user => newSelection.add(user.userId));
-        return newSelection.size !== prevSelected.size ? newSelection : prevSelected;
-      });
-
-      setSearchQuery("");
-      setIsWholeMemberChecked(false);
-    }
+  
+      return isUpdated ? newSelection : prevSelected; // Only update if necessary
+    });
+  
+    setSearchQuery("");
+    setIsWholeMemberChecked(false);
   }, [SideModalOpenState, filteredData, user.username]);
+  
 
   const filterDataBySearchQuery = (data: typeof filteredData) => {
     if (!searchQuery) return data;
