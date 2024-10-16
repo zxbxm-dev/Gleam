@@ -59,7 +59,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
         console.log(`roomID값 : ${matchingRoom.roomId}`);
         setSelectedRoomId({
           roomId: Number(matchingRoom.roomId),
-          isGroup: matchingRoom.isGroup
+          isGroup: matchingRoom.isGroup,
+          OtherTitle:""
         });
       }
     }
@@ -121,7 +122,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 setSelectedUserIdstate({ userID: person.userId });
                 setSelectedRoomId({
                   roomId: -1,
-                  isGroup: false
+                  isGroup: false,
+                   OtherTitle:""
                 });
               }}
             >
@@ -178,7 +180,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                               setSelectedUserIdstate({ userID: person.userId });
                               setSelectedRoomId({
                                 roomId: -1,
-                                isGroup: false
+                                isGroup: false,
+                                 OtherTitle:""
                               });
                             }}
                           >
@@ -236,7 +239,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                   setSelectedUserIdstate({ userID: person.userId });
                                   setSelectedRoomId({
                                     roomId: -1,
-                                    isGroup: false
+                                    isGroup: false,
+                                     OtherTitle:""
                                   });
                                 }}
                               >
@@ -301,7 +305,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                       setSelectedUserIdstate({ userID: person.userId });
                       setSelectedRoomId({
                         roomId: -1,
-                        isGroup: false
+                        isGroup: false,
+                         OtherTitle:""
                       });
                     }}
                   >
@@ -356,7 +361,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                     setSelectedUserIdstate({ userID: person.userId });
                                     setSelectedRoomId({
                                       roomId: -1,
-                                      isGroup: false
+                                      isGroup: false,
+                                       OtherTitle:""
                                     });
                                   }}
                                 >
@@ -414,7 +420,8 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                         setSelectedUserIdstate({ userID: person.userId });
                                         setSelectedRoomId({
                                           roomId: -1,
-                                          isGroup: false
+                                          isGroup: false,
+                                           OtherTitle:""
                                         });
                                       }}
                                     >
