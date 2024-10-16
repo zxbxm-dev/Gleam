@@ -1,9 +1,19 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require("fs-extra");
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../../uploads/message'));
+  destination: async function (req, file, cb) {
+    const uploadDir = "../../../uploads/message";
+
+    // 업로드 디렉토리가 없으면 생성
+    try {
+      await fs.ensureDir(uploadDir);
+      cb(null, uploadDir);
+    } catch (err) {
+      console.error("업로드 디렉토리 생성 실패:", err);
+      cb(err);
+    }
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

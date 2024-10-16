@@ -5,6 +5,7 @@ import {
   ModalCloseBtn,
   mail_add_receiver,
   FourchainsLogo,
+  mail_loading,
 } from "../../assets/images/index";
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
@@ -722,7 +723,8 @@ const WriteMail = () => {
       <div className="write_mail_container">
         <div className="write_mail_header">
           <div className="mail_header_left">
-            {isLoading ? <button className="send_button">전송 중...</button> : hasInvalidEmail ? <button className="disabled_send_button">보내기</button> : <button className="send_button" onClick={handleSendEmail}>보내기</button>}
+            {hasInvalidEmail ? <button className="disabled_send_button">보내기</button> : <button className="send_button" onClick={handleSendEmail}>보내기</button>}
+            {isLoading && <img className="mail_loading" src={mail_loading} alt="mail_loading" /> }
             <button className="basic_button" onClick={handleDraftEmail}>임시 저장</button>
             <button className="basic_button" onClick={toggleReservation}>
               발송 예약

@@ -16,6 +16,15 @@
       display: flex;
       gap: 10px;
 
+      .mail_loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        z-index: 999;
+      }
+
       .send_button {
         @include report-button;
         color: #000;
