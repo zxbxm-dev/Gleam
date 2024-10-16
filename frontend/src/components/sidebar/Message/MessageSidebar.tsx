@@ -109,11 +109,14 @@ const MessageSidebar: React.FC = () => {
 
     const userId = user.userID;
 
+    setChatRooms(prevRooms => prevRooms.filter(room => room.dataValues?.roomId !== roomId));
+
     console.log(`Leaving room with id ${roomId}`);
     socket.emit("exitRoom", roomId, userId);
+    
     setVisiblePopoverIndex(null);
   };
-
+  
   //chatTab - socket 채팅방 목록 조회
   useEffect(() => {
     const socket = io('http://localhost:3001', {
@@ -131,9 +134,6 @@ const MessageSidebar: React.FC = () => {
     socket.on('connection', () => {
       console.log(`[Client] Socket 서버에 연결됨: ${socket.id}`);
     });
-
-    // 채팅 방 요청
-    socket.emit('getChatRooms', userId);
 
     // 채팅 방 데이터 수신
     socket.on('chatRooms', (data: ChatRoom[]) => {
@@ -157,6 +157,9 @@ const MessageSidebar: React.FC = () => {
     socket.on('connect_error', (error) => {
       console.error('연결 오류:', error);
     });
+
+    // 채팅 방 요청
+    socket.emit('getChatRooms', userId);
 
     return () => {
       socket.off('chatRooms');
