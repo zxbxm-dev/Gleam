@@ -6,8 +6,8 @@ import {
   UserIcon_dark,
   RoomAdmin
 } from "../../assets/images/index";
-import { NewChatModalstate, userState, selectedRoomIdState, PeopleModalState } from '../../recoil/atoms';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { NewChatModalstate, userState, MsgNewUpdateState, selectedRoomIdState, PeopleModalState } from '../../recoil/atoms';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Person } from '../../components/sidebar/MemberSidebar';
 import { PersonData } from '../../services/person/PersonServices';
 import { changeAdminApi } from '../../services/message/MessageApi';
@@ -27,6 +27,8 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
   const [joinUserNumber, setJoinUserNumber] = useState(1);
+  const setMsgNewUpdate = useSetRecoilState(MsgNewUpdateState);
+  const isNewMessage = useRecoilValue(MsgNewUpdateState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +64,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
     };
 
     fetchData();
-  }, [ChatModalOpenState.joinUser, ChatModalOpenState.hostId]);
+  }, [ChatModalOpenState.joinUser, ChatModalOpenState.hostId, isNewMessage]);
 
   const changeAdmin = async (newAdminId: string) => {
     try {
@@ -93,10 +95,12 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
   
     // 내보내기
     socket.emit("KickRoom", { roomId, userId });
-  
+    setMsgNewUpdate(true);
+
     // 서버에서 내보내기 완료
     socket.on("userKicked", (data) => {
       console.log(`${data.userId}가 ${data.roomId}에서 강퇴당하셨습니다.`);
+      setMsgNewUpdate(false);
     });
   
     socket.on("error", (error) => {
