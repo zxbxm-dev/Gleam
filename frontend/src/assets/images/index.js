@@ -94,6 +94,7 @@ export { default as mail_attachment } from "./mail/mail_attachment.svg";
 export { default as mail_triangle } from "./mail/mail_triangle.svg";
 export { default as mail_cancle } from "./mail/mail_cancle.svg";
 export { default as mail_add_receiver } from "./mail/mail_add_receiver.svg";
+export { default as mail_loading } from "./mail/Gleam_loading3_webp.webp";
 
 //message
 export { default as MessageMe } from "./Message/MessageMe.svg";
