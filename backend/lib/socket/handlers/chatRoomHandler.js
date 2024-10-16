@@ -412,7 +412,7 @@ const joinRoom = async (io, socket, roomId, userIds) => {
                   });
               }
           }
-          
+
           socket.join(roomId.toString()); // 방에 참여
 
           socket.emit("roomJoined", { roomId });
@@ -424,6 +424,44 @@ const joinRoom = async (io, socket, roomId, userIds) => {
       socket.emit("error", { message: "채팅방 참여 서버 오류" });
   }
 };
+
+//채팅방에서 내보내기------------------------------------------------------------
+
+const kickOutFromRoom = async (io, socket, roomId, userId) => {
+  try {
+    if (!roomId || roomId <= 0) {
+      throw new Error("유효하지 않은 방 ID입니다.");
+    }
+
+    const chatRoom = await ChatRoom.findOne({ where: { roomId } });
+    if (!chatRoom) {
+      socket.emit("error", { message: "방을 찾을 수 없습니다." });
+      return;
+    }
+
+    const isMember = await ChatRoomParticipant.findOne({
+      where: { roomId, userId },
+    });
+
+    if (!isMember) {
+      socket.emit("error", { message: "사용자가 방의 참가자가 아닙니다." });
+      return;
+    }
+
+    await ChatRoomParticipant.destroy({
+      where: { roomId, userId },
+    });
+
+    socket.leave(roomId.toString());
+
+    socket.emit("userKicked", { roomId, userId });
+
+  } catch (error) {
+    console.error("채팅방 내보내기 오류:", error);
+    socket.emit("error", { message: "채팅방 내보내기 서버 오류" });
+  }
+};
+
 
 // 채팅방에서 나가기 -----------------------------------------------------------------------------------------------------
 const exitRoom = async (io, socket, data) => {
@@ -534,5 +572,6 @@ module.exports = {
   sendUserChatRooms,
   createPrivateRoom,
   joinRoom,
+  kickOutFromRoom,
   exitRoom,
 };

@@ -47,21 +47,35 @@ module.exports = (io, socket) => {
     }
   });
 
-// 채팅방에서 나가기 요청 처리
+  // 채팅방 내보내기 요청 처리
+  socket.on("KickRoom", async ({ roomId, userId }) => {
+    try {
+      if (!roomId) {
+        throw new Error("방 ID가 제공되지 않았습니다.");
+      }
+
+      await chatRoomHandlers.kickOutFromRoom(io, socket, roomId, userId);
+    } catch (error) {
+      console.error("채팅방 내보내기 요청 처리 오류:", error);
+      socket.emit("error", { message: "채팅방 내보내기 중 오류가 발생했습니다." });
+    }
+  });
+
+  // 채팅방에서 나가기 요청 처리
   socket.on("exitRoom", async (roomId, userId) => {
     try {
       if (!roomId || !userId) {
         throw new Error("방 ID 또는 사용자 ID가 제공되지 않았습니다.");
       }
-  
+
       // 채팅방 나가기 처리
       await chatRoomHandlers.exitRoom(io, socket, { roomId, userId });
-  
+
       console.log(`User ${userId} left room ${roomId}`);
-      
+
     } catch (error) {
       console.error("채팅방 나가기 요청 처리 오류:", error.message);
-  
+
       // 에러 메시지를 클라이언트로 보냄
       socket.emit("error", { message: error.message });
     }

@@ -86,12 +86,22 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
   };
 
   //채팅방 내보내기
-  const handleResignRoom = (roomId: number, resignId: string) => {
+  const handleResignRoom = (roomId: number, userId: string) => {
     const socket = io('http://localhost:3001', {
       transports: ['websocket'],
     });
-
-    socket.emit("resignroom", { roomId, resignId });
+  
+    // 내보내기
+    socket.emit("KickRoom", { roomId, userId });
+  
+    // 서버에서 내보내기 완료
+    socket.on("userKicked", (data) => {
+      console.log(`${data.userId}가 ${data.roomId}에서 강퇴당하셨습니다.`);
+    });
+  
+    socket.on("error", (error) => {
+      console.error("Error:", error.message);
+    });
   };
 
   return (
