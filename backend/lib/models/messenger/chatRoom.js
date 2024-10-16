@@ -61,11 +61,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       updatedAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
       },
     },
     {
       tableName: 'chatroom',  // 소문자
+      timestamps: false,
     }
   );
 
