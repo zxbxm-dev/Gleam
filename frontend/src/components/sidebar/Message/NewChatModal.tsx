@@ -43,6 +43,8 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
   const UsePeopleState = useRecoilValue(PeopleModalState);
   const [MsgOptionsState, setMsgOptionsState] = useRecoilState(MsgOptionState);
+  const UseModalUserState = useRecoilValue(PeopleModalState);
+  const selectedRoomId = useRecoilValue(selectedRoomIdState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -170,7 +172,6 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       };
     }
 
-
     // selectedUsers에서 각 userId를 personData에서 찾아 매칭하여 JSON 구조로 변환
     const userTitle: UserTitleType = targetIds.reduce((acc: UserTitleType, userId: string) => {
       const person = personData?.find(person => person.userId === userId);
@@ -202,41 +203,26 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     };
 
     try {
-      if (selectedUsers.size > 2 && UsePeopleState.joinNumber <= 2) {
-        await createRoom(payload);
-        setMsgOptionsState(true);
+     if(UseModalUserState.joinNumber>2){
+      const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
-        setTimeout(() => {
-          setMsgOptionsState(false);
-        }, 1000);
-      } else {
-        const socket = io('http://localhost:3001', { transports: ["websocket"] });
-
-        const targetIds = Array.from(selectedUsers);
-
-        const createPrivateRoomPayload = {
-          userId: user.userID,
-          content: "",
-          invitedUserIds: targetIds,
-          hostUserId: null,
-          name: null
-        };
-
-        socket.emit("createPrivateRoom", createPrivateRoomPayload);
-
-        console.log(createPrivateRoomPayload);
-
-
-        socket.on("roomCreated", (data) => {
-          console.log("Room Created:", data);
-        });
-      }
-
-      setSelectedUsers(new Set());
-      setChatTitle("");
-      setIsWholeMemberChecked(false);
-      setSearchQuery("");
-      closeModal();
+      // 방 ID 설정 (여기서 실제 방 ID로 대체)
+      const roomId = selectedRoomId.roomId;
+      const userId = user.userID;
+  
+      // 채팅방 참여 요청
+      socket.emit("joinRoom", roomId, userId);
+  
+      // 방 참여 결과 처리
+      socket.on("roomJoined", (data) => {
+          console.log(`방에 참여했습니다: ${data.roomId}`);
+      });
+  
+      // 에러 처리
+      socket.on("error", (error) => {
+          console.error("오류:", error.message);
+      });
+     }
 
     } catch (error) {
       console.error('Error creating chat room:', error);

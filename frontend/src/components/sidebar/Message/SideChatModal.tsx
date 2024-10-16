@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { userState, SideChatModalstate, PeopleModalState, MsgOptionState, selectedRoomIdState } from "../../../recoil/atoms";
+import { userState, SideChatModalstate, MsgOptionState } from "../../../recoil/atoms";
 import {
   SearchIcon,
   CheckBox,
