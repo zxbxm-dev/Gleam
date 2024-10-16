@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
-import { useRecoilValue, useRecoilState } from "recoil";
-import { userState, NewChatModalstate, PeopleModalState, MsgOptionState, selectedRoomIdState } from "../../../recoil/atoms";
+import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
+import { userState, NewChatModalstate, PeopleModalState, MsgNewUpdateState, selectedRoomIdState } from "../../../recoil/atoms";
 import {
   SearchIcon,
   CheckBox,
@@ -45,6 +45,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   const UseModalUserState = useRecoilValue(PeopleModalState);
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [additionalSelectedUsers, setAdditionalSelectedUsers] = useState<Set<string>>(new Set());
+  const setMsgNewUpdate = useSetRecoilState(MsgNewUpdateState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -198,29 +199,30 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     };
 
     try {
-     if(selectedRoomId.isGroup===true){
-      const socket = io('http://localhost:3001', { transports: ["websocket"] });
+      if (selectedRoomId.isGroup === true) {
+        const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
-      // 방 ID 설정 (여기서 실제 방 ID로 대체)
-      const roomId = selectedRoomId.roomId;
-      const userIds = Array.from(additionalSelectedUsers);
-  
-      // 채팅방 참여 요청
-      socket.emit("joinRoom", roomId, userIds);
-  console.log(roomId, userIds);
-  
-      // 방 참여 결과 처리
-      socket.on("roomJoined", (data) => {
+        // 방 ID 설정 (여기서 실제 방 ID로 대체)
+        const roomId = selectedRoomId.roomId;
+        const userIds = Array.from(additionalSelectedUsers);
+
+        // 채팅방 참여 요청
+        socket.emit("joinRoom", roomId, userIds);
+        console.log(roomId, userIds);
+        setMsgNewUpdate(true);
+        // 방 참여 결과 처리
+        socket.on("roomJoined", (data) => {
           console.log(`방에 참여했습니다: ${data.roomId}`);
-      });
-  
-      // 에러 처리
-      socket.on("error", (error) => {
+        });
+
+        // 에러 처리
+        socket.on("error", (error) => {
           console.error("오류:", error.message);
-      });
-     } else {
-      await createRoom(payload);
-     }
+        });
+      } else {
+        await createRoom(payload);
+        setMsgNewUpdate(true);
+      }
 
     } catch (error) {
       console.error('Error creating chat room:', error);
@@ -231,26 +233,26 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   }, [additionalSelectedUsers]);
 
 
-const handlePersonClick = (person: Person) => {
-  if (person.username === user.username) return;
+  const handlePersonClick = (person: Person) => {
+    if (person.username === user.username) return;
 
-  setSelectedUsers(prevSelected => {
-    const newSelection = new Set(prevSelected);
-    const newAdditionalSelected = new Set(additionalSelectedUsers);
-    if (newSelection.has(person.userId)) {
-      newSelection.delete(person.userId);
-      newAdditionalSelected.delete(person.userId);
-    } else {
-      newSelection.add(person.userId);
-      newAdditionalSelected.add(person.userId);
-    }
-    
-    // 추가로 선택된 사용자 상태 업데이트
-    setAdditionalSelectedUsers(newAdditionalSelected);
+    setSelectedUsers(prevSelected => {
+      const newSelection = new Set(prevSelected);
+      const newAdditionalSelected = new Set(additionalSelectedUsers);
+      if (newSelection.has(person.userId)) {
+        newSelection.delete(person.userId);
+        newAdditionalSelected.delete(person.userId);
+      } else {
+        newSelection.add(person.userId);
+        newAdditionalSelected.add(person.userId);
+      }
 
-    return newSelection;
-  });
-};
+      // 추가로 선택된 사용자 상태 업데이트
+      setAdditionalSelectedUsers(newAdditionalSelected);
+
+      return newSelection;
+    });
+  };
 
   const handleTeamClick = (teamName: string, companyName: string, departmentName: string) => {
     const teamMembers = filteredPersonsData[companyName][departmentName][teamName];
@@ -296,13 +298,13 @@ const handlePersonClick = (person: Person) => {
       <div className="body-container New-Chat-Room-Body">
         <div className="New-Chat-Room">
           <input
-           placeholder={
-            selectedRoomId.isGroup===true
-              ? selectedRoomId.OtherTitle
-              : selectedUsers.size === 2
-                ? "1:1 대화방"
-                : selectedRoomId.OtherTitle
-          }
+            placeholder={
+              selectedRoomId.isGroup === true
+                ? selectedRoomId.OtherTitle
+                : selectedUsers.size === 2
+                  ? "1:1 대화방"
+                  : selectedRoomId.OtherTitle
+            }
             className="TextInputCon"
             value={chatTitle}
             onChange={e => setChatTitle(e.target.value)}
