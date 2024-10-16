@@ -24,7 +24,7 @@ import {
   FileMyDown
 } from "../../assets/images/index";
 import io from 'socket.io-client';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import {
   selectedRoomIdState,
   userState,
@@ -32,7 +32,8 @@ import {
   selectUserID,
   selectedPersonState,
   NewChatModalstate,
-  MsgOptionState
+  MsgOptionState,
+  MsgNewUpdateState
 } from '../../recoil/atoms';
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
@@ -123,6 +124,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
   const [files, setFiles] = useState<File | null>(null);
   const [readMsg, setReadMsg] = useState("");
+  const setMsgNewUpdate = useSetRecoilState(MsgNewUpdateState);
   console.log(readMsg);
 
   const MessageGetFile = (messageId: number, msg: any) => {
@@ -256,9 +258,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     if (selectedRoomId.roomId === -1) {
       socket.emit("createPrivateRoom", messageData);
+      setMsgNewUpdate(true);
     } else {
       socket.emit("sendMessage", messageData);
-      console.log(messageData);
+      setMsgNewUpdate(true);
     }
   };
 

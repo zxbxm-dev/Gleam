@@ -49,6 +49,7 @@ export interface ChatRoom {
     profileImage: string | null;
     crt: string;
     upt: string;
+    updatedAt: string;
   };
 }
 

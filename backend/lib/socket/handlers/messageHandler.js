@@ -379,13 +379,20 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
       roomId: newMessage.roomId,
       senderId: newMessage.userId,
       timestamp: newMessage.createdAt,
-      fileValue: message.filePath ? 1 : 0,
+      fileValue: newMessage.filePath ? 1 : 0,
     };
 
     participants.forEach((participant) => {
       io.to(participant.userId).emit("newMessage", messageData);
     });
+
+    await ChatRoom.update(
+      { updatedAt: new Date() },
+      { where: { roomId } }
+    );
+  
   } catch (error) {
+    console.error(`메시지 전송 오류 발생: ${error.message}`);
     throw new Error("메시지 전송 오류 발생");
   }
 };

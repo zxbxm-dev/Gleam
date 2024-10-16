@@ -127,3 +127,8 @@ export const MsgOptionState = atom({
   key: 'MsgOptionState',
   default: false
 });
+
+export const MsgNewUpdateState = atom({
+  key: 'MsgNewUpdate',
+  default: false,
+});
