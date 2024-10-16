@@ -13,7 +13,7 @@ const getNewMsg = async (socket, userId) => {
             userId: userId,
           },
         }],
-        having: Sequelize.literal('읽지 않은 새로운 메세지를 가져옴'),
+        having: Sequelize.literal('messageRead.messageId is null'), //읽지 않은 메세지 필터링
       });
   
       if (newMsg.length > 0) {
