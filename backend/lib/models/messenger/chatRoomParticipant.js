@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       roomId: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'ChatRoom',  // 대문자
+          model: 'chatroom',  // 대문자
           key: 'roomId',
         },
         allowNull: false,

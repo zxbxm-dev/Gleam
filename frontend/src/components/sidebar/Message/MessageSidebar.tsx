@@ -6,7 +6,7 @@ import {
   selectedPersonState,
   userStateMessage,
   selectedRoomIdState,
-  NewChatModalstate,
+  SideChatModalstate,
   PeopleModalState,
   MsgOptionState
 } from "../../../recoil/atoms";
@@ -20,16 +20,17 @@ import {
 } from "../../../assets/images/index";
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
-import NewChatModal from "./NewChatModal";
+import SideChatModal from "./SideChatModal";
 import io, { Socket } from 'socket.io-client';
 import { useLocation } from "react-router-dom";
 import { ChatRoom } from "./ChatTab";
 import { Person } from "../MemberSidebar";
+import NewChatModal from "./NewChatModal";
 
 const MessageSidebar: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null); // Socket 타입 사용
   const [personData, setPersonData] = useState<Person[] | null>(null);
-  const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
+  const [openchatModal, setOpenchatModal] = useRecoilState(SideChatModalstate);
   const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const [expandedDepartments, setExpandedDepartments] = useState<{
@@ -57,7 +58,7 @@ const MessageSidebar: React.FC = () => {
   const msgOptionState = useRecoilValue(MsgOptionState);
   const location = useLocation();
   const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
-  const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(NewChatModalstate);
+  const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(SideChatModalstate);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -100,19 +101,19 @@ const MessageSidebar: React.FC = () => {
     }));
   };
 
-//채팅방 나가기
-    const handleLeaveRoom = (roomId: number) => {
-      const socket = io('http://localhost:3001', {
-        transports: ['websocket'],
-      });
-  
-      const userId = user.userID;
-  
-      console.log(`Leaving room with id ${roomId}`);
-      socket.emit("exitRoom", roomId, userId);
-      setVisiblePopoverIndex(null);
-    };
-    
+  //채팅방 나가기
+  const handleLeaveRoom = (roomId: number) => {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
+
+    const userId = user.userID;
+
+    console.log(`Leaving room with id ${roomId}`);
+    socket.emit("exitRoom", roomId, userId);
+    setVisiblePopoverIndex(null);
+  };
+
   //chatTab - socket 채팅방 목록 조회
   useEffect(() => {
     const socket = io('http://localhost:3001', {
@@ -139,9 +140,9 @@ const MessageSidebar: React.FC = () => {
       // Map data to match ChatRoom type
       const updatedRooms = data.map((room: ChatRoom, index: number) => {
         const title = room.userTitle?.[userId]?.username || room.title;
-        return { 
-          ...room, 
-          title, 
+        return {
+          ...room,
+          title,
           key: index
         };
       });
@@ -301,7 +302,7 @@ const MessageSidebar: React.FC = () => {
     //   borderColor
     // });
     const userId = user.userID;
-    
+
     socket.emit('userStatus', { status: MsguserState.state, borderColor, userId });
 
     return () => {
@@ -310,10 +311,7 @@ const MessageSidebar: React.FC = () => {
   }, [MsguserState.state, borderColor]);
 
   const openModal = () => {
-    setOpenchatModal((prevState) => ({
-      ...prevState,
-      openState: true,
-    }));
+    setOpenchatModal(true);
   };
 
   return (
@@ -381,10 +379,15 @@ const MessageSidebar: React.FC = () => {
           setIsWholeMemeberChecked(false);
           openModal();
           setSelectedUsers(new Set());
-          setPeopleState(false);
+          setPeopleState({ ...peopleState, state: false });
         }}
       />
 
+      <SideChatModal
+        filteredData={filteredData}
+        setSelectedUsers={setSelectedUsers}
+        selectedUsers={selectedUsers}
+      />
       <NewChatModal
         filteredData={filteredData}
         setSelectedUsers={setSelectedUsers}

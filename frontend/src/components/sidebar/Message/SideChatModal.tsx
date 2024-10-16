@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { userState, NewChatModalstate, PeopleModalState, MsgOptionState, selectedRoomIdState } from "../../../recoil/atoms";
+import { userState, SideChatModalstate, MsgOptionState } from "../../../recoil/atoms";
 import {
   SearchIcon,
   CheckBox,
@@ -29,22 +29,20 @@ interface NewChatModalProps {
   selectedUsers: Set<string>;
 }
 
-const NewChatModal: React.FC<NewChatModalProps> = ({
+const SideChatModal: React.FC<NewChatModalProps> = ({
   filteredData,
   setSelectedUsers,
   selectedUsers
 }) => {
   const [isWholeMemberChecked, setIsWholeMemberChecked] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+
   const [chatTitle, setChatTitle] = useState<string>("");
-  const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
+  const [openchatModal, setOpenchatModal] = useRecoilState(SideChatModalstate);
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const user = useRecoilValue(userState);
-  const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
-  const UsePeopleState = useRecoilValue(PeopleModalState);
+  const [SideModalOpenState] = useRecoilState(SideChatModalstate);
   const [MsgOptionsState, setMsgOptionsState] = useRecoilState(MsgOptionState);
-  const UseModalUserState = useRecoilValue(PeopleModalState);
-  const selectedRoomId = useRecoilValue(selectedRoomIdState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +60,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   }, []);
 
   useEffect(() => {
-    if (ChatModalOpenState && UsePeopleState) {
+    if (SideModalOpenState) {
       const allPersons = Object.values(filteredData).flatMap(company =>
         Object.values(company).flatMap(department =>
           Object.values(department).flat()
@@ -70,8 +68,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       );
 
       const initialSelectedUsers = allPersons.filter(person =>
-        person.username === user.username ||
-        ChatModalOpenState.joinUser.includes(person.userId)
+        person.username === user.username
       );
 
       setSelectedUsers(prevSelected => {
@@ -102,7 +99,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       setSearchQuery("");
       setIsWholeMemberChecked(false);
     }
-  }, [ChatModalOpenState, filteredData, user.username, ChatModalOpenState.joinUser]);
+  }, [SideModalOpenState, filteredData, user.username]);
 
   const filterDataBySearchQuery = (data: typeof filteredData) => {
     if (!searchQuery) return data;
@@ -132,10 +129,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   };
 
   const closeModal = () => {
-    setOpenchatModal((prevState) => ({
-      ...prevState,
-      openState: false,
-    }));
+    setOpenchatModal(false);
   };
 
   const filteredPersonsData = filterDataBySearchQuery(filteredData);
@@ -172,6 +166,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       };
     }
 
+
     // selectedUsers에서 각 userId를 personData에서 찾아 매칭하여 JSON 구조로 변환
     const userTitle: UserTitleType = targetIds.reduce((acc: UserTitleType, userId: string) => {
       const person = personData?.find(person => person.userId === userId);
@@ -203,26 +198,41 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     };
 
     try {
-     if(UseModalUserState.joinNumber>2){
-      const socket = io('http://localhost:3001', { transports: ["websocket"] });
+      if (selectedUsers.size > 2) {
+        await createRoom(payload);
+        setMsgOptionsState(true);
 
-      // 방 ID 설정 (여기서 실제 방 ID로 대체)
-      const roomId = selectedRoomId.roomId;
-      const userId = user.userID;
-  
-      // 채팅방 참여 요청
-      socket.emit("joinRoom", roomId, userId);
-  
-      // 방 참여 결과 처리
-      socket.on("roomJoined", (data) => {
-          console.log(`방에 참여했습니다: ${data.roomId}`);
-      });
-  
-      // 에러 처리
-      socket.on("error", (error) => {
-          console.error("오류:", error.message);
-      });
-     }
+        setTimeout(() => {
+          setMsgOptionsState(false);
+        }, 1000);
+      } else {
+        const socket = io('http://localhost:3001', { transports: ["websocket"] });
+
+        const targetIds = Array.from(selectedUsers);
+
+        const createPrivateRoomPayload = {
+          userId: user.userID,
+          content: "",
+          invitedUserIds: targetIds,
+          hostUserId: null,
+          name: null
+        };
+
+        socket.emit("createPrivateRoom", createPrivateRoomPayload);
+
+        console.log(createPrivateRoomPayload);
+
+
+        socket.on("roomCreated", (data) => {
+          console.log("Room Created:", data);
+        });
+      }
+
+      setSelectedUsers(new Set());
+      setChatTitle("");
+      setIsWholeMemberChecked(false);
+      setSearchQuery("");
+      closeModal();
 
     } catch (error) {
       console.error('Error creating chat room:', error);
@@ -262,7 +272,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
 
   return (
     <CustomModal
-      isOpen={ChatModalOpenState.openState}
+      isOpen={SideModalOpenState}
       onClose={() => {
         closeModal();
         setSelectedUsers(new Set());
@@ -504,4 +514,4 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   );
 };
 
-export default NewChatModal;
+export default SideChatModal;

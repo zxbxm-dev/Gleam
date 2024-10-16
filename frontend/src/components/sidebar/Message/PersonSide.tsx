@@ -60,7 +60,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
         setSelectedRoomId({
           roomId: Number(matchingRoom.roomId),
           isGroup: matchingRoom.isGroup
-      });
+        });
       }
     }
   }, [selectedUserId]);
@@ -88,11 +88,6 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     관리부: ["관리팀", "지원팀", "시설팀"],
   };
 
-  const RndDepartments = [
-    "알고리즘 연구실",
-    "동형분석 연구실",
-    "블록체인 연구실",
-  ];
 
   const RndDepartmentTeams: { [key: string]: string[] } = {
     "알고리즘 연구실": ["암호 연구팀", "AI 연구팀"],
@@ -100,7 +95,11 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
   };
 
-
+  const rndResearchLabs: { [key: string]: string[] } = {
+    "알고리즘 연구실": ["암호 연구팀", "AI 연구팀"],
+    "동형분석 연구실": ["동형분석 연구팀"],
+    "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
+  };
   return (
     <div>
       <ul className="Sidebar-Ms">
@@ -123,7 +122,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                 setSelectedRoomId({
                   roomId: -1,
                   isGroup: false
-              });
+                });
               }}
             >
               <div className="No-Left">
@@ -180,7 +179,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                               setSelectedRoomId({
                                 roomId: -1,
                                 isGroup: false
-                            });
+                              });
                             }}
                           >
                             <div className="No-Left">
@@ -238,7 +237,7 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                                   setSelectedRoomId({
                                     roomId: -1,
                                     isGroup: false
-                                });
+                                  });
                                 }}
                               >
                                 <div className="No-Left">
@@ -303,26 +302,148 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
                       setSelectedRoomId({
                         roomId: -1,
                         isGroup: false
-                    });
+                      });
                     }}
                   >
                     <div className="No-Left">
-                      <div
-                        className="Border"
-                      // style={{ border: "2px solid red" }}
-                      >
+                      <div className="Border">
                         <img
                           src={person.attachment ? person.attachment : UserIcon_dark}
-                          alt={`${person.username}`}
+                          alt={person.username}
                         />
                       </div>
                       {person.username} &nbsp;|&nbsp; {person.position}
-                      {user.userID === person.userId &&
+                      {user.userID === person.userId && (
                         <img className="Message-Me" src={MessageMe} alt="Message Me" />
-                      }
+                      )}
                     </div>
                   </li>
                 ))}
+
+              {Object.keys(rndResearchLabs).map((department) => (
+                <li className="DeptTeams" key={department}>
+                  <button
+                    className="downTeamBtn"
+                    onClick={() => toggleTeamExpansion(department)}
+                  >
+                    {expandedTeams[department] ? (
+                      <img src={MessageArrow_down} alt="down" />
+                    ) : (
+                      <img src={MessageArrow_right} alt="right" />
+                    )}{" "}
+                    {department}
+                  </button>
+                  {expandedTeams[department] && (
+                    <ul className="DeptDown">
+                      {rndResearchLabs[department] && (
+                        <ul>
+                          {personData.map(
+                            (person) =>
+                              person.department === department &&
+                              !(person.team) && (
+                                <li
+                                  key={person.userId}
+                                  className={`No-dept ${selectedUserId === person.userId ? "selected" : ""}`}
+                                  onClick={() => {
+                                    onPersonClick(
+                                      person.username,
+                                      person.team,
+                                      person.department,
+                                      person.position,
+                                      person.userId
+                                    );
+                                    setSelectedUserId(person.userId);
+                                    setSelectedUserIdstate({ userID: person.userId });
+                                    setSelectedRoomId({
+                                      roomId: -1,
+                                      isGroup: false
+                                    });
+                                  }}
+                                >
+                                  <div className="No-Left">
+                                    <div
+                                      className="Border"
+                                    // style={{ border: "2px solid red" }}
+                                    >
+                                      <img
+                                        src={person.attachment ? person.attachment : UserIcon_dark}
+                                        alt={`${person.username}`}
+                                      />
+                                    </div>
+                                    {person.username} &nbsp;|&nbsp; {person.position}
+                                    {user.userID === person.userId &&
+                                      <img className="Message-Me" src={MessageMe} alt="Message Me" />
+                                    }
+                                  </div>
+                                </li>
+                              )
+                          )}
+                        </ul>
+                      )}
+                      {rndResearchLabs[department]?.map((team) => (
+                        <li key={team}>
+                          <button
+                            className="downTeamBtn"
+                            onClick={() => toggleTeamExpansion(team)}
+                          >
+                            {expandedTeams[team] ? (
+                              <img src={MessageArrow_down} alt="down" />
+                            ) : (
+                              <img src={MessageArrow_right} alt="right" />
+                            )}{" "}
+                            {team}
+                          </button>
+                          {expandedTeams[team] && (
+                            <ul>
+                              {personData.map(
+                                (person) =>
+                                  person.department === department &&
+                                  person.team === team && (
+                                    <li
+                                      key={person.userId}
+                                      className={`No-dept ${selectedUserId === person.userId ? "selected" : ""}`}
+                                      onClick={() => {
+                                        onPersonClick(
+                                          person.username,
+                                          person.team,
+                                          person.department,
+                                          person.position,
+                                          person.userId
+                                        );
+                                        setSelectedUserId(person.userId);
+                                        setSelectedUserIdstate({ userID: person.userId });
+                                        setSelectedRoomId({
+                                          roomId: -1,
+                                          isGroup: false
+                                        });
+                                      }}
+                                    >
+                                      <div className="No-Left">
+                                        <div
+                                          className="Border"
+                                        // style={{ border: "2px solid red" }}
+                                        >
+                                          <img
+                                            src={person.attachment ? person.attachment : UserIcon_dark}
+                                            alt={`${person.username}`}
+                                          />
+                                        </div>
+                                        {person.username} &nbsp;|&nbsp; {person.position}
+                                        {user.userID === person.userId &&
+                                          <img className="Message-Me" src={MessageMe} alt="Message Me" />
+                                        }
+                                      </div>
+                                    </li>
+                                  )
+                              )}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
             </ul>
           )}
         </li>
