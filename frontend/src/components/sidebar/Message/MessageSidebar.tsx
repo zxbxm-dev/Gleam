@@ -8,7 +8,8 @@ import {
   selectedRoomIdState,
   SideChatModalstate,
   PeopleModalState,
-  MsgOptionState
+  MsgOptionState,
+  MsgNewUpdateState
 } from "../../../recoil/atoms";
 
 import {
@@ -48,6 +49,7 @@ const MessageSidebar: React.FC = () => {
   const user = useRecoilValue(userState);
   const setSelectedPerson = useSetRecoilState(selectedPersonState);
   const MsguserState = useRecoilValue(userStateMessage);
+  const setMsgNewUpdate = useSetRecoilState(MsgNewUpdateState);
   const [newChatChosenUsers, setNewChatChosenUsers] = useState<Person[] | null>(
     null
   );
@@ -56,6 +58,7 @@ const MessageSidebar: React.FC = () => {
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const setUserStatetoServer = useSetRecoilState(userStateMessage);
   const msgOptionState = useRecoilValue(MsgOptionState);
+  const isNewMessage = useRecoilValue(MsgNewUpdateState);
   const location = useLocation();
   const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(SideChatModalstate);
@@ -137,18 +140,26 @@ const MessageSidebar: React.FC = () => {
 
     // 채팅 방 데이터 수신
     socket.on('chatRooms', (data: ChatRoom[]) => {
-      // Map data to match ChatRoom type
-      const updatedRooms = data.map((room: ChatRoom, index: number) => {
-        const title = room.userTitle?.[userId]?.username || room.title;
-        return {
-          ...room,
-          title,
-          key: index
-        };
-      });
+      const updatedRooms = data
+        .map((room: ChatRoom, index: number) => {
+          const title = room.userTitle?.[userId]?.username || room.title;
+          return {
+            ...room,
+            title,
+            key: index
+          };
+        })
+        .sort((a, b) => {
+          // updatedAt이 존재하는 경우에만 비교, 없으면 0 (정렬 영향 없음)
+          const dateA = a.dataValues?.updatedAt ? new Date(a.dataValues?.updatedAt).getTime() : 0;
+          const dateB = b.dataValues?.updatedAt ? new Date(b.dataValues?.updatedAt).getTime() : 0;
+    
+          return dateB - dateA; // b가 더 크면 위로 오게
+        });
       setChatRooms(updatedRooms);
-      console.log("업데이트된 채팅 방:", updatedRooms);
+      setMsgNewUpdate(false);
     });
+    
 
     socket.on('disconnect', () => {
       console.log('[Client] Socket 서버와의 연결 끊김');
@@ -168,7 +179,7 @@ const MessageSidebar: React.FC = () => {
       socket.off('connect_error');
       socket.close();
     };
-  }, [user.userID, activeTab, msgOptionState]);
+  }, [user.userID, activeTab, msgOptionState, isNewMessage]);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
