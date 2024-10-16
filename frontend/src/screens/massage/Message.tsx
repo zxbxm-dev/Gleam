@@ -36,7 +36,8 @@ const Message: React.FC = () => {
       // console.log("클라이언트 저장된 방 ID:", roomId);
       setSelectedRoomId({
         roomId:roomId,
-        isGroup:false
+        isGroup:false,
+         OtherTitle:""
       });
     }
   }, [setSelectedRoomId]);

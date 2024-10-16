@@ -63,7 +63,7 @@ const MessageSidebar: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setSelectedRoomId({ roomId: -2, isGroup: false });
+      setSelectedRoomId({ roomId: -2, isGroup: false, OtherTitle:"" });
     }, 300);
 
     return () => clearTimeout(timer);

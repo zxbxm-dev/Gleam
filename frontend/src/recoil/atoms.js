@@ -61,7 +61,8 @@ export const selectedRoomIdState = atom({
   key: 'selectedRoomIdState',
   default: {
     roomId: -2,
-    isGroup:false
+    isGroup:false,
+    OtherTitle:""
   },
 });
 

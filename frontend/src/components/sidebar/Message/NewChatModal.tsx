@@ -42,7 +42,6 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   const user = useRecoilValue(userState);
   const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
   const UsePeopleState = useRecoilValue(PeopleModalState);
-  const [MsgOptionsState, setMsgOptionsState] = useRecoilState(MsgOptionState);
   const UseModalUserState = useRecoilValue(PeopleModalState);
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
   const [additionalSelectedUsers, setAdditionalSelectedUsers] = useState<Set<string>>(new Set());
@@ -152,11 +151,6 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       return;
     }
 
-    if (selectedUsers.size > 2 && !chatTitle) {
-      alert("채팅방 이름을 입력해주세요.");
-      return;
-    }
-
     const targetIds = Array.from(selectedUsers);
 
     // userTitle의 타입 정의
@@ -204,7 +198,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     };
 
     try {
-     if(UseModalUserState.joinNumber>2){
+     if(selectedRoomId.isGroup===true){
       const socket = io('http://localhost:3001', { transports: ["websocket"] });
 
       // 방 ID 설정 (여기서 실제 방 ID로 대체)
@@ -213,6 +207,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   
       // 채팅방 참여 요청
       socket.emit("joinRoom", roomId, userIds);
+  console.log(roomId, userIds);
   
       // 방 참여 결과 처리
       socket.on("roomJoined", (data) => {
@@ -224,26 +219,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
           console.error("오류:", error.message);
       });
      } else {
-      const socket = io('http://localhost:3001', { transports: ["websocket"] });
-
-      const targetIds = Array.from(selectedUsers);
-
-      const createPrivateRoomPayload = {
-        userId: user.userID,
-        content: "",
-        invitedUserIds: targetIds,
-        hostUserId: null,
-        name: null
-      };
-
-      socket.emit("createPrivateRoom", createPrivateRoomPayload);
-
-      console.log(createPrivateRoomPayload);
-
-
-      socket.on("roomCreated", (data) => {
-        console.log("Room Created:", data);
-      });
+      await createRoom(payload);
      }
 
     } catch (error) {
@@ -253,6 +229,8 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   useEffect(() => {
     console.log("추가로 선택된 사람:", Array.from(additionalSelectedUsers));
   }, [additionalSelectedUsers]);
+
+
 const handlePersonClick = (person: Person) => {
   if (person.username === user.username) return;
 
@@ -318,15 +296,17 @@ const handlePersonClick = (person: Person) => {
       <div className="body-container New-Chat-Room-Body">
         <div className="New-Chat-Room">
           <input
-            placeholder={
-              selectedUsers.size === 2
+           placeholder={
+            selectedRoomId.isGroup===true
+              ? selectedRoomId.OtherTitle
+              : selectedUsers.size === 2
                 ? "1:1 대화방"
-                : "(필수) 대화방 이름을 입력해주세요."
-            }
+                : selectedRoomId.OtherTitle
+          }
             className="TextInputCon"
             value={chatTitle}
             onChange={e => setChatTitle(e.target.value)}
-            disabled={selectedUsers.size === 2}
+            disabled={selectedUsers.size === 2 || UseModalUserState.joinNumber > 2}
           />
         </div>
         <div className="New-Chat-Room">

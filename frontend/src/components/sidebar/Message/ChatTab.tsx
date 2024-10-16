@@ -109,10 +109,12 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const position = person ? person.position : "";
     const roomId = chatRoom.dataValues?.roomId ?? -1;
     const isGroup = chatRoom.dataValues?.isGroup ?? false;
+    const OtherTitle = chatRoom?.othertitle ?? "";
 
     setSelectedRoomId({
       roomId: roomId,
-      isGroup: isGroup
+      isGroup: isGroup,
+      OtherTitle:OtherTitle
     });
 
     if (chatRoom.isSelfChat) {

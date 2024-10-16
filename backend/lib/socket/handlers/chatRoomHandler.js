@@ -155,7 +155,7 @@ const createPrivateRoom = async (io, socket, data) => {
 
       return;
     }
-    
+
     const invitedUserId = invitedUserIds[0];
     const user = await getUserById(userId);
     const targetUser = await getUserById(invitedUserId);
@@ -391,7 +391,6 @@ const joinRoom = async (io, socket, roomId, userIds) => {
       }
 
       const chatRoom = await ChatRoom.findOne({ where: { roomId } });
-
       if (chatRoom) {
           for (const userId of userIds) {
               const isMember = await ChatRoomParticipant.findOne({
@@ -413,7 +412,7 @@ const joinRoom = async (io, socket, roomId, userIds) => {
                   });
               }
           }
-
+          
           socket.join(roomId.toString()); // 방에 참여
 
           socket.emit("roomJoined", { roomId });
