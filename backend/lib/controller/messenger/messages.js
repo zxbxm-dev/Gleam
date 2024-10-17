@@ -126,4 +126,24 @@ const editChatRoom = async (req, res) => {
   }
 };
 
-module.exports = { createChatRoom, editChatRoom };
+const AdminChange = async (req, res) => {
+  const { roomId, newAdminId, currentAdminId } = req.body;
+
+  if (!roomId || !newAdminId || !currentAdminId) {
+    return res.status(400).json({ message: "모든 매개변수를 제공해야 합니다." });
+  }
+
+  try {
+    await chatRoomData.update(
+      { hostUserId: newAdminId },
+      { where: { roomId } }
+    );
+
+    res.status(200).json({ message: "관리자가 성공적으로 변경되었습니다." });
+  } catch (error) {
+    console.error("관리자 변경 오류:", error);
+    res.status(500).json({ message: "관리자 변경에 실패했습니다." });
+  }
+};
+
+module.exports = { createChatRoom, editChatRoom, AdminChange };
