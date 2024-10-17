@@ -554,6 +554,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [targetMessageId]);
 
+
   return (
     <div
       className="Message-container"
@@ -581,12 +582,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                             <img src={getFileIcon(msg.content)} alt="File Icon" />
                           </div>
                         )}
-                        <div
-                          key={msg.messageId}
-                          ref={(el) => (messageRefs.current[msg.messageId] = el)}
-                        >
-                          {msg.content || ""}
-                        </div>
+                        {msg.content ? (
+                          <div
+                            key={msg.messageId}
+                            ref={(el) => (messageRefs.current[msg.messageId] = el)}
+                            dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br />').replace(/ {2,}/g, '&nbsp;&nbsp;') }}
+                          />
+                        ) : ""}
+
                         {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
                         {msg.fileValue === 1 && (
                           <div className='FileDown' onClick={() => MessageGetFile(msg.messageId, msg)}>
@@ -635,7 +638,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
             </div> */}
           </div>
         )
-      )
+        )
       )}
       {selectedRoomId.roomId !== -2 && (
         <div className="Message-Input">
