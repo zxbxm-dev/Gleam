@@ -105,4 +105,25 @@ const createChatRoom = async (req, res) => {
   }
 };
 
-module.exports = { createChatRoom };
+
+const editChatRoom = async (req, res) => {
+  const { othertitle, profileColor } = req.body;
+  const { roomId } = req.params;
+
+  if(!roomId) {
+    return res.status(400).json({ message: "회의실 예약 ID가 제공되지 않았습니다." });
+  }  
+
+  try {
+    await chatRoomData.update(
+      { title: othertitle, profileColor: profileColor },
+      { where: { roomId } }
+    );
+    res.status(201).json({message: "대화방 프로필 설정이 변경되었습니다."});
+  } catch (error) {
+    console.log("대화방 프로필 설정 변경에 실패하였습니다.");
+    res.status(500).json({message: "대화방 프로필 설정 변경에 실패하였습니다."});
+  }
+};
+
+module.exports = { createChatRoom, editChatRoom };

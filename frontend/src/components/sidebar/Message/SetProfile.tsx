@@ -1,12 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomModal from "../../modal/CustomModal";
-import { useRecoilValue } from "recoil";
-import { selectedRoomIdState } from "../../../recoil/atoms";
+import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
+import { selectedRoomIdState, ChatRoomProfileState } from "../../../recoil/atoms";
 import { changeRoomData } from "../../../services/message/MessageApi";
+
+export interface ChatRoom {
+    roomId: number;
+    isGroup: boolean;
+    hostUserId: string;
+    invitedUserIds: string[];
+    title: string;
+    othertitle: string;
+    isSelfChat: boolean;
+    unreadCount: number;
+    userTitle?: {
+      [userId: string]: {
+        userId: string;
+        username: string;
+        company: string | null;
+        department: string | null;
+        team: string | null;
+        position: string | null;
+        spot: string | null;
+        attachment: string | null;
+      };
+    };
+    subContent: string;
+    profileColor: string;
+    profileImage: string | null;
+    crt: string;
+    upt: string;
+    dataValues?: {
+      roomId: number;
+      isGroup: boolean;
+      hostUserId: string;
+      invitedUserIds: string[];
+      title: string;
+      userTitle?: { [userId: string]: string };
+      subContent: string;
+      profileColor: string;
+      profileImage: string | null;
+      crt: string;
+      upt: string;
+      updatedAt: string;
+    };
+  }
 
 interface SetProfileProps {
     openProfile: boolean;
     setOpenProfile: React.Dispatch<React.SetStateAction<boolean>>;
+    selectedChatRoom: ChatRoom | null;
 }
 
 const ProfilePalette = [
@@ -22,10 +65,23 @@ const ProfilePalette = [
     { color: "#6A5644", borderColor: "#59422D" },
 ];
 
-const SetProfile: React.FC<SetProfileProps> = ({ openProfile, setOpenProfile }) => {
+const SetProfile: React.FC<SetProfileProps> = ({ openProfile, setOpenProfile, selectedChatRoom }) => {
     const [paletteIndex, setPaletteIndex] = useState<number | null>(null);
     const [profileName, setProfileName] = useState<string>("");
+    const [profileColor, setProfileColor] = useState<string>(""); // profileColor 상태 추가
     const selectedRoomId = useRecoilValue(selectedRoomIdState);
+    const setChatRoomProfileState = useSetRecoilState(ChatRoomProfileState);
+
+    useEffect(() => {
+        if (selectedChatRoom && selectedChatRoom.dataValues) {
+            setProfileName(selectedChatRoom.dataValues.title);
+            setProfileColor(selectedChatRoom.dataValues.profileColor);
+            const index = ProfilePalette.findIndex(
+                (palette) => palette.color === selectedChatRoom?.dataValues?.profileColor
+            );
+            setPaletteIndex(index !== -1 ? index : null); // paletteIndex 설정
+        }
+    }, [selectedChatRoom]);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setProfileName(e.target.value);
@@ -40,14 +96,14 @@ const SetProfile: React.FC<SetProfileProps> = ({ openProfile, setOpenProfile }) 
         const payload = {
             roomId: selectedRoomId.roomId,
             othertitle: profileName,
-            profileColor: ProfilePalette[paletteIndex].color
+            profileColor: ProfilePalette[paletteIndex].color,
         };
 
         console.log("Sending payload:", payload);
 
         try {
             await changeRoomData(payload.roomId, payload.othertitle, payload.profileColor);
-
+            setChatRoomProfileState(true);
             handleCloseModal();
         } catch (error) {
             console.error("프로필 업데이트 실패:", error);
@@ -57,6 +113,7 @@ const SetProfile: React.FC<SetProfileProps> = ({ openProfile, setOpenProfile }) 
 
     const handleCloseModal = () => {
         setOpenProfile(false);
+        setProfileName('');
     };
 
     return (
@@ -107,3 +164,4 @@ const SetProfile: React.FC<SetProfileProps> = ({ openProfile, setOpenProfile }) 
 };
 
 export default SetProfile;
+
