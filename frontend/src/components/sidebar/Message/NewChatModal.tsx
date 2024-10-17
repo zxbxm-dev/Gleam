@@ -283,6 +283,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       footer1="확인"
       footer1Class="back-green-btn"
       onFooter1Click={() => {
+        closeModal();
         handleSubmit();
         setSelectedUsers(new Set());
       }}
