@@ -9,7 +9,8 @@ import {
   SideChatModalstate,
   PeopleModalState,
   MsgOptionState,
-  MsgNewUpdateState
+  MsgNewUpdateState,
+  ChatRoomProfileState
 } from "../../../recoil/atoms";
 
 import {
@@ -57,8 +58,10 @@ const MessageSidebar: React.FC = () => {
   const [borderColor, setBorderColor] = useState<string>("");
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const setUserStatetoServer = useSetRecoilState(userStateMessage);
+  const setChatRoomProfileState = useSetRecoilState(ChatRoomProfileState);
   const msgOptionState = useRecoilValue(MsgOptionState);
   const isNewMessage = useRecoilValue(MsgNewUpdateState);
+  const isChatRoomProfile = useRecoilValue(ChatRoomProfileState);
   const location = useLocation();
   const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
   const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(SideChatModalstate);
@@ -158,6 +161,7 @@ const MessageSidebar: React.FC = () => {
         });
       setChatRooms(updatedRooms);
       setMsgNewUpdate(false);
+      setChatRoomProfileState(false);
     });
     
 
@@ -179,7 +183,7 @@ const MessageSidebar: React.FC = () => {
       socket.off('connect_error');
       socket.close();
     };
-  }, [user.userID, activeTab, msgOptionState, isNewMessage]);
+  }, [user.userID, activeTab, msgOptionState, isNewMessage, isChatRoomProfile]);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -327,7 +331,7 @@ const MessageSidebar: React.FC = () => {
   const openModal = () => {
     setOpenchatModal(true);
   };
-
+  
   return (
     <div className="message-sidebar">
       <div className="tab-container">

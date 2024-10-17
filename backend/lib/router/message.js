@@ -7,6 +7,7 @@ module.exports = (app) => {
 
   // 단채 채팅방 생성 라우트
   router.post("/rooms", upload.single("profileImage"), messageConstroller.createChatRoom);
+  router.put("/putProfileData/:roomId", messageConstroller.editChatRoom);
 
   app.use("/api", router);
 };

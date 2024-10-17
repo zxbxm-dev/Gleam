@@ -17,8 +17,7 @@ const changeAdminApi = (roomId, newAdminId, currentAdminId) => {
 
 //단체방 프로필 수정
 const changeRoomData = (roomId, othertitle, profileColor) => {
-  return api.put("/putProfileData", {
-    roomId,
+  return api.put(`/putProfileData/${roomId}`, {
     othertitle,
     profileColor,
   });

@@ -95,7 +95,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   setVisiblePopoverIndex
 }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
-  const [selectedChatRoom, setSelectedChatRoom] = useState<number | null>(null);
+  const [selectedChatRoom, setSelectedChatRoom] = useState<ChatRoom | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -151,6 +151,11 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const lastWord = title.trim().split(" ").pop();
     const person = personData?.find((person) => person.username === lastWord);
     return person ? person.attachment : "";
+  };
+
+  const handleChatRoomProfileClick = (chatRoom: ChatRoom) => {
+    setSelectedChatRoom(chatRoom);  // 선택된 대화방 정보 저장
+    setOpenProfile(true);  // 프로필 설정 열기
   };
 
   return (
@@ -268,7 +273,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
                       >
                         <span onClick={() => handleLeaveRoom(roomId)}>대화 나가기</span>
                         {chatRoom.dataValues?.isGroup && (
-                          <span onClick={() => setOpenProfile(true)}>
+                          <span onClick={() => handleChatRoomProfileClick(chatRoom)}>
                             대화방 프로필 설정
                           </span>
                         )}
@@ -280,7 +285,11 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             </div>
           );
         })}
-      <SetProfile openProfile={openProfile} setOpenProfile={setOpenProfile} />
+      <SetProfile 
+        openProfile={openProfile}
+        setOpenProfile={setOpenProfile}
+        selectedChatRoom={selectedChatRoom}
+      />
     </div>
   );
 };

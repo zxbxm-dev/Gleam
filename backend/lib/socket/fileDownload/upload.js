@@ -4,7 +4,7 @@ const fs = require("fs-extra");
 
 const storage = multer.diskStorage({
   destination: async function (req, file, cb) {
-    const uploadDir = "../../../uploads/message";
+    const uploadDir = "uploads/message";
 
     // 업로드 디렉토리가 없으면 생성
     try {
