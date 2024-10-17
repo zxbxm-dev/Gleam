@@ -66,13 +66,14 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
     fetchData();
   }, [ChatModalOpenState.joinUser, ChatModalOpenState.hostId, isNewMessage]);
 
+  //관리자 변경
   const changeAdmin = async (newAdminId: string) => {
     try {
       const roomId = selectedRoomId.roomId;
       const currentAdminId = ChatModalOpenState.hostId;
 
       await changeAdminApi(roomId, newAdminId, currentAdminId);
-
+      setMsgNewUpdate(true);
     } catch (error) {
       console.error("Error changing admin:", error);
     }
