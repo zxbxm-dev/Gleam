@@ -134,6 +134,6 @@ export const MsgNewUpdateState = atom({
 });
 
 export const ChatRoomProfileState = atom({
-  key: 'ChatRoomProfileUpdate',
+  key: 'ChatRoomProfileState',
   default: false,
 });

@@ -125,6 +125,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [files, setFiles] = useState<File | null>(null);
   const [readMsg, setReadMsg] = useState("");
   const setMsgNewUpdate = useSetRecoilState(MsgNewUpdateState);
+  const isNewMessage = useRecoilValue(MsgNewUpdateState);
   console.log(readMsg);
 
   const MessageGetFile = (messageId: number, msg: any) => {
@@ -398,7 +399,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     return () => {
       socket.disconnect();
     };
-  }, [selectedRoomId, user.userID, readMsg]);
+  }, [selectedRoomId, user.userID, readMsg, isNewMessage]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
