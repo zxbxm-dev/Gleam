@@ -127,6 +127,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const setMsgNewUpdate = useSetRecoilState(MsgNewUpdateState);
   const isNewMessage = useRecoilValue(MsgNewUpdateState);
   console.log(readMsg);
+console.log(selectedPerson);
 
   const MessageGetFile = (messageId: number, msg: any) => {
     console.log("Message content:", msg);
@@ -171,7 +172,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       });
   };
 
-
   //메신저 보내기 Socket
   const handleSendMessage = useCallback(() => {
     const inputElement = document.querySelector(".text-input") as HTMLDivElement;
@@ -194,6 +194,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         invitedUserIds: [selectedPerson.userId],
         userId: user.id,
         content: messageContent,
+        receiverId: selectedPerson.userId,
         hostUserId: null,
         name: null,
       };
@@ -202,12 +203,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         roomId: null,
         userId: user.id,
         content: messageContent,
+        receiverId: selectedPerson.userId,
       };
     } else {
       messageData = {
         roomId: selectedRoomId.roomId,
         senderId: user.id,
         content: messageContent,
+        receiverId: selectedPerson.userId,
       };
     }
 
@@ -262,6 +265,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       setMsgNewUpdate(true);
     } else {
       socket.emit("sendMessage", messageData);
+      console.log(messageData);
+      
       setMsgNewUpdate(true);
     }
   };
