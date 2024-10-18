@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      receiverId:{
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       roomId: {
         type: DataTypes.INTEGER,
         references: {

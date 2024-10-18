@@ -1,5 +1,6 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
+const notificationHandler = require("../handlers/notificationHandlers");
 const { Op } = require("sequelize");
 
 // 특정 사용자가 포함된 채팅방을 찾는 함수
@@ -353,7 +354,7 @@ const getChatHistory = async (socket, roomId) => {
 };
 
 // 채팅방의 모든 참가자에게 메시지를 전송하는 함수
-const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
+const sendMessageToRoomParticipants = async (io, roomId, content, senderId, receiverId) => {
   try {
     let room = await ChatRoom.findOne({ where: { roomId } });
 
@@ -370,6 +371,7 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
     const newMessage = await Message.create({
       roomId,
       userId: senderId,
+      receiverId,
       content,
     });
 
@@ -378,6 +380,7 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
       content: newMessage.content,
       roomId: newMessage.roomId,
       senderId: newMessage.userId,
+      receiverId: newMessage.receiverId,
       timestamp: newMessage.createdAt,
       fileValue: newMessage.filePath ? 1 : 0,
     };
@@ -390,7 +393,9 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId) => {
       { updatedAt: new Date() },
       { where: { roomId } }
     );
-  
+    
+    //새로운 메세지 데이터 생성 시 관련 데이터를 getNewMsg로 전달
+    await notificationHandler.getNewMsg(messageData);
   } catch (error) {
     console.error(`메시지 전송 오류 발생: ${error.message}`);
     throw new Error("메시지 전송 오류 발생");

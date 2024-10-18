@@ -9,12 +9,25 @@ module.exports = (io, socket) => {
   // 서버에서 메시지 전송 이벤트 처리
   socket.on("sendMessage", async (data) => {
   try {
-    await messageHandlers.sendMessageToRoomParticipants(io, data.roomId, data.content, data.senderId);
+    await messageHandlers.sendMessageToRoomParticipants(io, data.roomId, data.content, data.senderId, data.receiverId);
   } catch (error) {
     console.error(`메시지 전송 중 오류 발생: ${error.message}`);
     socket.emit("error", { message: error.message });
   }
 });
+
+//서버에서 메시지 수신 이벤트 처리
+//message 데이터베이스에 새로운 레코드가 생성 시 관련 사람에게 알림 전송하기
+
+// socket.on("receiveMessage", async (data) => {
+//   try{
+//     const userId = await getUserById(data.userId)
+//     await messageHandlers.receiveMessage(io, data.roomId, userId, data.content, data.senderId); // 사용자에게 메세지 수신 알람 보내기
+//   }catch(error){
+//     console.error(`메시지 전송 중 오류 발생 :", ${error.message}`);
+//     socket.emit("error", { message : error.message });
+//   }
+// })
 
 
   // 특정 채팅방의 과거 메시지 요청 처리
