@@ -58,7 +58,6 @@ const getUnreadMsg = async (socket, userId, roomId) => {
 };
 
 module.exports = {
-    requestUserData,
     getNewMsg,
     getUnreadMsg,
 };
