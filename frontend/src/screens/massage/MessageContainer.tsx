@@ -160,9 +160,11 @@ console.log(selectedPerson);
     const userId = user.id;
     const roomId = selectedRoomId.roomId;
     const content = files.name;
+    const receiverId = selectedPerson.userId;
 
     // 파일과 함께 메시지를 전송합니다.
-    messageFile(content, userId, roomId, files)
+    messageFile(content, userId, roomId, files, receiverId)
+
       .then(response => {
         console.log("File uploaded:", response.data);
         setServerMessages(response.data.content);
