@@ -6,7 +6,7 @@ exports.sendMessage = async (req, res) => {
   console.log('Message:', Message);
 
   try {
-    const { content, userId, roomId } = req.body;
+    const { content, userId, roomId, receiverId } = req.body;
     let filePath = null;
 
     if (req.file) {
@@ -18,6 +18,7 @@ exports.sendMessage = async (req, res) => {
       userId,
       roomId,
       filePath,
+      receiverId
     });
 
     // FileValue 설정

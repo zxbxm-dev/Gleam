@@ -24,12 +24,13 @@ const changeRoomData = (roomId, othertitle, profileColor) => {
 };
 
 //메신저 첨부파일 전송
-const messageFile = (content, userId, roomId, file) => {
+const messageFile = (content, userId, roomId, file, receiverId) => {
   return api.post("/messenger_upload", {
     content,
     userId,
     roomId,
-    file
+    file,
+    receiverId
   }, {
     headers: {
       'Content-Type': 'multipart/form-data'
