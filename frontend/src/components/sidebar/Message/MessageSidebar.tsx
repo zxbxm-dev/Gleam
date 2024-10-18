@@ -403,8 +403,8 @@ const MessageSidebar: React.FC = () => {
 
       <SideChatModal
         filteredData={filteredData}
-        setSelectedUsers={setSelectedUsers}
-        selectedUsers={selectedUsers}
+        // setSelectedUsers={setSelectedUsers}
+        // selectedUsers={selectedUsers}
       />
       <NewChatModal
         filteredData={filteredData}

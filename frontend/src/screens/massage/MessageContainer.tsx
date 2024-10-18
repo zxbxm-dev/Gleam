@@ -529,7 +529,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     setTimeout(() => {
       setMsgOptionsState(false);
-    }, 1000);
+    }, 500);
 
   }, [user.id, readMsg]);
 
