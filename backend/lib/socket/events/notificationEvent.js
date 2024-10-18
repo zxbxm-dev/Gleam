@@ -1,5 +1,4 @@
-const notificationHandlers = require("../handler/notificationHandlers");
-const { getNewMsg, getUnreadMsg } = require("../handlers/statusHandlers");
+const notificationHandlers = require("../handlers/notificationHandlers")
 
 module.exports = (io, socket) => {
     if(!socket) {
@@ -8,19 +7,7 @@ module.exports = (io, socket) => {
     }
 };
 
-//메세지의 sender와 receiver 의 정보를 요청하는 함수
-socket.on("requestUserData", async (roomId, sender,receiver) => {
-    try{
-        if(!roomId) {
-            throw new Error ("채팅방 ID가 제공되지 않았습니다.");
-        }
-
-        await notificationHandlers.requestUserData(socket,roomId,sender,receiver);
-
-    }catch(error){
-        console.error("메세지 수신 , 발신 사용자 정보 요청 처리 중 에러 발생")
-    }
-})
+module.exports = (noti, socket) => {
 
 //사용자에게 새로운 메세지가 전달됐을 때 
 socket.on("getNewMsg",async (userId) => {
@@ -29,7 +16,7 @@ socket.on("getNewMsg",async (userId) => {
             throw new Error("사용자 ID가 제공되지 않았습니다.");
         }
 
-        await notificationHandlers.getNewMsg(socket,userId)
+        await notificationHandlers.getNewMsg(messageData)
 
     }catch(error) {
         console.error("메세지알림 요청 처리 중 에러 발생 : ", error);
@@ -47,5 +34,12 @@ socket.on("unreadMsg",async(userId) => {
     }catch(error) {
         console.error("메세지알림 요청 처리 중 오류 발생: ",error);
         socket.emit("error", { message : "메세지 알림을 가져오는 중 오류가 발생했습니다."});
-    }
-});
+      };
+    });
+
+    //noti 네임스페이스 연결 해제 처리 
+    socket.on('disconnect', () => {
+        console.log(" noti 네임스페이스 접속 해제");
+    });
+};
+
