@@ -70,7 +70,7 @@ function App() {
     {
       element: <ChatLayout />,
       children: [
-        { path: "/message", element: <Message /> },
+        { path: "/messanger", element: <Message /> },
       ],
     },
     {

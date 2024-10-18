@@ -115,13 +115,13 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     setSelectedRoomId({
       roomId: roomId,
       isGroup: isGroup,
-      OtherTitle:OtherTitle
+      OtherTitle: OtherTitle
     });
 
     if (chatRoom.isSelfChat) {
-      onPersonClick(user.username ?? "", user.team, user.department, user.position, user.userID);
+      onPersonClick(user.username ?? "", user.team, user.department, user.position, user.userId);
     } else {
-      onPersonClick("", chatRoom.othertitle ?? "", "", position, chatRoom.hostUserId);
+      onPersonClick(chatRoom.othertitle ?? "", "", chatRoom.hostUserId, position, person?.userId ?? "");
     }
 
     setIsNotibarActive(false);
@@ -287,7 +287,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
             </div>
           );
         })}
-      <SetProfile 
+      <SetProfile
         openProfile={openProfile}
         setOpenProfile={setOpenProfile}
         selectedChatRoom={selectedChatRoom}

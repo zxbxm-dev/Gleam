@@ -41,7 +41,7 @@ const Header = () => {
 
   let messageWindow: Window | null = null;
   const CHECK_INTERVAL = 1000; // 1초마다 상태 확인
-  
+
   const openMessageWindow = () => {
     if (messageWindow && !messageWindow.closed) {
       // 창이 열려있으므로 세션 스토리지에 true 저장
@@ -49,14 +49,14 @@ const Header = () => {
       messageWindow.focus();
     } else {
       // 새 창을 열고 세션 스토리지에 true 저장
-      messageWindow = window.open('http://localhost:3000/message', '_blank') as Window;
+      messageWindow = window.open('http://localhost:3000/messanger', '_blank') as Window;
       sessionStorage.setItem('messageWindowOpen', 'true');
     }
-    
+
     // 창이 닫히는 것을 주기적으로 확인
     startCheckingWindowStatus();
   };
-  
+
   const startCheckingWindowStatus = () => {
     setInterval(() => {
       if (messageWindow && messageWindow.closed) {
@@ -69,7 +69,7 @@ const Header = () => {
       }
     }, CHECK_INTERVAL);
   };
-  
+
   // 페이지 로드 시 창 상태를 초기화합니다.
   startCheckingWindowStatus();
 

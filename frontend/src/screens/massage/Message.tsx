@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { userState, selectedPersonState, selectedRoomIdState } from '../../recoil/atoms';
+import {
+  MessageIcon
+} from "../../assets/images/index";
 import Header from './MessageHeader';
 import MessageContainer from './MessageContainer';
 import PeopleManagement from './PeopleManagement';
 import MessageSearch from './MessageSearch';
 import io from 'socket.io-client';
+import { Helmet } from "react-helmet";
 
 export interface Message {
   name: string;
@@ -28,6 +32,17 @@ const Message: React.FC = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
+
+
+  //메신저 창이 열렸을 경우 Title 및 favicon 변경
+  useEffect(() => {
+    document.title = "Gleam Messenger";
+
+    const favicon = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    if (favicon) {
+      favicon.href = MessageIcon;
+    }
+  }, []);
 
   useEffect(() => {
     const storedRoomId = localStorage.getItem('latestChatRoomId');

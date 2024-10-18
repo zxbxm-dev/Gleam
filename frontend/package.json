@@ -28,6 +28,7 @@
     "react": "^18.2.0",
     "react-datepicker": "^6.9.0",
     "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "react-hook-form": "^7.51.5",
     "react-js-pagination": "^3.0.3",
     "react-loading-skeleton": "^3.4.0",
@@ -69,7 +70,8 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@types/react-datepicker": "^6.2.0"
+    "@types/react-datepicker": "^6.2.0",
+    "@types/react-helmet": "^6.1.11"
   },
   "proxy": "http://localhost:3001"
 }
