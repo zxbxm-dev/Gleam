@@ -9,7 +9,6 @@ import {
 import { selectedRoomIdState, userState, selectUserID } from "../../../recoil/atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { ChatRoom } from "./ChatTab";
-import io, { Socket } from 'socket.io-client';
 
 interface PersonDataTabProps {
   personData: Person[] | null;

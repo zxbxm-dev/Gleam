@@ -9,7 +9,6 @@ import SetProfile from "./SetProfile";
 import { Person } from "../MemberSidebar";
 import { selectedRoomIdState, selectUserID, userState } from "../../../recoil/atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
-import io from 'socket.io-client';
 
 export interface ChatRoom {
   roomId: number;

@@ -14,7 +14,7 @@ import {
 import CustomModal from "../../modal/CustomModal";
 import { createRoom } from "../../../services/message/MessageApi";
 import { Person } from "../MemberSidebar";
-import io from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { PersonData } from "../../../services/person/PersonServices";
 
 interface NewChatModalProps {
@@ -25,10 +25,12 @@ interface NewChatModalProps {
       };
     };
   };
+  socket: Socket<any> | null;
 }
 
 const SideChatModal: React.FC<NewChatModalProps> = ({
   filteredData,
+  socket
 }) => {
   const [isWholeMemberChecked, setIsWholeMemberChecked] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -197,23 +199,23 @@ const SideChatModal: React.FC<NewChatModalProps> = ({
           setMsgOptionsState(false);
         }, 500);
       } else {
-        const socket = io('http://localhost:3001', { transports: ["websocket"] });
+        if (socket) {
+          const targetId = Array.from(selectedUsers).map(user => user.userId);
 
-        const targetId = Array.from(selectedUsers).map(user => user.userId);
+          const data = {
+            userId: user.userID,
+            content: "",
+            invitedUserIds: targetId,
+            hostUserId: null,
+            name: null
+          };
 
-        const data = {
-          userId: user.userID,
-          content: "",
-          invitedUserIds: targetId,
-          hostUserId: null,
-          name: null
-        };
+          socket.emit("createPrivateRoom", data);
 
-        socket.emit("createPrivateRoom", data);
-
-        socket.on("roomCreated", (data: any) => {
-          console.log("Room Created:", data);
-        });
+          socket.on("roomCreated", (data: any) => {
+            console.log("Room Created:", data);
+          });
+        }
       }
 
       setMsgOptionsState(true);

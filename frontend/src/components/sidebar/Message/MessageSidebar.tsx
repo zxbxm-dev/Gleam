@@ -29,6 +29,7 @@ import { ChatRoom } from "./ChatTab";
 import { Person } from "../MemberSidebar";
 import NewChatModal from "./NewChatModal";
 
+
 const MessageSidebar: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null); // Socket 타입 사용
   const [personData, setPersonData] = useState<Person[] | null>(null);
@@ -69,7 +70,7 @@ const MessageSidebar: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setSelectedRoomId({ roomId: -2, isGroup: false, OtherTitle:"" });
+      setSelectedRoomId({ roomId: -2, isGroup: false, OtherTitle: "" });
     }, 300);
 
     return () => clearTimeout(timer);
@@ -109,20 +110,18 @@ const MessageSidebar: React.FC = () => {
 
   //채팅방 나가기
   const handleLeaveRoom = (roomId: number) => {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
+    if (socket) {
+      const userId = user.userID;
 
-    const userId = user.userID;
+      setChatRooms(prevRooms => prevRooms.filter(room => room.dataValues?.roomId !== roomId));
 
-    setChatRooms(prevRooms => prevRooms.filter(room => room.dataValues?.roomId !== roomId));
+      console.log(`Leaving room with id ${roomId}`);
+      socket.emit("exitRoom", roomId, userId);
 
-    console.log(`Leaving room with id ${roomId}`);
-    socket.emit("exitRoom", roomId, userId);
-    
-    setVisiblePopoverIndex(null);
+      setVisiblePopoverIndex(null);
+    }
   };
-  
+
   //chatTab - socket 채팅방 목록 조회
   useEffect(() => {
     const socket = io('http://localhost:3001', {
@@ -156,14 +155,14 @@ const MessageSidebar: React.FC = () => {
           // updatedAt이 존재하는 경우에만 비교, 없으면 0 (정렬 영향 없음)
           const dateA = a.dataValues?.updatedAt ? new Date(a.dataValues?.updatedAt).getTime() : 0;
           const dateB = b.dataValues?.updatedAt ? new Date(b.dataValues?.updatedAt).getTime() : 0;
-    
+
           return dateB - dateA; // b가 더 크면 위로 오게
         });
       setChatRooms(updatedRooms);
       setMsgNewUpdate(false);
       setChatRoomProfileState(false);
     });
-    
+
 
     socket.on('disconnect', () => {
       console.log('[Client] Socket 서버와의 연결 끊김');
@@ -311,27 +310,25 @@ const MessageSidebar: React.FC = () => {
 
   // socket 활동 상태
   useEffect(() => {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
+    if (socket) {
+      // console.log("Emitting user status to server:", {
+      //   status: MsguserState.state,
+      //   borderColor
+      // });
+      const userId = user.userID;
 
-    // console.log("Emitting user status to server:", {
-    //   status: MsguserState.state,
-    //   borderColor
-    // });
-    const userId = user.userID;
+      socket.emit('userStatus', { status: MsguserState.state, borderColor, userId });
 
-    socket.emit('userStatus', { status: MsguserState.state, borderColor, userId });
-
-    return () => {
-      socket.disconnect();
-    };
+      return () => {
+        socket.disconnect();
+      };
+    }
   }, [MsguserState.state, borderColor]);
 
   const openModal = () => {
     setOpenchatModal(true);
   };
-  
+
   return (
     <div className="message-sidebar">
       <div className="tab-container">
@@ -403,13 +400,13 @@ const MessageSidebar: React.FC = () => {
 
       <SideChatModal
         filteredData={filteredData}
-        // setSelectedUsers={setSelectedUsers}
-        // selectedUsers={selectedUsers}
+        socket={socket}
       />
       <NewChatModal
         filteredData={filteredData}
         setSelectedUsers={setSelectedUsers}
         selectedUsers={selectedUsers}
+        socket={socket}
       />
     </div>
   );

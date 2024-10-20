@@ -70,7 +70,7 @@ const createPrivateRoom = async (io, socket, data) => {
   try {
     console.log("서버에서 수신한 데이터:", data);
 
-    let { userId, content, invitedUserIds } = data;
+    let { userId, content, invitedUserIds, receiverId } = data;
 
     if (!userId || !invitedUserIds || invitedUserIds.length === 0) {
       console.error("userId 또는 invitedUserIds가 정의되지 않았습니다.");
@@ -140,6 +140,7 @@ const createPrivateRoom = async (io, socket, data) => {
           io,
           chatRoom.roomId,
           content,
+          receiverId,
           userId
         );
       }
@@ -268,7 +269,7 @@ const createPrivateRoom = async (io, socket, data) => {
     // 메시지 전송
     if (content) {
       console.log(`새로운 메시지 전송: ${content}`);
-      await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId);
+      await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId, receiverId);
     }
 
     // 채팅방 제목 설정

@@ -15,7 +15,7 @@ import CustomModal from "../../modal/CustomModal";
 import { createRoom } from "../../../services/message/MessageApi";
 import { PersonData } from "../../../services/person/PersonServices";
 import { Person } from "../MemberSidebar";
-import io from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 
 interface NewChatModalProps {
   filteredData: {
@@ -27,12 +27,14 @@ interface NewChatModalProps {
   };
   setSelectedUsers: Dispatch<SetStateAction<Set<string>>>;
   selectedUsers: Set<string>;
+  socket: Socket<any> | null;
 }
 
 const NewChatModal: React.FC<NewChatModalProps> = ({
   filteredData,
   setSelectedUsers,
-  selectedUsers
+  selectedUsers,
+  socket
 }) => {
   const [isWholeMemberChecked, setIsWholeMemberChecked] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -198,27 +200,31 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
       title: chatTitle || null,
     };
 
+    interface RoomJoinedData {
+      roomId: number;
+    }
+
     try {
       if (selectedRoomId.isGroup === true) {
-        const socket = io('http://localhost:3001', { transports: ["websocket"] });
+        if (socket) {
+          // 방 ID 설정 (여기서 실제 방 ID로 대체)
+          const roomId = selectedRoomId.roomId;
+          const userIds = Array.from(additionalSelectedUsers);
 
-        // 방 ID 설정 (여기서 실제 방 ID로 대체)
-        const roomId = selectedRoomId.roomId;
-        const userIds = Array.from(additionalSelectedUsers);
+          // 채팅방 참여 요청
+          socket.emit("joinRoom", roomId, userIds);
+          console.log(roomId, userIds);
+          setMsgNewUpdate(true);
+          // 방 참여 결과 처리
+          socket.on("roomJoined", (data: RoomJoinedData) => {
+            console.log(`방에 참여했습니다: ${data.roomId}`);
+          });
 
-        // 채팅방 참여 요청
-        socket.emit("joinRoom", roomId, userIds);
-        console.log(roomId, userIds);
-        setMsgNewUpdate(true);
-        // 방 참여 결과 처리
-        socket.on("roomJoined", (data) => {
-          console.log(`방에 참여했습니다: ${data.roomId}`);
-        });
-
-        // 에러 처리
-        socket.on("error", (error) => {
-          console.error("오류:", error.message);
-        });
+          // 에러 처리
+          socket.on("error", (error: { message: string }) => {
+            console.error("오류:", error.message);
+          });
+        }
       } else {
         await createRoom(payload);
         setMsgNewUpdate(true);

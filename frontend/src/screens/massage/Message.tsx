@@ -8,9 +8,7 @@ import Header from './MessageHeader';
 import MessageContainer from './MessageContainer';
 import PeopleManagement from './PeopleManagement';
 import MessageSearch from './MessageSearch';
-import io from 'socket.io-client';
-import { Helmet } from "react-helmet";
-
+import io, { Socket } from 'socket.io-client';
 export interface Message {
   name: string;
   id: string;
@@ -21,7 +19,7 @@ export interface Message {
 }
 
 const Message: React.FC = () => {
-  const [rooms, setRooms] = useState<any[]>([]);
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] = useState<boolean>(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
@@ -32,7 +30,16 @@ const Message: React.FC = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
+  useEffect(() => {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
+    setSocket(socket);
 
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   //메신저 창이 열렸을 경우 Title 및 favicon 변경
   useEffect(() => {
@@ -50,9 +57,9 @@ const Message: React.FC = () => {
       const roomId = Number(storedRoomId); // Convert to number
       // console.log("클라이언트 저장된 방 ID:", roomId);
       setSelectedRoomId({
-        roomId:roomId,
-        isGroup:false,
-         OtherTitle:""
+        roomId: roomId,
+        isGroup: false,
+        OtherTitle: ""
       });
     }
   }, [setSelectedRoomId]);
@@ -66,30 +73,14 @@ const Message: React.FC = () => {
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:3001", { transports: ["websocket"] });
+    if (socket) {
 
-    socket.on("recMsg", handleIncomingMessage);
-    return () => {
-      socket.off("recMsg", handleIncomingMessage);
-    };
+      socket.on("recMsg", handleIncomingMessage);
+      return () => {
+        socket.off("recMsg", handleIncomingMessage);
+      };
+    }
   }, []);
-
-  // useEffect(() => {
-  //   const socket = io("http://localhost:3001", { transports: ["websocket"] });
-
-  //   rooms.forEach((room) => {
-  //     console.log("클라이언트에서 보낸 방에 방 번호:", room.roomId);
-  //     socket.emit("joinRoom", room.roomId);
-  //   });
-  // }, [rooms]);
-
-  // useEffect(() => {
-  //   const socket = io("http://localhost:3001", { transports: ["websocket"] });
-    
-  //   if (selectedRoomId) {
-  //     socket.emit("joinRoom", selectedRoomId.roomId);
-  //   }
-  // }, [selectedRoomId.roomId]);
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -140,6 +131,7 @@ const Message: React.FC = () => {
       setChatRoomPeopleManagement(false);
     }
   };
+  
 
   return (
     <div className="Message-contents">
@@ -148,6 +140,7 @@ const Message: React.FC = () => {
         toggleSection={toggleSection}
       />
       <MessageContainer
+        socket={socket}
         messages={messages}
         selectedPerson={selectedPerson}
         isAtBottom={isAtBottom}
@@ -158,7 +151,7 @@ const Message: React.FC = () => {
       <PeopleManagement
         chatRoomPeopleManagement={chatRoomPeopleManagement}
         setChatRoomPeopleManagement={setChatRoomPeopleManagement}
-        
+        socket={socket}
       />
 
       {showSearch && <MessageSearch

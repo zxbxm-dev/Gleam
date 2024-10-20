@@ -11,14 +11,15 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Person } from '../../components/sidebar/MemberSidebar';
 import { PersonData } from '../../services/person/PersonServices';
 import { changeAdminApi } from '../../services/message/MessageApi';
-import io from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 
 interface PeopleManagementProps {
   chatRoomPeopleManagement: boolean;
   setChatRoomPeopleManagement: React.Dispatch<React.SetStateAction<boolean>>;
+  socket: Socket<any> | null;
 }
 
-const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManagement, setChatRoomPeopleManagement }) => {
+const PeopleManagement: React.FC<PeopleManagementProps> = ({ socket, chatRoomPeopleManagement, setChatRoomPeopleManagement }) => {
   const [openchatModal, setOpenchatModal] = useRecoilState(NewChatModalstate);
   const [ChatModalOpenState] = useRecoilState(NewChatModalstate);
   const [personData, setPersonData] = useState<Person[] | null>(null);
@@ -90,23 +91,21 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ chatRoomPeopleManag
 
   //채팅방 내보내기
   const handleResignRoom = (roomId: number, userId: string) => {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
-  
-    // 내보내기
-    socket.emit("KickRoom", { roomId, userId });
-    setMsgNewUpdate(true);
+    if (socket) {
+      // 내보내기
+      socket.emit("KickRoom", { roomId, userId });
+      setMsgNewUpdate(true);
 
-    // 서버에서 내보내기 완료
-    socket.on("userKicked", (data) => {
-      console.log(`${data.userId}가 ${data.roomId}에서 강퇴당하셨습니다.`);
-      setMsgNewUpdate(false);
-    });
-  
-    socket.on("error", (error) => {
-      console.error("Error:", error.message);
-    });
+      // 서버에서 내보내기 완료
+      socket.on("userKicked", (data: any) => {
+        console.log(`${data.userId}가 ${data.roomId}에서 강퇴당하셨습니다.`);
+        setMsgNewUpdate(false);
+      });
+
+      socket.on("error", (error: any) => {
+        console.error("Error:", error.message);
+      });
+    }
   };
 
   return (

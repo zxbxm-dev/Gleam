@@ -23,7 +23,7 @@ import {
   FileUserDown,
   FileMyDown
 } from "../../assets/images/index";
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import {
   selectedRoomIdState,
@@ -47,6 +47,7 @@ interface MessageContainerProps {
   scrollToBottom: () => void;
   handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
   targetMessageId: string | null;
+  socket: Socket<any> | null;
 }
 
 const NoticeIcons: { [key: string]: string } = {
@@ -98,6 +99,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   scrollToBottom,
   handleDragOver,
   targetMessageId,
+  socket
 }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const messageRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -126,8 +128,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const [readMsg, setReadMsg] = useState("");
   const setMsgNewUpdate = useSetRecoilState(MsgNewUpdateState);
   const isNewMessage = useRecoilValue(MsgNewUpdateState);
-  console.log(readMsg);
-console.log(selectedPerson);
 
   const MessageGetFile = (messageId: number, msg: any) => {
     console.log("Message content:", msg);
@@ -200,6 +200,7 @@ console.log(selectedPerson);
         hostUserId: null,
         name: null,
       };
+
     } else if (selectedRoomId.roomId === 0) {
       messageData = {
         roomId: null,
@@ -214,7 +215,17 @@ console.log(selectedPerson);
         content: messageContent,
         receiverId: selectedPerson.userId,
       };
+
+      if (selectedPerson.userId === undefined) {
+        messageData = {
+          roomId: selectedRoomId.roomId,
+          senderId: user.id,
+          content: messageContent,
+          receiverId: user.id,
+        };
+      }
     }
+
 
     // 파일이 있는 경우 POST 요청으로 파일 전송
     if (files) {
@@ -250,26 +261,28 @@ console.log(selectedPerson);
   }, [selectedRoomId, selectedPerson, user, files]);
 
   const emitMessage = (messageData: any) => {
-    const socket = io('http://localhost:3001', { transports: ["websocket"] });
+    if (socket) {
 
-    if (messageData.file) {
-      const formData = new FormData();
-      formData.append('file', messageData.file);
-      formData.append('fileName', messageData.fileName);
-      formData.append('userId', messageData.userId);
-      formData.append('roomId', messageData.roomId);
+      if (messageData.file) {
+        const formData = new FormData();
+        formData.append('file', messageData.file);
+        formData.append('fileName', messageData.fileName);
+        formData.append('userId', messageData.userId);
+        formData.append('roomId', messageData.roomId);
 
-      socket.emit('uploadFile', formData);
-    }
+        socket.emit('uploadFile', formData);
+      }
 
-    if (selectedRoomId.roomId === -1) {
-      socket.emit("createPrivateRoom", messageData);
-      setMsgNewUpdate(true);
-    } else {
-      socket.emit("sendMessage", messageData);
-      console.log(messageData);
-      
-      setMsgNewUpdate(true);
+      if (selectedRoomId.roomId === -1) {
+        socket.emit("createPrivateRoom", messageData);
+        console.log(messageData);
+        setMsgNewUpdate(true);
+      } else {
+        socket.emit("sendMessage", messageData);
+        console.log(messageData);
+
+        setMsgNewUpdate(true);
+      }
     }
   };
 
@@ -355,10 +368,14 @@ console.log(selectedPerson);
       setMessageMetadata({ userInfo: newUserInfos, createdAt, usersAttachment });
     }
   }, [personData, serverMessages]);
+  // console.log(socket);
 
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
-    const socket = io('http://localhost:3001', { transports: ["websocket"] });
+    // if (socket) {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
 
     const requesterId = user.userID;
     const roomId = selectedRoomId.roomId;
@@ -389,7 +406,7 @@ console.log(selectedPerson);
     socket.on('chatHistory', handleChatHistory);
 
     // 새 메시지 수신
-    socket.on('message', (newMessage) => {
+    socket.on('message', (newMessage: any) => {
       setServerMessages(prevMessages => [
         ...prevMessages,
         ...(Array.isArray(newMessage) ? newMessage : [newMessage])
@@ -397,7 +414,7 @@ console.log(selectedPerson);
     });
 
     // 오류 처리
-    socket.on('error', (error) => {
+    socket.on('error', (error: any) => {
       console.error('메시지 가져오는 중 오류 발생:', error);
     });
 
@@ -406,6 +423,7 @@ console.log(selectedPerson);
     return () => {
       socket.disconnect();
     };
+    // }
   }, [selectedRoomId, user.userID, readMsg, isNewMessage]);
 
   useEffect(() => {
@@ -414,7 +432,7 @@ console.log(selectedPerson);
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [readMsg, ChatTabGetMessage]);
+  }, [readMsg, selectedRoomId.roomId > 0]);
 
   // 메시지 컨테이너 스크롤
   useEffect(() => {
@@ -425,9 +443,10 @@ console.log(selectedPerson);
 
   // personSide에서 사람 이름 클릭 시 대화방 메시지 조회
   const PersonSideGetMessage = useCallback(() => {
-    const socket = io('http://localhost:3001', { transports: ["websocket"] });
-    // console.log("소켓 연결됨");
-
+    // if (socket) {
+    const socket = io('http://localhost:3001', {
+      transports: ['websocket'],
+    });
     const selectedUserId = personSideGetmsg.userID;
     const requesterId = user.id;
 
@@ -451,12 +470,12 @@ console.log(selectedPerson);
       }
     });
 
-    socket.on("noChatRoomsForUser", (data) => {
+    socket.on("noChatRoomsForUser", (data: any) => {
       console.log("사용자에게 채팅방 없음.", data);
       setServerMessages([]);
     });
 
-    socket.on("chatHistoryForUser", (data) => {
+    socket.on("chatHistoryForUser", (data: any) => {
       console.log("chatHistoryForUser 데이터 수신:", data);
       if (data) {
         setServerMessages(data.chatHistory);
@@ -472,7 +491,7 @@ console.log(selectedPerson);
       }
     });
 
-    socket.on("chatHistoryForOthers", (data) => {
+    socket.on("chatHistoryForOthers", (data: any) => {
       console.log("chatHistoryForOthers 데이터 수신:", data);
       if (data) {
         setServerMessages(data.chatHistory);
@@ -488,7 +507,7 @@ console.log(selectedPerson);
       }
     });
 
-    socket.on("error", (error) => {
+    socket.on("error", (error: any) => {
       console.error("소켓 오류:", error.message);
     });
 
@@ -499,7 +518,8 @@ console.log(selectedPerson);
       socket.off("chatHistoryForOthers");
       socket.off("error");
     };
-  }, [personSideGetmsg.userID, user.id, readMsg]);
+    // }
+  }, [personSideGetmsg.userID, user.id, readMsg, handleSendMessage]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -527,17 +547,17 @@ console.log(selectedPerson);
 
   // 메시지가 읽혔을 때 호출되는 함수
   const handleReadMessage = useCallback((messageId: string) => {
-    const socket = io('http://localhost:3001', { transports: ["websocket"] });
-    const userId = user.userID;
-    console.log(`읽은 메시지 ID: ${messageId}`); // 읽은 메시지 ID를 콘솔에 출력
-    socket.emit('markMessageAsRead', { messageId, userId });
-    setMsgOptionsState(true);
-    setReadMsg(messageId);
+    if (socket) {
+      const userId = user.userID;
+      console.log(`읽은 메시지 ID: ${messageId}`); // 읽은 메시지 ID를 콘솔에 출력
+      socket.emit('markMessageAsRead', { messageId, userId });
+      setMsgOptionsState(true);
+      setReadMsg(messageId);
 
-    setTimeout(() => {
-      setMsgOptionsState(false);
-    }, 500);
-
+      setTimeout(() => {
+        setMsgOptionsState(false);
+      }, 500);
+    }
   }, [user.id, readMsg]);
 
   // 메시지가 화면에 나타나면 읽은 것으로 간주
