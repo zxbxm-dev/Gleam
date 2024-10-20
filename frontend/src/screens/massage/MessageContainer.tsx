@@ -160,7 +160,13 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     const userId = user.id;
     const roomId = selectedRoomId.roomId;
     const content = files.name;
-    const receiverId = selectedPerson.userId;
+    let receiverId;
+
+    if (selectedPerson.userId === undefined) {
+      receiverId = user.id;
+    } else {
+      receiverId = selectedPerson.userId;
+    }
 
     // 파일과 함께 메시지를 전송합니다.
     messageFile(content, userId, roomId, files, receiverId)
