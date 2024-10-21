@@ -76,9 +76,15 @@ const countUnreadMessages = async (socket, userId, roomId) => {
 
     // 클라이언트에 읽지 않은 메시지 개수 전송
     socket.emit("unreadMessageCount", { count: unreadCount });
+
+    //읽지 않은 메세지 개수 반환
+    return unreadCount;
+
   } catch (error) {
     console.error("읽지 않은 메시지 개수 조회 오류:", error);
     socket.emit("error", { message: "읽지 않은 메시지 개수 조회 오류 발생." });
+    //오류 발생 시 null 값 반환
+    return null;  
   }
 };
 

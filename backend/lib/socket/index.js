@@ -1,5 +1,6 @@
 const chatRoomEvents = require("./events/chatRoomEvents");
 const messageEvents = require("./events/messageEvents");
+const notificationEvent = require("./events/notificationEvent");
 const statusEvents = require("./events/statusEvents");
 
 // 사용자 소켓 관리 객체
@@ -33,6 +34,7 @@ module.exports = (io) => {
       chatRoomEvents(io, socket);
       messageEvents(io, socket);
       statusEvents(io, socket);
+      notificationEvent(io, socket);
     } catch (error) {
       console.error("이벤트 처리 중 오류 발생:", error);
       socket.emit("error", { message: "이벤트 처리 서버 오류" });
@@ -55,6 +57,17 @@ module.exports = (io) => {
     socket.on("error", (err) => {
       console.error("소켓 에러:", err);
       socket.emit("error", { message: "소켓 통신 오류 발생" });
+    });
+
+    //네임스페이스 등록
+    const noti = io.of('/notification');
+
+    //noti 네임스페이스 전용 이벤트 
+    noti.on('connection', (socket) => {
+      console.log('noti 네임스페이스에 접속');
+
+      require('../../lib/socket/events/notificationEvent')(noti, socket);
+      
     });
   });
 };
