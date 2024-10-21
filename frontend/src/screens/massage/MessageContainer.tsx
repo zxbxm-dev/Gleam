@@ -41,7 +41,6 @@ import { Message } from './Message';
 import { messageFile, getFile } from '../../services/message/MessageApi';
 
 interface MessageContainerProps {
-  messages: Message[];
   selectedPerson: any;
   isAtBottom: boolean;
   scrollToBottom: () => void;
@@ -285,8 +284,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         setMsgNewUpdate(true);
       } else {
         socket.emit("sendMessage", messageData);
-        console.log(messageData);
+        console.log('보낸 메시지',messageData);
+        console.log('보낸 메시지',user.id);
 
+        socket.emit("getNewMsg", user.id)
         setMsgNewUpdate(true);
       }
     }
@@ -389,7 +390,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     const handleChatHistory = (data: any) => {
       if (Array.isArray(data.chatHistory)) {
         setServerMessages(data.chatHistory);
-        console.log(data);
+        console.log('서버에서 대화목록 조회 완료-----',data);
 
         setModelPlusJoinId(prevState => ({
           ...prevState,
@@ -403,7 +404,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     // 채팅 이력 요청
     const emitChatHistoryRequest = () => {
-      const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
+      const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory'; 
       socket.emit(event, roomId, requesterId);
     };
 
@@ -555,7 +556,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const handleReadMessage = useCallback((messageId: string) => {
     if (socket) {
       const userId = user.userID;
-      console.log(`읽은 메시지 ID: ${messageId}`); // 읽은 메시지 ID를 콘솔에 출력
       socket.emit('markMessageAsRead', { messageId, userId });
       setMsgOptionsState(true);
       setReadMsg(messageId);
@@ -587,7 +587,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       });
     }
   }, [targetMessageId]);
-
 
   return (
     <div

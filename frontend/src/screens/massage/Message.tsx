@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { userState, selectedPersonState, selectedRoomIdState } from '../../recoil/atoms';
+import { selectedPersonState, selectedRoomIdState } from '../../recoil/atoms';
 import {
   MessageIcon
 } from "../../assets/images/index";
@@ -20,12 +20,10 @@ export interface Message {
 
 const Message: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] = useState<boolean>(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
 
   const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
-  const user = useRecoilValue(userState);
   const selectedPerson = useRecoilValue(selectedPersonState);
   const [showSearch, setShowSearch] = useState(false);
 
@@ -64,23 +62,23 @@ const Message: React.FC = () => {
     }
   }, [setSelectedRoomId]);
 
-  const handleIncomingMessage = ({ name, id, msg, team, department, position }: Message) => {
-    console.log("클라이언트 유저 정보 수신:", { name, id, msg, team, department, position });
-    setMessages(prevMessages => [
-      ...prevMessages,
-      { name, id, msg, team, department, position }
-    ]);
-  };
+  // const handleIncomingMessage = ({ name, id, msg, team, department, position }: Message) => {
+  //   console.log("클라이언트 유저 정보 수신:", { name, id, msg, team, department, position });
+  //   setMessages(prevMessages => [
+  //     ...prevMessages,
+  //     { name, id, msg, team, department, position }
+  //   ]);
+  // };
 
-  useEffect(() => {
-    if (socket) {
+  // useEffect(() => {
+  //   if (socket) {
 
-      socket.on("recMsg", handleIncomingMessage);
-      return () => {
-        socket.off("recMsg", handleIncomingMessage);
-      };
-    }
-  }, []);
+  //     socket.on("recMsg", handleIncomingMessage);
+  //     return () => {
+  //       socket.off("recMsg", handleIncomingMessage);
+  //     };
+  //   }
+  // }, []);
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -132,7 +130,6 @@ const Message: React.FC = () => {
     }
   };
   
-
   return (
     <div className="Message-contents">
       <Header
@@ -141,7 +138,6 @@ const Message: React.FC = () => {
       />
       <MessageContainer
         socket={socket}
-        messages={messages}
         selectedPerson={selectedPerson}
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
