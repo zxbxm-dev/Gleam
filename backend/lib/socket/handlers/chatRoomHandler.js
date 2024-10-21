@@ -138,6 +138,7 @@ const createPrivateRoom = async (io, socket, data) => {
         console.log(`새로운 메시지 전송: ${content}`);
         await sendMessageToRoomParticipants(
           io,
+          socket,
           chatRoom.roomId,
           content,
           receiverId,
@@ -269,7 +270,7 @@ const createPrivateRoom = async (io, socket, data) => {
     // 메시지 전송
     if (content) {
       console.log(`새로운 메시지 전송: ${content}`);
-      await sendMessageToRoomParticipants(io, chatRoom.roomId, content, userId, receiverId);
+      await sendMessageToRoomParticipants(io, socket, chatRoom.roomId, content, userId, receiverId);
     }
 
     // 채팅방 제목 설정

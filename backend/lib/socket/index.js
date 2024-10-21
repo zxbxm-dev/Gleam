@@ -59,15 +59,15 @@ module.exports = (io) => {
       socket.emit("error", { message: "소켓 통신 오류 발생" });
     });
 
-    //네임스페이스 등록
-    const noti = io.of('/notification');
+    // //네임스페이스 등록
+    // const noti = io.of('/notification');
 
-    //noti 네임스페이스 전용 이벤트 
-    noti.on('connection', (socket) => {
-      console.log('noti 네임스페이스에 접속');
+    // //noti 네임스페이스 전용 이벤트 
+    // noti.on('connection', (socket) => {
+    //   console.log('noti 네임스페이스에 접속');
 
-      require('../../lib/socket/events/notificationEvent')(noti, socket);
+    //   require('../../lib/socket/events/notificationEvent')(noti, socket);
       
-    });
+    // });
   });
 };

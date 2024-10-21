@@ -9,7 +9,7 @@ module.exports = (io, socket) => {
   // 서버에서 메시지 전송 이벤트 처리
   socket.on("sendMessage", async (data) => {
   try {
-    await messageHandlers.sendMessageToRoomParticipants(io, data.roomId, data.content, data.senderId, data.receiverId);
+    await messageHandlers.sendMessageToRoomParticipants(io, socket, data.roomId, data.content, data.senderId, data.receiverId);
   } catch (error) {
     console.error(`메시지 전송 중 오류 발생: ${error.message}`);
     socket.emit("error", { message: error.message });

@@ -13,7 +13,7 @@ socket.on("getNewMsg",async (userId) => {
             throw new Error("사용자 ID가 제공되지 않았습니다.");
         }
 
-        await notificationHandlers.getNewMsg(messageData)
+        await notificationHandlers.getNewMsg(socket, messageData)
 
     }catch(error) {
         console.error("메세지알림 요청 처리 중 에러 발생 : ", error);
@@ -34,9 +34,9 @@ socket.on("unreadMsg",async(userId) => {
       };
     });
 
-    //noti 네임스페이스 연결 해제 처리 
-    socket.on('disconnect', () => {
-        console.log(" noti 네임스페이스 접속 해제");
-    });
+    // //noti 네임스페이스 연결 해제 처리 
+    // socket.on('disconnect', () => {
+    //     console.log(" noti 네임스페이스 접속 해제");
+    // });
 
 };

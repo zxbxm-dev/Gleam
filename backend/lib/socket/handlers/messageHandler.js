@@ -354,7 +354,7 @@ const getChatHistory = async (socket, roomId) => {
 };
 
 // 채팅방의 모든 참가자에게 메시지를 전송하는 함수
-const sendMessageToRoomParticipants = async (io, roomId, content, senderId, receiverId) => {
+const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderId, receiverId) => {
   try {
     let room = await ChatRoom.findOne({ where: { roomId } });
 
@@ -390,12 +390,13 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId, rece
     });
 
     await ChatRoom.update(
+
       { updatedAt: new Date() },
       { where: { roomId } }
     );
     
     //새로운 메세지 데이터 생성 시 관련 데이터를 getNewMsg로 전달
-    await notificationHandler.getNewMsg(messageData);
+    await notificationHandler.getNewMsg(socket,messageData);
   } catch (error) {
     console.error(`메시지 전송 오류 발생: ${error.message}`);
     throw new Error("메시지 전송 오류 발생");
@@ -405,7 +406,7 @@ const sendMessageToRoomParticipants = async (io, roomId, content, senderId, rece
 // 클라이언트로 새로운 메시지 전송을 위한 별도 함수
 const broadcastNewMessage = (io, roomId, content, senderId) => {
   try {
-    sendMessageToRoomParticipants(io, roomId, content, senderId);
+    sendMessageToRoomParticipants(io,socket, roomId, content, senderId);
   } catch (error) {
     console.error("새 메시지 방송 오류:", error);
   }
