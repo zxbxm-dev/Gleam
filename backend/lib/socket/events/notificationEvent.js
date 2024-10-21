@@ -5,9 +5,6 @@ module.exports = (io, socket) => {
         console.error("Socket 객체가 정의되지 않았습니다.");
         return;
     }
-};
-
-module.exports = (noti, socket) => {
 
 //사용자에게 새로운 메세지가 전달됐을 때 
 socket.on("getNewMsg",async (userId) => {
@@ -41,5 +38,5 @@ socket.on("unreadMsg",async(userId) => {
     socket.on('disconnect', () => {
         console.log(" noti 네임스페이스 접속 해제");
     });
-};
 
+};

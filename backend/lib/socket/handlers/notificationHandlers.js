@@ -1,8 +1,8 @@
 const models = require("../../models");
-const { MessageRead , Message, ChatRoomParticipant } = models;
+const { Message } = models;
 const { countUnreadMessages } = require("../handlers/statusHandlers");
 
-//새로운 메세지가 있을 때 
+//새로운 메세지가 있을 때
 const getNewMsg = async (socket, messageData) => {
     try {
       const messageId = messageData.messageId;
@@ -15,7 +15,10 @@ const getNewMsg = async (socket, messageData) => {
         receiverId : receiver,
       },
     });
+
+    //안읽은 메세지 확인하는 함수
       const unreadMsg = await countUnreadMessages(socket, receiver, roomId );
+
       if (newMsg && unreadMsg) {
         socket.emit("newMsgNoti", {
           message: `새로운 메세지가 ${unreadMsg}개 있습니다.`,
