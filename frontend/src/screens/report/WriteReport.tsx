@@ -935,6 +935,7 @@ const WriteReport = () => {
         isOpen={isSubmitModalOpen}
         onClose={() => { setSubmitModalOpen(false); navigate('/approval'); }}
         header={'알림'}
+        headerTextColor='White'
         footer1={'확인'}
         footer1Class="green-btn"
         onFooter1Click={() => { setSubmitModalOpen(false); navigate('/approval'); }}

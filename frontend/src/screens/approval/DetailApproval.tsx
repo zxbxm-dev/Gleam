@@ -472,6 +472,7 @@ const DetailApproval = () => {
         isOpen={isSignModalOpen}
         onClose={() => setSignModalOpen(false)}
         header={'알림'}
+        headerTextColor='White'
         footer1={'서명'}
         footer1Class="green-btn"
         footer2={'취소'}
@@ -488,6 +489,7 @@ const DetailApproval = () => {
         isOpen={isEmptySignModalOpen}
         onClose={() => setEmptySignModalOpen(false)}
         header={'알림'}
+        headerTextColor='White'
         footer1={'확인'}
         footer1Class="green-btn"
         onFooter1Click={() => setEmptySignModalOpen(false)}
@@ -502,6 +504,7 @@ const DetailApproval = () => {
         isOpen={isApproveModalOpen}
         onClose={() => {setApproveModalOpen(false); navigate('/approval')}}
         header={'알림'}
+        headerTextColor='White'
       >
         <div>
           {modalContent}
@@ -512,6 +515,7 @@ const DetailApproval = () => {
         isOpen={isCheckSignModalOpen}
         onClose={() => setCheckSignModalOpen(false)}
         header={'알림'}
+        headerTextColor='White'
         footer1={'확인'}
         footer1Class="green-btn"
         onFooter1Click={() => setCheckSignModalOpen(false)}

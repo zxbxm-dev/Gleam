@@ -285,9 +285,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       } else {
         socket.emit("sendMessage", messageData);
         console.log('보낸 메시지',messageData);
-        console.log('보낸 메시지',user.id);
-
-        socket.emit("getNewMsg", user.id)
         setMsgNewUpdate(true);
       }
     }
@@ -587,6 +584,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       });
     }
   }, [targetMessageId]);
+
+  useEffect(() => {
+    socket?.on("newMsgNoti", () => console.log('새로운 메시지 알림'))
+
+  });
 
   return (
     <div
