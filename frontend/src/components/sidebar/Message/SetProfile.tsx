@@ -140,7 +140,7 @@ const SetProfile: React.FC<SetProfileProps> = ({ openProfile, setOpenProfile, se
                             border: paletteIndex !== null ? `1px solid ${ProfilePalette[paletteIndex].borderColor}` : "",
                         }}
                     >
-                        {profileName.charAt(0)}
+                        {profileName?.charAt(0)}
                     </div>
                     <div className="Palette">
                         {ProfilePalette.map((palette, index) => (
