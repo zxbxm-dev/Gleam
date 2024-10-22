@@ -8,7 +8,7 @@ const ChatLayout = () => {
             <MessageHeader />
 
             <div className="content-wrapper" style={{ display: 'flex' }}>
-                <MessageSidebar />
+                {/* <MessageSidebar /> */}
                 <Outlet />
             </div>
         </main>

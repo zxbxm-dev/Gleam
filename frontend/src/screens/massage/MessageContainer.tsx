@@ -129,7 +129,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const isNewMessage = useRecoilValue(MsgNewUpdateState);
 
   const MessageGetFile = (messageId: number, msg: any) => {
-    console.log("Message content:", msg);
     getFile(messageId)
       .then(response => {
         const blob = new Blob([response.data], { type: response.headers['content-type'] });
@@ -376,68 +375,55 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
-    // if (socket) {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
-
-    const requesterId = user.userID;
-    const roomId = selectedRoomId.roomId;
-
-    const handleChatHistory = (data: any) => {
-      if (Array.isArray(data.chatHistory)) {
-        setServerMessages(data.chatHistory);
-        console.log('서버에서 대화목록 조회 완료-----',data);
-
-        setModelPlusJoinId(prevState => ({
-          ...prevState,
-          joinUser: data.joinIds,
-          hostId: data.hostId
-        }));
-      } else {
-        console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
-      }
-    };
-
-    // 채팅 이력 요청
-    const emitChatHistoryRequest = () => {
-      const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory'; 
-      socket.emit(event, roomId, requesterId);
-    };
-
-    // 채팅 이력 수신 처리
-    socket.on('groupChatHistory', handleChatHistory);
-    socket.on('chatHistory', handleChatHistory);
-
-    // 새 메시지 수신
-    socket.on('message', (newMessage: any) => {
-      setServerMessages(prevMessages => [
-        ...prevMessages,
-        ...(Array.isArray(newMessage) ? newMessage : [newMessage])
-      ]);
-    });
-
-    // 오류 처리
-    socket.on('error', (error: any) => {
-      console.error('메시지 가져오는 중 오류 발생:', error);
-    });
-
-    emitChatHistoryRequest();
-
-    return () => {
-      socket.disconnect();
-    };
-    // }
-  }, [selectedRoomId, user.userID, readMsg, isNewMessage]);
-
+    if (socket) {
+      const requesterId = user.userID;
+      const roomId = selectedRoomId.roomId;
+  
+      const handleChatHistory = (data: any) => {
+        if (Array.isArray(data.chatHistory)) {
+          setServerMessages(data.chatHistory);
+          // console.log('서버에서 대화목록 조회 완료-----', data);
+  
+          setModelPlusJoinId(prevState => ({
+            ...prevState,
+            joinUser: data.joinIds,
+            hostId: data.hostId,
+          }));
+        } else {
+          console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
+        }
+      };
+  
+      // 채팅 이력 요청
+      const emitChatHistoryRequest = () => {
+        const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
+        socket.emit(event, roomId, requesterId);
+      };
+  
+      // 채팅 이력 수신 처리
+      socket.on('groupChatHistory', handleChatHistory);
+      socket.on('chatHistory', handleChatHistory);
+  
+      // 오류 처리
+      socket.on('error', (error: any) => {
+        console.error('메시지 가져오는 중 오류 발생:', error);
+      });
+  
+      emitChatHistoryRequest();
+  
+      // 클린업: 컴포넌트가 언마운트되거나 업데이트될 때 기존 리스너 제거
+      return () => {
+        socket.off('groupChatHistory', handleChatHistory);
+        socket.off('chatHistory', handleChatHistory);
+        socket.off('error');
+      };
+    }
+  }, [selectedRoomId, user.userID]);
+  
   useEffect(() => {
-    const timer = setTimeout(() => {
-      ChatTabGetMessage();
-    }, 200);
-
-    return () => clearTimeout(timer);
-  }, [readMsg, selectedRoomId.roomId > 0]);
-
+    ChatTabGetMessage();
+  }, [ChatTabGetMessage]); // 필요한 의존성만 넣음
+  
   // 메시지 컨테이너 스크롤
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -447,10 +433,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   // personSide에서 사람 이름 클릭 시 대화방 메시지 조회
   const PersonSideGetMessage = useCallback(() => {
-    // if (socket) {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
+    if (socket && selectedRoomId.roomId<0) {
+
     const selectedUserId = personSideGetmsg.userID;
     const requesterId = user.id;
 
@@ -522,32 +506,28 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       socket.off("chatHistoryForOthers");
       socket.off("error");
     };
-    // }
+    }
   }, [personSideGetmsg.userID, user.id, readMsg, handleSendMessage]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      PersonSideGetMessage();
-    }, 2000);
+  // useEffect(() => {
+  //   if(selectedRoomId.roomId<0){
+  //   const timer = setTimeout(() => {
+  //     PersonSideGetMessage();
+  //   }, 2000);
 
-    return () => clearTimeout(timer);
-  }, [readMsg, PersonSideGetMessage]);
+  //   return () => clearTimeout(timer);
+  // }
+  // }, [readMsg]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      ChatTabGetMessage();
-    }, 200);
+  // useEffect(() => {
+  //   if(selectedRoomId.roomId>0){
+  //   const timer = setTimeout(() => {
+  //     ChatTabGetMessage();
+  //   }, 200);
 
-    return () => clearTimeout(timer);
-  }, [selectedRoomId.roomId]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      PersonSideGetMessage();
-    }, 200);
-
-    return () => clearTimeout(timer);
-  }, [selectedPerson]);
+  //   return () => clearTimeout(timer);
+  // }
+  // }, []);
 
   // 메시지가 읽혔을 때 호출되는 함수
   const handleReadMessage = useCallback((messageId: string) => {
@@ -590,6 +570,22 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   });
 
+  // 새로운 메시지 수신
+  useEffect(() => {
+    if (socket) {
+        socket.on('newMessage', (messageData: any) => {
+          ChatTabGetMessage();
+        });
+    }
+    
+    return () => {
+      socket?.off('newMessage');
+    };
+  }, [socket]);
+
+  
+  // console.log('messageContainer 호출', selectedRoomId)
+  // console.log('내 연결 상태',socket?.connected);
   return (
     <div
       className="Message-container"
