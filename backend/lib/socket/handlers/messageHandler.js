@@ -389,6 +389,8 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       io.to(participant.userId).emit("newMessage", messageData);
     });
 
+    io.to(roomId).emit("newMsgData", messageData);
+
     await ChatRoom.update(
 
       { updatedAt: new Date() },
