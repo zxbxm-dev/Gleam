@@ -14,7 +14,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ selectedPerson, toggleSection }) => {
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
-
+  
   return (
     <div className="Message-header">
       {selectedRoomId.roomId !== -2 ?

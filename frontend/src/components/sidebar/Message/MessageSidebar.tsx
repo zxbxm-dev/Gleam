@@ -23,15 +23,18 @@ import {
 import PersonDataTab from "./PersonSide";
 import ChatDataTab from "./ChatTab";
 import SideChatModal from "./SideChatModal";
-import io, { Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { useLocation } from "react-router-dom";
 import { ChatRoom } from "./ChatTab";
 import { Person } from "../MemberSidebar";
 import NewChatModal from "./NewChatModal";
 
+interface MessageSidebarProps {
+  socket: Socket<any> | null;
+}
 
-const MessageSidebar: React.FC = () => {
-  const [socket, setSocket] = useState<Socket | null>(null); // Socket 타입 사용
+
+const MessageSidebar: React.FC<MessageSidebarProps> = ({socket}) => {
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const [openchatModal, setOpenchatModal] = useRecoilState(SideChatModalstate);
   const [peopleState, setPeopleState] = useRecoilState(PeopleModalState);
@@ -124,64 +127,40 @@ const MessageSidebar: React.FC = () => {
 
   //chatTab - socket 채팅방 목록 조회
   useEffect(() => {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-    });
-    setSocket(socket);
+    if (socket) {
+      const userId = user.userID;
+      // console.log("유저아이디 가져오기", userId);
+      // 채팅 방 데이터 수신
+      socket.on('chatRooms', (data: ChatRoom[]) => {
+        const updatedRooms = data
+          .map((room: ChatRoom, index: number) => {
+            const title = room.userTitle?.[userId]?.username || room.title;
+            return {
+              ...room,
+              title,
+              key: index
+            };
+          })
+          .sort((a, b) => {
+            // updatedAt이 존재하는 경우에만 비교, 없으면 0 (정렬 영향 없음)
+            const dateA = a.dataValues?.updatedAt ? new Date(a.dataValues?.updatedAt).getTime() : 0;
+            const dateB = b.dataValues?.updatedAt ? new Date(b.dataValues?.updatedAt).getTime() : 0;
 
-    const userId = user.userID;
-    // console.log("유저아이디 가져오기", userId);
+            return dateB - dateA; // b가 더 크면 위로 오게
+          });
+        setChatRooms(updatedRooms);
+        setMsgNewUpdate(false);
+        setChatRoomProfileState(false);
+      });
 
-    // 서버에 사용자 등록 요청
-    socket.emit('registerUser', userId);
+      // 채팅 방 요청
+      socket.emit('getChatRooms', userId);
 
-    // 서버에 연결되었을 때
-    socket.on('connection', () => {
-      console.log(`[Client] Socket 서버에 연결됨: ${socket.id}`);
-    });
-
-    // 채팅 방 데이터 수신
-    socket.on('chatRooms', (data: ChatRoom[]) => {
-      const updatedRooms = data
-        .map((room: ChatRoom, index: number) => {
-          const title = room.userTitle?.[userId]?.username || room.title;
-          return {
-            ...room,
-            title,
-            key: index
-          };
-        })
-        .sort((a, b) => {
-          // updatedAt이 존재하는 경우에만 비교, 없으면 0 (정렬 영향 없음)
-          const dateA = a.dataValues?.updatedAt ? new Date(a.dataValues?.updatedAt).getTime() : 0;
-          const dateB = b.dataValues?.updatedAt ? new Date(b.dataValues?.updatedAt).getTime() : 0;
-
-          return dateB - dateA; // b가 더 크면 위로 오게
-        });
-      setChatRooms(updatedRooms);
-      setMsgNewUpdate(false);
-      setChatRoomProfileState(false);
-    });
-
-
-    socket.on('disconnect', () => {
-      console.log('[Client] Socket 서버와의 연결 끊김');
-    });
-
-    socket.on('connect_error', (error) => {
-      console.error('연결 오류:', error);
-    });
-
-    // 채팅 방 요청
-    socket.emit('getChatRooms', userId);
-
-    return () => {
-      socket.off('chatRooms');
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('connect_error');
-      socket.close();
-    };
+      return () => {
+        socket.off('chatRooms');
+        socket.off('getChatRooms');
+      };
+    }
   }, [user.userID, activeTab, msgOptionState, isNewMessage, isChatRoomProfile]);
 
   const handleTabChange = (tab: string) => {
@@ -259,71 +238,74 @@ const MessageSidebar: React.FC = () => {
   const filteredData = filterDataBySearchQuery(groupedData);
 
 
-  //상태 설정 - 자리비움 등
-  useEffect(() => {
-    sessionStorage.setItem('messageWindowOpen', 'true');
-    const checkWindowStatus = () => {
-      const messageWindowOpen = sessionStorage.getItem('messageWindowOpen');
-      if (messageWindowOpen === 'true') {
-        // setStatus("접속됨");
-        setUserStatetoServer({ state: "접속됨" });
-        const idleBorderColor = "2px solid #42E452";
-        setBorderColor(idleBorderColor);
-      } else {
-        // setStatus("접속안됨");
-        setUserStatetoServer({ state: "접속안됨" });
-        const idleBorderColor = "2px solid #848484";
-        setBorderColor(idleBorderColor);
-      }
-    };
+  
+  // //상태 설정 - 자리비움 등
+  // useEffect(() => {
+  //   sessionStorage.setItem('messageWindowOpen', 'true');
+  //   const checkWindowStatus = () => {
+  //     const messageWindowOpen = sessionStorage.getItem('messageWindowOpen');
+  //     if (messageWindowOpen === 'true') {
+  //       // setStatus("접속됨");
+  //       setUserStatetoServer({ state: "접속됨" });
+  //       const idleBorderColor = "2px solid #42E452";
+  //       setBorderColor(idleBorderColor);
+  //     } else {
+  //       // setStatus("접속안됨");
+  //       setUserStatetoServer({ state: "접속안됨" });
+  //       const idleBorderColor = "2px solid #848484";
+  //       setBorderColor(idleBorderColor);
+  //     }
+  //   };
 
-    // 처음 실행 시 상태 확인
-    checkWindowStatus();
+  //   // 처음 실행 시 상태 확인
+  //   checkWindowStatus();
 
-    // 1초마다 상태 확인
-    const intervalId = setInterval(checkWindowStatus, 1000);
+  //   // 1초마다 상태 확인
+  //   const intervalId = setInterval(checkWindowStatus, 1000);
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    const handleMouseMove = () => {
-      const newTimeoutId = setTimeout(() => {
-        setUserStatetoServer({ state: "자리비움" });
-        const idleBorderColor = "2px solid #E0B727";
-        setBorderColor(idleBorderColor);
-        // console.log("User status: 자리비움 (no mouse movement for 5 minutes)");
-      }, 300000); // 5분
-      setTimeoutId(newTimeoutId);
-    };
+  // useEffect(() => {
+  //   const handleMouseMove = () => {
+  //     const newTimeoutId = setTimeout(() => {
+  //       setUserStatetoServer({ state: "자리비움" });
+  //       const idleBorderColor = "2px solid #E0B727";
+  //       setBorderColor(idleBorderColor);
+  //       // console.log("User status: 자리비움 (no mouse movement for 5 minutes)");
+  //     }, 5000); // 5분
+  //     setTimeoutId(newTimeoutId);
+  //   };
 
-    document.addEventListener('mousemove', handleMouseMove);
+  //   document.addEventListener('mousemove', handleMouseMove);
 
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      document.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [timeoutId, location.pathname]);
+  //   return () => {
+  //     if (timeoutId) clearTimeout(timeoutId);
+  //     document.removeEventListener('mousemove', handleMouseMove);
+  //   };
+  // }, [timeoutId, location.pathname]);
 
 
-  // socket 활동 상태
-  useEffect(() => {
-    if (socket) {
-      // console.log("Emitting user status to server:", {
-      //   status: MsguserState.state,
-      //   borderColor
-      // });
-      const userId = user.userID;
+  // // socket 활동 상태
+  // useEffect(() => {
+  //   if (socket) {
+  //     console.log("Emitting user status to server:", {
+  //       status: MsguserState.state,
+  //       borderColor
+  //     });
+  //     const userId = user.userID;
 
-      socket.emit('userStatus', { status: MsguserState.state, borderColor, userId });
+  //     socket.emit('userStatus', { status: MsguserState.state, borderColor, userId });
 
-      return () => {
-        socket.disconnect();
-      };
-    }
-  }, [MsguserState.state, borderColor]);
+  //     return () => {
+  //       socket.disconnect();
+  //     };
+  //   }
+  // }, [MsguserState.state, borderColor]);
+
+
 
   const openModal = () => {
     setOpenchatModal(true);

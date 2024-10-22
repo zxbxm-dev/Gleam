@@ -235,7 +235,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
     }
   };
   useEffect(() => {
-    console.log("추가로 선택된 사람:", Array.from(additionalSelectedUsers));
+    // console.log("추가로 선택된 사람:", Array.from(additionalSelectedUsers));
   }, [additionalSelectedUsers]);
 
 

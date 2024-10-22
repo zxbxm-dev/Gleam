@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { selectedPersonState, selectedRoomIdState } from '../../recoil/atoms';
+import { selectedPersonState, selectedRoomIdState, userState } from '../../recoil/atoms';
 import {
   MessageIcon
 } from "../../assets/images/index";
@@ -9,6 +9,7 @@ import MessageContainer from './MessageContainer';
 import PeopleManagement from './PeopleManagement';
 import MessageSearch from './MessageSearch';
 import io, { Socket } from 'socket.io-client';
+import { MessageSidebar } from '../../components';
 export interface Message {
   name: string;
   id: string;
@@ -19,6 +20,7 @@ export interface Message {
 }
 
 const Message: React.FC = () => {
+  const user = useRecoilValue(userState);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [chatRoomPeopleManagement, setChatRoomPeopleManagement] = useState<boolean>(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
@@ -32,10 +34,24 @@ const Message: React.FC = () => {
     const socket = io('http://localhost:3001', {
       transports: ['websocket'],
     });
+    const userId = user.userID
+    // 서버에 사용자 등록 요청
+    
+    // 서버에 연결되었을 때
+    socket.on('connect', () => {
+      socket.emit('registerUser', socket.id);
+      console.log(`[Client] Socket 서버에 연결됨: ${socket.id}`);
+    });
+    
     setSocket(socket);
 
+    socket.on('connect_error', (error) => {
+      console.error('연결 오류:', error);
+    });
+    
     return () => {
-      socket.disconnect();
+      socket.off('connect');
+      socket.off('connect_error');
     };
   }, []);
 
@@ -129,31 +145,41 @@ const Message: React.FC = () => {
       setChatRoomPeopleManagement(false);
     }
   };
-  
+
   return (
     <div className="Message-contents">
-      <Header
-        selectedPerson={selectedPerson}
-        toggleSection={toggleSection}
-      />
-      <MessageContainer
-        socket={socket}
-        selectedPerson={selectedPerson}
-        isAtBottom={isAtBottom}
-        scrollToBottom={scrollToBottom}
-        handleDragOver={handleDragOver}
-        targetMessageId={targetMessageId}
-      />
-      <PeopleManagement
-        chatRoomPeopleManagement={chatRoomPeopleManagement}
-        setChatRoomPeopleManagement={setChatRoomPeopleManagement}
-        socket={socket}
-      />
+      <div>
+        <MessageSidebar 
+          socket={socket}
+        />
+      </div>
+      <div className='Content_msg'>
+        <Header
+          selectedPerson={selectedPerson}
+          toggleSection={toggleSection}
+        />
 
-      {showSearch && <MessageSearch
-        setShowSearch={setShowSearch}
-        setTargetMessageId={setTargetMessageId}
-      />}
+        <MessageContainer
+          socket={socket}
+          selectedPerson={selectedPerson}
+          isAtBottom={isAtBottom}
+          scrollToBottom={scrollToBottom}
+          handleDragOver={handleDragOver}
+          targetMessageId={targetMessageId}
+        />
+        
+        <PeopleManagement
+          chatRoomPeopleManagement={chatRoomPeopleManagement}
+          setChatRoomPeopleManagement={setChatRoomPeopleManagement}
+          socket={socket}
+        />
+
+        {showSearch && <MessageSearch
+          socket={socket}
+          setShowSearch={setShowSearch}
+          setTargetMessageId={setTargetMessageId}
+        />}
+      </div>
     </div>
   );
 };

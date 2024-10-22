@@ -1,8 +1,9 @@
 .message-sidebar {
-  width: 300px;
-  max-width: 300px;
+  width: 280px;
+  max-width: 280px;
   height: 100vh;
   position: relative;
+  background-color: #FBFBFB;
 
   .tab-container {
     width: 100%;
@@ -30,7 +31,7 @@
 
   .Sidebar-Ms {
     position: relative;
-    overflow-y: scroll;
+    overflow-y: auto;
     height: calc(100vh - 116px);
 
     .My-bar,
@@ -185,7 +186,7 @@
   
 
   .chat-data-tab {
-    overflow-y: scroll;
+    overflow-y: auto;
     height: calc(100vh - 114px);
 
     .Noti-Icon {
