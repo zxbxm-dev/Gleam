@@ -7,6 +7,8 @@
     display: flex;
     gap: 10px;
     align-items: center;
+    margin-left: 10px;
+    margin-top: 5px;
   }
   
   .holiday-title{
@@ -28,6 +30,10 @@
       .fc-toolbar-chunk {
         display: flex;
         font-family: var(--font-family-Noto-M);
+
+        .fc-toolbar-title{
+          font-size: 25px;
+        }
       }
     }
 
@@ -47,6 +53,7 @@
 
     .fc-daygrid-day-frame {
       height: 100px;
+      background-color: #fff;
       
       &:hover {
         box-shadow: 0 0 0 3px #45C552 inset;
@@ -148,14 +155,18 @@
   // 요일 헤더
   .fc-theme-standard th {
     font-family: var(--font-family-Noto-M);
+    font-weight: normal;
     background-color: #fff;
     color: #969696;
     height: 40px;
     text-align: left;
-  }
-  .fc-col-header-cell-cushion {
-    margin-left: 5px;
-    margin-top: 5px;
+
+    .fc-scrollgrid-sync-inner{
+    height: 100%;
+        display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
   }
 
   .fc-event {
@@ -286,3 +297,22 @@
 .react-datepicker-wrapper{
   width: 150px;
 }
+
+.IncludeMe{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 7px;
+
+  span{
+    // font-size: 10px;
+  }
+
+  .ActiveCircle{
+    background-color: #00DD5C;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+}
+

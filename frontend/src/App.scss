@@ -269,6 +269,24 @@ ul {
 
     .additional_content_title {
       color: #ffffff;
+
+      .date_content {
+        overflow: hidden;
+        transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      }
+
+      .date_content.visible {
+        opacity: 1;
+      }
+
+      .date_header {
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+      }
     }
 
     .img_rotate {
@@ -303,7 +321,7 @@ ul {
       gap: 5px;
       width: 285px;
       height: auto;
-      
+
       .project_name_container {
         width: inherit;
         height: 43px;
@@ -352,7 +370,7 @@ ul {
       .project_content_container {
         font-family: var(--font-family-Noto-R);
         width: 285px;
-        height: 98px;
+        height: auto;
         border: 1px solid #EEEEEE;
         background-color: #EEEEEE;
         border-radius: 5px;
@@ -360,6 +378,13 @@ ul {
         margin-bottom: 5px;
         padding: 10px 13px;
         margin-bottom: 3px;
+        gap: 9px;
+        display: flex;
+        flex-direction: column;
+
+        div:first-child{
+          margin-top: 3px;
+        }
 
         div {
           width: 100%;
