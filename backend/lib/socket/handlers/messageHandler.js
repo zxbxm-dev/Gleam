@@ -385,18 +385,12 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       fileValue: newMessage.filePath ? 1 : 0,
     };
 
-    participants.forEach((participant) => {
-      io.to(participant.userId).emit("newMessage", messageData);
-    });
-    const testroom = io.sockets.adapter.rooms.get(roomId.toString());
-    console.log('====',io.sockets.adapter.rooms)
-    console.log(testroom);
-    if (testroom) {
-      console.log(`Room ${roomId} 참가 중인 소켓 ID들:`, Array.from(testroom));
-    } else {
-      console.log(`Room ${roomId}에 참가한 유저가 없습니다.`);
-    }
-    io.to(roomId.toString()).emit("newMsgData", messageData);
+    // participants.forEach((participant) => {
+    //   io.to(participant.userId).emit("newMessage", messageData);
+    // });
+
+    console.log('socket room 정보', io.sockets.adapter.rooms)
+    io.to(roomId).emit("newMsgData", messageData);
 
     await ChatRoom.update(
 
