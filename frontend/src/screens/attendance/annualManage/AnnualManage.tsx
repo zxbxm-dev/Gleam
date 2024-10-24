@@ -13,7 +13,7 @@ type TeamOrderType = {
   [key: string]: string[];
 };
 
-interface AnnualData {
+export interface AnnualData {
   username: string;
   availableDate: number;
   usedDate : number;
