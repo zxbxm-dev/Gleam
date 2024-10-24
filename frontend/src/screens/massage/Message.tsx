@@ -39,7 +39,7 @@ const Message: React.FC = () => {
     
     // 서버에 연결되었을 때
     socket.on('connect', () => {
-      socket.emit('registerUser', socket.id);
+      socket.emit('registerUser', userId);
       console.log(`[Client] Socket 서버에 연결됨: ${socket.id}`);
     });
     

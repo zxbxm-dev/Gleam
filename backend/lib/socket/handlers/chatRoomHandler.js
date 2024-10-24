@@ -306,10 +306,10 @@ const sendUserChatRooms = async (socket, userId) => {
       include: [{ model: ChatRoom }],
     });
 
-    console.log(
-      "사용자 채팅방 목록:",
-      chatRooms.map((participant) => participant.ChatRoom.roomId)
-    );
+    // console.log(
+    //   "사용자 채팅방 목록:",
+    //   chatRooms.map((participant) => participant.ChatRoom.roomId)
+    // );
 
     // 채팅방 ID와 관련된 참가자 정보를 담을 맵
     const roomParticipantsMap = {};
@@ -353,7 +353,7 @@ const sendUserChatRooms = async (socket, userId) => {
 
     const roomDataToSend = Object.values(roomParticipantsMap);
     // 추후 로그 삭제할것
-    console.log("클라이언트로 전달될 채팅방 데이터: ", roomDataToSend);
+    // console.log("클라이언트로 전달될 채팅방 데이터: ", roomDataToSend);
     // 필터링된 채팅방 목록을 클라이언트에 전송
     socket.emit("chatRooms", roomDataToSend);
   } catch (error) {
@@ -416,6 +416,7 @@ const joinRoom = async (io, socket, roomId, userIds) => {
           }
 
           socket.join(roomId.toString()); // 방에 참여
+          console.log(`${socket.id}가 방 ${roomId}에 참가했습니다.`);
 
           socket.emit("roomJoined", { roomId });
       } else {

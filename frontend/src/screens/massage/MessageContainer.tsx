@@ -573,19 +573,22 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // 새로운 메시지 수신
   useEffect(() => {
     if (socket) {
-        socket.on('newMessage', (messageData: any) => {
+        socket.on('newMsgData', (messageData: any) => {
+          console.log('새로운 메시지 받음')
           ChatTabGetMessage();
         });
     }
     
     return () => {
-      socket?.off('newMessage');
+      socket?.off('newMsgData');
     };
   }, [socket]);
 
   
   // console.log('messageContainer 호출', selectedRoomId)
   // console.log('내 연결 상태',socket?.connected);
+  // console.log('회원 아이디',user.id)
+  // console.log('서버메세지', serverMessages)
   return (
     <div
       className="Message-container"

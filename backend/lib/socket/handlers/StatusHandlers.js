@@ -16,7 +16,7 @@ const markMessageAsRead = async (socket, messageId, userId) => {
       where: { messageId, userId },
     });
 
-    console.log("메신저 읽음 요청");
+    // console.log("메신저 읽음 요청");
     
 
     if (!existingRead) {
