@@ -378,6 +378,9 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     if (socket) {
       const requesterId = user.userID;
       const roomId = selectedRoomId.roomId;
+
+      console.log('requesterId',requesterId)
+      console.log('roomId',roomId)
   
       const handleChatHistory = (data: any) => {
         if (Array.isArray(data.chatHistory)) {
@@ -388,22 +391,23 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
             ...prevState,
             joinUser: data.joinIds,
             hostId: data.hostId,
+            
           }));
         } else {
           console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
         }
       };
-  
+      
       // 채팅 이력 요청
       const emitChatHistoryRequest = () => {
         const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
         socket.emit(event, roomId, requesterId);
       };
-  
+      
       // 채팅 이력 수신 처리
       socket.on('groupChatHistory', handleChatHistory);
       socket.on('chatHistory', handleChatHistory);
-  
+      
       // 오류 처리
       socket.on('error', (error: any) => {
         console.error('메시지 가져오는 중 오류 발생:', error);
@@ -588,7 +592,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // console.log('messageContainer 호출', selectedRoomId)
   // console.log('내 연결 상태',socket?.connected);
   // console.log('회원 아이디',user.id)
-  // console.log('서버메세지', serverMessages)
+  console.log('서버메세지', serverMessages)
+  console.log('selectedRoomId',selectedRoomId)
   return (
     <div
       className="Message-container"
