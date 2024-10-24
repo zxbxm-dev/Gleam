@@ -53,9 +53,9 @@ const MobileCard: React.FC<Mobile> = ({ isMobileCardModal, setIsMobileCardModal 
 
                 <div className="mobile_user_info">
                   <div><span className="mobile_user_info_bold">{user.username}</span> <span className="mobile_user_info_mid">{user.team} / {user.position}</span></div>
-                  <div><span className="mobile_user_info_bold">Tel</span> <span className="mobile_user_info_Reg">+82 01000000000</span></div>
-                  <div><span className="mobile_user_info_bold">Mobile</span> <span className="mobile_user_info_Reg">+82 01000000000</span></div>
-                  <div><span className="mobile_user_info_bold">Email</span> <span className="mobile_user_info_Reg">fourchains@four-chains.com</span></div>
+                  <div><span className="mobile_user_info_bold">Tel</span> <span className="mobile_user_info_Reg">031-995-6409</span></div>
+                  <div><span className="mobile_user_info_bold">Mobile</span> <span className="mobile_user_info_Reg">+82 {user.phoneNumber}</span></div>
+                  <div><span className="mobile_user_info_bold">Email</span> <span className="mobile_user_info_Reg">{user.usermail}</span></div>
                   <div><span>경기 고양시 일산서구 킨텍스로 217-59 오피스동 703호</span></div>
                 </div>  
               </div>

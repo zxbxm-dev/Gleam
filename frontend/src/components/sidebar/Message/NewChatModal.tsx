@@ -210,10 +210,10 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
           // 방 ID 설정 (여기서 실제 방 ID로 대체)
           const roomId = selectedRoomId.roomId;
           const userIds = Array.from(additionalSelectedUsers);
-
+          console.log('NewChatModal.tsx 에서2 ',roomId)
           // 채팅방 참여 요청
           socket.emit("joinRoom", roomId, userIds);
-          console.log(roomId, userIds);
+          console.log('NewChatModal.tsx 에서 ',roomId, userIds);
           setMsgNewUpdate(true);
           // 방 참여 결과 처리
           socket.on("roomJoined", (data: RoomJoinedData) => {

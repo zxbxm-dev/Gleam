@@ -161,7 +161,7 @@ const MessageSidebar: React.FC<MessageSidebarProps> = ({socket}) => {
         socket.off('getChatRooms');
       };
     }
-  }, [user.userID, activeTab, msgOptionState, isNewMessage, isChatRoomProfile]);
+  }, [socket, user.userID, activeTab, msgOptionState, isNewMessage, isChatRoomProfile]);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);

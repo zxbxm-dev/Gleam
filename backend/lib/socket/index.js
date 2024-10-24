@@ -18,6 +18,7 @@ module.exports = (io) => {
         console.error("유효하지 않은 사용자 ID:", userId);
         return socket.emit("error", { message: "유효하지 않은 사용자 ID입니다." });
       }
+      console.log('================',userId)
 
       // 기존 사용자의 소켓이 있으면 해제
       if (connectedUsers[userId]) {
@@ -27,6 +28,11 @@ module.exports = (io) => {
       // 새로운 소켓 등록
       connectedUsers[userId] = socket;
       console.log(`사용자 ${userId}의 소켓 등록 완료`);
+      
+      Object.keys(connectedUsers).forEach(key => {
+        console.log('등록된 사용자 명',key)
+      })
+      console.log(connectedUsers)
     });
 
     // 채팅방 관련 이벤트 처리

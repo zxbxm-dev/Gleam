@@ -133,7 +133,7 @@ const getGroupChatHistory = async (socket, roomId) => {
       };
     });
 
-    console.log("단체방 클라이언트 전달 데이터", chatHistory)
+    // console.log("단체방 클라이언트 전달 데이터", chatHistory)
 
     const sendGroupChatHistoryToClient = (socket, chatHistory, joinIds, hostId) => {
       socket.emit("groupChatHistory", { chatHistory, joinIds, hostId });
@@ -342,7 +342,7 @@ const getChatHistory = async (socket, roomId) => {
       };
     });
 
-    console.log ("특정 채팅방 데이터 전달",chatHistory);
+    // console.log ("특정 채팅방 데이터 전달",chatHistory);
 
     socket.emit("chatHistory", { chatHistory, joinIds, hostId });
   } catch (error) {
@@ -388,8 +388,15 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
     participants.forEach((participant) => {
       io.to(participant.userId).emit("newMessage", messageData);
     });
-
-    io.to(roomId).emit("newMsgData", messageData);
+    const testroom = io.sockets.adapter.rooms.get(roomId.toString());
+    console.log('====',io.sockets.adapter.rooms)
+    console.log(testroom);
+    if (testroom) {
+      console.log(`Room ${roomId} 참가 중인 소켓 ID들:`, Array.from(testroom));
+    } else {
+      console.log(`Room ${roomId}에 참가한 유저가 없습니다.`);
+    }
+    io.to(roomId.toString()).emit("newMsgData", messageData);
 
     await ChatRoom.update(
 
