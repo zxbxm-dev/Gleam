@@ -27,22 +27,25 @@ const IncludeMeSlide: React.FC<IncludeMeProps> = ({ NotFilterEvent }) => {
 
     const todayString = useMemo(() => {
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return today.toISOString().split('T')[0];
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }, []);
 
     const filteredEvents = useMemo(() => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         return NotFilterEvent.filter(event => {
             const [day, month, year] = event.startDate.split('-');
             const eventDate = new Date(`20${year}-${month}-${day}`);
             return eventDate >= today && event.meetpeople.some(person => person.includes(Filtername));
         }).reduce<{ [key: string]: Event[] }>((acc, event) => {
-            const date = event.startDate;
-            acc[date] = acc[date] || [];
-            acc[date].push(event);
+            const [day, month, year] = event.startDate.split('-');
+            const formattedDate = `20${year}-${month}-${day}`;
+            acc[formattedDate] = acc[formattedDate] || [];
+            acc[formattedDate].push(event);
             return acc;
         }, {});
     }, [NotFilterEvent, Filtername]);
@@ -138,13 +141,13 @@ const IncludeMeSlide: React.FC<IncludeMeProps> = ({ NotFilterEvent }) => {
                                 }}
                             >
                                 {sortedEventsByDate[date].map(event => {
-                                    const [day, month, year] = event.startDate.split('-');
+                                    const [day, month, year] = event.endDate.split('-');
                                     const eventDate = new Date(`20${year}-${month}-${day}`);
                                     const isPastEvent = eventDate < new Date();
 
                                     return (
                                         <div className={isPastEvent ? "previous_content" : "project_content"} key={event.title}>
-                                            <div className="project_content_container">
+                                            <div className={isPastEvent ? "previous_content_name" : "project_content_container"}>
                                                 <div>
                                                     <span className="project_content_div_title_medium">{event.title}</span>
                                                 </div>
