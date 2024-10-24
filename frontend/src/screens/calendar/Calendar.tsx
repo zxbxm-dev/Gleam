@@ -14,6 +14,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { CheckAnnual } from '../../services/attendance/AttendanceServices';
 import { AnnualData } from "../attendance/annualManage/AnnualManage";
+import { aC } from "@fullcalendar/core/internal-common";
 
 type Event = {
   id: string;
@@ -80,6 +81,7 @@ const Calendar = () => {
   const [calendar, setCalendar] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [annualData, setAnnualData] = useState<AnnualData[]>([]);
+  const [active, setActive] = useState(true);
 
   const fetchAnnual = async () => {
     try {
@@ -122,16 +124,6 @@ const Calendar = () => {
     }
   })
 
-  // useEffect(() => {
-  //   if (activeTab === 0) {
-  //     setTabHeights({ 0: '41px', 1: '35px' });
-  //     setTabMargins({ 0: '0px', 1: '6px' });
-  //   } else {
-  //     setTabHeights({ 0: '35px', 1: '41px' });
-  //     setTabMargins({ 0: '6px', 1: '0px' });
-  //   }
-  // }, [activeTab]);
-
   useEffect(() => {
     setKey(prevKey => prevKey + 1);
   }, [activeTab]);
@@ -149,17 +141,17 @@ const Calendar = () => {
     setTitle(event.target.value);
     const value = event.target.value.toLowerCase();
     if (value.includes('반차')) {
-      setSelectedColor('#ABF0FF');
+      setSelectedColor('#CEF0FF');
     } else if (value.includes('연차')) {
-      setSelectedColor('#7AE1A9');
+      setSelectedColor('#BDF1BF');
     } else if (value.includes('외근')) {
-      setSelectedColor('#D6CDC2');
+      setSelectedColor('#FFFFB0');
     } else if (value.includes('워크숍')) {
-      setSelectedColor('#FFD8B5');
+      setSelectedColor('#FFDEC9');
     } else if (value.includes('출장')) {
-      setSelectedColor('#B1C2FF');
+      setSelectedColor('#CFD7F4');
     } else {
-      setSelectedColor('#B5B5B5');
+      setSelectedColor('#ECD0FF');
     }
   };
 
@@ -417,11 +409,6 @@ const Calendar = () => {
     fetchGoogleHolidays();
   }, []);
 
-  useEffect(() => {
-    if (activeTab === 0) {
-
-    }
-  })
 
   const dayCellContent = (arg: any) => {
     const date = new Date(arg.date.getFullYear(), arg.date.getMonth(), arg.date.getDate());
@@ -441,12 +428,42 @@ const Calendar = () => {
     );
   };
 
+
+  useEffect(() => {
+    const tabListButtons = document.querySelectorAll('.fc-tabList-button');
+    const RDListButtons = document.querySelectorAll('.fc-RDList-button');
+
+    tabListButtons.forEach(button => {
+        const btn = button as HTMLElement;
+        if (active) {
+            btn.style.backgroundColor = '#45C552';
+            btn.style.color = '#fff';
+            btn.style.border = '1px solid #fff';
+        } else {
+          btn.style.backgroundColor = '#fff';
+          btn.style.color = '#45C552';
+          btn.style.border = '1px solid #45C552';
+        }
+    });
+
+    RDListButtons.forEach(button => {
+      const btn = button as HTMLElement;
+      if (active === false) {
+          btn.style.backgroundColor = '#45C552';
+          btn.style.color = '#fff';
+          btn.style.border = '1px solid #fff';
+      } else {
+        btn.style.backgroundColor = '#fff';
+        btn.style.color = '#45C552';
+        btn.style.border = '1px solid #45C552';
+      }
+  });
+}, [active, annualData, calendar]);
+
   return (
     <div className="content" style={{ padding: '0px 20px' }}>
       <div className="content_container">
-        {activeTab === 0 && (
           <div className="calendar_container">
-
             <FullCalendar
               key={key}
               ref={calendarRef1}
@@ -463,14 +480,14 @@ const Calendar = () => {
                 tabList: {
                   text: '본사',
                   click: () => {
-                    setActiveTab(0);
+                    setActive(true);
                   },
                 },
 
                 RDList: {
                   text: 'R&D연구센터',
                   click: () => {
-                    setActiveTab(1);
+                    setActive(false);
                   },
                 },
                 annualInfo: {
@@ -487,7 +504,7 @@ const Calendar = () => {
               buttonText={{ today: '오늘' }}
               locale='kr'
               fixedWeekCount={false}
-              events={[...events1]}
+              events={active===true?[...events1]:events2}
               eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
               dayMaxEventRows={true}
               eventDisplay="block"
@@ -495,10 +512,9 @@ const Calendar = () => {
               moreLinkText='개 일정 더보기'
               dayCellContent={dayCellContent}
             />
-
           </div>
-        )}
-        {activeTab === 1 && (
+        {/* )} */}
+        {/* {activeTab === 1 && (
           <div className="calendar_container">
 
             <FullCalendar
@@ -516,15 +532,19 @@ const Calendar = () => {
                 },
                 tabList: {
                   text: '본사',
-                  click: function () {
-                    setActiveTab(0);
+                  click: () => {
+                    setTimeout(() => {
+                      setActiveTab(0);
+                    }, 2000); // 2초(2000밀리초) 후에 setActiveTab(1) 실행
                   },
                 },
 
                 RDList: {
                   text: 'R&D연구센터',
-                  click: function () {
-                    setActiveTab(1);
+                  click: () => {
+                    setTimeout(() => {
+                      setActiveTab(1);
+                    }, 2000); // 2초(2000밀리초) 후에 setActiveTab(1) 실행
                   },
                 },
                 annualInfo: {
@@ -551,7 +571,7 @@ const Calendar = () => {
             />
 
           </div>
-        )}
+        )} */}
       </div>
 
       <CustomModal
@@ -576,29 +596,29 @@ const Calendar = () => {
               </div>
               {selectOpen ? (
                 <div className="SelectContent">
-                  <div className="Option" onClick={() => SelectOptions('#ABF0FF')}>
+                  <div className="Option" onClick={() => SelectOptions('#CEF0FF')}>
                     <span>반차</span>
-                    <div style={{ backgroundColor: '#ABF0FF' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#CEF0FF' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#7AE1A9')}>
+                  <div className="Option" onClick={() => SelectOptions('#BDF1BF')}>
                     <span>연차</span>
-                    <div style={{ backgroundColor: '#7AE1A9' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#BDF1BF' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#D6CDC2')}>
+                  <div className="Option" onClick={() => SelectOptions('#FFFFB0')}>
                     <span>외근</span>
-                    <div style={{ backgroundColor: '#D6CDC2' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#FFFFB0' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#FFD8B5')}>
+                  <div className="Option" onClick={() => SelectOptions('#FFDEC9')}>
                     <span>워크숍</span>
-                    <div style={{ backgroundColor: '#FFD8B5' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#FFDEC9' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#B1C2FF')}>
+                  <div className="Option" onClick={() => SelectOptions('#CFD7F4')}>
                     <span>출장</span>
-                    <div style={{ backgroundColor: '#B1C2FF' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#CFD7F4' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#B5B5B5')}>
+                  <div className="Option" onClick={() => SelectOptions('#ECD0FF')}>
                     <span>기타</span>
-                    <div style={{ backgroundColor: '#B5B5B5' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#ECD0FF' }}>&nbsp;</div>
                   </div>
                 </div>
               ) : (
@@ -792,29 +812,29 @@ const Calendar = () => {
               </div>
               {selectOpen ? (
                 <div className="SelectContent">
-                  <div className="Option" onClick={() => SelectOptions('#ABF0FF')}>
+                  <div className="Option" onClick={() => SelectOptions('#CEF0FF')}>
                     <span>반차</span>
-                    <div style={{ backgroundColor: '#ABF0FF' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#CEF0FF' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#7AE1A9')}>
+                  <div className="Option" onClick={() => SelectOptions('#BDF1BF')}>
                     <span>연차</span>
-                    <div style={{ backgroundColor: '#7AE1A9' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#BDF1BF' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#D6CDC2')}>
+                  <div className="Option" onClick={() => SelectOptions('#FFFFB0')}>
                     <span>외근</span>
-                    <div style={{ backgroundColor: '#D6CDC2' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#FFFFB0' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#FFD8B5')}>
+                  <div className="Option" onClick={() => SelectOptions('#FFDEC9')}>
                     <span>워크숍</span>
-                    <div style={{ backgroundColor: '#FFD8B5' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#FFDEC9' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#B1C2FF')}>
+                  <div className="Option" onClick={() => SelectOptions('#CFD7F4')}>
                     <span>출장</span>
-                    <div style={{ backgroundColor: '#B1C2FF' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#CFD7F4' }}>&nbsp;</div>
                   </div>
-                  <div className="Option" onClick={() => SelectOptions('#B5B5B5')}>
+                  <div className="Option" onClick={() => SelectOptions('#ECD0FF')}>
                     <span>기타</span>
-                    <div style={{ backgroundColor: '#B5B5B5' }}>&nbsp;</div>
+                    <div style={{ backgroundColor: '#ECD0FF' }}>&nbsp;</div>
                   </div>
                 </div>
               ) : (

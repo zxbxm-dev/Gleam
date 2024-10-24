@@ -3,15 +3,15 @@
   background-color: #FBFBFB;
   padding: 0 20px;
 
-  .day-cell-content{
+  .day-cell-content {
     display: flex;
     gap: 10px;
     align-items: center;
     margin-left: 10px;
     margin-top: 5px;
   }
-  
-  .holiday-title{
+
+  .holiday-title {
     color: #E84848;
     font-size: 15px;
   }
@@ -31,7 +31,7 @@
         display: flex;
         font-family: var(--font-family-Noto-M);
 
-        .fc-toolbar-title{
+        .fc-toolbar-title {
           font-size: 25px;
         }
       }
@@ -41,7 +41,7 @@
       background-color: #FBFBFB;
       color: #969696;
       border: none;
-  
+
       &:active,
       &:focus,
       &.active {
@@ -54,7 +54,7 @@
     .fc-daygrid-day-frame {
       height: 100px;
       background-color: #fff;
-      
+
       &:hover {
         box-shadow: 0 0 0 3px #45C552 inset;
       }
@@ -107,25 +107,29 @@
           display: none;
         }
       }
+
       .fc-popover-body::-webkit-scrollbar-corner {
         background-color: none;
       }
+
       .fc-popover-body::-webkit-scrollbar {
         width: 10px;
         height: 10px;
       }
+
       .fc-popover-body::-webkit-scrollbar-thumb {
         background-color: #A8A8A8;
         border-radius: 10px;
         background-clip: padding-box;
         border: 2px solid transparent;
       }
+
       .fc-popover-body::-webkit-scrollbar-track {
         box-shadow: none;
         background-color: #fff;
       }
     }
-    
+
     .fc-daygrid-body-balanced .fc-daygrid-day-events {
       display: flex;
       flex-direction: column;
@@ -161,12 +165,12 @@
     height: 40px;
     text-align: left;
 
-    .fc-scrollgrid-sync-inner{
-    height: 100%;
-        display: flex;
-    align-items: center;
-    padding-left: 10px;
-}
+    .fc-scrollgrid-sync-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+    }
   }
 
   .fc-event {
@@ -178,24 +182,25 @@
       padding-left: 5px;
       font-size: 13px;
 
-      div{
+      div {
         font-family: var(--font-family-Noto-M);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
     }
-  }  
+  }
 
 }
-.Select{
+
+.Select {
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   flex-direction: column;
   position: relative;
-  
-  .SelectHeader{
+
+  .SelectHeader {
     width: 40px;
     height: 28px;
     border-radius: 3px;
@@ -206,43 +211,45 @@
     gap: 7px;
     cursor: pointer;
 
-    div{
+    div {
       width: 10px;
       height: 10px;
     }
   }
 
-  .SelectContent{
+  .SelectContent {
     width: 60px;
     height: 130px;
     border-radius: 3px;
     border: 1px solid #DCDCDC;
     position: absolute;
-    top:27px;
+    top: 27px;
     background-color: #fff;
-    
-    .Option{
+
+    .Option {
       display: flex;
       padding: 3px 8px;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
 
-      div{
+      div {
         width: 10px;
         height: 10px;
       }
 
-      span{
+      span {
         font-size: 10px;
         color: #929292;
       }
     }
-    .Option:hover{
-      background-color: rgba(0,0,0,0.10);
+
+    .Option:hover {
+      background-color: rgba(0, 0, 0, 0.10);
     }
   }
 }
+
 /* 일요일 날짜: 빨간색 */
 .fc-day-sun a {
   color: #D56D6D;
@@ -294,25 +301,24 @@
   }
 }
 
-.react-datepicker-wrapper{
+.react-datepicker-wrapper {
   width: 150px;
 }
 
-.IncludeMe{
+.IncludeMe {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-right: 7px;
 
-  span{
+  span {
     // font-size: 10px;
   }
 
-  .ActiveCircle{
+  .ActiveCircle {
     background-color: #00DD5C;
     width: 10px;
     height: 10px;
     border-radius: 50%;
   }
 }
-
