@@ -12,6 +12,8 @@ import { PersonData } from '../../services/person/PersonServices';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
+import { CheckAnnual } from '../../services/attendance/AttendanceServices';
+import { AnnualData } from "../attendance/annualManage/AnnualManage";
 
 type Event = {
   id: string;
@@ -77,6 +79,30 @@ const Calendar = () => {
   const [selectOpen, setSelectOpen] = useState(false);
   const [calendar, setCalendar] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [annualData, setAnnualData] = useState<AnnualData[]>([]);
+
+  const fetchAnnual = async () => {
+    try {
+      const response = await CheckAnnual();
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch data");
+    }
+  };
+
+  useQuery("annual", fetchAnnual, {
+    onSuccess: (data) => {
+      const filteredData = data.filter(
+        (item: any) =>
+          (item.dateType === "연차" || item.dateType === "반차") &&
+          item.userId === user.userID
+      );
+      setAnnualData(filteredData);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   const fetchUser = async () => {
     try {
@@ -96,15 +122,15 @@ const Calendar = () => {
     }
   })
 
-  useEffect(() => {
-    if (activeTab === 0) {
-      setTabHeights({ 0: '41px', 1: '35px' });
-      setTabMargins({ 0: '0px', 1: '6px' });
-    } else {
-      setTabHeights({ 0: '35px', 1: '41px' });
-      setTabMargins({ 0: '6px', 1: '0px' });
-    }
-  }, [activeTab]);
+  // useEffect(() => {
+  //   if (activeTab === 0) {
+  //     setTabHeights({ 0: '41px', 1: '35px' });
+  //     setTabMargins({ 0: '0px', 1: '6px' });
+  //   } else {
+  //     setTabHeights({ 0: '35px', 1: '41px' });
+  //     setTabMargins({ 0: '6px', 1: '0px' });
+  //   }
+  // }, [activeTab]);
 
   useEffect(() => {
     setKey(prevKey => prevKey + 1);
@@ -391,6 +417,12 @@ const Calendar = () => {
     fetchGoogleHolidays();
   }, []);
 
+  useEffect(() => {
+    if (activeTab === 0) {
+
+    }
+  })
+
   const dayCellContent = (arg: any) => {
     const date = new Date(arg.date.getFullYear(), arg.date.getMonth(), arg.date.getDate());
     const formattedDateStr = date.toISOString().split('T')[0];
@@ -412,87 +444,114 @@ const Calendar = () => {
   return (
     <div className="content" style={{ padding: '0px 20px' }}>
       <div className="content_container">
-        <Tabs variant='enclosed' onChange={(index) => setActiveTab(index)}>
-          <TabList>
-            <Tab _selected={{ bg: '#FFFFFF' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[0]} marginTop={tabMargins[0]}>본사</Tab>
-            <Tab _selected={{ bg: '#FFFFFF' }} bg='#DEDEDE' borderTop='1px solid #DEDEDE' borderRight='1px solid #DEDEDE' borderLeft='1px solid #DEDEDE' fontFamily='var(--font-family-Noto-R)' height={tabHeights[1]} marginTop={tabMargins[1]}>R&D 연구센터</Tab>
-          </TabList>
+        {activeTab === 0 && (
+          <div className="calendar_container">
 
-          <TabPanels>
-            <TabPanel>
-              <div className="calendar_container">
-                <FullCalendar
-                  key={key}
-                  ref={calendarRef1}
-                  plugins={[dayGridPlugin]}
-                  initialView="dayGridMonth"
-                  height="100%"
-                  customButtons={{
-                    Addschedule: {
-                      text: '일정 추가　+',
-                      click: function () {
-                        setAddEventModalOPen(true);
-                      },
-                    },
-                  }}
-                  headerToolbar={{
-                    start: 'prev title next',
-                    center: '',
-                    end: 'Addschedule',
-                  }}
-                  dayHeaderFormat={{ weekday: 'long' }}
-                  titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-                  buttonText={{ today: '오늘' }}
-                  locale='kr'
-                  fixedWeekCount={false}
-                  events={[...events1]}
-                  eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
-                  dayMaxEventRows={true}
-                  eventDisplay="block"
-                  eventClick={handleEventClick}
-                  moreLinkText='개 일정 더보기'
-                  dayCellContent={dayCellContent}
-                />
-              </div>
-            </TabPanel>
-            <TabPanel>
-              <div className="calendar_container">
-                <FullCalendar
-                  key={key}
-                  ref={calendarRef2}
-                  plugins={[dayGridPlugin]}
-                  initialView="dayGridMonth"
-                  height="100%"
-                  customButtons={{
-                    Addschedule: {
-                      text: '일정 추가　+',
-                      click: function () {
-                        setAddEventModalOPen(true);
-                      },
-                    },
-                  }}
-                  headerToolbar={{
-                    start: 'prev title next',
-                    center: '',
-                    end: 'Addschedule',
-                  }}
-                  dayHeaderFormat={{ weekday: 'long' }}
-                  titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-                  buttonText={{ today: '오늘' }}
-                  locale='kr'
-                  fixedWeekCount={false}
-                  events={events2}
-                  eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
-                  dayMaxEventRows={true}
-                  eventDisplay="block"
-                  eventClick={handleEventClick}
-                  moreLinkText='개 일정 더보기'
-                  dayCellContent={dayCellContent}
-                />
-              </div>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+            <FullCalendar
+              key={key}
+              ref={calendarRef1}
+              plugins={[dayGridPlugin]}
+              initialView="dayGridMonth"
+              height="100%"
+              customButtons={{
+                Addschedule: {
+                  text: '일정 추가　+',
+                  click: function () {
+                    setAddEventModalOPen(true);
+                  },
+                },
+                tabList: {
+                  text: '본사',
+                  click: () => {
+                    setActiveTab(0);
+                  },
+                },
+
+                RDList: {
+                  text: 'R&D연구센터',
+                  click: () => {
+                    setActiveTab(1);
+                  },
+                },
+                annualInfo: {
+                  text: `${user.username}님 잔여 연차 : ${annualData[annualData.length - 1]?.extraDate || 0}/${annualData[annualData.length - 1]?.availableDate || 0}`,
+                },
+              }}
+              headerToolbar={{
+                start: 'tabList,RDList',
+                center: 'prev title next',
+                end: 'annualInfo,Addschedule',
+              }}
+              dayHeaderFormat={{ weekday: 'long' }}
+              titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
+              buttonText={{ today: '오늘' }}
+              locale='kr'
+              fixedWeekCount={false}
+              events={[...events1]}
+              eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
+              dayMaxEventRows={true}
+              eventDisplay="block"
+              eventClick={handleEventClick}
+              moreLinkText='개 일정 더보기'
+              dayCellContent={dayCellContent}
+            />
+
+          </div>
+        )}
+        {activeTab === 1 && (
+          <div className="calendar_container">
+
+            <FullCalendar
+              key={key}
+              ref={calendarRef2}
+              plugins={[dayGridPlugin]}
+              initialView="dayGridMonth"
+              height="100%"
+              customButtons={{
+                Addschedule: {
+                  text: '일정 추가　+',
+                  click: function () {
+                    setAddEventModalOPen(true);
+                  },
+                },
+                tabList: {
+                  text: '본사',
+                  click: function () {
+                    setActiveTab(0);
+                  },
+                },
+
+                RDList: {
+                  text: 'R&D연구센터',
+                  click: function () {
+                    setActiveTab(1);
+                  },
+                },
+                annualInfo: {
+                  text: `${user.username}님 잔여 연차 : ${annualData[annualData.length - 1]?.extraDate || 0}/${annualData[annualData.length - 1]?.availableDate || 0}`,
+                },
+              }}
+              headerToolbar={{
+                start: 'tabList,RDList',
+                center: 'prev title next',
+                end: 'annualInfo,Addschedule',
+              }}
+              dayHeaderFormat={{ weekday: 'long' }}
+              titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
+              buttonText={{ today: '오늘' }}
+              locale='kr'
+              fixedWeekCount={false}
+              events={events2}
+              eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
+              dayMaxEventRows={true}
+              eventDisplay="block"
+              eventClick={handleEventClick}
+              moreLinkText='개 일정 더보기'
+              dayCellContent={dayCellContent}
+            />
+
+          </div>
+        )}
       </div>
 
       <CustomModal

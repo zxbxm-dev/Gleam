@@ -3,8 +3,8 @@
 
 .calendar_container {
   height: 87vh;
-  background-color: white;
-  border: 1px solid #DEDEDE;
+  // background-color: white;
+  // border: 1px solid #DEDEDE;
   padding: 20px;
   border-top-right-radius: 5px;
   border-bottom-left-radius: 5px;
@@ -26,7 +26,9 @@
   }
 
   .fc {
-
+.fc-tabList-button{
+  font-size: 50px;
+}
     .fc-toolbar.fc-header-toolbar {
       flex-direction: row;
       font-size: 16px;
@@ -36,6 +38,38 @@
       .fc-toolbar-chunk {
         display: flex;
         font-family: var(--font-family-Noto-M);
+
+        button{
+          background-color: #FBFBFB;
+        }
+
+        .fc-button-group{
+          display: flex;
+          gap: 10px;
+
+          button{
+            border-bottom-left-radius: 5px;
+            border-top-left-radius: 5px;
+            background-color: #FBFBFB;
+          }
+          button:first-child{
+            cursor: default;
+          }
+        }
+      }
+
+      .fc-toolbar-chunk:first-child{
+        button{
+          background-color: #fff;
+          border: 1px solid #45C552;
+          color: #45C552;
+          font-size: 14px;
+        }
+        button:focus{
+          background-color: #45C552;
+          border: 1px solid #fff;
+          color: #fff;
+        }
       }
     }
 
@@ -252,4 +286,8 @@
   .calendar_container{
     height: 82vh;
   }
+}
+
+.css-fgp5ep{
+  border-bottom: none;
 }
