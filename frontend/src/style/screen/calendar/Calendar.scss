@@ -2,21 +2,21 @@
 @import "../../Common/scrollbar.scss";
 
 .calendar_container {
-  height: 87vh;
-  // background-color: white;
-  // border: 1px solid #DEDEDE;
+  height: calc(100vh - 70px);
   padding: 20px;
   border-top-right-radius: 5px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 
-  .day-cell-content{
+  .day-cell-content {
     display: flex;
     gap: 10px;
     align-items: center;
+    margin-left: 10px;
+    margin-top: 5px;
   }
-  
-  .holiday-title{
+
+  .holiday-title {
     color: #E84848;
     font-size: 15px;
   }
@@ -26,9 +26,6 @@
   }
 
   .fc {
-.fc-tabList-button{
-  font-size: 50px;
-}
     .fc-toolbar.fc-header-toolbar {
       flex-direction: row;
       font-size: 16px;
@@ -39,36 +36,29 @@
         display: flex;
         font-family: var(--font-family-Noto-M);
 
-        button{
+        .fc-toolbar-title {
+          font-size: 25px;
+        }
+
+        button {
           background-color: #FBFBFB;
         }
 
-        .fc-button-group{
+        .fc-button-group {
           display: flex;
           gap: 10px;
 
-          button{
-            border-bottom-left-radius: 5px;
-            border-top-left-radius: 5px;
+          button {
+            border-radius: 5px;
             background-color: #FBFBFB;
           }
-          button:first-child{
-            cursor: default;
-          }
-        }
-      }
 
-      .fc-toolbar-chunk:first-child{
-        button{
-          background-color: #fff;
-          border: 1px solid #45C552;
-          color: #45C552;
-          font-size: 14px;
-        }
-        button:focus{
-          background-color: #45C552;
-          border: 1px solid #fff;
-          color: #fff;
+          .fc-tabList-button,
+          .fc-RDList-button {
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            padding: 8px 20px;
+          }
         }
       }
     }
@@ -89,6 +79,7 @@
 
     .fc-daygrid-day-frame {
       height: 100px;
+      background-color: #fff;
 
       &:hover {
         box-shadow: 0 0 0 3px #76CB7E inset;
@@ -138,7 +129,7 @@
         flex-direction: column;
         gap: 5px;
         overflow-y: auto;
-        
+
         .fc-more-popover-misc {
           display: none;
         }
@@ -161,8 +152,8 @@
   .fc-Addschedule-button {
     width: 107px;
     height: 35px;
-    background-color: rgba(69,197,82,0.75) !important;
-    border: 1px solid rgba(69,197,82,0.75);
+    background-color: #45C552 !important;
+    border: 1px solid #45C552;
     border-radius: 5px;
     font-family: var(--font-family-Noto-B);
     font-size: 14px;
@@ -173,12 +164,18 @@
   // 요일 헤더
   .fc-theme-standard th {
     font-family: var(--font-family-Noto-M);
+    font-weight: normal;
+    background-color: #fff;
     color: #969696;
+    height: 40px;
     text-align: left;
-  }
 
-  .fc-col-header-cell-cushion {
-    margin-left: 5px;
+    .fc-scrollgrid-sync-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+    }
   }
 
   .fc-event {
@@ -280,14 +277,4 @@
   div {
     color: #000;
   }
-}
-
-@include laptop{
-  .calendar_container{
-    height: 82vh;
-  }
-}
-
-.css-fgp5ep{
-  border-bottom: none;
 }

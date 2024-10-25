@@ -31,14 +31,14 @@
 
 .project_container {
   margin-top: 10px;
-  height: 83vh;
+  height: calc(100vh - 100px);
   width: 100%;
 
   .project_content {
     display: flex;
     height: 100%;
     margin-top: 15px;
-    
+
     .project_content_section {
       flex: 1 1 33.33%;
       max-width: 33.33%;
@@ -83,7 +83,7 @@
           padding: 15px 10px;
         }
       }
-      
+
       .project_content_notstarted_section {
         width: 100%;
         padding: 0 10px;
@@ -216,7 +216,7 @@
           width: 92px;
           height: 70px;
           z-index: 999;
-          
+
           .dropdown_pin {
             z-index: 999;
             display: flex;
@@ -229,7 +229,8 @@
             font-size: 14px;
             background-color: #ffffff;
           }
-          .dropdown_pin:hover{
+
+          .dropdown_pin:hover {
             background-color: #76CB7E;
             color: #fff;
           }
@@ -251,7 +252,7 @@
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.5s ease-in-out;
-        
+
         &.visible {
           max-height: 1000px;
         }
@@ -264,27 +265,27 @@
           max-height: 47px;
           background-color: #fff;
           cursor: pointer;
-    
+
           .subproject_box_left {
             display: flex;
             align-items: center;
             font-size: 14px;
             font-family: var(--font-family-Noto-M);
-  
+
             .subproject_box_left_notstarted_tag {
               width: 3px;
               height: 47px;
               background-color: #009544;
               margin-right: 15px;
             }
-  
+
             .subproject_box_left_inprogress_tag {
               width: 3px;
               height: 47px;
               background-color: #3870FF;
               margin-right: 15px;
             }
-  
+
             .subproject_box_left_done_tag {
               width: 3px;
               height: 47px;
@@ -292,54 +293,56 @@
               margin-right: 15px;
             }
           }
-    
+
           .subproject_box_right {
             display: flex;
             gap: 10px;
             margin-right: 15px;
-  
+
             .text_medium {
               font-size: 10px;
               font-family: var(--font-family-Noto-B);
             }
-  
+
             .text_regular {
               font-size: 10px;
               font-family: var(--font-family-Noto-R);
             }
-  
+
             .text_brown {
               color: #009544;
             }
-  
+
             .text_blue {
               color: #3870FF;
             }
-  
+
             .text_gray {
               color: #717171;
             }
           }
         }
       }
-  
+
       .subproject_inprogress {
         background-color: rgba(56, 112, 255, 0.15);
       }
-  
+
       .subproject_done {
         background-color: rgba(113, 113, 113, 0.15);
       }
     }
   }
 
-  .day-cell-content{
+  .day-cell-content {
     display: flex;
     gap: 10px;
     align-items: center;
+    margin-left: 10px;
+    margin-top: 5px;
   }
-  
-  .holiday-title{
+
+  .holiday-title {
     color: #E84848;
     font-size: 15px;
   }
@@ -347,7 +350,7 @@
   .holiday-date {
     color: #E84848;
   }
-  
+
   .fc {
     .fc-toolbar.fc-header-toolbar {
       flex-direction: row;
@@ -358,6 +361,10 @@
       .fc-toolbar-chunk {
         display: flex;
         font-family: var(--font-family-Noto-M);
+
+        .fc-toolbar-title {
+          font-size: 25px;
+        }
       }
     }
 
@@ -369,7 +376,7 @@
       background-color: #FBFBFB;
       color: #969696;
       border: none;
-  
+
       &:active,
       &:focus,
       &.active {
@@ -435,25 +442,29 @@
           display: none;
         }
       }
+
       .fc-popover-body::-webkit-scrollbar-corner {
         background-color: none;
       }
+
       .fc-popover-body::-webkit-scrollbar {
         width: 10px;
         height: 10px;
       }
+
       .fc-popover-body::-webkit-scrollbar-thumb {
         background-color: #A8A8A8;
         border-radius: 10px;
         background-clip: padding-box;
         border: 2px solid transparent;
       }
+
       .fc-popover-body::-webkit-scrollbar-track {
         box-shadow: none;
         background-color: #fff;
       }
     }
-    
+
     .fc-daygrid-body-balanced .fc-daygrid-day-events {
       display: flex;
       flex-direction: column;
@@ -464,14 +475,18 @@
   // 요일 헤더
   .fc-theme-standard th {
     font-family: var(--font-family-Noto-M);
+    font-weight: normal;
     background-color: #fff;
     color: #969696;
     height: 40px;
     text-align: left;
-  }
-  .fc-col-header-cell-cushion {
-    margin-left: 5px;
-    margin-top: 5px;
+
+    .fc-scrollgrid-sync-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+    }
   }
 
   .fc-event {
@@ -483,14 +498,14 @@
       padding-left: 5px;
       font-size: 13px;
 
-      div{
+      div {
         font-family: var(--font-family-Noto-M);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
     }
-  }  
+  }
 }
 
 /* 일요일 날짜: 빨간색 */
@@ -511,7 +526,7 @@
   }
 }
 
-.react-datepicker-wrapper{
+.react-datepicker-wrapper {
   width: 150px;
 }
 
@@ -560,34 +575,34 @@
         font-family: var(--font-family-Noto-M);
         max-height: 150px;
         overflow-y: auto;
-  
+
         li {
           padding: 8px;
           cursor: pointer;
           transition: background-color 0.3s ease;
         }
-  
+
         li:hover {
           background-color: #f0f0f0;
         }
       }
-  
+
       .autocomplete_dropdown_inbox::-webkit-scrollbar {
         width: 6px;
         height: 6px;
       }
-      
+
       .autocomplete_dropdown_inbox::-webkit-scrollbar-thumb {
         background-color: #A8A8A8;
         border-radius: 10px;
         background-clip: padding-box;
         border: 2px solid transparent;
       }
-      
+
       .autocomplete_dropdown_inbox::-webkit-scrollbar-corner {
         background-color: none;
       }
-      
+
       .autocomplete_dropdown_inbox::-webkit-scrollbar-track {
         box-shadow: none;
         background-color: #fff;
@@ -650,21 +665,21 @@
         width: 100px;
         font-size: 12px;
         font-family: var(--font-family-Noto-M);
-  
+
         .blue_circle {
           width: 7px;
           height: 7px;
           background-color: #000AFF;
           border-radius: 50%;
         }
-  
+
         .brown_circle {
           width: 7px;
           height: 7px;
           background-color: #0C6605;
           border-radius: 50%;
         }
-        
+
         li {
           display: flex;
           gap: 10px;
@@ -672,6 +687,7 @@
           padding: 3px 10px;
         }
       }
+
       .dropdown_menu_status li:hover {
         background-color: #f0f0f0;
       }
@@ -731,7 +747,7 @@
     }
 
     .input_project::placeholder {
-      color: #929292; 
+      color: #929292;
       font-size: 20px;
     }
 
@@ -749,7 +765,7 @@
     }
 
     .input_list::placeholder {
-      color: #C7C7C7; 
+      color: #C7C7C7;
       font-size: 12px;
     }
 
@@ -771,7 +787,7 @@
     }
 
     .input_box::placeholder {
-      color: #929292; 
+      color: #929292;
       font-size: 14px;
     }
 
@@ -829,18 +845,18 @@
       width: 6px;
       height: 6px;
     }
-    
+
     .autocomplete_dropdown::-webkit-scrollbar-thumb {
       background-color: #A8A8A8;
       border-radius: 10px;
       background-clip: padding-box;
       border: 2px solid transparent;
     }
-    
+
     .autocomplete_dropdown::-webkit-scrollbar-corner {
       background-color: none;
     }
-    
+
     .autocomplete_dropdown::-webkit-scrollbar-track {
       box-shadow: none;
       background-color: #fff;
@@ -875,18 +891,18 @@
       width: 6px;
       height: 6px;
     }
-    
+
     .body_container_content_listbox::-webkit-scrollbar-thumb {
       background-color: #A8A8A8;
       border-radius: 10px;
       background-clip: padding-box;
       border: 2px solid transparent;
     }
-    
+
     .body_container_content_listbox::-webkit-scrollbar-corner {
       background-color: none;
     }
-    
+
     .body_container_content_listbox::-webkit-scrollbar-track {
       box-shadow: none;
       background-color: #F7F7F7;
@@ -905,26 +921,29 @@
       align-items: center;
       justify-content: center;
       padding: 0 10px;
-      
+
       input {
         border: none;
       }
-      .timespan{
+
+      .timespan {
         display: flex;
         justify-content: center;
         width: 20px;
       }
 
-      .datepicker{
+      .datepicker {
         font-size: 14px;
         font-family: var(--font-family-Noto-M);
         width: 80px;
         height: 27px;
       }
-      .datepicker:focus{
+
+      .datepicker:focus {
         outline: none;
       }
-      .react-datepicker-wrapper{
+
+      .react-datepicker-wrapper {
         width: 80px;
       }
     }
@@ -937,4 +956,8 @@
   .body_container_content.content_box:focus-within {
     border-color: #A2E2A9;
   }
+}
+
+.fc-direction-ltr {
+  margin-top: -50px;
 }
