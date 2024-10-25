@@ -53,14 +53,14 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ socket, chatRoomPeo
         const updatedUsers = dataTeamDept.map((data: any, index: any) => {
           const userName = userNames[index];
           const userId = filteredData[index].userId;
-          console.log('userId',userId)
-          console.log('chatModalopenstate.hostid', ChatModalOpenState.hostId)
+          // console.log('userId',userId)
+          // console.log('chatModalopenstate.hostid', ChatModalOpenState.hostId)
           const isHost = userId === ChatModalOpenState.hostId;
           const attachment = userAttachments[index];
           return { id: userId, name: `${data} ${userName}`, isHost, attachment };
         });
 
-        console.log('업데이트 유저',updatedUsers)
+        // console.log('업데이트 유저',updatedUsers)
         setChatModalUser(updatedUsers);
         setJoinUserNumber(chatModalUser.length);
       } catch (err) {
@@ -70,7 +70,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ socket, chatRoomPeo
 
     fetchData();
   }, [ChatModalOpenState.joinUser, ChatModalOpenState.hostId, isNewMessage]);
-  console.log(chatModalUser)
+  // console.log(chatModalUser)
   //관리자 변경
   const changeAdmin = async (newAdminId: string) => {
     try {
