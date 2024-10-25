@@ -1217,8 +1217,8 @@ const Project = () => {
               dayCellContent={dayCellContent}
               height="100%"
               headerToolbar={{
-                start: 'prev title next',
-                center: '',
+                start: '',
+                center: 'prev title next',
                 end: '',
               }}
               dayHeaderFormat={{ weekday: 'long' }}
