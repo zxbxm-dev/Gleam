@@ -23,7 +23,7 @@ import {
   FileUserDown,
   FileMyDown
 } from "../../assets/images/index";
-import io, { Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import {
   selectedRoomIdState,
@@ -84,14 +84,32 @@ const DummyNotice = [
 
 const formatTime = (timestamp: string): string => {
   const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = date.getMonth()+1;
+  const day = date.getDate();
   const hours = date.getHours();
   const minutes = date.getMinutes();
   const isPM = hours >= 12;
   const formattedHours = isPM ? hours - 12 : hours;
   const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
   const period = isPM ? '오후' : '오전';
-  return `${period} ${formattedHours === 0 ? 12 : formattedHours}:${formattedMinutes}`;
+  return `${year}.${month < 10 ? `0${String(month)}` : `${String(month)}`}.${day} ${period} ${formattedHours === 0 ? 12 : formattedHours}:${formattedMinutes}`;
 };
+
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+  const day = daysOfWeek[date.getDay()];  // 요일 가져오기
+  return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${day}요일`;
+}
+
+function isNewDate(currentMessageDate: string, previousMessageDate: string) {
+  const current = formatDate(currentMessageDate);
+  const previous = formatDate(previousMessageDate);
+  
+  return current !== previous;
+}
+
 
 const MessageContainer: React.FC<MessageContainerProps> = ({
   isAtBottom,
@@ -391,7 +409,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
             ...prevState,
             joinUser: data.joinIds,
             hostId: data.hostId,
-            
+
           }));
         } else {
           console.error('수신된 데이터가 메시지 배열이 아닙니다:', data);
@@ -593,6 +611,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // console.log('내 연결 상태',socket?.connected);
   // console.log('회원 아이디',user.id)
   console.log('서버메세지', serverMessages)
+  console.log('서버메세지 메타데이터', messageMetadata)
   console.log('selectedRoomId',selectedRoomId)
   return (
     <div
@@ -603,62 +622,79 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     >
       {selectedRoomId.roomId !== -2 ? (
         Array.isArray(serverMessages) && serverMessages.length > 0 ? (
-          serverMessages.map((msg: any, index) => (
-            <div key={index} className={msg.messageId === targetMessageId ? 'Message highlighted-message' : 'Message'}>
-              <img
-                src={(ensureArray(messageMetadata.usersAttachment)[index]) || UserIcon_dark}
-                className='userCircleIcon'
-                alt="User Icon"
-              />
-              <div className='CountBox'>
-                <div className="RightBox">
-                  <div>{(ensureArray(messageMetadata.userInfo)[index]) || "Unknown User"}</div>
-                  <div className="MsgTimeBox">
-                    {ensureArray(messageMetadata.userInfo)[index] &&
-                      <div className={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
-                        {msg.fileValue === 1 && ( // 현재 인덱스의 파일 값 확인
-                          <div className='WhiteBox'>
-                            <img src={getFileIcon(msg.content)} alt="File Icon" />
+          serverMessages.map((msg: any, index) => {
+            const previousMsg = serverMessages[index - 1];
+            const currentDate = formatDate(msg.timestamp);
+            const previousDate = previousMsg ? formatDate(previousMsg.timestamp) : null;
+            const shouldShowDate = index === 0 || currentDate !== previousDate;
+          
+            return (
+              <div key={index}>
+                {shouldShowDate && (
+                  <div className="date-divider">
+                    {currentDate}
+                  </div>
+                )}
+          
+                {/* 기존 메시지 UI */}
+                <div className={msg.messageId === targetMessageId ? 'Message highlighted-message' : 'Message'}>
+                  <img
+                    src={(ensureArray(messageMetadata.usersAttachment)[index]) || UserIcon_dark}
+                    className='userCircleIcon'
+                    alt="User Icon"
+                  />
+                  <div className='CountBox'>
+                    <div className="RightBox">
+                      <div>{(ensureArray(messageMetadata.userInfo)[index]) || "Unknown User"}</div>
+                      <div className="MsgTimeBox">
+                        {ensureArray(messageMetadata.userInfo)[index] &&
+                          <div className={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
+                            {msg.fileValue === 1 && (
+                              <div className='WhiteBox'>
+                                <img src={getFileIcon(msg.content)} alt="File Icon" />
+                              </div>
+                            )}
+                            {msg.content ? (
+                              <div
+                                key={msg.messageId}
+                                ref={(el) => (messageRefs.current[msg.messageId] = el)}
+                                dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br />').replace(/ {2,}/g, '&nbsp;&nbsp;') }}
+                              />
+                            ) : ""}
+          
+                            {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
+                            {msg.fileValue === 1 && (
+                              <div className='FileDown' onClick={() => MessageGetFile(msg.messageId, msg)}>
+                                <img src={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />
+                              </div>
+                            )}
                           </div>
-                        )}
-                        {msg.content ? (
-                          <div
-                            key={msg.messageId}
-                            ref={(el) => (messageRefs.current[msg.messageId] = el)}
-                            dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br />').replace(/ {2,}/g, '&nbsp;&nbsp;') }}
-                          />
-                        ) : ""}
-
-                        {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
-                        {msg.fileValue === 1 && (
-                          <div className='FileDown' onClick={() => MessageGetFile(msg.messageId, msg)}>
-                            <img src={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />
-                          </div>
-                        )}
+                        }
+                        <div className="MsgTime">
+                          {formatTime(msg.timestamp) || "시간 미정"}
+                        </div>
                       </div>
-                    }
-                    <div className="MsgTime">
-                      {ensureArray(messageMetadata.createdAt)[index] || "시간 미정"}
+                    </div>
+                    <div className="ViewCount">
+                      {
+                        selectedRoomId.isGroup
+                          ? (msg.unreadCount === 0 ? "" : msg.unreadCount)
+                          : (msg.isReadOther === 0
+                            ? "1"
+                            : (msg.isReadOther === true
+                              ? ""
+                              : "1"
+                            )
+                          )
+                      }
                     </div>
                   </div>
                 </div>
-                <div className="ViewCount">
-                  {
-                    selectedRoomId.isGroup
-                      ? (msg.unreadCount === 0 ? "" : msg.unreadCount)
-                      : (msg.isReadOther === 0
-                        ? "1"
-                        : (msg.isReadOther === true
-                          ? ""
-                          : "1"
-                        )
-                      )
-                  }
-                </div>
               </div>
-            </div>
-          ))
-        ) : (
+            );
+          })
+        )
+        : (
           <div></div>
         )
       ) : (
