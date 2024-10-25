@@ -513,65 +513,6 @@ const Calendar = () => {
               dayCellContent={dayCellContent}
             />
           </div>
-        {/* )} */}
-        {/* {activeTab === 1 && (
-          <div className="calendar_container">
-
-            <FullCalendar
-              key={key}
-              ref={calendarRef2}
-              plugins={[dayGridPlugin]}
-              initialView="dayGridMonth"
-              height="100%"
-              customButtons={{
-                Addschedule: {
-                  text: '일정 추가　+',
-                  click: function () {
-                    setAddEventModalOPen(true);
-                  },
-                },
-                tabList: {
-                  text: '본사',
-                  click: () => {
-                    setTimeout(() => {
-                      setActiveTab(0);
-                    }, 2000); // 2초(2000밀리초) 후에 setActiveTab(1) 실행
-                  },
-                },
-
-                RDList: {
-                  text: 'R&D연구센터',
-                  click: () => {
-                    setTimeout(() => {
-                      setActiveTab(1);
-                    }, 2000); // 2초(2000밀리초) 후에 setActiveTab(1) 실행
-                  },
-                },
-                annualInfo: {
-                  text: `${user.username}님 잔여 연차 : ${annualData[annualData.length - 1]?.extraDate || 0}/${annualData[annualData.length - 1]?.availableDate || 0}`,
-                },
-              }}
-              headerToolbar={{
-                start: 'tabList,RDList',
-                center: 'prev title next',
-                end: 'annualInfo,Addschedule',
-              }}
-              dayHeaderFormat={{ weekday: 'long' }}
-              titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-              buttonText={{ today: '오늘' }}
-              locale='kr'
-              fixedWeekCount={false}
-              events={events2}
-              eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
-              dayMaxEventRows={true}
-              eventDisplay="block"
-              eventClick={handleEventClick}
-              moreLinkText='개 일정 더보기'
-              dayCellContent={dayCellContent}
-            />
-
-          </div>
-        )} */}
       </div>
 
       <CustomModal
