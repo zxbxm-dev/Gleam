@@ -84,16 +84,13 @@ const DummyNotice = [
 
 const formatTime = (timestamp: string): string => {
   const date = new Date(timestamp);
-  const year = date.getFullYear();
-  const month = date.getMonth()+1;
-  const day = date.getDate();
   const hours = date.getHours();
   const minutes = date.getMinutes();
   const isPM = hours >= 12;
   const formattedHours = isPM ? hours - 12 : hours;
   const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
   const period = isPM ? '오후' : '오전';
-  return `${year}.${month < 10 ? `0${String(month)}` : `${String(month)}`}.${day} ${period} ${formattedHours === 0 ? 12 : formattedHours}:${formattedMinutes}`;
+  return `${period} ${formattedHours === 0 ? 12 : formattedHours}:${formattedMinutes}`;
 };
 
 function formatDate(dateString: string) {
@@ -101,13 +98,6 @@ function formatDate(dateString: string) {
   const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
   const day = daysOfWeek[date.getDay()];  // 요일 가져오기
   return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${day}요일`;
-}
-
-function isNewDate(currentMessageDate: string, previousMessageDate: string) {
-  const current = formatDate(currentMessageDate);
-  const previous = formatDate(previousMessageDate);
-  
-  return current !== previous;
 }
 
 
@@ -393,12 +383,13 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
+    console.log('ChatTabGetMessage 함수 실행')
     if (socket) {
       const requesterId = user.userID;
       const roomId = selectedRoomId.roomId;
 
-      console.log('requesterId',requesterId)
-      console.log('roomId',roomId)
+      // console.log('requesterId',requesterId)
+      // console.log('roomId',roomId)
   
       const handleChatHistory = (data: any) => {
         if (Array.isArray(data.chatHistory)) {
@@ -596,10 +587,18 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (socket) {
         socket.on('newMsgData', (messageData: any) => {
-          console.log('새로운 메시지 받음')
-          ChatTabGetMessage();
+          const formattedMessage = {
+            content: messageData.content,
+            fileValue: messageData.fileValue,
+            isReadOther: true,
+            messageId: messageData.messageId,
+            timestamp: messageData.timestamp,
+            userId: messageData.senderId,
+          };
+
+          setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
         });
-    }
+      }
     
     return () => {
       socket?.off('newMsgData');
@@ -610,9 +609,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // console.log('messageContainer 호출', selectedRoomId)
   // console.log('내 연결 상태',socket?.connected);
   // console.log('회원 아이디',user.id)
-  console.log('서버메세지', serverMessages)
-  console.log('서버메세지 메타데이터', messageMetadata)
-  console.log('selectedRoomId',selectedRoomId)
+  // console.log('서버메세지', serverMessages)
+  // console.log('메세지', messages)
+  // console.log('서버메세지 메타데이터', messageMetadata)
+  // console.log('Recoil 에 저장된 selectedRoomId',selectedRoomId)
+  // console.log('받아온 targetMessageId',targetMessageId)
   return (
     <div
       className="Message-container"
