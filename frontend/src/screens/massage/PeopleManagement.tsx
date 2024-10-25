@@ -32,7 +32,6 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ socket, chatRoomPeo
   const isNewMessage = useRecoilValue(MsgNewUpdateState);
 
   useEffect(() => {
-    console.log('인원관리 fetch 다시 불러오기')
     const fetchData = async () => {
       try {
         const response = await PersonData();

@@ -8,7 +8,7 @@ import {
 import SetProfile from "./SetProfile";
 import { Person } from "../MemberSidebar";
 import { selectedRoomIdState, selectUserID, userState } from "../../../recoil/atoms";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface ChatRoom {
   roomId: number;
@@ -95,7 +95,7 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
 }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<ChatRoom | null>(null);
-  const [selectedRoomId, setSelectedRoomId] = useRecoilState(selectedRoomIdState);
+  const setSelectedRoomId = useSetRecoilState(selectedRoomIdState);
   const [activeItem, setActiveItem] = useState<number | null>(null);
   const popoverRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [selectedUserIdstate, setSelectedUserIdstate] = useRecoilState(selectUserID);

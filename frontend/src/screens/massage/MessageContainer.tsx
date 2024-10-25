@@ -383,7 +383,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   //chatTab에서 사람 눌렀을 때 대화방 메시지 조회
   const ChatTabGetMessage = useCallback(() => {
-    console.log('ChatTabGetMessage 함수 실행')
     if (socket) {
       const requesterId = user.userID;
       const roomId = selectedRoomId.roomId;
@@ -596,14 +595,16 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
             userId: messageData.senderId,
           };
 
-          setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+          if (messageData.roomId === selectedRoomId.roomId) {
+            setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+          }
         });
       }
     
     return () => {
       socket?.off('newMsgData');
     };
-  }, [socket]);
+  }, [socket, selectedRoomId]);
 
   
   // console.log('messageContainer 호출', selectedRoomId)
