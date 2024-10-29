@@ -100,6 +100,10 @@ const PersonDataTab: React.FC<PersonDataTabProps> = ({
     "동형분석 연구실": ["동형분석 연구팀"],
     "블록체인 연구실": ["크립토 블록체인 연구팀", "API 개발팀"],
   };
+
+  // console.log('selectedUserId',selectedUserId)
+  // console.log('chatRooms',chatRooms)
+
   return (
     <div>
       <ul className="Sidebar-Ms">
