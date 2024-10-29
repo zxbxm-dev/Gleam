@@ -440,6 +440,19 @@ const socketJoinChatRoom = async ( socket, roomId ) => {
    }
 };
 
+//socket 채팅방 참여 - roomId 없을 때 
+const socketJoinNoRoomId = async ( socket, userId ) => {
+  try{
+    const roomId = getNextRoomId();
+    socket.join(roomId);
+    console.log(`사용자가 ${roomId}번 채팅방에 참여했습니다.`);
+    //socket.emit //socket.emit("joinedRoom", { roomId });
+  }catch(error){
+    console.error("socket Join 처리 중 오류가 발생했습니다.", error );
+    socket.emit("error", {message : "socket Join 처리 중 오류가 발생했습니다."});
+  }
+}
+
 //채팅방에서 내보내기------------------------------------------------------------
 
 const kickOutFromRoom = async (io, socket, roomId, userId) => {
@@ -590,4 +603,5 @@ module.exports = {
   kickOutFromRoom,
   exitRoom,
   socketJoinChatRoom,
+  socketJoinNoRoomId,
 };

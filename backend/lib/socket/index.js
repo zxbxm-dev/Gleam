@@ -4,12 +4,12 @@ const notificationEvent = require("./events/notificationEvent");
 const statusEvents = require("./events/statusEvents");
 const mysql = require('mysql2/promise');
 
-const db = mysql.createPool({
-  host: '127.0.0.1',
-  user: 'root',
-  password: '1111',
-  database: 'chainlinker'
-})
+// const db = mysql.createPool({
+//   host: '127.0.0.1',
+//   user: 'root',
+//   password: '1111',
+//   database: 'chainlinker'
+// })
 
 // 사용자 소켓 관리 객체
 const connectedUsers = {};
@@ -21,14 +21,14 @@ module.exports = (io) => {
 
     // 사용자 ID를 클라이언트로부터 받기 위한 이벤트 처리
     socket.on("registerUser", async (userId) => {
-      const userRooms = await getUserRoomsFromDB(userId);
+      // const userRooms = await getUserRoomsFromDB(userId);
 
-      async function getUserRoomsFromDB(userId) {
-        const query = 'SELECT roomId FROM chatroom_participant WHERE userId = ?';
-        const [rows] = await db.execute(query, [userId]);
-        return rows.map(row => row.roomId);
-      }
-      console.log('본인이 속한 룸', userRooms)
+      // async function getUserRoomsFromDB(userId) {
+      //   const query = 'SELECT roomId FROM chatroom_participant WHERE userId = ?';
+      //   const [rows] = await db.execute(query, [userId]);
+      //   return rows.map(row => row.roomId);
+      // }
+      // console.log('본인이 속한 룸', userRooms)
       
 
       if (!userId || typeof userId !== 'string') {
@@ -45,10 +45,10 @@ module.exports = (io) => {
       connectedUsers[userId] = socket;
       console.log(`사용자 ${userId}의 소켓 등록 완료`);
       
-      userRooms.forEach(roomId => {
-        socket.join(roomId);
-        console.log(`사용자 ${userId}가 Room ${roomId}에 참여했습니다.`);
-      });
+      // userRooms.forEach(roomId => {
+      //   socket.join(roomId);
+      //   console.log(`사용자 ${userId}가 Room ${roomId}에 참여했습니다.`);
+      // });
 
       Object.keys(connectedUsers).forEach(key => {
         console.log('등록된 사용자 명',key)
