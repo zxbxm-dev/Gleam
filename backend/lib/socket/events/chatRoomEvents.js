@@ -19,19 +19,33 @@ module.exports = (io, socket) => {
     }
   });
 
-  //특정 채팅방 socket 참여 처리
+  //특정 채팅방 socket 참여 처리 - roomId 가 있을 때 
   socket.on("socketJoinChatRoom", async (roomId) => {
     try{
       if(!roomId){
         throw new Error("참여자의 방 정보가 제공되지 않았습니다.");
       }
       await chatRoomHandlers.socketJoinChatRoom(socket, roomId);
-      console.log(`사용자가 ${roomId}에 참여했습니다.`)
-      socket.emit("joinedRoom", { roomId });
+      console.log(`사용자가 ${roomId}에 참여했습니다.`);
+      //socket.emit("joinedRoom", { roomId });
     }catch(error) {
-      console.error("조회되는 채팅방 번호가 없습니다." , error);
-      socket.emit("error", {message: "조회되지 않는 방번호입니다."});
+      console.error("socket Join 처리에 실패했습니다." , error);
+      socket.emit("error", {message: "socket Join 처리에 실패했습니다."});
     };
+  })
+
+  //특정 채팅방 socket 참여 처리 - roomId가 없을 때
+  socket.on("socketJoinNoRoomId", async(userId) => {
+    try{
+      if(!userId){
+        throw new Error("사용자 정보를 찾을 수 없습니다.");
+      }
+      await chatRoomHandlers.socketJoinNoRoomId(socket, userId);
+      console.log(`${userId}가 새로운 채팅방을 생성했습니다.`);  // ...
+    }catch(error) {
+      console.error("socket Join 처리에 실패했습니다.");
+      socket.emit("error", {message: "socket Join 처리에 실패했습니다."});
+    }
   })
 
   // 새 채팅방 생성 요청 처리
