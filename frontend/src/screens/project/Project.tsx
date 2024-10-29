@@ -421,11 +421,16 @@ const Project = () => {
   };
 
   const colors = [
-    { backgroundColor: '#FCF5D7', borderColor: '#FCF5D7' },
-    { backgroundColor: '#D6CDC2', borderColor: '#D6CDC2' },
-    { backgroundColor: '#B1C3FF', borderColor: '#B1C3FF' },
-    { backgroundColor: '#C1FFC1', borderColor: '#C1FFC1' },
-    { backgroundColor: '#FFE897', borderColor: '#FFE897' },
+    { backgroundColor: '#FFC5C5', borderColor: '#FFC5C5' },
+    { backgroundColor: '#FFDFBE', borderColor: '#FFDFBE' },
+    { backgroundColor: '#F9F9A1', borderColor: '#F9F9A1' },
+    { backgroundColor: '#CAFFB7', borderColor: '#CAFFB7' },
+    { backgroundColor: '#B2F5E0', borderColor: '#B2F5E0' },
+    { backgroundColor: '#B7E1FF', borderColor: '#B7E1FF' },
+    { backgroundColor: '#CFD7FF', borderColor: '#CFD7FF' },
+    { backgroundColor: '#E0D1FF', borderColor: '#E0D1FF' },
+    { backgroundColor: '#FFCDFE', borderColor: '#FFCDFE' },
+    { backgroundColor: '#DADADA', borderColor: '#DADADA' },
   ];
 
   const transformProjectData = (data: any) => {
