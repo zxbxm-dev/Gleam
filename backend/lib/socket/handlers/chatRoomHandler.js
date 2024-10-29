@@ -520,6 +520,7 @@ const exitRoom = async (io, socket, data) => {
       socket.emit("chatRoomDeleted", {
         message: `${roomId}의 채팅방이 삭제되었습니다.`,
       });
+      socketLeave( socket,data );
       return;
     }
 
@@ -596,6 +597,19 @@ const exitRoom = async (io, socket, data) => {
   }
 };
 
+//socket leave  처리
+const socketLeave = async ( socket, data ) => {
+  const { roomId, userId } = data;
+
+   try{
+    socket.leave(roomId);
+    console.log(`${roomId}번 채팅방 소켓 해제 : ${socket.id}`)
+   }catch(error){
+    console.error("socket leave 처리 중 오류가 발생했습니다.", error );
+    socket.emit("error", {message: " socket leave 처리 중 오류가 발생했습니다." });
+   }
+}
+
 module.exports = {
   sendUserChatRooms,
   createPrivateRoom,
@@ -604,4 +618,5 @@ module.exports = {
   exitRoom,
   socketJoinChatRoom,
   socketJoinNoRoomId,
+  socketLeave,
 };

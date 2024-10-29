@@ -109,4 +109,19 @@ module.exports = (io, socket) => {
       socket.emit("error", { message: error.message });
     }
   });
+
+  // socket leave 처리 
+  socket.on("socketLeave", async ( socket, {roomId, userId} ) => {
+    try{
+    if(!userId || !roomId) {
+      throw new Error("방 ID 또는 사용자 ID가 제공되지 않았습니다.");
+    }
+    await chatRoomHandlers.socketLeave(socket, roomId, userId);
+    console.log(`사용자 socket이 ${roomId}번 채팅방에서 해제되었습니다.`);
+    
+    }catch(error){
+    console.error("socket 해제 처리 중 오류가 발생했습니다.", error);
+    socket.emit("error", { message: "socket 해제 처리 중 오류가 발생했습니다."});
+    } 
+  });
 };
