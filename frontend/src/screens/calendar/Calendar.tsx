@@ -14,7 +14,6 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 import { CheckAnnual } from '../../services/attendance/AttendanceServices';
 import { AnnualData } from "../attendance/annualManage/AnnualManage";
-import { aC } from "@fullcalendar/core/internal-common";
 
 type Event = {
   id: string;
@@ -428,6 +427,14 @@ const Calendar = () => {
     );
   };
 
+  const annualInfoText = '';
+
+  useEffect(() => {
+    const button = document.querySelector('.fc-annualInfo-button');
+    if (button) {
+      button.innerHTML = `잔여 연차 <span style="color: #009544;"> ${String(annualData[annualData.length - 1]?.extraDate).padStart(2, '0') || 0}</sapn><span style="color: #000000;">/${annualData[annualData.length - 1]?.availableDate || 0}</sapn>`;
+    }
+  }, [annualData]);
 
   useEffect(() => {
     const tabListButtons = document.querySelectorAll('.fc-tabList-button');
@@ -457,8 +464,8 @@ const Calendar = () => {
         btn.style.color = '#45C552';
         btn.style.border = '1px solid #45C552';
       }
-  });
-}, [active, annualData, calendar]);
+    });
+  }, [active, annualData, calendar]);
 
   return (
     <div className="content" style={{ padding: '0px 20px' }}>
@@ -491,7 +498,7 @@ const Calendar = () => {
                   },
                 },
                 annualInfo: {
-                  text: `${user.username}님 잔여 연차 : ${annualData[annualData.length - 1]?.extraDate || 0}/${annualData[annualData.length - 1]?.availableDate || 0}`,
+                  text: annualInfoText,
                 },
               }}
               headerToolbar={{

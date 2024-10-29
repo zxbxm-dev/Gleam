@@ -256,7 +256,7 @@ ul {
     align-items: center;
     gap: 15px;
     font-family: var(--font-family-Noto-R);
-    width: 450px;
+    width: 460px;
     height: 30px;
     font-size: 14px;
     background-color: #45C552;
@@ -302,13 +302,14 @@ ul {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 450px;
+    width: 460px;
     height: 600px;
     overflow-y: auto;
     transition: transform 0.3s ease-in-out;
     background-color: #fff;
     font-size: 12px;
     padding: 0 15px;
+    box-shadow: 0px 0px 5px #D9D9D9;
     z-index: 999;
 
     &.visible {
@@ -366,12 +367,12 @@ ul {
         padding: 0 15px;
         box-shadow: 0px 0px 5px #D9D9D9;
         border-radius: 5px;
+        cursor: pointer;
 
         .name_left {
           display: flex;
           align-items: center;
           gap: 10px;
-          cursor: pointer;
           font-family: var(--font-family-Noto-B);
 
           .img_rotate {
@@ -431,6 +432,7 @@ ul {
           }
 
           .project_content_div_title_medium {
+            cursor: pointer;
             font-family: var(--font-family-Noto-M);
           }
         }
@@ -457,12 +459,12 @@ ul {
         padding: 0 15px;
         box-shadow: 0px 0px 5px #D9D9D9;
         border-radius: 5px;
+        cursor: pointer;
 
         .name_left {
           display: flex;
           align-items: center;
           gap: 10px;
-          cursor: pointer;
           font-family: var(--font-family-Noto-B);
 
           .img_rotate {

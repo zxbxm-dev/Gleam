@@ -311,12 +311,15 @@
   justify-content: space-between;
   padding-right: 7px;
 
-  span {
-    // font-size: 10px;
+  .ActiveCircle {
+    background-color: #FF6969;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
   }
 
-  .ActiveCircle {
-    background-color: #00DD5C;
+  .InActiveCircle {
+    background-color: #777777;
     width: 10px;
     height: 10px;
     border-radius: 50%;

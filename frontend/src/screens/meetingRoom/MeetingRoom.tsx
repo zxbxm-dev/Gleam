@@ -165,7 +165,6 @@ const MeetingRoom = () => {
         setSelectedIndex(-1);
       }
     }
-    console.log(filteredEmails)
   };
 
   const handleAutoCompleteClick = (userData: string) => {
@@ -426,16 +425,16 @@ const MeetingRoom = () => {
       if (end < currentTime) {
         switch (event.place) {
           case '미팅룸':
-            colors = { backgroundColor: '#8B8B8B', borderColor: '#8B8B8B' };
+            colors = { backgroundColor: '#DDDDDD', borderColor: '#DDDDDD' };
             break;
           case '라운지':
-            colors = { backgroundColor: '#8B8B8B', borderColor: '#8B8B8B' };
+            colors = { backgroundColor: '#DDDDDD', borderColor: '#DDDDDD' };
             break;
           case '연구총괄실':
-            colors = { backgroundColor: '#8B8B8B', borderColor: '#8B8B8B' };
+            colors = { backgroundColor: '#DDDDDD', borderColor: '#DDDDDD' };
             break;
           default:
-            colors = { backgroundColor: '#8B8B8B', borderColor: '#8B8B8B' };
+            colors = { backgroundColor: '#DDDDDD', borderColor: '#DDDDDD' };
             break;
         }
       }
@@ -744,12 +743,13 @@ const MeetingRoom = () => {
                 return meetPerson.includes(user.username) && (user.team ? meetPerson.includes(user.team) : true);
               });
 
+              const circleClass = arg.event._def.ui.backgroundColor === '#DDDDDD' ? "InActiveCircle" : "ActiveCircle";
+
               return (
                 <div className="IncludeMe">
                   <span>{arg.event.title}</span>
                   {matches && (
-
-                    <div className="ActiveCircle" />
+                    <div className={circleClass} />
                   )}
                 </div>
               );
