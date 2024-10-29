@@ -7,14 +7,13 @@ const mysql = require('mysql2/promise');
 const db = mysql.createPool({
   host: '127.0.0.1',
   user: 'root',
-  password: 'math123@',
-  database: 'chainlinker_db'
+  password: '1111',
+  database: 'chainlinker'
 })
 
 // 사용자 소켓 관리 객체
 const connectedUsers = {};
-
-console.log("객체상태 관리: ",connectedUsers)
+console.log("객체상태 관리: ", connectedUsers);
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
@@ -36,7 +35,6 @@ module.exports = (io) => {
         console.error("유효하지 않은 사용자 ID:", userId);
         return socket.emit("error", { message: "유효하지 않은 사용자 ID입니다." });
       }
-      console.log('================',userId)
 
       // 기존 사용자의 소켓이 있으면 해제
       if (connectedUsers[userId]) {
@@ -87,16 +85,5 @@ module.exports = (io) => {
       console.error("소켓 에러:", err);
       socket.emit("error", { message: "소켓 통신 오류 발생" });
     });
-
-    // //네임스페이스 등록
-    // const noti = io.of('/notification');
-
-    // //noti 네임스페이스 전용 이벤트 
-    // noti.on('connection', (socket) => {
-    //   console.log('noti 네임스페이스에 접속');
-
-    //   require('../../lib/socket/events/notificationEvent')(noti, socket);
-      
-    // });
   });
 };
