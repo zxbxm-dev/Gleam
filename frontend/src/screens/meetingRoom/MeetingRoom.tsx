@@ -122,7 +122,27 @@ const MeetingRoom = () => {
 
   useQuery("person", fetchUser, {
     onSuccess: (data) => {
-      setPersonData(data);
+      const updatedData = [
+        { department: "관리부", username: ""},
+        { team: "지원팀", username: ""},
+        { team: "관리팀", username: ""},
+        { department: "마케팅부", username: ""},
+        { team: "기획팀", username: ""},
+        { team: "디자인팀", username: ""},
+        { department: "개발부", username: ""},
+        { team: "개발 1팀", username: ""},
+        { team: "개발 2팀", username: ""},
+        { department: "알고리즘 연구실", username: ""},
+        { team: "암호 연구팀", username: ""},
+        { team: "AI 연구팀", username: ""},
+        { department: "동형분석 연구실", username: ""},
+        { team: "동형분석 연구팀", username: ""},
+        { department: "블록체인 연구실", username: ""},
+        { team: "크립토 블록체인 연구팀", username: ""},
+        { team: "API 개발팀", username: ""},
+        ...data
+      ];
+      setPersonData(updatedData);
     },
     onError: (error) => {
       console.log(error);
@@ -168,11 +188,46 @@ const MeetingRoom = () => {
   };
 
   const handleAutoCompleteClick = (userData: string) => {
-    if (!recipients.includes(userData)) {
-      setRecipients([...recipients, userData]);
+    const trimmedData = userData.trim();
+    
+    const isTeam = persondata.some(person => person.team === trimmedData);
+    const isDepartment = persondata.some(person => person.department === trimmedData);
+
+    if (isTeam) {
+      const teamMembers = persondata.filter(person => person.team === trimmedData);
+      const newRecipients = [...recipients];
+
+      teamMembers.forEach(member => {
+        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
+        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+          newRecipients.push(fullName);
+        }
+      });
+
+      setRecipients(newRecipients);
+    } else if (isDepartment) {
+      const departmentMembers = persondata.filter(person => person.department === trimmedData);
+      const newRecipients = [...recipients];
+
+      departmentMembers.forEach(member => {
+        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
+        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+          newRecipients.push(fullName);
+        }
+      });
+
+      setRecipients(newRecipients);
+    } else {
+      if (!recipients.includes(userData)) {
+        setRecipients([...recipients, userData]);
+      }
     }
+
     setInputValue('');
   };
+
+
+
 
   const filteredEmails = persondata.filter(person => {
     const inputLowerCase = inputValue.toLowerCase();
