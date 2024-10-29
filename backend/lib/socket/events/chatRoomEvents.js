@@ -19,6 +19,21 @@ module.exports = (io, socket) => {
     }
   });
 
+  //특정 채팅방 socket 참여 처리
+  socket.on("socketJoinChatRoom", async (roomId) => {
+    try{
+      if(!roomId){
+        throw new Error("참여자의 방 정보가 제공되지 않았습니다.");
+      }
+      await chatRoomHandlers.socketJoinChatRoom(socket, roomId);
+      console.log(`사용자가 ${roomId}에 참여했습니다.`)
+      socket.emit("joinedRoom", { roomId });
+    }catch(error) {
+      console.error("조회되는 채팅방 번호가 없습니다." , error);
+      socket.emit("error", {message: "조회되지 않는 방번호입니다."});
+    };
+  })
+
   // 새 채팅방 생성 요청 처리
   socket.on("createPrivateRoom", async (data) => {
     console.log("Received data:", data);
