@@ -35,14 +35,13 @@ const IncludeMeSlide: React.FC<IncludeMeProps> = ({ NotFilterEvent }) => {
 
     const filteredEvents = useMemo(() => {
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
 
         return NotFilterEvent.filter(event => {
-            const [day, month, year] = event.startDate.split('-');
-            const eventDate = new Date(`20${year}-${month}-${day}`);
+            const [year, month, day] = event.endDate.split('-');
+            const eventDate = new Date(`20${year}-${month}-${day}T${event.endTime}`);
             return eventDate >= today && event.meetpeople.some(person => person.includes(Filtername));
         }).reduce<{ [key: string]: Event[] }>((acc, event) => {
-            const [day, month, year] = event.startDate.split('-');
+            const [year, month, day] = event.startDate.split('-');
             const formattedDate = `20${year}-${month}-${day}`;
             acc[formattedDate] = acc[formattedDate] || [];
             acc[formattedDate].push(event);
@@ -141,13 +140,13 @@ const IncludeMeSlide: React.FC<IncludeMeProps> = ({ NotFilterEvent }) => {
                                 }}
                             >
                                 {sortedEventsByDate[date].map(event => {
-                                    const [day, month, year] = event.endDate.split('-');
-                                    const eventDate = new Date(`20${year}-${month}-${day}`);
+                                    const [year, month, day] = event.endDate.split('-');
+                                    const eventDate = new Date(`20${year}-${month}-${day}T${event.endTime}`);
                                     const isPastEvent = eventDate < new Date();
 
                                     return (
-                                        <div className={isPastEvent ? "previous_content" : "project_content"} key={event.title}>
-                                            <div className={isPastEvent ? "previous_content_name" : "project_content_container"}>
+                                        <div className="project_content" key={event.title}>
+                                            <div className="project_content_container">
                                                 <div>
                                                     <span className="project_content_div_title_medium">{event.title}</span>
                                                 </div>
