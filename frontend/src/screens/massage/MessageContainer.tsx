@@ -445,11 +445,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   // personSide에서 사람 이름 클릭 시 대화방 메시지 조회
   const PersonSideGetMessage = useCallback(() => {
-    if (socket && selectedRoomId.roomId<0) {
+    if (socket) {
 
     const selectedUserId = personSideGetmsg.userID;
     const requesterId = user.id;
-
+    console.log('requesterId', requesterId)
     if (selectedUserId) {
       console.log("personCheckMsg 이벤트 전송:", { selectedUserId, requesterId });
       socket.emit("personCheckMsg", { selectedUserId, requesterId });
@@ -521,25 +521,17 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [personSideGetmsg.userID, user.id, readMsg, handleSendMessage]);
 
-  // useEffect(() => {
-  //   if(selectedRoomId.roomId<0){
-  //   const timer = setTimeout(() => {
-  //     PersonSideGetMessage();
-  //   }, 2000);
-
-  //   return () => clearTimeout(timer);
+  useEffect(() => {
+    // if(selectedRoomId.roomId<0){
+    PersonSideGetMessage();
   // }
-  // }, [readMsg]);
+  }, [personSideGetmsg.userID]);
 
-  // useEffect(() => {
-  //   if(selectedRoomId.roomId>0){
-  //   const timer = setTimeout(() => {
-  //     ChatTabGetMessage();
-  //   }, 200);
-
-  //   return () => clearTimeout(timer);
-  // }
-  // }, []);
+  useEffect(() => {
+    if(selectedRoomId.roomId>0){
+      ChatTabGetMessage();
+    }
+  }, []);
 
   // 메시지가 읽혔을 때 호출되는 함수
   const handleReadMessage = useCallback((messageId: string) => {
