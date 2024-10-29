@@ -361,6 +361,7 @@ const MessageSidebar: React.FC<MessageSidebarProps> = ({socket}) => {
           handleLeaveRoom={handleLeaveRoom}
           visiblePopoverIndex={visiblePopoverIndex}
           setVisiblePopoverIndex={setVisiblePopoverIndex}
+          socket={socket}
         />
       ) : (
         // const [isNotibarActive, setIsNotibarActive] = useState<boolean | null>(false);

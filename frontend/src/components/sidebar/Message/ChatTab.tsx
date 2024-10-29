@@ -9,6 +9,7 @@ import SetProfile from "./SetProfile";
 import { Person } from "../MemberSidebar";
 import { selectedRoomIdState, selectUserID, userState } from "../../../recoil/atoms";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { Socket } from 'socket.io-client';
 
 export interface ChatRoom {
   roomId: number;
@@ -74,6 +75,7 @@ interface ChatDataTabProps {
   handleLeaveRoom: (roomId: number) => void;
   visiblePopoverIndex: number | null;
   setVisiblePopoverIndex: Dispatch<SetStateAction<number | null>>;
+  socket: Socket<any> | null;
 }
 
 const ChatDataTab: React.FC<ChatDataTabProps> = ({
@@ -91,7 +93,8 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
   borderColor,
   handleLeaveRoom,
   visiblePopoverIndex,
-  setVisiblePopoverIndex
+  setVisiblePopoverIndex,
+  socket
 }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [selectedChatRoom, setSelectedChatRoom] = useState<ChatRoom | null>(null);
@@ -111,6 +114,10 @@ const ChatDataTab: React.FC<ChatDataTabProps> = ({
     const isGroup = chatRoom.dataValues?.isGroup ?? false;
     const OtherTitle = chatRoom?.othertitle ?? "";
 
+    if (socket) {
+      console.log('채팅 목록에서 채팅방 클릭');
+      socket.emit('socketJoinChatRoom', roomId);
+    }
     setSelectedRoomId({
       roomId: roomId,
       isGroup: isGroup,
