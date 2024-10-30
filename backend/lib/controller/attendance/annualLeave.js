@@ -19,8 +19,6 @@ const AddVacation = async (req, res) => {
     backgroundColor,
   } = req.body;
 
-  console.log("요청 본문 받음:", req.body);
-
   try {
     const newCalendar = await vacation.create({
       userId: userID,
@@ -37,21 +35,25 @@ const AddVacation = async (req, res) => {
       backgroundColor,
     });
 
-    // 사용자 '아이디'의 사용 가능 연차 정보 조회
-    const userVacation = await vacation.findOne({ where: { userId: userID } });
-
-    if (userVacation) {
-      // availableDatem업데이트
-      newCalendar.availableDate = userVacation.availableDate;
-      await newCalendar.save();
-
-      if (!userVacation.memo && !userVacation.title) {
-        await userVacation.destroy(); // memo와 title이 빈 값일 때만 삭제
+    if (dateType === '연차' || dateType === '반차') {
+      // 사용자 '아이디'의 사용 가능 연차 정보 조회
+      const userVacation = await vacation.findOne({ where: { userId: userID } });
+  
+      if (userVacation) {
+        // availableDatem업데이트
+        newCalendar.availableDate = userVacation.availableDate;
+        await newCalendar.save();
+  
+        if (!userVacation.memo && !userVacation.title) {
+          await userVacation.destroy(); // memo와 title이 빈 값일 때만 삭제
+        }
+      } else {
+        console.error(
+          `사용자 '${userID}'의 사용 가능 연차 정보를 찾을 수 없습니다.`
+        );
       }
     } else {
-      console.error(
-        `사용자 '${userID}'의 사용 가능 연차 정보를 찾을 수 없습니다.`
-      );
+      newCalendar.save();
     }
 
     res.status(201).json(newCalendar);

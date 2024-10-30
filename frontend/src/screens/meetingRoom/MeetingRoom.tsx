@@ -122,26 +122,72 @@ const MeetingRoom = () => {
 
   useQuery("person", fetchUser, {
     onSuccess: (data) => {
-      const updatedData = [
-        { department: "관리부", username: ""},
-        { team: "지원팀", username: ""},
-        { team: "관리팀", username: ""},
-        { department: "마케팅부", username: ""},
-        { team: "기획팀", username: ""},
-        { team: "디자인팀", username: ""},
-        { department: "개발부", username: ""},
-        { team: "개발 1팀", username: ""},
-        { team: "개발 2팀", username: ""},
-        { department: "알고리즘 연구실", username: ""},
-        { team: "암호 연구팀", username: ""},
-        { team: "AI 연구팀", username: ""},
-        { department: "동형분석 연구실", username: ""},
-        { team: "동형분석 연구팀", username: ""},
-        { department: "블록체인 연구실", username: ""},
-        { team: "크립토 블록체인 연구팀", username: ""},
-        { team: "API 개발팀", username: ""},
-        ...data
+      const departmentOrder = [
+        "개발부",
+        "마케팅부",
+        "관리부",
+        "알고리즘 연구실",
+        "동형분석 연구실",
+        "블록체인 연구실"
       ];
+
+      const initialData = [
+        { department: "관리부", username: "" },
+        { team: "지원팀", username: "" },
+        { team: "관리팀", username: "" },
+        { department: "마케팅부", username: "" },
+        { team: "기획팀", username: "" },
+        { team: "디자인팀", username: "" },
+        { department: "개발부", username: "" },
+        { team: "개발 1팀", username: "" },
+        { team: "개발 2팀", username: "" },
+        { department: "알고리즘 연구실", username: "" },
+        { team: "암호 연구팀", username: "" },
+        { team: "AI 연구팀", username: "" },
+        { department: "동형분석 연구실", username: "" },
+        { team: "동형분석 연구팀", username: "" },
+        { department: "블록체인 연구실", username: "" },
+        { team: "크립토 블록체인 연구팀", username: "" },
+        { team: "API 개발팀", username: "" }
+      ];
+
+      // data 부분만 정렬
+      const sortedData = data.sort((a: any, b: any) => {
+        const deptA = a.department || "";
+        const deptB = b.department || "";
+      
+        // 부서 순서 기준으로 정렬
+        const deptIndexA = departmentOrder.indexOf(deptA);
+        const deptIndexB = departmentOrder.indexOf(deptB);
+      
+        if (deptIndexA !== -1 && deptIndexB !== -1) {
+          if (deptIndexA !== deptIndexB) {
+            return deptIndexA - deptIndexB;
+          } else {
+            // 같은 부서일 경우 팀 이름으로 추가 정렬
+            const teamComparison = (a.team || "").localeCompare(b.team || "");
+            
+            if (teamComparison !== 0) return teamComparison;
+            
+            // 팀까지 동일하면 입사일로 정렬
+            const dateA = new Date(a.entering).getTime();
+            const dateB = new Date(b.entering).getTime();
+            return dateA - dateB;
+          }
+        } else if (deptIndexA !== -1) {
+          return -1;
+        } else if (deptIndexB !== -1) {
+          return 1;
+        }
+      
+        // 부서가 없는 경우 기본 알파벳 정렬, 이후 팀, 입사일 순
+        return deptA.localeCompare(deptB) || 
+               (a.team || "").localeCompare(b.team || "") || 
+               new Date(a.entering).getTime() - new Date(b.entering).getTime();
+      });
+      
+      // initialData와 sortedData를 결합
+      const updatedData = [...initialData, ...sortedData];
       setPersonData(updatedData);
     },
     onError: (error) => {
