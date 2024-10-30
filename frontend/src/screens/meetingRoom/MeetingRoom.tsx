@@ -103,7 +103,8 @@ const MeetingRoom = () => {
   const [isTwoOpen, setIsTwoOpen] = useState(false);
   const [selectedTwoTime, setSelectedTwoTime] = useState("");
   const [title, setTitle] = useState<string>("");
-  const [selectedIndex, setSelectedIndex] = useState(-1); // 현재 선택된 인덱스를 관리
+  const [selectedPersonIndex, setSelectedPersonIndex] = useState(-1); // 사람 리스트에 대한 인덱스
+  const [selectedTeamIndex, setSelectedTeamIndex] = useState(-1); // 팀 리스트에 대한 인덱스
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [recipients, setRecipients] = useState<string[]>([]);
@@ -155,36 +156,35 @@ const MeetingRoom = () => {
       const sortedData = data.sort((a: any, b: any) => {
         const deptA = a.department || "";
         const deptB = b.department || "";
-      
+
         // 부서 순서 기준으로 정렬
         const deptIndexA = departmentOrder.indexOf(deptA);
         const deptIndexB = departmentOrder.indexOf(deptB);
-      
+
         if (deptIndexA !== -1 && deptIndexB !== -1) {
           if (deptIndexA !== deptIndexB) {
             return deptIndexA - deptIndexB;
           } else {
             // 같은 부서일 경우 팀 이름으로 추가 정렬
             const teamComparison = (a.team || "").localeCompare(b.team || "");
-            
+
             if (teamComparison !== 0) return teamComparison;
-            
-            // 팀까지 동일하면 입사일로 정렬
-            const dateA = new Date(a.entering).getTime();
-            const dateB = new Date(b.entering).getTime();
-            return dateA - dateB;
+
+            // 팀까지 동일하면 이름으로 정렬
+            return (a.username || "").localeCompare(b.username || "");
           }
         } else if (deptIndexA !== -1) {
           return -1;
         } else if (deptIndexB !== -1) {
           return 1;
         }
-      
-        // 부서가 없는 경우 기본 알파벳 정렬, 이후 팀, 입사일 순
+
+        // 부서가 없는 경우 기본 알파벳 정렬, 이후 팀, 이름 순
         return deptA.localeCompare(deptB) || 
-               (a.team || "").localeCompare(b.team || "") || 
-               new Date(a.entering).getTime() - new Date(b.entering).getTime();
+              (a.team || "").localeCompare(b.team || "") || 
+              (a.username || "").localeCompare(b.username || "");
       });
+
       
       // initialData와 sortedData를 결합
       const updatedData = [...initialData, ...sortedData];
@@ -218,17 +218,17 @@ const MeetingRoom = () => {
   // 키보드 이벤트 핸들러
   const handleKeyDown = (e: any) => {
     if (e.key === "ArrowDown") {
-      setSelectedIndex((prevIndex) =>
-        prevIndex < filteredEmails.length - 1 ? prevIndex + 1 : prevIndex
+      setSelectedPersonIndex((prevIndex) =>
+        prevIndex < filteredEmailsPerson.length - 1 ? prevIndex + 1 : prevIndex
       );
     } else if (e.key === "ArrowUp") {
-      setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : -1));
+      setSelectedPersonIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : -1));
     } else if (e.key === "Enter") {
-      if (selectedIndex >= 0 && selectedIndex < filteredEmails.length) {
+      if (selectedPersonIndex >= 0 && selectedPersonIndex < filteredEmailsPerson.length) {
         handleAutoCompleteClick(
-          `${filteredEmails[selectedIndex].team ? filteredEmails[selectedIndex].team : filteredEmails[selectedIndex].department} ${filteredEmails[selectedIndex].username}`
+          `${filteredEmailsPerson[selectedPersonIndex].team ? filteredEmailsPerson[selectedPersonIndex].team : filteredEmailsPerson[selectedPersonIndex].department} ${filteredEmailsPerson[selectedPersonIndex].username}`
         );
-        setSelectedIndex(-1);
+        setSelectedPersonIndex(-1);
       }
     }
   };
@@ -289,6 +289,9 @@ const MeetingRoom = () => {
       )
     }
   });
+
+  const filteredEmailsPerson = filteredEmails.filter(person => person.username !== '')
+  const filteredEmailsTeam = filteredEmails.filter(person => person.username === '')
 
   const getClosestTime = () => {
     const now = new Date();
@@ -779,7 +782,7 @@ const MeetingRoom = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedIndex, filteredEmails]);
+  }, [selectedPersonIndex, filteredEmails]);
 
   useEffect(() => {
     // fc-popover의 위치를 조정
@@ -904,18 +907,36 @@ const MeetingRoom = () => {
                 ref={inputRef}
               />
               {inputValue && (
-                <ul className="autocomplete_dropdown">
-                  {filteredEmails.map((person, index) => (
-                    <li
-                      key={person.username}
-                      className={index === selectedIndex ? "selected" : ""}
-                      onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
-                      onMouseEnter={() => setSelectedIndex(index)}
-                    >
-                      {person.team ? person.team : person.department} {person.username}
-                    </li>
-                  ))}
-                </ul>
+                <div className="autocomplete_dropdown_container">
+                  <ul className="autocomplete_dropdown_person">
+                    {filteredEmailsPerson
+                    .map((person, index) => (
+                      <li
+                        key={person.username}
+                        className={index === selectedPersonIndex ? "selected" : ""}
+                        onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                        onMouseEnter={() => setSelectedPersonIndex(index)}
+                        onMouseLeave={() => setSelectedPersonIndex(-1)}
+                      >
+                        {person.team ? person.team : person.department} {person.username}
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="autocomplete_dropdown_team">
+                    {filteredEmailsTeam
+                    .map((person, index) => (
+                      <li
+                        key={person.username}
+                        className={index === selectedTeamIndex ? "selected" : ""}
+                        onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                        onMouseEnter={() => setSelectedTeamIndex(index)}
+                        onMouseLeave={() => setSelectedTeamIndex(-1)}
+                      >
+                        {person.team ? person.team : person.department} {person.username}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
               <div className="AddsInputCon">
                 {recipients.map((userData, index) => (
@@ -1195,18 +1216,36 @@ const MeetingRoom = () => {
                 ref={inputRef}
               />
               {inputValue && (
-                <ul className="autocomplete_dropdown">
-                  {filteredEmails.map((person, index) => (
-                    <li
-                      key={person.username}
-                      className={index === selectedIndex ? "selected" : ""}
-                      onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
-                      onMouseEnter={() => setSelectedIndex(index)}
-                    >
-                      {person.team ? person.team : person.department} {person.username}
-                    </li>
-                  ))}
-                </ul>
+                <div className="autocomplete_dropdown_container">
+                  <ul className="autocomplete_dropdown_person">
+                    {filteredEmailsPerson
+                    .map((person, index) => (
+                      <li
+                        key={person.username}
+                        className={index === selectedPersonIndex ? "selected" : ""}
+                        onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                        onMouseEnter={() => setSelectedPersonIndex(index)}
+                        onMouseLeave={() => setSelectedPersonIndex(-1)}
+                      >
+                        {person.team ? person.team : person.department} {person.username}
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="autocomplete_dropdown_team">
+                    {filteredEmailsTeam
+                    .map((person, index) => (
+                      <li
+                        key={person.username}
+                        className={index === selectedTeamIndex ? "selected" : ""}
+                        onClick={() => handleAutoCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                        onMouseEnter={() => setSelectedTeamIndex(index)}
+                        onMouseLeave={() => setSelectedTeamIndex(-1)}
+                      >
+                        {person.team ? person.team : person.department} {person.username}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
               <div className="AddsInputCon">
                 {recipients.map((userData, index) => (
