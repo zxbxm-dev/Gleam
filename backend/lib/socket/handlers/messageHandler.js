@@ -289,6 +289,18 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
 const getChatHistory = async (socket, roomId) => {
   try {
     const actualRoomId = roomId.roomId || roomId;
+    // socket이 기존에 연결되어있는 방의 정보를 가져옴
+    const currentJoinSocketRoom = Array.from(socket.rooms);
+    console.log("현재 접속중인 socket의 방 정보 배열: ", currentJoinSocketRoom );
+
+    for(const roomId of currentJoinSocketRoom ) {
+      if(actualRoomId !== roomId){
+        socket.leave(roomId);
+      };
+    };
+    console.log("2222222현재 접속중인 socket의 방 정보 배열: ", Array.from(socket.rooms ));
+
+
     const messages = await Message.findAll({
       where: { roomId: actualRoomId },
       include: [
