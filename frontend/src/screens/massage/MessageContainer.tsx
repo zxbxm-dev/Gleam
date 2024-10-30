@@ -21,7 +21,9 @@ import {
   mail_attachment_mp4,
   mail_attachment_avi,
   FileUserDown,
-  FileMyDown
+  FileMyDown,
+  MessageIcon,
+  MessageHeaderLogo,
 } from "../../assets/images/index";
 import { Socket } from 'socket.io-client';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
@@ -102,11 +104,26 @@ function formatDate(dateString: string) {
   return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${day}요일`;
 }
 
-const showCustomNotification = (title: string, message: string) => {
+const showCustomNotification = (username: string, userteam: string ,message: string) => {
+  const messageWithLineBreaks = message.replace(/<br\s*\/?>/gi, '<br />');
+  
   toast(
-    <div>
-      <strong>{title}</strong>
-      <p>{message}</p>
+    <div style={{ position: 'relative' }}>
+      <div style={{display: 'flex', alignItems: 'center'}}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '3px'}}>
+          <span style={{color: "#454545", fontFamily: "var(--font-family-Noto-B)", fontSize: '12px'}}>{username} </span>
+          {userteam &&
+            <span style={{color: "#ADADAD", fontFamily: "var(--font-family-Noto-R)", fontSize: '15px'}}>| </span> 
+          }
+          <span style={{color: "#ADADAD", fontFamily: "var(--font-family-Noto-M)", fontSize: '11px'}}>{userteam}</span>
+        </div>
+        <div style={{position: 'absolute', right: '-10px', top: '-3px', display: 'flex', alignItems: 'center', gap: '3px'}}>
+          <img style={{width: '15px', height: '15px'}} src={MessageIcon} alt="MessageIcon" />
+          <img style={{width: '80px', height: '18px'}} src={MessageHeaderLogo} alt="MessageHeaderLogo" />
+        </div>
+
+      </div>
+      <div style={{color: '#454545', fontSize: '12px', fontFamily: "var(--font-family-Noto-M)", marginLeft: '20px', marginTop: '10px'}} dangerouslySetInnerHTML={{ __html: messageWithLineBreaks }} />
     </div>,
     {
       position: "bottom-right",
@@ -116,10 +133,11 @@ const showCustomNotification = (title: string, message: string) => {
       pauseOnHover: true,
       draggable: true,
       theme: "colored",
-      style: { backgroundColor: '#45C552', color: '#ffffff' }
+      style: { backgroundColor: '#FFFFFF', border: '1px solid #45C552'}
     }
   );
 };
+
 
 const MessageContainer: React.FC<MessageContainerProps> = ({
   isAtBottom,
@@ -615,7 +633,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           // 본인 메시지가 아닌 경우에만 알림 표시
           if (messageData.senderId !== user.id) {
             showCustomNotification(
-              messageData.senderInfo,
+              messageData.senderUsername + ' ' + messageData.senderPosition,
+              messageData.senderTeam ? messageData.senderTeam : messageData.senderDepartment ? messageData.senderDepartment : '',
               formattedMessage.content
             );
           }

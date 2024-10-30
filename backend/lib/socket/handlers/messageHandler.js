@@ -408,7 +408,10 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       receiverId: newMessage.receiverId,
       timestamp: newMessage.createdAt,
       fileValue: newMessage.filePath ? 1 : 0,
-      senderInfo: senderInfo.dataValues.team ? senderInfo.dataValues.team + ' ' + senderInfo.dataValues.username : senderInfo.dataValues.department ? senderInfo.dataValues.department + ' ' + senderInfo.dataValues.username : senderInfo.dataValues.username,
+      senderUsername: senderInfo.dataValues.username,
+      senderDepartment: senderInfo.dataValues.department,
+      senderTeam: senderInfo.dataValues.team,
+      senderPosition: senderInfo.dataValues.position,
     };
 
     // participants.forEach((participant) => {
