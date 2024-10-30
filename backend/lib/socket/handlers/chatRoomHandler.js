@@ -446,7 +446,6 @@ const socketJoinNoRoomId = async ( socket, userId ) => {
     const roomId = getNextRoomId();
     socket.join(roomId);
     console.log(`사용자가 ${roomId}번 채팅방에 참여했습니다.`);
-    //socket.emit //socket.emit("joinedRoom", { roomId });
   }catch(error){
     console.error("socket Join 처리 중 오류가 발생했습니다.", error );
     socket.emit("error", {message : "socket Join 처리 중 오류가 발생했습니다."});
