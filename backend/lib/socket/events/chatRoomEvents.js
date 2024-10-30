@@ -26,7 +26,6 @@ module.exports = (io, socket) => {
         throw new Error("참여자의 방 정보가 제공되지 않았습니다.");
       }
       await chatRoomHandlers.socketJoinChatRoom(socket, roomId);
-      console.log(`사용자가 ${roomId}에 참여했습니다.`);
       //socket.emit("joinedRoom", { roomId });
     }catch(error) {
       console.error("socket Join 처리에 실패했습니다." , error);
