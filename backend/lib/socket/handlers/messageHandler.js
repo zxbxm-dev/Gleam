@@ -78,6 +78,15 @@ const getGroupChatHistory = async (socket, roomId) => {
       return;
     }
 
+    //기존에 연결되어있는 socketJoin 해제 처리
+    const currentJoinSocketRoom = Array.from(socket.rooms);
+    for(const roomId of currentJoinSocketRoom ) {
+      if(actualRoomId !== roomId){
+        socket.leave(roomId);
+      };
+    };
+    console.log("Joined Room : ", Array.from(socket.rooms ));
+
     // 채팅방의 모든 메시지를 가져오기
     const messages = await Message.findAll({
       where: { roomId: actualRoomId },
@@ -243,7 +252,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
       });
   
       const chatHistory = messages.map((message) => {
-        console.log("메시지 데이터:", message);
+        //console.log("메시지 데이터:", message);
         // console.log("reads 배열:", messageRead.reads);
 
         return {
@@ -289,16 +298,15 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
 const getChatHistory = async (socket, roomId) => {
   try {
     const actualRoomId = roomId.roomId || roomId;
-    // socket이 기존에 연결되어있는 방의 정보를 가져옴
-    const currentJoinSocketRoom = Array.from(socket.rooms);
-    console.log("현재 접속중인 socket의 방 정보 배열: ", currentJoinSocketRoom );
 
+    //기존 연결되어있던 socketJoin 해제 처리
+    const currentJoinSocketRoom = Array.from(socket.rooms);
     for(const roomId of currentJoinSocketRoom ) {
       if(actualRoomId !== roomId){
         socket.leave(roomId);
       };
     };
-    console.log("2222222현재 접속중인 socket의 방 정보 배열: ", Array.from(socket.rooms ));
+    console.log("Joined Room: ", Array.from(socket.rooms )); 
 
 
     const messages = await Message.findAll({
