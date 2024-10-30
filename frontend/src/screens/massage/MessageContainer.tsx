@@ -39,6 +39,8 @@ import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 import { Message } from './Message';
 import { messageFile, getFile } from '../../services/message/MessageApi';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface MessageContainerProps {
   selectedPerson: any;
@@ -100,6 +102,24 @@ function formatDate(dateString: string) {
   return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${day}요일`;
 }
 
+const showCustomNotification = (title: string, message: string) => {
+  toast(
+    <div>
+      <strong>{title}</strong>
+      <p>{message}</p>
+    </div>,
+    {
+      position: "bottom-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+      style: { backgroundColor: '#45C552', color: '#ffffff' }
+    }
+  );
+};
 
 const MessageContainer: React.FC<MessageContainerProps> = ({
   isAtBottom,
@@ -577,7 +597,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // 새로운 메시지 수신
   useEffect(() => {
     if (socket) {
-        socket.on('newMsgData', (messageData: any) => {
+      socket.on('newMsgData', (messageData: any) => {
+          console.log(messageData)
           const formattedMessage = {
             content: messageData.content,
             fileValue: messageData.fileValue,
@@ -589,6 +610,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
           if (messageData.roomId === selectedRoomId.roomId) {
             setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+          }
+
+          // 본인 메시지가 아닌 경우에만 알림 표시
+          if (messageData.senderId !== user.id) {
+            showCustomNotification(
+              messageData.senderInfo,
+              formattedMessage.content
+            );
           }
         });
       }
@@ -757,6 +786,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
 const notificationHandler = require("../handlers/notificationHandlers");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 // 특정 사용자가 포함된 채팅방을 찾는 함수
 const findChatRoomsForUser = async (userId) => {
@@ -388,6 +388,11 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       return;
     }
 
+    const senderInfo = await ChatRoomParticipant.findOne({
+      where: { userId : senderId },
+      attributes: ["userId", "username", "department", "team", "position"],
+    })
+
     const newMessage = await Message.create({
       roomId,
       userId: senderId,
@@ -403,6 +408,7 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       receiverId: newMessage.receiverId,
       timestamp: newMessage.createdAt,
       fileValue: newMessage.filePath ? 1 : 0,
+      senderInfo: senderInfo.dataValues.team ? senderInfo.dataValues.team + ' ' + senderInfo.dataValues.username : senderInfo.dataValues.department ? senderInfo.dataValues.department + ' ' + senderInfo.dataValues.username : senderInfo.dataValues.username,
     };
 
     // participants.forEach((participant) => {
