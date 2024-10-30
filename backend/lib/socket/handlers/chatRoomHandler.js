@@ -561,7 +561,7 @@ const exitRoom = async (io, socket, data) => {
     if (chatRoom.isGroup) {
       // 나가는 사용자의 상태를 업데이트
       await ChatRoomParticipant.update(
-        { participant: false },
+        { participant: true },   // { participant: false } -> { participant: true}
         { where: { roomId, userId } }
       );
 
@@ -574,11 +574,16 @@ const exitRoom = async (io, socket, data) => {
         });
       }
 
-      // 모든 참가자가 나간 경우 방과 메시지 삭제
+      
+      // 채팅방을 나간 참가자 정보
       const updatedParticipants = await ChatRoomParticipant.findAll({
-        where: { roomId, participant: false },
+        where: { roomId, participant: true },
       });
 
+      console.log("updatedParticipants:"+updatedParticipants.length);
+      console.log("participants:"+participants.length);
+     
+      // 모든 참가자가 나간 경우 방과 메시지 삭제
       if (updatedParticipants.length === participants.length) {
         await ChatRoomParticipant.destroy({ where: { roomId } });
         await Message.destroy({ where: { roomId } });
