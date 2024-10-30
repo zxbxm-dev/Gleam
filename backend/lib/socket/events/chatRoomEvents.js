@@ -1,4 +1,5 @@
 const chatRoomHandlers = require("../handlers/chatRoomHandler");
+const socketUtills = require("../socketUtills");
 
 module.exports = (io, socket) => {
   if (!socket) {
@@ -25,7 +26,7 @@ module.exports = (io, socket) => {
       if(!roomId){
         throw new Error("참여자의 방 정보가 제공되지 않았습니다.");
       }
-      await chatRoomHandlers.socketJoinChatRoom(socket, roomId);
+      await socketUtills.socketJoinChatRoom(socket, roomId);
       //socket.emit("joinedRoom", { roomId });
     }catch(error) {
       console.error("socket Join 처리에 실패했습니다." , error);

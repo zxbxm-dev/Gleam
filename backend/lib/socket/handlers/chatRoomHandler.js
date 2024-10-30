@@ -1,6 +1,7 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
 const { Op, Sequelize } = require("sequelize");
+const socketUtills = require("../socketUtills");
 const {
   sendMessageToRoomParticipants,
   findMutualChatRoomsForUsers,
@@ -84,6 +85,7 @@ const createPrivateRoom = async (io, socket, data) => {
       // 자신에게 메시지를 보내는 경우
       console.log("자신에게 메시지를 보냅니다.");
       const chatRoomIds = await findChatRoomsForMe(userId);
+      const socketJoinChatRoomForMe = await socketUtills.socketJoinChatRoom( socket, chatRoomIds );
 
       let chatRoom;
       if (chatRoomIds.length > 0) {
@@ -428,30 +430,6 @@ const joinRoom = async (io, socket, roomId, userIds) => {
   }
 };
 
-//socket 채팅방 참여 
-const socketJoinChatRoom = async ( socket, roomId ) => {
-   try{
-    socket.join(roomId);
-    console.log(`사용자가 ${roomId}번 채팅방에 참여했습니다.`);
-    //socket.emit("joinedRoom", { roomId });
-   }catch(error){
-    console.error("socket Join 처리 중 오류가 발생했습니다.", error);
-    socket.emit("error", { message: "socket Join 처리에 실패했습니다."});
-   }
-};
-
-//socket 채팅방 참여 - roomId 없을 때 
-const socketJoinNoRoomId = async ( socket, userId ) => {
-  try{
-    const roomId = getNextRoomId();
-    socket.join(roomId);
-    console.log(`사용자가 ${roomId}번 채팅방에 참여했습니다.`);
-  }catch(error){
-    console.error("socket Join 처리 중 오류가 발생했습니다.", error );
-    socket.emit("error", {message : "socket Join 처리 중 오류가 발생했습니다."});
-  }
-}
-
 //채팅방에서 내보내기------------------------------------------------------------
 
 const kickOutFromRoom = async (io, socket, roomId, userId) => {
@@ -620,7 +598,5 @@ module.exports = {
   joinRoom,
   kickOutFromRoom,
   exitRoom,
-  socketJoinChatRoom,
-  socketJoinNoRoomId,
   socketLeave,
 };
