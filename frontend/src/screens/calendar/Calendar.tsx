@@ -91,7 +91,7 @@ const Calendar = () => {
     }
   };
 
-  useQuery("annual", fetchAnnual, {
+  const { refetch: refetchAnnual } = useQuery("annual", fetchAnnual, {
     onSuccess: (data) => {
       const filteredData = data.filter(
         (item: any) =>
@@ -196,7 +196,7 @@ const Calendar = () => {
     const eventData = {
       userID: addEventUser?.userId || finduser?.userId,
       name: addEventUser?.username || finduser?.username,
-      company: addEventUser?.company || finduser?.company,
+      company: addEventUser?.company || finduser?.company || active ? '본사' : 'R&D',
       department: addEventUser?.department || finduser?.department,
       team: addEventUser?.team || finduser?.team,
       title: title,
@@ -208,12 +208,11 @@ const Calendar = () => {
       backgroundColor: selectedColor,
     };
 
-    console.log(eventData)
-
     writeCalen(eventData)
       .then(response => {
         console.log("Event added successfully:", response);
         fetchCalendar();
+        refetchAnnual();
       })
       .catch(error => {
         console.error('Error adding event:', error);
@@ -432,7 +431,7 @@ const Calendar = () => {
   useEffect(() => {
     const button = document.querySelector('.fc-annualInfo-button');
     if (button) {
-      button.innerHTML = `잔여 연차 <span style="color: #009544;"> ${String(annualData[annualData.length - 1]?.extraDate).padStart(2, '0') || 0}</sapn><span style="color: #000000;">/${annualData[annualData.length - 1]?.availableDate || 0}</sapn>`;
+      button.innerHTML = `잔여 연차 <span style="color: #009544;"> ${annualData.length > 0 ? String(annualData[annualData.length - 1].extraDate).padStart(2, '0') : '0'}</sapn><span style="color: #000000;">/${annualData[annualData.length - 1]?.availableDate || 0}</sapn>`;
     }
   }, [annualData]);
 
@@ -466,7 +465,7 @@ const Calendar = () => {
       }
     });
   }, [active, annualData, calendar]);
-
+  
   return (
     <div className="content" style={{ padding: '0px 20px' }}>
       <div className="content_container">
