@@ -616,37 +616,56 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (socket) {
       socket.on('newMsgData', (messageData: any) => {
-          console.log(messageData)
-          const formattedMessage = {
-            content: messageData.content,
-            fileValue: messageData.fileValue,
-            isReadOther: true,
-            messageId: messageData.messageId,
-            timestamp: messageData.timestamp,
-            userId: messageData.senderId,
-          };
+        console.log(messageData);
+        const formattedMessage = {
+          content: messageData.content,
+          fileValue: messageData.fileValue,
+          isReadOther: true,
+          messageId: messageData.messageId,
+          timestamp: messageData.timestamp,
+          userId: messageData.senderId,
+        };
 
-          if (messageData.roomId === selectedRoomId.roomId) {
-            setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
-          }
+        // 같은 방에서 메시지가 오는 경우 메시지 업데이트
+        if (messageData.roomId === selectedRoomId.roomId) {
+          setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+        }
 
-          // 본인 메시지가 아닌 경우에만 알림 표시
-          if (messageData.senderId !== user.id) {
-            showCustomNotification(
-              messageData.senderUsername + ' ' + messageData.senderPosition,
-              messageData.senderTeam ? messageData.senderTeam : messageData.senderDepartment ? messageData.senderDepartment : '',
-              formattedMessage.content
-            );
-          }
-        });
-      }
-    
+        // 본인 메시지가 아닌 경우에만 알림 표시
+        if (messageData.senderId !== user.id) {
+          // Notification API 권한 요청 및 알림 표시
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              // 알림을 표시할 때 사용자 정보와 메시지를 포함
+              new Notification(`${messageData.senderUsername} ${messageData.senderPosition}`, {
+                body: formattedMessage.content,
+              });
+            }
+          });
+        }
+      });
+    }
+
     return () => {
       socket?.off('newMsgData');
     };
   }, [socket, selectedRoomId]);
 
-  
+
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window) {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        console.log("Notification permission granted.");
+      } else {
+        console.log("Notification permission denied.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    requestNotificationPermission();
+  }, [])
   // console.log('messageContainer 호출', selectedRoomId)
   // console.log('내 연결 상태',socket?.connected);
   // console.log('회원 아이디',user.id)
