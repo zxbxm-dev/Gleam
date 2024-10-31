@@ -637,9 +637,18 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           Notification.requestPermission().then(permission => {
             if (permission === 'granted') {
               // 알림을 표시할 때 사용자 정보와 메시지를 포함
-              new Notification(`${messageData.senderUsername} ${messageData.senderPosition}`, {
-                body: formattedMessage.content,
-              });
+              const notification = new Notification(
+                `${messageData.senderUsername} ${messageData.senderPosition}`, 
+                {
+                  body: formattedMessage.content,
+                  tag: `${Date.now()}`,
+                }
+              );
+
+              // 3초 후에 알림 자동 닫힘
+              setTimeout(() => {
+                notification.close();
+              }, 3000);
             }
           });
         }
