@@ -1,6 +1,7 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
 const notificationHandler = require("../handlers/notificationHandlers");
+const socketUtills = require("../socketUtills");
 const { Op, where } = require("sequelize");
 
 // 특정 사용자가 포함된 채팅방을 찾는 함수
@@ -85,7 +86,7 @@ const getGroupChatHistory = async (socket, roomId) => {
         socket.leave(roomId);
       };
     };
-    console.log("Joined Room : ", Array.from(socket.rooms ));
+    console.log("<getGroupChatHistory> - Joined Room : ", Array.from(socket.rooms ));
 
     // 채팅방의 모든 메시지를 가져오기
     const messages = await Message.findAll({
@@ -228,6 +229,19 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         return;
       }
 
+      const ChatRoomIds = Array.from(validChatRoomIds);
+        // socket Join 처리 
+      const socketJoinRoom = await socketUtills.socketJoinChatRoom(socket, ChatRoomIds); 
+
+          //기존에 연결되어있는 socketJoin 해제 처리
+          const currentJoinSocketRoom = Array.from(socket.rooms);
+          for(const roomId of currentJoinSocketRoom ) {
+            if(!ChatRoomIds.includes(roomId)){  
+              socket.leave(roomId);
+            };
+          };
+          console.log("<personTab_getChatHistory> - Joined Room : ", Array.from(socket.rooms ));
+
       const messages = await Message.findAll({
         where: {
           roomId: {
@@ -306,7 +320,7 @@ const getChatHistory = async (socket, roomId) => {
         socket.leave(roomId);
       };
     };
-    console.log("Joined Room: ", Array.from(socket.rooms )); 
+    console.log("<GetChatHistory> - Joined Room: ", Array.from(socket.rooms )); 
 
 
     const messages = await Message.findAll({
