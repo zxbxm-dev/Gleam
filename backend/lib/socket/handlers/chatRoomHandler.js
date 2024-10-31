@@ -1,6 +1,6 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
-const { Op, Sequelize } = require("sequelize");
+const { Op, Sequelize, where } = require("sequelize");
 const socketUtills = require("../socketUtills");
 const {
   sendMessageToRoomParticipants,
@@ -475,6 +475,8 @@ const exitRoom = async (io, socket, data) => {
   try {
     // 채팅방 정보 가져오기
     const chatRoom = await ChatRoom.findByPk(roomId);
+    
+
 
     if (!chatRoom) {
       socket.emit("error", { message: "채팅방을 찾을 수 없습니다." });
@@ -486,6 +488,16 @@ const exitRoom = async (io, socket, data) => {
       where: { roomId },
     });
 
+    // 나가는 사람의 정보(이름,직책,부서이름)
+    const leaveInfo = await ChatRoomParticipant.findOne({
+      where:{userId: userId,
+             roomId: roomId
+            },
+        attributes: ["username","department","position","team"],
+    });
+    const leaveMessage = leaveInfo.department+" "+(leaveInfo.team ? leaveInfo.team+" "+leaveInfo.position+" "+leaveInfo.username : leaveInfo.position+" "+leaveInfo.username);
+
+  
     // 1. 자신과의 채팅 (Self Chat) 처리
     if (chatRoom.isSelfChat) {
       // 모든 관련 정보 삭제 (채팅방, 참가자, 메시지)
@@ -513,8 +525,8 @@ const exitRoom = async (io, socket, data) => {
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
         socket.to(roomId).emit("roomUpdated", {
-          roomId,
-          message: `${userId}님이 방을 나갔습니다.`,
+          leaveInfo,
+          message: `${leaveMessage}님이 방을 나갔습니다.`,
         });
       }
 
@@ -532,6 +544,7 @@ const exitRoom = async (io, socket, data) => {
           message: `${roomId}의 채팅방이 삭제되었습니다.`,
         });
       }
+      socketLeave( socket,data );
       return;
     }
 
@@ -547,8 +560,8 @@ const exitRoom = async (io, socket, data) => {
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
         socket.to(roomId).emit("roomUpdated", {
-          roomId,
-          message: `${userId}님이 방을 나갔습니다.`,
+          leaveInfo,
+          message: `${leaveMessage}님이 방을 나갔습니다.`,
         });
       }
 
@@ -571,6 +584,8 @@ const exitRoom = async (io, socket, data) => {
           message: `${roomId}의 채팅방이 삭제되었습니다.`,
         });
       }
+
+      socketLeave( socket,data );
       return;
     }
   } catch (error) {
