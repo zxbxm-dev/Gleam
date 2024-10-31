@@ -183,7 +183,72 @@ const Project = () => {
 
   useQuery("person", fetchUser, {
     onSuccess: (data) => {
-      setPersonData(data);
+      const departmentOrder = [
+        "개발부",
+        "마케팅부",
+        "관리부",
+        "알고리즘 연구실",
+        "동형분석 연구실",
+        "블록체인 연구실"
+      ];
+
+      const initialData = [
+        { department: "관리부", username: "" },
+        { team: "지원팀", username: "" },
+        { team: "관리팀", username: "" },
+        { department: "마케팅부", username: "" },
+        { team: "기획팀", username: "" },
+        { team: "디자인팀", username: "" },
+        { department: "개발부", username: "" },
+        { team: "개발 1팀", username: "" },
+        { team: "개발 2팀", username: "" },
+        { department: "알고리즘 연구실", username: "" },
+        { team: "암호 연구팀", username: "" },
+        { team: "AI 연구팀", username: "" },
+        { department: "동형분석 연구실", username: "" },
+        { team: "동형분석 연구팀", username: "" },
+        { department: "블록체인 연구실", username: "" },
+        { team: "크립토 블록체인 연구팀", username: "" },
+        { team: "API 개발팀", username: "" }
+      ];
+
+      // data 부분만 정렬
+      const sortedData = data.sort((a: any, b: any) => {
+        const deptA = a.department || "";
+        const deptB = b.department || "";
+
+        // 부서 순서 기준으로 정렬
+        const deptIndexA = departmentOrder.indexOf(deptA);
+        const deptIndexB = departmentOrder.indexOf(deptB);
+
+        if (deptIndexA !== -1 && deptIndexB !== -1) {
+          if (deptIndexA !== deptIndexB) {
+            return deptIndexA - deptIndexB;
+          } else {
+            // 같은 부서일 경우 팀 이름으로 추가 정렬
+            const teamComparison = (a.team || "").localeCompare(b.team || "");
+
+            if (teamComparison !== 0) return teamComparison;
+
+            // 팀까지 동일하면 이름으로 정렬
+            return (a.username || "").localeCompare(b.username || "");
+          }
+        } else if (deptIndexA !== -1) {
+          return -1;
+        } else if (deptIndexB !== -1) {
+          return 1;
+        }
+
+        // 부서가 없는 경우 기본 알파벳 정렬, 이후 팀, 이름 순
+        return deptA.localeCompare(deptB) || 
+              (a.team || "").localeCompare(b.team || "") || 
+              (a.username || "").localeCompare(b.username || "");
+      });
+
+      
+      // initialData와 sortedData를 결합
+      const updatedData = [...initialData, ...sortedData];
+      setPersonData(updatedData);
     },
     onError: (error) => {
       console.log(error);
@@ -276,21 +341,79 @@ const Project = () => {
     }
   };
   
-  const handleAutoAllMembersCompleteClick = (username: string, department: string, team: string) => {
-    if (team) {
-      setAllMembers([...allMembers, team + ' ' + username]);
+  const handleAutoAllMembersCompleteClick = (userData: string) => {
+    const trimmedData = userData.trim();
+    
+    const isTeam = persondata.some(person => person.team === trimmedData);
+    const isDepartment = persondata.some(person => person.department === trimmedData);
+
+    if (isTeam) {
+      const teamMembers = persondata.filter(person => person.team === trimmedData);
+      const newRecipients = [...allMembers];
+
+      teamMembers.forEach(member => {
+        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
+        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+          newRecipients.push(fullName);
+        }
+      });
+
+      setAllMembers(newRecipients);
+    } else if (isDepartment) {
+      const departmentMembers = persondata.filter(person => person.department === trimmedData);
+      const newRecipients = [...allMembers];
+
+      departmentMembers.forEach(member => {
+        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
+        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+          newRecipients.push(fullName);
+        }
+      });
+
+      setAllMembers(newRecipients);
     } else {
-      setAllMembers([...allMembers, department + ' ' + username]);
+      if (!allMembers.includes(userData)) {
+        setAllMembers([...allMembers, userData]);
+      }
     }
 
     setInputAllmember('');
   };
 
-  const handleAutoAllReferrersCompleteClick = (username: string, department: string, team: string) => {
-    if (team) {
-      setAllReferrers([...allReferrers, team + ' ' + username]);
+  const handleAutoAllReferrersCompleteClick = (userData: string) => {
+    const trimmedData = userData.trim();
+    
+    const isTeam = persondata.some(person => person.team === trimmedData);
+    const isDepartment = persondata.some(person => person.department === trimmedData);
+
+    if (isTeam) {
+      const teamMembers = persondata.filter(person => person.team === trimmedData);
+      const newRecipients = [...allReferrers];
+
+      teamMembers.forEach(member => {
+        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
+        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+          newRecipients.push(fullName);
+        }
+      });
+
+      setAllReferrers(newRecipients);
+    } else if (isDepartment) {
+      const departmentMembers = persondata.filter(person => person.department === trimmedData);
+      const newRecipients = [...allReferrers];
+
+      departmentMembers.forEach(member => {
+        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
+        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+          newRecipients.push(fullName);
+        }
+      });
+
+      setAllReferrers(newRecipients);
     } else {
-      setAllReferrers([...allReferrers, department + ' ' + username]);
+      if (!allReferrers.includes(userData)) {
+        setAllReferrers([...allReferrers, userData]);
+      }
     }
 
     setInputAllReferrer('');
@@ -319,6 +442,8 @@ const Project = () => {
     }
   });
 
+  const filteredNamesPerson = filteredNames.filter(person => person.username !== '')
+
   const filteredAllmembersNames = persondata.filter(person => {
     const inputLowerCase = inputAllMember.toLowerCase();
     if (person.team) {
@@ -334,6 +459,9 @@ const Project = () => {
     }
   });
 
+  const filteredAllmembersNamesPerson = filteredAllmembersNames.filter(person => person.username !== '')
+  const filteredAllmembersNamesTeam = filteredAllmembersNames.filter(person => person.username === '')
+
   const filteredAllReferrersNames = persondata.filter(person => {
     const inputLowerCase = inputAllReferrer.toLowerCase();
     if (person.team) {
@@ -348,6 +476,10 @@ const Project = () => {
       )
     }
   });
+
+  const filteredAllReferrersNamesPerson = filteredAllReferrersNames.filter(person => person.username !== '')
+  const filteredAllReferrersNamesTeam = filteredAllReferrersNames.filter(person => person.username === '')
+
 
   const togglePjtstate = () => {
     setPjtStateIsOpen(!pjtstateIsOpen);
@@ -372,7 +504,7 @@ const Project = () => {
   useEffect(() => {
     if (clickedProjects) {
       setViewSubPjtModalOpen(true);
-      setpjtStatus(clickedProjects.status === 'notstarted' ? '진행 예정' : clickedProjects.status === 'inprogress' ? '진행 중' : '진행 완료' || '진행 예정');
+      setpjtStatus(clickedProjects.status === 'notstarted' ? '진행 예정' : clickedProjects.status === 'inprogress' ? '진행 중' : '진행 완료');
       setPjtTitle(clickedProjects.projectName || '');
       setTeamLeader(clickedProjects.Leader || '');
       setAllMembers(clickedProjects.members || []);
@@ -1327,7 +1459,7 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNames.map(person => (
+                {filteredNamesPerson.map(person => (
                   <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
@@ -1348,14 +1480,30 @@ const Project = () => {
               ref={inputRef}
             />
             {inputAllMember && (
-              <ul className="autocomplete_dropdown_inbox">
-                {filteredAllmembersNames.map(person => (
-                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
-                    {person.team ? person.team : person.department} &nbsp;
-                    {person.username}
-                  </li>
-                ))}
-              </ul>
+              <div className="autocomplete_dropdown_container">
+                <ul className="autocomplete_dropdown_person">
+                  {filteredAllmembersNamesPerson
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="autocomplete_dropdown_team">
+                  {filteredAllmembersNamesTeam
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             <div className="body_container_content_listbox">
@@ -1379,14 +1527,30 @@ const Project = () => {
               ref={inputRef}
             />
             {inputAllReferrer && (
-              <ul className="autocomplete_dropdown_inbox">
-                {filteredAllReferrersNames.map(person => (
-                  <li key={person.username} onClick={() => handleAutoAllReferrersCompleteClick(person.username, person.department, person.team)}>
-                    {person.team ? person.team : person.department} &nbsp;
-                    {person.username}
-                  </li>
-                ))}
-              </ul>
+              <div className="autocomplete_dropdown_container">
+                <ul className="autocomplete_dropdown_person_referrer">
+                  {filteredAllReferrersNamesPerson
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllReferrersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="autocomplete_dropdown_team_referrer">
+                  {filteredAllReferrersNamesTeam
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllReferrersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             <div className="body_container_content_listbox">
@@ -1463,7 +1627,7 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNames.map(person => (
+                {filteredNamesPerson.map(person => (
                   <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
@@ -1484,14 +1648,30 @@ const Project = () => {
               ref={inputRef}
             />
             {inputAllMember && (
-              <ul className="autocomplete_dropdown_inbox">
-                {filteredAllmembersNames.map(person => (
-                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
-                    {person.team ? person.team : person.department} &nbsp;
-                    {person.username}
-                  </li>
-                ))}
-              </ul>
+              <div className="autocomplete_dropdown_container">
+                <ul className="autocomplete_dropdown_person">
+                  {filteredAllmembersNamesPerson
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="autocomplete_dropdown_team">
+                  {filteredAllmembersNamesTeam
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             <div className="body_container_content_listbox">
@@ -1593,7 +1773,7 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNames.map(person => (
+                {filteredNamesPerson.map(person => (
                   <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
@@ -1614,14 +1794,30 @@ const Project = () => {
               ref={inputRef}
             />
             {inputAllMember && (
-              <ul className="autocomplete_dropdown_inbox">
-                {filteredAllmembersNames.map(person => (
-                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
-                    {person.team ? person.team : person.department} &nbsp;
-                    {person.username}
-                  </li>
-                ))}
-              </ul>
+              <div className="autocomplete_dropdown_container">
+                <ul className="autocomplete_dropdown_person">
+                  {filteredAllmembersNamesPerson
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="autocomplete_dropdown_team">
+                  {filteredAllmembersNamesTeam
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             <div className="body_container_content_listbox">
@@ -1634,7 +1830,7 @@ const Project = () => {
             </div>
           </div>
 
-          <div className="body_container_content member_list_box" style={{height: '110px'}}>
+          <div className="body_container_content member_list_box" style={{height: '110px', backgroundColor: '#F4F4F4'}}>
             <input
               type="text"
               className="input_list"
@@ -1645,14 +1841,30 @@ const Project = () => {
               ref={inputRef}
             />
             {inputAllReferrer && (
-              <ul className="autocomplete_dropdown_inbox">
-                {filteredAllReferrersNames.map(person => (
-                  <li key={person.username} onClick={() => handleAutoAllReferrersCompleteClick(person.username, person.department, person.team)}>
-                    {person.team ? person.team : person.department} &nbsp;
-                    {person.username}
-                  </li>
-                ))}
-              </ul>
+              <div className="autocomplete_dropdown_container">
+                <ul className="autocomplete_dropdown_person_referrer">
+                  {filteredAllReferrersNamesPerson
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllReferrersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="autocomplete_dropdown_team_referrer">
+                  {filteredAllReferrersNamesTeam
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllReferrersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             <div className="body_container_content_listbox">
@@ -1740,7 +1952,7 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNames.map(person => (
+                {filteredNamesPerson.map(person => (
                   <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
@@ -1764,7 +1976,7 @@ const Project = () => {
             {inputAllMember && (
               <ul className="autocomplete_dropdown_inbox">
                 {filteredAllmembersNames.map(person => (
-                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
+                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick((`${person.team ? person.team : person.department} ${person.username}`))}>
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
                   </li>
@@ -1871,7 +2083,7 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNames.map(person => (
+                {filteredNamesPerson.map(person => (
                   <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
@@ -1892,14 +2104,30 @@ const Project = () => {
               ref={inputRef}
             />
             {inputAllMember && (
-              <ul className="autocomplete_dropdown_inbox">
-                {filteredAllmembersNames.map(person => (
-                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick(person.username, person.department, person.team)}>
-                    {person.team ? person.team : person.department} &nbsp;
-                    {person.username}
-                  </li>
-                ))}
-              </ul>
+              <div className="autocomplete_dropdown_container">
+                <ul className="autocomplete_dropdown_person">
+                  {filteredAllmembersNamesPerson
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="autocomplete_dropdown_team">
+                  {filteredAllmembersNamesTeam
+                  .map((person, index) => (
+                    <li
+                      key={person.username}
+                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                    >
+                      {person.team ? person.team : person.department} {person.username}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             <div className="body_container_content_listbox">

@@ -558,52 +558,162 @@
       display: flex;
       flex-direction: column;
 
-      .autocomplete_dropdown_inbox {
-        position: absolute;
-        top: 35px;
-        right: 0;
-        z-index: 10;
-        background-color: #fff;
-        border: 1px solid #EEEEEE;
-        border-top: none;
-        border-radius: 0 0 5px 5px;
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        font-size: 12px;
-        font-family: var(--font-family-Noto-M);
-        max-height: 150px;
+      .autocomplete_dropdown_container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        max-height: 114px;
+        height: 200px;
         overflow-y: auto;
 
-        li {
-          padding: 8px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
+        .autocomplete_dropdown_person {
+          @include custom-scrollbar;
+          position: absolute;
+          top: 33px;
+          left: -1px;
+          z-index: 1000;
+          background-color: #fff;
+          border-left: 1px solid #EEEEEE;
+          border-right: 1px solid #929292;
+          border-bottom: 1px solid #EEEEEE;
+          border-bottom-left-radius: 5px;
+          width: 50%;
+          min-height: 107px;
+          max-height: 107px;
+          overflow-y: auto;
+          gap: 5px;
+          margin: 10px 0;
+          flex: 1;
+
+          li {
+            font-size: 11px;
+            padding: 4px 17px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #5C5C5C;
+            font-family: var(--font-family-Noto-R);
+        
+            &.selected {
+              background-color: #e2e2e2;
+            }
+          }
         }
 
-        li:hover {
-          background-color: #f0f0f0;
+        .autocomplete_dropdown_person_referrer {
+          @include custom-scrollbar($trackColor: #F4F4F4);
+          position: absolute;
+          top: 33px;
+          left: -1px;
+          z-index: 1000;
+          background-color: #F4F4F4;
+          border-left: 1px solid #EEEEEE;
+          border-right: 1px solid #929292;
+          border-bottom: 1px solid #EEEEEE;
+          border-bottom-left-radius: 5px;
+          width: 50%;
+          min-height: 107px;
+          max-height: 107px;
+          overflow-y: auto;
+          gap: 5px;
+          margin: 10px 0;
+          flex: 1;
+
+          li {
+            font-size: 11px;
+            padding: 4px 17px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #5C5C5C;
+            font-family: var(--font-family-Noto-R);
+        
+            &.selected {
+              background-color: #e2e2e2;
+            }
+          }
+        }
+
+        .autocomplete_dropdown_team {
+          @include custom-scrollbar;
+          position: absolute;
+          top: 33px;
+          left: 193px;
+          z-index: 1000;
+          background-color: #fff;
+          border-right: 1px solid #EEEEEE;
+          border-bottom: 1px solid #EEEEEE;
+          border-bottom-right-radius: 5px;
+          width: 50%;
+          min-height: 107px;
+          max-height: 107px;
+          overflow-y: auto;
+          margin: 10px 0;
+          gap: 5px;
+          flex: 1;
+
+          li {
+            font-size: 11px;
+            padding: 4px 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #5C5C5C;
+            font-family: var(--font-family-Noto-R);
+        
+            &.selected {
+              background-color: #e2e2e2;
+            }
+          }
+        }
+
+        .autocomplete_dropdown_team_referrer {
+          @include custom-scrollbar($trackColor: #F4F4F4);
+          position: absolute;
+          top: 33px;
+          left: 193px;
+          z-index: 1000;
+          background-color: #F4F4F4;
+          border-right: 1px solid #EEEEEE;
+          border-bottom: 1px solid #EEEEEE;
+          border-bottom-right-radius: 5px;
+          width: 50%;
+          min-height: 107px;
+          max-height: 107px;
+          overflow-y: auto;
+          margin: 10px 0;
+          gap: 5px;
+          flex: 1;
+
+          li {
+            font-size: 11px;
+            padding: 4px 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #5C5C5C;
+            font-family: var(--font-family-Noto-R);
+        
+            &.selected {
+              background-color: #e2e2e2;
+            }
+          }
         }
       }
 
-      .autocomplete_dropdown_inbox::-webkit-scrollbar {
+      .autocomplete_dropdown_container::-webkit-scrollbar {
         width: 6px;
         height: 6px;
       }
 
-      .autocomplete_dropdown_inbox::-webkit-scrollbar-thumb {
+      .autocomplete_dropdown_container::-webkit-scrollbar-thumb {
         background-color: #A8A8A8;
         border-radius: 10px;
         background-clip: padding-box;
         border: 2px solid transparent;
       }
 
-      .autocomplete_dropdown_inbox::-webkit-scrollbar-corner {
+      .autocomplete_dropdown_container::-webkit-scrollbar-corner {
         background-color: none;
       }
 
-      .autocomplete_dropdown_inbox::-webkit-scrollbar-track {
+      .autocomplete_dropdown_container::-webkit-scrollbar-track {
         box-shadow: none;
         background-color: #fff;
       }
