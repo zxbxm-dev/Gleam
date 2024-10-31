@@ -444,34 +444,36 @@
               display: flex;
               flex-direction: column;
               justify-content: space-between;
-              border: 1px solid #ccc; /* 추가적인 스타일 */
-              max-height: 200px; /* 드롭다운 최대 높이 */
+              max-height: 114px;
+              height: 200px;
               overflow-y: auto;
 
               .autocomplete_dropdown_person {
                 @include custom-scrollbar;
                 position: absolute;
                 top: 33px;
-                left: 0;
+                left: -1px;
                 z-index: 1000;
                 background-color: #fff;
-                border-top: 1px solid #EEEEEE;
                 border-left: 1px solid #EEEEEE;
                 border-right: 1px solid #929292;
                 border-bottom: 1px solid #EEEEEE;
                 border-bottom-left-radius: 5px;
                 width: 50%;
-                min-height: 200px;
-                max-height: 200px;
+                min-height: 107px;
+                max-height: 107px;
                 overflow-y: auto;
                 gap: 5px;
+                margin: 10px 0;
                 flex: 1;
   
                 li {
-                  font-size: 14px;
-                  padding: 5px 10px;
+                  font-size: 11px;
+                  padding: 4px 17px;
                   cursor: pointer;
                   transition: background-color 0.2s;
+                  color: #5C5C5C;
+                  font-family: var(--font-family-Noto-R);
               
                   &.selected {
                     background-color: #e2e2e2;
@@ -483,25 +485,27 @@
                 @include custom-scrollbar;
                 position: absolute;
                 top: 33px;
-                left: 244px;
+                left: 245px;
                 z-index: 1000;
                 background-color: #fff;
-                border-top: 1px solid #EEEEEE;
                 border-right: 1px solid #EEEEEE;
                 border-bottom: 1px solid #EEEEEE;
                 border-bottom-right-radius: 5px;
                 width: 50%;
-                min-height: 200px;
-                max-height: 200px;
+                min-height: 107px;
+                max-height: 107px;
                 overflow-y: auto;
+                margin: 10px 0;
                 gap: 5px;
                 flex: 1;
   
                 li {
-                  font-size: 14px;
-                  padding: 5px 10px;
+                  font-size: 11px;
+                  padding: 4px 10px;
                   cursor: pointer;
                   transition: background-color 0.2s;
+                  color: #5C5C5C;
+                  font-family: var(--font-family-Noto-R);
               
                   &.selected {
                     background-color: #e2e2e2;
