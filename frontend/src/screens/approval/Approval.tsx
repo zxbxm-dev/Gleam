@@ -6,6 +6,8 @@ import { ReactComponent as FirstLeftIcon } from "../../assets/images/Common/Firs
 import {
   Asc_Icon,
   Desc_Icon,
+  SelectDownArrow,
+  SelectArrow
 } from "../../assets/images/index";
 import { useNavigate } from "react-router-dom";
 import Pagination from "react-js-pagination";
@@ -22,15 +24,72 @@ const Approval = () => {
   const [selectedTab, setSelectedTab] = useState<string>("myDocuments");
   const [postPerPage, setPostPerPage] = useState<number>(10);
   const [mydocuments, setMyDocument] = useState<any[]>([]); // 내 문서
+  const [originalMyDocuments, setOriginalMyDocuments] = useState<any[]>([]);
   const [approvalings, setApprovaling] = useState<any[]>([]); // 결재할 문서
+  const [originalApprovaling, setOriginalApprovaling] = useState<any[]>([]);
   const [inProgress, setInProgress] = useState<any[]>([]); // 결재 진행중 문서
+  const [originalInProgress, setOriginalInProgress] = useState<any[]>([]);
   const [rejecteds, setRejected] = useState<any[]>([]); // 반려된 문서
+  const [originalRejected, setOriginalRejected] = useState<any[]>([]);
   const [compleDocuments, setCompleDocument] = useState<any[]>([]); // 완료된 문서
+  const [originalCompleDocument, setOriginalCompleDocument] = useState<any[]>([]);
   const [idSortOrder, setIdSortOrder] = useState<"asc" | "desc">("asc");
   const [titleSortOrder, setTitleSortOrder] = useState<"asc" | "desc">("asc");
   const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");
   const [stateSortOrder, setStateSortOrder] = useState<"asc" | "desc">("asc");
   const [writerSortOrder, setWriterSortOrder] = useState<"asc" | "desc">("asc");
+  const [selectOpen, setSelectOpen] = useState(false);
+  const [selectedReport, setSelectedReport] = useState("전체 문서");
+
+  const SelectOpen = () => {
+    setSelectOpen(!selectOpen);
+  }
+  
+  const SelectOptions = (report: string) => {
+    if (selectedTab === 'myDocuments') {
+      if (report === "전체 문서") {
+        setMyDocument(originalMyDocuments);
+      } else {
+        const filteredDocuments = originalMyDocuments.filter(doc => doc.selectForm === report);
+        setMyDocument(filteredDocuments);
+      }
+    } else if (selectedTab === 'approval') {
+      if (report === "전체 문서") {
+        setApprovaling(originalApprovaling);
+      } else {
+        const filteredDocuments = originalApprovaling.filter(doc => doc.selectForm === report);
+        setApprovaling(filteredDocuments);
+      }
+    } else if (selectedTab === 'inProgress') {
+      if (report === "전체 문서") {
+        setInProgress(originalInProgress);
+      } else {
+        const filteredDocuments = originalInProgress.filter(doc => doc.selectForm === report);
+        setInProgress(filteredDocuments);
+      }
+    } else if (selectedTab === 'rejected') {
+      if (report === "전체 문서") {
+        setRejected(originalRejected);
+      } else {
+        const filteredDocuments = originalRejected.filter(doc => doc.selectForm === report);
+        setRejected(filteredDocuments);
+      }
+    } else if (selectedTab === 'completed') {
+      if (report === "전체 문서") {
+        setCompleDocument(originalCompleDocument);
+      } else {
+        const filteredDocuments = originalCompleDocument.filter(doc => doc.selectForm === report);
+        setCompleDocument(filteredDocuments);
+      }
+    }
+  
+    
+    setSelectedReport(report);
+    setSelectOpen(false);
+  };
+  
+
+  console.log(mydocuments)
 
   useEffect(() => {
     const handleResize = () => {
@@ -76,7 +135,7 @@ const Approval = () => {
   };
 
   useQuery("myReports", fetchMyReports, {
-    onSuccess: (data) => setMyDocument(data),
+    onSuccess: (data) => {setMyDocument(data); setOriginalMyDocuments(data);},
     onError: (error) => {
       console.log(error)
     }
@@ -99,7 +158,7 @@ const Approval = () => {
     }
   };
   useQuery("DocumentsToApprove", fetchDocumentsToApprove, {
-    onSuccess: (data) => setApprovaling(data),
+    onSuccess: (data) => {setApprovaling(data); setOriginalApprovaling(data)},
     onError: (error) => {
       console.log(error)
     }
@@ -121,7 +180,7 @@ const Approval = () => {
   };
 
   useQuery("DocumentsInProgress", fetchDocumentsInProgress, {
-    onSuccess: (data) => setInProgress(data),
+    onSuccess: (data) => {setInProgress(data); setOriginalInProgress(data)},
     onError: (error) => {
       console.log(error)
     }
@@ -144,7 +203,7 @@ const Approval = () => {
   };
 
   useQuery("RejectedDocuments", fetchRejectedDocuments, {
-    onSuccess: (data) => setRejected(data),
+    onSuccess: (data) => {setRejected(data); setOriginalRejected(data)},
     onError: (error) => {
       console.log(error)
     }
@@ -166,7 +225,7 @@ const Approval = () => {
   };
 
   useQuery("ApprovedDocuments", fetchApprovedDocuments, {
-    onSuccess: (data) => setCompleDocument(data),
+    onSuccess: (data) => {setCompleDocument(data); setOriginalCompleDocument(data)},
     onError: (error) => {
       console.log(error)
     }
@@ -939,6 +998,114 @@ const Approval = () => {
             :
             <></>
           } */}
+        </div>
+        <div className="approval_top_selector">
+          <div className="approval_top_selector_title">
+            양식 선택
+          </div>
+          <div className="approval_top_selector_box" onClick={SelectOpen}>
+            <img src={selectOpen ? SelectDownArrow : SelectArrow} alt="SelectArrow" className="SelectArrow" />
+            <span className="selector_title">{selectedReport}</span>
+          </div>
+          {selectOpen ? (
+            <div className="Select_report_Content">
+              <div className="Option" onClick={() => SelectOptions('전체 문서')}>
+                <span className="Option_title">전체 문서</span>
+              </div>
+              <div>공동</div>
+              <div className="Option" onClick={() => SelectOptions('주간업무일지')}>
+                <span className="Option_title">주간업무일지</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('휴가신청서')}>
+                <span className="Option_title">휴가신청서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('지출품의서')}>
+                <span className="Option_title">지출품의서</span>
+              </div>
+
+              <div>프로젝트</div>
+              <div className="Option" onClick={() => SelectOptions('기획서')}>
+                <span className="Option_title">기획서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('중간보고서')}>
+                <span className="Option_title">중간보고서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('최종보고서')}>
+                <span className="Option_title">최종보고서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('TF팀 기획서')}>
+                <span className="Option_title">TF팀 기획서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 계획서')}>
+                <span className="Option_title">TF팀 프로젝트 계획서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('TF팀 중간보고서')}>
+                <span className="Option_title">TF팀 중간보고서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 결과 보고서')}>
+                <span className="Option_title">TF팀 프로젝트 결과 보고서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('박람회 보고서')}>
+                <span className="Option_title">박람회 보고서</span>
+              </div>
+
+              <div>인사</div>
+              <div className="Option" onClick={() => SelectOptions('휴직원')}>
+                <span className="Option_title">휴직원</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('복직원')}>
+                <span className="Option_title">복직원</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('시말서')}>
+                <span className="Option_title">시말서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('경위서')}>
+                <span className="Option_title">경위서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('진급추천서')}>
+                <span className="Option_title">진급추천서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('퇴직금 중간정산 신청서')}>
+                <span className="Option_title">퇴직금 중간정산 신청서</span>
+              </div>
+
+              <div>총무</div>
+              <div className="Option" onClick={() => SelectOptions('출장 신청서')}>
+                <span className="Option_title">출장 신청서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('출장 보고서')}>
+                <span className="Option_title">출장 보고서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('출장비내역서')}>
+                <span className="Option_title">출장비내역서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('자기개발비 신청서')}>
+                <span className="Option_title">자기개발비 신청서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('법인카드 신청서')}>
+                <span className="Option_title">법인카드 신청서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('지출내역서')}>
+                <span className="Option_title">지출내역서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('예산신청서')}>
+                <span className="Option_title">예산신청서</span>
+              </div>
+
+              <div>기타</div>
+              <div className="Option" onClick={() => SelectOptions('워크숍 신청서')}>
+                <span className="Option_title">워크숍 신청서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('야유회 보고서')}>
+                <span className="Option_title">야유회 보고서</span>
+              </div>
+              <div className="Option" onClick={() => SelectOptions('프로젝트 회의 보고서')}>
+                <span className="Option_title">프로젝트 회의 보고서</span>
+              </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
 
