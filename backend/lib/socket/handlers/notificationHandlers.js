@@ -8,10 +8,13 @@ const getNewMsg = async (socket, messageData, connectedUsers) => {
 
       //수신자의 온라인 여부를 확인하는 코드
       if(Object.keys(connectedUsers).includes(messageData.receiverId)){
-        await onlineUser(socket, messageData);
+        const receiverSocketId = connectedUsers[messageData.receiverId];
+        await onlineUser( receiverSocketId, messageData);
       }else(
         await offlineUser(socket, messageData)
       );
+
+      //수신자의 
 
       //새로운 메세지 알람 
       const messageId = messageData.messageId;
@@ -23,16 +26,14 @@ const getNewMsg = async (socket, messageData, connectedUsers) => {
         receiverId : receiver,
       },
     });
-
-      if (newMsg) {
-        socket.emit("newMsgNoti", {
-          message: `새로운 메세지가 있습니다.`,
-          messages: newMsg          
-        });
-      } else {
-        console.log("새로운 메시지가 없습니다.");
-      }
-
+      // if (newMsg) {
+      //   socket.emit("newMsgNoti", {
+      //     message: `새로운 메세지가 있습니다.`,
+      //     messages: newMsg          
+      //   });
+      // } else {
+      //   console.log("새로운 메시지가 없습니다.");
+      // }
       return newMsg;
     
     } catch (error) {
