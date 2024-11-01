@@ -630,6 +630,17 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         if (messageData.roomId === selectedRoomId.roomId) {
           setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
         }
+      });
+      
+      socket.on('notiForOnline', (messageData: any) => {
+        const formattedMessage = {
+          content: messageData.content,
+          fileValue: messageData.fileValue,
+          isReadOther: true,
+          messageId: messageData.messageId,
+          timestamp: messageData.timestamp,
+          userId: messageData.senderId,
+        };
 
         // 본인 메시지가 아닌 경우에만 알림 표시
         if (messageData.senderId !== user.id) {
@@ -653,6 +664,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           });
         }
       });
+      
     }
 
     return () => {
