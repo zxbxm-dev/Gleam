@@ -3,6 +3,7 @@ const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
 const notificationHandler = require("../handlers/notificationHandlers");
 const socketUtills = require("../socketUtills");
 const { Op, where } = require("sequelize");
+const connectedUsers = require("../index");
 
 // 특정 사용자가 포함된 채팅방을 찾는 함수
 const findChatRoomsForUser = async (userId) => {
@@ -86,7 +87,7 @@ const getGroupChatHistory = async (socket, roomId) => {
         socket.leave(roomId);
       };
     };
-    console.log("<getGroupChatHistory> - Joined Room : ", Array.from(socket.rooms ));
+   
 
     // 채팅방의 모든 메시지를 가져오기
     const messages = await Message.findAll({
@@ -240,7 +241,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
               socket.leave(roomId);
             };
           };
-          console.log("<personTab_getChatHistory> - Joined Room : ", Array.from(socket.rooms ));
+         
 
       const messages = await Message.findAll({
         where: {
@@ -320,8 +321,6 @@ const getChatHistory = async (socket, roomId) => {
         socket.leave(roomId);
       };
     };
-    console.log("<GetChatHistory> - Joined Room: ", Array.from(socket.rooms )); 
-
 
     const messages = await Message.findAll({
       where: { roomId: actualRoomId },
@@ -441,8 +440,6 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       { where: { roomId } }
     );
     
-    //새로운 메세지 데이터 생성 시 관련 데이터를 getNewMsg로 전달
-    await notificationHandler.getNewMsg(socket,messageData);
   } catch (error) {
     console.error(`메시지 전송 오류 발생: ${error.message}`);
     throw new Error("메시지 전송 오류 발생");
