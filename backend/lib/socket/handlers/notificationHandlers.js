@@ -46,10 +46,14 @@ const getNewMsg = async (socket, messageData, connectedUsers) => {
   
   //온라인 사용자에게 알림
 const onlineUser = async (socket, messageData) =>{
+  const currentJoinSocketRoom = Array.from(socket.rooms);
+
+  //수신인이 채팅방에 접속 중인지 확인하는 조건 
   try{
+    if(messageData.roomId !== currentJoinSocketRoom[0]){
     console.log("🔔새로운 알림이 도착했습니다.")
     socket.emit("notiForOnline", messageData);
-   
+    }   
   }catch(error){
     console.error("메세지 알림 전송 중 에러 발생 : ", error);
     socket.emit("error", { message: "메세지 알림 전송 중 오류가 발생했습니다."})
@@ -67,6 +71,22 @@ const offlineUser = async (socket, messageData) => {
   }
 
 };
+
+
+//사용자가 특정 방에 접속중인지 확인 
+const checkUserConnected = async (socket, roomId, connectedUsers, messageData ) => {
+
+  const checkRoomsForSocket = (socket) => {
+    console.log(`Socket ID ${socket.id} is in rooms:`, Array.from(socket.rooms));
+  };
+  
+  if(roomId == messageData.roomId){
+
+  }else{
+
+  }
+    
+}
 
 module.exports = {
     getNewMsg,
