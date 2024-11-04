@@ -1,4 +1,6 @@
 const notificationHandlers = require("../handlers/notificationHandlers")
+const models = require("../../models");
+const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
 
 module.exports = (io, socket, connectedUsers) => {
     if(!socket) {
@@ -12,6 +14,33 @@ socket.on("getNewMsg",async (messageData) => {
         if(!messageData.senderId) {
             throw new Error("사용자 ID가 제공되지 않았습니다.");
         }
+
+        const senderInfo = await ChatRoomParticipant.findOne({
+            where: { userId : messageData.senderId },
+            attributes: ["userId", "username", "department", "team", "position"],
+          })
+      
+          const newMessage = await Message.create({
+            roomId: messageData.roomId,
+            userId: messageData.senderId,
+            receiverId : messageData.receiverId,
+            content: messageData.content,
+          });
+
+            messageData = {
+            messageId: newMessage.messageId,
+            content: newMessage.content,
+            roomId: newMessage.roomId,
+            senderId: newMessage.userId,
+            receiverId: newMessage.receiverId,
+            timestamp: newMessage.createdAt,
+            fileValue: newMessage.filePath ? 1 : 0,
+            senderUsername: senderInfo.dataValues.username,
+            senderDepartment: senderInfo.dataValues.department,
+            senderTeam: senderInfo.dataValues.team,
+            senderPosition: senderInfo.dataValues.position,
+          };
+      
         await notificationHandlers.getNewMsg(socket, messageData, connectedUsers)
 
     }catch(error) {
