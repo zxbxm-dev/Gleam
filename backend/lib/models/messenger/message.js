@@ -39,6 +39,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
+      contentType:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "text",
+      }
+      ,
     },
     {
       tableName: "message",
