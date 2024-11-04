@@ -329,6 +329,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         setMsgNewUpdate(true);
       } else {
         socket.emit("sendMessage", messageData);
+        socket.emit("getNewMsg", messageData);
         console.log('보낸 메시지',messageData);
         setMsgNewUpdate(true);
       }
@@ -594,7 +595,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         }
       });
     }
-  }, [serverMessages, handleReadMessage, user.id]);
+  }, [serverMessages, handleReadMessage, user.id, selectedRoomId]);
 
   const ensureArray = (arr: any) => Array.isArray(arr) ? arr : [];
 

@@ -708,7 +708,7 @@ const Approval = () => {
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>
                         <td>{compledocument.approval} / {compledocument.currentSigner}</td>
-                        <td>{compledocument.username} / {compledocument.dept}</td>
+                        <td>{compledocument.username} {compledocument.team ? ` / ${compledocument.team}` : (compledocument.dept ? ` / ${compledocument.dept}` : '')} </td>
                         <td>
                           <button className="primary_button" onClick={() => { navigate(`/detailDocument/${compledocument.id}`, { state: { documentInfo: compledocument } }) }}>
                             문서확인
