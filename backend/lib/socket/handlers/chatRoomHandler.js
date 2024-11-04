@@ -470,7 +470,7 @@ const kickOutFromRoom = async (io, socket, roomId, userId) => {
 
 // 채팅방에서 나가기 -----------------------------------------------------------------------------------------------------
 const exitRoom = async (io, socket, data) => {
-  const { roomId, userId } = data;
+  const { roomId, userId } = data; 
 
   try {
     // 채팅방 정보 가져오기
@@ -521,6 +521,15 @@ const exitRoom = async (io, socket, data) => {
         { where: { roomId, userId } }
       );
 
+      //message테이블에 ooo부 oo팀 xxx님이 방을 나갔습니다. insert
+      await Message.create({
+        content : `${leaveMessage} 님이 방을 나갔습니다.`,
+        userId : userId,
+        roomId : roomId,
+        receiverId : "deleted",
+        contentType : "leave",
+      });
+
       // 나간 후 남은 사용자에게 알림
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
@@ -555,7 +564,16 @@ const exitRoom = async (io, socket, data) => {
         { participant: true },   // { participant: false } -> { participant: true}
         { where: { roomId, userId } }
       );
-
+      
+     //message테이블에 ooo부 oo팀 xxx님이 방을 나갔습니다. insert
+      await Message.create({
+        content : `${leaveMessage} 님이 방을 나갔습니다.`,
+        userId : userId,
+        roomId : roomId,
+        receiverId : "deleted",
+        contentType : "leave",
+      });
+      
       // 남은 사용자에게 알림
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
