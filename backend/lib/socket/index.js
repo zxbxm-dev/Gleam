@@ -2,14 +2,6 @@ const chatRoomEvents = require("./events/chatRoomEvents");
 const messageEvents = require("./events/messageEvents");
 const notificationEvent = require("./events/notificationEvent");
 const statusEvents = require("./events/statusEvents");
-const mysql = require('mysql2/promise');
-
-// const db = mysql.createPool({
-//   host: '127.0.0.1',
-//   user: 'root',
-//   password: '1111',
-//   database: 'chainlinker'
-// })
 
 // 사용자 소켓 관리 객체
 const connectedUsers = {};
@@ -17,20 +9,10 @@ console.log("객체상태 관리: ", connectedUsers);
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    // console.log("새로운 사용자 연결:", socket.id);
 
     // 사용자 ID를 클라이언트로부터 받기 위한 이벤트 처리
     socket.on("registerUser", async (userId) => {
-      // const userRooms = await getUserRoomsFromDB(userId);
-
-      // async function getUserRoomsFromDB(userId) {
-      //   const query = 'SELECT roomId FROM chatroom_participant WHERE userId = ?';
-      //   const [rows] = await db.execute(query, [userId]);
-      //   return rows.map(row => row.roomId);
-      // }
-      // console.log('본인이 속한 룸', userRooms)
-      
-
+     
       if (!userId || typeof userId !== 'string') {
         console.error("유효하지 않은 사용자 ID:", userId);
         return socket.emit("error", { message: "유효하지 않은 사용자 ID입니다." });
@@ -45,23 +27,14 @@ module.exports = (io) => {
       connectedUsers[userId] = socket;
       console.log(`사용자 ${userId}의 소켓 등록 완료`);
       
-      // userRooms.forEach(roomId => {
-      //   socket.join(roomId);
-      //   console.log(`사용자 ${userId}가 Room ${roomId}에 참여했습니다.`);
-      // });
-
-      Object.keys(connectedUsers).forEach(key => {
-        console.log('등록된 사용자 명',key)
-      })
-      // console.log(connectedUsers)
     });
 
     // 채팅방 관련 이벤트 처리
     try {
       chatRoomEvents(io, socket);
       messageEvents(io, socket);
-      statusEvents(io, socket);
-      notificationEvent(io, socket);
+      statusEvents(io, socket, connectedUsers);
+      notificationEvent(io, socket, connectedUsers);
     } catch (error) {
       console.error("이벤트 처리 중 오류 발생:", error);
       socket.emit("error", { message: "이벤트 처리 서버 오류" });
