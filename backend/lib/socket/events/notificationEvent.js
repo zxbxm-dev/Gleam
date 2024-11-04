@@ -20,7 +20,7 @@ socket.on("getNewMsg",async (messageData) => {
             attributes: ["userId", "username", "department", "team", "position"],
           })
       
-          const newMessage = await Message.create({
+          const newMessage = await Message.findOne({
             roomId: messageData.roomId,
             userId: messageData.senderId,
             receiverId : messageData.receiverId,
