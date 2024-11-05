@@ -73,7 +73,7 @@ const sortDates = (dates: string[]) => {
 };
 
 
-const useAnnualData = () => {
+const useAnnualData = (year: number) => {
   const [annualData, setAnnualData] = useState([]);
   const [HO_Data, setHO_Data] = useState([]);
   const [RnD_Data, setRnD_Data] = useState([]);
@@ -97,9 +97,12 @@ const useAnnualData = () => {
     }
   });
 
-  useQuery("annual", fetchAnnual, {
+  useQuery(["annual", year], fetchAnnual, {
     onSuccess: (data) => {
-      const filteredData = data.filter((item: any) => item.dateType === '연차' || item.dateType === '반차');
+      const filteredData = data.filter((item: any) => 
+        (item.dateType === '연차' || item.dateType === '반차') && item.year === String(year)
+      );
+      console.log(filteredData)
       setAnnualData(filteredData);
     },
     onError: (error) => {
@@ -125,7 +128,7 @@ const useAnnualData = () => {
 
   const processedHOData = useMemo(() => {
     const result = HO_Data.map((user: any) => {
-      const userAnnualData: AnnualData[] = annualData.filter((annual: any) => annual.username === user.username);
+      const userAnnualData: AnnualData[] = annualData.filter((annual: any) => (annual.username === user.username) && annual.year === String(year));
       let formattedDates: string[] = [];
       
       userAnnualData.forEach((annual: any) => {
@@ -147,7 +150,7 @@ const useAnnualData = () => {
         user.entering ? formatEnteringDate(user.entering) : '',
         user.leavedate ? formatEnteringDate(user.leavedate) : '',
         user.department || '',
-        user.team || ''
+        user.team || '',
       ];
     });
     return result;
@@ -199,7 +202,7 @@ const AnnualManage = () => {
   const [membersRD, setMembersRD] = useState<Member[]>([]);
   const [rowsData, setRowsData] = useState<any[]>([]);
   const [rowsDataRD, setRowsDataRD] = useState<any[]>([]);
-  const { HO_Data, RnD_Data, userMap } = useAnnualData();
+  const { HO_Data, RnD_Data, userMap } = useAnnualData(selectedYear);
   const [changeData, setChangeData] = useState<any[]>([]); 
 
   const handleScreenChange = () => {
@@ -207,7 +210,7 @@ const AnnualManage = () => {
   };
 
   const handleYearChange = (event: any) => {
-    setSelectedYear(parseInt(event.target.value));
+    setSelectedYear(Number(event.target.value));
   };
 
   const handleAvailableChange = (member: any, index: any, event: any) => {
@@ -225,7 +228,8 @@ const AnnualManage = () => {
       .map((m) => ({
         userID:  userMap.get(m[0]),
         username: m[0],
-        availableDate: m[1]
+        availableDate: m[1],
+        year: selectedYear,
       }));
   
     setChangeData(updatedChangeData);
@@ -634,7 +638,7 @@ const AnnualManage = () => {
       </table>
     );
   };
-
+  
   return (
     <div className="content">
       <div className='anuual_header_right'>
@@ -646,7 +650,7 @@ const AnnualManage = () => {
           onChange={handleYearChange}
         >
           <option value={2024}>2024</option>
-          {/* <option value={2023}>2023</option> */}
+          <option value={2025}>2025</option>
         </select>
         {editMode ? 
           <button

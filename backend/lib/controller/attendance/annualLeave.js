@@ -37,7 +37,7 @@ const AddVacation = async (req, res) => {
 
     if (dateType === '연차' || dateType === '반차') {
       // 사용자 '아이디'의 사용 가능 연차 정보 조회
-      const userVacation = await vacation.findOne({ where: { userId: userID } });
+      const userVacation = await vacation.findOne({ where: { userId: userID, year: year } });
   
       if (userVacation) {
         // availableDatem업데이트
@@ -133,12 +133,12 @@ const deleteCalendarEvent = async (req, res) => {
 // 🔥🔥연차 관리 조회 (관리자)🔥🔥
 const administratorCalendar = async (req, res) => {
   try {
-    // 퇴사 상태인 사용자를 모두 조회
     const quitters = await Quitter.findAll({
       where: {
         status: "quitter",
       },
     });
+
     for (const quitter of quitters) {
       await vacation.update(
         { leavedate: quitter.leavedate },
@@ -150,54 +150,62 @@ const administratorCalendar = async (req, res) => {
       );
     }
 
-  // 모든 연차 정보 조회
-  const allVacations = await vacation.findAll();
-  for (const vac of allVacations) {
-    const userVacations = await vacation.findAll({
-      where: {
-        userId: vac.userId,
-      },
-    });
+    const allVacations = await vacation.findAll();
+    const yearVacationsMap = {};
 
-    // Type별 휴가 일수 계산
-    let usedDaysCount = 0;
-    for (const userVac of userVacations) {
-      if (!userVac.dateType) {
-        continue; // dateType 빈값이면 일수 카운트 안함
+    for (const vac of allVacations) {
+      if (!yearVacationsMap[vac.year]) {
+        yearVacationsMap[vac.year] = {};
       }
-      
-      if (userVac.dateType === '연차') {
-        if (userVac.startDate && userVac.endDate) {
-          const startDate = new Date(userVac.startDate);
-          const endDate = new Date(userVac.endDate);
-          const diffTime = Math.abs(endDate - startDate);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-          usedDaysCount += diffDays;
-        } else {
-          usedDaysCount += 1;
+      if (!yearVacationsMap[vac.year][vac.userId]) {
+        yearVacationsMap[vac.year][vac.userId] = [];
+      }
+      yearVacationsMap[vac.year][vac.userId].push(vac);
+    }
+
+    for (const year in yearVacationsMap) {
+      const userVacationsMap = yearVacationsMap[year];
+      for (const userId in userVacationsMap) {
+        const userVacations = userVacationsMap[userId];
+        
+        let usedDaysCount = 0;
+        for (const userVac of userVacations) {
+          if (!userVac.dateType) {
+            continue;
+          }
+          
+          if (userVac.dateType === '연차') {
+            if (userVac.startDate && userVac.endDate) {
+              const startDate = new Date(userVac.startDate);
+              const endDate = new Date(userVac.endDate);
+              const diffTime = Math.abs(endDate - startDate);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+              usedDaysCount += diffDays;
+            } else {
+              usedDaysCount += 1;
+            }
+          } else if (userVac.dateType === '반차') {
+            usedDaysCount += 0.5;
+          }
         }
-      } else if (userVac.dateType === '반차') {
-        usedDaysCount += 0.5;
+
+        await vacation.update(
+          { usedDate: usedDaysCount.toString() },
+          {
+            where: {
+              userId: userId,
+              year: year,
+            },
+          }
+        );
       }
     }
 
-    await vac.update(
-      { usedDate: usedDaysCount.toString() },
-      {
-        where: {
-          id: vac.id,
-        },
-      }
-    );
-  }
-
-    // extraDate 계산 및 업데이트
     const updatedVacations = await vacation.findAll();
     for (const vac of updatedVacations) {
       const availableDate = vac.availableDate || 0;
       const usedDate = parseFloat(vac.usedDate) || 0;
 
-      // extraDate 계산 및 음수 방지 로직 추가
       const extraDate = Math.max(availableDate - usedDate, 0);
 
       await vacation.update(
@@ -207,6 +215,7 @@ const administratorCalendar = async (req, res) => {
         {
           where: {
             userId: vac.userId,
+            year: vac.year,
           },
         }
       );
@@ -220,13 +229,14 @@ const administratorCalendar = async (req, res) => {
   }
 };
 
+
 // 🔥🔥연차 관리 일괄 수정(관리자)🔥🔥
 const updateUserAnnualLeave = async (req, res) => {
   try {
     const updatedVacations = req.body;
 
     for (const vacationInfo of updatedVacations) {
-      const { userID, username, availableDate } = vacationInfo;
+      const { userID, username, availableDate, year } = vacationInfo;
 
       let userVacation = await vacation.findOne({
         where: {
@@ -240,6 +250,7 @@ const updateUserAnnualLeave = async (req, res) => {
           userId: userID,
           username: username,
           availableDate: availableDate,
+          year: year,
         });
       } else {
         // 이미 연차 정보가 있는 경우 모든 필드 업데이트
@@ -249,6 +260,7 @@ const updateUserAnnualLeave = async (req, res) => {
             where: {
               userId: userID,
               username: username,
+              year: year,
             },
           }
         );
