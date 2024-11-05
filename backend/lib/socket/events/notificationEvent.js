@@ -19,28 +19,19 @@ socket.on("getNewMsg",async (messageData) => {
             where: { userId : messageData.senderId },
             attributes: ["userId", "username", "department", "team", "position"],
           })
-      
-          const newMessage = await Message.findOne({
-            roomId: messageData.roomId,
-            userId: messageData.senderId,
-            receiverId : messageData.receiverId,
-            content: messageData.content,
-          });
-
+        
             messageData = {
-            messageId: newMessage.messageId,
-            content: newMessage.content,
-            roomId: newMessage.roomId,
-            senderId: newMessage.userId,
-            receiverId: newMessage.receiverId,
-            timestamp: newMessage.createdAt,
-            fileValue: newMessage.filePath ? 1 : 0,
+            content: messageData.content,
+            roomId: messageData.roomId,
+            senderId: senderInfo.dataValues.userId,
+            receiverId: messageData.receiverId,
+            fileValue: messageData.filePath ? 1 : 0,
             senderUsername: senderInfo.dataValues.username,
             senderDepartment: senderInfo.dataValues.department,
             senderTeam: senderInfo.dataValues.team,
             senderPosition: senderInfo.dataValues.position,
           };
-      
+          
         await notificationHandlers.getNewMsg(socket, messageData, connectedUsers)
 
     }catch(error) {

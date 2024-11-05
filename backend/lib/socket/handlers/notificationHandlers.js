@@ -5,8 +5,9 @@ const { Message } = models;
 //새로운 메세지가 있을 때
 const getNewMsg = async (socket, messageData, connectedUsers) => {
     try {
-      const receiverSocketId = connectedUsers[messageData.receiverId];
-      //수신자의 온라인 여부를 확인하는 코드
+     const receiverSocketId = connectedUsers[messageData.receiverId]; 
+     
+      // 수신자의 온라인 여부를 확인하는 코드
       if(Object.keys(connectedUsers).includes(messageData.receiverId)){
         await onlineUser( receiverSocketId, messageData);
       }else(
@@ -23,14 +24,14 @@ const getNewMsg = async (socket, messageData, connectedUsers) => {
   
   //온라인 사용자에게 알림
 const onlineUser = async (socket, messageData) =>{
-  const currentJoinSocketRoom = Array.from(socket.rooms);
+  const currentJoinSocketRoom = Array.from(socket.rooms || []);
 
   //수신인이 채팅방에 접속 중인지 확인하는 조건 
   try{
-    if(messageData.roomId !== currentJoinSocketRoom[0]){
+     if(messageData.roomId !== currentJoinSocketRoom[0]){
     console.log("🔔새로운 알림이 도착했습니다.")
     socket.emit("notiForOnline", messageData);
-    }   
+     }   
   }catch(error){
     console.error("메세지 알림 전송 중 에러 발생 : ", error);
     socket.emit("error", { message: "메세지 알림 전송 중 오류가 발생했습니다."})
