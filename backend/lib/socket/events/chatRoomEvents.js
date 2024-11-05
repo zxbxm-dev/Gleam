@@ -77,13 +77,12 @@ module.exports = (io, socket) => {
   });
 
   // 채팅방 내보내기 요청 처리
-  socket.on("KickRoom", async ({ roomId, userId }) => {
+  socket.on("KickRoom", async ({ roomId, userId ,loginUser}) => {
     try {
       if (!roomId) {
         throw new Error("방 ID가 제공되지 않았습니다.");
       }
-
-      await chatRoomHandlers.kickOutFromRoom(io, socket, roomId, userId);
+      await chatRoomHandlers.kickOutFromRoom(io, socket, roomId, userId,loginUser);
     } catch (error) {
       console.error("채팅방 내보내기 요청 처리 오류:", error);
       socket.emit("error", { message: "채팅방 내보내기 중 오류가 발생했습니다." });

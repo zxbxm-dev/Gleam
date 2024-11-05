@@ -431,14 +431,13 @@ const joinRoom = async (io, socket, roomId, userIds) => {
 };
 
 //채팅방에서 내보내기------------------------------------------------------------
-
-const kickOutFromRoom = async (io, socket, roomId, userId) => {
+const kickOutFromRoom = async (io, socket, roomId, userId,loginUser) => {
   try {
     if (!roomId || roomId <= 0) {
       throw new Error("유효하지 않은 방 ID입니다.");
     }
-
     const chatRoom = await ChatRoom.findOne({ where: { roomId } });
+
     if (!chatRoom) {
       socket.emit("error", { message: "방을 찾을 수 없습니다." });
       return;
@@ -452,13 +451,36 @@ const kickOutFromRoom = async (io, socket, roomId, userId) => {
       socket.emit("error", { message: "사용자가 방의 참가자가 아닙니다." });
       return;
     }
+    // 내보내려는 사용자가 자기 자신인지 확인
+    if(loginUser === userId){
+      socket.emit("error", {message:"자기 자신은 강제퇴장 시킬 수 없습니다."});
+      console.log("현재 로그인한 아이디:["+loginUser+"]");
+      console.log("내보내려는 아이디 :["+userId+"]");
+      return;
+    };
 
-    await ChatRoomParticipant.destroy({
-      where: { roomId, userId },
+    //참가여부(participant) 상태값 변경 (0->1)
+    await ChatRoomParticipant.update(
+       {participant: true},
+       {where:{roomId,userId}}
+      );
+
+    //내보내지는 사용자의 정보
+    const kickoutInfo = await leaveUserInfo(userId,roomId);
+    console.log("내보내지는사람의 정보:["+kickoutInfo+"]");
+
+    // 로그메시지 저장
+    await Message.create({
+      content : `${kickoutInfo}님이 강제퇴장당했습니다.`,
+      userId,
+      roomId,
+      receiverId : "deleted",
+      contentType : "leave",
     });
 
-    socket.leave(roomId.toString());
+    socket.leave(roomId);
 
+    console.log(`소켓 해제[+${socket.id}+]`);
     socket.emit("userKicked", { roomId, userId });
 
   } catch (error) {
@@ -489,15 +511,9 @@ const exitRoom = async (io, socket, data) => {
     });
 
     // 나가는 사람의 정보(이름,직책,부서이름)
-    const leaveInfo = await ChatRoomParticipant.findOne({
-      where:{userId: userId,
-             roomId: roomId
-            },
-        attributes: ["username","department","position","team"],
-    });
-    const leaveMessage = leaveInfo.department+" "+(leaveInfo.team ? leaveInfo.team+" "+leaveInfo.position+" "+leaveInfo.username : leaveInfo.position+" "+leaveInfo.username);
+    const leaveMessage = await leaveUserInfo(userId,roomId);
+    console.log(`나가는 사람의 정보:${leaveMessage}`);
 
-  
     // 1. 자신과의 채팅 (Self Chat) 처리
     if (chatRoom.isSelfChat) {
       // 모든 관련 정보 삭제 (채팅방, 참가자, 메시지)
@@ -524,8 +540,8 @@ const exitRoom = async (io, socket, data) => {
       //message테이블에 ooo부 oo팀 xxx님이 방을 나갔습니다. insert
       await Message.create({
         content : `${leaveMessage} 님이 방을 나갔습니다.`,
-        userId : userId,
-        roomId : roomId,
+        userId ,
+        roomId ,
         receiverId : "deleted",
         contentType : "leave",
       });
@@ -534,7 +550,7 @@ const exitRoom = async (io, socket, data) => {
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
         socket.to(roomId).emit("roomUpdated", {
-          leaveInfo,
+          leaveMessage,
           message: `${leaveMessage}님이 방을 나갔습니다.`,
         });
       }
@@ -578,7 +594,7 @@ const exitRoom = async (io, socket, data) => {
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
         socket.to(roomId).emit("roomUpdated", {
-          leaveInfo,
+          leaveMessage,
           message: `${leaveMessage}님이 방을 나갔습니다.`,
         });
       }
@@ -624,6 +640,24 @@ const socketLeave = async ( socket, data ) => {
     socket.emit("error", {message: " socket leave 처리 중 오류가 발생했습니다." });
    }
 }
+
+ // 내보내지는(나가는) 사람의 정보(이름,직책,부서이름)
+const leaveUserInfo  =async(userId, roomId)=>{
+    try{
+        const leaveInfo = await ChatRoomParticipant.findOne({
+        where:{userId: userId,
+              roomId: roomId
+              },
+         attributes: ["username","department","position","team"],
+        });
+        const leaveMessage = leaveInfo.department+" "+(leaveInfo.team ? leaveInfo.team+" "+leaveInfo.position+" "+leaveInfo.username : leaveInfo.position+" "+leaveInfo.username);
+         return leaveMessage;
+    }catch(error){  
+        console.error(error.message);
+    } 
+ 
+
+  }
 
 module.exports = {
   sendUserChatRooms,
