@@ -1,10 +1,25 @@
 // const socket = require("..");
 const models = require("../../models");
-const { Message } = models;
+const message = require("../../models/messenger/message");
+const { Message, User } = models;
 
 //새로운 메세지가 있을 때
 const getNewMsg = async (socket, messageData, connectedUsers) => {
     try {
+
+      //수신자 정보 유효성 검사  
+      const existUser = await User.findOne ({
+      where : {
+        userId : messageData.receiverId,
+      }
+     });
+     if(!existUser){
+      console.log("사용자 정보를 찾을 수 없습니다.");
+      console.error("사용자 정보 조회 오류 :", error);
+      return;
+     }
+
+     //수신자의 socketId 
      const receiverSocketId = connectedUsers[messageData.receiverId]; 
      
       // 수신자의 온라인 여부를 확인하는 코드
