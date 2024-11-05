@@ -3,6 +3,7 @@ const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
 const notificationHandler = require("../handlers/notificationHandlers");
 const socketUtills = require("../socketUtills");
 const { Op, where } = require("sequelize");
+const connectedUsers = require("../index");
 
 // 특정 사용자가 포함된 채팅방을 찾는 함수
 const findChatRoomsForUser = async (userId) => {
