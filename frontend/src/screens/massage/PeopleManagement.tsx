@@ -96,7 +96,7 @@ const PeopleManagement: React.FC<PeopleManagementProps> = ({ socket, chatRoomPeo
   const handleResignRoom = (roomId: number, userId: string) => {
     if (socket) {
       // 내보내기
-      socket.emit("KickRoom", { roomId, userId });
+      socket.emit("KickRoom", { roomId, userId, loginUser: user.userID });
       setMsgNewUpdate(true);
 
       // 서버에서 내보내기 완료
