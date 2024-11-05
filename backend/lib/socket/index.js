@@ -3,6 +3,10 @@ const messageEvents = require("./events/messageEvents");
 const notificationEvent = require("./events/notificationEvent");
 const statusEvents = require("./events/statusEvents");
 
+
+//현재 로그인 한 사용자 ID 추출
+// let loginUserId = "";
+
 // 사용자 소켓 관리 객체
 const connectedUsers = {};
 console.log("객체상태 관리: ", connectedUsers);
@@ -25,6 +29,7 @@ module.exports = (io) => {
 
       // 새로운 소켓 등록
       connectedUsers[userId] = socket;
+      loginUserId = userId;
       console.log(`사용자 ${userId}의 소켓 등록 완료`);
       
     });
