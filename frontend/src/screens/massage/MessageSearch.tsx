@@ -94,7 +94,6 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
             }
 
             socket.on("chatHistory", (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
-                console.log("chatHistory 데이터 수신:", data);
                 if (data) {
                     setServerMessages(data.chatHistory);
 
@@ -109,7 +108,6 @@ const MessageSearch: React.FC<SearchProps> = ({ setShowSearch, setTargetMessageI
             });
 
             socket.on("chatHistoryForUser", (data: any) => {
-                console.log("chatHistoryForUser 데이터 수신:", data);
                 if (data) {
                     setServerMessages(data.chatHistory);
 

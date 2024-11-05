@@ -115,6 +115,8 @@ const Approval = () => {
   }
 
   const handleTabClick = (tab: string) => {
+    setSelectedReport("전체 문서");
+    SelectOptions("전체 문서");
     setSelectedTab(tab);
   };
 

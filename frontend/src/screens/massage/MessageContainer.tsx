@@ -325,12 +325,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
       if (selectedRoomId.roomId === -1) {
         socket.emit("createPrivateRoom", messageData);
-        console.log(messageData);
         setMsgNewUpdate(true);
       } else {
         socket.emit("sendMessage", messageData);
         socket.emit("getNewMsg", messageData);
-        console.log('보낸 메시지',messageData);
         setMsgNewUpdate(true);
       }
     }
@@ -488,14 +486,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     const selectedUserId = personSideGetmsg.userID;
     const requesterId = user.id;
-    console.log('requesterId', requesterId)
     if (selectedUserId) {
-      console.log("personCheckMsg 이벤트 전송:", { selectedUserId, requesterId });
       socket.emit("personCheckMsg", { selectedUserId, requesterId });
     }
 
     socket.on("chatHistory", (data: { chatHistory: any[], joinIds: string[], hostId: string; }) => {
-      console.log("chatHistory 데이터 수신:", data);
       if (data) {
         setServerMessages(data.chatHistory);
         setModelPlusJoinId(prevState => ({
@@ -515,7 +510,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     });
 
     socket.on("chatHistoryForUser", (data: any) => {
-      console.log("chatHistoryForUser 데이터 수신:", data);
       if (data) {
         setServerMessages(data.chatHistory);
 
@@ -617,7 +611,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (socket) {
       socket.on('newMsgData', (messageData: any) => {
-        console.log(messageData);
         const formattedMessage = {
           content: messageData.content,
           fileValue: messageData.fileValue,
