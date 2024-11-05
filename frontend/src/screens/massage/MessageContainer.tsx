@@ -646,14 +646,13 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 `${messageData.senderUsername} ${messageData.senderPosition}`, 
                 {
                   body: formattedMessage.content,
-                  tag: `${Date.now()}`,
                 }
               );
 
               // 3초 후에 알림 자동 닫힘
               setTimeout(() => {
                 notification.close();
-              }, 3000);
+              }, 10000);
             }
           });
         }
@@ -663,6 +662,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     return () => {
       socket?.off('newMsgData');
+      socket?.off('notiForOnline');
     };
   }, [socket, selectedRoomId]);
 
