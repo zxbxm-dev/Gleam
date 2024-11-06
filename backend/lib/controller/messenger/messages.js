@@ -1,6 +1,7 @@
 const models = require("../../models");
 const chatRoomData = models.ChatRoom;
 const chatRoomParticipantData = models.ChatRoomParticipant;
+const user = models.User;
 const userData = models.User;
 
 // 채팅방 생성
@@ -134,11 +135,19 @@ const AdminChange = async (req, res) => {
   }
 
   try {
+
+    //어드민으로 변경되는 유저의 정보
+    const newAdminInfo  =await user.findOne({ where:{userId : newAdminId}});
+
     await chatRoomData.update(
-      { hostUserId: newAdminId },
+      { hostUserId: newAdminId,
+        hostName: newAdminInfo.username,
+        hostDepartment: newAdminInfo.department,
+        hostTeam: newAdminInfo.team,
+        hostPosition: newAdminInfo.position,
+      },
       { where: { roomId } }
     );
-
     res.status(200).json({ message: "관리자가 성공적으로 변경되었습니다." });
   } catch (error) {
     console.error("관리자 변경 오류:", error);
