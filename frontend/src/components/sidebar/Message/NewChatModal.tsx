@@ -276,7 +276,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
   };
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
+  
   return (
     <CustomModal
       isOpen={ChatModalOpenState.openState}
@@ -284,7 +284,7 @@ const NewChatModal: React.FC<NewChatModalProps> = ({
         closeModal();
         setSelectedUsers(new Set());
       }}
-      header="새 대화방 생성"
+      header="인원 추가하기"
       headerTextColor="white"
       footer1="확인"
       footer1Class="back-green-btn"

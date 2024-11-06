@@ -498,7 +498,7 @@ const kickOutFromRoom = async (io, socket, roomId, userId,loginUser) => {
     console.log("시간포맷:",formattedTime);
   
 
-    socket.emit("userKicked", {content: info.content ,formattedTime});
+    socket.emit("userKicked", {content: info.content ,timestamp: info.createdAt});
 
   } catch (error) {
     console.error("채팅방 내보내기 오류:", error);

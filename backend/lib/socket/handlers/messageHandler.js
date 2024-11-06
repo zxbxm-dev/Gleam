@@ -92,9 +92,6 @@ const getGroupChatHistory = async (socket, roomId) => {
     // 채팅방의 모든 메시지를 가져오기
     const messages = await Message.findAll({
       where: { roomId: actualRoomId,
-        contentType: {
-            [Op.ne] : "leave", // oo님이 방에서 나갔습니다 메시지는 출력되지 않음
-        }
         },
       include: [
         {
@@ -145,6 +142,7 @@ const getGroupChatHistory = async (socket, roomId) => {
         timestamp: message.createdAt,
         unreadCount,
         fileValue: message.filePath ? 1 : 0,
+        contentType: message.contentType,
       };
     });
 

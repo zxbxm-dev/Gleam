@@ -687,12 +687,21 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         );
       });
       
+      socket.on('userKicked', (messageData: any) => {
+        const formattedMessage = {
+          content: messageData.content,
+          timestamp: messageData.timestamp,
+        };
+
+        setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+      });
     }
 
     return () => {
       socket?.off('newMsgData');
       socket?.off('googleNoti');
       socket?.off('messageRead');
+      socket?.off('userKicked');
     };
   }, [socket, selectedRoomId]);
 
@@ -714,7 +723,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // console.log('messageContainer 호출', selectedRoomId)
   // console.log('내 연결 상태',socket?.connected);
   // console.log('회원 아이디',user.id)
-  // console.log('서버메세지', serverMessages)
+  console.log('서버메세지', serverMessages)
   // console.log('메세지', messages)
   // console.log('서버메세지 메타데이터', messageMetadata)
   // console.log('Recoil 에 저장된 selectedRoomId',selectedRoomId)
@@ -743,59 +752,68 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 )}
           
                 {/* 기존 메시지 UI */}
-                <div className={msg.messageId === targetMessageId ? 'Message highlighted-message' : 'Message'}>
-                  <img
-                    src={(ensureArray(messageMetadata.usersAttachment)[index]) || UserIcon_dark}
-                    className='userCircleIcon'
-                    alt="User Icon"
-                  />
-                  <div className='CountBox'>
-                    <div className="RightBox">
-                      <div>{(ensureArray(messageMetadata.userInfo)[index]) || "Unknown User"}</div>
-                      <div className="MsgTimeBox">
-                        {ensureArray(messageMetadata.userInfo)[index] &&
-                          <div className={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
-                            {msg.fileValue === 1 && (
-                              <div className='WhiteBox'>
-                                <img src={getFileIcon(msg.content)} alt="File Icon" />
+                {
+                  msg.contentType === 'text' ? 
+                  (
+                    <div className={msg.messageId === targetMessageId ? 'Message highlighted-message' : 'Message'}>
+                      <img
+                        src={(ensureArray(messageMetadata.usersAttachment)[index]) || UserIcon_dark}
+                        className='userCircleIcon'
+                        alt="User Icon"
+                      />
+                      <div className='CountBox'>
+                        <div className="RightBox">
+                          <div>{(ensureArray(messageMetadata.userInfo)[index]) || "Unknown User"}</div>
+                          <div className="MsgTimeBox">
+                            {ensureArray(messageMetadata.userInfo)[index] &&
+                              <div className={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? "userMsgBox" : "MsgBox"}>
+                                {msg.fileValue === 1 && (
+                                  <div className='WhiteBox'>
+                                    <img src={getFileIcon(msg.content)} alt="File Icon" />
+                                  </div>
+                                )}
+                                {msg.content ? (
+                                  <div
+                                    key={msg.messageId}
+                                    ref={(el) => (messageRefs.current[msg.messageId] = el)}
+                                    dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br />').replace(/ {2,}/g, '&nbsp;&nbsp;') }}
+                                  />
+                                ) : ""}
+              
+                                {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
+                                {msg.fileValue === 1 && (
+                                  <div className='FileDown' onClick={() => MessageGetFile(msg.messageId, msg)}>
+                                    <img src={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />
+                                  </div>
+                                )}
                               </div>
-                            )}
-                            {msg.content ? (
-                              <div
-                                key={msg.messageId}
-                                ref={(el) => (messageRefs.current[msg.messageId] = el)}
-                                dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br />').replace(/ {2,}/g, '&nbsp;&nbsp;') }}
-                              />
-                            ) : ""}
-          
-                            {msg.content === ClickMsgSearch ? "asdfsfd" : ""}
-                            {msg.fileValue === 1 && (
-                              <div className='FileDown' onClick={() => MessageGetFile(msg.messageId, msg)}>
-                                <img src={ensureArray(messageMetadata.userInfo)[index].split(" ").pop() !== user.username ? FileUserDown : FileMyDown} />
-                              </div>
-                            )}
+                            }
+                            <div className="MsgTime">
+                              {formatTime(msg.timestamp) || "시간 미정"}
+                            </div>
                           </div>
-                        }
-                        <div className="MsgTime">
-                          {formatTime(msg.timestamp) || "시간 미정"}
+                        </div>
+                        <div className="ViewCount">
+                          {
+                            selectedRoomId.isGroup
+                              ? (msg.unreadCount === 0 ? "" : msg.unreadCount)
+                              : (msg.isReadOther === 0
+                                ? "1"
+                                : (msg.isReadOther === true
+                                  ? ""
+                                  : "1"
+                                )
+                              )
+                          }
                         </div>
                       </div>
                     </div>
-                    <div className="ViewCount">
-                      {
-                        selectedRoomId.isGroup
-                          ? (msg.unreadCount === 0 ? "" : msg.unreadCount)
-                          : (msg.isReadOther === 0
-                            ? "1"
-                            : (msg.isReadOther === true
-                              ? ""
-                              : "1"
-                            )
-                          )
-                      }
-                    </div>
-                  </div>
-                </div>
+                  )
+                  :
+                  (
+                    <div className='Message leave_message'>{formatTime(msg.timestamp)} {msg.content}</div>
+                  )
+                }
               </div>
             );
           })
