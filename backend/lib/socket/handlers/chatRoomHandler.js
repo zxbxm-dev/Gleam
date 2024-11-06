@@ -8,13 +8,6 @@ const {
   findChatRoomsForMe,
 } = require("./messageHandler");
 
-const dayjs = require("dayjs");
-const localizedFormat = require('dayjs/plugin/localizedFormat');
-const ko = require('dayjs/locale/ko');
-
-// `dayjs`에 한국어 로케일 적용
-dayjs.locale(ko);
-dayjs.extend(localizedFormat);
 
 // 사용자 조회 함수
 const getUserById = async (userId) => User.findOne({ where: { userId } });
@@ -493,11 +486,6 @@ const kickOutFromRoom = async (io, socket, roomId, userId,loginUser) => {
         order:[["createdAt","DESC"]], // 가장 최근 퇴장 로그
     });
    
-    const formattedTime = dayjs(info.createdAt).format("A h시 m분");
-    console.log("퇴장로그:"+info.content);
-    console.log("시간포맷:",formattedTime);
-  
-
     socket.emit("userKicked", {content: info.content ,timestamp: info.createdAt});
 
   } catch (error) {
