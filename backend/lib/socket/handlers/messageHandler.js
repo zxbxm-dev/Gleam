@@ -207,6 +207,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         timestamp: message.createdAt,
         fileValue: message.filePath ? 1 : 0,
         isRead: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 1, // 읽음 상태 기본값 설정
+        contentType: message.contentType,
       }));
       socket.emit("chatHistoryForUser", { chatHistory, joinIds: [requesterId], hostId: requesterId });
     } else {
@@ -280,6 +281,7 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
           timestamp: message.createdAt,
           isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
           fileValue: message.filePath ? 1 : 0,
+          contentType: message.contentType,
         };
       });
       const chatRoom = await ChatRoom.findOne({
