@@ -8,6 +8,14 @@ const {
   findChatRoomsForMe,
 } = require("./messageHandler");
 
+const dayjs = require("dayjs");
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+const ko = require('dayjs/locale/ko');
+
+// `dayjs`에 한국어 로케일 적용
+dayjs.locale(ko);
+dayjs.extend(localizedFormat);
+
 // 사용자 조회 함수
 const getUserById = async (userId) => User.findOne({ where: { userId } });
 const getUsersByIds = async (userIds) =>
@@ -464,25 +472,33 @@ const kickOutFromRoom = async (io, socket, roomId, userId,loginUser) => {
        {participant: true},
        {where:{roomId,userId}}
       );
-
+    
     //내보내지는 사용자의 정보
     const kickoutInfo = await leaveUserInfo(userId,roomId);
     console.log("내보내지는사람의 정보:["+kickoutInfo+"]");
 
-    // 로그메시지 저장
-    await insertLeaveMsg(kickoutInfo,roomId,userId)
-    // await Message.create({
-    //   content : `${kickoutInfo}님이 강제퇴장당했습니다.`,
-    //   userId,
-    //   roomId,
-    //   receiverId : "deleted",
-    //   contentType : "leave",
-    // });
 
+    // 로그메시지 저장
+    await insertLeaveMsg(kickoutInfo,roomId,userId);
+  
     socket.leave(roomId);
 
     console.log(`소켓 해제[+${socket.id}+]`);
-    socket.emit("userKicked", { roomId, userId });
+    const info = await Message.findOne({
+        attributes:["content","createdAt"],
+        where : {
+          roomId,
+          userId,
+        },
+        order:[["createdAt","DESC"]], // 가장 최근 퇴장 로그
+    });
+   
+    const formattedTime = dayjs(info.createdAt).format("A h시 m분");
+    console.log("퇴장로그:"+info.content);
+    console.log("시간포맷:",formattedTime);
+  
+
+    socket.emit("userKicked", {content: info.content ,formattedTime});
 
   } catch (error) {
     console.error("채팅방 내보내기 오류:", error);
