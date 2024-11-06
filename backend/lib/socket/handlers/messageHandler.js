@@ -110,7 +110,7 @@ const getGroupChatHistory = async (socket, roomId) => {
 
     // 채팅방의 모든 참가자 정보 가져오기
     const participants = await ChatRoomParticipant.findAll({
-      where: { roomId: actualRoomId },
+      where: { roomId: actualRoomId, participant: 0 },
       include: [
         {
           model: User,
