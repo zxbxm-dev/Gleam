@@ -447,7 +447,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       const handleChatHistory = (data: any) => {
         if (Array.isArray(data.chatHistory)) {
           setServerMessages(data.chatHistory);
-          // console.log('서버에서 대화목록 조회 완료-----', data);
+          console.log('서버에서 대화목록 조회 완료-----', data);
   
           setModelPlusJoinId(prevState => ({
             ...prevState,
@@ -694,6 +694,17 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         };
 
         setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+        ChatTabGetMessage();
+      });
+
+      socket.on('roomUpdated', (messageData: any) => {
+        const formattedMessage = {
+          content: messageData.content,
+          timestamp: messageData.timestamp,
+        };
+
+        setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+        ChatTabGetMessage();
       });
     }
 
@@ -702,6 +713,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       socket?.off('googleNoti');
       socket?.off('messageRead');
       socket?.off('userKicked');
+      socket?.off('roomUpdated');
     };
   }, [socket, selectedRoomId]);
 
