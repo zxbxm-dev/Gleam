@@ -578,18 +578,18 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         setMsgOptionsState(false);
       }, 500);
     }
-  }, [user.id, readMsg]);
+  }, [socket, user.userID]);
 
   // 메시지가 화면에 나타나면 읽은 것으로 간주
   useEffect(() => {
     if (Array.isArray(serverMessages) && serverMessages.length > 0) {
       serverMessages.forEach((msg) => {
-        if (msg.userId !== user.id) {
+        if (msg.userId !== user.id && msg.isReadOther === 0) {
           handleReadMessage(msg.messageId); // 상대방의 메시지를 읽었을 때만 처리
         }
       });
     }
-  }, [serverMessages, handleReadMessage, user.id, selectedRoomId]);
+  }, [selectedRoomId.roomId, serverMessages, handleReadMessage, user.id]);
 
   const ensureArray = (arr: any) => Array.isArray(arr) ? arr : [];
 
@@ -657,12 +657,25 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           });
         }
       });
+
+      socket.on('messageRead', (messageData: any) => {
+        console.log('읽은 메세지 아이디', messageData.messageId, '읽은 사람', messageData.userId);
+  
+        setServerMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.messageId === messageData.messageId && msg.isReadOther === 0
+              ? { ...msg, isReadOther: true }
+              : msg
+          )
+        );
+      });
       
     }
 
     return () => {
       socket?.off('newMsgData');
       socket?.off('notiForOnline');
+      socket?.off('messageRead');
     };
   }, [socket, selectedRoomId]);
 
