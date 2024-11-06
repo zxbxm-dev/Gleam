@@ -477,6 +477,7 @@ const kickOutFromRoom = async (io, socket, roomId, userId,loginUser) => {
     socket.leave(roomId);
 
     console.log(`소켓 해제[+${socket.id}+]`);
+
     const info = await Message.findOne({
         attributes:["content","createdAt"],
         where : {
@@ -567,12 +568,22 @@ const exitRoom = async (io, socket, data) => {
     //message테이블에 ooo부 oo팀 xxx님이 방을 나갔습니다. insert
     await insertLeaveMsg(leaveMessage,roomId,userId);
 
+    const info = await Message.findOne({
+      attributes:["content","createdAt"],
+      where : {
+        roomId,
+        userId,
+      },
+      order:[["createdAt","DESC"]], // 가장 최근 퇴장 로그
+  });
+  console.log(`로그:${info.content} || 시간:${info.createdAt}`);
+
     // 나간 후 남은 사용자에게 알림
     const remainingUser = participants.find((p) => p.userId !== userId);
     if (remainingUser) {
       socket.to(roomId).emit("roomUpdated", {
-        leaveMessage,
-        message: `${leaveMessage}님이 방을 나갔습니다.`,
+          content: info.content,
+          timestamp: info.createdAt,
       });
     }
 
@@ -630,13 +641,24 @@ const exitRoom = async (io, socket, data) => {
       
      //message테이블에 ooo부 oo팀 xxx님이 방을 나갔습니다. insert
      await insertLeaveMsg(leaveMessage,roomId,userId);
+
+     const info = await Message.findOne({
+      attributes:["content","createdAt"],
+      where : {
+        roomId,
+        userId,
+      },
+      order:[["createdAt","DESC"]], // 가장 최근 퇴장 로그
+    });
+
+    console.log(`로그:${info.content} || 시간:${info.createdAt}`);
       
       // 남은 사용자에게 알림
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
         socket.to(roomId).emit("roomUpdated", {
-          leaveMessage,
-          message: `${leaveMessage}님이 방을 나갔습니다.`,
+            content: info.content,
+            timestamp: info.createdAt,
         });
       }
 
