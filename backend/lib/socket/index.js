@@ -2,10 +2,7 @@ const chatRoomEvents = require("./events/chatRoomEvents");
 const messageEvents = require("./events/messageEvents");
 const notificationEvent = require("./events/notificationEvent");
 const statusEvents = require("./events/statusEvents");
-
-
-//현재 로그인 한 사용자 ID 추출
-// let loginUserId = "";
+const messageHandler = require("./handlers/messageHandler");
 
 // 사용자 소켓 관리 객체
 const connectedUsers = {};
@@ -37,7 +34,7 @@ module.exports = (io) => {
     // 채팅방 관련 이벤트 처리
     try {
       chatRoomEvents(io, socket);
-      messageEvents(io, socket);
+      messageEvents(io, socket, connectedUsers);
       statusEvents(io, socket, connectedUsers);
       notificationEvent(io, socket, connectedUsers);
     } catch (error) {
