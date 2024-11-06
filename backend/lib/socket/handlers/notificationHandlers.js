@@ -46,6 +46,7 @@ const onlineUser = async (socket, messageData) =>{
      if(messageData.roomId !== currentJoinSocketRoom[0]){
     console.log("🔔새로운 알림이 도착했습니다.")
     socket.emit("notiForOnline", messageData);
+    socket.emit("googleNoti", messageData);
      }   
   }catch(error){
     console.error("메세지 알림 전송 중 에러 발생 : ", error);
