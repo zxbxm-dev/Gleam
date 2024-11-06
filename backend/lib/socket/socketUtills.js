@@ -5,7 +5,7 @@ const chatRoomHandler = require("../socket/handlers/chatRoomHandler")
 const socketJoinChatRoom = async ( socket, roomId ) => {
     try{
      socket.join(roomId);
-     console.log(`사용자가 ${roomId}번 채팅방에 참여했습니다.`);
+     console.log(`ChatRoom : ${roomId}번`);
      return roomId;
     }catch(error){
      console.error("socket Join 처리 중 오류가 발생했습니다.", error);

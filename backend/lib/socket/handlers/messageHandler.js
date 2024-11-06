@@ -1,9 +1,8 @@
 const models = require("../../models");
 const { Message, User, ChatRoomParticipant, ChatRoom, MessageRead } = models;
-const notificationHandler = require("../handlers/notificationHandlers");
+const statusHandler = require("../handlers/StatusHandlers");
 const socketUtills = require("../socketUtills");
 const { Op, where } = require("sequelize");
-const connectedUsers = require("../index");
 
 // 특정 사용자가 포함된 채팅방을 찾는 함수
 const findChatRoomsForUser = async (userId) => {
@@ -234,18 +233,18 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         return;
       }
 
-      const ChatRoomIds = Array.from(validChatRoomIds);
+       const ChatRoomIds = Array.from(validChatRoomIds);
         // socket Join 처리 
-      const socketJoinRoom = await socketUtills.socketJoinChatRoom(socket, ChatRoomIds); 
+        await socketUtills.socketJoinChatRoom(socket, ChatRoomIds); 
 
-          //기존에 연결되어있는 socketJoin 해제 처리
-          const currentJoinSocketRoom = Array.from(socket.rooms);
-          for(const roomId of currentJoinSocketRoom ) {
-            if(!ChatRoomIds.includes(roomId)){  
-              socket.leave(roomId);
-            };
+        //기존에 연결되어있는 socketJoin 해제 처리
+        const currentJoinSocketRoom = Array.from(socket.rooms);
+        for(const roomId of currentJoinSocketRoom ) {
+          if(!ChatRoomIds.includes(roomId)){  
+            socket.leave(roomId);
           };
-          //console.log("<personTab_getChatHistory> - Joined Room : ", Array.from(socket.rooms ));
+        };
+        // console.log("<personTab_getChatHistory> - Joined Room : ", Array.from(socket.rooms ));
 
       const messages = await Message.findAll({
         where: {
@@ -397,7 +396,7 @@ const getChatHistory = async (socket, roomId) => {
 };
 
 // 채팅방의 모든 참가자에게 메시지를 전송하는 함수
-const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderId, receiverId) => {
+const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderId, receiverId, connectedUsers) => {
   try {
     let room = await ChatRoom.findOne({ where: { roomId } });
 
@@ -437,10 +436,6 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       senderPosition: senderInfo.dataValues.position,
     };
 
-    // participants.forEach((participant) => {
-    //   io.to(participant.userId).emit("newMessage", messageData);
-    // });
-
     console.log('socket room 정보', io.sockets.adapter.rooms)
     io.to(roomId).emit("newMsgData", messageData);
 
@@ -449,7 +444,21 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       { updatedAt: new Date() },
       { where: { roomId } }
     );
-    
+
+   
+    const connectedUserIds = Object.keys(connectedUsers);
+    const receiverSocketInfo = connectedUsers[newMessage.receiverId];
+    const receiverJoinRoomInfo = Array.from(receiverSocketInfo.rooms);
+
+    if( newMessage.roomId == receiverJoinRoomInfo[0]){
+    console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
+      //메세지 전송 후 발신자의 화면에서 읽음 상태를 확인 하는 함수
+      await statusHandler.getReadStatus(socket, newMessage.messageId);
+    }else{
+      console.log("수신자의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.")
+      // console.log(`${newMessage.roomId}`);
+      // console.log(`${receiverJoinRoomInfo[0]}`);
+    }
   } catch (error) {
     console.error(`메시지 전송 오류 발생: ${error.message}`);
     throw new Error("메시지 전송 오류 발생");

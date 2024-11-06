@@ -1,4 +1,4 @@
-const statusHandlers = require("../handlers/statusHandlers");
+const statusHandlers = require("../handlers/StatusHandlers");
 
 module.exports = (io, socket) => {
   if (!socket) {
