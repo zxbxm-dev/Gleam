@@ -91,9 +91,6 @@ const getGroupChatHistory = async (socket, roomId) => {
     // 채팅방의 모든 메시지를 가져오기
     const messages = await Message.findAll({
       where: { roomId: actualRoomId,
-        contentType: {
-            [Op.ne] : "leave", // oo님이 방에서 나갔습니다 메시지는 출력되지 않음
-        }
         },
       include: [
         {
@@ -112,7 +109,7 @@ const getGroupChatHistory = async (socket, roomId) => {
 
     // 채팅방의 모든 참가자 정보 가져오기
     const participants = await ChatRoomParticipant.findAll({
-      where: { roomId: actualRoomId },
+      where: { roomId: actualRoomId, participant: 0 },
       include: [
         {
           model: User,
@@ -144,6 +141,7 @@ const getGroupChatHistory = async (socket, roomId) => {
         timestamp: message.createdAt,
         unreadCount,
         fileValue: message.filePath ? 1 : 0,
+        contentType: message.contentType,
       };
     });
 
@@ -329,9 +327,6 @@ const getChatHistory = async (socket, roomId) => {
 
     const messages = await Message.findAll({
       where: { roomId: actualRoomId,
-              contentType: {
-                  [Op.ne] : "leave", // oo님이 방에서 나갔습니다 메시지는 출력되지 않음
-              }
               },
       include: [
         {
@@ -381,6 +376,7 @@ const getChatHistory = async (socket, roomId) => {
         timestamp: message.createdAt,
         isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
         fileValue: message.filePath ? 1 : 0,
+        contentType: message.contentType,
       };
     });
 

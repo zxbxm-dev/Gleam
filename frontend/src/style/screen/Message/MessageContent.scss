@@ -85,6 +85,14 @@
       &.highlighted-message {
         background-color: #DCFFD3;
       }
+      
+      &.leave_message {
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-family-Noto-R);
+        font-size: 14px;
+        color: #929292;
+      }
 
       .userCircleIcon {
         width: 40px;

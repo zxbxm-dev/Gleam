@@ -8,6 +8,7 @@ const {
   findChatRoomsForMe,
 } = require("./messageHandler");
 
+
 // 사용자 조회 함수
 const getUserById = async (userId) => User.findOne({ where: { userId } });
 const getUsersByIds = async (userIds) =>
@@ -464,24 +465,29 @@ const kickOutFromRoom = async (io, socket, roomId, userId,loginUser) => {
        {participant: true},
        {where:{roomId,userId}}
       );
-
+    
     //내보내지는 사용자의 정보
     const kickoutInfo = await leaveUserInfo(userId,roomId);
     console.log("내보내지는사람의 정보:["+kickoutInfo+"]");
 
-    // 로그메시지 저장
-    await Message.create({
-      content : `${kickoutInfo}님이 강제퇴장당했습니다.`,
-      userId,
-      roomId,
-      receiverId : "deleted",
-      contentType : "leave",
-    });
 
+    // 로그메시지 저장
+    await insertLeaveMsg(kickoutInfo,roomId,userId);
+  
     socket.leave(roomId);
 
     console.log(`소켓 해제[+${socket.id}+]`);
-    socket.emit("userKicked", { roomId, userId });
+
+    const info = await Message.findOne({
+        attributes:["content","createdAt"],
+        where : {
+          roomId,
+          userId,
+        },
+        order:[["createdAt","DESC"]], // 가장 최근 퇴장 로그
+    });
+   
+    socket.emit("userKicked", {content: info.content ,timestamp: info.createdAt});
 
   } catch (error) {
     console.error("채팅방 내보내기 오류:", error);
@@ -497,8 +503,6 @@ const exitRoom = async (io, socket, data) => {
   try {
     // 채팅방 정보 가져오기
     const chatRoom = await ChatRoom.findByPk(roomId);
-    
-
 
     if (!chatRoom) {
       socket.emit("error", { message: "채팅방을 찾을 수 없습니다." });
@@ -531,71 +535,130 @@ const exitRoom = async (io, socket, data) => {
 
     // 2. 개인 채팅 (1:1 채팅) 처리
     if (!chatRoom.isGroup && participants.length === 2) {
-      // 나가는 사용자의 상태를 업데이트
-      await ChatRoomParticipant.update(
-        { participant: true },
-        { where: { roomId, userId } }
-      );
+      
+      //나가는 사용자가 어드민인지 확인
+      const admain = await adminCheck(roomId,userId);
+      const currentAdminUserId =  admain ? admain.hostUserId : null;
+      console.log("어드민:"+admain?.hostUserId);
+      
+      //나가는 사용자가 어드민인 경우
+      if(currentAdminUserId){
 
-      //message테이블에 ooo부 oo팀 xxx님이 방을 나갔습니다. insert
-      await Message.create({
-        content : `${leaveMessage} 님이 방을 나갔습니다.`,
-        userId ,
-        roomId ,
-        receiverId : "deleted",
-        contentType : "leave",
-      });
-
-      // 나간 후 남은 사용자에게 알림
-      const remainingUser = participants.find((p) => p.userId !== userId);
-      if (remainingUser) {
-        socket.to(roomId).emit("roomUpdated", {
-          leaveMessage,
-          message: `${leaveMessage}님이 방을 나갔습니다.`,
-        });
-      }
-
-      // 모든 참가자가 나간 경우 방과 메시지 삭제
-      const updatedParticipants = await ChatRoomParticipant.findAll({
-        where: { roomId, participant: true },
-      });
-
-      if (updatedParticipants.length === participants.length) {
-        await ChatRoomParticipant.destroy({ where: { roomId } });
-        await Message.destroy({ where: { roomId } });
-        await ChatRoom.destroy({ where: { roomId } });
-
-        socket.emit("chatRoomDeleted", {
-          message: `${roomId}의 채팅방이 삭제되었습니다.`,
-        });
-      }
-      socketLeave( socket,data );
-      return;
+        //어드민이 아닌 사용자 목록 가져오기
+        const remainUserList = await remainUsers(currentAdminUserId,roomId);
+    
+        if(remainUserList.length > 0){
+        const selectUser = remainUserList[0];
+        await updateNewAdmin(selectUser, roomId); //새 어드민으로 변경
+        console.log(`어드민 변경: ${selectUser.userId}`);
+          }else {
+            console.log("어드민을 넘겨줄 수 없습니다.(남은 사용자 없음)");
+           }
+    }else{
+      //나가는 사용자가 어드민이 아닌 경우
+      console.log("나가는 사용자가 어드민이 아닙니다.");
     }
 
+     // 나가는 사용자의 상태를 업데이트
+     await ChatRoomParticipant.update(
+      { participant: true },
+      { where: { roomId, userId } }
+    );
+
+    //message테이블에 ooo부 oo팀 xxx님이 방을 나갔습니다. insert
+    await insertLeaveMsg(leaveMessage,roomId,userId);
+
+    const info = await Message.findOne({
+      attributes:["content","createdAt"],
+      where : {
+        roomId,
+        userId,
+      },
+      order:[["createdAt","DESC"]], // 가장 최근 퇴장 로그
+  });
+  console.log(`로그:${info.content} || 시간:${info.createdAt}`);
+
+    // 나간 후 남은 사용자에게 알림
+    const remainingUser = participants.find((p) => p.userId !== userId);
+    if (remainingUser) {
+      socket.to(roomId).emit("roomUpdated", {
+          content: info.content,
+          timestamp: info.createdAt,
+      });
+    }
+
+    // 모든 참가자가 나간 경우 방과 메시지 삭제
+    const updatedParticipants = await ChatRoomParticipant.findAll({
+      where: { roomId, participant: true },
+    });
+
+    if (updatedParticipants.length === participants.length) {
+      await ChatRoomParticipant.destroy({ where: { roomId } });
+      await Message.destroy({ where: { roomId } });
+      await ChatRoom.destroy({ where: { roomId } });
+
+      socket.emit("chatRoomDeleted", {
+        message: `${roomId}의 채팅방이 삭제되었습니다.`,
+      });
+    }
+    socketLeave( socket,data );
+    return;
+  }
     // 3. 단체 채팅방 (Group Chat) 처리
     if (chatRoom.isGroup) {
+      
+      //나가는 사용자가 어드민인지 확인
+      const admain = await adminCheck(roomId,userId);
+      const currentAdminUserId = admain ? admain.hostUserId : null;
+      console.log("어드민:"+admain?.hostUserId);
+
+      //나가는 사용자가 어드민인 경우
+      if(currentAdminUserId){
+
+        //어드민이 아닌 사용자 목록 가져오기
+        const remainUserList = await remainUsers(currentAdminUserId,roomId);
+
+        if(remainUserList.length > 0){
+
+          //남은 유저중 랜덤하게 호스트 지정
+          const randomIndex = Math.floor(Math.random() * remainUserList.length);
+          const selectUser = remainUserList[randomIndex];
+          await updateNewAdmin(selectUser, roomId); //새 어드민으로 변경
+          console.log(`어드민 변경: ${selectUser.userId}`);
+        }else {
+          console.log("어드민을 넘겨줄 수 없습니다.(남은 사용자 없음)");
+        }
+      }else{
+        //나가는 사용자가 어드민이 아닌 경우
+        console.log("나가는 사용자가 어드민이 아닙니다.");
+      }
+
       // 나가는 사용자의 상태를 업데이트
       await ChatRoomParticipant.update(
-        { participant: true },   // { participant: false } -> { participant: true}
+        { participant: true },   
         { where: { roomId, userId } }
       );
       
      //message테이블에 ooo부 oo팀 xxx님이 방을 나갔습니다. insert
-      await Message.create({
-        content : `${leaveMessage} 님이 방을 나갔습니다.`,
-        userId : userId,
-        roomId : roomId,
-        receiverId : "deleted",
-        contentType : "leave",
-      });
+     await insertLeaveMsg(leaveMessage,roomId,userId);
+
+     const info = await Message.findOne({
+      attributes:["content","createdAt"],
+      where : {
+        roomId,
+        userId,
+      },
+      order:[["createdAt","DESC"]], // 가장 최근 퇴장 로그
+    });
+
+    console.log(`로그:${info.content} || 시간:${info.createdAt}`);
       
       // 남은 사용자에게 알림
       const remainingUser = participants.find((p) => p.userId !== userId);
       if (remainingUser) {
         socket.to(roomId).emit("roomUpdated", {
-          leaveMessage,
-          message: `${leaveMessage}님이 방을 나갔습니다.`,
+            content: info.content,
+            timestamp: info.createdAt,
         });
       }
 
@@ -604,9 +667,6 @@ const exitRoom = async (io, socket, data) => {
       const updatedParticipants = await ChatRoomParticipant.findAll({
         where: { roomId, participant: true },
       });
-
-      console.log("updatedParticipants:"+updatedParticipants.length);
-      console.log("participants:"+participants.length);
      
       // 모든 참가자가 나간 경우 방과 메시지 삭제
       if (updatedParticipants.length === participants.length) {
@@ -626,7 +686,7 @@ const exitRoom = async (io, socket, data) => {
     console.error("채팅방에서 나가는 중 오류 발생:", error);
     socket.emit("error", { message: "채팅방 나가기 오류" });
   }
-};
+}
 
 //socket leave  처리
 const socketLeave = async ( socket, data ) => {
@@ -655,9 +715,59 @@ const leaveUserInfo  =async(userId, roomId)=>{
     }catch(error){  
         console.error(error.message);
     } 
- 
-
   }
+
+//나가는 사용자가 어드민인지 확인
+const adminCheck = async(roomId,userId)=>{
+  const isAdmin = await ChatRoom.findOne({
+    attributes:["hostUserId"],
+    where:{hostUserId : userId,
+           roomId,
+          }
+  });
+
+  return isAdmin;
+}
+
+//채팅방에서 어드민이 아닌 사용자 목록 가져오기 
+const remainUsers = async(currentAdminUserId,roomId)=>{
+  const notAdminparticipant = await ChatRoomParticipant.findAll({
+    where:{
+      roomId,
+      userId : {
+        [Op.ne]:currentAdminUserId,
+      }
+    }
+  });
+
+  return notAdminparticipant;
+}
+
+//새 어드민으로 변경하기
+const updateNewAdmin = async(selectUser, roomId)=>{
+      
+      await ChatRoom.update(
+        {
+          hostUserId : selectUser.userId,
+          hostName : selectUser.username,
+          hostDepartment : selectUser?.department,
+          hostTeam : selectUser?.team,
+          hostPosition : selectUser?.position,
+        },
+        {where: {roomId}},
+      );
+}
+
+//채팅방 나갈때 로그 저장하기
+const insertLeaveMsg = async(leaveMessage,roomId,userId)=>{
+  await Message.create({
+          content : `${leaveMessage} 님이 방을 나갔습니다.`,
+          userId : userId,
+          roomId : roomId,
+          receiverId : "deleted",
+          contentType : "leave",
+        });
+}
 
 module.exports = {
   sendUserChatRooms,
