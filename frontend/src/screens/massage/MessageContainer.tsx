@@ -162,6 +162,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     createdAt: []
   });
   const selectedRoomId = useRecoilValue(selectedRoomIdState);
+  const setSelectedRoomId = useSetRecoilState(selectedRoomIdState);
   const [personData, setPersonData] = useState<Person[] | null>(null);
   const user = useRecoilValue(userState);
   const personSideGetmsg = useRecoilValue(selectUserID);
@@ -325,6 +326,22 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
       if (selectedRoomId.roomId === -1) {
         socket.emit("createPrivateRoom", messageData);
+        socket.on("chatRoomCreated", (data: any) => {
+          setSelectedRoomId({
+            roomId: data.roomId,
+            isGroup: false,
+            OtherTitle: "",
+          });
+          
+          let newChatRoom;
+          newChatRoom = {
+            roomId: data.roomId,
+            senderId: messageData.userId,
+            content: messageData.content,
+            receiverId: messageData.receiverId,
+          };
+          socket.emit("getNewMsg", newChatRoom);
+        })
         setMsgNewUpdate(true);
       } else {
         socket.emit("sendMessage", messageData);
