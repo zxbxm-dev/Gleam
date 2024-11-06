@@ -311,6 +311,22 @@ const MessageSidebar: React.FC<MessageSidebarProps> = ({socket}) => {
     setOpenchatModal(true);
   };
 
+  useEffect(() => {
+    if (socket) {
+      const userId = user.userID;
+
+      socket.on('notiForOnline', () => {
+        console.log("새로운 메시지가 도착했습니다. 채팅 목록을 갱신합니다.");
+        socket.emit('getChatRooms', userId); // 목록 갱신을 위해 다시 요청
+      });
+      
+      return () => {
+        socket.off('notiForOnline');
+      };
+    }
+  }, [socket])
+
+
   return (
     <div className="message-sidebar">
       <div className="tab-container">
