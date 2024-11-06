@@ -330,9 +330,6 @@ const getChatHistory = async (socket, roomId) => {
 
     const messages = await Message.findAll({
       where: { roomId: actualRoomId,
-              contentType: {
-                  [Op.ne] : "leave", // oo님이 방에서 나갔습니다 메시지는 출력되지 않음
-              }
               },
       include: [
         {
@@ -382,6 +379,7 @@ const getChatHistory = async (socket, roomId) => {
         timestamp: message.createdAt,
         isReadOther: message.reads && message.reads.length > 0 ? message.reads[0].isRead : 0,
         fileValue: message.filePath ? 1 : 0,
+        contentType: message.contentType,
       };
     });
 
