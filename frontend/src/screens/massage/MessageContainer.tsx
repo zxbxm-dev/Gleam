@@ -626,7 +626,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         }
       });
       
-      socket.on('notiForOnline', (messageData: any) => {
+      socket.on('googleNoti', (messageData: any) => {
         const formattedMessage = {
           content: messageData.content,
           fileValue: messageData.fileValue,
@@ -674,7 +674,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     return () => {
       socket?.off('newMsgData');
-      socket?.off('notiForOnline');
+      socket?.off('googleNoti');
       socket?.off('messageRead');
     };
   }, [socket, selectedRoomId]);
