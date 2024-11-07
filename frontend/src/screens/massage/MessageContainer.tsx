@@ -634,7 +634,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         const formattedMessage = {
           content: messageData.content,
           fileValue: messageData.fileValue,
-          isReadOther: true,
+          isReadOther: messageData.isReadOther,
           messageId: messageData.messageId,
           timestamp: messageData.timestamp,
           userId: messageData.senderId,
