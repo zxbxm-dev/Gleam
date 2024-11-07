@@ -305,10 +305,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     inputElement.innerHTML = "";
 
     // 일정 시간 후 메시지 목록 갱신
-    setTimeout(() => {
-      ChatTabGetMessage();
-      PersonSideGetMessage();
-    }, 200);
+    // setTimeout(() => {
+    //   ChatTabGetMessage();
+    //   PersonSideGetMessage();
+    // }, 200);
   }, [selectedRoomId, selectedPerson, user, files]);
 
   const emitMessage = (messageData: any) => {
@@ -345,9 +345,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         setMsgNewUpdate(true);
       } else {
         socket.emit("sendMessage", messageData);
+        console.log('보낸 메세지', messageData)
         socket.emit("getNewMsg", messageData);
         setMsgNewUpdate(true);
       }
+      ChatTabGetMessage();
     }
   };
 
@@ -447,7 +449,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       const handleChatHistory = (data: any) => {
         if (Array.isArray(data.chatHistory)) {
           setServerMessages(data.chatHistory);
-          console.log('서버에서 대화목록 조회 완료-----', data);
+          // console.log('서버에서 대화목록 조회 완료-----', data);
   
           setModelPlusJoinId(prevState => ({
             ...prevState,
@@ -628,6 +630,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (socket) {
       socket.on('newMsgData', (messageData: any) => {
+        
         const formattedMessage = {
           content: messageData.content,
           fileValue: messageData.fileValue,
@@ -635,6 +638,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           messageId: messageData.messageId,
           timestamp: messageData.timestamp,
           userId: messageData.senderId,
+          contentType: 'text',
         };
 
         // 같은 방에서 메시지가 오는 경우 메시지 업데이트
@@ -686,7 +690,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           )
         );
       });
-      
+
       socket.on('userKicked', (messageData: any) => {
         const formattedMessage = {
           content: messageData.content,
@@ -717,6 +721,24 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     };
   }, [socket, selectedRoomId]);
 
+  useEffect(() => {
+    if (socket) {
+      socket.on('readStatus', (messageData: any) => {
+        console.log('readStatus 실행 될때의 서버메세지', serverMessages)
+        setServerMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.messageId === messageData.messageId && msg.isReadOther === 0
+              ? { ...msg, isReadOther: true }
+              : msg
+          )
+        );
+      });
+    }
+
+    return () => {
+      socket?.off('readStatus');
+    };
+  }, [serverMessages])
 
   const requestNotificationPermission = async () => {
     if ('Notification' in window) {
