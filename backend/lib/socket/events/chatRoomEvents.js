@@ -1,7 +1,7 @@
 const chatRoomHandlers = require("../handlers/chatRoomHandler");
 const socketUtills = require("../socketUtills");
 
-module.exports = (io, socket) => {
+module.exports = (io, socket, connectedUsers) => {
   if (!socket) {
     console.error("Socket 객체가 정의되지 않았습니다.");
     return;
@@ -56,7 +56,7 @@ module.exports = (io, socket) => {
 
         throw new Error("필수 데이터가 누락되었습니다.");
       }
-      await chatRoomHandlers.createPrivateRoom(io, socket, data);
+      await chatRoomHandlers.createPrivateRoom(io, socket, data, connectedUsers);
     } catch (error) {
       console.error("채팅방 생성 요청 처리 오류:", error);
       socket.emit("error", { message: "채팅방 생성 중 오류가 발생했습니다." });
