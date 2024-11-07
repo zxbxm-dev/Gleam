@@ -267,10 +267,10 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
         ],
         order: [["createdAt", "ASC"]],
       });
-  
+
       const chatHistory = messages.map((message) => {
         //console.log("메시지 데이터:", message);
-        // console.log("reads 배열:", messageRead.reads);
+        // console.log("reads 배열:", messageRead.reads);  
 
         return {
           messageId: message.messageId,
@@ -420,6 +420,11 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       content,
     });
 
+    const connectedUserIds = Object.keys(connectedUsers);
+    const receiverSocketInfo = connectedUsers[newMessage.receiverId];
+    const receiverJoinRoomInfo = Array.from(receiverSocketInfo.rooms);
+    const isReadOther = newMessage.roomId == receiverJoinRoomInfo[0];
+
     const messageData = {
       messageId: newMessage.messageId,
       content: newMessage.content,
@@ -432,8 +437,9 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       senderDepartment: senderInfo.dataValues.department,
       senderTeam: senderInfo.dataValues.team,
       senderPosition: senderInfo.dataValues.position,
+      isReadOther: isReadOther,
     };
-
+    console.log(">>>>>>>>>>>>>>>>>>>>>isReadOther", isReadOther);
     console.log('socket room 정보', io.sockets.adapter.rooms)
     io.to(roomId).emit("newMsgData", messageData);
 
@@ -443,20 +449,22 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       { where: { roomId } }
     );
 
-   
-    const connectedUserIds = Object.keys(connectedUsers);
-    const receiverSocketInfo = connectedUsers[newMessage.receiverId];
-    const receiverJoinRoomInfo = Array.from(receiverSocketInfo.rooms);
 
-    if( newMessage.roomId == receiverJoinRoomInfo[0]){
+    if( isReadOther){
     console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
       //메세지 전송 후 발신자의 화면에서 읽음 상태를 확인 하는 함수
-      await statusHandler.getReadStatus(socket, newMessage.messageId);
+      await statusHandler.markMessageAsRead(socket, newMessage.messageId, newMessage.userId)
+
+      // await statusHandler.getReadStatus(socket, newMessage.messageId);
+      // await statusHandler.countUnreadMessages( socket, newMessage.userId, newMessage.roomId)
     }else{
       console.log("수신자의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.")
+      //await statusHandler.getReadStatus(socket, newMessage.messageId)
+
       // console.log(`${newMessage.roomId}`);
       // console.log(`${receiverJoinRoomInfo[0]}`);
     }
+    // await statusHandler.getReadStatus(socket, newMessage.messageId);
   } catch (error) {
     console.error(`메시지 전송 오류 발생: ${error.message}`);
     throw new Error("메시지 전송 오류 발생");
