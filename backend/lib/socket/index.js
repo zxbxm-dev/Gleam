@@ -33,7 +33,7 @@ module.exports = (io) => {
 
     // 채팅방 관련 이벤트 처리
     try {
-      chatRoomEvents(io, socket);
+      chatRoomEvents(io, socket, connectedUsers);
       messageEvents(io, socket, connectedUsers);
       statusEvents(io, socket, connectedUsers);
       notificationEvent(io, socket, connectedUsers);

@@ -68,7 +68,7 @@ const getNextRoomId = async () => {
 };
 
 // 새로운 개인 채팅방을 생성하거나 기존 채팅방을 조회
-const createPrivateRoom = async (io, socket, data) => {
+const createPrivateRoom = async (io, socket, data, connectedUsers) => {
   try {
     console.log("서버에서 수신한 데이터:", data);
 
@@ -273,7 +273,7 @@ const createPrivateRoom = async (io, socket, data) => {
     // 메시지 전송
     if (content) {
       console.log(`새로운 메시지 전송: ${content}`);
-      await sendMessageToRoomParticipants(io, socket, chatRoom.roomId, content, userId, receiverId);
+      await sendMessageToRoomParticipants(io, socket, chatRoom.roomId, content, userId, receiverId, connectedUsers);
     }
 
     // 채팅방 제목 설정
