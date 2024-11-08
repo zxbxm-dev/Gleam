@@ -463,7 +463,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       };
       
       // 채팅 이력 요청
-      console.log('personTab에서 누른건데 여길 왜옴 ?')
       const emitChatHistoryRequest = () => {
         const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
         socket.emit(event, roomId, requesterId);

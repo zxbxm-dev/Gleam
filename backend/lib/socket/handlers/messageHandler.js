@@ -423,7 +423,7 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       content,
     });
 
-    const connectedUserIds = Object.keys(connectedUsers);
+    // const connectedUserIds = Object.keys(connectedUsers);
     const receiverSocketInfo = connectedUsers[newMessage.receiverId];
 
     if (receiverSocketInfo) { // socket 연결 된 사람에게 보낼 때
@@ -450,7 +450,7 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
       if (isReadOther) {
         console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
         //메세지 전송 후 발신자의 화면에서 읽음 상태를 확인 하는 함수
-        await statusHandler.markMessageAsRead(socket, newMessage.messageId, newMessage.userId)
+        await statusHandler.markMessageAsRead(socket, newMessage.messageId, newMessage.receiverId)
       }else{
         console.log("수신자의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.")
       }
@@ -470,7 +470,7 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
         senderPosition: senderInfo.dataValues.position,
         isReadOther: 0,
       };
-
+      
       io.to(roomId).emit("newMsgData", messageData);
     }
     console.log('socket room 정보', io.sockets.adapter.rooms)
