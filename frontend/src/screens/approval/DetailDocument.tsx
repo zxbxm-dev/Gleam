@@ -6,7 +6,7 @@ import CustomModal from "../../components/modal/CustomModal";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { CheckReport, DeleteReport } from '../../services/approval/ApprovalServices';
-import { PersonData } from "../../services/person/PersonServices";
+import { PersonData, QuitterPersonData } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
@@ -45,6 +45,7 @@ const DetailDocument = () => {
   const documentInfo = useState(location.state?.documentInfo);
   const [checksignup, setCheckSignUp] = useState<boolean[]>([]);
   const [personData, setPersonData] = useState<Person[] | null>(null);
+  const [quitterPersonData, setQuitterPersonData] = useState<Person[] | null>(null);
 
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine = documentInfo[0].pending?.split(',').map((item:any) => item.trim()) ?? []; // 아직 결재가 진행중일때
@@ -64,9 +65,20 @@ const DetailDocument = () => {
       }
     };
 
+    const quitterfetchData = async () => {
+      try {
+        const response = await QuitterPersonData();
+        setQuitterPersonData(response.data);
+      } catch (err) {
+        console.error("Error fetching quitter person data:", err);
+      }
+    }
+
     fetchData();
+    quitterfetchData();
   }, []);
 
+  console.log(quitterPersonData)
   useEffect(() => {
     const initialChecks = new Array(signatories.length).fill(false);
     const approvedCount = Number(documentInfo[0].approval);
@@ -211,7 +223,7 @@ const DetailDocument = () => {
   };
 
   const getSignUrl = (username: string) => {
-    const user = personData?.find(person => person.username === username);
+    const user = personData?.find(person => person.username === username) || quitterPersonData?.find(person => person.username === username);
     return user ? user.Sign : null;
   };
 

@@ -4,4 +4,8 @@ const PersonData = () => {
     return api.get("/checkInformation");
 };
 
-export { PersonData };
+const QuitterPersonData = () => {
+    return api.get("/checkQuitterList");
+}
+
+export { PersonData, QuitterPersonData };

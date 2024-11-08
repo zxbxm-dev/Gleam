@@ -18,7 +18,7 @@ import CustomModal from '../../components/modal/CustomModal';
 import { userState } from '../../recoil/atoms';
 import { useRecoilValue } from 'recoil';
 import { WriteApprovalOp, WriteApproval, HandleApproval, CheckReport } from '../../services/approval/ApprovalServices';
-import { PersonData } from "../../services/person/PersonServices";
+import { PersonData, QuitterPersonData } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -58,6 +58,7 @@ const DetailApproval = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const user = useRecoilValue(userState);
   const [personData, setPersonData] = useState<Person[] | null>(null);
+  const [quitterPersonData, setQuitterPersonData] = useState<Person[] | null>(null);
   const [opinion, setOpinion] = useState('');
   const [rejection, setRejection] = useState('');
 
@@ -82,7 +83,17 @@ const DetailApproval = () => {
       }
     };
 
+    const quitterfetchData = async () => {
+      try {
+        const response = await QuitterPersonData();
+        setQuitterPersonData(response.data);
+      } catch (err) {
+        console.error("Error fetching quitter person data:", err);
+      }
+    }
+
     fetchData();
+    quitterfetchData();
   }, []);
 
   useEffect(() => {
@@ -342,7 +353,7 @@ const DetailApproval = () => {
   }
 
   const getSignUrl = (username: string) => {
-    const user = personData?.find(person => person.username === username);
+    const user = personData?.find(person => person.username === username) || quitterPersonData?.find(person => person.username === username);
     return user ? user.Sign : null;
   };
 
