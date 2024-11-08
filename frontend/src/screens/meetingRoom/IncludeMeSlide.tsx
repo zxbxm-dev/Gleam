@@ -63,11 +63,22 @@ const IncludeMeSlide: React.FC<IncludeMeProps> = ({ NotFilterEvent }) => {
     }, [filteredEvents]);
 
     const toggleDateSlide = (date: string) => {
-        setVisibleSlides(prev => ({
-            ...prev,
-            [date]: !prev[date],
-        }));
+        setVisibleSlides(prev => {
+            const isCurrentlyVisible = prev[date];
+            const newHeight = isCurrentlyVisible ? 0 : slideRef.current[date]?.scrollHeight || 0;
+            
+            setSlideHeights(prevHeights => ({
+                ...prevHeights,
+                [date]: newHeight,
+            }));
+            
+            return {
+                ...prev,
+                [date]: !isCurrentlyVisible,
+            };
+        });
     };
+    
 
     useEffect(() => {
         const newSlideHeights: { [key: string]: number } = {};
