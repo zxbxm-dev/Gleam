@@ -357,7 +357,7 @@ ul {
       gap: 5px;
       width: 420px;
       height: auto;
-
+      
       .project_name_container {
         width: inherit;
         height: 43px;
@@ -367,8 +367,9 @@ ul {
         padding: 0 15px;
         box-shadow: 0px 0px 5px #D9D9D9;
         border-radius: 5px;
+        z-index: 999;
         cursor: pointer;
-
+        
         .name_left {
           display: flex;
           align-items: center;

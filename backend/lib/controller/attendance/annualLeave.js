@@ -53,7 +53,9 @@ const AddVacation = async (req, res) => {
         );
       }
     } else {
-      newCalendar.save();
+      const userVacation = await vacation.findOne({ where: { userId: userID, year: year } });
+      newCalendar.availableDate = userVacation.availableDate;
+      await newCalendar.save();
     }
 
     res.status(201).json(newCalendar);

@@ -27,7 +27,7 @@ type Event = {
   dateType: string;
   memo: string;
   year: string;
-  userID: string;
+  userId: string;
 };
 
 type User = {
@@ -81,7 +81,7 @@ const Calendar = () => {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [annualData, setAnnualData] = useState<AnnualData[]>([]);
   const [active, setActive] = useState(true);
-
+  
   const fetchAnnual = async () => {
     try {
       const response = await CheckAnnual();
@@ -182,7 +182,7 @@ const Calendar = () => {
       console.error("Start date or end date is null.");
       return;
     }
-
+    
     const getLocalISODateString = (date: Date) => {
       const offset = date.getTimezoneOffset();
       const adjustedDate = new Date(date.getTime() - (offset * 60 * 1000));
@@ -192,13 +192,13 @@ const Calendar = () => {
     const finduser = persondata.find(person => person.username === title.split(' ')[0])
     const isoStartDate = getLocalISODateString(startDate);
     const isoEndDate = getLocalISODateString(endDate);
-
+    
     const eventData = {
-      userID: addEventUser?.userId || finduser?.userId,
-      name: addEventUser?.username || finduser?.username,
+      userID: addEventUser?.userId || finduser?.userId || user?.userID,
+      name: addEventUser?.username || finduser?.username || user?.username,
       company: addEventUser?.company || finduser?.company || active ? '본사' : 'R&D',
-      department: addEventUser?.department || finduser?.department,
-      team: addEventUser?.team || finduser?.team,
+      department: addEventUser?.department || finduser?.department || user?.department,
+      team: addEventUser?.team || finduser?.team || user?.team,
       title: title,
       startDate: isoStartDate,
       endDate: isoEndDate,
@@ -249,10 +249,10 @@ const Calendar = () => {
       dateType: info.event.extendedProps.dateType || "",
       memo: info.event.extendedProps.memo || "",
       year: info.event.start.toISOString().substring(0, 4),
-      userID: info.event.extendedProps.userID || "",
+      userId: info.event.extendedProps.userId || "",
     });
 
-    if (user.username === info.event.title.split(' ')[0] || user.team === '관리팀') {
+    if (user.username === info.event.title.split(' ')[0] || user.team === '관리팀' || user.userID === info.event.extendedProps.userId) {
       setControlEventModalOPen(true);
     } else {
       setEventModalOPen(true);
@@ -369,6 +369,7 @@ const Calendar = () => {
   const transformEvents = (calendarData: Event[]) => {
     return calendarData.map(event => ({
       id: event.id,
+      userId: event.userId,
       title: event.title,
       start: event.startDate,
       end: event.endDate,
