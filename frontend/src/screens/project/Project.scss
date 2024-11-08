@@ -30,9 +30,10 @@
 }
 
 .project_container {
-  margin-top: 10px;
-  height: calc(100vh - 150px);
-  width: 100%;
+  position: fixed;
+  top: 100px;
+  height: calc(100vh - 120px);
+  width: calc(100% - 230px);
 
   .project_content {
     display: flex;

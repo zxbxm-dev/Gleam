@@ -608,5 +608,30 @@ ul {
         }
       }
     }
+
+    .project_slide {
+      width: 400px;
+      height: 30px;
+    }
+    
+    .project_slide.visible {
+      transform: translateY(-500px);
+      z-index: 999;
+    }
+
+    .additional_content {
+      @include custom-scrollbar();
+      bottom: -600px;
+      width: 400px;
+      height: 500px;
+      
+      .project_content {
+        width: 370px;
+
+        .project_content_container {
+          width: 370px;
+        }
+      }
+    }
   }
 }
