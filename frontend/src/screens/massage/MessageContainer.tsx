@@ -348,8 +348,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         console.log('보낸 메세지', messageData)
         socket.emit("getNewMsg", messageData);
         setMsgNewUpdate(true);
+        ChatTabGetMessage();
       }
-      ChatTabGetMessage();
     }
   };
 
@@ -463,6 +463,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       };
       
       // 채팅 이력 요청
+      console.log('personTab에서 누른건데 여길 왜옴 ?')
       const emitChatHistoryRequest = () => {
         const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
         socket.emit(event, roomId, requesterId);
