@@ -21,13 +21,12 @@ const getNewMsg = async (socket, messageData, connectedUsers) => {
 
      //수신자의 socketId 
      const receiverSocketId = connectedUsers[messageData.receiverId]; 
-     
       // 수신자의 온라인 여부를 확인하는 코드
       if(Object.keys(connectedUsers).includes(messageData.receiverId)){
         await onlineUser( receiverSocketId, messageData);
-      }else(
-        await offlineUser(receiverSocketId, messageData)
-      );
+      }else{
+        await offlineUser(messageData)
+      };
 
     } catch (error) {
       socket.emit("error", {
@@ -55,10 +54,11 @@ const onlineUser = async (socket, messageData) =>{
 };
 
 //오프라인 사용자에게 알림
-const offlineUser = async (socket, messageData) => {
+const offlineUser = async (messageData) => {
   try{
     console.log("🔔새로운 알림이 도착했습니다.");
-    socket.emit("notiForOffline", messageData);
+    // 추후 공통 알림이 생겼을 때 오프라인 유저에게 알림
+    // socket.emit("notiForOffline", messageData);
   }catch(error){
     console.error("메세지 알림 전송 중 에러 발생 : ", error);
     socket.emit("error", { message: "메세지 알림 전송 중 오류가 발생했습니다."})

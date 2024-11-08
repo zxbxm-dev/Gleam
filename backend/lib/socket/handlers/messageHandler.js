@@ -425,40 +425,60 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
 
     const connectedUserIds = Object.keys(connectedUsers);
     const receiverSocketInfo = connectedUsers[newMessage.receiverId];
-    const receiverJoinRoomInfo = Array.from(receiverSocketInfo.rooms);
-    const isReadOther = newMessage.roomId == receiverJoinRoomInfo[0];
 
-    const messageData = {
-      messageId: newMessage.messageId,
-      content: newMessage.content,
-      roomId: newMessage.roomId,
-      senderId: newMessage.userId,
-      receiverId: newMessage.receiverId,
-      timestamp: newMessage.createdAt,
-      fileValue: newMessage.filePath ? 1 : 0,
-      senderUsername: senderInfo.dataValues.username,
-      senderDepartment: senderInfo.dataValues.department,
-      senderTeam: senderInfo.dataValues.team,
-      senderPosition: senderInfo.dataValues.position,
-      isReadOther: isReadOther,
-    };
+    if (receiverSocketInfo) { // socket 연결 된 사람에게 보낼 때
+      const receiverJoinRoomInfo = Array.from(receiverSocketInfo.rooms);
+      const isReadOther = newMessage.roomId == receiverJoinRoomInfo[0];
+  
+      const messageData = {
+        messageId: newMessage.messageId,
+        content: newMessage.content,
+        roomId: newMessage.roomId,
+        senderId: newMessage.userId,
+        receiverId: newMessage.receiverId,
+        timestamp: newMessage.createdAt,
+        fileValue: newMessage.filePath ? 1 : 0,
+        senderUsername: senderInfo.dataValues.username,
+        senderDepartment: senderInfo.dataValues.department,
+        senderTeam: senderInfo.dataValues.team,
+        senderPosition: senderInfo.dataValues.position,
+        isReadOther: isReadOther,
+      };
+
+      io.to(roomId).emit("newMsgData", messageData);
+
+      if (isReadOther) {
+        console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
+        //메세지 전송 후 발신자의 화면에서 읽음 상태를 확인 하는 함수
+        await statusHandler.markMessageAsRead(socket, newMessage.messageId, newMessage.userId)
+      }else{
+        console.log("수신자의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.")
+      }
+
+    } else { // socket 연결 안된 사람에게 보낼때
+      const messageData = {
+        messageId: newMessage.messageId,
+        content: newMessage.content,
+        roomId: newMessage.roomId,
+        senderId: newMessage.userId,
+        receiverId: newMessage.receiverId,
+        timestamp: newMessage.createdAt,
+        fileValue: newMessage.filePath ? 1 : 0,
+        senderUsername: senderInfo.dataValues.username,
+        senderDepartment: senderInfo.dataValues.department,
+        senderTeam: senderInfo.dataValues.team,
+        senderPosition: senderInfo.dataValues.position,
+        isReadOther: 0,
+      };
+
+      io.to(roomId).emit("newMsgData", messageData);
+    }
     console.log('socket room 정보', io.sockets.adapter.rooms)
-    io.to(roomId).emit("newMsgData", messageData);
 
     await ChatRoom.update(
-
       { updatedAt: new Date() },
       { where: { roomId } }
     );
-
-
-    if( isReadOther){
-    console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
-      //메세지 전송 후 발신자의 화면에서 읽음 상태를 확인 하는 함수
-      await statusHandler.markMessageAsRead(socket, newMessage.messageId, newMessage.userId)
-    }else{
-      console.log("수신자의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.")
-    }
 
   } catch (error) {
     console.error(`메시지 전송 오류 발생: ${error.message}`);
