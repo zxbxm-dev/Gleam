@@ -530,7 +530,12 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
     socket.on("chatHistoryForUser", (data: any) => {
       if (data) {
-        setServerMessages(data.chatHistory);
+        const transformedChatHistory = data.chatHistory.map((message: any) => ({
+          ...message,
+          isReadOther: message.isRead === 1 ? true : 0,
+        }));
+      
+      setServerMessages(transformedChatHistory);
 
         setModelPlusJoinId(prevState => ({
           ...prevState,
