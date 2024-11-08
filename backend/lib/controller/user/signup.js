@@ -286,7 +286,7 @@ const userleaves = async (req, res) => {
     }
   );
 
-  const mailcowDelAppPwd = await axios.post('https://mailcow.host/api/v1/delete/app-passwd',[
+  const mailcowDelAppPwd = await axios.post('http://119.193.90.123:8080/api/v1/delete/app-passwd',[
 
   ],
   {
