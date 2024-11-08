@@ -145,7 +145,8 @@ const createPrivateRoom = async (io, socket, data, connectedUsers) => {
           chatRoom.roomId,
           content,
           receiverId,
-          userId
+          userId,
+          connectedUsers
         );
       }
 
