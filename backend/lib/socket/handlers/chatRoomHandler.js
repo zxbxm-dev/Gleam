@@ -476,7 +476,7 @@ const kickOutFromRoom = async (io, socket, roomId, userId,loginUser) => {
       );
     
     //내보내지는 사용자의 정보
-    const kickoutInfo = await leaveUserInfo(userId,roomId);
+    const kickoutInfo = await socketUserInfo(userId,roomId);
     console.log("내보내지는사람의 정보:["+kickoutInfo+"]");
 
 
@@ -524,7 +524,7 @@ const exitRoom = async (io, socket, data) => {
     });
 
     // 나가는 사람의 정보(이름,직책,부서이름)
-    const leaveMessage = await leaveUserInfo(userId,roomId);
+    const leaveMessage = await socketUserInfo(userId,roomId);
     console.log(`나가는 사람의 정보:${leaveMessage}`);
 
     // 1. 자신과의 채팅 (Self Chat) 처리
@@ -710,17 +710,17 @@ const socketLeave = async ( socket, data ) => {
    }
 }
 
- // 내보내지는(나가는) 사람의 정보(이름,직책,부서이름)
-const leaveUserInfo  =async(userId, roomId)=>{
+ // 사용자 정보(이름,직책,부서이름)
+const socketUserInfo  =async(userId, roomId)=>{
     try{
-        const leaveInfo = await ChatRoomParticipant.findOne({
+        const userInfo = await ChatRoomParticipant.findOne({
         where:{userId: userId,
               roomId: roomId
               },
          attributes: ["username","department","position","team"],
         });
-        const leaveMessage = leaveInfo.department+" "+(leaveInfo.team ? leaveInfo.team+" "+leaveInfo.position+" "+leaveInfo.username : leaveInfo.position+" "+leaveInfo.username);
-         return leaveMessage;
+        const systemMessage = userInfo.department+" "+(userInfo.team ? userInfo.team+" "+userInfo.position+" "+userInfo.username : userInfo.position+" "+userInfo.username);
+         return systemMessage;
     }catch(error){  
         console.error(error.message);
     } 
