@@ -24,7 +24,7 @@ const createChatRoom = async (req, res) => {
     if (req.file) {
       profileImage = req.file.path;
     }
-
+       
     // 채팅방 생성
     const chatRoom = await chatRoomData.create({
       roomId,
@@ -46,8 +46,10 @@ const createChatRoom = async (req, res) => {
       throw new Error('호스트 사용자를 찾을 수 없습니다.');
     }
 
-    // userTitle JSON을 파싱하여 참가자 데이터 배열로 변환
+    // userTitle JSON을 파싱
     const parsedUserTitle = JSON.parse(userTitle);
+
+    //참가자 데이터를 배열로 변환 
     const participantsFromTitle = Object.values(parsedUserTitle).map(user => ({
       roomId: chatRoom.roomId,
       userId: user.userId,
@@ -60,19 +62,21 @@ const createChatRoom = async (req, res) => {
     }));
 
     // invitedUserIds 배열에 있는 사용자들 추가
-    const invitedParticipants = await Promise.all(invitedUserIds.map(async (userId) => {
-      const user = await userData.findByPk(userId);
-      return user ? {
-        roomId: chatRoom.roomId,
-        userId: user.userId,
-        username: user.username,
-        department: user.department,
-        team: user.team,
-        position: user.position,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } : null;
-    }));
+    // const invitedParticipants = await Promise.all(invitedUserIds.map(async (userId) => {
+    //   const user = await userData.findByPk(userId);
+    //   return user ? {
+    //     roomId: chatRoom.roomId,
+    //     userId: user.userId,
+    //     username: user.username,
+    //     department: user.department,
+    //     team: user.team,
+    //     position: user.position,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   } : null;
+    // }));
+    
+ 
 
     // 참가자 데이터 합치기
     const participants = [
@@ -87,14 +91,14 @@ const createChatRoom = async (req, res) => {
         updatedAt: new Date(),
       },
       ...participantsFromTitle, // userTitle에서 파싱한 참가자들
-      ...invitedParticipants.filter(item => item !== null), // 초대된 참가자들
+      // ...invitedParticipants.filter(item => item !== null), // 초대된 참가자들
     ];
 
     // 중복된 userId를 가진 참가자 제거
     const uniqueParticipants = Array.from(new Map(participants.map(p => [p.userId, p])).values());
 
     // 로그를 추가하여 데이터 확인
-    console.log("참가자 데이터:", uniqueParticipants);
+    console.log("참가자 데이터||", uniqueParticipants);
 
     // 채팅방 참가자 추가
     await chatRoomParticipantData.bulkCreate(uniqueParticipants);
