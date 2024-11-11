@@ -404,14 +404,6 @@ const joinRoom = async (io, socket, roomId, userIds) => {
                   where: { roomId, userId },
               });
 
-              if(isMember.participant == 1 ){
-                await ChatRoomParticipant.update(
-                  {participant: 0},
-                  {where :
-                    {userId : userId,}
-                })
-              };
-
               if (!isMember) {
                   // 사용자가 이미 멤버가 아니라면 방에 참가자로 추가
                   const user = await getUserById(userId);
@@ -425,7 +417,14 @@ const joinRoom = async (io, socket, roomId, userIds) => {
                       createdAt: new Date(),
                       updatedAt: new Date(),
                   });
-              }
+                  // 초대하려는 사용자가 해당 방에서 이미 퇴장한 상태일 때 (participant 값이 1일 때)
+              }else if(isMember.participant == 1 ){
+                await ChatRoomParticipant.update(
+                  {participant: 0},
+                  {where :
+                    {userId : userId,}
+                })
+              };
           }
 
           socket.join(roomId.toString()); // 방에 참여
