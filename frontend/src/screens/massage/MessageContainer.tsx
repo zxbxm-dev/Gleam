@@ -234,7 +234,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     if (files) {
       messageContent = files.name; // 파일이 있는 경우 파일 이름을 메시지로 설정
     } else if (inputElement && inputElement.innerHTML.trim() !== "") {
-      messageContent = inputElement.innerHTML.trim(); // 텍스트 입력이 있을 경우 그 값을 메시지로 설정
+      messageContent = cleanMessage(inputElement.innerHTML.trim()); // 텍스트 입력이 있을 경우 그 값을 메시지로 설정
     } else {
       return; // 아무 내용이 없으면 전송하지 않음
     }
@@ -310,6 +310,12 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     //   PersonSideGetMessage();
     // }, 200);
   }, [selectedRoomId, selectedPerson, user, files]);
+
+  function cleanMessage(message: string): string { // 복사한 메세지 HTML 제거 함수
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = message;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  }
 
   const emitMessage = (messageData: any) => {
     if (socket) {
