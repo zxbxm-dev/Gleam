@@ -310,6 +310,19 @@
   justify-content: space-between;
   padding-right: 7px;
 
+  .IncludeMe_content {
+    display: flex;
+    width: 100%;
+    
+    .IncludeMe_title {
+      justify-content: start;
+    }
+  
+    .IncludeMe_place {
+      margin-right: 10px;
+    }
+  }
+
   .ActiveCircle {
     background-color: #FF6969;
     width: 10px;
