@@ -26,6 +26,7 @@ module.exports = (io, socket, connectedUsers) => {
     try {
       console.log(`사용자의 채팅 기록을 가져오는 중 ${selectedUserId}`);
       await messageHandlers.getChatHistoryForUser(
+        io,
         socket,
         selectedUserId,
         requesterId

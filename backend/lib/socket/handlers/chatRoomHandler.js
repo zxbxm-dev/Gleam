@@ -7,6 +7,7 @@ const {
   findMutualChatRoomsForUsers,
   findChatRoomsForMe,
 } = require("./messageHandler");
+const chatRoomParticipant = require("../../models/messenger/chatRoomParticipant");
 
 
 // 사용자 조회 함수
@@ -83,8 +84,8 @@ const createPrivateRoom = async (io, socket, data, connectedUsers) => {
     invitedUserIds = invitedUserIds.filter((id) => id !== userId);
 
     if (invitedUserIds.length === 0) {
-      // 자신에게 메시지를 보내는 경우
-      console.log("자신에게 메시지를 보냅니다.");
+      //자신에게 메시지를 보내는 경우
+      //console.log("자신에게 메시지를 보냅니다.");
       const chatRoomIds = await findChatRoomsForMe(userId);
       const socketJoinChatRoomForMe = await socketUtills.socketJoinChatRoom( socket, chatRoomIds );
 
@@ -403,6 +404,14 @@ const joinRoom = async (io, socket, roomId, userIds) => {
                   where: { roomId, userId },
               });
 
+              if(isMember.participant == 1 ){
+                await ChatRoomParticipant.update(
+                  {participant: 0},
+                  {where :
+                    {userId : userId,}
+                })
+              };
+
               if (!isMember) {
                   // 사용자가 이미 멤버가 아니라면 방에 참가자로 추가
                   const user = await getUserById(userId);
@@ -473,7 +482,7 @@ const kickOutFromRoom = async (io, socket, roomId, userId,loginUser) => {
 
 
     // 로그메시지 저장
-    await insertLeaveMsg(kickoutInfo,roomId,userId);
+    await insertLeaveMsg(kickoutInfo, roomId, userId);
   
     socket.leave(roomId);
 
