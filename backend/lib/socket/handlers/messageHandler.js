@@ -166,7 +166,7 @@ const getGroupChatHistory = async (socket, roomId) => {
 };
 
 // 나와 상대방의 채팅 기록을 조회하고 전송하는 함수
-const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
+const getChatHistoryForUser = async (io,socket, selectedUserId, requesterId) => {
   try {
     if (selectedUserId === requesterId) {
       const chatRoomIds = await findChatRoomsForMe(requesterId);
@@ -243,7 +243,8 @@ const getChatHistoryForUser = async (socket, selectedUserId, requesterId) => {
             socket.leave(roomId);
           };
         };
-        // console.log("<personTab_getChatHistory> - Joined Room : ", Array.from(socket.rooms ));
+        console.log("<personTab_getChatHistory> - Joined Room : ", Array.from(socket.rooms ));
+        console.log('socket room 정보', io.sockets.adapter.rooms)
 
       const messages = await Message.findAll({
         where: {
