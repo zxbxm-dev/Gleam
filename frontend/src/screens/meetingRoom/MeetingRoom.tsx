@@ -814,7 +814,7 @@ const MeetingRoom = () => {
   useEffect(() => {
     refetchMeeting(); // 첫 렌더링 시 목록 조회 호출
   }, [refetchMeeting]);
-
+  console.log('meetingEvent', meetingEvent)
   return (
     <div className="content">
       <div className="content_container">
@@ -843,6 +843,7 @@ const MeetingRoom = () => {
             fixedWeekCount={false}
             events={meetingEvent}
             eventContent={(arg) => {
+              console.log(arg)
               const matches = arg.event.extendedProps.meetpeople.some((meetPerson: string[]) => {
                 return meetPerson.includes(user.username) && (user.team ? meetPerson.includes(user.team) : true);
               });
@@ -851,7 +852,10 @@ const MeetingRoom = () => {
 
               return (
                 <div className="IncludeMe">
-                  <span>{arg.event.title}</span>
+                  <div className="IncludeMe_content">
+                    <div className="IncludeMe_title">{arg.event.title?.split('|')[0]} &nbsp;</div>
+                    <span className="IncludeMe_place">| {arg.event._def.extendedProps.place}</span>
+                  </div>
                   {matches && (
                     <div className={circleClass} />
                   )}
