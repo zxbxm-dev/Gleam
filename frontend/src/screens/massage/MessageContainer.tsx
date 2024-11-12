@@ -264,7 +264,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         roomId: selectedRoomId.roomId,
         senderId: user.id,
         content: messageContent,
-        receiverId: selectedPerson.userId,
+        receiverId: ModelPlusJoinId.joinUser,
       };
 
       if (selectedPerson.userId === undefined) {
@@ -272,7 +272,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           roomId: selectedRoomId.roomId,
           senderId: user.id,
           content: messageContent,
-          receiverId: user.id,
+          receiverId: ModelPlusJoinId.joinUser,
         };
       }
     }
@@ -769,6 +769,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // console.log('내 연결 상태',socket?.connected);
   // console.log('회원 아이디',user.id)
   console.log('서버메세지', serverMessages)
+  // console.log('selectedPerson', selectedPerson)
+  // console.log('ModelPlusJoinId', ModelPlusJoinId.joinUser)
   // console.log('메세지', messages)
   // console.log('서버메세지 메타데이터', messageMetadata)
   // console.log('Recoil 에 저장된 selectedRoomId',selectedRoomId)
