@@ -9,7 +9,12 @@ module.exports = (io, socket, connectedUsers) => {
   // 서버에서 메시지 전송 이벤트 처리
   socket.on("sendMessage", async (data) => {
   try {
-    await messageHandlers.sendMessageToRoomParticipants(io, socket, data.roomId, data.content, data.senderId, data.receiverId, connectedUsers);
+  // 단체채팅방일 때 sendMessage
+    if(Array.isArray(data.receiverId)){
+      await messageHandlers.GCsendMessageToRoomParticipants(io, socket, data.roomId, data.content, data.senderId, data.receiverId, connectedUsers)
+    }else{
+  // 개인채팅방일 때 sendMessage 
+    await messageHandlers.sendMessageToRoomParticipants(io, socket, data.roomId, data.content, data.senderId, data.receiverId, connectedUsers)};
   } catch (error) {
     console.error(`메시지 전송 중 오류 발생: ${error.message}`);
     socket.emit("error", { message: error.message });
