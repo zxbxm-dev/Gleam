@@ -769,13 +769,20 @@ const updateNewAdmin = async(selectUser, roomId)=>{
 
 //채팅방 나갈때 로그 저장하기
 const insertLeaveMsg = async(leaveMessage,roomId,userId)=>{
-  await Message.create({
-          content : `${leaveMessage} 님이 방을 나갔습니다.`,
-          userId : userId,
-          roomId : roomId,
-          receiverId : "deleted",
-          contentType : "leave",
-        });
+  const LeaveMsg = await Message.create({
+                    content : `${leaveMessage} 님이 방을 나갔습니다.`,
+                    userId : userId,
+                    roomId : roomId,
+                    receiverId : "deleted",
+                    contentType : "leave",
+                  });
+    //방을 나간 로그는 즉시 읽음 처리
+                await MessageRead.create({
+                  messageId : LeaveMsg.messageId,
+                  userId : LeaveMsg.userId,
+                  readAt : LeaveMsg.createdAt,
+                  isRead : 1,
+  })
 }
 
 module.exports = {
