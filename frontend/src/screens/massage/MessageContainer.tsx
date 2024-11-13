@@ -471,7 +471,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       // 채팅 이력 요청
       const emitChatHistoryRequest = () => {
         const event = selectedRoomId.isGroup ? 'getGroupChatHistory' : 'getChatHistory';
-        socket.emit(event, roomId, requesterId);
+        if (event === 'getGroupChatHistory') {
+          socket.emit(event, roomId, requesterId, user.userID);
+        } else {
+          socket.emit(event, roomId, requesterId);
+        }
       };
       
       // 채팅 이력 수신 처리
