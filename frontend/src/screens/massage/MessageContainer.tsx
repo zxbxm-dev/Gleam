@@ -260,19 +260,26 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         receiverId: selectedPerson.userId,
       };
     } else {
-      messageData = {
-        roomId: selectedRoomId.roomId,
-        senderId: user.id,
-        content: messageContent,
-        receiverId: ModelPlusJoinId.joinUser,
-      };
-
-      if (selectedPerson.userId === undefined) {
+      if (selectedPerson.userId === '') {
         messageData = {
           roomId: selectedRoomId.roomId,
           senderId: user.id,
           content: messageContent,
-          receiverId: ModelPlusJoinId.joinUser,
+          receiverId: ModelPlusJoinId.joinUser.filter(id => id !== user.userID),
+        };
+      } else if (selectedPerson.userId === undefined) {
+        messageData = {
+          roomId: selectedRoomId.roomId,
+          senderId: user.id,
+          content: messageContent,
+          receiverId: user.userID,
+        };
+      } else {
+        messageData = {
+          roomId: selectedRoomId.roomId,
+          senderId: user.id,
+          content: messageContent,
+          receiverId: selectedPerson.userId,
         };
       }
     }
@@ -309,7 +316,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     //   ChatTabGetMessage();
     //   PersonSideGetMessage();
     // }, 200);
-  }, [selectedRoomId, selectedPerson, user, files]);
+  }, [selectedRoomId, selectedPerson, user, files, ModelPlusJoinId]);
 
   function cleanMessage(message: string): string { // 복사한 메세지 HTML 제거 함수
     const tempDiv = document.createElement("div");
@@ -456,7 +463,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         if (Array.isArray(data.chatHistory)) {
           setServerMessages(data.chatHistory);
           // console.log('서버에서 대화목록 조회 완료-----', data);
-  
           setModelPlusJoinId(prevState => ({
             ...prevState,
             joinUser: data.joinIds,
@@ -772,7 +778,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // console.log('messageContainer 호출', selectedRoomId)
   // console.log('내 연결 상태',socket?.connected);
   // console.log('회원 아이디',user.id)
-  console.log('서버메세지', serverMessages)
+  // console.log('서버메세지', serverMessages)
   // console.log('selectedPerson', selectedPerson)
   // console.log('ModelPlusJoinId', ModelPlusJoinId.joinUser)
   // console.log('메세지', messages)
