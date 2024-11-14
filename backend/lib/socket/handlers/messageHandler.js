@@ -154,8 +154,8 @@ const getGroupChatHistory = async (socket, roomId, userId) => {
       
       // 메시지를 읽지 않은 사용자들 조회
       let unreadCount = participants.length;
-      unreadCount = participants.length - message.reads.filter(read => read.isRead).length ;
-      // unreadCount = participants.length - message.reads.filter(read => read.isRead).length - 1;
+      // unreadCount = participants.length - message.reads.filter(read => read.isRead).length ;
+      unreadCount = participants.length - message.reads.filter(read => read.isRead).length - 1;
     
       return {
         messageId: message.messageId,
