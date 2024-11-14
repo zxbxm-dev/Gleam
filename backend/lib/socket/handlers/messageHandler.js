@@ -577,7 +577,6 @@ const GCsendMessageToRoomParticipants = async (io,socket, roomId, content, sende
       };
 
       messageInfo.push(messageData);
-      //io.to(messageData.roomId).emit("newMsgData", messageData);
 
       // if (isReadOther) {
       //   console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
@@ -605,15 +604,15 @@ const GCsendMessageToRoomParticipants = async (io,socket, roomId, content, sende
       };
       messageInfo.push(messageData);
       // io.to(messageData.roomId).emit("newMsgData", messageData);
-      }
+           }
     };
-
     if(messageInfo.length > 0 ){
       io.to(newMessage.roomId).emit("newMsgData", messageInfo)      
     };
-    await statusHandler.getReadStatus( socket, newMessage.messageId );
-    await statusHandler.GCmarkMessageAsRead( socket, newMessage.messageId, newMessage.userId );
-    await statusHandler.countUnreadMessages( socket, newMessage.userId, newMessage.roomId );
+    // await statusHandler.getReadStatus( socket, newMessage.messageId );
+    // await statusHandler.countUnreadMessages( socket, newMessage.userId, newMessage.roomId );
+
+    getGroupChatHistory(socket, roomId, newMessage.userId);
    
     console.log('socket room 정보', io.sockets.adapter.rooms)
 
@@ -621,7 +620,7 @@ const GCsendMessageToRoomParticipants = async (io,socket, roomId, content, sende
       { updatedAt: new Date() },
       { where: { roomId } }
     );
-
+  
   } catch (error) {
     console.error(`메시지 전송 오류 발생: ${error.message}`);
     throw new Error("메시지 전송 오류 발생");
