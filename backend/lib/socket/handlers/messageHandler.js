@@ -154,10 +154,8 @@ const getGroupChatHistory = async (socket, roomId, userId) => {
       
       // 메시지를 읽지 않은 사용자들 조회
       let unreadCount = participants.length;
-      console.log(" 채팅방 참가 인원 >>:", unreadCount);
       unreadCount = participants.length - message.reads.filter(read => read.isRead).length ;
       // unreadCount = participants.length - message.reads.filter(read => read.isRead).length - 1;
-      console.log("읽음 처리 상태 >> :", unreadCount);
     
       return {
         messageId: message.messageId,
@@ -168,7 +166,7 @@ const getGroupChatHistory = async (socket, roomId, userId) => {
         unreadCount,
         fileValue: message.filePath ? 1 : 0,
         contentType: message.contentType,
-        alreadyReadUser: alreadyReadUser,
+        alreadyReadUser: alreadyReadUser[message.messageId],
       };
     });
 
