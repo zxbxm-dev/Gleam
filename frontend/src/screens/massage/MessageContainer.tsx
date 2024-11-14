@@ -624,7 +624,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (Array.isArray(serverMessages) && serverMessages.length > 0) {
       serverMessages.forEach((msg) => {
-        if (msg.userId !== user.id && msg.isReadOther === 0) {
+        if (msg.userId !== user.id && (msg.isReadOther === 0 || !msg.alreadyReadUser?.includes(user.userID))) {
           handleReadMessage(msg.messageId); // 상대방의 메시지를 읽었을 때만 처리
         }
       });
