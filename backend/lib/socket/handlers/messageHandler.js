@@ -60,7 +60,7 @@ const findChatRoomsForMe = async (userId) => {
 };
 
 // 그룹 채팅방의 과거 메시지를 조회하는 함수
-const getGroupChatHistory = async (socket, roomId) => {
+const getGroupChatHistory = async (socket, roomId, userId) => {
   try {
     const actualRoomId = roomId.roomId || roomId;
 
@@ -86,6 +86,7 @@ const getGroupChatHistory = async (socket, roomId) => {
         socket.leave(roomId);
       };
     };
+    await socketUtills.socketJoinChatRoom( socket , roomId );
     //console.log("<getGroupChatHistory> - Joined Room : ", Array.from(socket.rooms ));
 
     // 채팅방의 모든 메시지를 가져오기
@@ -107,6 +108,14 @@ const getGroupChatHistory = async (socket, roomId) => {
       order: [["createdAt", "ASC"]],
     });
 
+   // messageId 배열 조회 
+   const messageIds = messages.map( message => message.messageId );
+
+    // //메세지 읽음 상태 조회
+    // for ( const messageId of messageIds){
+    // await statusHandler.getReadStatus( socket, messageId );
+    // };
+
     // 채팅방의 모든 참가자 정보 가져오기
     const participants = await ChatRoomParticipant.findAll({
       where: { roomId: actualRoomId, participant: 0 },
@@ -124,15 +133,32 @@ const getGroupChatHistory = async (socket, roomId) => {
       return acc;
     }, {});
 
-    const joinIds = participants.map((participant) => participant.User.userId);
+    const joinIds = participants.map((participant) => participant.User.userId); //단체 채팅방 참여자 정보 배열 
     const hostId = chatRoom.hostUserId;
+
+    //메세지를 읽은 사용자들 조회
+    const alreadyReadUser = {};
+    for( const messageId of messageIds){
+    const alreadyRead = await MessageRead.findAll({
+      where: { 
+        messageId : messageId
+      },
+      attributes : ["userId"],
+    });
+
+    alreadyReadUser[messageId] = alreadyRead.map( data => data.userId );
+  }
 
     const chatHistory = messages.map((message) => {
       const participant = participantMap[message.User.userId];
-
+      
       // 메시지를 읽지 않은 사용자들 조회
-      const unreadCount = participants.length - message.reads.filter(read => read.isRead).length - 1;
-
+      let unreadCount = participants.length;
+      console.log(" 채팅방 참가 인원 >>:", unreadCount);
+      unreadCount = participants.length - message.reads.filter(read => read.isRead).length ;
+      // unreadCount = participants.length - message.reads.filter(read => read.isRead).length - 1;
+      console.log("읽음 처리 상태 >> :", unreadCount);
+    
       return {
         messageId: message.messageId,
         content: message.content,
@@ -142,6 +168,7 @@ const getGroupChatHistory = async (socket, roomId) => {
         unreadCount,
         fileValue: message.filePath ? 1 : 0,
         contentType: message.contentType,
+        alreadyReadUser: alreadyReadUser,
       };
     });
 
@@ -326,7 +353,6 @@ const getChatHistory = async (socket, roomId, connectedUsers) => {
       };
     };
     //console.log("<GetChatHistory> - Joined Room: ", Array.from(socket.rooms )); 
-
 
     const messages = await Message.findAll({
       where: { roomId: actualRoomId,
@@ -586,7 +612,11 @@ const GCsendMessageToRoomParticipants = async (io,socket, roomId, content, sende
 
     if(messageInfo.length > 0 ){
       io.to(newMessage.roomId).emit("newMsgData", messageInfo)      
-    }
+    };
+    await statusHandler.getReadStatus( socket, newMessage.messageId );
+    await statusHandler.GCmarkMessageAsRead( socket, newMessage.messageId, newMessage.userId );
+    await statusHandler.countUnreadMessages( socket, newMessage.userId, newMessage.roomId );
+   
     console.log('socket room 정보', io.sockets.adapter.rooms)
 
     await ChatRoom.update(
