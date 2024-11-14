@@ -68,7 +68,6 @@ const MessageSidebar: React.FC<MessageSidebarProps> = ({socket}) => {
   const isChatRoomProfile = useRecoilValue(ChatRoomProfileState);
   const location = useLocation();
   const [visiblePopoverIndex, setVisiblePopoverIndex] = useState<number | null>(null);
-  const [ModelPlusJoinId, setModelPlusJoinId] = useRecoilState(SideChatModalstate);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
 
   useEffect(() => {
