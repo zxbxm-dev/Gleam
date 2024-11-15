@@ -607,7 +607,7 @@ const GCsendMessageToRoomParticipants = async (io,socket, roomId, content, sende
            }
     };
     if(messageInfo.length > 0 ){
-      io.to(newMessage.roomId).emit("newMsgData", messageInfo)      
+      io.to(newMessage.roomId).emit("newMsgData", messageInfo[0])      
     };
     // await statusHandler.getReadStatus( socket, newMessage.messageId );
     // await statusHandler.countUnreadMessages( socket, newMessage.userId, newMessage.roomId );
