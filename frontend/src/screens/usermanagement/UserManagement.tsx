@@ -248,13 +248,14 @@ const UserManagement = () => {
   };
 
   const handleSubmit = () => {
-    const formData = new FormData();
-    formData.append('company', selectedOptions.company);
-    formData.append('department', selectedOptions.department);
-    formData.append('team', selectedOptions.team);
-    formData.append('spot', selectedOptions.spot);
-    formData.append('position', selectedOptions.position);
-    
+    const formData = {
+      company: selectedOptions.company,
+      department: selectedOptions.department,
+      team: selectedOptions.team,
+      spot: selectedOptions.spot,
+      position: selectedOptions.position
+    }
+
     // API 호출
     EditUserInfoManagement(clickIdx, formData)
     .then((res) => {
@@ -269,6 +270,7 @@ const UserManagement = () => {
     });
   };
 
+  console.log(selectedOptions)
   return (
     <div className="content">
       <div className="content_container">
