@@ -1,5 +1,6 @@
 const models = require("../../models");
 const transfer = models.TransferPosition;
+const user = models.User;
 
 // 인사이동 등록 --------------------------------------------------------------------------------------------
 const PersonnelTransfer = async (req, res) => {
@@ -126,7 +127,7 @@ const deleteTransfer = async (req, res) => {
             where: { userID: userID }, 
         }
      );
-     
+
       console.log(`직무변경 완료 : ${editInfo} `);
 
       res.status(200).json({
