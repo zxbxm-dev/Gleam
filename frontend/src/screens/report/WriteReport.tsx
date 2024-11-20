@@ -344,7 +344,7 @@ const WriteReport = () => {
         
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
@@ -356,7 +356,7 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
@@ -369,7 +369,7 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: true, selectedMembers: vacationFixed ? [vacationFixed] : [] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
@@ -390,7 +390,7 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
       ]
     }
@@ -398,7 +398,7 @@ const WriteReport = () => {
     function supportTeamLast() {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
-        { name: '전무', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
         { name: '부서장', checked: true, selectedMember: departmentDirector },
         { name: '팀장', checked: true, selectedMember: teamLeader },
