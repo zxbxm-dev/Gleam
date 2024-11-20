@@ -1,5 +1,6 @@
 const models = require("../../models");
 const transfer = models.TransferPosition;
+const user = models.User;
 
 // 인사이동 등록 --------------------------------------------------------------------------------------------
 const PersonnelTransfer = async (req, res) => {
@@ -102,10 +103,50 @@ const deleteTransfer = async (req, res) => {
       res.status(500).json({ error: "인사이동 삭제 중 오류가 발생했습니다." });
     }
   };
-  
+
+  // 직무변경---------------------------------------------------------------------------------------
+  const editUserInfoManagement = async ( req, res ) => {
+    const { userID } = req.params;
+    const { company, team, department, position, spot } = req.body.data;
+    console.log( ")))))))))))))))))))))))))))))))))))))))) :", req.body.data);
+    try{
+
+      if(!userID){
+        return res.status(404).json({ error : " 해당 사용자 정보를 찾을 수 없습니다." });
+      }
+
+      //직무변경 
+      const editInfo = await user.update(
+        {
+            company: company !== undefined ? company : undefined,
+            team: team !== undefined ? team : undefined,
+            department: department !== undefined ? department : undefined,
+            position: position !== undefined ? position : undefined,
+            spot: spot !== undefined ? spot : undefined,
+        },
+        {
+            where: { userID: userID }, 
+        }
+     );
+     
+
+      console.log(`직무변경 완료 : ${editInfo} `);
+
+      res.status(200).json({
+        message : "직무변경이 성공적으로 완료되었습니다.",
+        User : editInfo,
+      });
+
+    }catch (error) {
+      console.error("직무 변경 중 오류 발생 : ",  error );
+      res.status(500).json({ error : " 직무 변경 중 오류가 발생했습니다. "});
+    };
+
+  }
   module.exports = {
     PersonnelTransfer,
     checkTransfer,
     updateTransfer,
-    deleteTransfer
+    deleteTransfer,
+    editUserInfoManagement,
   };

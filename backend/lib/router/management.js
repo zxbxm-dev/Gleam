@@ -29,6 +29,8 @@ module.exports = (app) => {
   router.put('/editAppointment/:appoint_id', PersonnelTransfer.updateTransfer);  
   // 인사이동 삭제
   router.delete('/deleteAppointment/:appoint_id', PersonnelTransfer.deleteTransfer);  
+  // 직무변경
+  router.patch('/editUserInfoManagement/:userID',PersonnelTransfer.editUserInfoManagement);
 
 
   app.use(
