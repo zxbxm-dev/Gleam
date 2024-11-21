@@ -271,8 +271,6 @@ const UserManagement = () => {
       });
   };
 
-  // console.log(selectedOptions)
-  // useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await PersonData();
@@ -281,15 +279,13 @@ const UserManagement = () => {
             new Date(a.entering).getTime() - new Date(b.entering).getTime()
         );
         setPersonData(sortedData);
+            setApprovedUserManages(sortedData);
         console.log("aaaaaaaaaaaaaaaaaaa",response);
         
       } catch (err) {
         console.error("Error fetching person data:", err);
       }
     };
-
-  //   fetchData();
-  // }, []);
 
   return (
     <div className="content">
