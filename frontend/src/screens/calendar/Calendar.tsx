@@ -82,6 +82,7 @@ const Calendar = () => {
   const [annualData, setAnnualData] = useState<AnnualData[]>([]);
   const [active, setActive] = useState(true);
   
+  
   const fetchAnnual = async () => {
     try {
       const response = await CheckAnnual();
@@ -192,6 +193,11 @@ const Calendar = () => {
     const finduser = persondata.find(person => person.username === title.split(' ')[0])
     const isoStartDate = getLocalISODateString(startDate);
     const isoEndDate = getLocalISODateString(endDate);
+<<<<<<< Updated upstream
+=======
+
+    
+>>>>>>> Stashed changes
     const eventData = {
       userID: addEventUser?.userId || finduser?.userId || user?.userID,
       name: addEventUser?.username || finduser?.username || user?.username,
@@ -531,7 +537,10 @@ const Calendar = () => {
         onFooter1Click={handleAddEvent}
         footer2={'취소'}
         footer2Class="gray-btn"
-        onFooter2Click={() => { setAddEventModalOPen(false); resetForm(); }}
+        onFooter2Click={() => { 
+          setAddEventModalOPen(false); 
+          resetForm(); 
+        }}
         height="auto"
       >
         <div className="body-container">

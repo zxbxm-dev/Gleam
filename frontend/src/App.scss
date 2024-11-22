@@ -315,6 +315,7 @@ ul {
     &.visible {
       transform: translateY(-394px);
     }
+
     // .previous_content{
     //   background-color: red;
     //   font-family: var(--font-family-Noto-R);
@@ -351,13 +352,29 @@ ul {
     //   }
     // }
     // }
+    .modalplusbtn {
+      width: 100%;
+      padding: 17px 0;
+
+      button {
+        float: right;
+        width: 30px;
+        height: 30px;
+
+        img {
+          width: 100%;
+        }
+      }
+
+    }
+
     .project_content {
       display: flex;
       flex-direction: column;
       gap: 5px;
       width: 420px;
       height: auto;
-      
+
       .project_name_container {
         width: inherit;
         height: 43px;
@@ -369,8 +386,24 @@ ul {
         border-radius: 5px;
         z-index: 999;
         cursor: pointer;
-        
+
         .name_left {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-family: var(--font-family-Noto-B);
+
+          .img_rotate {
+            transform: rotate(90deg);
+          }
+
+          .project_name {
+            font-family: var(--font-family-Noto-B);
+          }
+        }
+
+        .name_leftTop,
+        .name_leftBottom {
           display: flex;
           align-items: center;
           gap: 10px;
@@ -419,7 +452,7 @@ ul {
         display: flex;
         flex-direction: column;
 
-        div:first-child{
+        div:first-child {
           margin-top: 3px;
         }
 
@@ -511,7 +544,7 @@ ul {
         display: flex;
         flex-direction: column;
 
-        div:first-child{
+        div:first-child {
           margin-top: 3px;
         }
 
@@ -613,7 +646,7 @@ ul {
       width: 400px;
       height: 30px;
     }
-    
+
     .project_slide.visible {
       transform: translateY(-500px);
       z-index: 999;
@@ -624,7 +657,7 @@ ul {
       bottom: -600px;
       width: 400px;
       height: 500px;
-      
+
       .project_content {
         width: 370px;
 

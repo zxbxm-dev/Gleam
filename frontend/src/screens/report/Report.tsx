@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import IncludeReSlide from "./IncludeReSlide";
 
 const reportCategories = [
   {
@@ -81,6 +82,10 @@ const Report = () => {
             {renderReports(category)}
           </div>
         ))}
+      </div>
+
+      <div className="content_container">
+        <IncludeReSlide />
       </div>
     </div>
   );

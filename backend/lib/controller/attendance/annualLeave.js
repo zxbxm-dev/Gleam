@@ -18,7 +18,7 @@ const AddVacation = async (req, res) => {
     year,
     backgroundColor,
   } = req.body;
-
+console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> :", req.body);
   try {
     const newCalendar = await vacation.create({
       userId: userID,
