@@ -192,11 +192,10 @@ const Calendar = () => {
     const finduser = persondata.find(person => person.username === title.split(' ')[0])
     const isoStartDate = getLocalISODateString(startDate);
     const isoEndDate = getLocalISODateString(endDate);
-    
     const eventData = {
       userID: addEventUser?.userId || finduser?.userId || user?.userID,
       name: addEventUser?.username || finduser?.username || user?.username,
-      company: addEventUser?.company || finduser?.company || active ? '본사' : 'R&D',
+      company: addEventUser?.company ?? finduser?.company ?? (active ? '본사' : 'R&D'),
       department: addEventUser?.department || finduser?.department || user?.department,
       team: addEventUser?.team || finduser?.team || user?.team,
       title: title,
