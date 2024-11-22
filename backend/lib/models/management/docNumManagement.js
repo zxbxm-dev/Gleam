@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
                 isIn: [["Team", "Public"]],
             },
         },
+        team:{
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         docTitle: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -25,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         username: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING, 
             allowNull: false,
         },
         },
