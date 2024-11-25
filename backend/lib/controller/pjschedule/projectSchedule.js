@@ -17,9 +17,6 @@ const addProject = async (req, res) => {
         memo,
         //status
     } = req.body;
-    
-    console.log("요청 본문 받음:", req.body);
-    console.log("요청 파라미터:", req.params);
 
     const currentDate = new Date();
     const today = currentDate.toISOString().split('T')[0];

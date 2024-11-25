@@ -38,6 +38,8 @@ const email = require("./email/email");
 const emailAttachments= require("./email/emailAttachments");  
 const junkList = require("./email/JunkList");     
 const emailAction = require("./email/emailAction");
+//문서번호 관리 
+const docNumManagement = require("./management/docNumManagement");
 
 const db = {};
 
@@ -71,6 +73,7 @@ db.Email = email(sequelize, Sequelize);
 db.EmailAttachment = emailAttachments(sequelize, Sequelize);
 db.JunkList = junkList(sequelize, Sequelize);
 db.EmailAction = emailAction(sequelize, Sequelize);
+db.docNumManagement = docNumManagement(sequelize, Sequelize);
 
 // 모델 관계 설정
 // 프로젝트 관계 설정
