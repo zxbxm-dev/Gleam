@@ -1,5 +1,4 @@
 const models = require("../../models");
-const docNumManagement = require("../../models/management/docNumManagement");
 const User = models.User;
 const docNumManagement = models.docNumManagement;
 
@@ -64,6 +63,7 @@ const addDocument = async( req, res ) => {
 
 
 //문서 번호 편집
+//patch
 
 module.exports = {
     addDocument,
