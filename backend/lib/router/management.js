@@ -33,9 +33,9 @@ module.exports = (app) => {
   // 직무변경
   router.patch('/editUserInfoManagement/:userID',PersonnelTransfer.editUserInfoManagement);
   //문서 추가 
-  router.post('/addDocument', docNumManagement.addDocument);
+  router.post('/addDocument/:userID', docNumManagement.addDocument);
   //문서 조회
-  router.get('/getAllDocument', docNumManagement.getAllDocument);
+  router.get('/getAllDocument/:userID', docNumManagement.getAllDocument);
 
 
   app.use(
