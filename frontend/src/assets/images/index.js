@@ -38,6 +38,7 @@ export { default as CheckBox_Active } from "./Modal/CheckBox_Active.svg";
 export { default as DepartmentTabIcon } from "./Modal/DepartmentTabIcon.svg";
 export { default as CheckBox_Not } from "./Modal/CheckBox_Not.svg";
 export { default as MinusIcon } from "./Modal/MinusIcon.svg";
+export { default as ModalPlusButton } from "./Modal/ModalplusButton.svg";
 
 // header
 export { default as Logo } from "./header/MainLogo.svg";

@@ -271,21 +271,21 @@ const UserManagement = () => {
       });
   };
 
-    const fetchData = async () => {
-      try {
-        const response = await PersonData();
-        const sortedData = response.data.sort(
-          (a: Person, b: Person) =>
-            new Date(a.entering).getTime() - new Date(b.entering).getTime()
-        );
-        setPersonData(sortedData);
-            setApprovedUserManages(sortedData);
-        console.log("aaaaaaaaaaaaaaaaaaa",response);
-        
-      } catch (err) {
-        console.error("Error fetching person data:", err);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await PersonData();
+      const sortedData = response.data.sort(
+        (a: Person, b: Person) =>
+          new Date(a.entering).getTime() - new Date(b.entering).getTime()
+      );
+      setPersonData(sortedData);
+      setApprovedUserManages(sortedData);
+      console.log("aaaaaaaaaaaaaaaaaaa", response);
+
+    } catch (err) {
+      console.error("Error fetching person data:", err);
+    }
+  };
 
   return (
     <div className="content">
