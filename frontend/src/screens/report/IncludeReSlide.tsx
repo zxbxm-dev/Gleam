@@ -8,7 +8,7 @@ import { userState } from '../../recoil/atoms';
 interface Document {
     docType: string;
     docTitle: string;
-    docNumber: string;
+    docNumber: number;
 }
 
 const IncludeReSlide = () => {
@@ -23,14 +23,14 @@ const IncludeReSlide = () => {
         docTitle: "",
         docNumber: "",
     });
-      // 문서 데이터 상태
-      const [documents, setDocuments] = useState<Document[]>([]);
+    // 문서 데이터 상태
+    const [documents, setDocuments] = useState<Document[]>([]);
 
-       // 컴포넌트 렌더링 시 문서 데이터 가져오기
-       useEffect(() => {
+    // 컴포넌트 렌더링 시 문서 데이터 가져오기
+    useEffect(() => {
         const fetchDocuments = async () => {
             const userID = user.userID;
-            
+
             try {
                 const response = await GetDocuments(userID);
                 setDocuments(response.data);
@@ -40,7 +40,7 @@ const IncludeReSlide = () => {
         };
 
         fetchDocuments();
-    }, [user.userID, user.team, user.department]); 
+    }, []);
 
     const toggleSlide = () => {
         setSlideVisible(prev => !prev)
@@ -50,14 +50,17 @@ const IncludeReSlide = () => {
         setIsPopupOpen(false);
     }
 
-    const handleInputChange = (e:any) => {
+    const handleInputChange = (e: any) => {
         const { name, value } = e.target;
-        setAddDocument((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+
+        const updatedValue = name === 'docNumber' ? Number(value) : value;
+
+       setAddDocument((prev) => ({
+        ...prev,
+        [name]: updatedValue,
+    }));
     };
-    
+
     const handlePopup = () => {
         setIsSuccessPopupOpen(false);
     }
@@ -69,7 +72,7 @@ const IncludeReSlide = () => {
             docTitle: addDocument.docTitle,
             docNumber: addDocument.docNumber,
         };
-    
+
         try {
             const response = await AddDocuments(userID, formData);
             console.log("문서 추가 성공:", response.data);
@@ -108,7 +111,7 @@ const IncludeReSlide = () => {
                             {/* 팀 문서 내용 여기 추가 */}
                             <ul>
                                 {documents
-                                    .filter((doc) => doc.docType === "팀 문서")
+                                    .filter((doc) => doc.docType === "Team")
                                     .map((doc, index) => (
                                         <li key={index}>{doc.docTitle}</li>
                                     ))}
@@ -129,8 +132,8 @@ const IncludeReSlide = () => {
                         <div className="public_documents_content">
                             {/* 공용 문서 내용 여기 추가 */}
                             <ul>
-                                 {documents
-                                    .filter((doc) => doc.docType === "공용 문서")
+                                {documents
+                                    .filter((doc) => doc.docType === "Public")
                                     .map((doc, index) => (
                                         <li key={index}>{doc.docTitle}</li>
                                     ))}
@@ -157,7 +160,7 @@ const IncludeReSlide = () => {
                 height="235px"
                 width="350px"
                 onFooter1Click={handleCancelClick}
-                 onFooter2Click={() => handleSubmit()} 
+                onFooter2Click={() => handleSubmit()}
             >
                 <form className="body-container" onSubmit={(e) => {
                     e.preventDefault();
@@ -165,54 +168,54 @@ const IncludeReSlide = () => {
                     setIsSuccessPopupOpen(true);
                 }}>
                     <div className="formDiv">
-                    <div className="doc_docOption">
-    <div className="division">문서 구분</div>
-    <input
-        type="radio"
-        id="team"
-        name="docType"
-        value="팀 문서"
-        checked={addDocument.docType === "팀 문서"}
-        onChange={handleInputChange}
-    />
-    <label htmlFor="team" className="docetc">팀 문서</label>
+                        <div className="doc_docOption">
+                            <div className="division">문서 구분</div>
+                            <input
+                                type="radio"
+                                id="team"
+                                name="docType"
+                                value="Team"
+                                checked={addDocument.docType === "Team"}
+                                onChange={handleInputChange}
+                            />
+                            <label htmlFor="team" className="docetc">팀 문서</label>
 
-    <input
-        type="radio"
-        id="share"
-        name="docType"
-        value="공용 문서"
-        checked={addDocument.docType === "공용 문서"}
-        onChange={handleInputChange}
-    />
-    <label htmlFor="share" className="docetc">공용 문서</label>
-</div>
+                            <input
+                                type="radio"
+                                id="share"
+                                name="docType"
+                                value="Public"
+                                checked={addDocument.docType === "Public"}
+                                onChange={handleInputChange}
+                            />
+                            <label htmlFor="share" className="docetc">공용 문서</label>
+                        </div>
 
-<div className="input-field">
-    <label htmlFor="doc_docTitle">문서 제목</label>
-    <input
-        type="text"
-        id="docTitle"
-        name="docTitle"
-        value={addDocument.docTitle}
-        required
-        placeholder="문서 제목을 입력해 주세요."
-        onChange={handleInputChange}
-    />
-</div>
+                        <div className="input-field">
+                            <label htmlFor="doc_docTitle">문서 제목</label>
+                            <input
+                                type="text"
+                                id="docTitle"
+                                name="docTitle"
+                                value={addDocument.docTitle}
+                                required
+                                placeholder="문서 제목을 입력해 주세요."
+                                onChange={handleInputChange}
+                            />
+                        </div>
 
-<div className="input-field">
-    <label htmlFor="doc_docNumber">현재 문서 번호</label>
-    <input
-        type="text"
-        id="docNumber"
-        name="docNumber"
-        value={addDocument.docNumber}
-        required
-        placeholder="시작될 문서 번호를 입력해 주세요."
-        onChange={handleInputChange}
-    />
-</div>
+                        <div className="input-field">
+                            <label htmlFor="doc_docNumber">현재 문서 번호</label>
+                            <input
+                                type="text"
+                                id="docNumber"
+                                name="docNumber"
+                                value={addDocument.docNumber}
+                                required
+                                placeholder="시작될 문서 번호를 입력해 주세요."
+                                onChange={handleInputChange}
+                            />
+                        </div>
 
                     </div>
 
