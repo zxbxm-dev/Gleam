@@ -5,12 +5,20 @@ const docNumManagement = models.docNumManagement;
 
 //문서 조회
 const getAllDocument = async( req, res ) => {
+    const { userID } = req.params;
+    const { team } = req.body;
     try{
-        const documetnts = await docNumManagement.findAll({
+        const documents = await docNumManagement.findAll({
             where : {
-                te
+                userID: userID,
+                team : team,
             }
-        })
+        });
+        if(!documents){
+            return res.status(404).json({ error : "해당 사용자가 조회 가능한 문서가 없습니다."});
+        };
+
+        res.status(200).json({ message : "해당 사용자의 팀문서/공용문서 조회 결과 : ", documents});
          
     }catch(error){
       console.error("문서 목록 조회 중 오류가 발생했습니다.:", error);
@@ -59,4 +67,5 @@ const addDocument = async( req, res ) => {
 
 module.exports = {
     addDocument,
+    getAllDocument,
 };
