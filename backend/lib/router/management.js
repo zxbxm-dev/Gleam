@@ -2,6 +2,7 @@ module.exports = (app) => {
   const managementController = require("../controller/management/submit_Management");
   const management_retouch = require("../controller/management/check_management");
   const PersonnelTransfer = require("../controller/management/personnel_transfer");
+  const docNumManagement = require("../controller/management/docNumManagement");
   const multerMiddleware = require("../controller/management/multerMiddleware");
 
   const express = require("express");
@@ -31,6 +32,10 @@ module.exports = (app) => {
   router.delete('/deleteAppointment/:appoint_id', PersonnelTransfer.deleteTransfer);  
   // 직무변경
   router.patch('/editUserInfoManagement/:userID',PersonnelTransfer.editUserInfoManagement);
+  //문서 추가 
+  router.post('/addDocument', docNumManagement.addDocument);
+  //문서 조회
+  router.get('/getAllDocument', docNumManagement.getAllDocument);
 
 
   app.use(
