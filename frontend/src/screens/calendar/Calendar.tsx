@@ -193,11 +193,8 @@ const Calendar = () => {
     const finduser = persondata.find(person => person.username === title.split(' ')[0])
     const isoStartDate = getLocalISODateString(startDate);
     const isoEndDate = getLocalISODateString(endDate);
-<<<<<<< Updated upstream
-=======
 
     
->>>>>>> Stashed changes
     const eventData = {
       userID: addEventUser?.userId || finduser?.userId || user?.userID,
       name: addEventUser?.username || finduser?.username || user?.username,

@@ -1,13 +1,30 @@
 import { useState } from "react";
 import { ModalPlusButton, Right_Arrow, White_Arrow } from "../../assets/images/index";
+import CustomModal from "../../components/modal/CustomModal";
 
 const IncludeReSlide = () => {
     const [slideVisible, setSlideVisible] = useState(true);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
+    const [isTeamDocsOpen, setIsTeamDocsOpen] = useState(false);
+    const [isPublicDocsOpen, setIsPublicDocsOpen] = useState(false);
+
 
     const toggleSlide = () => {
         setSlideVisible(prev => !prev)
+    }
+
+    const handleCancelClick = () => {
+        setIsPopupOpen(false);
+    }
+
+    const handleSubmit = () => {
+        setIsPopupOpen(false);
+        setIsSuccessPopupOpen(true);
+    }
+
+    const handlePopup = () => {
+        setIsSuccessPopupOpen(false);
     }
 
     return (
@@ -23,110 +40,140 @@ const IncludeReSlide = () => {
                         <img src={ModalPlusButton} alt="plusbutton" />
                     </button>
                 </div>
+
                 <div className="project_content">
-                    <div className="project_name_container">
+                    <div className="project_name_container" onClick={() => setIsTeamDocsOpen(prev => !prev)}>
                         <div className="name_leftTop">
                             <img src={Right_Arrow} alt="toggle" />
                             <span className="project_name">팀 문서</span>
                         </div>
                     </div>
 
-                    <div className="project_name_container">
+                    {isTeamDocsOpen && (
+                        <div className="team_documents_content">
+                            {/* 팀 문서 내용 여기 추가 */}
+                            <ul>
+                                <li>팀 문서 1</li>
+                                <li>팀 문서 2</li>
+                                <li>팀 문서 3</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
+                <div className="project_content">
+                    <div className="project_name_container" onClick={() => setIsPublicDocsOpen(prev => !prev)}>
                         <div className="name_leftBottom">
                             <img src={Right_Arrow} alt="toggle" />
                             <span className="project_name">공용 문서</span>
                         </div>
                     </div>
+
+                    {isPublicDocsOpen && (
+                        <div className="public_documents_content">
+                            {/* 공용 문서 내용 여기 추가 */}
+                            <ul>
+                                <li>공용 문서 1</li>
+                                <li>공용 문서 2</li>
+                                <li>공용 문서 3</li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
 
+
             {/* plusbtn클릭시 나오는 팝업창 */}
-            {
-                isPopupOpen && (
-                    <div className="popup">
-                        <div className="popup_content">
-                            <form>
-                                <div className="formDiv">
-                                    <div className="doc_docOption">
-                                        <label>문서 구분</label>
-                                        <input
-                                            type="radio"
-                                            id="team"
-                                            name="docType"
-                                            value="팀 문서"
-                                        // checked={selectedDocType === "팀 문서"}
-                                        // onChange={handleDocTypeChange}
-                                        />
-                                        <label htmlFor="team" className="docetc">팀 문서</label>
 
-                                        <input
-                                            type="radio"
-                                            id="share"
-                                            name="docType"
-                                            value="공용 문서"
-                                        // checked={selectedDocType === "공용 문서"}
-                                        // onChange={handleDocTypeChange}
-                                        />
-                                        <label htmlFor="share" className="docetc">공용 문서</label>
-                                    </div>
+            <CustomModal
+                isOpen={isPopupOpen} // 모달 열림 상태
+                onClose={() => {
+                    setIsPopupOpen(false); // 모달 닫기
+                }}
+                header="문서 추가"
+                headerTextColor="#fff"
+                footer1="취소"
+                footer2="추가"
+                footer1Class="footer-button"
+                height="235px"
+                width="350px"
+                onFooter1Click={handleCancelClick}
+                onFooter2Click={handleSubmit}
+            >
+                <form className="body-container" onSubmit={(e) => {
+                    e.preventDefault();
+                    setIsPopupOpen(false);
+                    setIsSuccessPopupOpen(true);
+                }}>
+                    <div className="formDiv">
+                        <div className="doc_docOption">
+                            <label>문서 구분</label>
+                            <input
+                                type="radio"
+                                id="team"
+                                name="docType"
+                                value="팀 문서"
 
-                                    <div className="input-field">
-                                        <label htmlFor="doc_docTitle">문서 제목</label>
-                                        <input
-                                            type="text"
-                                            id="docTitle"
-                                            name="docTitle"
-                                            // value={docTitle}
-                                            // onChange={handleInputChange}
-                                            required
-                                        />
-                                    </div>
+                            />
+                            <label htmlFor="team" className="docetc">팀 문서</label>
 
-                                    <div className="input-field">
-                                        <label htmlFor="doc_docNumber">현재 문서 번호</label>
-                                        <input
-                                            type="text"
-                                            id="docNumber"
-                                            name="docNumber"
-                                            // value={docNumber}
-                                            // onChange={handleInputChange}
-                                            required
-                                        />
-                                    </div>
-
-                                </div>
-
-
-                                {/* 취소 및 추가 버튼 */}
-                                <div className="button-container">
-                                    <button type="button">취소</button>
-                                    <button type="submit" onClick={() => {
-                                        setIsPopupOpen(false)
-                                        setIsSuccessPopupOpen(true);
-                                        }}>추가</button>
-                                </div>
-                            </form>
+                            <input
+                                type="radio"
+                                id="share"
+                                name="docType"
+                                value="공용 문서"
+                            />
+                            <label htmlFor="share" className="docetc">공용 문서</label>
                         </div>
+
+                        <div className="input-field">
+                            <label htmlFor="doc_docTitle">문서 제목</label>
+                            <input
+                                type="text"
+                                id="docTitle"
+                                name="docTitle"
+                                required
+                            />
+                        </div>
+
+                        <div className="input-field">
+                            <label htmlFor="doc_docNumber">현재 문서 번호</label>
+                            <input
+                                type="text"
+                                id="docNumber"
+                                name="docNumber"
+                                required
+                            />
+                        </div>
+
                     </div>
-                )
-            }
+
+                </form>
+            </CustomModal>
+
+
 
             {/* 추가 버튼 클릭시 뜨는 창 */}
-            {
-                isSuccessPopupOpen && (
-                    <div className="popup2">
-                        <div className="popup_content2">
-                            <h2>새로운 문서가 추가 되었습니다.</h2>
-                            <p className="button-container">
-                                <button onClick={() => setIsSuccessPopupOpen(false)}>확인</button>
-                            </p>
-                        </div>
+            <CustomModal
+                isOpen={isSuccessPopupOpen} // 모달 열림 상태
+                onClose={() => {
+                    setIsSuccessPopupOpen(false); // 모달 닫기
+                }}
+                header="알림"
+                headerTextColor="#fff"
+                footer1="확인"
+                footer1Class="footer-button"
+                height="200px"
+                width="400px"
+                onFooter1Click={handlePopup}
+            >
+                <div className="body-container">
+                    <div className="popup_content2">
+                        <h2>새로운 문서가 추가 되었습니다.</h2>
                     </div>
-                )
-            }
-
-
-        </div>
+                </div>
+            </CustomModal>
+        </div >
     )
 }
 
