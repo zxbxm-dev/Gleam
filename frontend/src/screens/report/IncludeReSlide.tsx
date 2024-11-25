@@ -55,10 +55,10 @@ const IncludeReSlide = () => {
 
         const updatedValue = name === 'docNumber' ? Number(value) : value;
 
-       setAddDocument((prev) => ({
-        ...prev,
-        [name]: updatedValue,
-    }));
+        setAddDocument((prev) => ({
+            ...prev,
+            [name]: updatedValue,
+        }));
     };
 
     const handlePopup = () => {
@@ -233,13 +233,13 @@ const IncludeReSlide = () => {
                 header="알림"
                 headerTextColor="#fff"
                 footer1="확인"
-                footer1Class="footer-button"
+                footer1Class="back-green-btn"
                 height="200px"
                 width="400px"
                 onFooter1Click={handlePopup}
             >
-                <div className="body-container">
-                    <div className="popup_content2">
+                <div className="body-container" style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <div className="addDocu">
                         <h2>새로운 문서가 추가 되었습니다.</h2>
                     </div>
                 </div>
