@@ -94,7 +94,8 @@ const IncludeReSlide = () => {
                 headerTextColor="#fff"
                 footer1="취소"
                 footer2="추가"
-                footer1Class="footer-button"
+                footer1Class="gray-btn"
+                footer2Class="back-green-btn"
                 height="235px"
                 width="350px"
                 onFooter1Click={handleCancelClick}
@@ -107,7 +108,7 @@ const IncludeReSlide = () => {
                 }}>
                     <div className="formDiv">
                         <div className="doc_docOption">
-                            <label>문서 구분</label>
+                            <div className="division">문서 구분</div>
                             <input
                                 type="radio"
                                 id="team"
@@ -133,6 +134,7 @@ const IncludeReSlide = () => {
                                 id="docTitle"
                                 name="docTitle"
                                 required
+                                placeholder="문서 제목을 입력해 주세요."
                             />
                         </div>
 
@@ -143,6 +145,7 @@ const IncludeReSlide = () => {
                                 id="docNumber"
                                 name="docNumber"
                                 required
+                                placeholder="시작될 문서 번호를 입력해 주세요."
                             />
                         </div>
 

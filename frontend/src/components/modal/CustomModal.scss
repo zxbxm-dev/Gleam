@@ -1,4 +1,5 @@
 @import '../../style/Common/scrollbar.scss';
+@import "../../style/mixin";
 
 .modal-overlay {
   position: fixed;
@@ -69,7 +70,7 @@
         width: 100%;
         height: 100%;
         gap: 20px;
-        
+
         .spam_check {
           display: flex;
           gap: 5px;
@@ -237,12 +238,12 @@
               padding: 10px;
               resize: none;
             }
-  
+
             .TextInputCon2:focus {
               outline: none;
             }
           }
-          
+
 
           .div {
             display: flex;
@@ -273,7 +274,7 @@
         .AddPeoples {
           display: flex;
           width: 100%;
-          
+
           .div {
             display: flex;
             flex-direction: row-reverse;
@@ -466,7 +467,7 @@
                 gap: 5px;
                 margin: 10px 0;
                 flex: 1;
-  
+
                 li {
                   font-size: 11px;
                   padding: 4px 17px;
@@ -474,7 +475,7 @@
                   transition: background-color 0.2s;
                   color: #5C5C5C;
                   font-family: var(--font-family-Noto-R);
-              
+
                   &.selected {
                     background-color: #e2e2e2;
                   }
@@ -498,7 +499,7 @@
                 margin: 10px 0;
                 gap: 5px;
                 flex: 1;
-  
+
                 li {
                   font-size: 11px;
                   padding: 4px 10px;
@@ -506,14 +507,14 @@
                   transition: background-color 0.2s;
                   color: #5C5C5C;
                   font-family: var(--font-family-Noto-R);
-              
+
                   &.selected {
                     background-color: #e2e2e2;
                   }
                 }
               }
             }
-            
+
 
             .AddsInputCon {
               width: 100%;
@@ -760,13 +761,13 @@
             }
           }
 
-   
+
         }
 
         .ProfileSetting {
           display: flex;
           justify-content: center;
-          
+
         }
 
         .PeopleSearchCon {
@@ -897,7 +898,7 @@
             &.mail_resize {
               max-height: 290px;
             }
-            
+
             &::-webkit-scrollbar {
               width: 3px;
             }
@@ -1216,7 +1217,7 @@
               display: flex;
               flex-direction: column;
               width: 100%;
-              
+
               .content-memo-text {
                 color: #929292;
                 font-size: 12px;
@@ -1265,6 +1266,74 @@
             .mail_read_list_user_status {
               font-size: 12px;
               color: #717171;
+            }
+          }
+        }
+
+        .formDiv {
+          .doc_docOption {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+
+            .division {
+              font-size: 12px;
+              color: #929292;
+              width: 114px;
+              padding-left: 10px;
+            }
+
+            label {
+              font-size: 12px;
+              color: #323232;
+              margin-left: 10px;
+              margin-right: 25px;
+            }
+
+            input[type='radio'] {
+              -webkit-appearance: none; // 웹킷 브라우저에서 기본 스타일 제거
+              -moz-appearance: none; // 모질라 브라우저에서 기본 스타일 제거 
+              appearance: none; // 기본 브라우저에서 기본 스타일 제거
+              width: 13px;
+              height: 13px;
+              border: 2px solid #45C552;
+              border-radius: 50%;
+              outline: none;
+              cursor: pointer;
+            }
+
+            // 체크될 시에, 변화되는 스타일 설정
+            input[type='radio']:checked {
+              background-color: #45C552;
+              border: 3px solid white;
+              box-shadow: 0 0 0 1.6px #45C552;
+            }
+          }
+
+          .input-field {
+            border: 1px solid #EEE;
+            border-radius: 5px;
+            padding-left: 10px;
+            display: flex;
+            height: 37px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 5px;
+
+            label {
+              font-size: 12px;
+              color: #929292;
+            }
+
+            input {
+              width: 205px;
+              height: 34px;
+              font-size: 12px;
+              color: #323232;
+            }
+
+            input:focus {
+              outline: none;
             }
           }
         }
