@@ -5,4 +5,9 @@ const AddDocuments = (userID, formData) => {
     return api.post(`/addDocument/${userID}`, formData);
 };
 
-export { AddDocuments };
+// 관리 문서 조회
+const GetDocuments = (userID) => {
+    return api.get(`/getAllDocument/${userID}`);
+}
+
+export { AddDocuments, GetDocuments };

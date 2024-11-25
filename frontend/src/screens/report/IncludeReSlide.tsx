@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ModalPlusButton, Right_Arrow, White_Arrow } from "../../assets/images/index";
 import CustomModal from "../../components/modal/CustomModal";
-import { AddDocuments } from "../../services/report/documentServices";
+import { AddDocuments, GetDocuments } from "../../services/report/documentServices";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
+
+interface Document {
+    docType: string;
+    docTitle: string;
+    docNumber: string;
+}
 
 const IncludeReSlide = () => {
     const user = useRecoilValue(userState);
@@ -17,7 +23,24 @@ const IncludeReSlide = () => {
         docTitle: "",
         docNumber: "",
     });
+      // 문서 데이터 상태
+      const [documents, setDocuments] = useState<Document[]>([]);
 
+       // 컴포넌트 렌더링 시 문서 데이터 가져오기
+       useEffect(() => {
+        const fetchDocuments = async () => {
+            const userID = user.userID;
+            
+            try {
+                const response = await GetDocuments(userID);
+                setDocuments(response.data);
+            } catch (error) {
+                console.error("문서 조회 실패:", error);
+            }
+        };
+
+        fetchDocuments();
+    }, [user.userID, user.team, user.department]); 
 
     const toggleSlide = () => {
         setSlideVisible(prev => !prev)
@@ -84,9 +107,11 @@ const IncludeReSlide = () => {
                         <div className="team_documents_content">
                             {/* 팀 문서 내용 여기 추가 */}
                             <ul>
-                                <li>팀 문서 1</li>
-                                <li>팀 문서 2</li>
-                                <li>팀 문서 3</li>
+                                {documents
+                                    .filter((doc) => doc.docType === "팀 문서")
+                                    .map((doc, index) => (
+                                        <li key={index}>{doc.docTitle}</li>
+                                    ))}
                             </ul>
                         </div>
                     )}
@@ -104,9 +129,11 @@ const IncludeReSlide = () => {
                         <div className="public_documents_content">
                             {/* 공용 문서 내용 여기 추가 */}
                             <ul>
-                                <li>공용 문서 1</li>
-                                <li>공용 문서 2</li>
-                                <li>공용 문서 3</li>
+                                 {documents
+                                    .filter((doc) => doc.docType === "공용 문서")
+                                    .map((doc, index) => (
+                                        <li key={index}>{doc.docTitle}</li>
+                                    ))}
                             </ul>
                         </div>
                     )}
