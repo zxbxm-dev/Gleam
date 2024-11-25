@@ -475,6 +475,44 @@ ul {
       &.visible .project_content_container {
         display: block;
       }
+
+
+
+      .team_documents_content{
+        .TeamDocBox{
+          display: flex;
+          flex-direction: column;
+
+          .TeamDoc{
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            height: 45px;
+
+            .DocTitle{
+              width: 173px;
+              padding-left: 20px;
+              color: #323232;
+            }
+            .DocNum{
+              width: 92px;
+              color: #323232;
+            }
+            .DocPerson{
+              width: 88px;
+              color: #323232;
+            }
+            .edit-button{
+              background-color: #45C552;
+              color: #fff;
+              border: none;
+              font-size: 12px;
+              padding: 6px 12px;
+              border-radius: 5px;
+            }
+          }
+        }
+      }
     }
 
     .previous_content {

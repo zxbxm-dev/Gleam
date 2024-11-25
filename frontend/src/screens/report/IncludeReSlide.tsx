@@ -8,7 +8,10 @@ import { userState } from '../../recoil/atoms';
 interface Document {
     docType: string;
     docTitle: string;
-    docNumber: number;
+    docNum: number;
+    docPerson: string;
+    docPersonTeam: string;
+    docPersondept: string;
 }
 
 const IncludeReSlide = () => {
@@ -25,6 +28,26 @@ const IncludeReSlide = () => {
     });
     // 문서 데이터 상태
     const [documents, setDocuments] = useState<Document[]>([]);
+    const [isEditMode, setIsEditMode] = useState(false); // 관리부 - 편집 버튼 상태
+    const [docList, setDocList] = useState(documents); //서류 번호 상태
+
+    const handleIncreaseNum = (index: number) => {
+        const newDocs = [...docList];
+        newDocs[index].docNum += 1;
+        setDocList(newDocs);
+    };
+
+    const handleDecreaseNum = (index: number) => {
+        const newDocs = [...docList];
+        if (newDocs[index].docNum > 1) {
+            newDocs[index].docNum -= 1;
+            setDocList(newDocs);
+        }
+    };
+
+    const handleEditClick = () => {
+        setIsEditMode(!isEditMode);
+    };
 
     // 컴포넌트 렌더링 시 문서 데이터 가져오기
     useEffect(() => {
@@ -87,19 +110,26 @@ const IncludeReSlide = () => {
     return (
         <div className="project_slide_container">
             <div className={`project_slide ${slideVisible ? 'visible' : ''}`} onClick={toggleSlide}>
-                <span className="additional_content_title">본사 문서 번호 관리</span>
+                <span className="additional_content_title">{user.company} 문서 번호 관리</span>
                 <img src={White_Arrow} alt="White Arrow" className={slideVisible ? "img_rotate" : ""} />
             </div>
 
             <div className={`additional_content ${slideVisible ? 'visible' : ''}`}>
-                <div className="modalplusbtn">
-                    <button onClick={() => setIsPopupOpen(true)}>
-                        <img src={ModalPlusButton} alt="plusbutton" />
-                    </button>
-                </div>
+                {user.department === "관리부" &&
+                    <div className="modalplusbtn">
+                        {isEditMode ? (
+                            <>
+                                <button>추가</button>
+                                <button>삭제</button>
+                            </>
+                        ) : (
+                            <button onClick={handleEditClick}>편집</button>
+                        )}
+                    </div>
+                }
 
                 <div className="project_content">
-                    <div className="project_name_container" onClick={() => setIsTeamDocsOpen(prev => !prev)}>
+                    <div className="project_name_container">
                         <div className="name_leftTop">
                             <img src={Right_Arrow} alt="toggle" />
                             <span className="project_name">팀 문서</span>
@@ -108,14 +138,42 @@ const IncludeReSlide = () => {
 
                     {isTeamDocsOpen && (
                         <div className="team_documents_content">
-                            {/* 팀 문서 내용 여기 추가 */}
-                            <ul>
-                                {documents
+                            <div className="TeamDocBox">
+                                {docList
                                     .filter((doc) => doc.docType === "Team")
                                     .map((doc, index) => (
-                                        <li key={index}>{doc.docTitle}</li>
+                                        <div className="TeamDocBox" key={index}>
+                                            <div className="TeamDoc">
+                                                <div className="DocTitle">{doc.docTitle}</div>
+                                                <div className="DocNum">
+                                                    {doc.docNum}
+                                                    {isEditMode && (
+                                                        <div className="docNumControls">
+                                                            <button
+                                                                className="num-up-button"
+                                                                onClick={() => handleIncreaseNum(index)}
+                                                            >
+                                                                ↑
+                                                            </button>
+                                                            <button
+                                                                className="num-down-button"
+                                                                onClick={() => handleDecreaseNum(index)}
+                                                            >
+                                                                ↓
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="DocPerson">
+                                                    {doc.docPerson} {doc.docPersonTeam ? doc.docPersonTeam : doc.docPersondept}
+                                                </div>
+                                                <button className="edit-button">
+                                                    {isEditMode ? "수정" : "편집"}
+                                                </button>
+                                            </div>
+                                        </div>
                                     ))}
-                            </ul>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -129,15 +187,43 @@ const IncludeReSlide = () => {
                     </div>
 
                     {isPublicDocsOpen && (
-                        <div className="public_documents_content">
-                            {/* 공용 문서 내용 여기 추가 */}
-                            <ul>
-                                {documents
+                        <div className="team_documents_content">
+                            <div className="TeamDocBox">
+                                {docList
                                     .filter((doc) => doc.docType === "Public")
                                     .map((doc, index) => (
-                                        <li key={index}>{doc.docTitle}</li>
+                                        <div className="TeamDocBox" key={index}>
+                                            <div className="TeamDoc">
+                                                <div className="DocTitle">{doc.docTitle}</div>
+                                                <div className="DocNum">
+                                                    {doc.docNum}
+                                                    {isEditMode && (
+                                                        <div className="docNumControls">
+                                                            <button
+                                                                className="num-up-button"
+                                                                onClick={() => handleIncreaseNum(index)}
+                                                            >
+                                                                ↑
+                                                            </button>
+                                                            <button
+                                                                className="num-down-button"
+                                                                onClick={() => handleDecreaseNum(index)}
+                                                            >
+                                                                ↓
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="DocPerson">
+                                                    {doc.docPerson} {doc.docPersonTeam ? doc.docPersonTeam : doc.docPersondept}
+                                                </div>
+                                                <button className="edit-button">
+                                                    {isEditMode ? "수정" : "편집"}
+                                                </button>
+                                            </div>
+                                        </div>
                                     ))}
-                            </ul>
+                            </div>
                         </div>
                     )}
                 </div>
