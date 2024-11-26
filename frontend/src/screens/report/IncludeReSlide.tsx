@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-import { ModalPlusButton, Right_Arrow, White_Arrow } from "../../assets/images/index";
+import { slide_downArrow, Right_Arrow, White_Arrow, spinnerBtm, spinnerTop } from "../../assets/images/index";
 import CustomModal from "../../components/modal/CustomModal";
-import { AddDocuments, GetDocuments } from "../../services/report/documentServices";
+import { AddDocuments, GetDocuments, EditDocuments } from "../../services/report/documentServices";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/atoms';
 
 interface Document {
+    documentId: number;
     docType: string;
     docTitle: string;
-    docNum: number;
+    docNumber: number;
     docPerson: string;
     docPersonTeam: string;
     docPersondept: string;
@@ -28,42 +29,38 @@ const IncludeReSlide = () => {
     });
     // 문서 데이터 상태
     const [documents, setDocuments] = useState<Document[]>([]);
-    const [isEditMode, setIsEditMode] = useState(false); // 관리부 - 편집 버튼 상태
-    const [docList, setDocList] = useState(documents); //서류 번호 상태
+    const [editModes, setEditModes] = useState(
+        documents.map(() => false) // 각 문서마다 false로 초기화
+    );
+    const [ismanagerEditMode, setIsManagerEditMode] = useState(false); // 관리부 - 편집 버튼 상태
+    const [editDocumentId, setEditDocumentId] = useState<number | null>(null);
+    const [selectedDocId, setSelectedDocId] = useState<number | null>(null);
 
-    const handleIncreaseNum = (index: number) => {
-        const newDocs = [...docList];
-        newDocs[index].docNum += 1;
-        setDocList(newDocs);
-    };
-
-    const handleDecreaseNum = (index: number) => {
-        const newDocs = [...docList];
-        if (newDocs[index].docNum > 1) {
-            newDocs[index].docNum -= 1;
-            setDocList(newDocs);
-        }
-    };
-
-    const handleEditClick = () => {
-        setIsEditMode(!isEditMode);
+    const handleEditClick = (documentId: number) => {
+        setSelectedDocId(documents[documentId].documentId);
+        setEditModes((prev) => {
+            const newEditModes = [...prev];
+            newEditModes[documentId] = !newEditModes[documentId];
+            setEditDocumentId(documentId);
+            return newEditModes;
+        });
     };
 
     // 컴포넌트 렌더링 시 문서 데이터 가져오기
     useEffect(() => {
-        const fetchDocuments = async () => {
-            const userID = user.userID;
-
-            try {
-                const response = await GetDocuments(userID);
-                setDocuments(response.data);
-            } catch (error) {
-                console.error("문서 조회 실패:", error);
-            }
-        };
-
         fetchDocuments();
     }, []);
+
+    const fetchDocuments = async () => {
+        const userID = user.userID;
+
+        try {
+            const response = await GetDocuments(userID);
+            setDocuments(response.data.documents);
+        } catch (error) {
+            console.error("문서 조회 실패:", error);
+        }
+    };
 
     const toggleSlide = () => {
         setSlideVisible(prev => !prev)
@@ -88,6 +85,7 @@ const IncludeReSlide = () => {
         setIsSuccessPopupOpen(false);
     }
 
+    //관리부 - 문서 추가
     const handleSubmit = async () => {
         const userID = user.userID;
         const formData = {
@@ -101,9 +99,53 @@ const IncludeReSlide = () => {
             console.log("문서 추가 성공:", response.data);
             setIsPopupOpen(false);
             setIsSuccessPopupOpen(true);
+            fetchDocuments();
         } catch (error) {
             console.error("문서 추가 실패:", error);
             alert("문서 추가에 실패했습니다.");
+        }
+    };
+
+
+    const handleNumberIncrease = (index: number) => {
+        setDocuments((prevDocuments) => {
+            const updatedDocuments = [...prevDocuments];
+            updatedDocuments[index] = {
+                ...updatedDocuments[index],
+                docNumber: updatedDocuments[index].docNumber + 1,
+            };
+            return updatedDocuments;
+        });
+    };
+
+    const handleNumberDecrease = (index: number) => {
+        setDocuments((prevDocuments) => {
+            const updatedDocuments = [...prevDocuments];
+            updatedDocuments[index] = {
+                ...updatedDocuments[index],
+                docNumber: Math.max(updatedDocuments[index].docNumber - 1, 0),
+            };
+            return updatedDocuments;
+        });
+    };
+
+    //문서번호 수정
+    const handleEditConfirm = async (index:any) => {
+        const updatedDoc = documents[index];
+        const updateData = {
+            docTitle: updatedDoc.docTitle,
+            docNumber: updatedDoc.docNumber,
+            userName: user.username,
+            userposition: user.position,
+        };
+    
+        try {
+            const response = await EditDocuments(selectedDocId, updateData);
+            console.log("문서 번호 수정 성공:", response.data);
+            fetchDocuments();
+        } catch (error) {
+            console.error("문서 번호 수정 실패:", error);
+            alert("문서 번호 수정에 실패했습니다.");
         }
     };
 
@@ -117,21 +159,22 @@ const IncludeReSlide = () => {
             <div className={`additional_content ${slideVisible ? 'visible' : ''}`}>
                 {user.department === "관리부" &&
                     <div className="modalplusbtn">
-                        {isEditMode ? (
+                        {ismanagerEditMode ? (
                             <>
-                                <button>추가</button>
+                                <button onClick={() => setIsPopupOpen(true)}>추가</button>
                                 <button>삭제</button>
+                                <button onClick={() => setIsManagerEditMode(false)}>닫기</button>
                             </>
                         ) : (
-                            <button onClick={handleEditClick}>편집</button>
+                            <button onClick={() => setIsManagerEditMode(true)}>편집</button>
                         )}
                     </div>
                 }
 
                 <div className="project_content">
-                    <div className="project_name_container">
+                    <div className="project_name_container" onClick={() => setIsTeamDocsOpen(prev => !prev)}>
                         <div className="name_leftTop">
-                            <img src={Right_Arrow} alt="toggle" />
+                            <img src={isTeamDocsOpen ? slide_downArrow : Right_Arrow} alt="toggle" />
                             <span className="project_name">팀 문서</span>
                         </div>
                     </div>
@@ -139,40 +182,49 @@ const IncludeReSlide = () => {
                     {isTeamDocsOpen && (
                         <div className="team_documents_content">
                             <div className="TeamDocBox">
-                                {docList
-                                    .filter((doc) => doc.docType === "Team")
-                                    .map((doc, index) => (
-                                        <div className="TeamDocBox" key={index}>
-                                            <div className="TeamDoc">
-                                                <div className="DocTitle">{doc.docTitle}</div>
-                                                <div className="DocNum">
-                                                    {doc.docNum}
-                                                    {isEditMode && (
-                                                        <div className="docNumControls">
-                                                            <button
-                                                                className="num-up-button"
-                                                                onClick={() => handleIncreaseNum(index)}
-                                                            >
-                                                                ↑
-                                                            </button>
-                                                            <button
-                                                                className="num-down-button"
-                                                                onClick={() => handleDecreaseNum(index)}
-                                                            >
-                                                                ↓
-                                                            </button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="DocPerson">
-                                                    {doc.docPerson} {doc.docPersonTeam ? doc.docPersonTeam : doc.docPersondept}
-                                                </div>
-                                                <button className="edit-button">
-                                                    {isEditMode ? "수정" : "편집"}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
+                            {documents
+                .filter((doc) => doc.docType === "Team")
+                .map((doc, index) => (
+                    <div className="TeamDocBox" key={index}>
+                        <div className="TeamDoc">
+                            <div className="DocTitle">{doc.docTitle}</div>
+                            <div className="DocNum">
+                                {doc.docNumber}
+                                {editModes[index] && (
+                                    <div className="docNumControls">
+                                        <button
+                                            className="num-up-button"
+                                            onClick={() => handleNumberIncrease(index)}
+                                        >
+                                            <img src={spinnerTop} />
+                                        </button>
+                                        <button
+                                            className="num-down-button"
+                                            onClick={() => handleNumberDecrease(index)}
+                                        >
+                                            <img src={spinnerBtm} />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="DocPerson">
+                                {doc.docPerson} {doc.docPersonTeam ? doc.docPersonTeam : doc.docPersondept}
+                            </div>
+                          <button
+    className="edit-button"
+    onClick={() =>
+        ismanagerEditMode
+            ? handleEditClick(index)
+            : editModes[index]
+            ? handleEditConfirm(index)
+            : handleEditClick(index)
+    }
+>
+    {ismanagerEditMode ? "수정" : editModes[index] ? "확인" : "편집"}
+</button>
+                        </div>
+                    </div>
+                ))}
                             </div>
                         </div>
                     )}
@@ -181,7 +233,7 @@ const IncludeReSlide = () => {
                 <div className="project_content">
                     <div className="project_name_container" onClick={() => setIsPublicDocsOpen(prev => !prev)}>
                         <div className="name_leftBottom">
-                            <img src={Right_Arrow} alt="toggle" />
+                            <img src={isPublicDocsOpen ? slide_downArrow : Right_Arrow} alt="toggle" />
                             <span className="project_name">공용 문서</span>
                         </div>
                     </div>
@@ -189,40 +241,49 @@ const IncludeReSlide = () => {
                     {isPublicDocsOpen && (
                         <div className="team_documents_content">
                             <div className="TeamDocBox">
-                                {docList
-                                    .filter((doc) => doc.docType === "Public")
-                                    .map((doc, index) => (
-                                        <div className="TeamDocBox" key={index}>
-                                            <div className="TeamDoc">
-                                                <div className="DocTitle">{doc.docTitle}</div>
-                                                <div className="DocNum">
-                                                    {doc.docNum}
-                                                    {isEditMode && (
-                                                        <div className="docNumControls">
-                                                            <button
-                                                                className="num-up-button"
-                                                                onClick={() => handleIncreaseNum(index)}
-                                                            >
-                                                                ↑
-                                                            </button>
-                                                            <button
-                                                                className="num-down-button"
-                                                                onClick={() => handleDecreaseNum(index)}
-                                                            >
-                                                                ↓
-                                                            </button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="DocPerson">
-                                                    {doc.docPerson} {doc.docPersonTeam ? doc.docPersonTeam : doc.docPersondept}
-                                                </div>
-                                                <button className="edit-button">
-                                                    {isEditMode ? "수정" : "편집"}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
+                            {documents
+                .filter((doc) => doc.docType === "Public")
+                .map((doc, index) => (
+                    <div className="TeamDocBox" key={index}>
+                        <div className="TeamDoc">
+                            <div className="DocTitle">{doc.docTitle}</div>
+                            <div className="DocNum">
+                                {doc.docNumber}
+                                {editModes[index] && (
+                                    <div className="docNumControls">
+                                        <button
+                                            className="num-up-button"
+                                            onClick={() => handleNumberIncrease(index)}
+                                        >
+                                            <img src={spinnerTop} />
+                                        </button>
+                                        <button
+                                            className="num-down-button"
+                                            onClick={() => handleNumberDecrease(index)}
+                                        >
+                                            <img src={spinnerBtm} />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="DocPerson">
+                                {doc.docPerson} {doc.docPersonTeam ? doc.docPersonTeam : doc.docPersondept}
+                            </div>
+                            <button
+                                className="edit-button"
+                                onClick={() =>
+                                    ismanagerEditMode
+                                        ? handleEditClick(index)
+                                        : editModes[index]
+                                        ? handleEditConfirm(index)
+                                        : handleEditClick(index)
+                                }
+                            >
+                                {ismanagerEditMode ? "수정" : editModes[index] ? "확인" : "편집"}
+                            </button>
+                        </div>
+                    </div>
+                ))}
                             </div>
                         </div>
                     )}
