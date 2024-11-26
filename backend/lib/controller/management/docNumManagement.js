@@ -2,6 +2,7 @@ const models = require("../../models");
 const User = models.User;
 const docNumManagement = models.docNumManagement;
 const { organizationMapping } = require("../organizationMapping");
+const {Op}= require("sequelize");
 
 //문서 조회
 const getAllDocument = async( req, res ) => {
@@ -13,17 +14,34 @@ const getAllDocument = async( req, res ) => {
             },
             attributes:[ 'department','team'],
         });
-        const userDpt = userInfo?.department;
-        const userTeam = userInfo?.team;
+        const userDpt = userInfo[0].dataValues.department;
+        const userTeam = userInfo[0].dataValues.team;
 
         if(userDpt && !userTeam){
+        //부서장 문서 조회 시 
+        
+            const checkingUserDpt = await checkUserDpt(userDpt);
+            const checketDpt = checkingUserDpt.department;
+            const checkedTeam = checkingUserDpt.teams.map((team)=> team.name);
 
+            const documentsForManager = await docNumManagement.findAll({
+                where: {
+                    team:{
+                    [Op.in] : checkedTeam,
+                    }
+                }
+            });
+
+            if(documentsForManager){
+                return res.status(404).json({ error : " 해당 사용자가 조회 가능한 하위 문서가 없습니다." });
+            }
+            res.status(200).json({ message: " 해당 사용자의 하위 팀문서/공용문서 조회 결과 : ", documentsForManager });
         }else{
 
+        //팀원 문서 조회 시
         const documents = await docNumManagement.findAll({
             where : {
-                userID: userID,
-                userTeam: userTeam,
+                team: userTeam,
             }
         });
 
@@ -82,7 +100,7 @@ const addDocument = async( req, res ) => {
             username: userInfo.dataValues.username,
         });
 
-        res.status(201).json({
+        res.status(200).json({
             message: "신규 공용 문서가 추가되었습니다.",
             notice: newPublicDoc,
         });
@@ -98,8 +116,18 @@ const addDocument = async( req, res ) => {
 
 
 
-//문서 번호 편집
+//문서번호 관리 - 편집
 //patch
+
+//문서번호 관리 - 삭제 
+
+//사용자 부서 확인
+async function checkUserDpt(userDpt) {
+    const departmentData = Object.values(organizationMapping).find(
+         (deptNum) => deptNum.department === userDpt
+    );
+    return departmentData;
+  };
 
 module.exports = {
     addDocument,
