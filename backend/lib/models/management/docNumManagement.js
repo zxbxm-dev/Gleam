@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING, 
             allowNull: false,
         },
+        userposition: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        }
         },
         {
             tableName: "docNumManagement",
