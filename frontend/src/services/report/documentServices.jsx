@@ -10,4 +10,9 @@ const GetDocuments = (userID) => {
     return api.get(`/getAllDocument/${userID}`);
 }
 
-export { AddDocuments, GetDocuments };
+//문서 번호 수정
+const EditDocuments = async (selectedDocId, updateData) => {
+    return api.put(`/updatedocuments/${selectedDocId}`, updateData);
+};
+
+export { AddDocuments, GetDocuments, EditDocuments };

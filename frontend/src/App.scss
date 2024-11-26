@@ -374,6 +374,7 @@ ul {
       gap: 5px;
       width: 420px;
       height: auto;
+      margin-bottom: 10px;
 
       .project_name_container {
         width: inherit;
@@ -479,9 +480,14 @@ ul {
 
 
       .team_documents_content{
+        margin-top: -5px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+
         .TeamDocBox{
           display: flex;
           flex-direction: column;
+          border-bottom: 1px solid #eee;
 
           .TeamDoc{
             font-size: 12px;
@@ -497,6 +503,14 @@ ul {
             .DocNum{
               width: 92px;
               color: #323232;
+              display: flex;
+              align-items: center;
+              gap: 5px;
+
+              .docNumControls{
+                display: flex;
+                flex-direction: column;
+              }
             }
             .DocPerson{
               width: 88px;

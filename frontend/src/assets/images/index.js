@@ -64,6 +64,9 @@ export { default as ActivePersonTab } from "./sidebar/ActivePersonTab.svg";
 export { default as Right_Arrow } from "./project/Right_Arrow.svg";
 export { default as White_Arrow } from "./project/White_Arrow.svg";
 export { default as Down_Arrow } from "./project/Down_Arrow.svg";
+export { default as slide_downArrow } from "./project/slide_downArrow.svg";
+export { default as spinnerBtm } from "./project/spinnerBtm.svg";
+export { default as spinnerTop } from "./project/spinnerTop.svg";
 
 // mail
 export { default as mail_calendar } from "./mail/mail_calendar.svg";
