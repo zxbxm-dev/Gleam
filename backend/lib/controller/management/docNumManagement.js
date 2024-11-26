@@ -84,7 +84,8 @@ const addDocument = async( req, res ) => {
                         team : team.name,
                         docTitle: docTitle,
                         docNumber: docNumber,
-                        username: userInfo.dataValues.username,
+                        username: {},
+                        userposition: {},
                     });
                 }
             }
@@ -97,7 +98,8 @@ const addDocument = async( req, res ) => {
             docType: docType,
             docTitle: docTitle,
             docNumber: docNumber,
-            username: userInfo.dataValues.username,
+            username: {},
+            userposition: {},
         });
 
         res.status(200).json({
@@ -106,20 +108,60 @@ const addDocument = async( req, res ) => {
         });
         }
 
-        
-        
     }catch(error){
         console.error(" 문서 추가 중 오류 발생 : ", error );
         res.status(500).json({ message: "문서 추가 중 오류가 발생했습니다." });
     }
 };
 
+//문서번호 수정
+const editDocNumber = async( req, res ) => {
+    const { documentId } = req.query;
+    const { docTitle, docNumber, userName, userposition } = req.body;
+    try{
+    if(!documentId){
+        return res.status(404).json({ message : "해당 문서번호와 일치하는 문서 정보를 찾을 수 없습니다." });
+    };
+    const editNumber = await docNumManagement.update (
+        {
+        docNumber : docNumber,
+        username : userName,
+        userposition : userposition,
+        },
+        {
+            where : {
+                documentId :documentId,
+            }
+        },
+    );
+
+    res.status(200).json({ message: `${documentId}번 문서의 문서번호가 성공적으로 수정되었습니다.`, user: username });
+}catch(error){
+    console.error("문서번호 수정 중 오류 발생", error );
+    res.status(500).json({ error: `${documentId}번 문서 번호 수정 중 오류 발생가 발생했습니다. ` });
+}
+
+};
+
+//문서정보 편집 - 관리팀 권한
+//문서 삭제 
+const deleteDoc = async (req, res) => {
+    const { documentId } = req.body;
+    try{
+    if(!documentId){
+        return res.status(404).json({ message : "해당 문서번호와 일치하는 문서 정보를 찾을 수 없습니다." });
+    };
+    const deleteDocument = await docNumManagement.findByPk(documentId);
+    await deleteDocument.destroy();
+    res.status(200).json({ message: "문서를 성공적으로 삭제했습니다." });
+}catch(error){
+    console.error("문서 삭제 중 오류 발생", error);
+    res.status(500).json({ error: " 문서 삭제에 실패했습니다." });
+}
+}
+//문서 편집
 
 
-//문서번호 관리 - 편집
-//patch
-
-//문서번호 관리 - 삭제 
 
 //사용자 부서 확인
 async function checkUserDpt(userDpt) {
@@ -132,4 +174,5 @@ async function checkUserDpt(userDpt) {
 module.exports = {
     addDocument,
     getAllDocument,
+    editDocNumber,
 };

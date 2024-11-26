@@ -135,9 +135,6 @@ const addProject = async (req, res) => {
             subprojectIndex 
         } = req.params;
 
-        console.log("요청 파라미터:", req.params);
-        console.log("요청 본문:", req.body);
-
         const currentDate = new Date();
         const today = currentDate.toISOString().split('T')[0];
 
@@ -278,9 +275,6 @@ const addProject = async (req, res) => {
         //프로젝트 일정 삭제하기
         const deleteProject = async (req, res) =>{
             const { mainprojectIndex, subprojectIndex}  = req.params
-
-            console.log("요청 파라미터(main):", req.params.mainprojectIndex);
-            console.log("요청 파라미터(sub):", req.params.mainprojectIndex);
 
             //메인프로젝트 삭제 
             if(!subprojectIndex){
