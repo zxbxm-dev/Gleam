@@ -41,8 +41,11 @@ const getAllDocument = async( req, res ) => {
         //팀원 문서 조회 시
         const documents = await docNumManagement.findAll({
             where : {
-                team: userTeam,
-            }
+                [Op.or]:[
+                {team: userTeam},
+                {docType: "Public"},              
+                ]
+            },
         });
 
         if(!documents){
