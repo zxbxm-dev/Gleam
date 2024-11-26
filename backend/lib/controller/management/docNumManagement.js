@@ -84,8 +84,8 @@ const addDocument = async( req, res ) => {
                         team : team.name,
                         docTitle: docTitle,
                         docNumber: docNumber,
-                        username: {},
-                        userposition: {},
+                        username: "",
+                        userposition: "",
                     });
                 }
             }
@@ -98,8 +98,8 @@ const addDocument = async( req, res ) => {
             docType: docType,
             docTitle: docTitle,
             docNumber: docNumber,
-            username: {},
-            userposition: {},
+            username: "",
+            userposition: "",
         });
 
         res.status(200).json({
