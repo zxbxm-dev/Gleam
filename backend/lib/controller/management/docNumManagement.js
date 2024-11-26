@@ -37,7 +37,7 @@ const getAllDocument = async( req, res ) => {
             }
             res.status(200).json({ message: " 해당 사용자의 하위 팀문서/공용문서 조회 결과 : ", documentsForManager });
         }else{
-
+        //대표이사님, 이사님의 문서번호관리 권한은 별도로 설정되어있지 않습니다.
         //팀원 문서 조회 시
         const documents = await docNumManagement.findAll({
             where : {
