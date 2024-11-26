@@ -15,4 +15,10 @@ const EditDocuments = async (selectedDocId, updateData) => {
     return api.put(`/updatedocuments/${selectedDocId}`, updateData);
 };
 
-export { AddDocuments, GetDocuments, EditDocuments };
+
+//관리팀 - 문서수정
+const ManagerEditDocuments = async (selectedDocId, updateData) => {
+    return api.put(`/Manageupdatedocuments/${selectedDocId}`, updateData);
+};
+
+export { AddDocuments, GetDocuments, EditDocuments, ManagerEditDocuments };
