@@ -37,7 +37,7 @@ module.exports = (app) => {
   //문서 조회
   router.get('/getAllDocument/:userID', docNumManagement.getAllDocument);
   //문서번호 수정 
-  router.put('/editDocNumber', docNumManagement.editDocNumber);
+  router.put('/updatedocuments/:selectedId', docNumManagement.editDocNumber);
 
 
   app.use(
