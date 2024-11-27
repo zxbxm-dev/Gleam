@@ -119,14 +119,17 @@ const addDocument = async( req, res ) => {
 
 //문서번호 수정
 const editDocNumber = async( req, res ) => {
-    const { documentId } = req.query;
+    const { selectedId } = req.params;
     const { docTitle, docNumber, userName, userposition } = req.body;
+    const documentId = req.params.selectedId; 
     try{
+      
     if(!documentId){
         return res.status(404).json({ message : "해당 문서번호와 일치하는 문서 정보를 찾을 수 없습니다." });
     };
     const editNumber = await docNumManagement.update (
         {
+            //여기 칼럼 다 추가해서 업데이트 해보셈   
         docNumber : docNumber,
         username : userName,
         userposition : userposition,
@@ -138,17 +141,17 @@ const editDocNumber = async( req, res ) => {
         },
     );
 
-    res.status(200).json({ message: `${documentId}번 문서의 문서번호가 성공적으로 수정되었습니다.`, user: username });
+    res.status(200).json({ message: `${documentId}번 문서의 문서번호가 성공적으로 수정되었습니다.`});
 }catch(error){
     console.error("문서번호 수정 중 오류 발생", error );
-    res.status(500).json({ error: `${documentId}번 문서 번호 수정 중 오류 발생가 발생했습니다. ` });
+    res.status(500).json({ error: ` 문서 번호 수정 중 오류 발생가 발생했습니다.` });
 }
 
 };
 
 //문서정보 편집 - 관리팀 권한
 //문서 삭제 
-const deleteDoc = async (req, res) => {
+const deleteDocument = async (req, res) => {
     const { documentId } = req.body;
     try{
     if(!documentId){
@@ -178,4 +181,5 @@ module.exports = {
     addDocument,
     getAllDocument,
     editDocNumber,
+    deleteDocument,
 };
