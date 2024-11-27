@@ -129,7 +129,6 @@ const editDocNumber = async( req, res ) => {
     };
     const editNumber = await docNumManagement.update (
         {
-            //여기 칼럼 다 추가해서 업데이트 해보셈   
         docNumber : docNumber,
         username : userName,
         userposition : userposition,
