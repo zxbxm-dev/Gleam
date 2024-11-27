@@ -165,6 +165,47 @@ const deleteDocument = async (req, res) => {
 }
 }
 //문서 편집
+const editDocument = async (req, res) => {
+    const { documentId , docNumber, docTitle, team, userName, userposition } = req.body;
+
+    try{
+        //관리팀 권한 확인 
+        const checkUser = await docNumManagement.findOne({
+            where: { 
+                username: userName,
+            },
+            attributes: ['team'],
+        });
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>편집하려는 사용자의 팀정보 확인 :", checkUser);
+        
+        if(checkUser !== "관리팀"){
+           return res.status(403).json({ message: "문서 수정 권한이 없습니다." });
+        }
+        if(!documentId){
+            return res.status(404).json({ message: " 해당 문서번호와 일치하는 문서 정보를 찾을 수 없습니다." });
+        };
+
+        const updateDocument = await docNumManagement.update(
+            {   
+                docNumber: docNumber!== undefined? docNumber: docNumManagement.docNumber,
+                docTitle: docTitle!== undefined? docTitle: docNumManagement.docTitle,
+                team: team!== undefined? team: docNumManagement.team,
+                username: userName,
+                userposition: userposition,
+
+            },
+            {
+                where: { documentId : documentId}
+            },
+        )
+        res.status(200).json({ message: " 문서가 수정이 성공적으로 완료되었습니다." });
+
+    }catch(error){
+        console.error("문서 편집 중 오류 발생");
+         res.status(500).json({ error : " 문서 편집 중 오류가 발생했습니다. "});
+
+    }
+}
 
 
 
