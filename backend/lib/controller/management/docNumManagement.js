@@ -24,7 +24,7 @@ const getAllDocument = async( req, res ) => {
             const checketDpt = checkingUserDpt.department;
             const checkedTeam = checkingUserDpt.teams.map((team)=> team.name);
 
-            const documentsForManager = await docNumManagement.findAll({
+                   const documentsForManager = await docNumManagement.findAll({
                 where: {
                     team:{
                     [Op.in] : checkedTeam,
@@ -32,7 +32,7 @@ const getAllDocument = async( req, res ) => {
                 }
             });
 
-            if(documentsForManager){
+            if(!documentsForManager){
                 return res.status(404).json({ error : " 해당 사용자가 조회 가능한 하위 문서가 없습니다." });
             }
             res.status(200).json({ message: "사용자의 하위 팀문서/공용문서 조회완료" });
