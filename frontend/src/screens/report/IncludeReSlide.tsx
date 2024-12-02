@@ -29,32 +29,57 @@ const IncludeReSlide = () => {
     });
     // 문서 데이터 상태
     const [documents, setDocuments] = useState<Document[]>([]);
-    const [editModes, setEditModes] = useState(
-        documents.map(() => false) // 각 문서마다 false로 초기화
-    );
-    const [ismanagerEditMode, setIsManagerEditMode] = useState(false); // 관리부 - 편집 버튼 상태
+    // const [editModes, setEditModes] = useState(
+    //     documents.map(() => false) // 각 문서마다 false로 초기화
+    // );
+    const [ismanagerMode, setIsManagerMode] = useState(false); // 관리부 - 편집 버튼 상태
+    const [ismanagerEditMode, setIsManagerEditMode] = useState(false); // 관리부 - 수정 버튼 상태
     const [editDocumentId, setEditDocumentId] = useState<number | null>(null);
     const [selectedDocId, setSelectedDocId] = useState<number | null>(null);
-console.log(editDocumentId);
+    const [selectedDocTitle, setSelectedDocTitle] = useState<string | null>(null);
+    const [selectedDocNumber, setSelectedDocNumber] = useState<number | null>(null);
+    const [selectedDocType, setSelectedDocType] = useState<string | null>(null);
+    const [teamEditModes, setTeamEditModes] = useState<boolean[]>([]); // 팀 문서 편집 모드
+    const [publicEditModes, setPublicEditModes] = useState<boolean[]>([]); // 공용 문서 편집 모드
 
-const handleManagEditClick = (documentId: number) => {
-    setSelectedDocId(documents[documentId].documentId);
-    // setEditModes((prev) => {
-    //     const newEditModes = [...prev];
-    //     newEditModes[documentId] = !newEditModes[documentId];
-    //     setEditDocumentId(documentId);
-    //     return newEditModes;
-    // });
-};
-
-    const handleEditClick = (documentId: number) => {
+    //관리자 수정 클릭
+    const handleManagEditClick = (documentId: number) => {
         setSelectedDocId(documents[documentId].documentId);
-        setEditModes((prev) => {
-            const newEditModes = [...prev];
-            newEditModes[documentId] = !newEditModes[documentId];
-            setEditDocumentId(documentId);
-            return newEditModes;
-        });
+        setIsManagerEditMode(true);
+        setIsPopupOpen(true);
+    };;
+
+    //선택된 아이디에 따른 각 상태 저장
+    useEffect(() => {
+        if (selectedDocId !== null) {
+            const selectedDoc = documents.find(doc => doc.documentId === selectedDocId);
+            if (selectedDoc) {
+                setSelectedDocTitle(selectedDoc.docTitle);
+                setSelectedDocNumber(selectedDoc.docNumber);
+                setSelectedDocType(selectedDoc.docType);
+            }
+        }
+    }, [selectedDocId, documents]);
+
+    //일반 사용자 - 편집
+    const handleEditClick = (documentId: number, docType: string) => {
+        setSelectedDocId(documents[documentId].documentId);
+
+        if (docType === "Team") {
+            setSelectedDocType('Team');
+            setTeamEditModes((prev) => {
+                const newEditModes = [...prev];
+                newEditModes[documentId] = !newEditModes[documentId];
+                return newEditModes;
+            });
+        } else if (docType === "Public") {
+            setSelectedDocType('Public');
+            setPublicEditModes((prev) => {
+                const newEditModes = [...prev];
+                newEditModes[documentId] = !newEditModes[documentId];
+                return newEditModes;
+            });
+        }
     };
 
     // 컴포넌트 렌더링 시 문서 데이터 가져오기
@@ -67,7 +92,8 @@ const handleManagEditClick = (documentId: number) => {
 
         try {
             const response = await GetDocuments(userID);
-            setDocuments(response.data.documents);
+            console.log(response.data.documents);
+            setDocuments(response.data.documents || []);
         } catch (error) {
             console.error("문서 조회 실패:", error);
         }
@@ -79,18 +105,29 @@ const handleManagEditClick = (documentId: number) => {
 
     const handleCancelClick = () => {
         setIsPopupOpen(false);
+        setIsManagerEditMode(false);
     }
 
-    const handleInputChange = (e: any) => {
-        const { name, value } = e.target;
+    //input
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
 
-        const updatedValue = name === 'docNumber' ? Number(value) : value;
-
-        setAddDocument((prev) => ({
-            ...prev,
-            [name]: updatedValue,
-        }));
+        if (ismanagerEditMode) {
+            if (name === "docTitle") {
+                setSelectedDocTitle(value);
+            } else if (name === "docNumber") {
+                setSelectedDocNumber(value ? Number(value) : null);
+            } else if (name === "docType") {
+                setSelectedDocType(value);
+            }
+        } else {
+            setAddDocument(prevState => ({
+                ...prevState,
+                [name]: name === "docNumber" ? (value ? Number(value) : null) : value
+            }));
+        }
     };
+
 
     const handlePopup = () => {
         setIsSuccessPopupOpen(false);
@@ -116,26 +153,31 @@ const handleManagEditClick = (documentId: number) => {
             alert("문서 추가에 실패했습니다.");
         }
     };
-
-
-    const handleNumberIncrease = (index: number) => {
+    // 스피너 증가
+    const handleNumberIncrease = (index: number, docType: string) => {
         setDocuments((prevDocuments) => {
-            const updatedDocuments = [...prevDocuments];
-            updatedDocuments[index] = {
-                ...updatedDocuments[index],
-                docNumber: updatedDocuments[index].docNumber + 1,
-            };
+            // 해당 문서가 맞는지 체크하여 증가시킴
+            const updatedDocuments = prevDocuments.map((doc, i) => {
+                if (i === index && selectedDocType === docType) {
+                    return { ...doc, docNumber: doc.docNumber + 1 };
+                }
+                return doc;
+            });
             return updatedDocuments;
         });
     };
 
-    const handleNumberDecrease = (index: number) => {
+    // 스피너 감소
+    const handleNumberDecrease = (index: number, docType: string) => {
         setDocuments((prevDocuments) => {
-            const updatedDocuments = [...prevDocuments];
-            updatedDocuments[index] = {
-                ...updatedDocuments[index],
-                docNumber: Math.max(updatedDocuments[index].docNumber - 1, 0),
-            };
+            // 해당 문서가 맞는지 체크하여 감소시킴
+            const updatedDocuments = prevDocuments.map((doc, i) => {
+
+                if (i === index && selectedDocType === docType) {
+                    return { ...doc, docNumber: Math.max(doc.docNumber - 1, 0) };
+                }
+                return doc;
+            });
             return updatedDocuments;
         });
     };
@@ -143,6 +185,8 @@ const handleManagEditClick = (documentId: number) => {
     //문서번호 수정
     const handleEditConfirm = async (index: any) => {
         const updatedDoc = documents[index];
+        console.log(updatedDoc);
+
         const updateData = {
             docTitle: updatedDoc.docTitle,
             docNumber: updatedDoc.docNumber,
@@ -154,20 +198,23 @@ const handleManagEditClick = (documentId: number) => {
             const response = await EditDocuments(selectedDocId, updateData);
             console.log("문서 번호 수정 성공:", response.data);
             fetchDocuments();
+            // setEditModes((prevEditModes) => {
+            //     const newEditModes = [...prevEditModes];
+            //     newEditModes[index] = false;
+            //     return newEditModes;
+            // });
         } catch (error) {
             console.error("문서 번호 수정 실패:", error);
             alert("문서 번호 수정에 실패했습니다.");
         }
     };
 
-
-
     //관리팀 - 문서번호 수정
-    const handleManagerEdit = async (index: any) => {
-        const updatedDoc = documents[index];
+    const handleManagerEdit = async () => {
         const updateData = {
-            docTitle: updatedDoc.docTitle,
-            docNumber: updatedDoc.docNumber,
+            docTitle: selectedDocTitle,
+            docNumber: selectedDocNumber,
+            docType: selectedDocType,
             userName: user.username,
             userposition: user.position,
         };
@@ -192,14 +239,14 @@ const handleManagEditClick = (documentId: number) => {
             <div className={`additional_content ${slideVisible ? 'visible' : ''}`}>
                 {user.department === "관리부" &&
                     <div className="modalplusbtn">
-                        {ismanagerEditMode ? (
+                        {ismanagerMode ? (
                             <>
                                 <button onClick={() => setIsPopupOpen(true)}>추가</button>
                                 <button>삭제</button>
-                                <button onClick={() => setIsManagerEditMode(false)}>닫기</button>
+                                <button onClick={() => setIsManagerMode(false)}>닫기</button>
                             </>
                         ) : (
-                            <button onClick={() => setIsManagerEditMode(true)}>편집</button>
+                            <button onClick={() => setIsManagerMode(true)}>편집</button>
                         )}
                     </div>
                 }
@@ -223,17 +270,17 @@ const handleManagEditClick = (documentId: number) => {
                                                 <div className="DocTitle">{doc.docTitle}</div>
                                                 <div className="DocNum">
                                                     {doc.docNumber}
-                                                    {editModes[index] && (
+                                                    {teamEditModes[index] && (
                                                         <div className="docNumControls">
                                                             <button
                                                                 className="num-up-button"
-                                                                onClick={() => handleNumberIncrease(index)}
+                                                                onClick={() => handleNumberIncrease(index, "Team")}
                                                             >
                                                                 <img src={spinnerTop} />
                                                             </button>
                                                             <button
                                                                 className="num-down-button"
-                                                                onClick={() => handleNumberDecrease(index)}
+                                                                onClick={() => handleNumberDecrease(index, "Team")}
                                                             >
                                                                 <img src={spinnerBtm} />
                                                             </button>
@@ -246,14 +293,14 @@ const handleManagEditClick = (documentId: number) => {
                                                 <button
                                                     className="edit-button"
                                                     onClick={() =>
-                                                        ismanagerEditMode
-                                                            ? setIsPopupOpen(true)
-                                                            : editModes[index]
+                                                        ismanagerMode
+                                                            ? handleManagEditClick(index)
+                                                            : teamEditModes[index]
                                                                 ? handleEditConfirm(index)
-                                                                : handleEditClick(index)
+                                                                : handleEditClick(index, "Team")
                                                     }
                                                 >
-                                                    {ismanagerEditMode ? "수정" : editModes[index] ? "확인" : "편집"}
+                                                    {ismanagerMode ? "수정" : teamEditModes[index] ? "확인" : "편집"}
                                                 </button>
                                             </div>
                                         </div>
@@ -282,17 +329,17 @@ const handleManagEditClick = (documentId: number) => {
                                                 <div className="DocTitle">{doc.docTitle}</div>
                                                 <div className="DocNum">
                                                     {doc.docNumber}
-                                                    {editModes[index] && (
+                                                    {publicEditModes[index] && (
                                                         <div className="docNumControls">
                                                             <button
                                                                 className="num-up-button"
-                                                                onClick={() => handleNumberIncrease(index)}
+                                                                onClick={() => handleNumberIncrease(doc.documentId, "Public")}
                                                             >
                                                                 <img src={spinnerTop} />
                                                             </button>
                                                             <button
                                                                 className="num-down-button"
-                                                                onClick={() => handleNumberDecrease(index)}
+                                                                onClick={() => handleNumberDecrease(doc.documentId, "Public")}
                                                             >
                                                                 <img src={spinnerBtm} />
                                                             </button>
@@ -305,14 +352,14 @@ const handleManagEditClick = (documentId: number) => {
                                                 <button
                                                     className="edit-button"
                                                     onClick={() =>
-                                                        ismanagerEditMode
-                                                            ? handleEditClick(index)
-                                                            : editModes[index]
+                                                        ismanagerMode
+                                                            ? handleManagEditClick(index)
+                                                            : publicEditModes[index]
                                                                 ? handleEditConfirm(index)
-                                                                : handleEditClick(index)
+                                                                : handleEditClick(index, "Public")
                                                     }
                                                 >
-                                                    {ismanagerEditMode ? "수정" : editModes[index] ? "확인" : "편집"}
+                                                    {ismanagerMode ? "수정" : publicEditModes[index] ? "확인" : "편집"}
                                                 </button>
                                             </div>
                                         </div>
@@ -330,19 +377,20 @@ const handleManagEditClick = (documentId: number) => {
                 isOpen={isPopupOpen} // 모달 열림 상태
                 onClose={() => {
                     setIsPopupOpen(false); // 모달 닫기
+                    setIsManagerEditMode(false);
                 }}
                 header="문서 추가"
                 headerTextColor="#fff"
                 footer1="취소"
-                footer2={ismanagerEditMode?"수정" :"추가"}
+                footer2={ismanagerEditMode ? "수정" : "추가"}
                 footer1Class="gray-btn"
                 footer2Class="back-green-btn"
                 height="235px"
                 width="350px"
                 onFooter1Click={handleCancelClick}
                 onFooter2Click={() => {
-                    if (ismanagerEditMode && selectedDocId !== null) {
-                        handleManagerEdit(selectedDocId);
+                    if (ismanagerEditMode) {
+                        handleManagerEdit();
                     } else {
                         handleSubmit();
                     }
@@ -361,7 +409,7 @@ const handleManagEditClick = (documentId: number) => {
                                 id="team"
                                 name="docType"
                                 value="Team"
-                                checked={addDocument.docType === "Team" || (ismanagerEditMode && editDocumentId !== null && documents[editDocumentId]?.docType === "Team")}
+                                checked={ismanagerEditMode ? selectedDocType === "Team" : addDocument.docType === "Team"}
                                 onChange={handleInputChange}
                             />
                             <label htmlFor="team" className="docetc">팀 문서</label>
@@ -371,7 +419,7 @@ const handleManagEditClick = (documentId: number) => {
                                 id="share"
                                 name="docType"
                                 value="Public"
-                                checked={addDocument.docType === "Public" || (ismanagerEditMode && editDocumentId !== null && documents[editDocumentId]?.docType === "Public")}
+                                checked={ismanagerEditMode ? selectedDocType === "Public" : addDocument.docType === "Public"}
                                 onChange={handleInputChange}
                             />
                             <label htmlFor="share" className="docetc">공용 문서</label>
@@ -383,7 +431,7 @@ const handleManagEditClick = (documentId: number) => {
                                 type="text"
                                 id="docTitle"
                                 name="docTitle"
-                                value={ismanagerEditMode && selectedDocId !== null ? documents[selectedDocId]?.docTitle : addDocument.docNumber}
+                                value={ismanagerEditMode ? (selectedDocTitle ?? '') : addDocument.docTitle}
                                 required
                                 placeholder="문서 제목을 입력해 주세요."
                                 onChange={handleInputChange}
@@ -396,7 +444,7 @@ const handleManagEditClick = (documentId: number) => {
                                 type="text"
                                 id="docNumber"
                                 name="docNumber"
-                                value={ismanagerEditMode && selectedDocId !== null ? documents[selectedDocId]?.docNumber : addDocument.docNumber}
+                                value={ismanagerEditMode ? (selectedDocNumber ?? '') : addDocument.docNumber}
                                 required
                                 placeholder="시작될 문서 번호를 입력해 주세요."
                                 onChange={handleInputChange}
