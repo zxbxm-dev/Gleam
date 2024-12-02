@@ -35,8 +35,9 @@ const getAllDocument = async( req, res ) => {
             if(documentsForManager){
                 return res.status(404).json({ error : " 해당 사용자가 조회 가능한 하위 문서가 없습니다." });
             }
-            res.status(200).json({ message: " 해당 사용자의 하위 팀문서/공용문서 조회 결과 : ", documentsForManager });
+            res.status(200).json({ message: "사용자의 하위 팀문서/공용문서 조회완료" });
         }else{
+
         //대표이사님, 이사님의 문서번호관리 권한은 별도로 설정되어있지 않습니다.
         //팀원 문서 조회 시
         const documents = await docNumManagement.findAll({
@@ -52,7 +53,7 @@ const getAllDocument = async( req, res ) => {
             return res.status(404).json({ error : "해당 사용자가 조회 가능한 문서가 없습니다."});
         };
 
-        res.status(200).json({ message : "해당 사용자의 팀문서/공용문서 조회 결과 : ", documents});
+        res.status(200).json({ message : "사용자의 팀문서/공용문서 조회완료", documents});
     }
 
     }catch(error){
@@ -143,12 +144,12 @@ const editDocNumber = async( req, res ) => {
     res.status(200).json({ message: `${documentId}번 문서의 문서번호가 성공적으로 수정되었습니다.`});
 }catch(error){
     console.error("문서번호 수정 중 오류 발생", error );
-    res.status(500).json({ error: ` 문서 번호 수정 중 오류 발생가 발생했습니다.` });
+    res.status(500).json({ error: ` 문서 번호 수정 중 오류가 발생했습니다.` });
 }
 
 };
 
-//문서정보 편집 - 관리팀 권한
+//문서정보 편집 - 관리팀 권한 -----------------------------------------------------------------------------------------------------
 //문서 삭제 
 const deleteDocument = async (req, res) => {
     const { documentId } = req.body;
@@ -163,24 +164,13 @@ const deleteDocument = async (req, res) => {
     console.error("문서 삭제 중 오류 발생", error);
     res.status(500).json({ error: " 문서 삭제에 실패했습니다." });
 }
-}
+};
+
 //문서 편집
 const editDocument = async (req, res) => {
-    const { documentId , docNumber, docTitle, team, userName, userposition } = req.body;
+    const { documentId , docNumber, docTitle, team } = req.body;
 
     try{
-        //관리팀 권한 확인 
-        const checkUser = await docNumManagement.findOne({
-            where: { 
-                username: userName,
-            },
-            attributes: ['team'],
-        });
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>편집하려는 사용자의 팀정보 확인 :", checkUser);
-        
-        if(checkUser !== "관리팀"){
-           return res.status(403).json({ message: "문서 수정 권한이 없습니다." });
-        }
         if(!documentId){
             return res.status(404).json({ message: " 해당 문서번호와 일치하는 문서 정보를 찾을 수 없습니다." });
         };
@@ -190,15 +180,15 @@ const editDocument = async (req, res) => {
                 docNumber: docNumber!== undefined? docNumber: docNumManagement.docNumber,
                 docTitle: docTitle!== undefined? docTitle: docNumManagement.docTitle,
                 team: team!== undefined? team: docNumManagement.team,
-                username: userName,
-                userposition: userposition,
+                username: "", 
+                userposition: "",
 
             },
             {
                 where: { documentId : documentId}
             },
         )
-        res.status(200).json({ message: " 문서가 수정이 성공적으로 완료되었습니다." });
+        res.status(200).json({ message: " 문서가 수정이 성공적으로 완료되었습니다.", updateDocument: updateDocument});
 
     }catch(error){
         console.error("문서 편집 중 오류 발생");
@@ -209,7 +199,7 @@ const editDocument = async (req, res) => {
 
 
 
-//사용자 부서 확인
+//사용자 부서 확인 --------------------------------------------------------------------------------------------------------------
 async function checkUserDpt(userDpt) {
     const departmentData = Object.values(organizationMapping).find(
          (deptNum) => deptNum.department === userDpt
@@ -222,4 +212,5 @@ module.exports = {
     getAllDocument,
     editDocNumber,
     deleteDocument,
+    editDocument,
 };
