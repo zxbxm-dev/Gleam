@@ -177,25 +177,24 @@ const editDocument = async (req, res) => {
         return res.status(404).json({ message: "해당 문서번호와 일치하는 문서정보를 찾을 수 없습니다."})
     };
 
-    const updateData = await docNumManagement.update(
+     //where 조건 설정
+     const whereCondition =  docType === 'Team'
+     ? { docTitle : docTitle }
+     : { documentId : documentId }
+
+    const updateData = 
         {   
             docNumber: docNumber!== undefined? docNumber: docNumManagement.docNumber,
             docTitle: newDocTitle,
             username: "", 
             userposition: "",
-        });
-        
-    //where 조건 설정
-    const whereCondition =  docType === 'Team'
-        ? { doctTitle : docTitle }
-        : { documentId : documentId }
+        };
     
     const updateDocument = await docNumManagement.update( updateData, { where : whereCondition });
     const successMessage = docType === 'Team'
     ?  "팀 문서 수정이 완료되었습니다."
     : "공용 문서 수정이 완료되었습니다."
-
-    res.status(200).json({ message: successMessage}, updateDocument );
+    res.status(200).json({ message: successMessage, updateDocument} );
 
     }catch(error){
         const failMessage = docType === 'Team'
