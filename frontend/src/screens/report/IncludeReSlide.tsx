@@ -117,7 +117,6 @@ const IncludeReSlide = () => {
     try {
       const response = await GetDocuments(userID);
       setDocuments(response.data.documents || []);
-      console.log(response.data);
     } catch (error) {
       console.error("문서 조회 실패:", error);
     }
@@ -241,7 +240,7 @@ const IncludeReSlide = () => {
       documentId: selectItem,
       docNumber: selectedDocNumber,
       docTitle: staticTitle,
-      docNewTitle: selectedDocTitle,
+      newDocTitle: selectedDocTitle,
       docType: selectedDocType,
     };
 
@@ -254,10 +253,6 @@ const IncludeReSlide = () => {
       alert("문서 번호 수정에 실패했습니다.");
     }
   };
-  useEffect(() => {
-    console.log(staticTitle);
-    console.log(selectedDocTitle);
-  }, [selectedDocTitle]);
 
   const up = (id: number) => {
     setDocuments((prevDocuments) =>
@@ -285,10 +280,9 @@ const IncludeReSlide = () => {
 
   const handleDeleteDocument = async () => {
     const data = { documentId: selectItem };
-    console.log(data);
     const res = await DeleteDocument(data);
 
-    console.log(res.data);
+    console.log("삭제 성공? : ", res.data);
   };
 
   return (
