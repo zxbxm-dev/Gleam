@@ -17,7 +17,7 @@ const EditDocuments = async (selectedDocId, updateData) => {
 
 //관리팀 - 문서수정
 const ManagerEditDocuments = async (updateData) => {
-  return api.patch(`/editDocument/`, updateData);
+  return api.patch(`/editDocument`, updateData);
 };
 
 const DeleteDocument = async (selectedDocId) => {
