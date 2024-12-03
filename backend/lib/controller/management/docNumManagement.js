@@ -152,17 +152,38 @@ const editDocNumber = async( req, res ) => {
 //문서정보 편집 - 관리팀 권한 -----------------------------------------------------------------------------------------------------
 //문서 삭제 
 const deleteDocument = async (req, res) => {
-    const { documentId } = req.body;
+    const { documentId, docType, docTitle } = req.body;
     try{
-    if(!documentId){
-        return res.status(404).json({ message : "해당 문서번호와 일치하는 문서 정보를 찾을 수 없습니다." });
+    
+    //유효성검사 
+    if(docType == 'Team' && !docTitle){
+        return res.status(404).json({message : "해당 문서제목과 일치하는 문서 정보를 찾을 수 없습니다." });
+    }else if( docType == 'Public' && !documentId){
+        return res.status(404).json({message: "해당하는 문서번호와 일치하는 문서정보를 찾을 수 없습니다." });
     };
-    const deleteDocument = await docNumManagement.findByPk(documentId);
-    await deleteDocument.destroy();
-    res.status(200).json({ message: "문서를 성공적으로 삭제했습니다." });
+
+    //where 조건 설정
+    const whereCondition = docType === 'Team'
+    ? { docTitle : docTitle}
+    : { documentId: documentId }
+
+    const successMessage = docType === 'Team'
+    ? "선택한 팀문서가 성공적으로 삭제되었습니다."
+    : "선택한 공용문서가 성공적으로 삭제되었습니다."
+
+    const deleteDocument = await docNumManagement.destroy({where : whereCondition});
+    if( deleteDocument === 0 ){ 
+        return res.status(404).json({ message: "삭제할 문서를 찾을 수 없습니다." });
+    }
+    res.status(200).json({ message: successMessage });
+
 }catch(error){
-    console.error("문서 삭제 중 오류 발생", error);
-    res.status(500).json({ error: " 문서 삭제에 실패했습니다." });
+    const failMessage = docType === 'Team'
+    ? " 팀문서 삭제 중 오류가 발생했습니다."
+    : " 공용문서 삭제 중 오류가 발생했습니다."
+    
+    console.error( failMessage, error );
+    res.status(500).json({ message: failMessage });
 }
 };
 
@@ -194,7 +215,7 @@ const editDocument = async (req, res) => {
     const successMessage = docType === 'Team'
     ?  "팀 문서 수정이 완료되었습니다."
     : "공용 문서 수정이 완료되었습니다."
-    res.status(200).json({ message: successMessage, updateDocument} );
+    res.status(200).json({ message: successMessage} );
 
     }catch(error){
         const failMessage = docType === 'Team'
@@ -222,5 +243,4 @@ module.exports = {
     editDocNumber,
     deleteDocument,
     editDocument,
-    deleteDocument,
 };
