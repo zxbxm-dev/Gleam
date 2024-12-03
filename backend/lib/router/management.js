@@ -38,7 +38,10 @@ module.exports = (app) => {
   router.get('/getAllDocument/:userID', docNumManagement.getAllDocument);
   //문서번호 수정 
   router.put('/updatedocuments/:selectedId', docNumManagement.editDocNumber);
-
+  //문서 수정
+  router.patch('/editDocument',docNumManagement.editDocument);
+  //문서 삭제
+  router.delete('/deleteDocument', docNumManagement.deleteDocument);
 
   app.use(
     "/uploads",

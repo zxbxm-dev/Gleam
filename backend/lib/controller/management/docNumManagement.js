@@ -21,7 +21,7 @@ const getAllDocument = async( req, res ) => {
         //부서장 문서 조회 시 
         
             const checkingUserDpt = await checkUserDpt(userDpt);
-            const checketDpt = checkingUserDpt.department;
+            const checkedDpt = checkingUserDpt.department;
             const checkedTeam = checkingUserDpt.teams.map((team)=> team.name);
 
                    const documentsForManager = await docNumManagement.findAll({
@@ -30,16 +30,16 @@ const getAllDocument = async( req, res ) => {
                     [Op.in] : checkedTeam,
                     }
                 }
-            });
+            }) ;
 
             if(!documentsForManager){
                 return res.status(404).json({ error : " 해당 사용자가 조회 가능한 하위 문서가 없습니다." });
             }
             res.status(200).json({ message: "사용자의 하위 팀문서/공용문서 조회완료" });
         }else{
-
-        //대표이사님, 이사님의 문서번호관리 권한은 별도로 설정되어있지 않습니다.
+            
         //팀원 문서 조회 시
+        //대표이사님, 이사님의 문서번호관리 권한은 별도로 설정되어있지 않습니다.
         const documents = await docNumManagement.findAll({
             where : {
                 [Op.or]:[
@@ -123,7 +123,7 @@ const editDocNumber = async( req, res ) => {
     const { selectedId } = req.params;
     const { docTitle, docNumber, userName, userposition } = req.body;
     const documentId = req.params.selectedId; 
-    try{
+    try{      
       
     if(!documentId){
         return res.status(404).json({ message : "해당 문서번호와 일치하는 문서 정보를 찾을 수 없습니다." });
@@ -188,7 +188,7 @@ const editDocument = async (req, res) => {
                 where: { documentId : documentId}
             },
         )
-        res.status(200).json({ message: " 문서가 수정이 성공적으로 완료되었습니다.", updateDocument: updateDocument});
+        res.status(200).json({ message: " 문서 수정이 성공적으로 완료되었습니다.", updateDocument: updateDocument});
 
     }catch(error){
         console.error("문서 편집 중 오류 발생");
@@ -213,4 +213,5 @@ module.exports = {
     editDocNumber,
     deleteDocument,
     editDocument,
+    deleteDocument,
 };
