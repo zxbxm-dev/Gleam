@@ -168,7 +168,7 @@ const deleteDocument = async (req, res) => {
 
 //문서 편집
 const editDocument = async (req, res) => {
-    const { documentId , docNumber, docTitle, team } = req.body;
+    const { documentId , docNumber, docTitle} = req.body;
 
     try{
         if(!documentId){
@@ -179,7 +179,6 @@ const editDocument = async (req, res) => {
             {   
                 docNumber: docNumber!== undefined? docNumber: docNumManagement.docNumber,
                 docTitle: docTitle!== undefined? docTitle: docNumManagement.docTitle,
-                team: team!== undefined? team: docNumManagement.team,
                 username: "", 
                 userposition: "",
 
