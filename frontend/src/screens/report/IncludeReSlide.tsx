@@ -57,6 +57,7 @@ const IncludeReSlide = () => {
   const [publicEditModes, setPublicEditModes] = useState<boolean[]>([]); // 공용 문서 편집 모드
   const [docNumber, setdocNumber] = useState<number | null>(null);
   const [selectItem, setSelectItem] = useState<number | null>(null);
+  const [staticTitle, setStaticTitle] = useState<string | null>(null);
 
   //관리자 수정 클릭
   const handleManagEditClick = (documentId: number) => {
@@ -77,6 +78,7 @@ const IncludeReSlide = () => {
       );
       if (selectedDoc) {
         setSelectedDocTitle(selectedDoc.docTitle);
+        setStaticTitle(selectedDoc.docTitle);
         setSelectedDocNumber(selectedDoc.docNumber);
         setSelectedDocType(selectedDoc.docType);
       }
@@ -115,6 +117,7 @@ const IncludeReSlide = () => {
     try {
       const response = await GetDocuments(userID);
       setDocuments(response.data.documents || []);
+      console.log(response.data);
     } catch (error) {
       console.error("문서 조회 실패:", error);
     }
@@ -237,8 +240,9 @@ const IncludeReSlide = () => {
     const updateData = {
       documentId: selectItem,
       docNumber: selectedDocNumber,
-      docTitle: selectedDocTitle,
-      team: selectedDocType,
+      docTitle: staticTitle,
+      docNewTitle: selectedDocTitle,
+      docType: selectedDocType,
     };
 
     try {
@@ -250,6 +254,10 @@ const IncludeReSlide = () => {
       alert("문서 번호 수정에 실패했습니다.");
     }
   };
+  useEffect(() => {
+    console.log(staticTitle);
+    console.log(selectedDocTitle);
+  }, [selectedDocTitle]);
 
   const up = (id: number) => {
     setDocuments((prevDocuments) =>
@@ -277,6 +285,7 @@ const IncludeReSlide = () => {
 
   const handleDeleteDocument = async () => {
     const data = { documentId: selectItem };
+    console.log(data);
     const res = await DeleteDocument(data);
 
     console.log(res.data);
@@ -314,7 +323,14 @@ const IncludeReSlide = () => {
                 <button onClick={() => setIsManagerMode(false)}>닫기</button>
               </>
             ) : (
-              <button onClick={() => setIsManagerMode(true)}>편집</button>
+              <button
+                onClick={() => {
+                  setIsManagerMode(true);
+                  setTeamEditModes((prev) => prev.map(() => false));
+                }}
+              >
+                편집
+              </button>
             )}
           </div>
         )}
