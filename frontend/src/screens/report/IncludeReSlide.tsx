@@ -16,6 +16,7 @@ import {
 } from "../../services/report/documentServices";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/atoms";
+import { set } from "react-hook-form";
 
 interface Document {
   documentId: number;
@@ -58,6 +59,7 @@ const IncludeReSlide = () => {
   const [docNumber, setdocNumber] = useState<number | null>(null);
   const [selectItem, setSelectItem] = useState<number | null>(null);
   const [staticTitle, setStaticTitle] = useState<string | null>(null);
+  const [staticDocNumber, setStaticDocNumber] = useState<number | null>(null);
 
   //관리자 수정 클릭
   const handleManagEditClick = (documentId: number) => {
@@ -79,6 +81,7 @@ const IncludeReSlide = () => {
       if (selectedDoc) {
         setSelectedDocTitle(selectedDoc.docTitle);
         setStaticTitle(selectedDoc.docTitle);
+        setStaticDocNumber(selectedDoc.docNumber);
         setSelectedDocNumber(selectedDoc.docNumber);
         setSelectedDocType(selectedDoc.docType);
       }
@@ -130,6 +133,7 @@ const IncludeReSlide = () => {
     setIsPopupOpen(false);
     setIsManagerEditMode(false);
     setSelectedDocTitle(staticTitle);
+    setSelectedDocNumber(staticDocNumber);
   };
 
   //input
@@ -275,16 +279,19 @@ const IncludeReSlide = () => {
     );
   };
 
-  const selectBox = (id: number) => {
+  const selectBox = (id: number, doc: any) => {
+    setStaticTitle(doc.docTitle);
+    setSelectedDocType(doc.docType);
     setSelectItem(id);
   };
 
   const handleDeleteDocument = async () => {
     const data = {
       documentId: selectItem,
-      documentType: selectedDocType,
-      documentTitle: staticTitle,
+      docType: selectedDocType,
+      docTitle: staticTitle,
     };
+    console.log(data);
     const res = await DeleteDocument(data);
 
     console.log("삭제 성공? : ", res.data);
@@ -362,7 +369,7 @@ const IncludeReSlide = () => {
                             : "TeamDoc"
                         }
                         onClick={() => {
-                          selectBox(doc.documentId);
+                          selectBox(doc.documentId, doc);
                         }}
                       >
                         <div className="DocTitle">{doc.docTitle}</div>
@@ -450,7 +457,7 @@ const IncludeReSlide = () => {
                             : "TeamDoc"
                         }
                         onClick={() => {
-                          selectBox(doc.documentId);
+                          selectBox(doc.documentId, doc);
                         }}
                       >
                         <div className="DocTitle">{doc.docTitle}</div>
@@ -524,6 +531,7 @@ const IncludeReSlide = () => {
           setIsPopupOpen(false); // 모달 닫기
           setIsManagerEditMode(false);
           setSelectedDocTitle(staticTitle);
+          setSelectedDocNumber(staticDocNumber);
         }}
         header="문서 추가"
         headerTextColor="#fff"

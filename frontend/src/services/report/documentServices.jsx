@@ -20,8 +20,8 @@ const ManagerEditDocuments = async (updateData) => {
   return api.patch(`/editDocument`, updateData);
 };
 
-const DeleteDocument = async (selectedDocId) => {
-  return api.delete(`/deleteDocument`, selectedDocId);
+const DeleteDocument = async (data) => {
+  return api.delete(`/deleteDocument`, data);
 };
 
 export {
