@@ -129,6 +129,7 @@ const IncludeReSlide = () => {
   const handleCancelClick = () => {
     setIsPopupOpen(false);
     setIsManagerEditMode(false);
+    setSelectedDocTitle(staticTitle);
   };
 
   //input
@@ -279,7 +280,11 @@ const IncludeReSlide = () => {
   };
 
   const handleDeleteDocument = async () => {
-    const data = { documentId: selectItem };
+    const data = {
+      documentId: selectItem,
+      documentType: selectedDocType,
+      documentTitle: staticTitle,
+    };
     const res = await DeleteDocument(data);
 
     console.log("삭제 성공? : ", res.data);
@@ -518,6 +523,7 @@ const IncludeReSlide = () => {
         onClose={() => {
           setIsPopupOpen(false); // 모달 닫기
           setIsManagerEditMode(false);
+          setSelectedDocTitle(staticTitle);
         }}
         header="문서 추가"
         headerTextColor="#fff"
