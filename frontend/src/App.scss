@@ -3,29 +3,29 @@
 
 // fonts
 @font-face {
-  font-family: 'Noto sans KR-light';
-  src: url('./assets/fonts/NotoSansKR-Light.ttf');
+  font-family: "Noto sans KR-light";
+  src: url("./assets/fonts/NotoSansKR-Light.ttf");
 }
 
 @font-face {
-  font-family: 'Noto sans KR-Regular';
-  src: url('./assets/fonts/NotoSansKR-Regular.ttf');
+  font-family: "Noto sans KR-Regular";
+  src: url("./assets/fonts/NotoSansKR-Regular.ttf");
 }
 
 @font-face {
-  font-family: 'Noto sans KR-Medium';
-  src: url('./assets/fonts/NotoSansKR-Medium.ttf');
+  font-family: "Noto sans KR-Medium";
+  src: url("./assets/fonts/NotoSansKR-Medium.ttf");
 }
 
 @font-face {
-  font-family: 'Noto sans KR-Bold';
-  src: url('./assets/fonts/NotoSansKR-Bold.ttf');
+  font-family: "Noto sans KR-Bold";
+  src: url("./assets/fonts/NotoSansKR-Bold.ttf");
 }
 
 :root {
   // colors
   --light-color: #ffffff;
-  --chainlinker-color: #76CB7E;
+  --chainlinker-color: #76cb7e;
   // typography
   --font-family-Noto-L: "Noto sans KR-Light";
   --font-family-Noto-R: "Noto sans KR-Regular";
@@ -43,9 +43,9 @@
 // color mode toggle mixins
 @mixin lightMode {
   --primary-color: rgba(69, 197, 82, 0.75);
-  --secondary-color: #FBFBFB;
-  --background-color: #FBFBFB;
-  --side-link-hover-color: #F5F5F5;
+  --secondary-color: #fbfbfb;
+  --background-color: #fbfbfb;
+  --side-link-hover-color: #f5f5f5;
   --side-link-click-color: rgba(221, 221, 221, 0.37);
   --side-text-color: #000;
   --base-text-color: #676767;
@@ -69,7 +69,6 @@ body {
 
   @include lightMode();
 }
-
 
 a {
   text-decoration: none;
@@ -119,7 +118,7 @@ ul {
     gap: 5px;
 
     .main_header {
-      color: #8F8F8F;
+      color: #8f8f8f;
       font-family: var(--font-family-Noto-R);
     }
   }
@@ -141,7 +140,7 @@ ul {
     .container {
       height: 84vh;
       background-color: white;
-      border: 1px solid #DEDEDE;
+      border: 1px solid #dedede;
       border-radius: 10px;
       padding: 39px 40px 30px 40px;
       overflow: hidden;
@@ -155,14 +154,14 @@ ul {
       .header_name {
         font-family: var(--font-family-Noto-B);
         font-size: 32px;
-        color: #C7C7C7;
+        color: #c7c7c7;
         margin-top: 15px;
       }
 
       .header_name_sm {
         font-family: var(--font-family-Noto-R);
         font-size: 16px;
-        color: #C7C7C7;
+        color: #c7c7c7;
         margin-top: 15px;
       }
 
@@ -173,19 +172,19 @@ ul {
       .input_form {
         width: 350px;
         height: 40px;
-        border: 1px solid #DEDEDE;
+        border: 1px solid #dedede;
         border-radius: 10px;
         padding: 10px;
         padding-right: 30px;
       }
 
       .input_form:hover {
-        border: 1px solid #DEDEDE;
+        border: 1px solid #dedede;
       }
 
       .input_form:focus-visible {
         outline: none !important;
-        border: 1px solid #DEDEDE;
+        border: 1px solid #dedede;
       }
 
       .search-icon {
@@ -199,7 +198,6 @@ ul {
     }
 
     .main_header2 {
-
       .header_name_bg {
         font-family: var(--font-family-Noto-M);
         font-size: 32px;
@@ -237,7 +235,6 @@ ul {
     }
 
     .pagination li {
-
       &:active,
       &.active {
         background-color: rgba(199, 199, 199, 0.75);
@@ -259,7 +256,7 @@ ul {
     width: 460px;
     height: 30px;
     font-size: 14px;
-    background-color: #45C552;
+    background-color: #45c552;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
     cursor: pointer;
@@ -309,7 +306,7 @@ ul {
     background-color: #fff;
     font-size: 12px;
     padding: 0 15px;
-    box-shadow: 0px 0px 5px #D9D9D9;
+    box-shadow: 0px 0px 5px #d9d9d9;
     z-index: 999;
 
     &.visible {
@@ -365,7 +362,6 @@ ul {
           width: 100%;
         }
       }
-
     }
 
     .project_content {
@@ -383,7 +379,7 @@ ul {
         justify-content: space-between;
         align-items: center;
         padding: 0 15px;
-        box-shadow: 0px 0px 5px #D9D9D9;
+        box-shadow: 0px 0px 5px #d9d9d9;
         border-radius: 5px;
         z-index: 999;
         cursor: pointer;
@@ -431,7 +427,7 @@ ul {
             font-family: var(--font-family-Noto-M);
             width: 48px;
             height: 20px;
-            background-color: #3870FF;
+            background-color: #3870ff;
             border-radius: 15px;
             color: #ffffff;
           }
@@ -442,8 +438,8 @@ ul {
         font-family: var(--font-family-Noto-R);
         width: 420px;
         height: auto;
-        border: 1px solid #EEEEEE;
-        background-color: #EEEEEE;
+        border: 1px solid #eeeeee;
+        background-color: #eeeeee;
         border-radius: 5px;
         transition: 0.3s ease-in-out;
         margin-bottom: 5px;
@@ -477,47 +473,85 @@ ul {
         display: block;
       }
 
-
-
-      .team_documents_content{
+      .team_documents_content {
         margin-top: -5px;
         border: 1px solid #eee;
         border-radius: 5px;
 
-        .TeamDocBox{
+        .TeamDocBox {
           display: flex;
           flex-direction: column;
           border-bottom: 1px solid #eee;
 
-          .TeamDoc{
+          .TeamDoc {
             font-size: 12px;
             display: flex;
             align-items: center;
             height: 45px;
 
-            .DocTitle{
+            .DocTitle {
               width: 173px;
               padding-left: 20px;
               color: #323232;
             }
-            .DocNum{
+            .DocNum {
               width: 92px;
               color: #323232;
               display: flex;
               align-items: center;
               gap: 5px;
 
-              .docNumControls{
+              .docNumControls {
                 display: flex;
                 flex-direction: column;
               }
             }
-            .DocPerson{
+            .DocPerson {
               width: 88px;
               color: #323232;
             }
-            .edit-button{
-              background-color: #45C552;
+            .edit-button {
+              background-color: #45c552;
+              color: #fff;
+              border: none;
+              font-size: 12px;
+              padding: 6px 12px;
+              border-radius: 5px;
+            }
+          }
+          .TeamDoc:hover {
+            background-color: #eeeeee;
+          }
+          .TeamDocActive {
+            background-color: #ffd9d9;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            height: 45px;
+
+            .DocTitle {
+              width: 173px;
+              padding-left: 20px;
+              color: #323232;
+            }
+            .DocNum {
+              width: 92px;
+              color: #323232;
+              display: flex;
+              align-items: center;
+              gap: 5px;
+
+              .docNumControls {
+                display: flex;
+                flex-direction: column;
+              }
+            }
+            .DocPerson {
+              width: 88px;
+              color: #323232;
+            }
+            .edit-button {
+              background-color: #45c552;
               color: #fff;
               border: none;
               font-size: 12px;
@@ -543,7 +577,7 @@ ul {
         justify-content: space-between;
         align-items: center;
         padding: 0 15px;
-        box-shadow: 0px 0px 5px #D9D9D9;
+        box-shadow: 0px 0px 5px #d9d9d9;
         border-radius: 5px;
         cursor: pointer;
 
@@ -574,7 +608,7 @@ ul {
             font-family: var(--font-family-Noto-M);
             width: 48px;
             height: 20px;
-            background-color: #3870FF;
+            background-color: #3870ff;
             border-radius: 15px;
             color: #ffffff;
           }
@@ -585,7 +619,7 @@ ul {
         font-family: var(--font-family-Noto-R);
         width: 420px;
         height: auto;
-        border: 1px solid #EEEEEE;
+        border: 1px solid #eeeeee;
         background-color: #757575;
         border-radius: 5px;
         transition: 0.3s ease-in-out;
@@ -639,7 +673,7 @@ ul {
     @include report-button;
     color: rgba(69, 197, 82, 0.75);
     box-shadow: 0 0 0 2px rgba(69, 197, 82, 0.75) inset;
-    background-color: #FBFBFB;
+    background-color: #fbfbfb;
     padding: 8px 20px;
     display: flex;
     align-items: center;
@@ -648,7 +682,7 @@ ul {
 
   .red_button {
     @include report-button;
-    background-color: #FBFBFB;
+    background-color: #fbfbfb;
     box-shadow: 0 0 0 2px #c97c7c inset;
     color: #c97c7c;
     padding: 8px 20px;
@@ -659,7 +693,7 @@ ul {
 
   .cancle_button {
     @include report-button;
-    background-color: #FBFBFB;
+    background-color: #fbfbfb;
     box-shadow: 0 0 0 2px #929292 inset;
     color: #929292;
     padding: 8px 20px;
@@ -672,7 +706,6 @@ ul {
 // 노트북 기준 전체 레이아웃
 @include laptop {
   .content {
-
     .content_header {
       margin-bottom: 10px;
     }
