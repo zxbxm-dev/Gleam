@@ -2,7 +2,7 @@ const models = require("../../models");
 const User = models.User;
 const docNumManagement = models.docNumManagement;
 const { organizationMapping } = require("../organizationMapping");
-const {Op}= require("sequelize");
+const {Op, where}= require("sequelize");
 
 //문서 조회
 const getAllDocument = async( req, res ) => {
@@ -168,33 +168,44 @@ const deleteDocument = async (req, res) => {
 
 //문서 편집
 const editDocument = async (req, res) => {
-    const { documentId , docNumber, docTitle} = req.body;
-
+    const { documentId, docNumber, docTitle, newDocTitle, docType } = req.body;
     try{
-        if(!documentId){
-            return res.status(404).json({ message: " 해당 문서번호와 일치하는 문서 정보를 찾을 수 없습니다." });
-        };
+    //유효성 검사
+    if( docType == 'Team' && !docTitle){
+        return res.status(404).json({ message: "해당 문서제목과 일치하는 문서정보를 찾을 수 없습니다."})
+    }else if( docType == 'Public' && !documentId){
+        return res.status(404).json({ message: "해당 문서번호와 일치하는 문서정보를 찾을 수 없습니다."})
+    };
 
-        const updateDocument = await docNumManagement.update(
-            {   
-                docNumber: docNumber!== undefined? docNumber: docNumManagement.docNumber,
-                docTitle: docTitle!== undefined? docTitle: docNumManagement.docTitle,
-                username: "", 
-                userposition: "",
+    const updateData = await docNumManagement.update(
+        {   
+            docNumber: docNumber!== undefined? docNumber: docNumManagement.docNumber,
+            docTitle: newDocTitle,
+            username: "", 
+            userposition: "",
+        });
+        
+    //where 조건 설정
+    const whereCondition =  docType === 'Team'
+        ? { doctTitle : docTitle }
+        : { documentId : documentId }
+    
+    const updateDocument = await docNumManagement.update( updateData, { where : whereCondition });
+    const successMessage = docType === 'Team'
+    ?  "팀 문서 수정이 완료되었습니다."
+    : "공용 문서 수정이 완료되었습니다."
 
-            },
-            {
-                where: { documentId : documentId}
-            },
-        )
-        res.status(200).json({ message: " 문서 수정이 성공적으로 완료되었습니다.", updateDocument: updateDocument});
+    res.status(200).json({ message: successMessage}, updateDocument );
 
     }catch(error){
-        console.error("문서 편집 중 오류 발생");
-         res.status(500).json({ error : " 문서 편집 중 오류가 발생했습니다. "});
-
-    }
-}
+        const failMessage = docType === 'Team'
+        ? " 팀문서 수정 중 오류가 발생했습니다."
+        : " 공용문서 수정 중 오류가 발생했습니다."
+        
+        console.error( failMessage, error );
+        res.status(500).json({ message: failMessage });
+    };
+};
 
 
 
