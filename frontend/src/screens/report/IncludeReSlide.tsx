@@ -66,6 +66,7 @@ const IncludeReSlide = () => {
   const [selectItem, setSelectItem] = useState<number | null>(null);
   const [staticTitle, setStaticTitle] = useState<string | null>(null);
   const [staticDocNumber, setStaticDocNumber] = useState<number | null>(null);
+  const [newDocNumber, setNewDocNumber] = useState<number | null>(null);
   const [teamData, setTeamData] = useState([]);
 
   //관리자 수정 클릭
@@ -230,11 +231,13 @@ const IncludeReSlide = () => {
         userposition: user.position,
       };
       if (item.documentId === id) {
+        setNewDocNumber(item.docNumber);
         try {
           const response = await EditDocuments(id, updateData);
           setTeamEditModes((prev) => prev.map(() => false));
           setPublicEditModes((prev) => prev.map(() => false));
           console.log("문서 번호 수정 성공:", response.data);
+          setNewDocNumber(item.docNumber);
 
           if (response) {
             setEditNumberAlertOpen(true);
@@ -342,26 +345,21 @@ const IncludeReSlide = () => {
       }, []);
 
       setTeamData(groupedData);
-
-      console.log(teamData);
     }
   }, [documents]);
 
   useEffect(() => {
     setIsTeamDocsOpen2(new Array(teamData.length).fill(false));
-    console.log(isTeamDocsOpen2);
-  }, [teamData]);
+  }, []);
 
   const toggleTeamDocs = (index: number) => {
     setIsTeamDocsOpen2((prev) => {
       if (!Array.isArray(prev)) {
-        console.error("Invalid state:", prev);
-        return prev; // 상태가 배열이 아니면 그대로 반환
+        return prev;
       }
 
-      const updated = [...prev]; // 상태 복사
-      updated[index] = !updated[index]; // 특정 인덱스만 토글
-      console.log("Updated state:", updated); // 상태 확인
+      const updated = [...prev];
+      updated[index] = !updated[index];
       return updated;
     });
   };
@@ -419,7 +417,7 @@ const IncludeReSlide = () => {
               >
                 <div className="name_leftTop">
                   <img
-                    src={isTeamDocsOpen ? slide_downArrow : Right_Arrow}
+                    src={isTeamDocsOpen2[index] ? slide_downArrow : Right_Arrow}
                     alt="toggle"
                   />
                   <span className="project_name">{data.name}</span>
@@ -887,7 +885,7 @@ const IncludeReSlide = () => {
           style={{ alignItems: "center", justifyContent: "center" }}
         >
           <div className="addDocu">
-            <h2>문서 번호가 {selectedDocNumber}로 변경되었습니다.</h2>
+            <h2>문서 번호가 {newDocNumber}로 변경되었습니다.</h2>
           </div>
         </div>
       </CustomModal>
