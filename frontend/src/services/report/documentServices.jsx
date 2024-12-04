@@ -17,11 +17,15 @@ const EditDocuments = async (selectedDocId, updateData) => {
 
 //관리팀 - 문서수정
 const ManagerEditDocuments = async (updateData) => {
+  console.log("이거 보내는 데이터임", updateData);
   return api.patch(`/editDocument`, updateData);
 };
 
+//관리팀 - 문서삭제
 const DeleteDocument = async (data) => {
-  return api.delete(`/deleteDocument`, data);
+  console.log("이거 보내는 데이터임", data);
+  const { documentId, docType, docTitle } = data;
+  return api.delete(`/deleteDocument/?documentId=${documentId}`);
 };
 
 export {
