@@ -35,6 +35,10 @@ const IncludeReSlide = () => {
   const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
   const [isTeamDocsOpen, setIsTeamDocsOpen] = useState(false);
   const [isPublicDocsOpen, setIsPublicDocsOpen] = useState(false);
+  const [isDeletePopUpOpen, setIsDeletePopUpOpen] = useState(false);
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+  const [editAlertOpen, setEditAlertOpen] = useState(false);
+  const [editNumberAlertOpen, setEditNumberAlertOpen] = useState(false);
   const [addDocument, setAddDocument] = useState({
     docType: "",
     docTitle: "",
@@ -225,6 +229,10 @@ const IncludeReSlide = () => {
           setPublicEditModes((prev) => prev.map(() => false));
           console.log("문서 번호 수정 성공:", response.data);
 
+          if (response) {
+            setEditNumberAlertOpen(true);
+          }
+
           fetchDocuments();
           // setEditModes((prevEditModes) => {
           //     const newEditModes = [...prevEditModes];
@@ -251,6 +259,10 @@ const IncludeReSlide = () => {
 
     try {
       const response = await ManagerEditDocuments(updateData);
+      if (response) {
+        setEditAlertOpen(true);
+        setIsPopupOpen(false);
+      }
       console.log("문서 번호 수정 성공:", response.data);
       fetchDocuments();
     } catch (error) {
@@ -286,14 +298,21 @@ const IncludeReSlide = () => {
   };
 
   const handleDeleteDocument = async () => {
+    setIsDeletePopUpOpen(false);
     const data = {
       documentId: selectItem,
       docType: selectedDocType,
       docTitle: staticTitle,
     };
-    const res = await DeleteDocument(data);
-
-    console.log("삭제 성공? : ", res.data);
+    try {
+      const res = await DeleteDocument(data);
+      if (res) {
+        fetchDocuments();
+        setDeleteAlertOpen(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -320,7 +339,7 @@ const IncludeReSlide = () => {
                 <button onClick={() => setIsPopupOpen(true)}>추가</button>
                 <button
                   onClick={() => {
-                    handleDeleteDocument();
+                    setIsDeletePopUpOpen(true);
                   }}
                 >
                   삭제
@@ -650,6 +669,113 @@ const IncludeReSlide = () => {
         >
           <div className="addDocu">
             <h2>새로운 문서가 추가 되었습니다.</h2>
+          </div>
+        </div>
+      </CustomModal>
+
+      {/* 문서 삭제 완료시 뜨는 창 */}
+      <CustomModal
+        isOpen={deleteAlertOpen} // 모달 열림 상태
+        onClose={() => {
+          setDeleteAlertOpen(false); // 모달 닫기
+        }}
+        header="알림"
+        headerTextColor="#fff"
+        footer1="확인"
+        footer1Class="back-green-btn"
+        height="200px"
+        width="400px"
+        onFooter1Click={() => {
+          setDeleteAlertOpen(false);
+        }}
+      >
+        <div
+          className="body-container"
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <div className="addDocu">
+            <h2>해당 문서가 삭제되었습니다.</h2>
+          </div>
+        </div>
+      </CustomModal>
+
+      {/* 문서 수정 완료시 뜨는 창 */}
+      <CustomModal
+        isOpen={editAlertOpen} // 모달 열림 상태
+        onClose={() => {
+          setEditAlertOpen(false); // 모달 닫기
+        }}
+        header="알림"
+        headerTextColor="#fff"
+        footer1="확인"
+        footer1Class="back-green-btn"
+        height="200px"
+        width="400px"
+        onFooter1Click={() => {
+          setEditAlertOpen(false);
+        }}
+      >
+        <div
+          className="body-container"
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <div className="addDocu">
+            <h2>문서가 수정되었습니다.</h2>
+          </div>
+        </div>
+      </CustomModal>
+
+      {/* 문서 번호 수정 완료시 뜨는 창 */}
+      <CustomModal
+        isOpen={editNumberAlertOpen} // 모달 열림 상태
+        onClose={() => {
+          setEditNumberAlertOpen(false); // 모달 닫기
+        }}
+        header="알림"
+        headerTextColor="#fff"
+        footer1="확인"
+        footer1Class="back-green-btn"
+        height="200px"
+        width="400px"
+        onFooter1Click={() => {
+          setEditNumberAlertOpen(false);
+        }}
+      >
+        <div
+          className="body-container"
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <div className="addDocu">
+            <h2>문서 번호가 {selectedDocNumber}로 변경되었습니다.</h2>
+          </div>
+        </div>
+      </CustomModal>
+
+      {/* 문서 삭제 버튼 클릭시 나오는 모달 */}
+      <CustomModal
+        isOpen={isDeletePopUpOpen} // 모달 열림 상태
+        onClose={() => {
+          setIsDeletePopUpOpen(false); // 모달 닫기
+        }}
+        header="알림"
+        headerTextColor="#fff"
+        footer1="취소"
+        footer2="확인"
+        footer1Class="gray-btn"
+        footer2Class="back-green-btn"
+        height="200px"
+        width="400px"
+        onFooter2Click={handleDeleteDocument}
+        onFooter1Click={() => {
+          setIsDeletePopUpOpen(false);
+        }}
+      >
+        <div
+          className="body-container"
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <div className="addDocu">
+            <h2>해당 문서를 삭제하시겠습니까?</h2>
           </div>
         </div>
       </CustomModal>
