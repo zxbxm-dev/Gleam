@@ -152,22 +152,22 @@ const editDocNumber = async( req, res ) => {
 //문서정보 편집 - 관리팀 권한 -----------------------------------------------------------------------------------------------------
 //문서 삭제 
 const deleteDocument = async (req, res) => {
-    const { documentId, docType, docTitle } = req.body;
-    try{
-    
+    const { documentId } = req.params
+    const selectedDoc = await docNumManagement.findOne({ where : { documentId : documentId }});   
+    try{    
     //유효성검사 
-    if(docType == 'Team' && !docTitle){
+    if(selectedDoc.docType == 'Team' && ! selectedDoc.docTitle){
         return res.status(404).json({message : "해당 문서제목과 일치하는 문서 정보를 찾을 수 없습니다." });
-    }else if( docType == 'Public' && !documentId){
+    }else if( selectedDoc.docType == 'Public' && !selectedDoc.documentId){
         return res.status(404).json({message: "해당하는 문서번호와 일치하는 문서정보를 찾을 수 없습니다." });
     };
 
     //where 조건 설정
-    const whereCondition = docType === 'Team'
-    ? { docTitle : docTitle}
-    : { documentId: documentId }
+    const whereCondition = selectedDoc.docType === 'Team'
+    ? { docTitle : selectedDoc.docTitle}
+    : { documentId: selectedDoc.documentId }
 
-    const successMessage = docType === 'Team'
+    const successMessage = selectedDoc.docType === 'Team'
     ? "선택한 팀문서가 성공적으로 삭제되었습니다."
     : "선택한 공용문서가 성공적으로 삭제되었습니다."
 
@@ -178,14 +178,14 @@ const deleteDocument = async (req, res) => {
     res.status(200).json({ message: successMessage });
 
 }catch(error){
-    const failMessage = docType === 'Team'
+    
+    const failMessage = selectedDoc.docType === 'Team'
     ? " 팀문서 삭제 중 오류가 발생했습니다."
     : " 공용문서 삭제 중 오류가 발생했습니다."
     
     console.error( failMessage, error );
     res.status(500).json({ message: failMessage });
-}
-};
+}}
 
 //문서 편집
 const editDocument = async (req, res) => {
