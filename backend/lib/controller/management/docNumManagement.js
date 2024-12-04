@@ -70,6 +70,22 @@ const addDocument = async( req, res ) => {
     const { userID } = req.params;
     const { docType, docTitle, docNumber } = req.body;
 
+    //신규 문서 등록 시 문서명 중복확인
+    try{
+        const overlappedTitle = await docNumManagement.findOne({
+            where:{
+                docTitle: docTitle
+            }
+        });
+    if( overlappedTitle && overlappedTitle !== null){
+    return res.status(207).json({ overlapped : "중복 된 문서명입니다.", overlappedTitle});
+    }
+    }catch(error){
+        console.error("문서명 중복처리 중 오류 발생");
+        res.status(500).json({ error: "문서명 중복확인 중 오류 발생", error})
+    }
+
+    //신규 문서 추가 
     try{
         if(!userID){
             return res.status(404).json({ error : "문서 등록 중 사용자 정보를 찾을 수 없습니다."});
@@ -96,6 +112,7 @@ const addDocument = async( req, res ) => {
                     });
                 }
             }
+            
             res.status(200).json({
                 message: "신규 팀 문서가 추가되었습니다.",
             })
