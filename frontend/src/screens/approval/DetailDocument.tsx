@@ -78,7 +78,6 @@ const DetailDocument = () => {
     quitterfetchData();
   }, []);
 
-  console.log(quitterPersonData)
   useEffect(() => {
     const initialChecks = new Array(signatories.length).fill(false);
     const approvedCount = Number(documentInfo[0].approval);

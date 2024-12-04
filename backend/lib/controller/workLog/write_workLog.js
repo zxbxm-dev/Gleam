@@ -27,7 +27,6 @@ const getReportById = async (req, res) => {
 
     // 파일 스트림을 통해 전송
     const fileStream = fs.createReadStream(filePath);
-    fileStream.pipe(res);
 
     // 파일 스트림을 HTTP 응답 스트림으로 파이핑
     fileStream.pipe(res);
