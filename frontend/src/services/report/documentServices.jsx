@@ -23,9 +23,8 @@ const ManagerEditDocuments = async (updateData) => {
 
 //관리팀 - 문서삭제
 const DeleteDocument = async (data) => {
-  console.log("이거 보내는 데이터임", data);
   const { documentId, docType, docTitle } = data;
-  return api.delete(`/deleteDocument/?documentId=${documentId}`);
+  return api.delete(`/deleteDocument/${documentId}`);
 };
 
 export {
