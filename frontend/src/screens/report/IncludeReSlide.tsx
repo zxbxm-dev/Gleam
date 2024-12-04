@@ -123,7 +123,11 @@ const IncludeReSlide = () => {
 
     try {
       const response = await GetDocuments(userID);
-      setDocuments(response.data.documents || []);
+      if (user.position === "부서장") {
+        setDocuments(response.data.documentsForManager || []);
+      } else {
+        setDocuments(response.data.documents || []);
+      }
     } catch (error) {
       console.error("문서 조회 실패:", error);
     }
