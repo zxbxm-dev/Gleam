@@ -41,7 +41,7 @@ module.exports = (app) => {
   //문서 수정
   router.patch('/editDocument',docNumManagement.editDocument);
   //문서 삭제
-  router.delete('/deleteDocument', docNumManagement.deleteDocument);
+  router.delete('/deleteDocument/:documentId', docNumManagement.deleteDocument);
 
   app.use(
     "/uploads",
