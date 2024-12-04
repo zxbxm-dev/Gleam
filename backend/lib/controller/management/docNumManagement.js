@@ -35,7 +35,7 @@ const getAllDocument = async( req, res ) => {
             if(!documentsForManager){
                 return res.status(404).json({ error : " 해당 사용자가 조회 가능한 하위 문서가 없습니다." });
             }
-            res.status(200).json({ message: "사용자의 하위 팀문서/공용문서 조회완료" });
+            res.status(200).json({ message: "사용자의 하위 팀문서/공용문서 조회완료", documentsForManager});
         }else{
             
         //팀원 문서 조회 시
@@ -159,7 +159,7 @@ const deleteDocument = async (req, res) => {
     if(selectedDoc.docType == 'Team' && ! selectedDoc.docTitle){
         return res.status(404).json({message : "해당 문서제목과 일치하는 문서 정보를 찾을 수 없습니다." });
     }else if( selectedDoc.docType == 'Public' && !selectedDoc.documentId){
-        return res.status(404).json({message: "해당하는 문서번호와 일치하는 문서정보를 찾을 수 없습니다." });
+        return res.status(404).json({message: "해당 문서번호와 일치하는 문서정보를 찾을 수 없습니다." });
     };
 
     //where 조건 설정
@@ -178,7 +178,7 @@ const deleteDocument = async (req, res) => {
     res.status(200).json({ message: successMessage });
 
 }catch(error){
-    
+
     const failMessage = selectedDoc.docType === 'Team'
     ? " 팀문서 삭제 중 오류가 발생했습니다."
     : " 공용문서 삭제 중 오류가 발생했습니다."
