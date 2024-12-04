@@ -291,7 +291,6 @@ const IncludeReSlide = () => {
       docType: selectedDocType,
       docTitle: staticTitle,
     };
-    console.log(data);
     const res = await DeleteDocument(data);
 
     console.log("삭제 성공? : ", res.data);
