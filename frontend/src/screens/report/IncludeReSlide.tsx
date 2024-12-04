@@ -26,6 +26,7 @@ interface Document {
   docPerson: string;
   docPersonTeam: string;
   docPersondept: string;
+  team: string;
 }
 
 const IncludeReSlide = () => {
@@ -34,6 +35,7 @@ const IncludeReSlide = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
   const [isTeamDocsOpen, setIsTeamDocsOpen] = useState(false);
+  const [isTeamDocsOpen2, setIsTeamDocsOpen2] = useState<boolean[]>([]);
   const [isPublicDocsOpen, setIsPublicDocsOpen] = useState(false);
   const [isDeletePopUpOpen, setIsDeletePopUpOpen] = useState(false);
   const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
@@ -64,6 +66,7 @@ const IncludeReSlide = () => {
   const [selectItem, setSelectItem] = useState<number | null>(null);
   const [staticTitle, setStaticTitle] = useState<string | null>(null);
   const [staticDocNumber, setStaticDocNumber] = useState<number | null>(null);
+  const [teamData, setTeamData] = useState([]);
 
   //관리자 수정 클릭
   const handleManagEditClick = (documentId: number) => {
@@ -319,6 +322,50 @@ const IncludeReSlide = () => {
     }
   };
 
+  // position이 부서장일 경우
+  useEffect(() => {
+    if (user.position === "부서장") {
+      const groupedData = documents.reduce((acc: any, item) => {
+        if (item.team !== null) {
+          // acc에 이미 존재하는 팀이 있는지 직접 확인
+          const existingTeam = acc.find((team: any) => team.name === item.team);
+
+          if (existingTeam) {
+            // 이미 존재하면 item 전체를 추가
+            existingTeam.data.push(item);
+          } else {
+            // 존재하지 않으면 새 팀 추가
+            acc.push({ name: item.team, data: [item] });
+          }
+        }
+        return acc;
+      }, []);
+
+      setTeamData(groupedData);
+
+      console.log(teamData);
+    }
+  }, [documents]);
+
+  useEffect(() => {
+    setIsTeamDocsOpen2(new Array(teamData.length).fill(false));
+    console.log(isTeamDocsOpen2);
+  }, [teamData]);
+
+  const toggleTeamDocs = (index: number) => {
+    setIsTeamDocsOpen2((prev) => {
+      if (!Array.isArray(prev)) {
+        console.error("Invalid state:", prev);
+        return prev; // 상태가 배열이 아니면 그대로 반환
+      }
+
+      const updated = [...prev]; // 상태 복사
+      updated[index] = !updated[index]; // 특정 인덱스만 토글
+      console.log("Updated state:", updated); // 상태 확인
+      return updated;
+    });
+  };
+
   return (
     <div className="project_slide_container">
       <div
@@ -363,93 +410,183 @@ const IncludeReSlide = () => {
           </div>
         )}
 
-        <div className="project_content">
-          <div
-            className="project_name_container"
-            onClick={() => setIsTeamDocsOpen((prev) => !prev)}
-          >
-            <div className="name_leftTop">
-              <img
-                src={isTeamDocsOpen ? slide_downArrow : Right_Arrow}
-                alt="toggle"
-              />
-              <span className="project_name">팀 문서</span>
-            </div>
-          </div>
+        {user.position === "부서장" ? (
+          teamData.map((data: any, index: number) => (
+            <div className="project_content">
+              <div
+                className="project_name_container"
+                onClick={() => toggleTeamDocs(index)}
+              >
+                <div className="name_leftTop">
+                  <img
+                    src={isTeamDocsOpen ? slide_downArrow : Right_Arrow}
+                    alt="toggle"
+                  />
+                  <span className="project_name">{data.name}</span>
+                </div>
+              </div>
 
-          {isTeamDocsOpen && (
-            <div className="team_documents_content">
-              <div className="TeamDocBox">
-                {documents
-                  .filter((doc) => doc.docType === "Team")
-                  .map((doc, index) => (
-                    <div className="TeamDocBox" key={index}>
-                      <div
-                        className={
-                          selectItem === doc.documentId
-                            ? "TeamDocActive"
-                            : "TeamDoc"
-                        }
-                        onClick={() => {
-                          selectBox(doc.documentId, doc);
-                        }}
-                      >
-                        <div className="DocTitle">{doc.docTitle}</div>
-                        <div className="DocNum">
-                          {doc.docNumber}
-
-                          {teamEditModes[index] && (
-                            <div className="docNumControls">
-                              <button
-                                className="num-up-button"
-                                onClick={() => {
-                                  //   handleNumberIncrease(index, "Team")
-                                  up(doc.documentId);
-                                }}
-                              >
-                                <img src={spinnerTop} />
-                              </button>
-                              <button
-                                className="num-down-button"
-                                onClick={() => {
-                                  //   handleNumberDecrease(index, "Team")
-                                  down(doc.documentId);
-                                }}
-                              >
-                                <img src={spinnerBtm} />
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                        <div className="DocPerson">
-                          {doc.docPerson}{" "}
-                          {doc.docPersonTeam
-                            ? doc.docPersonTeam
-                            : doc.docPersondept}
-                        </div>
-                        <button
-                          className="edit-button"
-                          onClick={() =>
-                            ismanagerMode
-                              ? handleManagEditClick(doc.documentId)
-                              : teamEditModes[index]
-                              ? handleEditConfirm(index, doc.documentId)
-                              : handleEditClick(index, "Team")
+              {isTeamDocsOpen2[index] && (
+                <div className="team_documents_content">
+                  <div className="TeamDocBox">
+                    {data.data.map((doc: any, index: any) => (
+                      <div className="TeamDocBox" key={index}>
+                        <div
+                          className={
+                            selectItem === doc.documentId
+                              ? "TeamDocActive"
+                              : "TeamDoc"
                           }
+                          onClick={() => {
+                            selectBox(doc.documentId, doc);
+                          }}
                         >
-                          {ismanagerMode
-                            ? "수정"
-                            : teamEditModes[index]
-                            ? "확인"
-                            : "편집"}
-                        </button>
+                          <div className="DocTitle">{doc.docTitle}</div>
+                          <div className="DocNum">
+                            {doc.docNumber}
+
+                            {teamEditModes[index] && (
+                              <div className="docNumControls">
+                                <button
+                                  className="num-up-button"
+                                  onClick={() => {
+                                    //   handleNumberIncrease(index, "Team")
+                                    up(doc.documentId);
+                                  }}
+                                >
+                                  <img src={spinnerTop} />
+                                </button>
+                                <button
+                                  className="num-down-button"
+                                  onClick={() => {
+                                    //   handleNumberDecrease(index, "Team")
+                                    down(doc.documentId);
+                                  }}
+                                >
+                                  <img src={spinnerBtm} />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          <div className="DocPerson">
+                            {doc.docPerson}{" "}
+                            {doc.docPersonTeam
+                              ? doc.docPersonTeam
+                              : doc.docPersondept}
+                          </div>
+                          <button
+                            className="edit-button"
+                            onClick={() =>
+                              ismanagerMode
+                                ? handleManagEditClick(doc.documentId)
+                                : teamEditModes[index]
+                                ? handleEditConfirm(index, doc.documentId)
+                                : handleEditClick(index, "Team")
+                            }
+                          >
+                            {ismanagerMode
+                              ? "수정"
+                              : teamEditModes[index]
+                              ? "확인"
+                              : "편집"}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="project_content">
+            <div
+              className="project_name_container"
+              onClick={() => setIsTeamDocsOpen((prev) => !prev)}
+            >
+              <div className="name_leftTop">
+                <img
+                  src={isTeamDocsOpen ? slide_downArrow : Right_Arrow}
+                  alt="toggle"
+                />
+                <span className="project_name">팀 문서</span>
               </div>
             </div>
-          )}
-        </div>
+
+            {isTeamDocsOpen && (
+              <div className="team_documents_content">
+                <div className="TeamDocBox">
+                  {documents
+                    .filter((doc) => doc.docType === "Team")
+                    .map((doc, index) => (
+                      <div className="TeamDocBox" key={index}>
+                        <div
+                          className={
+                            selectItem === doc.documentId
+                              ? "TeamDocActive"
+                              : "TeamDoc"
+                          }
+                          onClick={() => {
+                            selectBox(doc.documentId, doc);
+                          }}
+                        >
+                          <div className="DocTitle">{doc.docTitle}</div>
+                          <div className="DocNum">
+                            {doc.docNumber}
+
+                            {teamEditModes[index] && (
+                              <div className="docNumControls">
+                                <button
+                                  className="num-up-button"
+                                  onClick={() => {
+                                    //   handleNumberIncrease(index, "Team")
+                                    up(doc.documentId);
+                                  }}
+                                >
+                                  <img src={spinnerTop} />
+                                </button>
+                                <button
+                                  className="num-down-button"
+                                  onClick={() => {
+                                    //   handleNumberDecrease(index, "Team")
+                                    down(doc.documentId);
+                                  }}
+                                >
+                                  <img src={spinnerBtm} />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          <div className="DocPerson">
+                            {doc.docPerson}{" "}
+                            {doc.docPersonTeam
+                              ? doc.docPersonTeam
+                              : doc.docPersondept}
+                          </div>
+                          <button
+                            className="edit-button"
+                            onClick={() =>
+                              ismanagerMode
+                                ? handleManagEditClick(doc.documentId)
+                                : teamEditModes[index]
+                                ? handleEditConfirm(index, doc.documentId)
+                                : handleEditClick(index, "Team")
+                            }
+                          >
+                            {ismanagerMode
+                              ? "수정"
+                              : teamEditModes[index]
+                              ? "확인"
+                              : "편집"}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="project_content">
           <div
