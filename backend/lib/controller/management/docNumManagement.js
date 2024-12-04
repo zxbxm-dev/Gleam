@@ -24,13 +24,16 @@ const getAllDocument = async( req, res ) => {
             const checkedDpt = checkingUserDpt.department;
             const checkedTeam = checkingUserDpt.teams.map((team)=> team.name);
 
-                   const documentsForManager = await docNumManagement.findAll({
+            const documentsForManager = await docNumManagement.findAll({
                 where: {
-                    team:{
-                    [Op.in] : checkedTeam,
-                    }
-                }
-            }) ;
+                 [Op.or] : [
+                  { 
+                   team:{ [Op.in] : checkedTeam },
+                  },{
+                   docType : 'Public',
+                  }
+                 ]}
+                });
 
             if(!documentsForManager){
                 return res.status(404).json({ error : " 해당 사용자가 조회 가능한 하위 문서가 없습니다." });
