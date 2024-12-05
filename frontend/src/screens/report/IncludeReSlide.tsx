@@ -361,11 +361,31 @@ const IncludeReSlide = () => {
         return acc;
       }, []);
 
+      if (groupedData.length === 0 && user.department === "관리부") {
+        groupedData.push({ name: "관리팀" }, { name: "지원팀" });
+      }
+      if (groupedData.length === 0 && user.department === "개발부") {
+        groupedData.push({ name: "개발 1팀" }, { name: "개발 2팀" });
+      }
+      if (groupedData.length === 0 && user.department === "마케팅부") {
+        groupedData.push({ name: "디자인팀" }, { name: "기획팀" });
+      }
+      if (groupedData.length === 0 && user.department === "알고리즘 연구실") {
+        groupedData.push({ name: "암호 연구팀" }, { name: "AI 연구팀" });
+      }
+      if (groupedData.length === 0 && user.department === "블록체인 연구실") {
+        groupedData.push(
+          { name: "크립토 블록체인 연구팀" },
+          { name: "API 개발팀" }
+        );
+      }
       const sortedTeamData = [...groupedData].sort(
         (a: { name: string }, b: { name: string }) => {
           if (user.department === "관리부") {
-            if (a.name === "관리팀") return -1;
-            if (b.name === "관리팀") return 1;
+            if (groupedData.length === 0) {
+              if (a.name === "관리팀") return -1;
+              if (b.name === "지원팀") return 1;
+            }
           }
           if (user.department === "개발부") {
             if (a.name === "개발 1팀") return -1;
@@ -387,6 +407,7 @@ const IncludeReSlide = () => {
         }
       );
       setTeamData(sortedTeamData);
+      console.log(sortedTeamData);
     }
   }, [documents]);
 
@@ -469,7 +490,7 @@ const IncludeReSlide = () => {
               {isTeamDocsOpen2[index] && (
                 <div className="team_documents_content">
                   <div className="TeamDocBox">
-                    {data.data.map((doc: any, index: any) => (
+                    {data.data?.map((doc: any, index: any) => (
                       <div className="TeamDocBox" key={index}>
                         <div
                           className={
