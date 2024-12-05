@@ -67,6 +67,10 @@ export { default as Down_Arrow } from "./project/Down_Arrow.svg";
 export { default as slide_downArrow } from "./project/slide_downArrow.svg";
 export { default as spinnerBtm } from "./project/spinnerBtm.svg";
 export { default as spinnerTop } from "./project/spinnerTop.svg";
+export { default as addDocumentImage } from "./project/addDocument.svg";
+export { default as removeDocument } from "./project/removeDocument.svg";
+export { default as openSetting } from "./project/openSetting.svg";
+export { default as document_Arrow } from "./project/document_Arrow.svg";
 
 // mail
 export { default as mail_calendar } from "./mail/mail_calendar.svg";
