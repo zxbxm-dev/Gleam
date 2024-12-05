@@ -17,7 +17,6 @@ const EditDocuments = async (selectedDocId, updateData) => {
 
 //관리팀 - 문서수정
 const ManagerEditDocuments = async (updateData) => {
-  console.log("이거 보내는 데이터임", updateData);
   return api.patch(`/editDocument`, updateData);
 };
 
