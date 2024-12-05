@@ -624,7 +624,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (Array.isArray(serverMessages) && serverMessages.length > 0) {
       serverMessages.forEach((msg) => {
-        if (msg.userId !== user.id && (msg.isReadOther === 0 || !msg.alreadyReadUser?.includes(user.userID))) {
+        if (
+          (msg.userId !== user.id && msg.isReadOther === 0) || // 1대1 채팅방 처리
+          (msg.userId !== user.id && msg.alreadyReadUser && !msg.alreadyReadUser.includes(user.userID)) // 단체 채팅방 처리
+        ) {
           handleReadMessage(msg.messageId); // 상대방의 메시지를 읽었을 때만 처리
         }
       });
@@ -646,7 +649,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (socket) {
       socket.on('newMsgData', (messageData: any) => {
-        
         const formattedMessage = {
           content: messageData.content,
           fileValue: messageData.fileValue,
@@ -848,7 +850,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                         <div className="ViewCount">
                           {
                             selectedRoomId.isGroup
-                              ? (msg.unreadCount === 0 ? "" : msg.unreadCount)
+                              ? (msg.unreadCount > 0 ?  msg.unreadCount : '')
                               : (msg.isReadOther === 0
                                 ? "1"
                                 : (msg.isReadOther === true
