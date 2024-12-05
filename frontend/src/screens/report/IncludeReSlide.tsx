@@ -27,6 +27,8 @@ interface Document {
   docPersonTeam: string;
   docPersondept: string;
   team: string;
+  username: string;
+  userposition: string;
 }
 
 const IncludeReSlide = () => {
@@ -40,6 +42,7 @@ const IncludeReSlide = () => {
   const [isDeletePopUpOpen, setIsDeletePopUpOpen] = useState(false);
   const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
   const [editAlertOpen, setEditAlertOpen] = useState(false);
+  const [errorAlertOpen, setErrorAlertOpen] = useState(false);
   const [editNumberAlertOpen, setEditNumberAlertOpen] = useState(false);
   const [addDocument, setAddDocument] = useState({
     docType: "",
@@ -60,14 +63,14 @@ const IncludeReSlide = () => {
     null
   );
   const [selectedDocType, setSelectedDocType] = useState<string | null>(null);
-  const [teamEditModes, setTeamEditModes] = useState<boolean[]>([]); // 팀 문서 편집 모드
+  const [teamEditModes, setTeamEditModes] = useState<any[]>([]); // 팀 문서 편집 모드
   const [publicEditModes, setPublicEditModes] = useState<boolean[]>([]); // 공용 문서 편집 모드
   const [docNumber, setdocNumber] = useState<number | null>(null);
   const [selectItem, setSelectItem] = useState<number | null>(null);
   const [staticTitle, setStaticTitle] = useState<string | null>(null);
   const [staticDocNumber, setStaticDocNumber] = useState<number | null>(null);
   const [newDocNumber, setNewDocNumber] = useState<number | null>(null);
-  const [teamData, setTeamData] = useState([]);
+  const [teamData, setTeamData] = useState<any[]>([]);
 
   //관리자 수정 클릭
   const handleManagEditClick = (documentId: number) => {
@@ -97,21 +100,25 @@ const IncludeReSlide = () => {
   }, [selectedDocId, documents]);
 
   //일반 사용자 - 편집
-  const handleEditClick = (documentId: number, docType: string) => {
-    setSelectedDocId(documents[documentId].documentId);
+  const handleEditClick = (
+    index: number,
+    documentId: number,
+    docType: string
+  ) => {
+    setSelectedDocId(documentId);
 
     if (docType === "Team") {
       setSelectedDocType("Team");
+
       setTeamEditModes((prev) => {
-        const newEditModes = [...prev];
-        newEditModes[documentId] = !newEditModes[documentId];
-        return newEditModes;
+        return prev.map((_, i) => documents[i].documentId === documentId);
       });
     } else if (docType === "Public") {
       setSelectedDocType("Public");
       setPublicEditModes((prev) => {
-        const newEditModes = [...prev];
-        newEditModes[documentId] = !newEditModes[documentId];
+        const newEditModes = prev.map(() => false);
+
+        newEditModes[index] = true;
         return newEditModes;
       });
     }
@@ -184,6 +191,10 @@ const IncludeReSlide = () => {
     try {
       const response = await AddDocuments(userID, formData);
       console.log("문서 추가 성공:", response.data);
+      if (response.status === 207) {
+        setErrorAlertOpen(true);
+        return;
+      }
       setIsPopupOpen(false);
       setIsSuccessPopupOpen(true);
       fetchDocuments();
@@ -273,6 +284,10 @@ const IncludeReSlide = () => {
         setEditAlertOpen(true);
         setIsPopupOpen(false);
       }
+      if (response.status === 207) {
+        alert("중복 된 문서명입니다.");
+        return;
+      }
       console.log("문서 번호 수정 성공:", response.data);
       fetchDocuments();
     } catch (error) {
@@ -331,7 +346,9 @@ const IncludeReSlide = () => {
       const groupedData = documents.reduce((acc: any, item) => {
         if (item.team !== null) {
           // acc에 이미 존재하는 팀이 있는지 직접 확인
-          const existingTeam = acc.find((team: any) => team.name === item.team);
+          const existingTeam = acc.find(
+            (team: { name: string }) => team.name === item.team
+          );
 
           if (existingTeam) {
             // 이미 존재하면 item 전체를 추가
@@ -344,7 +361,32 @@ const IncludeReSlide = () => {
         return acc;
       }, []);
 
-      setTeamData(groupedData);
+      const sortedTeamData = [...groupedData].sort(
+        (a: { name: string }, b: { name: string }) => {
+          if (user.department === "관리부") {
+            if (a.name === "관리팀") return -1;
+            if (b.name === "관리팀") return 1;
+          }
+          if (user.department === "개발부") {
+            if (a.name === "개발 1팀") return -1;
+            if (b.name === "개발 2팀") return 1;
+          }
+          if (user.department === "마케팅부") {
+            if (a.name === "디자인팀") return -1;
+            if (b.name === "기획팀") return 1;
+          }
+          if (user.department === "알고리즘 연구실") {
+            if (a.name === "암호 연구팀") return -1;
+            if (b.name === "AI 연구팀") return 1;
+          }
+          if (user.department === "블록체인 연구실") {
+            if (a.name === "크립토 블록체인 연구팀") return -1;
+            if (b.name === "API 개발팀") return 1;
+          }
+          return 0;
+        }
+      );
+      setTeamData(sortedTeamData);
     }
   }, [documents]);
 
@@ -408,9 +450,9 @@ const IncludeReSlide = () => {
           </div>
         )}
 
-        {user.position === "부서장" ? (
+        {user.position === "부서장" || user.position === "연구실장" ? (
           teamData.map((data: any, index: number) => (
-            <div className="project_content">
+            <div className="project_content" key={data.name}>
               <div
                 className="project_name_container"
                 onClick={() => toggleTeamDocs(index)}
@@ -443,7 +485,8 @@ const IncludeReSlide = () => {
                           <div className="DocNum">
                             {doc.docNumber}
 
-                            {teamEditModes[index] && (
+                            {selectedDocId === doc.documentId &&
+                            ismanagerMode === false ? (
                               <div className="docNumControls">
                                 <button
                                   className="num-up-button"
@@ -464,12 +507,12 @@ const IncludeReSlide = () => {
                                   <img src={spinnerBtm} />
                                 </button>
                               </div>
-                            )}
+                            ) : null}
                           </div>
                           <div className="DocPerson">
-                            {doc.docPerson}{" "}
-                            {doc.docPersonTeam
-                              ? doc.docPersonTeam
+                            {doc.username ? doc.username : "수정됨"}{" "}
+                            {doc.userposition
+                              ? doc.userposition
                               : doc.docPersondept}
                           </div>
                           <button
@@ -477,14 +520,14 @@ const IncludeReSlide = () => {
                             onClick={() =>
                               ismanagerMode
                                 ? handleManagEditClick(doc.documentId)
-                                : teamEditModes[index]
+                                : selectedDocId === doc.documentId
                                 ? handleEditConfirm(index, doc.documentId)
-                                : handleEditClick(index, "Team")
+                                : handleEditClick(index, doc.documentId, "Team")
                             }
                           >
                             {ismanagerMode
                               ? "수정"
-                              : teamEditModes[index]
+                              : selectedDocId === doc.documentId
                               ? "확인"
                               : "편집"}
                           </button>
@@ -532,7 +575,7 @@ const IncludeReSlide = () => {
                           <div className="DocNum">
                             {doc.docNumber}
 
-                            {teamEditModes[index] && (
+                            {selectedDocId === doc.documentId && (
                               <div className="docNumControls">
                                 <button
                                   className="num-up-button"
@@ -556,9 +599,9 @@ const IncludeReSlide = () => {
                             )}
                           </div>
                           <div className="DocPerson">
-                            {doc.docPerson}{" "}
-                            {doc.docPersonTeam
-                              ? doc.docPersonTeam
+                            {doc.username ? doc.username : "수정됨"}{" "}
+                            {doc.userposition
+                              ? doc.userposition
                               : doc.docPersondept}
                           </div>
                           <button
@@ -566,14 +609,14 @@ const IncludeReSlide = () => {
                             onClick={() =>
                               ismanagerMode
                                 ? handleManagEditClick(doc.documentId)
-                                : teamEditModes[index]
+                                : selectedDocId === doc.documentId
                                 ? handleEditConfirm(index, doc.documentId)
-                                : handleEditClick(index, "Team")
+                                : handleEditClick(index, doc.documentId, "Team")
                             }
                           >
                             {ismanagerMode
                               ? "수정"
-                              : teamEditModes[index]
+                              : selectedDocId === doc.documentId
                               ? "확인"
                               : "편집"}
                           </button>
@@ -620,7 +663,7 @@ const IncludeReSlide = () => {
                         <div className="DocTitle">{doc.docTitle}</div>
                         <div className="DocNum">
                           {doc.docNumber}
-                          {publicEditModes[index] && (
+                          {selectedDocId === doc.documentId && (
                             <div className="docNumControls">
                               <button
                                 className="num-up-button"
@@ -650,9 +693,9 @@ const IncludeReSlide = () => {
                           )}
                         </div>
                         <div className="DocPerson">
-                          {doc.docPerson}{" "}
-                          {doc.docPersonTeam
-                            ? doc.docPersonTeam
+                          {doc.username ? doc.username : "수정됨"}{" "}
+                          {doc.userposition
+                            ? doc.userposition
                             : doc.docPersondept}
                         </div>
                         <button
@@ -660,14 +703,14 @@ const IncludeReSlide = () => {
                           onClick={() =>
                             ismanagerMode
                               ? handleManagEditClick(doc.documentId)
-                              : publicEditModes[index]
+                              : selectedDocId === doc.documentId
                               ? handleEditConfirm(index, doc.documentId)
-                              : handleEditClick(index, "Public")
+                              : handleEditClick(index, doc.documentId, "Public")
                           }
                         >
                           {ismanagerMode
                             ? "수정"
-                            : publicEditModes[index]
+                            : selectedDocId === doc.documentId
                             ? "확인"
                             : "편집"}
                         </button>
@@ -869,6 +912,7 @@ const IncludeReSlide = () => {
         isOpen={editNumberAlertOpen} // 모달 열림 상태
         onClose={() => {
           setEditNumberAlertOpen(false); // 모달 닫기
+          setSelectedDocId(null);
         }}
         header="알림"
         headerTextColor="#fff"
@@ -878,6 +922,7 @@ const IncludeReSlide = () => {
         width="400px"
         onFooter1Click={() => {
           setEditNumberAlertOpen(false);
+          setSelectedDocId(null);
         }}
       >
         <div
@@ -890,7 +935,33 @@ const IncludeReSlide = () => {
         </div>
       </CustomModal>
 
-      {/* 문서 삭제 버튼 클릭시 나오는 모달 */}
+      {/* 중복된 문서제목이 있을경우에 뜨는 창 */}
+      <CustomModal
+        isOpen={errorAlertOpen} // 모달 열림 상태
+        onClose={() => {
+          setErrorAlertOpen(false); // 모달 닫기
+        }}
+        header="알림"
+        headerTextColor="#fff"
+        footer1="확인"
+        footer1Class="back-green-btn"
+        height="200px"
+        width="400px"
+        onFooter1Click={() => {
+          setErrorAlertOpen(false);
+        }}
+      >
+        <div
+          className="body-container"
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <div className="addDocu">
+            <h2>중복 된 문서명입니다.</h2>
+          </div>
+        </div>
+      </CustomModal>
+
+      {/* 문서 삭제 버튼 클릭시 뜨는 창 */}
       <CustomModal
         isOpen={isDeletePopUpOpen} // 모달 열림 상태
         onClose={() => {
