@@ -138,7 +138,7 @@ const IncludeReSlide = () => {
 
     try {
       const response = await GetDocuments(userID);
-      if (user.position === "부서장") {
+      if (user.position === "부서장" || user.position === "연구실장") {
         setDocuments(response.data.documentsForManager || []);
       } else {
         setDocuments(response.data.documents || []);
@@ -272,7 +272,7 @@ const IncludeReSlide = () => {
     });
   };
 
-  //관리팀 - 문서번호 수정
+  //관리팀 - 문서 수정
   const handleManagerEdit = async () => {
     const updateData = {
       documentId: selectItem,
@@ -346,7 +346,7 @@ const IncludeReSlide = () => {
 
   // position이 부서장일 경우
   useEffect(() => {
-    if (user.position === "부서장") {
+    if (user.position === "부서장" || user.position === "연구실장") {
       const groupedData = documents.reduce((acc: any, item) => {
         if (item.team !== null) {
           // acc에 이미 존재하는 팀이 있는지 직접 확인
