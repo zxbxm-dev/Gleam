@@ -71,6 +71,8 @@ export { default as addDocumentImage } from "./project/addDocument.svg";
 export { default as removeDocument } from "./project/removeDocument.svg";
 export { default as openSetting } from "./project/openSetting.svg";
 export { default as document_Arrow } from "./project/document_Arrow.svg";
+export { default as document_Setting_Open } from "./project/document_Setting_Open.svg";
+export { default as document_Setting_Close } from "./project/document_Setting_Close.svg";
 
 // mail
 export { default as mail_calendar } from "./mail/mail_calendar.svg";
