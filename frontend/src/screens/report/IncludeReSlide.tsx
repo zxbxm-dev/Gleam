@@ -6,9 +6,9 @@ import {
   spinnerBtm,
   spinnerTop,
   removeDocument,
-  openSetting,
   addDocumentImage,
-  document_Arrow,
+  document_Setting_Close,
+  document_Setting_Open,
 } from "../../assets/images/index";
 import CustomModal from "../../components/modal/CustomModal";
 import {
@@ -457,10 +457,10 @@ const IncludeReSlide = () => {
               <>
                 <div className="document_gap">
                   <button onClick={() => setIsManagerMode(false)}>
-                    <div style={{ display: "flex" }}>
-                      <img className="document_openSetting" src={openSetting} />
-                      <img className="document_Arrow" src={document_Arrow} />
-                    </div>
+                    <img
+                      className="document_Arrow"
+                      src={document_Setting_Close}
+                    />
                   </button>
 
                   <button onClick={() => setIsPopupOpen(true)}>
@@ -485,10 +485,10 @@ const IncludeReSlide = () => {
                       setTeamEditModes((prev) => prev.map(() => false));
                     }}
                   >
-                    <div style={{ display: "flex" }}>
-                      <img className="document_Arrow2" src={document_Arrow} />
-                      <img className="document_openSetting" src={openSetting} />
-                    </div>
+                    <img
+                      className="document_openSetting"
+                      src={document_Setting_Open}
+                    />
                   </button>
                 </div>
               </>
