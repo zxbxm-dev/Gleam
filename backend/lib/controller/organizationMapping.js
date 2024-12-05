@@ -8,7 +8,7 @@ const organizationMapping = {
         teams: [
             { id : 201 , name: "관리팀" },
             { id : 202 , name: "지원팀" },
-           // { id : 203 , name: "시설팀" },
+            { id : 203 , name: "시설팀" },
         ] },
     3: { department: "마케팅부",
         teams: [
@@ -20,6 +20,7 @@ const organizationMapping = {
             { id: 401 , name: "암호 연구팀" },
             { id: 402 , name: "AI 연구팀" },
             { id: 403, name: "API 개발팀"},
+            { id: 404, name: "크립토 블록체인 연구팀" },
         ] },
     5: { department: "동형분석 연구실",
         teams: [
