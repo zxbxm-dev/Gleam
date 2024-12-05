@@ -744,3 +744,20 @@ ul {
     }
   }
 }
+
+.document_gap {
+  justify-content: end;
+  display: flex;
+  gap: 10px;
+}
+.document_Arrow2 {
+  transform: rotate(180deg);
+  object-fit: contain;
+}
+.document_Arrow {
+  object-fit: contain;
+}
+
+.document_openSetting {
+  object-fit: contain;
+}

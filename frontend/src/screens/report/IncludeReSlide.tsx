@@ -5,6 +5,10 @@ import {
   White_Arrow,
   spinnerBtm,
   spinnerTop,
+  removeDocument,
+  openSetting,
+  addDocumentImage,
+  document_Arrow,
 } from "../../assets/images/index";
 import CustomModal from "../../components/modal/CustomModal";
 import {
@@ -371,20 +375,19 @@ const IncludeReSlide = () => {
         groupedData.push({ name: "디자인팀" }, { name: "기획팀" });
       }
       if (groupedData.length === 0 && user.department === "알고리즘 연구실") {
-        groupedData.push({ name: "암호 연구팀" }, { name: "AI 연구팀" });
-      }
-      if (groupedData.length === 0 && user.department === "블록체인 연구실") {
         groupedData.push(
-          { name: "크립토 블록체인 연구팀" },
-          { name: "API 개발팀" }
+          { name: "AI 연구팀" },
+          { name: "암호 연구팀" },
+          { name: "API 개발팀" },
+          { name: "크립토 블록체인 연구팀" }
         );
       }
       const sortedTeamData = [...groupedData].sort(
         (a: { name: string }, b: { name: string }) => {
           if (user.department === "관리부") {
             if (groupedData.length === 0) {
-              if (a.name === "관리팀") return -1;
-              if (b.name === "지원팀") return 1;
+              const order = ["관리팀", "지원팀", "시설팀"];
+              return order.indexOf(a.name) - order.indexOf(b.name);
             }
           }
           if (user.department === "개발부") {
@@ -396,18 +399,22 @@ const IncludeReSlide = () => {
             if (b.name === "기획팀") return 1;
           }
           if (user.department === "알고리즘 연구실") {
-            if (a.name === "암호 연구팀") return -1;
-            if (b.name === "AI 연구팀") return 1;
+            if (user.department === "알고리즘 연구실") {
+              const order = [
+                "AI 연구팀",
+                "암호 연구팀",
+                "API 개발팀",
+                "크립토 블록체인 연구팀",
+              ];
+              return order.indexOf(a.name) - order.indexOf(b.name);
+            }
           }
-          if (user.department === "블록체인 연구실") {
-            if (a.name === "크립토 블록체인 연구팀") return -1;
-            if (b.name === "API 개발팀") return 1;
-          }
+          // if (user.department === "블록체인 연구실") {
+          // }
           return 0;
         }
       );
       setTeamData(sortedTeamData);
-      console.log(sortedTeamData);
     }
   }, [documents]);
 
@@ -448,25 +455,43 @@ const IncludeReSlide = () => {
           <div className="modalplusbtn">
             {ismanagerMode ? (
               <>
-                <button onClick={() => setIsPopupOpen(true)}>추가</button>
-                <button
-                  onClick={() => {
-                    setIsDeletePopUpOpen(true);
-                  }}
-                >
-                  삭제
-                </button>
-                <button onClick={() => setIsManagerMode(false)}>닫기</button>
+                <div className="document_gap">
+                  <button onClick={() => setIsManagerMode(false)}>
+                    <div style={{ display: "flex" }}>
+                      <img className="document_openSetting" src={openSetting} />
+                      <img className="document_Arrow" src={document_Arrow} />
+                    </div>
+                  </button>
+
+                  <button onClick={() => setIsPopupOpen(true)}>
+                    <img src={addDocumentImage} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsDeletePopUpOpen(true);
+                    }}
+                  >
+                    <img src={removeDocument} />
+                  </button>
+                </div>
               </>
             ) : (
-              <button
-                onClick={() => {
-                  setIsManagerMode(true);
-                  setTeamEditModes((prev) => prev.map(() => false));
-                }}
-              >
-                편집
-              </button>
+              <>
+                <div className="document_gap">
+                  <button
+                    style={{ width: "auto" }}
+                    onClick={() => {
+                      setIsManagerMode(true);
+                      setTeamEditModes((prev) => prev.map(() => false));
+                    }}
+                  >
+                    <div style={{ display: "flex" }}>
+                      <img className="document_Arrow2" src={document_Arrow} />
+                      <img className="document_openSetting" src={openSetting} />
+                    </div>
+                  </button>
+                </div>
+              </>
             )}
           </div>
         )}
@@ -531,7 +556,7 @@ const IncludeReSlide = () => {
                             ) : null}
                           </div>
                           <div className="DocPerson">
-                            {doc.username ? doc.username : "수정됨"}{" "}
+                            {doc.username ? doc.username : "관리부 수정"}{" "}
                             {doc.userposition
                               ? doc.userposition
                               : doc.docPersondept}
@@ -620,7 +645,7 @@ const IncludeReSlide = () => {
                             )}
                           </div>
                           <div className="DocPerson">
-                            {doc.username ? doc.username : "수정됨"}{" "}
+                            {doc.username ? doc.username : "관리부 수정"}{" "}
                             {doc.userposition
                               ? doc.userposition
                               : doc.docPersondept}
@@ -714,7 +739,7 @@ const IncludeReSlide = () => {
                           )}
                         </div>
                         <div className="DocPerson">
-                          {doc.username ? doc.username : "수정됨"}{" "}
+                          {doc.username ? doc.username : "관리부 수정"}{" "}
                           {doc.userposition
                             ? doc.userposition
                             : doc.docPersondept}
