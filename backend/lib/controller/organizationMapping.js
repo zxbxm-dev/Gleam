@@ -19,6 +19,7 @@ const organizationMapping = {
         teams: [
             { id: 401 , name: "암호 연구팀" },
             { id: 402 , name: "AI 연구팀" },
+            { id: 403, name: "API 개발팀"},
         ] },
     5: { department: "동형분석 연구실",
         teams: [
@@ -27,7 +28,7 @@ const organizationMapping = {
     6: { department: "블록체인 연구실",
         teams: [
             //{ id: 601 , name: "크립토 블록체인 연구팀" },
-            { id: 602 , name: "API 개발팀"}
+            // { id: 602 , name: "API 개발팀"}  *************** 알고리즘 연구실 하위팀으로 설정되어있습니다 ***************
         ] },
     };
 
