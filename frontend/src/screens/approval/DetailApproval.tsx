@@ -445,7 +445,7 @@ const DetailApproval = () => {
                   <div className='PaymentLine'>
                     {signatories.map((signatory, index) => (
                       <div className='Pay' key={index}>
-                        <input className='Top' type="text" placeholder={signatory} disabled />
+                        <input className={signatory.length === 6 ? 'SmTop' : signatory.length === 5 ? 'MdTop' : 'Top'} type="text" placeholder={signatory} disabled />
                         {canUserSignAtIndex(index) ? 
                           (
                             <div className='Bottom' onClick={() => handleSignModal(index)}>

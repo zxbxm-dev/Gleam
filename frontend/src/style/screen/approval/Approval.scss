@@ -559,6 +559,34 @@
         color: #000;
       }
 
+      .SmTop {
+        border: 1px solid #000;
+        height: 35px;
+        width: 90px;
+        text-align: center;
+        font-size: 14px;
+        background-color: #fff;
+        border-right: none;
+      }
+
+      .SmTop::placeholder {
+        color: #000;
+      }
+
+      .MdTop {
+        border: 1px solid #000;
+        height: 35px;
+        width: 90px;
+        text-align: center;
+        font-size: 15px;
+        background-color: #fff;
+        border-right: none;
+      }
+
+      .MdTop::placeholder {
+        color: #000;
+      }
+
       .Bottom {
         display: flex;
         align-items: center;

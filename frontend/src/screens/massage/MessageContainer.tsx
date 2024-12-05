@@ -642,11 +642,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     }
   }, [targetMessageId]);
 
-  useEffect(() => {
-    socket?.on("newMsgNoti", () => console.log('새로운 메시지 알림'))
-
-  });
-
   // 새로운 메시지 수신
   useEffect(() => {
     if (socket) {

@@ -316,6 +316,10 @@ const WriteReport = () => {
       : (user.department === '블록체인 연구실')
         ? RDOffice ? RDOffice.find(member => member[0] === '심민지') || null : null
         : null;
+        
+
+  const TeamName = user.team.slice(0, 2);
+  const DepartmentName = user.department.slice(0, -1);
 
   const updateApprovalLines = (report: string) => {
     let newApprovalLines;
@@ -344,10 +348,10 @@ const WriteReport = () => {
         
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '관리부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
-        { name: '부서장', checked: true, selectedMember: departmentDirector },
-        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: `${DepartmentName}부서장`, checked: true, selectedMember: departmentDirector },
+        { name: `${TeamName}팀장`, checked: true, selectedMember: teamLeader },
         { name: '작성자', checked: true, selectedMember: writer },
       ];
     }
@@ -356,10 +360,10 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '관리부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
-        { name: '부서장', checked: true, selectedMember: departmentDirector },
-        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: `${DepartmentName}부서장`, checked: true, selectedMember: departmentDirector },
+        { name: `${TeamName}팀장`, checked: true, selectedMember: teamLeader },
         { name: '작성자', checked: true, selectedMember: writer },
       ];
     }
@@ -369,10 +373,10 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: true, selectedMembers: vacationFixed ? [vacationFixed] : [] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '관리부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '관리팀장', checked: true, selectedMember: ManagementFixed },
-        { name: '부서장', checked: true, selectedMember: departmentDirector },
-        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: `${DepartmentName}부서장`, checked: true, selectedMember: departmentDirector },
+        { name: `${TeamName}팀장`, checked: true, selectedMember: teamLeader },
         { name: '작성자', checked: true, selectedMember: writer },
       ];
     }
@@ -381,8 +385,8 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '부서장', checked: true, selectedMember: departmentDirector },
-        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: `${DepartmentName}부서장`, checked: true, selectedMember: departmentDirector },
+        { name: `${TeamName}팀장`, checked: true, selectedMember: teamLeader },
       ];
     }
 
@@ -390,7 +394,7 @@ const WriteReport = () => {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
         { name: '대표이사', checked: true, selectedMember: approvalFixed },
-        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
+        { name: `${DepartmentName}부서장`, checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
       ]
     }
@@ -398,10 +402,10 @@ const WriteReport = () => {
     function supportTeamLast() {
       return [
         { name: '참조', checked: false, selectedMembers: [] as Member[] },
-        { name: '부서장', checked: true, selectedMember: ManagementHeadFixed },
+        { name: '관리부서장', checked: true, selectedMember: ManagementHeadFixed },
         { name: '담당자', checked: true, selectedMember: SupportFixed },
-        { name: '부서장', checked: true, selectedMember: departmentDirector },
-        { name: '팀장', checked: true, selectedMember: teamLeader },
+        { name: `${DepartmentName}부서장`, checked: true, selectedMember: departmentDirector },
+        { name: `${TeamName}팀장`, checked: true, selectedMember: teamLeader },
         { name: '작성자', checked: true, selectedMember: writer },
       ]
     }
@@ -435,8 +439,8 @@ const WriteReport = () => {
         newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
         break;
       case '경위서':
-          newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
-          break;
+        newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
+        break;
       case '진급추천서':
         newApprovalLines = user.company === '본사' ? ManagementLines() : RDWriteLines();
         break;
