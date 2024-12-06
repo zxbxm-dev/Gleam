@@ -624,18 +624,21 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (Array.isArray(serverMessages) && serverMessages.length > 0) {
       serverMessages.forEach((msg) => {
-        if (
-          (msg.userId !== user.id && msg.isReadOther === 0) || // 1대1 채팅방 처리
-          (msg.userId !== user.id && msg.alreadyReadUser && !msg.alreadyReadUser.includes(user.userID)) // 단체 채팅방 처리
-        ) {
-          handleReadMessage(msg.messageId); // 상대방의 메시지를 읽었을 때만 처리
+        if (selectedRoomId.isGroup) {
+          if (msg.userId !== user.id && msg.alreadyReadUser && !msg.alreadyReadUser.includes(user.userID)) {
+            handleReadMessage(msg.messageId); // 상대방의 메시지를 읽었을 때만 처리
+          }
+        } else {
+          if (msg.userId !== user.id && msg.isReadOther === 0) {
+            handleReadMessage(msg.messageId); // 상대방의 메시지를 읽었을 때만 처리
+          }
         }
       });
     }
   }, [selectedRoomId.roomId, serverMessages, handleReadMessage, user.id]);
 
   const ensureArray = (arr: any) => Array.isArray(arr) ? arr : [];
-
+  
   useEffect(() => {
     if (targetMessageId && messageRefs.current[targetMessageId]) {
       messageRefs.current[targetMessageId]?.scrollIntoView({
