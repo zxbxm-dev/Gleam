@@ -272,14 +272,14 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           roomId: selectedRoomId.roomId,
           senderId: user.id,
           content: messageContent,
-          receiverId: user.userID,
+          receiverId: [user.userID],
         };
       } else {
         messageData = {
           roomId: selectedRoomId.roomId,
           senderId: user.id,
           content: messageContent,
-          receiverId: selectedPerson.userId,
+          receiverId:[selectedPerson.userId],
         };
       }
     }
