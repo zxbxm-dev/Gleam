@@ -425,6 +425,7 @@ const getChatHistory = async (socket, roomId, connectedUsers) => {
 const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderId, receiverId, connectedUsers) => {
   try {
     let room = await ChatRoom.findOne({ where: { roomId } });
+    const receiverIdtoString = receiverId.join(',');
 
     const participants = await ChatRoomParticipant.findAll({
       where: { roomId },
@@ -444,12 +445,14 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
     const newMessage = await Message.create({
       roomId,
       userId: senderId,
-      receiverId,
+      receiverId : receiverIdtoString,
       content,
     });
+    const messageInfo = [];
 
     // const connectedUserIds = Object.keys(connectedUsers);
-    const receiverSocketInfo = connectedUsers[newMessage.receiverId];
+    for (const Id of receiverId ){
+      const receiverSocketInfo = connectedUsers[Id];
 
     if (receiverSocketInfo) { // socket 연결 된 사람에게 보낼 때
       const receiverJoinRoomInfo = Array.from(receiverSocketInfo.rooms);
@@ -469,121 +472,15 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
         senderPosition: senderInfo.dataValues.position,
         isReadOther: isReadOther,
       };
-
-      io.to(roomId).emit("newMsgData", messageData);
-
-      if (isReadOther) {
-        console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
-        //메세지 전송 후 발신자의 화면에서 읽음 상태를 확인 하는 함수
-        await statusHandler.markMessageAsRead(socket, newMessage.messageId, newMessage.receiverId)
-      }else{
-        console.log("수신자의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.")
-      }
-
-    } else { // socket 연결 안된 사람에게 보낼때
-      const messageData = {
-        messageId: newMessage.messageId,
-        content: newMessage.content,
-        roomId: newMessage.roomId,
-        senderId: newMessage.userId,
-        receiverId: newMessage.receiverId,
-        timestamp: newMessage.createdAt,
-        fileValue: newMessage.filePath ? 1 : 0,
-        senderUsername: senderInfo.dataValues.username,
-        senderDepartment: senderInfo.dataValues.department,
-        senderTeam: senderInfo.dataValues.team,
-        senderPosition: senderInfo.dataValues.position,
-        isReadOther: 0,
-      };
-      
-      io.to(roomId).emit("newMsgData", messageData);
-    }
-    console.log('socket room 정보', io.sockets.adapter.rooms)
-
-    await ChatRoom.update(
-      { updatedAt: new Date() },
-      { where: { roomId } }
-    );
-
-  } catch (error) {
-    console.error(`메시지 전송 오류 발생: ${error.message}`);
-    throw new Error("메시지 전송 오류 발생");
-  }
-};
-
-// 클라이언트로 새로운 메시지 전송을 위한 별도 함수
-const broadcastNewMessage = (io, roomId, content, senderId) => {
-  try {
-    sendMessageToRoomParticipants(io,socket, roomId, content, senderId);
-  } catch (error) {
-    console.error("새 메시지 방송 오류:", error);
-  }
-};
-
-// 단체채팅방 ---------------------------------------------------------------------------------------------------------------
-
-// 단체채팅방 메세지 전송
-const GCsendMessageToRoomParticipants = async (io,socket, roomId, content, senderId, receiverId, connectedUsers) => {
-  try {
-    const receivers = receiverId.join(',');    
-    let room = await ChatRoom.findOne({ where: { roomId } });
-
-    const participants = await ChatRoomParticipant.findAll({
-      where: { roomId },
-      attributes: ["userId", "username", "department", "team", "position"],
-    });
-
-    if (participants.length === 0) {
-      console.error(`방 ${roomId}에 참가자가 없습니다.`);
-      return;
-    }
-
-    const senderInfo = await ChatRoomParticipant.findOne({
-      where: { userId : senderId },
-      attributes: ["userId", "username", "department", "team", "position"],
-    })
-
-    const newMessage = await Message.create({
-      roomId,
-      userId: senderId,
-      receiverId : receivers,
-      content,
-    });
-    
-    const messageInfo = [];
-
-    //const connectedUserIds = Object.keys(connectedUsers);
-    for (const Id of receiverId ){
-    const receiverSocketInfo = connectedUsers[Id];
-
-    if (receiverSocketInfo) { 
-      // socket 연결 된 사람에게 보낼 때
-      const receiverJoinRoomInfo = Array.from(receiverSocketInfo.rooms);
-      const isReadOther = newMessage.roomId == receiverJoinRoomInfo[0];
-  
-      const messageData = {
-        messageId: newMessage.messageId,
-        content: newMessage.content,
-        roomId: newMessage.roomId,
-        senderId: newMessage.userId,
-        receiverId: newMessage.receiverId,
-        timestamp: newMessage.createdAt,
-        fileValue: newMessage.filePath ? 1 : 0,
-        senderUsername: senderInfo.dataValues.username,
-        senderDepartment: senderInfo.dataValues.department,
-        senderTeam: senderInfo.dataValues.team,
-        senderPosition: senderInfo.dataValues.position,
-        isReadOther: isReadOther,
-      };
-
       messageInfo.push(messageData);
 
+      // -------------------------------------------------  추후 읽음 상태 처리와 함께 수정예정입니다.
       // if (isReadOther) {
       //   console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
       //   //메세지 전송 후 발신자의 화면에서 읽음 상태를 확인 하는 함수
       //   await statusHandler.markMessageAsRead(socket, newMessage.messageId, newMessage.receiverId)
       // }else{
-      //   console.log(`수신자명 ${Id}의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.`)
+      //   console.log("수신자의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.")
       // }
 
     } else { 
@@ -603,33 +500,35 @@ const GCsendMessageToRoomParticipants = async (io,socket, roomId, content, sende
         isReadOther: 0,
       };
       messageInfo.push(messageData);
-      // io.to(messageData.roomId).emit("newMsgData", messageData);
-           }
-    };
-    if(messageInfo.length > 0 ){
-      io.to(newMessage.roomId).emit("newMsgData", messageInfo[0])      
-    };
-    // await statusHandler.getReadStatus( socket, newMessage.messageId );
-    // await statusHandler.countUnreadMessages( socket, newMessage.userId, newMessage.roomId );
-
-    getGroupChatHistory(socket, roomId, newMessage.userId);
    
-    console.log('socket room 정보', io.sockets.adapter.rooms)
-
+    }
     await ChatRoom.update(
       { updatedAt: new Date() },
       { where: { roomId } }
     );
-  
+  };
+
+  if(messageInfo.length > 0 ){
+    io.to(newMessage.roomId).emit("newMsgData", messageInfo[0])      
+  };
+  getGroupChatHistory(socket, roomId, newMessage.userId);
+ 
+  console.log('socket room 정보', io.sockets.adapter.rooms)
+
   } catch (error) {
     console.error(`메시지 전송 오류 발생: ${error.message}`);
     throw new Error("메시지 전송 오류 발생");
   }
 };
 
-
-
-
+// 클라이언트로 새로운 메시지 전송을 위한 별도 함수
+const broadcastNewMessage = (io, roomId, content, senderId) => {
+  try {
+    sendMessageToRoomParticipants(io,socket, roomId, content, senderId);
+  } catch (error) {
+    console.error("새 메시지 방송 오류:", error);
+  }
+};
 
 module.exports = {
   getChatHistoryForUser,
@@ -639,5 +538,4 @@ module.exports = {
   findMutualChatRoomsForUsers,
   findChatRoomsForMe,
   getGroupChatHistory,
-  GCsendMessageToRoomParticipants,
 };
