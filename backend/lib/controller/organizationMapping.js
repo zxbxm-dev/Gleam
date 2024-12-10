@@ -33,6 +33,16 @@ const organizationMapping = {
         ] },
     };
 
+     const positionMapping = {
+        0 : { department : "포체인스 주식회사",
+            
+         },
+     }
+
+
+     
+
     module.exports ={
         organizationMapping,
+        positionMapping,
     }
