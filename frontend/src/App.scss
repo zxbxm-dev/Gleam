@@ -667,6 +667,13 @@ ul {
 
   .primary_button {
     @include report-button;
+    text-wrap: nowrap;
+  }
+
+  .disable_button {
+    @include report-button;
+    background-color: #b2b2b2;
+    cursor: auto;
   }
 
   .white_button {
