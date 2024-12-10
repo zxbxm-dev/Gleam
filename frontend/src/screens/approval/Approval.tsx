@@ -7,21 +7,33 @@ import {
   Asc_Icon,
   Desc_Icon,
   SelectDownArrow,
-  SelectArrow
+  SelectArrow,
+  report_Down,
+  report_Up,
+  new_Icon,
 } from "../../assets/images/index";
 import { useNavigate } from "react-router-dom";
 import Pagination from "react-js-pagination";
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../recoil/atoms';
+import { useRecoilValue } from "recoil";
+import { userState } from "../../recoil/atoms";
 
 import { useQuery } from "react-query";
-import { getMyReports, getDocumentsToApprove, getDocumentsInProgress, getRejectedDocuments, getApprovedDocuments } from "../../services/approval/ApprovalServices";
+import {
+  getMyReports,
+  getDocumentsToApprove,
+  getDocumentsInProgress,
+  getRejectedDocuments,
+  getApprovedDocuments,
+} from "../../services/approval/ApprovalServices";
+import ReportStatus from "../../components/ReportPayment/ReportStatus";
 
 const Approval = () => {
   let navigate = useNavigate();
   const user = useRecoilValue(userState);
   const [page, setPage] = useState<number>(1);
-  const [selectedTab, setSelectedTab] = useState<string>("myDocuments");
+  const [selectedTab, setSelectedTab] = useState<string>(
+    sessionStorage.getItem("selectedTab") || "myDocuments"
+  );
   const [postPerPage, setPostPerPage] = useState<number>(10);
   const [mydocuments, setMyDocument] = useState<any[]>([]); // 내 문서
   const [originalMyDocuments, setOriginalMyDocuments] = useState<any[]>([]);
@@ -32,7 +44,9 @@ const Approval = () => {
   const [rejecteds, setRejected] = useState<any[]>([]); // 반려된 문서
   const [originalRejected, setOriginalRejected] = useState<any[]>([]);
   const [compleDocuments, setCompleDocument] = useState<any[]>([]); // 완료된 문서
-  const [originalCompleDocument, setOriginalCompleDocument] = useState<any[]>([]);
+  const [originalCompleDocument, setOriginalCompleDocument] = useState<any[]>(
+    []
+  );
   const [idSortOrder, setIdSortOrder] = useState<"asc" | "desc">("asc");
   const [titleSortOrder, setTitleSortOrder] = useState<"asc" | "desc">("asc");
   const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");
@@ -40,56 +54,66 @@ const Approval = () => {
   const [writerSortOrder, setWriterSortOrder] = useState<"asc" | "desc">("asc");
   const [selectOpen, setSelectOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState("전체 문서");
+  const [reportStatusOpen, setReportStatusOpen] = useState(false);
+  const [reportButtonValue, setReportButtonValue] = useState<String | null>(
+    "myDocuments"
+  );
 
   const SelectOpen = () => {
     setSelectOpen(!selectOpen);
-  }
-  
+  };
+
   const SelectOptions = (report: string) => {
-    if (selectedTab === 'myDocuments') {
+    if (selectedTab === "myDocuments") {
       if (report === "전체 문서") {
         setMyDocument(originalMyDocuments);
       } else {
-        const filteredDocuments = originalMyDocuments.filter(doc => doc.selectForm === report);
+        const filteredDocuments = originalMyDocuments.filter(
+          (doc) => doc.selectForm === report
+        );
         setMyDocument(filteredDocuments);
       }
-    } else if (selectedTab === 'approval') {
+    } else if (selectedTab === "approval") {
       if (report === "전체 문서") {
         setApprovaling(originalApprovaling);
       } else {
-        const filteredDocuments = originalApprovaling.filter(doc => doc.selectForm === report);
+        const filteredDocuments = originalApprovaling.filter(
+          (doc) => doc.selectForm === report
+        );
         setApprovaling(filteredDocuments);
       }
-    } else if (selectedTab === 'inProgress') {
+    } else if (selectedTab === "inProgress") {
       if (report === "전체 문서") {
         setInProgress(originalInProgress);
       } else {
-        const filteredDocuments = originalInProgress.filter(doc => doc.selectForm === report);
+        const filteredDocuments = originalInProgress.filter(
+          (doc) => doc.selectForm === report
+        );
         setInProgress(filteredDocuments);
       }
-    } else if (selectedTab === 'rejected') {
+    } else if (selectedTab === "rejected") {
       if (report === "전체 문서") {
         setRejected(originalRejected);
       } else {
-        const filteredDocuments = originalRejected.filter(doc => doc.selectForm === report);
+        const filteredDocuments = originalRejected.filter(
+          (doc) => doc.selectForm === report
+        );
         setRejected(filteredDocuments);
       }
-    } else if (selectedTab === 'completed') {
+    } else if (selectedTab === "completed") {
       if (report === "전체 문서") {
         setCompleDocument(originalCompleDocument);
       } else {
-        const filteredDocuments = originalCompleDocument.filter(doc => doc.selectForm === report);
+        const filteredDocuments = originalCompleDocument.filter(
+          (doc) => doc.selectForm === report
+        );
         setCompleDocument(filteredDocuments);
       }
     }
-  
-    
+
     setSelectedReport(report);
     setSelectOpen(false);
   };
-  
-
-  console.log(mydocuments)
 
   useEffect(() => {
     const handleResize = () => {
@@ -103,50 +127,48 @@ const Approval = () => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
+  useEffect(() => {}, []);
+
   const handlePageChange = (page: number) => {
     setPage(page);
-  }
-
-  const handleTabClick = (tab: string) => {
-    setSelectedReport("전체 문서");
-    SelectOptions("전체 문서");
-    setSelectedTab(tab);
   };
 
   // 내 문서 목록 불러오기
   const fetchMyReports = async () => {
     const params = {
       userID: user.userID,
-      username: user.username
+      username: user.username,
     };
 
     try {
       const response = await getMyReports(params);
       return response.data;
-
     } catch (error) {
       console.log("Failed to fetch data");
     }
   };
 
   useQuery("myReports", fetchMyReports, {
-    onSuccess: (data) => {setMyDocument(data); setOriginalMyDocuments(data);},
+    onSuccess: (data) => {
+      setMyDocument(data);
+      setOriginalMyDocuments(data);
+    },
     onError: (error) => {
-      console.log(error)
-    }
+      console.log(error);
+    },
   });
 
   // 결재할 문서 목록 불러오기
   const fetchDocumentsToApprove = async () => {
     const params = {
-      username: user.username
+      username: user.username,
     };
 
     try {
@@ -160,16 +182,19 @@ const Approval = () => {
     }
   };
   useQuery("DocumentsToApprove", fetchDocumentsToApprove, {
-    onSuccess: (data) => {setApprovaling(data); setOriginalApprovaling(data)},
+    onSuccess: (data) => {
+      setApprovaling(data);
+      setOriginalApprovaling(data);
+    },
     onError: (error) => {
-      console.log(error)
-    }
+      console.log(error);
+    },
   });
 
   // 결재 진행 중인 문서 목록 불러오기
   const fetchDocumentsInProgress = async () => {
     const params = {
-      username: user.username
+      username: user.username,
     };
 
     try {
@@ -182,17 +207,19 @@ const Approval = () => {
   };
 
   useQuery("DocumentsInProgress", fetchDocumentsInProgress, {
-    onSuccess: (data) => {setInProgress(data); setOriginalInProgress(data)},
+    onSuccess: (data) => {
+      setInProgress(data);
+      setOriginalInProgress(data);
+    },
     onError: (error) => {
-      console.log(error)
-    }
+      console.log(error);
+    },
   });
-
 
   // 반려된 문서 목록 불러오기
   const fetchRejectedDocuments = async () => {
     const params = {
-      username: user.username
+      username: user.username,
     };
 
     try {
@@ -205,16 +232,19 @@ const Approval = () => {
   };
 
   useQuery("RejectedDocuments", fetchRejectedDocuments, {
-    onSuccess: (data) => {setRejected(data); setOriginalRejected(data)},
+    onSuccess: (data) => {
+      setRejected(data);
+      setOriginalRejected(data);
+    },
     onError: (error) => {
-      console.log(error)
-    }
+      console.log(error);
+    },
   });
 
   // 결재 완료된 문서 목록 불러오기
   const fetchApprovedDocuments = async () => {
     const params = {
-      username: user.username
+      username: user.username,
     };
 
     try {
@@ -227,15 +257,25 @@ const Approval = () => {
   };
 
   useQuery("ApprovedDocuments", fetchApprovedDocuments, {
-    onSuccess: (data) => {setCompleDocument(data); setOriginalCompleDocument(data)},
+    onSuccess: (data) => {
+      setCompleDocument(data);
+      setOriginalCompleDocument(data);
+    },
     onError: (error) => {
-      console.log(error)
-    }
+      console.log(error);
+    },
   });
 
-  const handleSort = (sortKey: string, targetState: any[], setTargetState: React.Dispatch<React.SetStateAction<any[]>>) => {
+  const handleSort = (
+    sortKey: string,
+    targetState: any[],
+    setTargetState: React.Dispatch<React.SetStateAction<any[]>>
+  ) => {
     // 정렬 상태 변수를 저장하는 Map
-    const sortOrders: Map<string, ["asc" | "desc", React.Dispatch<React.SetStateAction<"asc" | "desc">>]> = new Map([
+    const sortOrders: Map<
+      string,
+      ["asc" | "desc", React.Dispatch<React.SetStateAction<"asc" | "desc">>]
+    > = new Map([
       ["id", [idSortOrder, setIdSortOrder]],
       ["selectForm", [titleSortOrder, setTitleSortOrder]],
       ["sendDate", [dateSortOrder, setDateSortOrder]],
@@ -243,31 +283,38 @@ const Approval = () => {
       ["state", [stateSortOrder, setStateSortOrder]],
       ["username", [writerSortOrder, setWriterSortOrder]],
     ]);
-    const [currentSortOrder, setCurrentSortOrder] = sortOrders.get(sortKey) || ["asc", setIdSortOrder];
+    const [currentSortOrder, setCurrentSortOrder] = sortOrders.get(sortKey) || [
+      "asc",
+      setIdSortOrder,
+    ];
 
     const sortedDocuments = [...targetState].sort((a, b) => {
-      console.log(sortKey)
+      console.log(sortKey);
       if (currentSortOrder === "asc") {
-        console.log(a[sortKey], b[sortKey])
+        console.log(a[sortKey], b[sortKey]);
         return a[sortKey] > b[sortKey] ? 1 : -1;
       } else {
         return a[sortKey] < b[sortKey] ? 1 : -1;
       }
     });
 
-    console.log(sortedDocuments)
+    console.log(sortedDocuments);
     setCurrentSortOrder(currentSortOrder === "asc" ? "desc" : "asc");
     setTargetState(sortedDocuments);
   };
-  
+
+  const reportButtonClick = (item: any) => {
+    setReportButtonValue(item);
+  };
+
+  useEffect(() => {
+    sessionStorage.setItem("selectedTab", selectedTab);
+  }, [selectedTab]);
+
   const renderTabContent = () => {
     switch (selectedTab) {
       case "main":
-        return (
-          <div>
-
-          </div>
-        );
+        return <div></div>;
       case "approval":
         return (
           <>
@@ -282,38 +329,90 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", approvalings, setApprovaling)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("id", approvalings, setApprovaling)
+                    }
+                  >
                     순번
-                    {idSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {idSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("selectForm", approvalings, setApprovaling)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("selectForm", approvalings, setApprovaling)
+                    }
+                  >
                     제목
-                    {titleSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {titleSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("sendDate", approvalings, setApprovaling)}>
-                    결재수신일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("sendDate", approvalings, setApprovaling)
                     }
+                  >
+                    결재수신일자
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("username", approvalings, setApprovaling)}>
-                    작성자/부서
-                    {writerSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("username", approvalings, setApprovaling)
                     }
+                  >
+                    작성자/부서
+                    {writerSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>결재</th>
                 </tr>
@@ -325,10 +424,16 @@ const Approval = () => {
                     const formatDate = (dateString: string) => {
                       const date = new Date(dateString);
                       const year = date.getFullYear();
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const hours = String(date.getHours()).padStart(2, '0');
-                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const hours = String(date.getHours()).padStart(2, "0");
+                      const minutes = String(date.getMinutes()).padStart(
+                        2,
+                        "0"
+                      );
                       return `${year}-${month}-${day} ${hours}:${minutes}`;
                     };
 
@@ -337,22 +442,35 @@ const Approval = () => {
                     return (
                       <tr key={approvaling.id} className="board_content">
                         <td>
-                          {idSortOrder === 'asc' ? 
-                            (
-                              approvalings.length - ((page - 1) * postPerPage + index)
-                            )
-                            :
-                            (
-                              (page - 1) * postPerPage + index + 1
-                            )
-                          }
+                          {idSortOrder === "asc"
+                            ? approvalings.length -
+                              ((page - 1) * postPerPage + index)
+                            : (page - 1) * postPerPage + index + 1}
                         </td>
-                        <td style={{ textAlign: 'center' }}>{approvaling.selectForm}</td>
+                        <td style={{ textAlign: "center" }}>
+                          {approvaling.selectForm}
+                        </td>
                         <td>{formattedSendDate}</td>
-                        <td>{approvaling.approval} / {approvaling.currentSigner}</td>
-                        <td>{approvaling.username} {approvaling.team ? ` / ${approvaling.team}` : (approvaling.dept ? ` / ${approvaling.dept}` : '')} </td>
                         <td>
-                          <button className="primary_button" onClick={() => { navigate(`/detailApproval/${approvaling.id}`, { state: { documentInfo: approvaling } }) }}>
+                          {approvaling.approval} / {approvaling.currentSigner}
+                        </td>
+                        <td>
+                          {approvaling.username}{" "}
+                          {approvaling.team
+                            ? ` / ${approvaling.team}`
+                            : approvaling.dept
+                            ? ` / ${approvaling.dept}`
+                            : ""}{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="primary_button"
+                            onClick={() => {
+                              navigate(`/detailApproval/${approvaling.id}`, {
+                                state: { documentInfo: approvaling },
+                              });
+                            }}
+                          >
                             결재하기
                           </button>
                         </td>
@@ -366,7 +484,9 @@ const Approval = () => {
                   activePage={page}
                   itemsCountPerPage={postPerPage}
                   totalItemsCount={approvalings?.length}
-                  pageRangeDisplayed={Math.ceil(approvalings?.length / postPerPage)}
+                  pageRangeDisplayed={Math.ceil(
+                    approvalings?.length / postPerPage
+                  )}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -392,46 +512,109 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", inProgress, setInProgress)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() => handleSort("id", inProgress, setInProgress)}
+                  >
                     순번
-                    {idSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {idSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("selectForm", inProgress, setInProgress)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("selectForm", inProgress, setInProgress)
+                    }
+                  >
                     제목
-                    {titleSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {titleSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("sendDate", inProgress, setInProgress)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("sendDate", inProgress, setInProgress)
+                    }
+                  >
                     결재수신일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("updatedAt", inProgress, setInProgress)}>
-                    결재발신일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("updatedAt", inProgress, setInProgress)
                     }
+                  >
+                    결재발신일자
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("username", inProgress, setInProgress)}>
-                    작성자/부서
-                    {writerSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("username", inProgress, setInProgress)
                     }
+                  >
+                    작성자/부서
+                    {writerSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>확인</th>
                 </tr>
@@ -443,10 +626,16 @@ const Approval = () => {
                     const formatDate = (dateString: string) => {
                       const date = new Date(dateString);
                       const year = date.getFullYear();
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const hours = String(date.getHours()).padStart(2, '0');
-                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const hours = String(date.getHours()).padStart(2, "0");
+                      const minutes = String(date.getMinutes()).padStart(
+                        2,
+                        "0"
+                      );
                       return `${year}-${month}-${day} ${hours}:${minutes}`;
                     };
 
@@ -456,23 +645,36 @@ const Approval = () => {
                     return (
                       <tr key={inProgres.id} className="board_content">
                         <td>
-                          {idSortOrder === 'asc' ? 
-                            (
-                              inProgress.length - ((page - 1) * postPerPage + index)
-                            )
-                            :
-                            (
-                              (page - 1) * postPerPage + index + 1
-                            )
-                          }
+                          {idSortOrder === "asc"
+                            ? inProgress.length -
+                              ((page - 1) * postPerPage + index)
+                            : (page - 1) * postPerPage + index + 1}
                         </td>
-                        <td style={{ textAlign: 'center' }}>{inProgres.selectForm}</td>
+                        <td style={{ textAlign: "center" }}>
+                          {inProgres.selectForm}
+                        </td>
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>
-                        <td>{inProgres.approval} / {inProgres.currentSigner}</td>
-                        <td>{inProgres.username} {inProgres.team ? ` / ${inProgres.team}` : (inProgres.dept ? ` / ${inProgres.dept}` : '')} </td>
                         <td>
-                          <button className="primary_button" onClick={() => { navigate(`/detailDocument/${inProgres.id}`, { state: { documentInfo: inProgres } }) }}>
+                          {inProgres.approval} / {inProgres.currentSigner}
+                        </td>
+                        <td>
+                          {inProgres.username}{" "}
+                          {inProgres.team
+                            ? ` / ${inProgres.team}`
+                            : inProgres.dept
+                            ? ` / ${inProgres.dept}`
+                            : ""}{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="primary_button"
+                            onClick={() => {
+                              navigate(`/detailDocument/${inProgres.id}`, {
+                                state: { documentInfo: inProgres },
+                              });
+                            }}
+                          >
                             문서확인
                           </button>
                         </td>
@@ -486,7 +688,9 @@ const Approval = () => {
                   activePage={page}
                   itemsCountPerPage={postPerPage}
                   totalItemsCount={inProgress?.length}
-                  pageRangeDisplayed={Math.ceil(inProgress?.length / postPerPage)}
+                  pageRangeDisplayed={Math.ceil(
+                    inProgress?.length / postPerPage
+                  )}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -512,46 +716,109 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", rejecteds, setRejected)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() => handleSort("id", rejecteds, setRejected)}
+                  >
                     순번
-                    {idSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {idSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("selectForm", rejecteds, setRejected)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("selectForm", rejecteds, setRejected)
+                    }
+                  >
                     제목
-                    {titleSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {titleSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("sendDate", rejecteds, setRejected)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("sendDate", rejecteds, setRejected)
+                    }
+                  >
                     결재수신일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("updatedAt", rejecteds, setRejected)}>
-                    결재반려일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("updatedAt", rejecteds, setRejected)
                     }
+                  >
+                    결재반려일자
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("username", rejecteds, setRejected)}>
-                    작성자/부서
-                    {writerSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("username", rejecteds, setRejected)
                     }
+                  >
+                    작성자/부서
+                    {writerSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>결재</th>
                 </tr>
@@ -563,10 +830,16 @@ const Approval = () => {
                     const formatDate = (dateString: string) => {
                       const date = new Date(dateString);
                       const year = date.getFullYear();
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const hours = String(date.getHours()).padStart(2, '0');
-                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const hours = String(date.getHours()).padStart(2, "0");
+                      const minutes = String(date.getMinutes()).padStart(
+                        2,
+                        "0"
+                      );
                       return `${year}-${month}-${day} ${hours}:${minutes}`;
                     };
 
@@ -576,23 +849,36 @@ const Approval = () => {
                     return (
                       <tr key={rejected.id} className="board_content">
                         <td>
-                          {idSortOrder === 'asc' ? 
-                            (
-                              rejecteds.length - ((page - 1) * postPerPage + index)
-                            )
-                            :
-                            (
-                              (page - 1) * postPerPage + index + 1
-                            )
-                          }
+                          {idSortOrder === "asc"
+                            ? rejecteds.length -
+                              ((page - 1) * postPerPage + index)
+                            : (page - 1) * postPerPage + index + 1}
                         </td>
-                        <td style={{ textAlign: 'center' }}>{rejected.selectForm}</td>
+                        <td style={{ textAlign: "center" }}>
+                          {rejected.selectForm}
+                        </td>
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>
-                        <td>{rejected.approval} / {rejected.currentSigner}</td>
-                        <td>{rejected.username} {rejected.team ? ` / ${rejected.team}` : (rejected.dept ? ` / ${rejected.dept}` : '')} </td>
                         <td>
-                          <button className="primary_button" onClick={() => { navigate(`/detailDocument/${rejected.id}`, { state: { documentInfo: rejected } }) }}>
+                          {rejected.approval} / {rejected.currentSigner}
+                        </td>
+                        <td>
+                          {rejected.username}{" "}
+                          {rejected.team
+                            ? ` / ${rejected.team}`
+                            : rejected.dept
+                            ? ` / ${rejected.dept}`
+                            : ""}{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="primary_button"
+                            onClick={() => {
+                              navigate(`/detailDocument/${rejected.id}`, {
+                                state: { documentInfo: rejected },
+                              });
+                            }}
+                          >
                             문서확인
                           </button>
                         </td>
@@ -606,7 +892,9 @@ const Approval = () => {
                   activePage={page}
                   itemsCountPerPage={postPerPage}
                   totalItemsCount={rejecteds?.length}
-                  pageRangeDisplayed={Math.ceil(rejecteds?.length / postPerPage)}
+                  pageRangeDisplayed={Math.ceil(
+                    rejecteds?.length / postPerPage
+                  )}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -632,46 +920,119 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", compleDocuments, setCompleDocument)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("id", compleDocuments, setCompleDocument)
+                    }
+                  >
                     순번
-                    {idSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {idSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("selectForm", compleDocuments, setCompleDocument)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "selectForm",
+                        compleDocuments,
+                        setCompleDocument
+                      )
+                    }
+                  >
                     제목
-                    {titleSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {titleSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("sendDate", compleDocuments, setCompleDocument)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("sendDate", compleDocuments, setCompleDocument)
+                    }
+                  >
                     결재수신일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("updatedAt", compleDocuments, setCompleDocument)}>
-                    결재완료일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "updatedAt",
+                        compleDocuments,
+                        setCompleDocument
+                      )
                     }
+                  >
+                    결재완료일자
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("username", compleDocuments, setCompleDocument)}>
-                    작성자/부서
-                    {writerSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("username", compleDocuments, setCompleDocument)
                     }
+                  >
+                    작성자/부서
+                    {writerSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>확인</th>
                 </tr>
@@ -683,36 +1044,60 @@ const Approval = () => {
                     const formatDate = (dateString: string) => {
                       const date = new Date(dateString);
                       const year = date.getFullYear();
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const hours = String(date.getHours()).padStart(2, '0');
-                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const hours = String(date.getHours()).padStart(2, "0");
+                      const minutes = String(date.getMinutes()).padStart(
+                        2,
+                        "0"
+                      );
                       return `${year}-${month}-${day} ${hours}:${minutes}`;
                     };
 
-                    const formattedSendDate = formatDate(compledocument.sendDate);
-                    const formattedUpdatedAt = formatDate(compledocument.updatedAt);
+                    const formattedSendDate = formatDate(
+                      compledocument.sendDate
+                    );
+                    const formattedUpdatedAt = formatDate(
+                      compledocument.updatedAt
+                    );
 
                     return (
                       <tr key={compledocument.id} className="board_content">
                         <td>
-                          {idSortOrder === 'asc' ? 
-                            (
-                              compleDocuments.length - ((page - 1) * postPerPage + index)
-                            )
-                            :
-                            (
-                              (page - 1) * postPerPage + index + 1
-                            )
-                          }
+                          {idSortOrder === "asc"
+                            ? compleDocuments.length -
+                              ((page - 1) * postPerPage + index)
+                            : (page - 1) * postPerPage + index + 1}
                         </td>
-                        <td style={{ textAlign: 'center' }}>{compledocument.selectForm}</td>
+                        <td style={{ textAlign: "center" }}>
+                          {compledocument.selectForm}
+                        </td>
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>
-                        <td>{compledocument.approval} / {compledocument.currentSigner}</td>
-                        <td>{compledocument.username} {compledocument.team ? ` / ${compledocument.team}` : (compledocument.dept ? ` / ${compledocument.dept}` : '')} </td>
                         <td>
-                          <button className="primary_button" onClick={() => { navigate(`/detailDocument/${compledocument.id}`, { state: { documentInfo: compledocument } }) }}>
+                          {compledocument.approval} /{" "}
+                          {compledocument.currentSigner}
+                        </td>
+                        <td>
+                          {compledocument.username}{" "}
+                          {compledocument.team
+                            ? ` / ${compledocument.team}`
+                            : compledocument.dept
+                            ? ` / ${compledocument.dept}`
+                            : ""}{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="primary_button"
+                            onClick={() => {
+                              navigate(`/detailDocument/${compledocument.id}`, {
+                                state: { documentInfo: compledocument },
+                              });
+                            }}
+                          >
                             문서확인
                           </button>
                         </td>
@@ -726,7 +1111,9 @@ const Approval = () => {
                   activePage={page}
                   itemsCountPerPage={postPerPage}
                   totalItemsCount={compleDocuments?.length}
-                  pageRangeDisplayed={Math.ceil(compleDocuments?.length / postPerPage)}
+                  pageRangeDisplayed={Math.ceil(
+                    compleDocuments?.length / postPerPage
+                  )}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -753,54 +1140,130 @@ const Approval = () => {
               </colgroup>
               <thead>
                 <tr className="board_header">
-                  <th className="HoverTab" onClick={() => handleSort("id", mydocuments, setMyDocument)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() => handleSort("id", mydocuments, setMyDocument)}
+                  >
                     순번
-                    {idSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {idSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("selectForm", mydocuments, setMyDocument)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("selectForm", mydocuments, setMyDocument)
+                    }
+                  >
                     제목
-                    {titleSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {titleSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("sendDate", mydocuments, setMyDocument)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("sendDate", mydocuments, setMyDocument)
+                    }
+                  >
                     결재발신일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("updatedAt", mydocuments, setMyDocument)}>
-                    처리일자
-                    {dateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("updatedAt", mydocuments, setMyDocument)
                     }
+                  >
+                    처리일자
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>진행상황</th>
-                  <th className="HoverTab" onClick={() => handleSort("state", mydocuments, setMyDocument)}>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("state", mydocuments, setMyDocument)
+                    }
+                  >
                     처리상황
-                    {stateSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
-                    }
+                    {stateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
-                  <th className="HoverTab" onClick={() => handleSort("username", mydocuments, setMyDocument)}>
-                    작성자/부서
-                    {writerSortOrder === 'asc' ?
-                      <img src={Asc_Icon} alt="Asc_Icon" className="sort_icon" />
-                      :
-                      <img src={Desc_Icon} alt="Desc_Icon" className="sort_icon" />
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("username", mydocuments, setMyDocument)
                     }
+                  >
+                    작성자/부서
+                    {writerSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
                   </th>
                   <th>확인</th>
                 </tr>
@@ -812,37 +1275,56 @@ const Approval = () => {
                     const formatDate = (dateString: string) => {
                       const date = new Date(dateString);
                       const year = date.getFullYear();
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const hours = String(date.getHours()).padStart(2, '0');
-                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const hours = String(date.getHours()).padStart(2, "0");
+                      const minutes = String(date.getMinutes()).padStart(
+                        2,
+                        "0"
+                      );
                       return `${year}-${month}-${day} ${hours}:${minutes}`;
                     };
-              
+
                     const formattedSendDate = formatDate(mydocument.sendDate);
                     const formattedUpdatedAt = formatDate(mydocument.updatedAt);
 
                     return (
                       <tr key={mydocument.id} className="board_content">
                         <td>
-                          {idSortOrder === 'asc' ? 
-                            (
-                              mydocuments.length - ((page - 1) * postPerPage + index)
-                            )
-                            :
-                            (
-                              (page - 1) * postPerPage + index + 1
-                            )
-                          }
+                          {idSortOrder === "asc"
+                            ? mydocuments.length -
+                              ((page - 1) * postPerPage + index)
+                            : (page - 1) * postPerPage + index + 1}
                         </td>
-                        <td style={{ textAlign: 'center' }}>{mydocument.selectForm}</td>
+                        <td style={{ textAlign: "center" }}>
+                          {mydocument.selectForm}
+                        </td>
                         <td>{formattedSendDate}</td>
                         <td>{formattedUpdatedAt}</td>
-                        <td>{mydocument.approval} / {mydocument.currentSigner}</td>
-                        <td>{mydocument.status}</td>
-                        <td>{mydocument.username} {mydocument.team ? ` / ${mydocument.team}` : (mydocument.dept ? ` / ${mydocument.dept}` : '')} </td>
                         <td>
-                          <button className="primary_button" onClick={() => { navigate(`/detailDocument/${mydocument.id}`, { state: { documentInfo: mydocument } }) }}>
+                          {mydocument.approval} / {mydocument.currentSigner}
+                        </td>
+                        <td>{mydocument.status}</td>
+                        <td>
+                          {mydocument.username}{" "}
+                          {mydocument.team
+                            ? ` / ${mydocument.team}`
+                            : mydocument.dept
+                            ? ` / ${mydocument.dept}`
+                            : ""}{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="primary_button"
+                            onClick={() => {
+                              navigate(`/detailDocument/${mydocument.id}`, {
+                                state: { documentInfo: mydocument },
+                              });
+                            }}
+                          >
                             문서확인
                           </button>
                         </td>
@@ -856,7 +1338,9 @@ const Approval = () => {
                   activePage={page}
                   itemsCountPerPage={postPerPage}
                   totalItemsCount={mydocuments?.length}
-                  pageRangeDisplayed={Math.ceil(mydocuments?.length / postPerPage)}
+                  pageRangeDisplayed={Math.ceil(
+                    mydocuments?.length / postPerPage
+                  )}
                   prevPageText={<LeftIcon />}
                   nextPageText={<RightIcon />}
                   firstPageText={<FirstLeftIcon />}
@@ -972,147 +1456,529 @@ const Approval = () => {
         return null;
     }
   };
-  
+
+  useEffect(() => {
+    if (
+      selectedTab === "approval" ||
+      selectedTab === "inProgress" ||
+      selectedTab === "completed" ||
+      selectedTab === "rejected"
+    ) {
+      setReportStatusOpen(true);
+    } else {
+      setReportStatusOpen(false);
+    }
+  }, [selectedTab]);
+
   return (
     <div className="content">
-      <div className="approval_top">
-        <div className="approval_top_first">
-          <div className={`${selectedTab === "myDocuments" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("myDocuments")}>
-            <span>내문서</span> <span className="document_count">{mydocuments?.length}</span>
-          </div>
-          <div className={`${selectedTab === "approval" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("approval")}>
-            <span>결재 할 문서</span> <span className="document_count">{approvalings?.length}</span>
-          </div>
-          <div className={`${selectedTab === "inProgress" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("inProgress")}>
-            <span>결재 진행 중 문서</span> <span className="document_count">{inProgress?.length}</span>
-          </div>
-          <div className={`${selectedTab === "rejected" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("rejected")}>
-            <span>반려 문서</span> <span className="document_count">{rejecteds?.length}</span>
-          </div>
-          <div className={`${selectedTab === "completed" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("completed")}>
-            <span>결재 완료 문서</span> <span className="document_count">{compleDocuments?.length}</span>
-          </div>
-          {/* {user.username === '우현지' ? (
-            <div className={`${selectedTab === "vacation" ? "approval_tab_clicked" : "approval_tab"}`} onClick={() => handleTabClick("vacation")}>
-              <span>휴가문서관리</span> <span className="document_count">{vacations.length}</span>
-            </div>
-          )
-            :
-            <></>
-          } */}
-        </div>
-        <div className="approval_top_selector">
-          <div className="approval_top_selector_title">
-            양식 선택
-          </div>
-          <div className="approval_top_selector_box" onClick={SelectOpen}>
-            <img src={selectOpen ? SelectDownArrow : SelectArrow} alt="SelectArrow" className="SelectArrow" />
-            <span className="selector_title">{selectedReport}</span>
-          </div>
-          {selectOpen ? (
-            <div className="Select_report_Content">
-              <div className="Option" onClick={() => SelectOptions('전체 문서')}>
-                <span className="Option_title">전체 문서</span>
+      <div
+        className={
+          reportStatusOpen
+            ? "approval_content_box"
+            : "approval_content_box_open"
+        }
+      >
+        <div className="approval_top">
+          <div className="report_button_contain">
+            <button
+              className={
+                reportStatusOpen
+                  ? "report_button_box_active"
+                  : "report_button_box"
+              }
+              onClick={() => {
+                reportButtonClick("reportStatus");
+                setSelectedTab(selectedTab);
+                setReportStatusOpen(!reportStatusOpen);
+              }}
+            >
+              <div className="report_toggle_box">
+                <div></div>
+                <div>진행상태</div>
+                <img
+                  src={reportStatusOpen ? report_Up : report_Down}
+                  alt="SelectArrow"
+                  className="SelectArrow"
+                />
               </div>
-              <div>공동</div>
-              <div className="Option" onClick={() => SelectOptions('주간업무일지')}>
-                <span className="Option_title">주간업무일지</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('휴가신청서')}>
-                <span className="Option_title">휴가신청서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('지출품의서')}>
-                <span className="Option_title">지출품의서</span>
-              </div>
+            </button>
+            <button
+              className={
+                selectedTab === "recheckDocument"
+                  ? "report_button_box_active2"
+                  : "report_button_box2"
+              }
+              onClick={() => {
+                reportButtonClick("recheckDocument");
+                setReportStatusOpen(false);
+              }}
+            >
+              재확인 문서
+              <img src={new_Icon} alt="new_Icon" className="new_Icon" />
+            </button>
+            <button
+              className={
+                selectedTab === "myDocuments"
+                  ? "report_button_box_active"
+                  : "report_button_box"
+              }
+              onClick={() => {
+                reportButtonClick("myDocuments");
+                setSelectedTab("myDocuments");
+                setReportStatusOpen(false);
+              }}
+            >
+              내 문서
+            </button>
+            <button
+              className={
+                selectedTab === "doneDocument"
+                  ? "report_button_box_active"
+                  : "report_button_box"
+              }
+              onClick={() => {
+                reportButtonClick("doneDocument");
+                setSelectedTab("rejected");
+                setReportStatusOpen(false);
+              }}
+            >
+              만료 문서
+            </button>
+          </div>
 
-              <div>프로젝트</div>
-              <div className="Option" onClick={() => SelectOptions('기획서')}>
-                <span className="Option_title">기획서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('중간보고서')}>
-                <span className="Option_title">중간보고서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('최종보고서')}>
-                <span className="Option_title">최종보고서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('TF팀 기획서')}>
-                <span className="Option_title">TF팀 기획서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 계획서')}>
-                <span className="Option_title">TF팀 프로젝트 계획서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('TF팀 중간보고서')}>
-                <span className="Option_title">TF팀 중간보고서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('TF팀 프로젝트 결과 보고서')}>
-                <span className="Option_title">TF팀 프로젝트 결과 보고서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('박람회 보고서')}>
-                <span className="Option_title">박람회 보고서</span>
-              </div>
+          {reportStatusOpen ? (
+            <div className="child_Box">
+              {reportStatusOpen ? (
+                <ReportStatus
+                  selectedTab={selectedTab}
+                  mydocuments={mydocuments}
+                  approvalings={approvalings}
+                  inProgress={inProgress}
+                  rejecteds={rejecteds}
+                  compleDocuments={compleDocuments}
+                  setSelectedReport={setSelectedReport}
+                  setSelectedTab={setSelectedTab}
+                  SelectOptions={SelectOptions}
+                />
+              ) : (
+                <div className="approval_top_first"></div>
+              )}
+              <div className="approval_top_selector">
+                <div className="approval_top_selector_title">양식 선택</div>
+                <div className="approval_top_selector_box" onClick={SelectOpen}>
+                  <img
+                    src={selectOpen ? SelectDownArrow : SelectArrow}
+                    alt="SelectArrow"
+                    className="SelectArrow"
+                  />
+                  <span className="selector_title">{selectedReport}</span>
+                </div>
+                {selectOpen ? (
+                  <div className="Select_report_Content">
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("전체 문서")}
+                    >
+                      <span className="Option_title">전체 문서</span>
+                    </div>
+                    <div>공동</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("주간업무일지")}
+                    >
+                      <span className="Option_title">주간업무일지</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("휴가신청서")}
+                    >
+                      <span className="Option_title">휴가신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("지출품의서")}
+                    >
+                      <span className="Option_title">지출품의서</span>
+                    </div>
 
-              <div>인사</div>
-              <div className="Option" onClick={() => SelectOptions('휴직원')}>
-                <span className="Option_title">휴직원</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('복직원')}>
-                <span className="Option_title">복직원</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('시말서')}>
-                <span className="Option_title">시말서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('경위서')}>
-                <span className="Option_title">경위서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('진급추천서')}>
-                <span className="Option_title">진급추천서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('퇴직금 중간정산 신청서')}>
-                <span className="Option_title">퇴직금 중간정산 신청서</span>
-              </div>
+                    <div>프로젝트</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("기획서")}
+                    >
+                      <span className="Option_title">기획서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("중간보고서")}
+                    >
+                      <span className="Option_title">중간보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("최종보고서")}
+                    >
+                      <span className="Option_title">최종보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("TF팀 기획서")}
+                    >
+                      <span className="Option_title">TF팀 기획서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("TF팀 프로젝트 계획서")}
+                    >
+                      <span className="Option_title">TF팀 프로젝트 계획서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("TF팀 중간보고서")}
+                    >
+                      <span className="Option_title">TF팀 중간보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("TF팀 프로젝트 결과 보고서")}
+                    >
+                      <span className="Option_title">
+                        TF팀 프로젝트 결과 보고서
+                      </span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("박람회 보고서")}
+                    >
+                      <span className="Option_title">박람회 보고서</span>
+                    </div>
 
-              <div>총무</div>
-              <div className="Option" onClick={() => SelectOptions('출장 신청서')}>
-                <span className="Option_title">출장 신청서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('출장 보고서')}>
-                <span className="Option_title">출장 보고서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('출장비내역서')}>
-                <span className="Option_title">출장비내역서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('자기개발비 신청서')}>
-                <span className="Option_title">자기개발비 신청서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('법인카드 신청서')}>
-                <span className="Option_title">법인카드 신청서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('지출내역서')}>
-                <span className="Option_title">지출내역서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('예산신청서')}>
-                <span className="Option_title">예산신청서</span>
-              </div>
+                    <div>인사</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("휴직원")}
+                    >
+                      <span className="Option_title">휴직원</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("복직원")}
+                    >
+                      <span className="Option_title">복직원</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("시말서")}
+                    >
+                      <span className="Option_title">시말서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("경위서")}
+                    >
+                      <span className="Option_title">경위서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("진급추천서")}
+                    >
+                      <span className="Option_title">진급추천서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("퇴직금 중간정산 신청서")}
+                    >
+                      <span className="Option_title">
+                        퇴직금 중간정산 신청서
+                      </span>
+                    </div>
 
-              <div>기타</div>
-              <div className="Option" onClick={() => SelectOptions('워크숍 신청서')}>
-                <span className="Option_title">워크숍 신청서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('야유회 보고서')}>
-                <span className="Option_title">야유회 보고서</span>
-              </div>
-              <div className="Option" onClick={() => SelectOptions('프로젝트 회의 보고서')}>
-                <span className="Option_title">프로젝트 회의 보고서</span>
+                    <div>총무</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("출장 신청서")}
+                    >
+                      <span className="Option_title">출장 신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("출장 보고서")}
+                    >
+                      <span className="Option_title">출장 보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("출장비내역서")}
+                    >
+                      <span className="Option_title">출장비내역서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("자기개발비 신청서")}
+                    >
+                      <span className="Option_title">자기개발비 신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("법인카드 신청서")}
+                    >
+                      <span className="Option_title">법인카드 신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("지출내역서")}
+                    >
+                      <span className="Option_title">지출내역서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("예산신청서")}
+                    >
+                      <span className="Option_title">예산신청서</span>
+                    </div>
+
+                    <div>기타</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("워크숍 신청서")}
+                    >
+                      <span className="Option_title">워크숍 신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("야유회 보고서")}
+                    >
+                      <span className="Option_title">야유회 보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("프로젝트 회의 보고서")}
+                    >
+                      <span className="Option_title">프로젝트 회의 보고서</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
               </div>
             </div>
           ) : (
-            <div></div>
-          )}
-        </div>
-      </div>
+            <>
+              {reportStatusOpen && (
+                <ReportStatus
+                  selectedTab={selectedTab}
+                  mydocuments={mydocuments}
+                  approvalings={approvalings}
+                  inProgress={inProgress}
+                  rejecteds={rejecteds}
+                  compleDocuments={compleDocuments}
+                  setSelectedReport={setSelectedReport}
+                  setSelectedTab={setSelectedTab}
+                  SelectOptions={SelectOptions}
+                />
+              )}
+              <div className="approval_top_selector">
+                <div className="approval_top_selector_title">양식 선택</div>
+                <div className="approval_top_selector_box" onClick={SelectOpen}>
+                  <img
+                    src={selectOpen ? SelectDownArrow : SelectArrow}
+                    alt="SelectArrow"
+                    className="SelectArrow"
+                  />
+                  <span className="selector_title">{selectedReport}</span>
+                </div>
+                {selectOpen ? (
+                  <div className="Select_report_Content">
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("전체 문서")}
+                    >
+                      <span className="Option_title">전체 문서</span>
+                    </div>
+                    <div>공동</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("주간업무일지")}
+                    >
+                      <span className="Option_title">주간업무일지</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("휴가신청서")}
+                    >
+                      <span className="Option_title">휴가신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("지출품의서")}
+                    >
+                      <span className="Option_title">지출품의서</span>
+                    </div>
 
-      <div className="approval_btm">
-        {renderTabContent()}
+                    <div>프로젝트</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("기획서")}
+                    >
+                      <span className="Option_title">기획서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("중간보고서")}
+                    >
+                      <span className="Option_title">중간보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("최종보고서")}
+                    >
+                      <span className="Option_title">최종보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("TF팀 기획서")}
+                    >
+                      <span className="Option_title">TF팀 기획서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("TF팀 프로젝트 계획서")}
+                    >
+                      <span className="Option_title">TF팀 프로젝트 계획서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("TF팀 중간보고서")}
+                    >
+                      <span className="Option_title">TF팀 중간보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("TF팀 프로젝트 결과 보고서")}
+                    >
+                      <span className="Option_title">
+                        TF팀 프로젝트 결과 보고서
+                      </span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("박람회 보고서")}
+                    >
+                      <span className="Option_title">박람회 보고서</span>
+                    </div>
+
+                    <div>인사</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("휴직원")}
+                    >
+                      <span className="Option_title">휴직원</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("복직원")}
+                    >
+                      <span className="Option_title">복직원</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("시말서")}
+                    >
+                      <span className="Option_title">시말서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("경위서")}
+                    >
+                      <span className="Option_title">경위서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("진급추천서")}
+                    >
+                      <span className="Option_title">진급추천서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("퇴직금 중간정산 신청서")}
+                    >
+                      <span className="Option_title">
+                        퇴직금 중간정산 신청서
+                      </span>
+                    </div>
+
+                    <div>총무</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("출장 신청서")}
+                    >
+                      <span className="Option_title">출장 신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("출장 보고서")}
+                    >
+                      <span className="Option_title">출장 보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("출장비내역서")}
+                    >
+                      <span className="Option_title">출장비내역서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("자기개발비 신청서")}
+                    >
+                      <span className="Option_title">자기개발비 신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("법인카드 신청서")}
+                    >
+                      <span className="Option_title">법인카드 신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("지출내역서")}
+                    >
+                      <span className="Option_title">지출내역서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("예산신청서")}
+                    >
+                      <span className="Option_title">예산신청서</span>
+                    </div>
+
+                    <div>기타</div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("워크숍 신청서")}
+                    >
+                      <span className="Option_title">워크숍 신청서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("야유회 보고서")}
+                    >
+                      <span className="Option_title">야유회 보고서</span>
+                    </div>
+                    <div
+                      className="Option"
+                      onClick={() => SelectOptions("프로젝트 회의 보고서")}
+                    >
+                      <span className="Option_title">프로젝트 회의 보고서</span>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </>
+          )}
+
+          <div className="approval_btm">{renderTabContent()}</div>
+        </div>
       </div>
     </div>
   );
