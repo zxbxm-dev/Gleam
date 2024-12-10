@@ -99,7 +99,7 @@
 
       &:focus {
         outline: none;
-        box-shadow: 0 0 0 1px #45C552 inset;
+        box-shadow: 0 0 0 1px #45c552 inset;
       }
     }
 
@@ -114,7 +114,7 @@
 
       &:focus {
         outline: none;
-        box-shadow: 0 0 0 1px #45C552 inset;
+        box-shadow: 0 0 0 1px #45c552 inset;
       }
     }
 
@@ -142,7 +142,7 @@
     text-align: center;
 
     .total_title {
-      width: 48.8%
+      width: 48.8%;
     }
 
     .total_cost {
@@ -181,7 +181,7 @@
 
   .dropdown_border {
     width: 110px;
-    border-bottom: 1px solid #45C552;
+    border-bottom: 1px solid #45c552;
     margin-bottom: 3px;
     margin-left: 4px;
   }
@@ -193,22 +193,21 @@
     cursor: pointer;
 
     &:hover {
-      background-color: #E9E9E9;
+      background-color: #e9e9e9;
     }
   }
 
   .dropdown_del {
     height: 27px;
-    color: #D56D6D;
+    color: #d56d6d;
     padding: 0px 10px;
     cursor: pointer;
 
     &:hover {
-      background-color: #E9E9E9;
+      background-color: #e9e9e9;
     }
   }
 }
-
 
 .dropdown_select {
   width: 102.5%;
@@ -221,7 +220,7 @@
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 1px #45C552 inset;
+    box-shadow: 0 0 0 1px #45c552 inset;
   }
 }
 
@@ -232,10 +231,9 @@
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 1px #45C552 inset;
+    box-shadow: 0 0 0 1px #45c552 inset;
   }
 }
-
 
 .oper_header_right {
   display: flex;
@@ -247,7 +245,7 @@
     width: 100px;
     height: 35px;
     background-color: #fff;
-    border: 1px solid #DCDCDC;
+    border: 1px solid #dcdcdc;
     border-radius: 8px;
     font-size: 14px;
     font-family: var(--font-family-Noto-M);
@@ -268,8 +266,7 @@
     background-color: #f19696;
   }
 }
-
-
+// 안녕
 
 @include laptop {
   .oper_header_right {

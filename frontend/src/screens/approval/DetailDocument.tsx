@@ -307,6 +307,8 @@ const DetailDocument = () => {
         )}
       </div>
 
+      {/* 안녕 */}
+
       <div className="content_container">
         <div className="approval_write_container">
           {memoState ? (
