@@ -28,7 +28,7 @@ import { submitReport } from "../../services/report/ReportServices";
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 
-type Member = [string, string, string, string];
+type Member = [string, string, string, string, string];
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -198,6 +198,7 @@ const WriteReport = () => {
             user.team || "",
             user.position,
             user.entering,
+            user.assignPosition,
           ];
         };
 
@@ -306,14 +307,14 @@ const WriteReport = () => {
   };
 
   const approvalFixed = headOffice
-    ? headOffice.find((member) => member[3] === "대표이사") || null
+    ? headOffice.find((member) => member[4] === "대표이사") || null
     : null;
   // const approvalFixed = members.find(member => member[0] === '이정훈') || null;
   const ManagementHeadFixed = headOffice
-    ? headOffice.find((member) => member[0] === "이정열") || null
+    ? headOffice.find((member) => member[4] === "이사") || null
     : null;
   const ManagementFixed = headOffice
-    ? headOffice.find((member) => member[0] === "김효은") || null
+    ? headOffice.find((member) => member[4] === "관리팀장") || null
     : null;
   const SupportFixed = headOffice
     ? headOffice.find((member) => member[0] === "한지희") || null
@@ -325,15 +326,15 @@ const WriteReport = () => {
   const departmentDirector =
     user.department === "개발부"
       ? headOffice
-        ? headOffice.find((member) => member[0] === "진유빈") || null
+        ? headOffice.find((member) => member[4] === "개발부서장") || null
         : null
       : user.department === "관리부"
       ? headOffice
-        ? headOffice.find((member) => member[0] === "이정열") || null
+        ? headOffice.find((member) => member[4] === "관리부서장") || null
         : null
       : user.department === "마케팅부"
       ? headOffice
-        ? headOffice.find((member) => member[0] === "김현지") || null
+        ? headOffice.find((member) => member[4] === "마케팅부서장") || null
         : null
       : user.department === ""
       ? null
@@ -342,19 +343,19 @@ const WriteReport = () => {
   const teamLeader =
     user.team === "개발 1팀"
       ? headOffice
-        ? headOffice.find((member) => member[0] === "장현지") || null
+        ? headOffice.find((member) => member[4] === "개발 1팀장") || null
         : null
       : user.team === "개발 2팀"
       ? headOffice
-        ? headOffice.find((member) => member[0] === "변도일") || null
+        ? headOffice.find((member) => member[4] === "개발 2팀장") || null
         : null
       : user.team === "기획팀"
       ? headOffice
-        ? headOffice.find((member) => member[0] === "전아름") || null
+        ? headOffice.find((member) => member[4] === "기획팀장") || null
         : null
       : user.team === "관리팀"
       ? headOffice
-        ? headOffice.find((member) => member[0] === "김효은") || null
+        ? headOffice.find((member) => member[4] === "관리팀장") || null
         : null
       : user.team === "지원팀"
       ? null
@@ -372,20 +373,20 @@ const WriteReport = () => {
     : null;
 
   const RDLead = RDOffice
-    ? RDOffice.find((member) => member[0] === "이유정") || null
+    ? RDOffice.find((member) => member[4] === "센터장") || null
     : null;
   const RDTeamLead =
     user.department === "동형분석 연구실"
       ? RDOffice
-        ? RDOffice.find((member) => member[0] === "윤민지") || null
+        ? RDOffice.find((member) => member[4] === "동형분석 연구실장") || null
         : null
       : user.department === "알고리즘 연구실"
       ? RDOffice
-        ? RDOffice.find((member) => member[0] === "심민지") || null
+        ? RDOffice.find((member) => member[4] === "알고리즘 연구실장") || null
         : null
       : user.department === "블록체인 연구실"
       ? RDOffice
-        ? RDOffice.find((member) => member[0] === "심민지") || null
+        ? RDOffice.find((member) => member[4] === "알고리즘 연구실장") || null
         : null
       : null;
 
@@ -735,10 +736,11 @@ const WriteReport = () => {
     dept: string,
     team: string,
     position: string,
-    lineName: string
+    lineName: string,
+    approvalFixed: string
   ) => {
     // 선택된 멤버 정보를 새로운 Member 배열로 생성
-    const newMember: Member = [name, dept, team, position];
+    const newMember: Member = [name, dept, team, position, approvalFixed];
 
     // approvalLines 배열을 복사하여 새로운 배열 생성
     const updatedApprovalLines = [...approvalLines];
@@ -1039,39 +1041,60 @@ const WriteReport = () => {
                         {user.company === "본사" ? (
                           <HrSidebar
                             members={headOffice}
-                            onClickMember={(name, dept, team, position) =>
+                            onClickMember={(
+                              name,
+                              dept,
+                              team,
+                              position,
+                              assignPosition
+                            ) =>
                               handleMemberClick(
                                 name,
                                 dept,
                                 team,
                                 position,
-                                selectedApproval
+                                selectedApproval,
+                                assignPosition
                               )
                             }
                           />
                         ) : user.company === "R&D" ? (
                           <HrSidebar
                             members={RDOffice}
-                            onClickMember={(name, dept, team, position) =>
+                            onClickMember={(
+                              name,
+                              dept,
+                              team,
+                              position,
+                              assignPosition
+                            ) =>
                               handleMemberClick(
                                 name,
                                 dept,
                                 team,
                                 position,
-                                selectedApproval
+                                selectedApproval,
+                                assignPosition
                               )
                             }
                           />
                         ) : (
                           <HrSidebar
                             members={personData}
-                            onClickMember={(name, dept, team, position) =>
+                            onClickMember={(
+                              name,
+                              dept,
+                              team,
+                              position,
+                              assignPosition
+                            ) =>
                               handleMemberClick(
                                 name,
                                 dept,
                                 team,
                                 position,
-                                selectedApproval
+                                selectedApproval,
+                                assignPosition
                               )
                             }
                           />
