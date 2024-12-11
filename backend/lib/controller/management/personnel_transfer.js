@@ -107,7 +107,7 @@ const deleteTransfer = async (req, res) => {
   // 직무변경---------------------------------------------------------------------------------------
   const editUserInfoManagement = async ( req, res ) => {
     const { userID } = req.params;
-    const { company, team, department, position, spot } = req.body.data;
+    const { company, team, department, position, spot, assignPosition } = req.body.data;
     try{
 
       if(!userID){
@@ -122,6 +122,7 @@ const deleteTransfer = async (req, res) => {
             department: department !== undefined ? department : undefined,
             position: position !== undefined ? position : undefined,
             spot: spot !== undefined ? spot : undefined,
+            assignPosition: assignPosition !== undefined ? assignPosition : undefined,
         },
         {
             where: { userID: userID }, 
