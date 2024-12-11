@@ -1,3 +1,6 @@
+const models = require("../models");
+const User = models.User;
+
 const organizationMapping = {
     1: { department: "개발부",
          teams: [
@@ -33,21 +36,61 @@ const organizationMapping = {
         ] },
     };
 
-     const positionMapping = {
-        0 : { department : "포체인스 주식회사",
-            
-         },
-     }
+    //사용자의 문서 결재 시 사용되는 명칭을 할당하는 함수
+    async function assignMapping( { company,department, team, position, spot} ) {
+        if( spot === "사원" ){
+            return "작성자";
+        }
+
+        switch(position) {
+            case "대표이사":
+                return "대표이사";
+            case "이사":
+                return "이사";
+            case "센터장":
+                return "센터장";
+            case "부서장":
+                return company === "본사"? `${department}서장`: "부서장"; 
+            case "연구실장":
+                return company === "R&D"? `${department}장` : "연구실장"
+            case "팀장":
+                return `${team}장`;
+            default:
+                return "작성자";
+        }
+  };
+
+  //문서결재 시 명칭을 업데이트 하는 함수
+  async function updateAssignInfo({ userID }){
+     const userInfo = await User.findOne ({
+        where : { userId: userID },
+        attributes: [
+            "company", "department","team","position","spot"
+        ]
+     });
+     const updateAssignPosition = await assignMapping(userInfo);
+
+     //문서결재 명칭 업데이트 
+     const updateUserInfo = await User.update(
+        {assignPosition : updateAssignPosition },
+        { where: { userId: userID }},
+     );
+
+     //추후 삭제 예정 
+     const updatedUser = await User.findOne({
+        where: { userId: userID },
+        attributes: ["assignPosition"],
+      });
+        
+      return updatedUser.assignPosition;
+
+  };
 
 
 
-
-
-     
-
-
-
+    
     module.exports ={
         organizationMapping,
-        positionMapping,
-    }
+        assignMapping,
+        updateAssignInfo
+    };

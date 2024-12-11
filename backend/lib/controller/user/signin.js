@@ -5,6 +5,7 @@ const path = require("path");
 const Models = require("../../models");
 const { fetchMailcowEmails } = require("../../services/emailService");
 const User = Models.User;
+const { updateAssignInfo } = require("../../controller/organizationMapping");
 
 require("dotenv").config();
 
@@ -33,6 +34,9 @@ const login = async (req, res) => {
           expiresIn: "1h",
         });
 
+        //사용자의 문서 결재 시 사용되는 명칭 업데이트
+        const updateAssignedPosition = await updateAssignInfo({ userID });
+        
         //이메일 서버 접속
         await fetchMailcowEmails(userID);
 

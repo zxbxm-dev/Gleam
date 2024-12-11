@@ -4,6 +4,7 @@ const Models = require("../../models");
 const signupUser = Models.User;
 const quitter = Models.Quitter;
 const axios = require('axios');
+const { assignMapping } = require('../../controller/organizationMapping');
 require('dotenv').config();
 
 // 회원가입
@@ -26,6 +27,7 @@ const createUser = async (req, res) => {
       Sign,
       entering,
       leavedate,
+      assignPosition,
     } = req.body;
 
     const existingUser = await signupUser.findOne({
@@ -41,7 +43,8 @@ const createUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    const assignedPosition = await assignMapping({ company,department, team, position, spot});
+    
     const newUser = await signupUser.create({
       userId: userID,
       password: hashedPassword,
@@ -60,6 +63,7 @@ const createUser = async (req, res) => {
       entering,
       leavedate,
       status: "pending",
+      assignPosition : assignedPosition,
     });
 
     res.status(201).json({

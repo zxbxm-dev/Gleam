@@ -83,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      assignPosition: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       tableName: "user",
