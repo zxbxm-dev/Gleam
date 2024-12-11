@@ -28,6 +28,7 @@ const getAllUserList = async (req, res) => {
       leavedate: user.leavedate,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      assignPosition: user.assignPosition,
     }));
 
     res.json(userProfiles);
