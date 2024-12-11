@@ -252,8 +252,6 @@ const DetailDocument = () => {
   };
 
   useEffect(() => {
-    console.log(signatories);
-
     if (signatories.length > 0) {
       if (
         signatories.includes("관리팀장") &&
@@ -307,14 +305,12 @@ const DetailDocument = () => {
         )}
       </div>
 
-      {/* 안녕 */}
-
       <div className="content_container">
         <div className="approval_write_container">
-          {memoState ? (
+          {/* {memoState ? (
             memoState === "reject" ? (
               <>
-                {/* <div className="write_top_container_document">
+                <div className="write_top_container_document">
                   <div className="document_container">
                     <div className="document_title">반려자</div>
                     <div className="document_content">
@@ -327,7 +323,7 @@ const DetailDocument = () => {
                       {documentInfo[0].rejectContent}
                     </div>
                   </div>
-                </div> */}
+                </div>
               </>
             ) : (
               <>
@@ -340,8 +336,14 @@ const DetailDocument = () => {
                   </div>
                   <div className="document_container">
                     <div className="document_title">의견 내용</div>
-                    <div className="document_content">
-                      {documentInfo[0].opinionContent}
+                    <div
+                      className="document_content"
+                      style={{ whiteSpace: "pre-line" }}
+                    >
+                      {documentInfo[0].opinionContent
+                        .split(",")
+                        .map((item: string) => item.trim())
+                        .join("\n")}
                     </div>
                   </div>
                 </div>
@@ -349,7 +351,7 @@ const DetailDocument = () => {
             )
           ) : (
             <></>
-          )}
+          )} */}
           <div className="detail_documnet_contain">
             <div className="write_btm_container">
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
@@ -400,20 +402,48 @@ const DetailDocument = () => {
                 </div>
               </Document>
             </div>
-            {memoState && memoState === "reject" && (
-              <div className="detail_documnet_comment">
-                <div className="reject_requester">
-                  <p>반려요청자</p>
-                  <div>{documentInfo[0].rejectName}</div>
+            {documentInfo[0].opinionName || documentInfo[0].rejectName ? (
+              <>
+                <div className="detail_documnet_comment">
+                  {documentInfo[0].opinionName && (
+                    <>
+                      <div className="reject_requester">
+                        <p>의견 작성자</p>
+                        <div>{documentInfo[0].opinionName}</div>
+                      </div>
+                      <div
+                        className="document_content"
+                        style={{ whiteSpace: "pre-line" }}
+                      >
+                        {documentInfo[0].opinionContent
+                          .split(",")
+                          .map((item: string) => item.trim())
+                          .join("\n\n")}
+                      </div>
+                    </>
+                  )}
+
+                  {documentInfo[0].rejectName && (
+                    <>
+                      <div className="reject_requester">
+                        <p>반려자</p>
+                        <div>{documentInfo[0].rejectName}</div>
+                      </div>
+                      <div
+                        className="document_content"
+                        style={{ whiteSpace: "pre-line" }}
+                      >
+                        {documentInfo[0].rejectContent
+                          .split(",")
+                          .map((item: string) => item.trim())
+                          .join("\n\n")}
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div>{documentInfo[0].rejectContent}</div>
-                <div className="reject_requester">
-                  <p>반려자</p>
-                  <div>전아름 기획팀장</div>
-                </div>
-                <div>살라살라</div>
-              </div>
-            )}
+              </>
+            ) : null}
+            <></>
           </div>
         </div>
       </div>

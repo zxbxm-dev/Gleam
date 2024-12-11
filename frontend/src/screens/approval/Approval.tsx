@@ -149,6 +149,12 @@ const Approval = () => {
 
     try {
       const response = await getMyReports(params);
+      const index = response.data.findIndex(
+        (item: any) => item.status === "참조"
+      );
+      if (index !== -1) {
+        response.data.splice(index, 1); // 해당 요소 제거
+      }
       return response.data;
     } catch (error) {
       console.log("Failed to fetch data");
