@@ -22,6 +22,8 @@ import {
   WriteApproval,
   HandleApproval,
   CheckReport,
+  getDocumentsInProgress,
+  getRejectedDocuments,
 } from "../../services/approval/ApprovalServices";
 import {
   PersonData,
@@ -55,6 +57,8 @@ const DetailApproval = () => {
   const [isEmptySignModalOpen, setEmptySignModalOpen] = useState(false);
   const [isApproveModalOpen, setApproveModalOpen] = useState(false);
   const [isCheckSignModalOpen, setCheckSignModalOpen] = useState(false);
+  const [canWriteOption, setWriteOption] = useState(false);
+  const [optionButtonDisabe, setOptionButtonDisabe] = useState(false);
   const [modalContent, setModalContent] = useState<string>("");
   const {
     onOpen: onOpinionModalOpen,
@@ -80,6 +84,36 @@ const DetailApproval = () => {
   const [opinion, setOpinion] = useState("");
   const [rejection, setRejection] = useState("");
   const [buttonDisable, setButtonDisable] = useState(true);
+  const [nextData, setNextData] = useState<any[]>([]);
+  const [rejectedData, setRejectedData] = useState<any[]>([]);
+
+  const params = {
+    username: user.username,
+  };
+
+  const getNextData = async () => {
+    try {
+      const response = await getDocumentsInProgress(params);
+      console.log(response.data);
+      const data = response.data;
+      const hi = data.find((item: any) => item.id === documentInfo[0].id);
+      setNextData(hi);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getRejectedData = async () => {
+    try {
+      const response = await getRejectedDocuments(params);
+      console.log(response.data);
+      const data = response.data;
+      const hi = data.find((item: any) => item.id === documentInfo[0].id);
+      console.log(hi);
+      setRejectedData(hi);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const location = useLocation();
   const pathnameParts = location.pathname.split("/");
@@ -252,8 +286,6 @@ const DetailApproval = () => {
     newSignDates[index] = formattedDate;
     setSignDates(newSignDates);
 
-    console.log(newSignDates);
-
     setSignModalOpen(false);
   };
 
@@ -361,9 +393,14 @@ const DetailApproval = () => {
         rejection: rejection,
       };
       await WriteApproval(report_id, formData);
+      getRejectedData();
       alert("반려 사유가 등록되었습니다.");
+      console.log(rejectedData);
       setRejection("");
       onRejectionModalClose();
+      navigate(`/detailDocument/${documentInfo[0].id}`, {
+        state: { documentInfo: rejectedData },
+      });
     } catch (error) {
       alert("Failed to submit rejection.");
       onRejectionModalClose();
@@ -392,6 +429,7 @@ const DetailApproval = () => {
         console.log("보고서 결재에 성공했습니다.");
         setModalContent("결재완료되었습니다.");
         setApproveModalOpen(true);
+        getNextData();
       })
       .catch((error) => {
         console.error("보고서 결재에 실패했습니다.", error);
@@ -414,6 +452,24 @@ const DetailApproval = () => {
     return user ? user.Sign : null;
   };
 
+  useEffect(() => {
+    let lastValue = documentInfo[0].personSigning.split(",").at(-1).trim();
+
+    if (documentInfo[0].opinionName) {
+      setOptionButtonDisabe(true);
+    }
+
+    if (
+      lastValue !== user.username ||
+      documentInfo[0].pending ||
+      documentInfo[0].username !== user.username
+    ) {
+      setWriteOption(true);
+    } else {
+      setWriteOption(false);
+    }
+  }, [documentInfo]);
+
   return (
     <div className="content">
       <div className="content_container">
@@ -432,78 +488,91 @@ const DetailApproval = () => {
                 >
                   확인
                 </button>
-                <Popover
-                  placement="right-start"
-                  isOpen={isOpinionModalOpen}
-                  onOpen={onOpinionModalOpen}
-                  onClose={onOpinionModalClose}
-                >
-                  <PopoverTrigger>
-                    <button className="white_button">의견 작성</button>
-                  </PopoverTrigger>
-                  <Portal>
-                    <PopoverContent
-                      width="400px"
-                      height="274px"
-                      border="0"
-                      borderRadius="5px"
-                      boxShadow="0px 0px 5px #444"
-                    >
-                      <PopoverHeader
-                        color="white"
-                        bg="#76CB7E"
-                        border="0"
-                        fontFamily="var(--font-family-Noto-B)"
-                        borderTopRadius="5px"
-                        fontSize="14px"
+                {canWriteOption && (
+                  <Popover
+                    placement="right-start"
+                    isOpen={isOpinionModalOpen}
+                    onOpen={onOpinionModalOpen}
+                    onClose={onOpinionModalClose}
+                  >
+                    <PopoverTrigger>
+                      <button
+                        className={
+                          optionButtonDisabe ? "disable_button" : "white_button"
+                        }
+                        disabled={optionButtonDisabe}
                       >
                         의견 작성
-                      </PopoverHeader>
-                      <PopoverCloseButton color="white" />
-                      <PopoverBody
-                        display="flex"
-                        flexDirection="column"
-                        padding="0px"
-                        justifyContent="center"
-                        alignItems="center"
-                        fontSize="14px"
-                        paddingRight="15px"
+                      </button>
+                    </PopoverTrigger>
+                    <Portal>
+                      <PopoverContent
+                        width="400px"
+                        height="274px"
+                        border="0"
+                        borderRadius="5px"
+                        boxShadow="0px 0px 5px #444"
                       >
-                        <div className="opinionBox">
-                          <div className="WriterBox">
-                            <div className="Write">작성자</div>
-                            <div className="Writer">
-                              {user.username}&nbsp;{user.position}
+                        <PopoverHeader
+                          color="white"
+                          bg="#76CB7E"
+                          border="0"
+                          fontFamily="var(--font-family-Noto-B)"
+                          borderTopRadius="5px"
+                          fontSize="14px"
+                        >
+                          의견 작성
+                        </PopoverHeader>
+                        <PopoverCloseButton color="white" />
+                        <PopoverBody
+                          display="flex"
+                          flexDirection="column"
+                          padding="0px"
+                          justifyContent="center"
+                          alignItems="center"
+                          fontSize="14px"
+                          paddingRight="15px"
+                        >
+                          <div className="opinionBox">
+                            <div className="WriterBox">
+                              <div className="Write">작성자</div>
+                              <div className="Writer">
+                                {user.username}&nbsp;{user.position}
+                              </div>
+                            </div>
+                            <div className="TextAreaBox">
+                              <div className="Title">내용</div>
+                              <textarea
+                                className="TextAreaStyle"
+                                placeholder="내용을 입력해주세요."
+                                value={opinion}
+                                onChange={handleOpinionChange}
+                              />
                             </div>
                           </div>
-                          <div className="TextAreaBox">
-                            <div className="Title">내용</div>
-                            <textarea
-                              className="TextAreaStyle"
-                              placeholder="내용을 입력해주세요."
-                              value={opinion}
-                              onChange={handleOpinionChange}
-                            />
+                          <div className="button-wrap">
+                            <button
+                              className="second_button"
+                              onClick={() => {
+                                handleSubmitOpinion(report_id);
+                                setOptionButtonDisabe(true);
+                              }}
+                            >
+                              등록
+                            </button>
+                            <button
+                              className="white_button"
+                              onClick={onOpinionModalClose}
+                            >
+                              취소
+                            </button>
                           </div>
-                        </div>
-                        <div className="button-wrap">
-                          <button
-                            className="second_button"
-                            onClick={() => handleSubmitOpinion(report_id)}
-                          >
-                            등록
-                          </button>
-                          <button
-                            className="white_button"
-                            onClick={onOpinionModalClose}
-                          >
-                            취소
-                          </button>
-                        </div>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Portal>
-                </Popover>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Portal>
+                  </Popover>
+                )}
+
                 <button className="white_button" onClick={exportToPDF}>
                   다운로드
                 </button>
@@ -673,7 +742,9 @@ const DetailApproval = () => {
         isOpen={isApproveModalOpen}
         onClose={() => {
           setApproveModalOpen(false);
-          navigate("/approval");
+          navigate(`/detailDocument/${documentInfo[0].id}`, {
+            state: { documentInfo: nextData },
+          });
         }}
         header={"알림"}
         headerTextColor="White"

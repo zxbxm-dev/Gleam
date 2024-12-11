@@ -2,8 +2,8 @@ import "./App.scss";
 import "./style/index.scss";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import BaseLayout from "./layout/BaseLayout";
-import { useRecoilValue } from 'recoil';
-import { userState } from './recoil/atoms';
+import { useRecoilValue } from "recoil";
+import { userState } from "./recoil/atoms";
 import PrivateRoute from "./layout/PrivateRoute";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import PublicRoute from "./layout/PublicRoute";
@@ -42,18 +42,33 @@ import {
   Project,
   Mail,
   WriteMail,
-  Message
+  Message,
 } from "./screens";
 import ChatLayout from "./layout/ChatLayout";
 
 function App() {
   const user = useRecoilValue(userState);
-  const isLogin = localStorage.getItem('isLoggedIn') === 'true';
-  const isPerformance = (user.team === '관리팀' && user.position === '팀장') || user.position === '대표이사' || user.position === '센터장'; // 인사평가제출
-  const isHumanResources = user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장'; // 인사정보관리
-  const isAttendance = user.team === '관리팀' || user.position === '대표이사' || user.position === '센터장' || user.position === '연구실장'; // 근태관리
-  const isOperating = user.team === '지원팀' || user.position === '대표이사'; // 운영비관리
-  const isAuthorized = user.team === '관리팀' || user.position === '대표이사'; // 회원관리
+  const isLogin = localStorage.getItem("isLoggedIn") === "true";
+  const isPerformance =
+    (user.team === "관리팀" && user.position === "팀장") ||
+    user.position === "대표이사" ||
+    user.position === "센터장"; // 인사평가제출
+  const isHumanResources =
+    user.team === "관리팀" ||
+    user.position === "대표이사" ||
+    user.position === "센터장" ||
+    (user.position === "부서장" && user.department === "관리부"); // 인사정보관리
+  const isAttendance =
+    user.team === "관리팀" ||
+    user.position === "대표이사" ||
+    user.position === "센터장" ||
+    user.position === "연구실장" ||
+    (user.position === "부서장" && user.department === "관리부"); // 근태관리
+  const isOperating = user.team === "지원팀" || user.position === "대표이사"; // 운영비관리
+  const isAuthorized =
+    user.team === "관리팀" ||
+    user.position === "대표이사" ||
+    (user.position === "부서장" && user.department === "관리부"); // 회원관리
 
   const router = createBrowserRouter([
     { path: "*", element: <PageNotFound /> },
@@ -69,9 +84,7 @@ function App() {
     },
     {
       element: <ChatLayout />,
-      children: [
-        { path: "/messanger", element: <Message /> },
-      ],
+      children: [{ path: "/messanger", element: <Message /> }],
     },
     {
       element: <PrivateRoute isAllowed={isLogin} />,
@@ -101,33 +114,59 @@ function App() {
             { path: "/submit-perform", element: <SubmitPerform /> },
             { path: "/detailSubmit", element: <DetailSubmit /> },
             {
-              element: <ProtectedRoute isAllowed={isPerformance} redirectPath="/notAuth" />,
+              element: (
+                <ProtectedRoute
+                  isAllowed={isPerformance}
+                  redirectPath="/notAuth"
+                />
+              ),
               children: [
                 { path: "/manage-perform", element: <ManagePerform /> },
-                { path: "/detail-manage-perform", element: <DetailManagePerform /> },
+                {
+                  path: "/detail-manage-perform",
+                  element: <DetailManagePerform />,
+                },
               ],
             },
             {
-              element: <ProtectedRoute isAllowed={isAttendance} redirectPath="/notAuth" />,
+              element: (
+                <ProtectedRoute
+                  isAllowed={isAttendance}
+                  redirectPath="/notAuth"
+                />
+              ),
               children: [
                 { path: "/annual-manage", element: <AnnualManage /> },
                 { path: "/attendance-regist", element: <AttendanceRegist /> },
               ],
             },
             {
-              element: <ProtectedRoute isAllowed={isHumanResources} redirectPath="/notAuth" />,
+              element: (
+                <ProtectedRoute
+                  isAllowed={isHumanResources}
+                  redirectPath="/notAuth"
+                />
+              ),
               children: [
                 { path: "/human-resources", element: <HumanResource /> },
               ],
             },
             {
-              element: <ProtectedRoute isAllowed={isOperating} redirectPath="/notAuth" />,
-              children: [
-                { path: "/operating-manage", element: <Operating /> },
-              ],
+              element: (
+                <ProtectedRoute
+                  isAllowed={isOperating}
+                  redirectPath="/notAuth"
+                />
+              ),
+              children: [{ path: "/operating-manage", element: <Operating /> }],
             },
             {
-              element: <ProtectedRoute isAllowed={isAuthorized} redirectPath="/notAuth" />,
+              element: (
+                <ProtectedRoute
+                  isAllowed={isAuthorized}
+                  redirectPath="/notAuth"
+                />
+              ),
               children: [
                 { path: "/user-management", element: <UserManagement /> },
               ],
