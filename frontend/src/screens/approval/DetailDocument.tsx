@@ -258,14 +258,12 @@ const DetailDocument = () => {
         documentInfo[0].pending?.includes("김효은")
       ) {
         setCanReject(true);
-        console.log("관리팀장님까지");
       }
       if (
         signatories.includes("담당자") &&
         documentInfo[0].pending?.includes("한지희")
       ) {
         setCanReject(true);
-        console.log("담당자까지");
       }
       if (
         !signatories.includes("관리팀장") &&
@@ -275,10 +273,11 @@ const DetailDocument = () => {
           documentInfo[0].pending?.includes("김현지"))
       ) {
         setCanReject(true);
-        console.log("부서장님까지");
       }
     }
   }, [signatories]);
+
+  console.log(documentInfo[0]);
 
   return (
     <div className="content">
