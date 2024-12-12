@@ -76,6 +76,17 @@ const cancelReportById = async (req, res) => {
   const { rejection, userID, username, position } = req.body;
 
   try {
+
+    //보고서 반려자의 문서결재명칭 추출
+    const {assignPosition} = await models.User.findOne({
+      where:{
+        userId: userID,
+      },
+      attributes:["assignPosition"],
+      raw: true,
+    });
+
+
     const report = await Report.findByPk(report_id);
 
     if (!report) {
@@ -122,7 +133,7 @@ const cancelReportById = async (req, res) => {
     }
 
     // 반려 내용을 저장
-    report.rejectName = username; // 반려한 사람의 이름
+    report.rejectName = `${username} (${assignPosition})`; // 반려한 사람의 이름
     report.rejectContent = rejection; // 반려 내용
 
     // pending 비우기
@@ -152,6 +163,16 @@ const opinionReportById = async (req, res) => {
   const { opinion, userID, username, position } = req.body;
 
   try {
+
+    //보고서 의견 작성자의 문서결재명칭 추출
+    const {assignPosition} = await models.User.findOne({
+      where:{
+        userId: userID,
+      },
+      attributes:["assignPosition"],
+      raw: true,
+    });
+
     const report = await Report.findByPk(report_id);
 
     if (!report) {
@@ -169,7 +190,7 @@ const opinionReportById = async (req, res) => {
     report.opinionContent = existingOpinions.join(", ");
 
     // 의견 작성자 정보 업데이트
-    report.opinionName = username;
+    report.opinionName = `${username} (${assignPosition})`;
 
     // 상태 업데이트 저장
     await report.save();
