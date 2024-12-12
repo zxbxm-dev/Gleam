@@ -48,6 +48,8 @@ const IncludeReSlide = () => {
   const [editAlertOpen, setEditAlertOpen] = useState(false);
   const [errorAlertOpen, setErrorAlertOpen] = useState(false);
   const [editNumberAlertOpen, setEditNumberAlertOpen] = useState(false);
+  const [spinnerOpen, setSpinnerOpen] = useState(false);
+
   const [addDocument, setAddDocument] = useState({
     docType: "",
     docTitle: "",
@@ -80,6 +82,7 @@ const IncludeReSlide = () => {
   const handleManagEditClick = (documentId: number) => {
     documents.map((item) => {
       if (item.documentId === documentId) {
+        setSelectedDocNumber(item.docNumber);
         setIsManagerEditMode(true);
         setIsPopupOpen(true);
       }
@@ -97,7 +100,7 @@ const IncludeReSlide = () => {
         setSelectedDocTitle(selectedDoc.docTitle);
         setStaticTitle(selectedDoc.docTitle);
         setStaticDocNumber(selectedDoc.docNumber);
-        setSelectedDocNumber(selectedDoc.docNumber);
+
         setSelectedDocType(selectedDoc.docType);
       }
     }
@@ -110,6 +113,7 @@ const IncludeReSlide = () => {
     docType: string
   ) => {
     setSelectedDocId(documentId);
+    setSpinnerOpen(true);
 
     if (docType === "Team") {
       setSelectedDocType("Team");
@@ -167,14 +171,21 @@ const IncludeReSlide = () => {
       if (name === "docTitle") {
         setSelectedDocTitle(value);
       } else if (name === "docNumber") {
-        setSelectedDocNumber(value ? Number(value) : null);
+        if (/^\d+$/.test(value)) {
+          setSelectedDocNumber(Number(value));
+        } else {
+          alert("문서 번호엔 숫자만 입력가능합니다.");
+        }
       } else if (name === "docType") {
         setSelectedDocType(value);
       }
     } else {
+      // if (!/^\d+$/.test(addDocument.docNumber)) {
+      //   alert("문서 번호엔 숫자만 입력가능합니다.");
+      // }
       setAddDocument((prevState) => ({
         ...prevState,
-        [name]: name === "docNumber" ? (value ? Number(value) : null) : value,
+        [name]: name === "docNumber" ? value : value,
       }));
     }
   };
@@ -192,6 +203,10 @@ const IncludeReSlide = () => {
       docNumber: addDocument.docNumber,
     };
 
+    if (!/^\d+$/.test(addDocument.docNumber)) {
+      alert("문서번호엔 숫자만 등록 가능합니다");
+      return;
+    }
     try {
       const response = await AddDocuments(userID, formData);
       console.log("문서 추가 성공:", response.data);
@@ -239,6 +254,7 @@ const IncludeReSlide = () => {
   //문서번호 수정
   const handleEditConfirm = async (index: any, id: number) => {
     documents.map(async (item) => {
+      setSpinnerOpen(false);
       const updateData = {
         docTitle: item.docTitle,
         docNumber: item.docNumber,
@@ -281,6 +297,10 @@ const IncludeReSlide = () => {
       newDocTitle: selectedDocTitle,
       docType: selectedDocType,
     };
+
+    if (!/^\d+$/.test(String(selectedDocNumber))) {
+      alert("문서 번호엔 숫자만 등록 가능합니다");
+    }
 
     try {
       const response = await ManagerEditDocuments(updateData);
@@ -434,6 +454,12 @@ const IncludeReSlide = () => {
     });
   };
 
+  useEffect(() => {
+    if (ismanagerMode === true) {
+      setSpinnerOpen(false);
+    }
+  }, [ismanagerMode]);
+
   return (
     <div className="project_slide_container">
       <div
@@ -463,7 +489,17 @@ const IncludeReSlide = () => {
                     />
                   </button>
 
-                  <button onClick={() => setIsPopupOpen(true)}>
+                  <button
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setIsManagerEditMode(false);
+                      setAddDocument({
+                        docType: "",
+                        docTitle: "",
+                        docNumber: "",
+                      });
+                    }}
+                  >
                     <img src={addDocumentImage} />
                   </button>
                   <button
@@ -532,7 +568,8 @@ const IncludeReSlide = () => {
                             {doc.docNumber}
 
                             {selectedDocId === doc.documentId &&
-                            ismanagerMode === false ? (
+                            ismanagerMode === false &&
+                            spinnerOpen ? (
                               <div className="docNumControls">
                                 <button
                                   className="num-up-button"
@@ -566,14 +603,15 @@ const IncludeReSlide = () => {
                             onClick={() =>
                               ismanagerMode
                                 ? handleManagEditClick(doc.documentId)
-                                : selectedDocId === doc.documentId
+                                : selectedDocId === doc.documentId &&
+                                  spinnerOpen
                                 ? handleEditConfirm(index, doc.documentId)
                                 : handleEditClick(index, doc.documentId, "Team")
                             }
                           >
                             {ismanagerMode
                               ? "수정"
-                              : selectedDocId === doc.documentId
+                              : selectedDocId === doc.documentId && spinnerOpen
                               ? "확인"
                               : "편집"}
                           </button>
@@ -621,28 +659,30 @@ const IncludeReSlide = () => {
                           <div className="DocNum">
                             {doc.docNumber}
 
-                            {selectedDocId === doc.documentId && (
-                              <div className="docNumControls">
-                                <button
-                                  className="num-up-button"
-                                  onClick={() => {
-                                    //   handleNumberIncrease(index, "Team")
-                                    up(doc.documentId);
-                                  }}
-                                >
-                                  <img src={spinnerTop} />
-                                </button>
-                                <button
-                                  className="num-down-button"
-                                  onClick={() => {
-                                    //   handleNumberDecrease(index, "Team")
-                                    down(doc.documentId);
-                                  }}
-                                >
-                                  <img src={spinnerBtm} />
-                                </button>
-                              </div>
-                            )}
+                            {selectedDocId === doc.documentId &&
+                              ismanagerMode === false &&
+                              spinnerOpen && (
+                                <div className="docNumControls">
+                                  <button
+                                    className="num-up-button"
+                                    onClick={() => {
+                                      //   handleNumberIncrease(index, "Team")
+                                      up(doc.documentId);
+                                    }}
+                                  >
+                                    <img src={spinnerTop} />
+                                  </button>
+                                  <button
+                                    className="num-down-button"
+                                    onClick={() => {
+                                      //   handleNumberDecrease(index, "Team")
+                                      down(doc.documentId);
+                                    }}
+                                  >
+                                    <img src={spinnerBtm} />
+                                  </button>
+                                </div>
+                              )}
                           </div>
                           <div className="DocPerson">
                             {doc.username ? doc.username : "관리부 수정"}{" "}
@@ -655,14 +695,15 @@ const IncludeReSlide = () => {
                             onClick={() =>
                               ismanagerMode
                                 ? handleManagEditClick(doc.documentId)
-                                : selectedDocId === doc.documentId
+                                : selectedDocId === doc.documentId &&
+                                  spinnerOpen
                                 ? handleEditConfirm(index, doc.documentId)
                                 : handleEditClick(index, doc.documentId, "Team")
                             }
                           >
                             {ismanagerMode
                               ? "수정"
-                              : selectedDocId === doc.documentId
+                              : selectedDocId === doc.documentId && spinnerOpen
                               ? "확인"
                               : "편집"}
                           </button>
@@ -709,34 +750,36 @@ const IncludeReSlide = () => {
                         <div className="DocTitle">{doc.docTitle}</div>
                         <div className="DocNum">
                           {doc.docNumber}
-                          {selectedDocId === doc.documentId && (
-                            <div className="docNumControls">
-                              <button
-                                className="num-up-button"
-                                onClick={() => {
-                                  //   handleNumberIncrease(
-                                  //     doc.documentId,
-                                  //     "Public"
-                                  //   );
-                                  up(doc.documentId);
-                                }}
-                              >
-                                <img src={spinnerTop} />
-                              </button>
-                              <button
-                                className="num-down-button"
-                                onClick={() => {
-                                  //   handleNumberDecrease(
-                                  //     doc.documentId,
-                                  //     "Public"
-                                  //   );
-                                  down(doc.documentId);
-                                }}
-                              >
-                                <img src={spinnerBtm} />
-                              </button>
-                            </div>
-                          )}
+                          {selectedDocId === doc.documentId &&
+                            ismanagerMode === false &&
+                            spinnerOpen && (
+                              <div className="docNumControls">
+                                <button
+                                  className="num-up-button"
+                                  onClick={() => {
+                                    //   handleNumberIncrease(
+                                    //     doc.documentId,
+                                    //     "Public"
+                                    //   );
+                                    up(doc.documentId);
+                                  }}
+                                >
+                                  <img src={spinnerTop} />
+                                </button>
+                                <button
+                                  className="num-down-button"
+                                  onClick={() => {
+                                    //   handleNumberDecrease(
+                                    //     doc.documentId,
+                                    //     "Public"
+                                    //   );
+                                    down(doc.documentId);
+                                  }}
+                                >
+                                  <img src={spinnerBtm} />
+                                </button>
+                              </div>
+                            )}
                         </div>
                         <div className="DocPerson">
                           {doc.username ? doc.username : "관리부 수정"}{" "}
@@ -749,14 +792,14 @@ const IncludeReSlide = () => {
                           onClick={() =>
                             ismanagerMode
                               ? handleManagEditClick(doc.documentId)
-                              : selectedDocId === doc.documentId
+                              : selectedDocId === doc.documentId && spinnerOpen
                               ? handleEditConfirm(index, doc.documentId)
                               : handleEditClick(index, doc.documentId, "Public")
                           }
                         >
                           {ismanagerMode
                             ? "수정"
-                            : selectedDocId === doc.documentId
+                            : selectedDocId === doc.documentId && spinnerOpen
                             ? "확인"
                             : "편집"}
                         </button>
@@ -779,7 +822,7 @@ const IncludeReSlide = () => {
           setSelectedDocTitle(staticTitle);
           setSelectedDocNumber(staticDocNumber);
         }}
-        header="문서 추가"
+        header={ismanagerEditMode ? "문서 수정" : "문서 추가"}
         headerTextColor="#fff"
         footer1="취소"
         footer2={ismanagerEditMode ? "수정" : "추가"}
@@ -812,6 +855,7 @@ const IncludeReSlide = () => {
                 id="team"
                 name="docType"
                 value="Team"
+                disabled={ismanagerEditMode ? true : false}
                 checked={
                   ismanagerEditMode
                     ? selectedDocType === "Team"
@@ -828,6 +872,7 @@ const IncludeReSlide = () => {
                 id="share"
                 name="docType"
                 value="Public"
+                disabled={ismanagerEditMode ? true : false}
                 checked={
                   ismanagerEditMode
                     ? selectedDocType === "Public"
