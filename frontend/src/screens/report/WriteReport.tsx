@@ -197,7 +197,6 @@ const WriteReport = () => {
             department,
             user.team || "",
             user.position,
-            user.entering,
             user.assignPosition,
           ];
         };
@@ -317,12 +316,13 @@ const WriteReport = () => {
     ? headOffice.find((member) => member[4] === "관리팀장") || null
     : null;
   const SupportFixed = headOffice
-    ? headOffice.find((member) => member[0] === "한지희") || null
+    ? headOffice.find((member) => member[4] === "지원담당자") || null
     : null;
   const vacationFixed = headOffice
-    ? headOffice.find((member) => member[0] === "우현지") || null
+    ? headOffice.find((member) => member[4] === "휴가담당자") || null
     : null;
 
+  console.log(headOffice);
   const departmentDirector =
     user.department === "개발부"
       ? headOffice

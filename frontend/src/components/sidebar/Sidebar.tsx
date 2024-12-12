@@ -117,6 +117,8 @@ const Sidebar = () => {
     setIsHrSidebarVisible(true);
   };
 
+  console.log(user);
+
   const renderSubMenu = (
     menuType: boolean | undefined,
     menuItems: SubMenu[] | undefined
@@ -214,39 +216,37 @@ const Sidebar = () => {
         },
       ].filter(Boolean) as SubMenu[],
     },
-    user.team === "관리팀" ||
+    (user.team === "관리팀" ||
       user.position === "대표이사" ||
       user.position === "센터장" ||
-      (user.position === "부서장" &&
-        user.department === "관리부" && {
-          menu: "human-resources",
-          label: "인사 정보 관리",
-          link: "/human-resources",
-          requiresHrSideClick: true,
-        }),
-    user.team === "관리팀" ||
+      (user.position === "부서장" && user.department === "관리부")) && {
+      menu: "human-resources",
+      label: "인사 정보 관리",
+      link: "/human-resources",
+      requiresHrSideClick: true,
+    },
+    (user.team === "관리팀" ||
       user.position === "대표이사" ||
       user.position === "센터장" ||
       user.position === "연구실장" ||
-      (user.position === "부서장" &&
-        user.department === "관리부" && {
-          menu: "attendance",
-          label: "근태 관리",
-          menuType: isAttendanceMenuOpen,
-          toggleMenuType: "attendance",
-          subMenu: [
-            {
-              menu: "annual-manage",
-              label: "연차 관리",
-              link: "/annual-manage",
-            },
-            {
-              menu: "attendance-regist",
-              label: "출근부",
-              link: "/attendance-regist",
-            },
-          ],
-        }),
+      (user.position === "부서장" && user.department === "관리부")) && {
+      menu: "attendance",
+      label: "근태 관리",
+      menuType: isAttendanceMenuOpen,
+      toggleMenuType: "attendance",
+      subMenu: [
+        {
+          menu: "annual-manage",
+          label: "연차 관리",
+          link: "/annual-manage",
+        },
+        {
+          menu: "attendance-regist",
+          label: "출근부",
+          link: "/attendance-regist",
+        },
+      ],
+    },
     (user.team === "지원팀" || user.position === "대표이사") && {
       menu: "operating-manage",
       label: "운영비 관리",
