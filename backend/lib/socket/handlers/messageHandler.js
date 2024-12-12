@@ -111,11 +111,6 @@ const getGroupChatHistory = async (socket, roomId, userId) => {
    // messageId 배열 조회 
    const messageIds = messages.map( message => message.messageId );
 
-    // //메세지 읽음 상태 조회
-    // for ( const messageId of messageIds){
-    // await statusHandler.getReadStatus( socket, messageId );
-    // };
-
     // 채팅방의 모든 참가자 정보 가져오기
     const participants = await ChatRoomParticipant.findAll({
       where: { roomId: actualRoomId, participant: 0 },
@@ -425,8 +420,7 @@ const getChatHistory = async (socket, roomId, connectedUsers) => {
 const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderId, receiverId, connectedUsers) => {
   try {
     let room = await ChatRoom.findOne({ where: { roomId } });
-    const receiverIdtoString = receiverId.join(',');
-
+    const receiverIdtoString = receiverId.join(','); 
     const participants = await ChatRoomParticipant.findAll({
       where: { roomId },
       attributes: ["userId", "username", "department", "team", "position"],
@@ -450,57 +444,41 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
     });
     const messageInfo = [];
 
-    // const connectedUserIds = Object.keys(connectedUsers);
     for (const Id of receiverId ){
       const receiverSocketInfo = connectedUsers[Id];
-
-    if (receiverSocketInfo) { // socket 연결 된 사람에게 보낼 때
-      const receiverJoinRoomInfo = Array.from(receiverSocketInfo.rooms);
-      const isReadOther = newMessage.roomId == receiverJoinRoomInfo[0];
-  
-      const messageData = {
-        messageId: newMessage.messageId,
-        content: newMessage.content,
-        roomId: newMessage.roomId,
-        senderId: newMessage.userId,
-        receiverId: newMessage.receiverId,
-        timestamp: newMessage.createdAt,
-        fileValue: newMessage.filePath ? 1 : 0,
-        senderUsername: senderInfo.dataValues.username,
-        senderDepartment: senderInfo.dataValues.department,
-        senderTeam: senderInfo.dataValues.team,
-        senderPosition: senderInfo.dataValues.position,
-        isReadOther: isReadOther,
-      };
-      messageInfo.push(messageData);
-
-      // -------------------------------------------------  추후 읽음 상태 처리와 함께 수정예정입니다.
-      // if (isReadOther) {
-      //   console.log("수신자의 현재 접속중인 채팅방이 동일한 것으로 확인되어 읽음처리 진행")
-      //   //메세지 전송 후 발신자의 화면에서 읽음 상태를 확인 하는 함수
-      //   await statusHandler.markMessageAsRead(socket, newMessage.messageId, newMessage.receiverId)
-      // }else{
-      //   console.log("수신자의 현재 접속중인 채팅방이 동일하지 않아 읽음 처리 되지 않습니다.")
-      // }
-
-    } else { 
-      // socket 연결 안된 사람에게 보낼때
-      const messageData = {
-        messageId: newMessage.messageId,
-        content: newMessage.content,
-        roomId: newMessage.roomId,
-        senderId: newMessage.userId,
-        receiverId: newMessage.receiverId,
-        timestamp: newMessage.createdAt,
-        fileValue: newMessage.filePath ? 1 : 0,
-        senderUsername: senderInfo.dataValues.username,
-        senderDepartment: senderInfo.dataValues.department,
-        senderTeam: senderInfo.dataValues.team,
-        senderPosition: senderInfo.dataValues.position,
-        isReadOther: 0,
-      };
-      messageInfo.push(messageData);
+      console.log("...", receiverSocketInfo);
    
+    //메세지 전송 시 채팅방 접속중인 사용자 확인 후 읽음처리 
+    if (receiverSocketInfo) { 
+      const roomSocketId = Array.from(receiverSocketInfo.rooms);
+      const participantsSocketId = io.sockets.adapter.rooms.get(roomId);
+
+      //unreadCount 처리
+     async function checkMessageRead () {
+        if( participantsSocketId.size >= 1) {
+          const readCount = participantsSocketId? participantsSocketId.size : 1;
+           unread =  participants.length - readCount;
+           return unread;
+        }
+      }
+      const unreadCount = await checkMessageRead();
+
+      const messageData = {
+        messageId: newMessage.messageId,
+        content: newMessage.content,
+        roomId: newMessage.roomId,
+        senderId: newMessage.userId,
+        receiverId: newMessage.receiverId,
+        timestamp: newMessage.createdAt,
+        fileValue: newMessage.filePath ? 1 : 0,
+        senderUsername: senderInfo.dataValues.username,
+        senderDepartment: senderInfo.dataValues.department,
+        senderTeam: senderInfo.dataValues.team,
+        senderPosition: senderInfo.dataValues.position,
+        unReadCount: unreadCount,
+      };
+      messageInfo.push(messageData);
+
     }
     await ChatRoom.update(
       { updatedAt: new Date() },
@@ -511,7 +489,7 @@ const sendMessageToRoomParticipants = async (io,socket, roomId, content, senderI
   if(messageInfo.length > 0 ){
     io.to(newMessage.roomId).emit("newMsgData", messageInfo[0])      
   };
-  getGroupChatHistory(socket, roomId, newMessage.userId);
+ // getGroupChatHistory(socket, roomId, newMessage.userId);
  
   console.log('socket room 정보', io.sockets.adapter.rooms)
 
