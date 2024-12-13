@@ -48,9 +48,9 @@ const ReportStatus = ({
       </div>
       <div
         className={`${
-          selectedTab === "rejected" ? "approval_tab_clicked" : "approval_tab"
+          selectedTab === "reference" ? "approval_tab_clicked" : "approval_tab"
         }`}
-        onClick={() => handleTabClick("rejected")}
+        onClick={() => handleTabClick("reference")}
       >
         <span>참조</span>{" "}
         <span className="document_count">{rejecteds?.length}</span>

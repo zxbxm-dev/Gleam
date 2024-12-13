@@ -322,7 +322,6 @@ const WriteReport = () => {
     ? headOffice.find((member) => member[4] === "휴가담당자") || null
     : null;
 
-  console.log(headOffice);
   const departmentDirector =
     user.department === "개발부"
       ? headOffice
