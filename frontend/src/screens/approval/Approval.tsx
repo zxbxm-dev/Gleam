@@ -1468,7 +1468,7 @@ const Approval = () => {
       selectedTab === "approval" ||
       selectedTab === "inProgress" ||
       selectedTab === "completed" ||
-      selectedTab === "rejected"
+      selectedTab === "reference"
     ) {
       setReportStatusOpen(true);
     } else {
@@ -1539,7 +1539,7 @@ const Approval = () => {
             </button>
             <button
               className={
-                selectedTab === "doneDocument"
+                selectedTab === "rejected"
                   ? "report_button_box_active"
                   : "report_button_box"
               }

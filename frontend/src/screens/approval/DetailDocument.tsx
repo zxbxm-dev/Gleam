@@ -46,6 +46,7 @@ const DetailDocument = () => {
   const [memoState, setMemoState] = useState<string>("");
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const pathnameParts = location.pathname.split("/");
   const report_id = pathnameParts[pathnameParts.length - 1];
   const documentInfo = useState(location.state?.documentInfo);
@@ -171,7 +172,6 @@ const DetailDocument = () => {
 
     try {
       await Promise.all(loadPromises);
-      console.log(loadPromises);
       const pdf = new jsPDF("p", "mm", "a4");
       element.style.height = element.scrollHeight + "px";
 
@@ -277,7 +277,13 @@ const DetailDocument = () => {
     }
   }, [signatories]);
 
-  console.log(documentInfo[0]);
+  useEffect(() => {
+    if (documentInfo[0].opinionName || documentInfo[0].rejectName) {
+      setIsVisible(true); // 조건이 충족될 때만 표시
+    } else {
+      setIsVisible(false); // 조건이 충족되지 않으면 숨김
+    }
+  }, [documentInfo]);
 
   return (
     <div className="content">
@@ -403,12 +409,21 @@ const DetailDocument = () => {
             </div>
             {documentInfo[0].opinionName || documentInfo[0].rejectName ? (
               <>
-                <div className="detail_documnet_comment">
+                <div
+                  className={`detail_documnet_comment ${
+                    isVisible ? "show" : ""
+                  }`}
+                >
                   {documentInfo[0].opinionName && (
                     <>
                       <div className="reject_requester">
                         <p>의견 작성자</p>
-                        <div>{documentInfo[0].opinionName}</div>
+                        <div>
+                          {documentInfo[0].opinionName.replace(
+                            /\s*\(작성자\)/,
+                            ""
+                          )}
+                        </div>
                       </div>
                       <div
                         className="document_content"
@@ -442,7 +457,6 @@ const DetailDocument = () => {
                 </div>
               </>
             ) : null}
-            <></>
           </div>
         </div>
       </div>

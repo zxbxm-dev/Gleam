@@ -117,8 +117,6 @@ const Sidebar = () => {
     setIsHrSidebarVisible(true);
   };
 
-  console.log(user);
-
   const renderSubMenu = (
     menuType: boolean | undefined,
     menuItems: SubMenu[] | undefined

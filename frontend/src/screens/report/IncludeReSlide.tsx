@@ -931,7 +931,7 @@ const IncludeReSlide = () => {
         header="알림"
         headerTextColor="#fff"
         footer1="확인"
-        footer1Class="back-green-btn"
+        footer1Class="green-btn"
         height="200px"
         width="400px"
         onFooter1Click={handlePopup}
@@ -955,7 +955,7 @@ const IncludeReSlide = () => {
         header="알림"
         headerTextColor="#fff"
         footer1="확인"
-        footer1Class="back-green-btn"
+        footer1Class="green-btn"
         height="200px"
         width="400px"
         onFooter1Click={() => {
@@ -981,7 +981,7 @@ const IncludeReSlide = () => {
         header="알림"
         headerTextColor="#fff"
         footer1="확인"
-        footer1Class="back-green-btn"
+        footer1Class="green-btn"
         height="200px"
         width="400px"
         onFooter1Click={() => {
@@ -1008,7 +1008,7 @@ const IncludeReSlide = () => {
         header="알림"
         headerTextColor="#fff"
         footer1="확인"
-        footer1Class="back-green-btn"
+        footer1Class="green-btn"
         height="200px"
         width="400px"
         onFooter1Click={() => {
@@ -1063,7 +1063,7 @@ const IncludeReSlide = () => {
         footer1="취소"
         footer2="확인"
         footer1Class="gray-btn"
-        footer2Class="back-green-btn"
+        footer2Class="green-btn"
         height="200px"
         width="400px"
         onFooter2Click={handleDeleteDocument}

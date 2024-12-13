@@ -57,8 +57,8 @@ const DetailApproval = () => {
   const [isEmptySignModalOpen, setEmptySignModalOpen] = useState(false);
   const [isApproveModalOpen, setApproveModalOpen] = useState(false);
   const [isCheckSignModalOpen, setCheckSignModalOpen] = useState(false);
-  const [canWriteOption, setWriteOption] = useState(false);
   const [optionButtonDisabe, setOptionButtonDisabe] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [modalContent, setModalContent] = useState<string>("");
   const {
     onOpen: onOpinionModalOpen,
@@ -86,39 +86,17 @@ const DetailApproval = () => {
   const [buttonDisable, setButtonDisable] = useState(true);
   const [nextData, setNextData] = useState<any[]>([]);
   const [rejectedData, setRejectedData] = useState<any[]>([]);
+  const [newOpinion, setNewOpinion] = useState<string | null>(null);
 
   const params = {
     username: user.username,
-  };
-
-  const getNextData = async () => {
-    try {
-      const response = await getDocumentsInProgress(params);
-      console.log(response.data);
-      const data = response.data;
-      const hi = data.find((item: any) => item.id === documentInfo[0].id);
-      setNextData(hi);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const getRejectedData = async () => {
-    try {
-      const response = await getRejectedDocuments(params);
-      console.log(response.data);
-      const data = response.data;
-      const hi = data.find((item: any) => item.id === documentInfo[0].id);
-      console.log(hi);
-      setRejectedData(hi);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const location = useLocation();
   const pathnameParts = location.pathname.split("/");
   const report_id = pathnameParts[pathnameParts.length - 1];
   const documentInfo = useState(location.state?.documentInfo);
+  const status = useState(location.state?.status);
 
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine = documentInfo[0].personSigning
@@ -132,6 +110,26 @@ const DetailApproval = () => {
     documentInfo[0]?.approveDate?.split(",").map((item: any) => item.trim()) ??
     [];
 
+  const getNextData = async () => {
+    try {
+      const response = await getDocumentsInProgress(params);
+      const data = response.data;
+      const hi = data.find((item: any) => item.id === documentInfo[0].id);
+      setNextData(hi);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getRejectedData = async () => {
+    try {
+      const response = await getRejectedDocuments(params);
+      const data = response.data;
+      const hi = data.find((item: any) => item.id === documentInfo[0].id);
+      setRejectedData(hi);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -364,7 +362,7 @@ const DetailApproval = () => {
     }
   }, [report_id]);
 
-  // 의견 작성하기
+  //의견 작성하기
   const handleSubmitOpinion = async (report_id: string) => {
     try {
       const formData = {
@@ -373,8 +371,8 @@ const DetailApproval = () => {
         position: user.position,
         opinion: opinion,
       };
+
       await WriteApprovalOp(report_id, formData);
-      alert("의견이 등록되었습니다.");
       setOpinion("");
       onOpinionModalClose();
     } catch (error) {
@@ -395,7 +393,6 @@ const DetailApproval = () => {
       await WriteApproval(report_id, formData);
       getRejectedData();
       alert("반려 사유가 등록되었습니다.");
-      console.log(rejectedData);
       setRejection("");
       onRejectionModalClose();
       navigate(`/detailDocument/${documentInfo[0].id}`, {
@@ -453,22 +450,22 @@ const DetailApproval = () => {
   };
 
   useEffect(() => {
-    let lastValue = documentInfo[0].personSigning.split(",").at(-1).trim();
-
-    if (documentInfo[0].opinionName) {
+    if (
+      documentInfo[0].opinionName.replace(/\s*\(.*?\)$/, "") === user.username
+    ) {
       setOptionButtonDisabe(true);
     }
-
-    if (
-      lastValue !== user.username ||
-      documentInfo[0].pending ||
-      documentInfo[0].username !== user.username
-    ) {
-      setWriteOption(true);
-    } else {
-      setWriteOption(false);
-    }
   }, [documentInfo]);
+
+  const addOpinion = () => {
+    setNewOpinion(opinion);
+  };
+
+  useEffect(() => {
+    if (newOpinion) {
+      setIsVisible(true);
+    }
+  }, [newOpinion]);
 
   return (
     <div className="content">
@@ -482,100 +479,104 @@ const DetailApproval = () => {
                     buttonDisable ? "disable_button" : "primary_button"
                   }
                   disabled={buttonDisable}
-                  onClick={() => {
-                    handleApproval(report_id);
+                  onClick={async () => {
+                    await handleSubmitOpinion(report_id);
+                    await handleApproval(report_id);
                   }}
                 >
                   확인
                 </button>
-                {canWriteOption && (
-                  <Popover
-                    placement="right-start"
-                    isOpen={isOpinionModalOpen}
-                    onOpen={onOpinionModalOpen}
-                    onClose={onOpinionModalClose}
-                  >
-                    <PopoverTrigger>
-                      <button
-                        className={
-                          optionButtonDisabe ? "disable_button" : "white_button"
-                        }
-                        disabled={optionButtonDisabe}
+                <Popover
+                  placement="right-start"
+                  isOpen={isOpinionModalOpen}
+                  onOpen={onOpinionModalOpen}
+                  onClose={onOpinionModalClose}
+                >
+                  <PopoverTrigger>
+                    <button
+                      className={
+                        optionButtonDisabe ? "disable_button" : "white_button"
+                      }
+                      disabled={optionButtonDisabe}
+                    >
+                      의견 작성
+                    </button>
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent
+                      width="400px"
+                      border="0"
+                      borderRadius="5px"
+                      boxShadow="0px 0px 5px #444"
+                    >
+                      <PopoverHeader
+                        color="white"
+                        bg="#76CB7E"
+                        border="0"
+                        fontFamily="var(--font-family-Noto-B)"
+                        borderTopRadius="5px"
+                        fontSize="14px"
                       >
                         의견 작성
-                      </button>
-                    </PopoverTrigger>
-                    <Portal>
-                      <PopoverContent
-                        width="400px"
-                        height="274px"
-                        border="0"
-                        borderRadius="5px"
-                        boxShadow="0px 0px 5px #444"
+                      </PopoverHeader>
+                      <PopoverCloseButton color="white" />
+                      <PopoverBody
+                        display="flex"
+                        flexDirection="column"
+                        padding="0px"
+                        justifyContent="center"
+                        alignItems="center"
+                        fontSize="14px"
+                        paddingRight="15px"
+                        style={{
+                          paddingBottom: "15px",
+                        }}
                       >
-                        <PopoverHeader
-                          color="white"
-                          bg="#76CB7E"
-                          border="0"
-                          fontFamily="var(--font-family-Noto-B)"
-                          borderTopRadius="5px"
-                          fontSize="14px"
-                        >
-                          의견 작성
-                        </PopoverHeader>
-                        <PopoverCloseButton color="white" />
-                        <PopoverBody
-                          display="flex"
-                          flexDirection="column"
-                          padding="0px"
-                          justifyContent="center"
-                          alignItems="center"
-                          fontSize="14px"
-                          paddingRight="15px"
-                        >
-                          <div className="opinionBox">
-                            <div className="WriterBox">
-                              <div className="Write">작성자</div>
-                              <div className="Writer">
-                                {user.username}&nbsp;{user.position}
-                              </div>
+                        <div className="opinionBox">
+                          <div className="WriterBox">
+                            <div className="Write">작성자</div>
+                            <div className="Writer">
+                              {user.username}&nbsp;{user.position}
                             </div>
-                            <div className="TextAreaBox">
-                              <div className="Title">내용</div>
+                          </div>
+                          <div className="TextAreaBox">
+                            <div className="Title">내용</div>
+                            <div>
                               <textarea
                                 className="TextAreaStyle"
                                 placeholder="내용을 입력해주세요."
                                 value={opinion}
                                 onChange={handleOpinionChange}
                               />
+                              <div className="warn_text">
+                                * 결재 미완료 시 의견작성은 진행되지 않습니다.
+                              </div>
                             </div>
                           </div>
-                          <div className="button-wrap">
-                            <button
-                              className="second_button"
-                              onClick={() => {
-                                handleSubmitOpinion(report_id);
-                                setOptionButtonDisabe(true);
-                              }}
-                            >
-                              등록
-                            </button>
-                            <button
-                              className="white_button"
-                              onClick={onOpinionModalClose}
-                            >
-                              취소
-                            </button>
-                          </div>
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Portal>
-                  </Popover>
-                )}
+                        </div>
+                        <div className="button-wrap">
+                          <button
+                            className="second_button"
+                            onClick={() => {
+                              setOptionButtonDisabe(true);
+                              addOpinion();
+                              onOpinionModalClose();
+                            }}
+                          >
+                            등록
+                          </button>
+                          <button
+                            className="white_button"
+                            onClick={onOpinionModalClose}
+                          >
+                            취소
+                          </button>
+                        </div>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Portal>
+                </Popover>
 
-                <button className="white_button" onClick={exportToPDF}>
-                  다운로드
-                </button>
                 <Popover
                   placement="right-start"
                   isOpen={isRejectionModalOpen}
@@ -589,10 +590,12 @@ const DetailApproval = () => {
                       <button className="red_button">반려하기</button>
                     )}
                   </PopoverTrigger>
+                  <button className="white_button" onClick={exportToPDF}>
+                    다운로드
+                  </button>
                   <Portal>
                     <PopoverContent
                       width="410px"
-                      height="274px"
                       border="0"
                       borderRadius="5px"
                       boxShadow="0px 0px 5px #444"
@@ -616,6 +619,9 @@ const DetailApproval = () => {
                         alignItems="center"
                         fontSize="14px"
                         paddingRight="15px"
+                        style={{
+                          paddingBottom: "15px",
+                        }}
                       >
                         <div className="opinionBox">
                           <div className="WriterBox">
@@ -626,12 +632,17 @@ const DetailApproval = () => {
                           </div>
                           <div className="TextAreaBox">
                             <div className="CompanionTitle">반려 사유</div>
-                            <textarea
-                              className="TextAreaCompanion"
-                              placeholder="내용을 입력해주세요."
-                              value={rejection}
-                              onChange={handleRejectionChange}
-                            />
+                            <div>
+                              <textarea
+                                className="TextAreaCompanion"
+                                placeholder="내용을 입력해주세요."
+                                value={rejection}
+                                onChange={handleRejectionChange}
+                              />
+                              <div className="warn_text">
+                                * 반려 시 결재는 진행하실 수 없습니다.
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <div className="button-wrap">
@@ -654,55 +665,123 @@ const DetailApproval = () => {
                 </Popover>
               </div>
             </div>
-            <div className="write_btm_container">
-              <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                <div ref={containerRef} id="report-to-xls">
-                  <div className="PaymentLine">
-                    {signatories.map((signatory, index) => (
-                      <div className="Pay" key={index}>
-                        <input
-                          className="Top"
-                          type="text"
-                          placeholder={signatory}
-                          disabled
-                        />
-                        {canUserSignAtIndex(index) ? (
-                          <div
-                            className="Bottom"
-                            onClick={() => handleSignModal(index)}
-                          >
-                            {checksignup[index] ? (
-                              <img
-                                className="SignImg"
-                                src={`${getSignUrl(user.username)}` || ""}
-                                alt="sign"
-                              />
-                            ) : (
-                              <></>
-                            )}
+            <div className="detail_documnet_contain">
+              <div className="write_btm_container">
+                <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                  <div ref={containerRef} id="report-to-xls">
+                    <div className="PaymentLine">
+                      {signatories.map((signatory, index) => (
+                        <div className="Pay" key={index}>
+                          <input
+                            className="Top"
+                            type="text"
+                            placeholder={signatory}
+                            disabled
+                          />
+                          {canUserSignAtIndex(index) ? (
+                            <div
+                              className="Bottom"
+                              onClick={() => handleSignModal(index)}
+                            >
+                              {checksignup[index] ? (
+                                <img
+                                  className="SignImg"
+                                  src={`${getSignUrl(user.username)}` || ""}
+                                  alt="sign"
+                                />
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="Bottom_notHover">
+                              {checksignup[index] ? (
+                                <img
+                                  className="SignImg"
+                                  src={
+                                    `${getSignUrl(combinedLine[index])}` || ""
+                                  }
+                                  alt="sign"
+                                />
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                          )}
+                          <div className="BtmDate">
+                            {approveDates[index] || signDates[index]}
                           </div>
-                        ) : (
-                          <div className="Bottom_notHover">
-                            {checksignup[index] ? (
-                              <img
-                                className="SignImg"
-                                src={`${getSignUrl(combinedLine[index])}` || ""}
-                                alt="sign"
-                              />
-                            ) : (
-                              <></>
-                            )}
-                          </div>
-                        )}
-                        <div className="BtmDate">
-                          {approveDates[index] || signDates[index]}
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    {renderPages()}
                   </div>
-                  {renderPages()}
-                </div>
-              </Document>
+                </Document>
+              </div>
+
+              {documentInfo[0].opinionName ||
+              documentInfo[0].rejectName ||
+              newOpinion ? (
+                <>
+                  <div
+                    className={`detail_documnet_comment ${
+                      newOpinion ? "show" : ""
+                    }`}
+                  >
+                    {(documentInfo[0].opinionName || newOpinion) && (
+                      <>
+                        <div className="reject_requester">
+                          <p>의견 작성자</p>
+                          <div>
+                            {newOpinion
+                              ? user.username
+                              : documentInfo[0].opinionName.replace(
+                                  /\s*\(작성자\)/,
+                                  ""
+                                )}
+                          </div>
+                        </div>
+                        <div className={`opinion ${isVisible ? "show" : ""}`}>
+                          {newOpinion &&
+                            `${user.username} (${user.position}): ${newOpinion}`}
+                        </div>
+                        <div
+                          className="document_content"
+                          style={{ whiteSpace: "pre-line" }}
+                        >
+                          <div>
+                            {documentInfo[0].opinionContent
+                              .split(",")
+                              .map((item: string) => item.trim())
+                              .join("\n")}
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {documentInfo[0].rejectName && (
+                      <>
+                        <div className="reject_requester">
+                          <p>반려자</p>
+                          <div>
+                            {documentInfo[0].rejectName}
+                            {documentInfo[0].position}
+                          </div>
+                        </div>
+                        <div
+                          className="document_content"
+                          style={{ whiteSpace: "pre-line" }}
+                        >
+                          {documentInfo[0].rejectContent
+                            .split(",")
+                            .map((item: string) => item.trim())
+                            .join("\n\n")}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              ) : null}
             </div>
           </div>
         </div>

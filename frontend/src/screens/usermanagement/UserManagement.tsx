@@ -350,7 +350,10 @@ const UserManagement = () => {
       team: selectedOptions.team,
       spot: selectedOptions.spot,
       position: selectedOptions.position,
-      assignPosition: selectedOptions.assignPosition,
+      assignPosition:
+        selectedOptions.assignPosition === "해당 없음"
+          ? ""
+          : selectedOptions.assignPosition,
     };
     // API 호출
     EditUserInfoManagement(clickIdx, formData)
@@ -1023,6 +1026,14 @@ const UserManagement = () => {
                         }
                       >
                         지원담당자
+                      </div>
+                      <div
+                        className="op"
+                        onClick={() =>
+                          handleOptionClick("assignPosition", "해당 없음")
+                        }
+                      >
+                        해당 없음
                       </div>
                     </>
                   )}
