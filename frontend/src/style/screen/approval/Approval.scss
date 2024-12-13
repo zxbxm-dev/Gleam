@@ -373,7 +373,6 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom: 1px solid #dcdcdc;
 
     .top_left_content {
       width: 50%;
@@ -638,9 +637,9 @@
   justify-content: center;
   flex-direction: column;
   gap: 11px;
-  height: 182px;
   width: 100%;
   padding-left: 15px;
+  padding-top: 15px;
 
   .WriterBox {
     width: 100%;
@@ -824,6 +823,15 @@
   padding: 15px;
   gap: 10px;
   max-width: 420px;
+
+  transform: translateX(500px);
+  opacity: 0;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.detail_documnet_comment.show {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .reject_requester {
@@ -844,4 +852,20 @@
     font-weight: 700;
     font-size: 14px;
   }
+}
+
+.warn_text {
+  color: #ff2929;
+  font-size: 10px;
+
+  margin-bottom: 16px;
+}
+
+.opinion {
+  transform: translateY(-20px);
+  transition: all 0.4s ease-in-out;
+}
+
+.opinion.show {
+  transform: translateY(0);
 }

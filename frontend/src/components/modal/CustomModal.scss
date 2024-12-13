@@ -1,4 +1,4 @@
-@import '../../style/Common/scrollbar.scss';
+@import "../../style/Common/scrollbar.scss";
 @import "../../style/mixin";
 
 .modal-overlay {
@@ -25,7 +25,7 @@
       width: inherit;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
-      background-color: #45C552;
+      background-color: #45c552;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -184,7 +184,7 @@
           .MeetingRoom_Title {
             width: 100%;
             height: 40px;
-            border-bottom: 1px solid #CACACA;
+            border-bottom: 1px solid #cacaca;
             font-size: 20px;
             padding: 5px;
             font-family: var(--font-family-Noto-M);
@@ -232,7 +232,7 @@
             .TextInputCon2 {
               width: 100%;
               height: 84px;
-              border: 1px solid #EEEEEE;
+              border: 1px solid #eeeeee;
               border-radius: 5px;
               font-size: 14px;
               padding: 10px;
@@ -243,7 +243,6 @@
               outline: none;
             }
           }
-
 
           .div {
             display: flex;
@@ -318,7 +317,7 @@
                 width: 100%;
                 height: 32px;
                 cursor: pointer;
-                border: 1px solid #EEEEEE;
+                border: 1px solid #eeeeee;
                 border-radius: 5px;
               }
 
@@ -330,7 +329,7 @@
                 padding: 0px 10px;
                 font-size: 14px;
                 width: 235px;
-                border: 1px solid #EEEEEE;
+                border: 1px solid #eeeeee;
                 border-radius: 5px;
                 font-family: var(--font-family-Noto-M);
               }
@@ -375,7 +374,7 @@
           &.Meeting_border {
             display: flex;
             align-items: center;
-            border: 1px solid #EEEEEE;
+            border: 1px solid #eeeeee;
             border-radius: 5px;
             padding: 0 10px;
             font-family: var(--font-family-Noto-M);
@@ -417,7 +416,7 @@
             flex-direction: column;
             width: 100%;
             height: 130px;
-            border: 1px solid #A2E2A9;
+            border: 1px solid #a2e2a9;
             border-radius: 5px;
             position: relative;
 
@@ -426,7 +425,7 @@
               width: 98%;
               margin-left: 1%;
               height: 35px;
-              border-bottom: 1px solid #CACACA;
+              border-bottom: 1px solid #cacaca;
               font-size: 14px;
               padding: 10px;
               font-family: var(--font-family-Noto-M);
@@ -456,9 +455,9 @@
                 left: -1px;
                 z-index: 1000;
                 background-color: #fff;
-                border-left: 1px solid #EEEEEE;
+                border-left: 1px solid #eeeeee;
                 border-right: 1px solid #929292;
-                border-bottom: 1px solid #EEEEEE;
+                border-bottom: 1px solid #eeeeee;
                 border-bottom-left-radius: 5px;
                 width: 50%;
                 min-height: 107px;
@@ -473,7 +472,7 @@
                   padding: 4px 17px;
                   cursor: pointer;
                   transition: background-color 0.2s;
-                  color: #5C5C5C;
+                  color: #5c5c5c;
                   font-family: var(--font-family-Noto-R);
 
                   &.selected {
@@ -489,8 +488,8 @@
                 left: 245px;
                 z-index: 1000;
                 background-color: #fff;
-                border-right: 1px solid #EEEEEE;
-                border-bottom: 1px solid #EEEEEE;
+                border-right: 1px solid #eeeeee;
+                border-bottom: 1px solid #eeeeee;
                 border-bottom-right-radius: 5px;
                 width: 50%;
                 min-height: 107px;
@@ -505,7 +504,7 @@
                   padding: 4px 10px;
                   cursor: pointer;
                   transition: background-color 0.2s;
-                  color: #5C5C5C;
+                  color: #5c5c5c;
                   font-family: var(--font-family-Noto-R);
 
                   &.selected {
@@ -514,7 +513,6 @@
                 }
               }
             }
-
 
             .AddsInputCon {
               width: 100%;
@@ -538,7 +536,7 @@
                 .remove {
                   cursor: pointer;
                   margin-left: 5px;
-                  color: #A2A2A2;
+                  color: #a2a2a2;
                   font-size: 10px;
                 }
               }
@@ -760,14 +758,11 @@
               white-space: nowrap;
             }
           }
-
-
         }
 
         .ProfileSetting {
           display: flex;
           justify-content: center;
-
         }
 
         .PeopleSearchCon {
@@ -953,7 +948,7 @@
                 }
 
                 .createMe {
-                  color: #BABABA;
+                  color: #bababa;
                   font-size: 10px;
                 }
               }
@@ -1104,7 +1099,7 @@
               align-items: center;
               width: 100%;
               padding: 5px 10px;
-              border-bottom: 1px solid #CACACA;
+              border-bottom: 1px solid #cacaca;
 
               .green_circle {
                 display: flex;
@@ -1125,7 +1120,7 @@
                 justify-content: center;
                 width: 48px;
                 height: 20px;
-                background-color: #3870FF;
+                background-color: #3870ff;
                 color: #ffffff;
                 font-size: 10px;
                 font-family: var(--font-family-Noto-R);
@@ -1155,7 +1150,7 @@
               height: 37px;
               border-radius: 5px;
               font-size: 12px;
-              border: 1px solid #EEEEEE;
+              border: 1px solid #eeeeee;
               border-radius: 5px;
 
               .content-teamLead-name {
@@ -1171,7 +1166,7 @@
               width: 100%;
               padding: 0 10px;
               height: 37px;
-              background-color: #F4F4F4;
+              background-color: #f4f4f4;
               border-radius: 5px;
               font-size: 12px;
 
@@ -1186,13 +1181,13 @@
               width: 100%;
               height: 110px;
               font-size: 12px;
-              border: 1px solid #EEEEEE;
+              border: 1px solid #eeeeee;
               border-radius: 5px;
               padding: 10px 5px;
 
               .content-member-text {
                 color: #929292;
-                border-bottom: 1px solid #CACACA;
+                border-bottom: 1px solid #cacaca;
                 padding-bottom: 5px;
                 padding-left: 5px;
               }
@@ -1245,18 +1240,17 @@
           display: flex;
           justify-content: space-between;
           font-size: 10px;
-          color: #AAAAAA;
-          border-bottom: 1px solid #CACACA;
+          color: #aaaaaa;
+          border-bottom: 1px solid #cacaca;
           padding: 3px 5px;
         }
 
         .mail_read_list_content {
-
           .mail_read_list_user {
             padding: 6px 5px;
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px solid #EEEEEE;
+            border-bottom: 1px solid #eeeeee;
 
             .mail_read_list_user_name {
               font-size: 14px;
@@ -1270,7 +1264,7 @@
           }
         }
 
-        .addDocu{
+        .addDocu {
           font-size: 16px;
         }
 
@@ -1294,28 +1288,28 @@
               margin-right: 25px;
             }
 
-            input[type='radio'] {
+            input[type="radio"] {
               -webkit-appearance: none; // 웹킷 브라우저에서 기본 스타일 제거
-              -moz-appearance: none; // 모질라 브라우저에서 기본 스타일 제거 
+              -moz-appearance: none; // 모질라 브라우저에서 기본 스타일 제거
               appearance: none; // 기본 브라우저에서 기본 스타일 제거
               width: 13px;
               height: 13px;
-              border: 2px solid #45C552;
+              border: 2px solid #45c552;
               border-radius: 50%;
               outline: none;
               cursor: pointer;
             }
 
             // 체크될 시에, 변화되는 스타일 설정
-            input[type='radio']:checked {
-              background-color: #45C552;
+            input[type="radio"]:checked {
+              background-color: #45c552;
               border: 3px solid white;
-              box-shadow: 0 0 0 1.6px #45C552;
+              box-shadow: 0 0 0 1.6px #45c552;
             }
           }
 
           .input-field {
-            border: 1px solid #EEE;
+            border: 1px solid #eee;
             border-radius: 5px;
             padding-left: 10px;
             display: flex;
@@ -1348,7 +1342,6 @@
       width: 100%;
       height: auto;
       padding-bottom: 20px;
-      margin-top: 15px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1367,13 +1360,13 @@
 
         &.green-btn {
           background-color: #fff;
-          border: 1px solid #45C552;
-          color: #45C552;
+          border: 1px solid #45c552;
+          color: #45c552;
         }
 
         &.back-green-btn {
-          background-color: #45C552;
-          border: 1px solid #45C552;
+          background-color: #45c552;
+          border: 1px solid #45c552;
           color: #fff;
         }
 
@@ -1489,11 +1482,11 @@
     }
   }
 
-  &:hover input~.checkmark {
+  &:hover input ~ .checkmark {
     background-color: #ccc;
   }
 
-  input:checked~.checkmark {
+  input:checked ~ .checkmark {
     background-color: #eee;
     border: 2px solid #45c552;
 
