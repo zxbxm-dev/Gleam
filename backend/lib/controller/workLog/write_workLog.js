@@ -1,5 +1,6 @@
 const models = require("../../models");
 const Report = models.Report;
+const ReportOpinion = models.ReportOpinion;
 const fs = require("fs");
 
 // 보고서 상세 조회 --------------------------------------------------------------------------------
@@ -8,7 +9,6 @@ const getReportById = async (req, res) => {
 
   try {
     const report = await Report.findByPk(report_id);
-
     if (!report) {
       return res.status(404).json({ error: "해당 보고서를 찾을 수 없습니다." });
     }
@@ -30,9 +30,31 @@ const getReportById = async (req, res) => {
 
     // 파일 스트림을 HTTP 응답 스트림으로 파이핑
     fileStream.pipe(res);
+
   } catch (error) {
     console.error("보고서 조회 중 오류 발생:", error);
     res.status(500).json({ error: "내부 서버 오류입니다." });
+  }
+};
+
+//보고서 의견,반려사유, 취소사유 조회--------------------------------------------------------------------------------
+const getReportOpinionById = async( req, res ) => {
+  const { report_id } = req.params;
+ 
+  try{
+    const report = await Report.findByPk(report_id);
+    if(!report){
+      return res.status(404).json({ error: " 보고서를 찾을 수 없습니다. "});
+    };
+
+    const opinions = await ReportOpinion.findAll({
+      where: { reportId : report_id },
+    });
+    res.status(200).json(opinions);
+
+  }catch(error){
+    console.error("보고서 의견을 가져오는 중 오류가 발생했습니다.:", error);
+    res.status(500).json({ error: "보고서 의견 조회에 실패했습니다." });
   }
 };
 
@@ -71,7 +93,7 @@ const deleteReportById = async (req, res) => {
 };
 
 // 보고서 반려 --------------------------------------------------------------------------------
-const cancelReportById = async (req, res) => {
+const rejectReportById = async (req, res) => {
   const { report_id } = req.params;
   const { rejection, userID, username, position } = req.body;
 
@@ -145,6 +167,15 @@ const cancelReportById = async (req, res) => {
 
     console.log("변경 후 report.personSigning:", report.personSigning);
 
+    await ReportOpinion.create({
+      reportId : report_id,
+      username: username,
+      position: position,
+      assignPosition: assignPosition,
+      content: rejection,
+      type: 'rejection',
+      });
+      
     // 상태 업데이트 저장
     await report.save();
 
@@ -186,9 +217,18 @@ const opinionReportById = async (req, res) => {
     const newOpinion = `${username} (${position}): ${opinion}`;
     existingOpinions.push(newOpinion);
 
+    await ReportOpinion.create({
+      reportId : report_id,
+      username: username,
+      position: position,
+      assignPosition: assignPosition,
+      content: opinion,
+      type: 'opinion',
+      });
+
     // 의견 내용 업데이트
     report.opinionContent = existingOpinions.join(", ");
-
+    
     // 의견 작성자 정보 업데이트
     report.opinionName = `${username} (${assignPosition})`;
 
@@ -277,10 +317,25 @@ const SignProgress = async (req, res) => {
   }
 };
 
+//보고서 결재취소 요청 -------------------------------------------------------------------
+const cancleReportById  = async (req, res) => {
+  const {report_id} = req.params;
+  const {} = req.body;
+  
+  try{
+
+    
+  }catch(error){
+    console.error()
+    res.status(500).json({})
+  }
+};
+
 module.exports = {
   getReportById,
   deleteReportById,
-  cancelReportById,
+  rejectReportById, 
   opinionReportById,
   SignProgress,
+  getReportOpinionById,
 };
