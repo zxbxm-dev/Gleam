@@ -29,6 +29,7 @@ const getUserStateFromLocalStorage = () => {
         question2: "",
         entering: "",
         attachment: "",
+        assignPosition: "",
         Sign: "",
         MobileCard: "사용 안함",
       };
@@ -58,11 +59,11 @@ export const selectedPersonState = atom({
 });
 
 export const selectedRoomIdState = atom({
-  key: 'selectedRoomIdState',
+  key: "selectedRoomIdState",
   default: {
     roomId: -2,
-    isGroup:false,
-    OtherTitle:""
+    isGroup: false,
+    OtherTitle: "",
   },
 });
 
@@ -74,66 +75,66 @@ export const selectedRoomIdState = atom({
  * @type {import('recoil').RecoilState<{ state: UserState }>}
  */
 export const userStateMessage = atom({
-  key: 'userStateMessage',
+  key: "userStateMessage",
   default: {
-    state: ""
+    state: "",
   },
 });
 
 export const selectUserID = atom({
-  key: 'selectUserID',
+  key: "selectUserID",
   default: {
-    userID: ""
+    userID: "",
   },
 });
 
 //새 대화방 생성 모달
 export const SideChatModalstate = atom({
-  key: 'SideChatModalstate',
-  default: false
+  key: "SideChatModalstate",
+  default: false,
 });
 
 //인원관리 인원추가
 export const NewChatModalstate = atom({
-  key: 'NewChatModalstate',
+  key: "NewChatModalstate",
   default: {
     openState: false,
     joinUser: [""],
-    hostId:"",
+    hostId: "",
   },
 });
 
 export const SearchClickMsg = atom({
-  key: 'SearchClickMsg',
+  key: "SearchClickMsg",
   default: {
-      content: '',
-      messageId: 0,
-      timestamp: '',
-      userId: '',
-      username: ''
-    }
+    content: "",
+    messageId: 0,
+    timestamp: "",
+    userId: "",
+    username: "",
+  },
 });
 
 export const PeopleModalState = atom({
-  key: 'PeopleModalState',
+  key: "PeopleModalState",
   default: {
-    state:false,
-    joinNumber:1
-  }
+    state: false,
+    joinNumber: 1,
+  },
 });
 
 //메시지 목록 옵션
 export const MsgOptionState = atom({
-  key: 'MsgOptionState',
-  default: false
+  key: "MsgOptionState",
+  default: false,
 });
 
 export const MsgNewUpdateState = atom({
-  key: 'MsgNewUpdate',
+  key: "MsgNewUpdate",
   default: false,
 });
 
 export const ChatRoomProfileState = atom({
-  key: 'ChatRoomProfileState',
+  key: "ChatRoomProfileState",
   default: false,
 });

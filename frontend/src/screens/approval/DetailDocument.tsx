@@ -8,6 +8,7 @@ import "react-pdf/dist/Page/TextLayer.css";
 import {
   CheckReport,
   DeleteReport,
+  getReportOpinion,
 } from "../../services/approval/ApprovalServices";
 import {
   PersonData,
@@ -37,6 +38,18 @@ interface Person {
   Sign: string;
 }
 
+export interface RejectOp {
+  assignPosition: string;
+  content: string;
+  createdAt: string;
+  opinionId: number;
+  position: string;
+  reportId: number;
+  type: string;
+  updatedAt: string;
+  username: string;
+}
+
 const DetailDocument = () => {
   let navigate = useNavigate();
   let location = useLocation();
@@ -44,6 +57,7 @@ const DetailDocument = () => {
   const [file, setFile] = useState<PDFFile>("");
   const [numPages, setNumPages] = useState<number>(0);
   const [memoState, setMemoState] = useState<string>("");
+  const [rejectOpinionData, setRejectOpinionData] = useState<RejectOp[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDeleteeventModalOpen, setDeleteEventModalOPen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -91,6 +105,7 @@ const DetailDocument = () => {
       }
     };
 
+    reportOpinionData();
     fetchData();
     quitterfetchData();
   }, []);
@@ -250,6 +265,20 @@ const DetailDocument = () => {
     return user ? user.Sign : null;
   };
 
+  const reportOpinionData = async () => {
+    try {
+      const response = await getReportOpinion(report_id);
+      const sortedData = response.data.sort(
+        (a: any, b: any) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      setRejectOpinionData(sortedData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (signatories.length > 0) {
       if (
@@ -406,16 +435,57 @@ const DetailDocument = () => {
                 </div>
               </Document>
             </div>
-            {documentInfo[0].opinionName || documentInfo[0].rejectName ? (
+            {rejectOpinionData ? (
               <>
                 <div
                   className={`detail_documnet_comment ${
                     isVisible ? "show" : ""
                   }`}
                 >
+                  {rejectOpinionData.map((reject) => (
+                    <>
+                      <div className="reject_requester show">
+                        <p>
+                          {reject.type === "opinion" ? "의견 작성자" : "반려자"}
+                        </p>
+                        <div>
+                          {reject.username}{" "}
+                          {reject.assignPosition !== "작성자"
+                            ? reject.assignPosition
+                            : ""}
+                        </div>
+                      </div>
+                      <div
+                        className="document_content"
+                        style={{ whiteSpace: "pre-line" }}
+                      >
+                        {reject.content
+                          .split(",")
+                          .map((item: string) => item.trim())
+                          .join("\n\n")}
+                      </div>
+                    </>
+                  ))}
+                  {/* {documentInfo[0].rejectName && (
+                    <>
+                      <div className="reject_requester show">
+                        <p>반려자</p>
+                        <div>{documentInfo[0].rejectName}</div>
+                      </div>
+                      <div
+                        className="document_content"
+                        style={{ whiteSpace: "pre-line" }}
+                      >
+                        {documentInfo[0].rejectContent
+                          .split(",")
+                          .map((item: string) => item.trim())
+                          .join("\n\n")}
+                      </div>
+                    </>
+                  )}
                   {documentInfo[0].opinionName && (
                     <>
-                      <div className="reject_requester">
+                      <div className="reject_requester show">
                         <p>의견 작성자</p>
                         <div>
                           {documentInfo[0].opinionName.replace(
@@ -434,25 +504,7 @@ const DetailDocument = () => {
                           .join("\n\n")}
                       </div>
                     </>
-                  )}
-
-                  {documentInfo[0].rejectName && (
-                    <>
-                      <div className="reject_requester">
-                        <p>반려자</p>
-                        <div>{documentInfo[0].rejectName}</div>
-                      </div>
-                      <div
-                        className="document_content"
-                        style={{ whiteSpace: "pre-line" }}
-                      >
-                        {documentInfo[0].rejectContent
-                          .split(",")
-                          .map((item: string) => item.trim())
-                          .join("\n\n")}
-                      </div>
-                    </>
-                  )}
+                  )} */}
                 </div>
               </>
             ) : null}
