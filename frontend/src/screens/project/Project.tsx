@@ -8,16 +8,24 @@ import {
   pinned_false,
 } from "../../assets/images/index";
 import React, { useState, useEffect, useRef } from "react";
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import CustomModal from "../../components/modal/CustomModal";
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../recoil/atoms';
-import { PersonData } from '../../services/person/PersonServices';
-import { useQuery } from 'react-query';
-import { CheckProject, addMainProject, addSubProject, EditMainProject, EditSubProject, DeleteMainProject, DeleteSubProject } from "../../services/project/ProjectServices";
+import { useRecoilValue } from "recoil";
+import { userState } from "../../recoil/atoms";
+import { PersonData } from "../../services/person/PersonServices";
+import { useQuery } from "react-query";
+import {
+  CheckProject,
+  addMainProject,
+  addSubProject,
+  EditMainProject,
+  EditSubProject,
+  DeleteMainProject,
+  DeleteSubProject,
+} from "../../services/project/ProjectServices";
 
 interface ProjectData {
   mainprojectIndex: number;
@@ -27,13 +35,13 @@ interface ProjectData {
   projectName: string;
   Leader: string;
   startDate: Date;
-  endDate: Date
+  endDate: Date;
   members: string[];
   referrer: string[];
   memo: string;
   pinned: number;
   subProject?: ProjectData[];
-};
+}
 
 interface GoogleCalendarEvent {
   start: {
@@ -50,7 +58,6 @@ interface Holiday {
   color?: string;
 }
 
-
 const Project = () => {
   const user = useRecoilValue(userState);
   const [ispjtModalOpen, setPjtModalOPen] = useState(false);
@@ -61,7 +68,7 @@ const Project = () => {
   const [isEditSubPjtModalOpen, setEditSubPjtModalOpen] = useState(false);
   const [isDeletePjtModalOpen, setDeletePjtModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('');
+  const [statusMessage, setStatusMessage] = useState("");
   const [EditForceMessage, setEditForceMessage] = useState(false);
 
   const [persondata, setPersonData] = useState<any[]>([]);
@@ -69,20 +76,22 @@ const Project = () => {
   const calendarRef = useRef<FullCalendar>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [pjtStatus, setpjtStatus] = useState('진행 예정');
-  const [pjtTitle, setPjtTitle] = useState<string>('');
-  const [pjtMemo, setPjtMemo] = useState<string>('');
+  const [pjtStatus, setpjtStatus] = useState("진행 예정");
+  const [pjtTitle, setPjtTitle] = useState<string>("");
+  const [pjtMemo, setPjtMemo] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [teamLeader, setTeamLeader] = useState('');
-  const [inputteamLeader, setInputteamLeader] = useState('');
+  const [teamLeader, setTeamLeader] = useState("");
+  const [inputteamLeader, setInputteamLeader] = useState("");
   const [allMembers, setAllMembers] = useState<string[]>([]);
-  const [inputAllMember, setInputAllmember] = useState('');
+  const [inputAllMember, setInputAllmember] = useState("");
   const [allReferrers, setAllReferrers] = useState<string[]>([]);
-  const [inputAllReferrer, setInputAllReferrer] = useState('');
+  const [inputAllReferrer, setInputAllReferrer] = useState("");
 
   const [slideVisible, setSlideVisible] = useState(false);
-  const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>({});
+  const [projectVisible, setProjectVisible] = useState<Record<number, boolean>>(
+    {}
+  );
   const [pjtstateIsOpen, setPjtStateIsOpen] = useState(false);
 
   const [projects, setProjects] = useState<any[]>([]);
@@ -90,28 +99,33 @@ const Project = () => {
   const [subprojects, setSubProjects] = useState<any[]>([]);
   const [projectEvent, setProjectEvent] = useState<any[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<ProjectData | null>(null);
-  const [rightclickedProjects, setRightClickedProjects] = useState<ProjectData | null>(null);
-  const [clickedProjects, setClickedProjects] = useState<ProjectData | null>(null);
+  const [rightclickedProjects, setRightClickedProjects] =
+    useState<ProjectData | null>(null);
+  const [clickedProjects, setClickedProjects] = useState<ProjectData | null>(
+    null
+  );
   const [allSelected, setAllSelected] = useState(false);
-  const [selectedProjects, setSelectedProjects] = useState<{ [key: number]: boolean }>({});
-  const [pinnedProjects, setPinnedProjects] = useState<{ [key: number]: boolean }>({});
-  const [subprojectVisible, setSubProjectVisible] = useState<{ [key: string]: boolean }>({});
+  const [selectedProjects, setSelectedProjects] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [pinnedProjects, setPinnedProjects] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [subprojectVisible, setSubProjectVisible] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [subdropdownOpen, setSubDropdownOpen] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
 
-  const pjtstateOptions = [
-    '진행 예정',
-    '진행 중',
-    '진행 완료',
-  ];
+  const pjtstateOptions = ["진행 예정", "진행 중", "진행 완료"];
 
   const resetForm = () => {
     setPjtStateIsOpen(false);
-    setPjtTitle('');
-    setPjtMemo('');
-    setTeamLeader('');
+    setPjtTitle("");
+    setPjtMemo("");
+    setTeamLeader("");
     setAllMembers([]);
     setAllReferrers([]);
     setStartDate(null);
@@ -137,7 +151,7 @@ const Project = () => {
   }, [projects]);
 
   const toggleSubProjects = (projectId: string) => {
-    setSubProjectVisible(prev => {
+    setSubProjectVisible((prev) => {
       // 모든 프로젝트를 false로 설정한 새 객체 생성
       const newState = Object.keys(prev).reduce((acc: any, key) => {
         acc[key] = false;
@@ -151,7 +165,6 @@ const Project = () => {
     });
   };
 
-
   const toggleAllCheckboxes = () => {
     if (allSelected) {
       setSelectedProjects({});
@@ -164,7 +177,7 @@ const Project = () => {
     }
     setAllSelected(!allSelected);
   };
-  
+
   const toggleProjectSelection = (projectId: number) => {
     setSelectedProjects((prevSelectedProjects) => ({
       ...prevSelectedProjects,
@@ -189,7 +202,7 @@ const Project = () => {
         "관리부",
         "알고리즘 연구실",
         "동형분석 연구실",
-        "블록체인 연구실"
+        "블록체인 연구실",
       ];
 
       const initialData = [
@@ -209,7 +222,7 @@ const Project = () => {
         { team: "동형분석 연구팀", username: "" },
         { department: "블록체인 연구실", username: "" },
         { team: "크립토 블록체인 연구팀", username: "" },
-        { team: "API 개발팀", username: "" }
+        { team: "API 개발팀", username: "" },
       ];
 
       // data 부분만 정렬
@@ -240,36 +253,39 @@ const Project = () => {
         }
 
         // 부서가 없는 경우 기본 알파벳 정렬, 이후 팀, 이름 순
-        return deptA.localeCompare(deptB) || 
-              (a.team || "").localeCompare(b.team || "") || 
-              (a.username || "").localeCompare(b.username || "");
+        return (
+          deptA.localeCompare(deptB) ||
+          (a.team || "").localeCompare(b.team || "") ||
+          (a.username || "").localeCompare(b.username || "")
+        );
       });
 
-      
       // initialData와 sortedData를 결합
       const updatedData = [...initialData, ...sortedData];
       setPersonData(updatedData);
     },
     onError: (error) => {
       console.log(error);
-    }
-  })
+    },
+  });
 
   const handleEventClick = (info: any) => {
     setSelectedEvent({
-      mainprojectIndex: info.event.id?.split('-')[0],
-      subprojectIndex: info.event.id?.split('-')[1],
+      mainprojectIndex: info.event.id?.split("-")[0],
+      subprojectIndex: info.event.id?.split("-")[1],
       userId: info.event.extendedProps.userId,
       status: info.event.extendedProps.status,
-      projectName: `${info.event.title?.split('|')[0]} | ${info.event.id?.split('-')[1]} - ${info.event.extendedProps.origintitle}`,
+      projectName: `${info.event.title?.split("|")[0]} | ${
+        info.event.id?.split("-")[1]
+      } - ${info.event.extendedProps.origintitle}`,
       Leader: info.event.extendedProps.Leader,
-      startDate: info.event.extendedProps.originstart ,
-      endDate: info.event.extendedProps.originend ,
+      startDate: info.event.extendedProps.originstart,
+      endDate: info.event.extendedProps.originend,
       members: info.event.extendedProps.members,
       referrer: info.event.extendedProps.referrer,
       memo: info.event.extendedProps.memo,
       pinned: 0,
-    })
+    });
     setPjtModalOPen(true);
   };
 
@@ -278,16 +294,18 @@ const Project = () => {
   };
 
   const ProjectVisibilityInitial = (projectId: number) => {
-    setProjectVisible(prevState => ({
+    setProjectVisible((prevState) => ({
       ...prevState,
       [projectId]: true,
     }));
   };
 
   const toggleProjectVisibility = (index: number) => {
-    setProjectVisible(prevState => ({ ...prevState, [index]: !prevState[index] }));
+    setProjectVisible((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index],
+    }));
   };
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputteamLeader(e.target.value);
@@ -295,77 +313,105 @@ const Project = () => {
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',') {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       if (inputteamLeader.trim()) {
         setTeamLeader(inputteamLeader.trim());
-        setInputteamLeader('');
+        setInputteamLeader("");
       }
     }
   };
 
-  const handleAutoCompleteClick = (username: string, department: string, team: string) => {
+  const handleAutoCompleteClick = (
+    username: string,
+    department: string,
+    team: string
+  ) => {
     if (team) {
-      setTeamLeader(team + ' ' + username);
+      setTeamLeader(team + " " + username);
     } else {
-      setTeamLeader(department + ' ' + username);
+      setTeamLeader(department + " " + username);
     }
-    setInputteamLeader('');
+    setInputteamLeader("");
   };
 
-  const handleInputAllMemberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputAllMemberChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setInputAllmember(e.target.value);
   };
 
-  const handleInputAllReferrerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputAllReferrerChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setInputAllReferrer(e.target.value);
   };
 
-  const handleInputAllMemberKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',') {
+  const handleInputAllMemberKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       if (inputAllMember.trim()) {
         setAllMembers([...allMembers, inputAllMember.trim()]);
-        setInputAllmember('');
+        setInputAllmember("");
       }
     }
   };
 
-  const handleInputAllReferrerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',') {
+  const handleInputAllReferrerKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       if (inputAllReferrer.trim()) {
         setAllReferrers([...allReferrers, inputAllReferrer.trim()]);
-        setInputAllReferrer('');
+        setInputAllReferrer("");
       }
     }
   };
-  
+
   const handleAutoAllMembersCompleteClick = (userData: string) => {
     const trimmedData = userData.trim();
-    
-    const isTeam = persondata.some(person => person.team === trimmedData);
-    const isDepartment = persondata.some(person => person.department === trimmedData);
+
+    const isTeam = persondata.some((person) => person.team === trimmedData);
+    const isDepartment = persondata.some(
+      (person) => person.department === trimmedData
+    );
 
     if (isTeam) {
-      const teamMembers = persondata.filter(person => person.team === trimmedData);
+      const teamMembers = persondata.filter(
+        (person) => person.team === trimmedData
+      );
       const newRecipients = [...allMembers];
 
-      teamMembers.forEach(member => {
-        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
-        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+      teamMembers.forEach((member) => {
+        const fullName = `${member.team ? member.team : member.department} ${
+          member.username
+        }`;
+        if (
+          !newRecipients.includes(fullName) &&
+          fullName.trim() !== trimmedData
+        ) {
           newRecipients.push(fullName);
         }
       });
 
       setAllMembers(newRecipients);
     } else if (isDepartment) {
-      const departmentMembers = persondata.filter(person => person.department === trimmedData);
+      const departmentMembers = persondata.filter(
+        (person) => person.department === trimmedData
+      );
       const newRecipients = [...allMembers];
 
-      departmentMembers.forEach(member => {
-        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
-        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+      departmentMembers.forEach((member) => {
+        const fullName = `${member.team ? member.team : member.department} ${
+          member.username
+        }`;
+        if (
+          !newRecipients.includes(fullName) &&
+          fullName.trim() !== trimmedData
+        ) {
           newRecipients.push(fullName);
         }
       });
@@ -377,34 +423,50 @@ const Project = () => {
       }
     }
 
-    setInputAllmember('');
+    setInputAllmember("");
   };
 
   const handleAutoAllReferrersCompleteClick = (userData: string) => {
     const trimmedData = userData.trim();
-    
-    const isTeam = persondata.some(person => person.team === trimmedData);
-    const isDepartment = persondata.some(person => person.department === trimmedData);
+
+    const isTeam = persondata.some((person) => person.team === trimmedData);
+    const isDepartment = persondata.some(
+      (person) => person.department === trimmedData
+    );
 
     if (isTeam) {
-      const teamMembers = persondata.filter(person => person.team === trimmedData);
+      const teamMembers = persondata.filter(
+        (person) => person.team === trimmedData
+      );
       const newRecipients = [...allReferrers];
 
-      teamMembers.forEach(member => {
-        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
-        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+      teamMembers.forEach((member) => {
+        const fullName = `${member.team ? member.team : member.department} ${
+          member.username
+        }`;
+        if (
+          !newRecipients.includes(fullName) &&
+          fullName.trim() !== trimmedData
+        ) {
           newRecipients.push(fullName);
         }
       });
 
       setAllReferrers(newRecipients);
     } else if (isDepartment) {
-      const departmentMembers = persondata.filter(person => person.department === trimmedData);
+      const departmentMembers = persondata.filter(
+        (person) => person.department === trimmedData
+      );
       const newRecipients = [...allReferrers];
 
-      departmentMembers.forEach(member => {
-        const fullName = `${member.team ? member.team : member.department} ${member.username}`;
-        if (!newRecipients.includes(fullName) && fullName.trim() !== trimmedData) {
+      departmentMembers.forEach((member) => {
+        const fullName = `${member.team ? member.team : member.department} ${
+          member.username
+        }`;
+        if (
+          !newRecipients.includes(fullName) &&
+          fullName.trim() !== trimmedData
+        ) {
           newRecipients.push(fullName);
         }
       });
@@ -416,18 +478,18 @@ const Project = () => {
       }
     }
 
-    setInputAllReferrer('');
+    setInputAllReferrer("");
   };
 
   const handleRecipientRemove = (user: string) => {
-    setAllMembers(allMembers.filter(member => member !== user));
+    setAllMembers(allMembers.filter((member) => member !== user));
   };
 
   const handleReferrersRemove = (user: string) => {
-    setAllReferrers(allReferrers.filter(member => member !== user));
+    setAllReferrers(allReferrers.filter((member) => member !== user));
   };
 
-  const filteredNames = persondata.filter(person => {
+  const filteredNames = persondata.filter((person) => {
     const inputLowerCase = inputteamLeader.toLowerCase();
     if (person.team) {
       return (
@@ -442,44 +504,53 @@ const Project = () => {
     }
   });
 
-  const filteredNamesPerson = filteredNames.filter(person => person.username !== '')
+  const filteredNamesPerson = filteredNames.filter(
+    (person) => person.username !== ""
+  );
 
-  const filteredAllmembersNames = persondata.filter(person => {
+  const filteredAllmembersNames = persondata.filter((person) => {
     const inputLowerCase = inputAllMember.toLowerCase();
     if (person.team) {
       return (
         person.username.toLowerCase().includes(inputLowerCase) ||
         person.team.toLowerCase().includes(inputLowerCase)
-      )
+      );
     } else {
       return (
         person.username.toLowerCase().includes(inputLowerCase) ||
         person.department.toLowerCase().includes(inputLowerCase)
-      )
+      );
     }
   });
 
-  const filteredAllmembersNamesPerson = filteredAllmembersNames.filter(person => person.username !== '')
-  const filteredAllmembersNamesTeam = filteredAllmembersNames.filter(person => person.username === '')
+  const filteredAllmembersNamesPerson = filteredAllmembersNames.filter(
+    (person) => person.username !== ""
+  );
+  const filteredAllmembersNamesTeam = filteredAllmembersNames.filter(
+    (person) => person.username === ""
+  );
 
-  const filteredAllReferrersNames = persondata.filter(person => {
+  const filteredAllReferrersNames = persondata.filter((person) => {
     const inputLowerCase = inputAllReferrer.toLowerCase();
     if (person.team) {
       return (
         person.username.toLowerCase().includes(inputLowerCase) ||
         person.team.toLowerCase().includes(inputLowerCase)
-      )
+      );
     } else {
       return (
         person.username.toLowerCase().includes(inputLowerCase) ||
         person.department.toLowerCase().includes(inputLowerCase)
-      )
+      );
     }
   });
 
-  const filteredAllReferrersNamesPerson = filteredAllReferrersNames.filter(person => person.username !== '')
-  const filteredAllReferrersNamesTeam = filteredAllReferrersNames.filter(person => person.username === '')
-
+  const filteredAllReferrersNamesPerson = filteredAllReferrersNames.filter(
+    (person) => person.username !== ""
+  );
+  const filteredAllReferrersNamesTeam = filteredAllReferrersNames.filter(
+    (person) => person.username === ""
+  );
 
   const togglePjtstate = () => {
     setPjtStateIsOpen(!pjtstateIsOpen);
@@ -504,41 +575,47 @@ const Project = () => {
   useEffect(() => {
     if (clickedProjects) {
       setViewSubPjtModalOpen(true);
-      setpjtStatus(clickedProjects.status === 'notstarted' ? '진행 예정' : clickedProjects.status === 'inprogress' ? '진행 중' : '진행 완료');
-      setPjtTitle(clickedProjects.projectName || '');
-      setTeamLeader(clickedProjects.Leader || '');
+      setpjtStatus(
+        clickedProjects.status === "notstarted"
+          ? "진행 예정"
+          : clickedProjects.status === "inprogress"
+          ? "진행 중"
+          : "진행 완료"
+      );
+      setPjtTitle(clickedProjects.projectName || "");
+      setTeamLeader(clickedProjects.Leader || "");
       setAllMembers(clickedProjects.members || []);
       setStartDate(clickedProjects.startDate || null);
       setEndDate(clickedProjects.endDate || null);
-      setPjtMemo(clickedProjects.memo || '');
+      setPjtMemo(clickedProjects.memo || "");
     }
   }, [clickedProjects]);
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (dropdownOpen && !event.target.closest('.dropdown-menu')) {
+      if (dropdownOpen && !event.target.closest(".dropdown-menu")) {
         setDropdownOpen(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [dropdownOpen]);
 
   useEffect(() => {
     const handleSubClickOutside = (event: any) => {
-      if (subdropdownOpen && !event.target.closest('.dropdown-menu')) {
+      if (subdropdownOpen && !event.target.closest(".dropdown-menu")) {
         setSubDropdownOpen(false);
       }
     };
 
-    document.addEventListener('click', handleSubClickOutside);
+    document.addEventListener("click", handleSubClickOutside);
 
     return () => {
-      document.removeEventListener('click', handleSubClickOutside);
+      document.removeEventListener("click", handleSubClickOutside);
     };
   }, [subdropdownOpen]);
 
@@ -553,37 +630,43 @@ const Project = () => {
   };
 
   const colors = [
-    { backgroundColor: '#FFC5C5', borderColor: '#FFC5C5' },
-    { backgroundColor: '#FFDFBE', borderColor: '#FFDFBE' },
-    { backgroundColor: '#F9F9A1', borderColor: '#F9F9A1' },
-    { backgroundColor: '#CAFFB7', borderColor: '#CAFFB7' },
-    { backgroundColor: '#B2F5E0', borderColor: '#B2F5E0' },
-    { backgroundColor: '#B7E1FF', borderColor: '#B7E1FF' },
-    { backgroundColor: '#CFD7FF', borderColor: '#CFD7FF' },
-    { backgroundColor: '#E0D1FF', borderColor: '#E0D1FF' },
-    { backgroundColor: '#FFCDFE', borderColor: '#FFCDFE' },
-    { backgroundColor: '#DADADA', borderColor: '#DADADA' },
+    { backgroundColor: "#FFC5C5", borderColor: "#FFC5C5" },
+    { backgroundColor: "#FFDFBE", borderColor: "#FFDFBE" },
+    { backgroundColor: "#F9F9A1", borderColor: "#F9F9A1" },
+    { backgroundColor: "#CAFFB7", borderColor: "#CAFFB7" },
+    { backgroundColor: "#B2F5E0", borderColor: "#B2F5E0" },
+    { backgroundColor: "#B7E1FF", borderColor: "#B7E1FF" },
+    { backgroundColor: "#CFD7FF", borderColor: "#CFD7FF" },
+    { backgroundColor: "#E0D1FF", borderColor: "#E0D1FF" },
+    { backgroundColor: "#FFCDFE", borderColor: "#FFCDFE" },
+    { backgroundColor: "#DADADA", borderColor: "#DADADA" },
   ];
 
   const transformProjectData = (data: any) => {
     const result: any[] = [];
     let colorIndex = 0;
-  
+
     data?.forEach((event: any) => {
       const { projectName, textColor, subProjects } = event;
-  
+
       // 서브 프로젝트 배열을 순회
       subProjects?.forEach((subProject: any) => {
-        const { subprojectIndex, projectName: subProjectName, startDate: subStartDate, endDate: subEndDate, ...rest } = subProject;
-  
+        const {
+          subprojectIndex,
+          projectName: subProjectName,
+          startDate: subStartDate,
+          endDate: subEndDate,
+          ...rest
+        } = subProject;
+
         // 순차적으로 색상 선택
         const { backgroundColor, borderColor } = colors[colorIndex];
         colorIndex = (colorIndex + 1) % colors.length; // 다음 색상으로 인덱스 업데이트
-  
+
         // 시작일 이벤트 추가
         result.push({
           id: `${subprojectIndex}-start`,
-          title: `${projectName} | ${subprojectIndex?.split('-')[1]} 시작일`,
+          title: `${projectName} | ${subprojectIndex?.split("-")[1]} 시작일`,
           origintitle: subProjectName,
           start: new Date(subStartDate).toISOString(),
           end: new Date(subStartDate).toISOString(),
@@ -592,13 +675,13 @@ const Project = () => {
           backgroundColor: backgroundColor,
           borderColor: borderColor,
           textColor: textColor || "#000",
-          ...rest
+          ...rest,
         });
-  
+
         // 종료일 이벤트 추가
         result.push({
           id: `${subprojectIndex}-end`,
-          title: `${projectName} | ${subprojectIndex?.split('-')[1]} 종료일`,
+          title: `${projectName} | ${subprojectIndex?.split("-")[1]} 종료일`,
           origintitle: subProjectName,
           start: new Date(subEndDate).toISOString(),
           end: new Date(subEndDate).toISOString(),
@@ -607,11 +690,11 @@ const Project = () => {
           backgroundColor: backgroundColor,
           borderColor: borderColor,
           textColor: textColor || "#000",
-          ...rest
+          ...rest,
         });
       });
     });
-  
+
     return result;
   };
 
@@ -620,8 +703,9 @@ const Project = () => {
   useEffect(() => {
     const fetchGoogleHolidays = async () => {
       const apiKey = "AIzaSyBB-X6Uc-1EnRlFTXs36cKK6gAQ0VAPpC0";
-      const calendarId = 'ko.south_korea.official%23holiday%40group.v.calendar.google.com';
-      const timeMin = new Date('2020-01-01').toISOString();
+      const calendarId =
+        "ko.south_korea.official%23holiday%40group.v.calendar.google.com";
+      const timeMin = new Date("2020-01-01").toISOString();
       const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${timeMin}&singleEvents=true&orderBy=startTime`;
 
       try {
@@ -631,7 +715,7 @@ const Project = () => {
           title: item.summary,
           start: item.start.date,
           allDay: true,
-          color: 'red',
+          color: "red",
         }));
         setHolidays(holidays);
       } catch (error) {
@@ -643,18 +727,24 @@ const Project = () => {
   }, []);
 
   const dayCellContent = (arg: any) => {
-    const date = new Date(arg.date.getFullYear(), arg.date.getMonth(), arg.date.getDate());
-    const formattedDateStr = date.toISOString().split('T')[0];
-    const holiday = holidays.find(holiday => {
+    const date = new Date(
+      arg.date.getFullYear(),
+      arg.date.getMonth(),
+      arg.date.getDate()
+    );
+    const formattedDateStr = date.toISOString().split("T")[0];
+    const holiday = holidays.find((holiday) => {
       const holidayDate = new Date(holiday.start);
       holidayDate.setHours(0, 0, 0, 0);
-      const holidayDateStr = holidayDate.toISOString().split('T')[0];
+      const holidayDateStr = holidayDate.toISOString().split("T")[0];
       return holidayDateStr === formattedDateStr;
     });
 
     return (
       <div className="day-cell-content">
-        <div className={`date-text ${holiday ? 'holiday-date' : ''}`}>{date.getDate()}</div>
+        <div className={`date-text ${holiday ? "holiday-date" : ""}`}>
+          {date.getDate()}
+        </div>
         {holiday && <div className="holiday-title">{holiday.title}</div>}
       </div>
     );
@@ -664,40 +754,55 @@ const Project = () => {
     enabled: false,
     onSuccess: (data) => {
       // Process and sort the main projects
-      const mainprojects = data?.mainprojects?.map((mainproject: ProjectData) => {
-        ProjectVisibilityInitial(mainproject?.mainprojectIndex);
-        const subProjects = data?.subprojects?.filter(
-          (subproject: ProjectData) => subproject.mainprojectIndex === mainproject.mainprojectIndex
-        );
-        return { ...mainproject, subProjects };
-      });
-  
-      const newPinnedProjects = mainprojects?.reduce((acc: { [key: number]: number }, mainproject: ProjectData) => {
-        acc[mainproject.mainprojectIndex] = mainproject.pinned;
-        return acc;
-      }, {});
-  
-      setPinnedProjects(newPinnedProjects);
-  
-      const sortedMainProjects = mainprojects?.sort((a: ProjectData, b: ProjectData) => {
-        if (a.pinned && !b.pinned) {
-          return -1;
-        } else if (!a.pinned && b.pinned) {
-          return 1;
-        } else {
-          return b.mainprojectIndex - a.mainprojectIndex;
+      const mainprojects = data?.mainprojects?.map(
+        (mainproject: ProjectData) => {
+          ProjectVisibilityInitial(mainproject?.mainprojectIndex);
+          const subProjects = data?.subprojects?.filter(
+            (subproject: ProjectData) =>
+              subproject.mainprojectIndex === mainproject.mainprojectIndex
+          );
+          return { ...mainproject, subProjects };
         }
-      });
-  
+      );
+
+      const newPinnedProjects = mainprojects?.reduce(
+        (acc: { [key: number]: number }, mainproject: ProjectData) => {
+          acc[mainproject.mainprojectIndex] = mainproject.pinned;
+          return acc;
+        },
+        {}
+      );
+
+      setPinnedProjects(newPinnedProjects);
+
+      const sortedMainProjects = mainprojects?.sort(
+        (a: ProjectData, b: ProjectData) => {
+          if (a.pinned && !b.pinned) {
+            return -1;
+          } else if (!a.pinned && b.pinned) {
+            return 1;
+          } else {
+            return b.mainprojectIndex - a.mainprojectIndex;
+          }
+        }
+      );
+
       const userUsername = user?.username.trim();
-  
-      const filteredSortedProjects = sortedMainProjects?.filter((mainproject: ProjectData) => {
-        const isLeader = userUsername === mainproject?.Leader?.split(' ').pop();
-        const isMember = mainproject?.members?.some(member => member.includes(userUsername));
-        const isReferrer = mainproject?.referrer?.some(referrer => referrer.includes(userUsername));
-        return isLeader || isMember || isReferrer;
-      });
-  
+
+      const filteredSortedProjects = sortedMainProjects?.filter(
+        (mainproject: ProjectData) => {
+          const isLeader =
+            userUsername === mainproject?.Leader?.split(" ").pop();
+          const isMember = mainproject?.members?.some((member) =>
+            member.includes(userUsername)
+          );
+          const isReferrer = mainproject?.referrer?.some((referrer) =>
+            referrer.includes(userUsername)
+          );
+          return isLeader || isMember || isReferrer;
+        }
+      );
+
       setMyProjects(filteredSortedProjects);
       setProjects(sortedMainProjects);
       setSubProjects(mainprojects);
@@ -705,21 +810,20 @@ const Project = () => {
     },
     onError: (error) => {
       console.log(error);
-    }
+    },
   });
-  
-  
+
   // 메인 프로젝트 추가
   const handleAddMainProject = async () => {
     const currentDate = new Date();
-    
+
     let status;
     if (startDate === null) {
-      status = 'notstarted';
+      status = "notstarted";
     } else if (startDate > currentDate) {
-      status = 'notstarted';
+      status = "notstarted";
     } else {
-      status = 'inprogress';
+      status = "inprogress";
     }
 
     const pjtDetails = {
@@ -731,17 +835,17 @@ const Project = () => {
       startDate: startDate,
       endDate: endDate,
       memo: pjtMemo,
-      status : status,
+      status: status,
     };
 
     try {
       const response = await addMainProject(pjtDetails);
-      console.log('메인 프로젝트 추가 성공', response.data);
-      setStatusMessage('프로젝트 일정을 추가하였습니다.')
+      console.log("메인 프로젝트 추가 성공", response.data);
+      setStatusMessage("프로젝트 일정을 추가하였습니다.");
       setIsStatusModalOpen(true);
     } catch (error: any) {
-      console.log('메인 프로젝트 추가 실패', error);
-      setStatusMessage('프로젝트 일정 추가에 실패하였습니다.')
+      console.log("메인 프로젝트 추가 실패", error);
+      setStatusMessage("프로젝트 일정 추가에 실패하였습니다.");
       setIsStatusModalOpen(true);
     }
     refetchProject();
@@ -751,14 +855,14 @@ const Project = () => {
   // 서브 프로젝트 추가
   const handleAddSubProject = async (mainprojectindex: any) => {
     const currentDate = new Date();
-    
+
     let status;
     if (startDate === null) {
-      status = 'notstarted';
+      status = "notstarted";
     } else if (startDate > currentDate) {
-      status = 'notstarted';
+      status = "notstarted";
     } else {
-      status = 'inprogress';
+      status = "inprogress";
     }
 
     const pjtDetails = {
@@ -770,20 +874,20 @@ const Project = () => {
       startDate: startDate,
       endDate: endDate,
       memo: pjtMemo,
-      status : status,
+      status: status,
     };
 
     try {
       const response = await addSubProject(mainprojectindex, pjtDetails);
-      console.log('서브 프로젝트 추가 성공', response.data);
-      setStatusMessage('프로젝트 일정을 추가하였습니다.')
+      console.log("서브 프로젝트 추가 성공", response.data);
+      setStatusMessage("프로젝트 일정을 추가하였습니다.");
       setIsStatusModalOpen(true);
     } catch (error: any) {
-      console.log('서브 프로젝트 추가 실패', error);
+      console.log("서브 프로젝트 추가 실패", error);
       if (error.response) {
         const { status } = error.response;
         const { message } = error.response.data;
-        switch (status ) {
+        switch (status) {
           case 418:
             setStatusMessage(message);
             setIsStatusModalOpen(true);
@@ -805,16 +909,16 @@ const Project = () => {
   const handleEditProject = (mainprojectIndex: any, force = false) => {
     let projectStatus;
 
-    if (pjtStatus === '진행 예정') {
-      projectStatus = 'notstarted';
-    } else if (pjtStatus === '진행 중') {
-      projectStatus = 'inprogress';
-    } else if (pjtStatus === '진행 완료') {
-      projectStatus = 'done';
+    if (pjtStatus === "진행 예정") {
+      projectStatus = "notstarted";
+    } else if (pjtStatus === "진행 중") {
+      projectStatus = "inprogress";
+    } else if (pjtStatus === "진행 완료") {
+      projectStatus = "done";
     } else {
-      projectStatus = 'notstarted';
+      projectStatus = "notstarted";
     }
-    
+
     const pjtData = {
       userID: user.userID,
       projectName: pjtTitle,
@@ -826,41 +930,44 @@ const Project = () => {
       memo: pjtMemo,
       status: projectStatus,
       force: force,
-    }
+    };
 
     EditMainProject(mainprojectIndex, pjtData)
-    .then(() => {
-      console.log('메인 프로젝트 수정 성공');
-      refetchProject();
-      resetForm();
-    })
-    .catch((error) => {
-      console.log('메인 프로젝트 수정 실패', error);
-      if (error.response) {
-        const { status } = error.response;
-        switch (status ) {
-          case 420:
-            setEditForceMessage(true);
-            break;
+      .then(() => {
+        console.log("메인 프로젝트 수정 성공");
+        refetchProject();
+        resetForm();
+      })
+      .catch((error) => {
+        console.log("메인 프로젝트 수정 실패", error);
+        if (error.response) {
+          const { status } = error.response;
+          switch (status) {
+            case 420:
+              setEditForceMessage(true);
+              break;
+          }
         }
-      }
-    })
+      });
   };
 
   // 서브 프로젝트 수정
-  const handleEditSubProject = (mainprojectIndex: any, subprojectIndex: any) => {
+  const handleEditSubProject = (
+    mainprojectIndex: any,
+    subprojectIndex: any
+  ) => {
     let projectStatus;
 
-    if (pjtStatus === '진행 예정') {
-      projectStatus = 'notstarted';
-    } else if (pjtStatus === '진행 중') {
-      projectStatus = 'inprogress';
-    } else if (pjtStatus === '진행 완료') {
-      projectStatus = 'done';
+    if (pjtStatus === "진행 예정") {
+      projectStatus = "notstarted";
+    } else if (pjtStatus === "진행 중") {
+      projectStatus = "inprogress";
+    } else if (pjtStatus === "진행 완료") {
+      projectStatus = "done";
     } else {
-      projectStatus = 'notstarted';
+      projectStatus = "notstarted";
     }
-    
+
     const pjtData = {
       userID: user.userID,
       projectName: pjtTitle,
@@ -870,96 +977,102 @@ const Project = () => {
       endDate: endDate,
       memo: pjtMemo,
       status: projectStatus,
-    }
+    };
 
     EditSubProject(mainprojectIndex, subprojectIndex, pjtData)
-    .then(() => {
-      console.log('서브 프로젝트 수정 성공');
-      refetchProject();
-      resetForm();
-      setClickedProjects(null);
-    })
-    .catch((error) => {
-      console.log('서브 프로젝트 수정 실패', error);
-      setClickedProjects(null);
-      if (error.response) {
-        const { status } = error.response;
-        const { message } = error.response.data;
-        switch (status ) {
-          case 418:
-            setStatusMessage(message);
-            setIsStatusModalOpen(true);
-            break;
+      .then(() => {
+        console.log("서브 프로젝트 수정 성공");
+        refetchProject();
+        resetForm();
+        setClickedProjects(null);
+      })
+      .catch((error) => {
+        console.log("서브 프로젝트 수정 실패", error);
+        setClickedProjects(null);
+        if (error.response) {
+          const { status } = error.response;
+          const { message } = error.response.data;
+          switch (status) {
+            case 418:
+              setStatusMessage(message);
+              setIsStatusModalOpen(true);
+              break;
 
-          case 419:
-            setStatusMessage(message);
-            setIsStatusModalOpen(true);
-            break;
+            case 419:
+              setStatusMessage(message);
+              setIsStatusModalOpen(true);
+              break;
+          }
         }
-      }
-    })
+      });
   };
 
   // 메인 프로젝트 삭제
   const hanelDeleteMainPjt = (mainprojectIndex: any) => {
     DeleteMainProject(mainprojectIndex)
-    .then(response => {
-      console.log('메인 프로젝트 삭제 성공', response);
-      refetchProject();
-    })
-    .catch(error => {
-      console.log('메인 프로젝트 삭제 실패', error);
-    })
+      .then((response) => {
+        console.log("메인 프로젝트 삭제 성공", response);
+        refetchProject();
+      })
+      .catch((error) => {
+        console.log("메인 프로젝트 삭제 실패", error);
+      });
   };
 
   // 서브 프로젝트 삭제
   const handleDeleteSubPjt = (mainprojectIndex: any, subprojectIndex: any) => {
     DeleteSubProject(mainprojectIndex, subprojectIndex)
-    .then(response => {
-      console.log('서브 프로젝트 삭제 성공', response);
-      refetchProject();
-    })
-    .catch(error => {
-      console.log('서브 프로젝트 삭제 실패', error);
-    })
+      .then((response) => {
+        console.log("서브 프로젝트 삭제 성공", response);
+        refetchProject();
+      })
+      .catch((error) => {
+        console.log("서브 프로젝트 삭제 실패", error);
+      });
   };
 
   // 체크박스로 선택한 프로젝트 삭제
   const handleDeleteCheckboxPjt = (selectedProjects: any) => {
-    Object.keys(selectedProjects).forEach(mainprojectIndex => {
+    Object.keys(selectedProjects).forEach((mainprojectIndex) => {
       if (selectedProjects[mainprojectIndex]) {
         DeleteMainProject(mainprojectIndex)
-        .then(response => {
-          console.log(`메인 프로젝트 ${mainprojectIndex} 삭제 성공`, response);
-          setDeletePjtModalOpen(false);
-          setSelectedProjects({});
-          refetchProject();
-        })
-        .catch(error => {
-          console.log(`메인 프로젝트 ${mainprojectIndex} 삭제 실패`, error);
-        });
+          .then((response) => {
+            console.log(
+              `메인 프로젝트 ${mainprojectIndex} 삭제 성공`,
+              response
+            );
+            setDeletePjtModalOpen(false);
+            setSelectedProjects({});
+            refetchProject();
+          })
+          .catch((error) => {
+            console.log(`메인 프로젝트 ${mainprojectIndex} 삭제 실패`, error);
+          });
       }
     });
   };
 
   // 체크박스로 선택한 프로젝트 고정
-  const handlePinnedCheckboxPjt = (mainprojectIndex: any, mainprojectstatus: any) => {
+  const handlePinnedCheckboxPjt = (
+    mainprojectIndex: any,
+    mainprojectstatus: any
+  ) => {
     const pjtData = {
       pinned: !pinnedProjects[Number(mainprojectIndex)],
       status: mainprojectstatus,
-    }
+    };
 
     EditMainProject(mainprojectIndex, pjtData)
-    .then(() => {
-      console.log('메인 프로젝트 수정 성공');
-      refetchProject();
-      resetForm();
-      setSelectedProjects({});
-    })
-    .catch((error) => {
-      console.log('메인 프로젝트 수정 실패', error);
-    })
-  }
+      .then(() => {
+        console.log("메인 프로젝트 수정 성공");
+        refetchProject();
+        resetForm();
+        setSelectedProjects({});
+      })
+      .catch((error) => {
+        console.log("메인 프로젝트 수정 실패", error);
+      });
+  };
 
   useEffect(() => {
     refetchProject();
@@ -969,15 +1082,18 @@ const Project = () => {
   const members = rightclickedProjects?.members ?? [];
   const referrer = rightclickedProjects?.referrer ?? [];
 
-  const isMemberIncluded = members.some(member => member.includes(userUsername));
-  const isReferrerIncluded = referrer.some(ref => ref.includes(userUsername));
+  const isMemberIncluded = members.some((member) =>
+    member.includes(userUsername)
+  );
+  const isReferrerIncluded = referrer.some((ref) => ref.includes(userUsername));
 
-  const canEdit = (
-    user.username === rightclickedProjects?.Leader?.split(' ').pop() || 
+  const canEdit =
+    user.username === rightclickedProjects?.Leader?.split(" ").pop() ||
     user.userID === rightclickedProjects?.userId ||
     isMemberIncluded ||
-    isReferrerIncluded
-  );
+    isReferrerIncluded;
+
+  console.log(subprojectVisible);
 
   return (
     <div className="content">
@@ -999,13 +1115,22 @@ const Project = () => {
           </div>
           {activeTab === 0 && (
             <div className="project_container_header_right">
-              <img className="mail_delete_img" src={mail_delete} alt="mail_delete" onClick={() => setDeletePjtModalOpen(true)}/>
-              <button className="primary_button" onClick={() => setAddPjtModalOPen(true)}>새 업무 +</button>
+              <img
+                className="mail_delete_img"
+                src={mail_delete}
+                alt="mail_delete"
+                onClick={() => setDeletePjtModalOpen(true)}
+              />
+              <button
+                className="primary_button"
+                onClick={() => setAddPjtModalOPen(true)}
+              >
+                새 업무 +
+              </button>
             </div>
           )}
         </div>
-        
-        
+
         {activeTab === 0 && (
           <div className="project_container">
             {/*<div className="project_container_header">
@@ -1026,208 +1151,546 @@ const Project = () => {
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'notstarted') : []).map((project, index) => (
+                  {(Array.isArray(myprojects)
+                    ? myprojects.filter(
+                        (project) => project.status === "notstarted"
+                      )
+                    : []
+                  ).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
-                        style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
+                      <div
+                        className={`project_box ${
+                          subprojectVisible[project.mainprojectIndex]
+                            ? "visible"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          toggleSubProjects(project.mainprojectIndex);
+                          setRightClickedProjects(project);
+                        }}
+                        onContextMenu={(e) => handleRightClick(project, e)}
+                        style={{
+                          background:
+                            project?.status === "inprogress" &&
+                            new Date().toISOString().split("T")[0] >
+                              new Date(project.endDate).getFullYear() +
+                                "-" +
+                                String(
+                                  new Date(project.endDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "-" +
+                                String(
+                                  new Date(project.endDate).getDate()
+                                ).padStart(2, "0")
+                              ? "#d0d0d0"
+                              : "",
+                        }}
                       >
                         <div className="project_box_header">
                           <div className="box_header_title">
                             <div className="box_header_title_left">
                               {project?.pinned === false ? (
-                                <img className="box_header_title_important" src={pinned_false} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img
+                                  className="box_header_title_important"
+                                  src={pinned_false}
+                                  alt="mail_important"
+                                  onClick={() =>
+                                    handlePinnedCheckboxPjt(
+                                      project.mainprojectIndex,
+                                      project.status
+                                    )
+                                  }
+                                />
                               ) : (
-                                <img className="box_header_title_important" src={pinned_true} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img
+                                  className="box_header_title_important"
+                                  src={pinned_true}
+                                  alt="mail_important_active"
+                                  onClick={() =>
+                                    handlePinnedCheckboxPjt(
+                                      project.mainprojectIndex,
+                                      project.status
+                                    )
+                                  }
+                                />
                               )}
                               <span>{project.projectName}</span>
                             </div>
                             <div className="box_header_title_right">
                               <label className="custom-checkbox">
-                                <input 
+                                <input
                                   type="checkbox"
-                                  checked={allSelected ? allSelected : selectedProjects[project.mainprojectIndex] || false}
-                                  onChange={() => toggleProjectSelection(project.mainprojectIndex)}   
+                                  checked={
+                                    allSelected
+                                      ? allSelected
+                                      : selectedProjects[
+                                          project.mainprojectIndex
+                                        ] || false
+                                  }
+                                  onChange={() =>
+                                    toggleProjectSelection(
+                                      project.mainprojectIndex
+                                    )
+                                  }
                                 />
                                 <span></span>
                               </label>
                               {subprojectVisible[project.mainprojectIndex] ? (
-                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate"/>
+                                <img
+                                  src={Down_Arrow}
+                                  alt="Down_Arrow"
+                                  className="Arrow_rotate"
+                                />
                               ) : (
-                                <img src={Down_Arrow} alt="Down_Arrow"/>
+                                <img src={Down_Arrow} alt="Down_Arrow" />
                               )}
                             </div>
                           </div>
                         </div>
                         <div className="project_box_content">
                           {dropdownOpen && (
-                            <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(canEdit
-                              ) && (
-                                <div className="dropdown_pin"
+                            <div
+                              className="dropdown-menu"
+                              style={{
+                                position: "absolute",
+                                top: dropdownPosition.y - 70,
+                                left: dropdownPosition.x - 210,
+                              }}
+                            >
+                              {canEdit && (
+                                <div
+                                  className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setEditPjtModalOpen(true);
                                     setpjtStatus(
-                                      rightclickedProjects?.status === 'notstarted' ? '진행 예정' :
-                                      rightclickedProjects?.status === 'inprogress' ? '진행 중' :
-                                      rightclickedProjects?.status === 'completed' ? '진행 완료' :
-                                      '진행 예정'
+                                      rightclickedProjects?.status ===
+                                        "notstarted"
+                                        ? "진행 예정"
+                                        : rightclickedProjects?.status ===
+                                          "inprogress"
+                                        ? "진행 중"
+                                        : rightclickedProjects?.status ===
+                                          "completed"
+                                        ? "진행 완료"
+                                        : "진행 예정"
                                     );
-                                    setPjtTitle(rightclickedProjects?.projectName || ''); 
-                                    setTeamLeader(rightclickedProjects?.Leader || '');
-                                    setAllMembers(rightclickedProjects?.members || []);
-                                    setAllReferrers(rightclickedProjects?.referrer || []);
-                                    setStartDate(rightclickedProjects?.startDate || null);
-                                    setEndDate(rightclickedProjects?.endDate || null);
+                                    setPjtTitle(
+                                      rightclickedProjects?.projectName || ""
+                                    );
+                                    setTeamLeader(
+                                      rightclickedProjects?.Leader || ""
+                                    );
+                                    setAllMembers(
+                                      rightclickedProjects?.members || []
+                                    );
+                                    setAllReferrers(
+                                      rightclickedProjects?.referrer || []
+                                    );
+                                    setStartDate(
+                                      rightclickedProjects?.startDate || null
+                                    );
+                                    setEndDate(
+                                      rightclickedProjects?.endDate || null
+                                    );
                                   }}
                                 >
                                   편집
                                 </div>
                               )}
-                              <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>
+                              <div
+                                className="dropdown_pin"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setAddSubPjtModalOPen(true);
+                                }}
+                              >
                                 추가
                               </div>
                             </div>
                           )}
                           <div>
                             <div>{project.Leader}</div>
-                          </div> 
+                          </div>
                           <div className="project_box_content_right">
-                            <div>{new Date(project.startDate).getFullYear() + '.' + String(new Date(project.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(project.startDate).getDate()).padStart(2, '0')}</div>
+                            <div>
+                              {new Date(project.startDate).getFullYear() +
+                                "." +
+                                String(
+                                  new Date(project.startDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "." +
+                                String(
+                                  new Date(project.startDate).getDate()
+                                ).padStart(2, "0")}
+                            </div>
                             <div>-</div>
-                            <div>{new Date(project.endDate).getFullYear() + '.' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(project.endDate).getDate()).padStart(2, '0')}</div>
+                            <div>
+                              {new Date(project.endDate).getFullYear() +
+                                "." +
+                                String(
+                                  new Date(project.endDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "." +
+                                String(
+                                  new Date(project.endDate).getDate()
+                                ).padStart(2, "0")}
+                            </div>
                           </div>
                         </div>
-                        {subprojectVisible[project.mainprojectIndex] && project.subProjects.length !== 0 && (
-                          <div className={`subprojects_container ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); }}>
-                            {project.subProjects?.slice().reverse().map((subProject: any, subindex: any) => (
-                              <div key={subProject.subprojectIndex} className="subproject_box" onClick={() => { handleOpenSubProject(subProject); }}>
-                                <div className="subproject_box_left">
-                                  <div className={subProject.status === 'notstarted' ? 'subproject_box_left_notstarted_tag' : subProject.status === 'inprogress' ? 'subproject_box_left_inprogress_tag' : 'subproject_box_left_done_tag'}></div>
-                                  <div>
-                                    {subProject.projectName}
-                                  </div>
-                                </div>
+                        {subprojectVisible[project.mainprojectIndex] &&
+                          project.subProjects.length !== 0 && (
+                            <div
+                              className={`subprojects_container ${
+                                subprojectVisible[project.mainprojectIndex]
+                                  ? "visible"
+                                  : ""
+                              }`}
+                              onContextMenu={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                            >
+                              {project.subProjects
+                                ?.slice()
+                                .reverse()
+                                .map((subProject: any, subindex: any) => (
+                                  <div
+                                    key={subProject.subprojectIndex}
+                                    className="subproject_box"
+                                    onClick={() => {
+                                      handleOpenSubProject(subProject);
+                                    }}
+                                  >
+                                    <div className="subproject_box_left">
+                                      <div
+                                        className={
+                                          subProject.status === "notstarted"
+                                            ? "subproject_box_left_notstarted_tag"
+                                            : subProject.status === "inprogress"
+                                            ? "subproject_box_left_inprogress_tag"
+                                            : "subproject_box_left_done_tag"
+                                        }
+                                      ></div>
+                                      <div>{subProject.projectName}</div>
+                                    </div>
 
-                                <div className="subproject_box_right">
-                                  <div className={subProject.status === 'notstarted' ? 'text_medium text_brown' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_gray'}>
-                                    {subProject.status === 'notstarted' ? '진행 예정' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}
+                                    <div className="subproject_box_right">
+                                      <div
+                                        className={
+                                          subProject.status === "notstarted"
+                                            ? "text_medium text_brown"
+                                            : subProject.status === "inprogress"
+                                            ? "text_medium text_blue"
+                                            : "text_medium text_gray"
+                                        }
+                                      >
+                                        {subProject.status === "notstarted"
+                                          ? "진행 예정"
+                                          : subProject.status === "inprogress"
+                                          ? "진행 중"
+                                          : "진행 완료"}
+                                      </div>
+                                      <div className="text_regular text_gray">
+                                        {subProject?.startDate
+                                          ? new Date(
+                                              subProject.startDate
+                                            ).getFullYear() +
+                                            "." +
+                                            String(
+                                              new Date(
+                                                subProject.startDate
+                                              ).getMonth() + 1
+                                            ).padStart(2, "0") +
+                                            "." +
+                                            String(
+                                              new Date(
+                                                subProject.startDate
+                                              ).getDate()
+                                            ).padStart(2, "0")
+                                          : null}
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="text_regular text_gray">
-                                    {subProject?.startDate ? new Date(subProject.startDate).getFullYear() + '.' + String(new Date(subProject.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(subProject.startDate).getDate()).padStart(2, '0') : null}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                                ))}
+                            </div>
+                          )}
                       </div>
                     </React.Fragment>
                   ))}
                 </div>
               </div>
-              
+
               <div className="project_content_section">
                 <div className="project_content_inprogress_section">
                   <span>진행 중</span>
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'inprogress') : []).map((project, index) => (
+                  {(Array.isArray(myprojects)
+                    ? myprojects.filter(
+                        (project) => project.status === "inprogress"
+                      )
+                    : []
+                  ).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
-                        style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
+                      <div
+                        className={`project_box ${
+                          subprojectVisible[project.mainprojectIndex]
+                            ? "visible"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          toggleSubProjects(project.mainprojectIndex);
+                          setRightClickedProjects(project);
+                        }}
+                        onContextMenu={(e) => handleRightClick(project, e)}
+                        style={{
+                          background:
+                            project?.status === "inprogress" &&
+                            new Date().toISOString().split("T")[0] >
+                              new Date(project.endDate).getFullYear() +
+                                "-" +
+                                String(
+                                  new Date(project.endDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "-" +
+                                String(
+                                  new Date(project.endDate).getDate()
+                                ).padStart(2, "0")
+                              ? "#d0d0d0"
+                              : "",
+                        }}
                       >
                         <div className="project_box_header">
                           <div className="box_header_title">
                             <div className="box_header_title_left">
                               {project?.pinned === false ? (
-                                <img className="box_header_title_important" src={pinned_false} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img
+                                  className="box_header_title_important"
+                                  src={pinned_false}
+                                  alt="mail_important"
+                                  onClick={() =>
+                                    handlePinnedCheckboxPjt(
+                                      project.mainprojectIndex,
+                                      project.status
+                                    )
+                                  }
+                                />
                               ) : (
-                                <img className="box_header_title_important" src={pinned_true} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img
+                                  className="box_header_title_important"
+                                  src={pinned_true}
+                                  alt="mail_important_active"
+                                  onClick={() =>
+                                    handlePinnedCheckboxPjt(
+                                      project.mainprojectIndex,
+                                      project.status
+                                    )
+                                  }
+                                />
                               )}
                               <span>{project.projectName}</span>
                             </div>
                             <div className="box_header_title_right">
                               <label className="custom-checkbox">
-                                <input 
+                                <input
                                   type="checkbox"
-                                  checked={allSelected ? allSelected : selectedProjects[project.mainprojectIndex] || false}
-                                  onChange={() => toggleProjectSelection(project.mainprojectIndex)}   
+                                  checked={
+                                    allSelected
+                                      ? allSelected
+                                      : selectedProjects[
+                                          project.mainprojectIndex
+                                        ] || false
+                                  }
+                                  onChange={() =>
+                                    toggleProjectSelection(
+                                      project.mainprojectIndex
+                                    )
+                                  }
                                 />
                                 <span></span>
                               </label>
                               {subprojectVisible[project.mainprojectIndex] ? (
-                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate"/>
+                                <img
+                                  src={Down_Arrow}
+                                  alt="Down_Arrow"
+                                  className="Arrow_rotate"
+                                />
                               ) : (
-                                <img src={Down_Arrow} alt="Down_Arrow"/>
+                                <img src={Down_Arrow} alt="Down_Arrow" />
                               )}
                             </div>
                           </div>
                         </div>
                         <div className="project_box_content">
                           {dropdownOpen && (
-                            <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(canEdit
-                              ) && (
-                                <div className="dropdown_pin"
+                            <div
+                              className="dropdown-menu"
+                              style={{
+                                position: "absolute",
+                                top: dropdownPosition.y - 70,
+                                left: dropdownPosition.x - 210,
+                              }}
+                            >
+                              {canEdit && (
+                                <div
+                                  className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setEditPjtModalOpen(true);
                                     setpjtStatus(
-                                      rightclickedProjects?.status === 'notstarted' ? '진행 예정' :
-                                      rightclickedProjects?.status === 'inprogress' ? '진행 중' :
-                                      rightclickedProjects?.status === 'completed' ? '진행 완료' :
-                                      '진행 예정'
+                                      rightclickedProjects?.status ===
+                                        "notstarted"
+                                        ? "진행 예정"
+                                        : rightclickedProjects?.status ===
+                                          "inprogress"
+                                        ? "진행 중"
+                                        : rightclickedProjects?.status ===
+                                          "completed"
+                                        ? "진행 완료"
+                                        : "진행 예정"
                                     );
-                                    setPjtTitle(rightclickedProjects?.projectName || ''); 
-                                    setTeamLeader(rightclickedProjects?.Leader || '');
-                                    setAllMembers(rightclickedProjects?.members || []);
-                                    setAllReferrers(rightclickedProjects?.referrer || []);
-                                    setStartDate(rightclickedProjects?.startDate || null);
-                                    setEndDate(rightclickedProjects?.endDate || null);
+                                    setPjtTitle(
+                                      rightclickedProjects?.projectName || ""
+                                    );
+                                    setTeamLeader(
+                                      rightclickedProjects?.Leader || ""
+                                    );
+                                    setAllMembers(
+                                      rightclickedProjects?.members || []
+                                    );
+                                    setAllReferrers(
+                                      rightclickedProjects?.referrer || []
+                                    );
+                                    setStartDate(
+                                      rightclickedProjects?.startDate || null
+                                    );
+                                    setEndDate(
+                                      rightclickedProjects?.endDate || null
+                                    );
                                   }}
                                 >
                                   편집
                                 </div>
                               )}
-                              <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>
+                              <div
+                                className="dropdown_pin"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setAddSubPjtModalOPen(true);
+                                }}
+                              >
                                 추가
                               </div>
                             </div>
                           )}
                           <div>
                             <div>{project.Leader}</div>
-                          </div> 
+                          </div>
                           <div className="project_box_content_right">
-                            <div>{new Date(project.startDate).getFullYear() + '.' + String(new Date(project.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(project.startDate).getDate()).padStart(2, '0')}</div>
+                            <div>
+                              {new Date(project.startDate).getFullYear() +
+                                "." +
+                                String(
+                                  new Date(project.startDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "." +
+                                String(
+                                  new Date(project.startDate).getDate()
+                                ).padStart(2, "0")}
+                            </div>
                             <div>-</div>
-                            <div>{new Date(project.endDate).getFullYear() + '.' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(project.endDate).getDate()).padStart(2, '0')}</div>
+                            <div>
+                              {new Date(project.endDate).getFullYear() +
+                                "." +
+                                String(
+                                  new Date(project.endDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "." +
+                                String(
+                                  new Date(project.endDate).getDate()
+                                ).padStart(2, "0")}
+                            </div>
                           </div>
                         </div>
-                        {subprojectVisible[project.mainprojectIndex] && project.subProjects.length !== 0 && (
-                          <div className={`subprojects_container subproject_inprogress ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); }}>
-                            {project.subProjects?.slice().reverse().map((subProject: any, subindex: any) => (
-                              <div key={subProject.subprojectIndex} className="subproject_box" onClick={() => { handleOpenSubProject(subProject); }}>
-                                <div className="subproject_box_left">
-                                  <div className={subProject.status === 'notstarted' ? 'subproject_box_left_notstarted_tag' : subProject.status === 'inprogress' ? 'subproject_box_left_inprogress_tag' : 'subproject_box_left_done_tag'}></div>
-                                  <div>
-                                    {subProject.projectName}
-                                  </div>
-                                </div>
+                        {subprojectVisible[project.mainprojectIndex] &&
+                          project.subProjects.length !== 0 && (
+                            <div
+                              className={`subprojects_container subproject_inprogress ${
+                                subprojectVisible[project.mainprojectIndex]
+                                  ? "visible"
+                                  : ""
+                              }`}
+                              onContextMenu={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                            >
+                              {project.subProjects
+                                ?.slice()
+                                .reverse()
+                                .map((subProject: any, subindex: any) => (
+                                  <div
+                                    key={subProject.subprojectIndex}
+                                    className="subproject_box"
+                                    onClick={() => {
+                                      handleOpenSubProject(subProject);
+                                    }}
+                                  >
+                                    <div className="subproject_box_left">
+                                      <div
+                                        className={
+                                          subProject.status === "notstarted"
+                                            ? "subproject_box_left_notstarted_tag"
+                                            : subProject.status === "inprogress"
+                                            ? "subproject_box_left_inprogress_tag"
+                                            : "subproject_box_left_done_tag"
+                                        }
+                                      ></div>
+                                      <div>{subProject.projectName}</div>
+                                    </div>
 
-                                <div className="subproject_box_right">
-                                  <div className={subProject.status === 'notstarted' ? 'text_medium text_brown' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_gray'}>
-                                    {subProject.status === 'notstarted' ? '진행 예정' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}
+                                    <div className="subproject_box_right">
+                                      <div
+                                        className={
+                                          subProject.status === "notstarted"
+                                            ? "text_medium text_brown"
+                                            : subProject.status === "inprogress"
+                                            ? "text_medium text_blue"
+                                            : "text_medium text_gray"
+                                        }
+                                      >
+                                        {subProject.status === "notstarted"
+                                          ? "진행 예정"
+                                          : subProject.status === "inprogress"
+                                          ? "진행 중"
+                                          : "진행 완료"}
+                                      </div>
+                                      <div className="text_regular text_gray">
+                                        {subProject?.startDate
+                                          ? new Date(
+                                              subProject.startDate
+                                            ).getFullYear() +
+                                            "." +
+                                            String(
+                                              new Date(
+                                                subProject.startDate
+                                              ).getMonth() + 1
+                                            ).padStart(2, "0") +
+                                            "." +
+                                            String(
+                                              new Date(
+                                                subProject.startDate
+                                              ).getDate()
+                                            ).padStart(2, "0")
+                                          : null}
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="text_regular text_gray">
-                                    {subProject?.startDate ? new Date(subProject.startDate).getFullYear() + '.' + String(new Date(subProject.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(subProject.startDate).getDate()).padStart(2, '0') : null}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                                ))}
+                            </div>
+                          )}
                       </div>
                     </React.Fragment>
                   ))}
@@ -1240,110 +1703,276 @@ const Project = () => {
                   <div></div>
                 </div>
                 <div className="project_content_section_list">
-                  {(Array.isArray(myprojects) ? myprojects.filter(project => project.status === 'done') : []).map((project, index) => (
+                  {(Array.isArray(myprojects)
+                    ? myprojects.filter((project) => project.status === "done")
+                    : []
+                  ).map((project, index) => (
                     <React.Fragment key={project.mainprojectIndex}>
-                      <div className={`project_box ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onClick={() => { toggleSubProjects(project.mainprojectIndex); setRightClickedProjects(project);}} onContextMenu={(e) => handleRightClick(project, e)}
-                        style={{background: project?.status === 'inprogress' && new Date().toISOString().split('T')[0] > new Date(project.endDate).getFullYear() + '-' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(project.endDate).getDate()).padStart(2, '0') ? '#d0d0d0' : ''}}
+                      <div
+                        className={`project_box ${
+                          subprojectVisible[project.mainprojectIndex]
+                            ? "visible"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          toggleSubProjects(project.mainprojectIndex);
+                          setRightClickedProjects(project);
+                        }}
+                        onContextMenu={(e) => handleRightClick(project, e)}
+                        style={{
+                          background:
+                            project?.status === "inprogress" &&
+                            new Date().toISOString().split("T")[0] >
+                              new Date(project.endDate).getFullYear() +
+                                "-" +
+                                String(
+                                  new Date(project.endDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "-" +
+                                String(
+                                  new Date(project.endDate).getDate()
+                                ).padStart(2, "0")
+                              ? "#d0d0d0"
+                              : "",
+                        }}
                       >
                         <div className="project_box_header">
                           <div className="box_header_title">
                             <div className="box_header_title_left">
                               {project?.pinned === false ? (
-                                <img className="box_header_title_important" src={pinned_false} alt="mail_important" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img
+                                  className="box_header_title_important"
+                                  src={pinned_false}
+                                  alt="mail_important"
+                                  onClick={() =>
+                                    handlePinnedCheckboxPjt(
+                                      project.mainprojectIndex,
+                                      project.status
+                                    )
+                                  }
+                                />
                               ) : (
-                                <img className="box_header_title_important" src={pinned_true} alt="mail_important_active" onClick={() => handlePinnedCheckboxPjt(project.mainprojectIndex, project.status)}/>
+                                <img
+                                  className="box_header_title_important"
+                                  src={pinned_true}
+                                  alt="mail_important_active"
+                                  onClick={() =>
+                                    handlePinnedCheckboxPjt(
+                                      project.mainprojectIndex,
+                                      project.status
+                                    )
+                                  }
+                                />
                               )}
                               <span>{project.projectName}</span>
                             </div>
                             <div className="box_header_title_right">
                               <label className="custom-checkbox">
-                                <input 
+                                <input
                                   type="checkbox"
-                                  checked={allSelected ? allSelected : selectedProjects[project.mainprojectIndex] || false}
-                                  onChange={() => toggleProjectSelection(project.mainprojectIndex)}   
+                                  checked={
+                                    allSelected
+                                      ? allSelected
+                                      : selectedProjects[
+                                          project.mainprojectIndex
+                                        ] || false
+                                  }
+                                  onChange={() =>
+                                    toggleProjectSelection(
+                                      project.mainprojectIndex
+                                    )
+                                  }
                                 />
                                 <span></span>
                               </label>
                               {subprojectVisible[project.mainprojectIndex] ? (
-                                <img src={Down_Arrow} alt="Down_Arrow" className="Arrow_rotate"/>
+                                <img
+                                  src={Down_Arrow}
+                                  alt="Down_Arrow"
+                                  className="Arrow_rotate"
+                                />
                               ) : (
-                                <img src={Down_Arrow} alt="Down_Arrow"/>
+                                <img src={Down_Arrow} alt="Down_Arrow" />
                               )}
                             </div>
                           </div>
                         </div>
                         <div className="project_box_content">
                           {dropdownOpen && (
-                            <div className="dropdown-menu" style={{ position: 'absolute', top: dropdownPosition.y - 70, left: dropdownPosition.x - 210 }}>
-                              {(canEdit
-                              ) && (
-                                <div className="dropdown_pin"
+                            <div
+                              className="dropdown-menu"
+                              style={{
+                                position: "absolute",
+                                top: dropdownPosition.y - 70,
+                                left: dropdownPosition.x - 210,
+                              }}
+                            >
+                              {canEdit && (
+                                <div
+                                  className="dropdown_pin"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setEditPjtModalOpen(true);
                                     setpjtStatus(
-                                      rightclickedProjects?.status === 'notstarted' ? '진행 예정' :
-                                      rightclickedProjects?.status === 'inprogress' ? '진행 중' :
-                                      rightclickedProjects?.status === 'completed' ? '진행 완료' :
-                                      '진행 예정'
+                                      rightclickedProjects?.status ===
+                                        "notstarted"
+                                        ? "진행 예정"
+                                        : rightclickedProjects?.status ===
+                                          "inprogress"
+                                        ? "진행 중"
+                                        : rightclickedProjects?.status ===
+                                          "completed"
+                                        ? "진행 완료"
+                                        : "진행 예정"
                                     );
-                                    setPjtTitle(rightclickedProjects?.projectName || ''); 
-                                    setTeamLeader(rightclickedProjects?.Leader || '');
-                                    setAllMembers(rightclickedProjects?.members || []);
-                                    setAllReferrers(rightclickedProjects?.referrer || []);
-                                    setStartDate(rightclickedProjects?.startDate || null);
-                                    setEndDate(rightclickedProjects?.endDate || null);
+                                    setPjtTitle(
+                                      rightclickedProjects?.projectName || ""
+                                    );
+                                    setTeamLeader(
+                                      rightclickedProjects?.Leader || ""
+                                    );
+                                    setAllMembers(
+                                      rightclickedProjects?.members || []
+                                    );
+                                    setAllReferrers(
+                                      rightclickedProjects?.referrer || []
+                                    );
+                                    setStartDate(
+                                      rightclickedProjects?.startDate || null
+                                    );
+                                    setEndDate(
+                                      rightclickedProjects?.endDate || null
+                                    );
                                   }}
                                 >
                                   편집
                                 </div>
                               )}
-                              <div className="dropdown_pin" onClick={(e) => {e.stopPropagation(); setAddSubPjtModalOPen(true);}}>
+                              <div
+                                className="dropdown_pin"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setAddSubPjtModalOPen(true);
+                                }}
+                              >
                                 추가
                               </div>
                             </div>
                           )}
                           <div>
                             <div>{project.Leader}</div>
-                          </div> 
+                          </div>
                           <div className="project_box_content_right">
-                            <div>{new Date(project.startDate).getFullYear() + '.' + String(new Date(project.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(project.startDate).getDate()).padStart(2, '0')}</div>
+                            <div>
+                              {new Date(project.startDate).getFullYear() +
+                                "." +
+                                String(
+                                  new Date(project.startDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "." +
+                                String(
+                                  new Date(project.startDate).getDate()
+                                ).padStart(2, "0")}
+                            </div>
                             <div>-</div>
-                            <div>{new Date(project.endDate).getFullYear() + '.' + String(new Date(project.endDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(project.endDate).getDate()).padStart(2, '0')}</div>
+                            <div>
+                              {new Date(project.endDate).getFullYear() +
+                                "." +
+                                String(
+                                  new Date(project.endDate).getMonth() + 1
+                                ).padStart(2, "0") +
+                                "." +
+                                String(
+                                  new Date(project.endDate).getDate()
+                                ).padStart(2, "0")}
+                            </div>
                           </div>
                         </div>
-                        {subprojectVisible[project.mainprojectIndex] && project.subProjects.length !== 0 && (
-                          <div className={`subprojects_container subproject_done ${subprojectVisible[project.mainprojectIndex] ? 'visible' : ''}`} onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); }}>
-                            {project.subProjects?.slice().reverse().map((subProject: any, subindex: any) => (
-                              <div key={subProject.subprojectIndex} className="subproject_box" onClick={() => { handleOpenSubProject(subProject); }}>
-                                <div className="subproject_box_left">
-                                  <div className={subProject.status === 'notstarted' ? 'subproject_box_left_notstarted_tag' : subProject.status === 'inprogress' ? 'subproject_box_left_inprogress_tag' : 'subproject_box_left_done_tag'}></div>
-                                  <div>
-                                    {subProject.projectName}
-                                  </div>
-                                </div>
+                        {subprojectVisible[project.mainprojectIndex] &&
+                          project.subProjects.length !== 0 && (
+                            <div
+                              className={`subprojects_container subproject_done ${
+                                subprojectVisible[project.mainprojectIndex]
+                                  ? "visible"
+                                  : ""
+                              }`}
+                              onContextMenu={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                            >
+                              {project.subProjects
+                                ?.slice()
+                                .reverse()
+                                .map((subProject: any, subindex: any) => (
+                                  <div
+                                    key={subProject.subprojectIndex}
+                                    className="subproject_box"
+                                    onClick={() => {
+                                      handleOpenSubProject(subProject);
+                                    }}
+                                  >
+                                    <div className="subproject_box_left">
+                                      <div
+                                        className={
+                                          subProject.status === "notstarted"
+                                            ? "subproject_box_left_notstarted_tag"
+                                            : subProject.status === "inprogress"
+                                            ? "subproject_box_left_inprogress_tag"
+                                            : "subproject_box_left_done_tag"
+                                        }
+                                      ></div>
+                                      <div>{subProject.projectName}</div>
+                                    </div>
 
-                                <div className="subproject_box_right">
-                                  <div className={subProject.status === 'notstarted' ? 'text_medium text_brown' : subProject.status === 'inprogress' ? 'text_medium text_blue' : 'text_medium text_gray'}>
-                                    {subProject.status === 'notstarted' ? '진행 예정' : subProject.status === 'inprogress' ? '진행 중' : '진행 완료'}
+                                    <div className="subproject_box_right">
+                                      <div
+                                        className={
+                                          subProject.status === "notstarted"
+                                            ? "text_medium text_brown"
+                                            : subProject.status === "inprogress"
+                                            ? "text_medium text_blue"
+                                            : "text_medium text_gray"
+                                        }
+                                      >
+                                        {subProject.status === "notstarted"
+                                          ? "진행 예정"
+                                          : subProject.status === "inprogress"
+                                          ? "진행 중"
+                                          : "진행 완료"}
+                                      </div>
+                                      <div className="text_regular text_gray">
+                                        {subProject?.startDate
+                                          ? new Date(
+                                              subProject.startDate
+                                            ).getFullYear() +
+                                            "." +
+                                            String(
+                                              new Date(
+                                                subProject.startDate
+                                              ).getMonth() + 1
+                                            ).padStart(2, "0") +
+                                            "." +
+                                            String(
+                                              new Date(
+                                                subProject.startDate
+                                              ).getDate()
+                                            ).padStart(2, "0")
+                                          : null}
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="text_regular text_gray">
-                                    {subProject?.startDate ? new Date(subProject.startDate).getFullYear() + '.' + String(new Date(subProject.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(subProject.startDate).getDate()).padStart(2, '0') : null}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                                ))}
+                            </div>
+                          )}
                       </div>
                     </React.Fragment>
                   ))}
-                </div>                
+                </div>
               </div>
             </div>
           </div>
         )}
-
 
         {activeTab === 1 && (
           <div className="project_container">
@@ -1354,97 +1983,197 @@ const Project = () => {
               dayCellContent={dayCellContent}
               height="100%"
               headerToolbar={{
-                start: '',
-                center: 'prev title next',
-                end: '',
+                start: "",
+                center: "prev title next",
+                end: "",
               }}
-              dayHeaderFormat={{ weekday: 'long' }}
-              titleFormat={(date) => `${date.date.year}년 ${date.date.month + 1}월`}
-              locale='kr'
+              dayHeaderFormat={{ weekday: "long" }}
+              titleFormat={(date) =>
+                `${date.date.year}년 ${date.date.month + 1}월`
+              }
+              locale="kr"
               fixedWeekCount={false}
               events={projectEvent}
-              eventContent={(arg) => <div>{arg.event.title.replace('오전 12시 ', '')}</div>}
+              eventContent={(arg) => (
+                <div>{arg.event.title.replace("오전 12시 ", "")}</div>
+              )}
               dayMaxEventRows={true}
               eventDisplay="block"
               eventClick={handleEventClick}
-              moreLinkText='개 일정 더보기'
+              moreLinkText="개 일정 더보기"
             />
 
-              <div className="project_slide_container">
-              <div className={`project_slide ${slideVisible ? 'visible' : ''}`} onClick={toggleSlide}>
-                <span className="additional_content_title">진행 중인 프로젝트 일정</span>
+            <div className="project_slide_container">
+              <div
+                className={`project_slide ${slideVisible ? "visible" : ""}`}
+                onClick={toggleSlide}
+              >
+                <span className="additional_content_title">
+                  진행 중인 프로젝트 일정
+                </span>
                 {slideVisible ? (
-                  <img src={White_Arrow} alt="White_Arrow" className="img_rotate" />
+                  <img
+                    src={White_Arrow}
+                    alt="White_Arrow"
+                    className="img_rotate"
+                  />
                 ) : (
                   <img src={White_Arrow} alt="White_Arrow" />
                 )}
               </div>
-              <div className={`additional_content ${slideVisible ? 'visible' : ''}`}>
-                {
-                  (Array.isArray(subprojects) ? subprojects : [])
-                    .filter((projectData: any) => projectData.status === 'inprogress')
-                    .map((projectData: any, index: number) => (
+              <div
+                className={`additional_content ${
+                  slideVisible ? "visible" : ""
+                }`}
+              >
+                {(Array.isArray(subprojects) ? subprojects : [])
+                  .filter(
+                    (projectData: any) => projectData.status === "inprogress"
+                  )
+                  .map((projectData: any, index: number) => (
                     <React.Fragment key={projectData.mainprojectIndex}>
                       <div className="project_content">
                         <div className="project_name_container">
-                          <div className="name_left" onClick={() => toggleProjectVisibility(projectData.mainprojectIndex)}>
+                          <div
+                            className="name_left"
+                            onClick={() =>
+                              toggleProjectVisibility(
+                                projectData.mainprojectIndex
+                              )
+                            }
+                          >
                             {projectVisible[projectData.mainprojectIndex] ? (
-                              <img src={Right_Arrow} alt="Right_Arrow" className="img_rotate" />
+                              <img
+                                src={Right_Arrow}
+                                alt="Right_Arrow"
+                                className="img_rotate"
+                              />
                             ) : (
                               <img src={Right_Arrow} alt="Right_Arrow" />
                             )}
-                            <span className="project_name">{projectData.projectName}</span>
+                            <span className="project_name">
+                              {projectData.projectName}
+                            </span>
                           </div>
                           <div className="name_right">
                             <div className="project_state">
-                              {projectData.status === 'notstarted' ? '진행 예정' :
-                              projectData.status === 'inprogress' ? '진행 중' : '진행 완료'}
+                              {projectData.status === "notstarted"
+                                ? "진행 예정"
+                                : projectData.status === "inprogress"
+                                ? "진행 중"
+                                : "진행 완료"}
                             </div>
                           </div>
                         </div>
-                        {projectVisible[projectData.mainprojectIndex] && (
-                          (Array.isArray(projectData.subProjects) ? projectData.subProjects : []).map((subprojectData: any, subIndex: number) => (
-                            <React.Fragment key={subprojectData.subprojectIndex}>
+                        {projectVisible[projectData.mainprojectIndex] &&
+                          (Array.isArray(projectData.subProjects)
+                            ? projectData.subProjects
+                            : []
+                          ).map((subprojectData: any, subIndex: number) => (
+                            <React.Fragment
+                              key={subprojectData.subprojectIndex}
+                            >
                               <div className="project_content_container">
                                 <div>
-                                  <span className="project_content_div_title_medium">{subprojectData.subprojectIndex?.split('-')[1]}</span> &nbsp; <span>{subprojectData?.projectName}</span>
+                                  <span className="project_content_div_title_medium">
+                                    {
+                                      subprojectData.subprojectIndex?.split(
+                                        "-"
+                                      )[1]
+                                    }
+                                  </span>{" "}
+                                  &nbsp;{" "}
+                                  <span>{subprojectData?.projectName}</span>
                                 </div>
                                 <div>
-                                  <span className="project_content_div_title">팀리더</span> &nbsp; <span>{subprojectData.Leader}</span>
+                                  <span className="project_content_div_title">
+                                    팀리더
+                                  </span>{" "}
+                                  &nbsp; <span>{subprojectData.Leader}</span>
                                 </div>
                                 <div>
-                                  <span className="project_content_div_title">프로젝트 기간 </span> &nbsp; <span>  {new Date(subprojectData.startDate).getFullYear() + '-' + String(new Date(subprojectData.startDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subprojectData.startDate).getDate()).padStart(2, '0')} ~ {new Date(subprojectData.endDate).getFullYear() + '-' + String(new Date(subprojectData.endDate).getMonth() + 1).padStart(2, '0') + '-' + String(new Date(subprojectData.endDate).getDate()).padStart(2, '0')}</span>
+                                  <span className="project_content_div_title">
+                                    프로젝트 기간{" "}
+                                  </span>{" "}
+                                  &nbsp;{" "}
+                                  <span>
+                                    {" "}
+                                    {new Date(
+                                      subprojectData.startDate
+                                    ).getFullYear() +
+                                      "-" +
+                                      String(
+                                        new Date(
+                                          subprojectData.startDate
+                                        ).getMonth() + 1
+                                      ).padStart(2, "0") +
+                                      "-" +
+                                      String(
+                                        new Date(
+                                          subprojectData.startDate
+                                        ).getDate()
+                                      ).padStart(2, "0")}{" "}
+                                    ~{" "}
+                                    {new Date(
+                                      subprojectData.endDate
+                                    ).getFullYear() +
+                                      "-" +
+                                      String(
+                                        new Date(
+                                          subprojectData.endDate
+                                        ).getMonth() + 1
+                                      ).padStart(2, "0") +
+                                      "-" +
+                                      String(
+                                        new Date(
+                                          subprojectData.endDate
+                                        ).getDate()
+                                      ).padStart(2, "0")}
+                                  </span>
                                 </div>
                               </div>
                             </React.Fragment>
-                          ))
-                        )}
+                          ))}
                       </div>
                     </React.Fragment>
-                  ))
-                }
+                  ))}
               </div>
             </div>
           </div>
-
-        )}  
+        )}
       </div>
 
       {/* 메인 프로젝트 생성 모달 */}
       <CustomModal
         isOpen={isAddPjtModalOpen}
-        onClose={() => { setAddPjtModalOPen(false); resetForm(); }}
-        header={'프로젝트 - 새 업무'}
+        onClose={() => {
+          setAddPjtModalOPen(false);
+          resetForm();
+        }}
+        header={"프로젝트 - 새 업무"}
         headerTextColor="white"
-        footer1={'저장'}
+        footer1={"저장"}
         footer1Class="back-green-btn"
-        onFooter1Click={() => { setAddPjtModalOPen(false); resetForm(); handleAddMainProject(); }}
+        onFooter1Click={() => {
+          setAddPjtModalOPen(false);
+          resetForm();
+          handleAddMainProject();
+        }}
         width="430px"
         height="510px"
       >
-        <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
+        <div
+          className="body-container custom_scroll"
+          style={{ padding: "2% 5%" }}
+        >
           <div className="body_container_content">
-            <input type="text" className="input_project" value={pjtTitle} placeholder="프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)}/>
+            <input
+              type="text"
+              className="input_project"
+              value={pjtTitle}
+              placeholder="프로젝트 명"
+              onChange={(e) => setPjtTitle(e.target.value)}
+            />
           </div>
 
           <div className="body_container_content content_box">
@@ -1459,8 +2188,17 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNamesPerson.map(person => (
-                  <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
+                {filteredNamesPerson.map((person) => (
+                  <li
+                    key={person.username}
+                    onClick={() =>
+                      handleAutoCompleteClick(
+                        person.username,
+                        person.department,
+                        person.team
+                      )
+                    }
+                  >
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
                   </li>
@@ -1468,7 +2206,7 @@ const Project = () => {
               </ul>
             )}
           </div>
-            
+
           <div className="body_container_content member_list_box" tabIndex={0}>
             <input
               type="text"
@@ -1482,24 +2220,36 @@ const Project = () => {
             {inputAllMember && (
               <div className="autocomplete_dropdown_container">
                 <ul className="autocomplete_dropdown_person">
-                  {filteredAllmembersNamesPerson
-                  .map((person, index) => (
+                  {filteredAllmembersNamesPerson.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllMembersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
                 <ul className="autocomplete_dropdown_team">
-                  {filteredAllmembersNamesTeam
-                  .map((person, index) => (
+                  {filteredAllmembersNamesTeam.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllMembersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
@@ -1510,13 +2260,21 @@ const Project = () => {
               {allMembers.map((item: string, index: number) => (
                 <div key={index} className="listbox_content">
                   {item}
-                  <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
+                  <span
+                    className="remove"
+                    onClick={() => handleRecipientRemove(item)}
+                  >
+                    ×
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="body_container_content member_list_box" style={{height: '110px', backgroundColor: '#F4F4F4'}}>
+          <div
+            className="body_container_content member_list_box"
+            style={{ height: "110px", backgroundColor: "#F4F4F4" }}
+          >
             <input
               type="text"
               className="input_list"
@@ -1529,24 +2287,36 @@ const Project = () => {
             {inputAllReferrer && (
               <div className="autocomplete_dropdown_container">
                 <ul className="autocomplete_dropdown_person_referrer">
-                  {filteredAllReferrersNamesPerson
-                  .map((person, index) => (
+                  {filteredAllReferrersNamesPerson.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllReferrersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllReferrersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
                 <ul className="autocomplete_dropdown_team_referrer">
-                  {filteredAllReferrersNamesTeam
-                  .map((person, index) => (
+                  {filteredAllReferrersNamesTeam.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllReferrersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllReferrersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
@@ -1557,7 +2327,12 @@ const Project = () => {
               {allReferrers.map((item: string) => (
                 <div className="listbox_content">
                   {item}
-                  <span className="remove" onClick={() => handleReferrersRemove(item)}>×</span>
+                  <span
+                    className="remove"
+                    onClick={() => handleReferrersRemove(item)}
+                  >
+                    ×
+                  </span>
                 </div>
               ))}
             </div>
@@ -1570,11 +2345,11 @@ const Project = () => {
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
-                onChange={date => setStartDate(date)}
+                onChange={(date) => setStartDate(date)}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -1582,39 +2357,54 @@ const Project = () => {
               <span className="timespan">~</span>
               <DatePicker
                 selected={endDate}
-                onChange={date => setEndDate(date)}
+                onChange={(date) => setEndDate(date)}
                 selectsEnd
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
               />
             </div>
           </div>
-
         </div>
       </CustomModal>
 
       {/* 서브 프로젝트 생성 모달 */}
       <CustomModal
         isOpen={isAddSubPjtModalOpen}
-        onClose={() => { setAddSubPjtModalOPen(false); resetForm(); }}
+        onClose={() => {
+          setAddSubPjtModalOPen(false);
+          resetForm();
+        }}
         header={rightclickedProjects?.projectName}
         headerTextColor="white"
-        footer1={'저장'}
+        footer1={"저장"}
         footer1Class="green-btn"
-        onFooter1Click={() => { setAddSubPjtModalOPen(false); resetForm(); handleAddSubProject(rightclickedProjects?.mainprojectIndex); }}
+        onFooter1Click={() => {
+          setAddSubPjtModalOPen(false);
+          resetForm();
+          handleAddSubProject(rightclickedProjects?.mainprojectIndex);
+        }}
         width="430px"
         height="510px"
       >
-        <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
+        <div
+          className="body-container custom_scroll"
+          style={{ padding: "2% 5%" }}
+        >
           <div className="body_container_content">
-            <input type="text" className="input_project" value={pjtTitle} placeholder="서브 프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)}/>
+            <input
+              type="text"
+              className="input_project"
+              value={pjtTitle}
+              placeholder="서브 프로젝트 명"
+              onChange={(e) => setPjtTitle(e.target.value)}
+            />
           </div>
-          
+
           <div className="body_container_content content_box">
             <input
               type="text"
@@ -1627,8 +2417,17 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNamesPerson.map(person => (
-                  <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
+                {filteredNamesPerson.map((person) => (
+                  <li
+                    key={person.username}
+                    onClick={() =>
+                      handleAutoCompleteClick(
+                        person.username,
+                        person.department,
+                        person.team
+                      )
+                    }
+                  >
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
                   </li>
@@ -1650,24 +2449,36 @@ const Project = () => {
             {inputAllMember && (
               <div className="autocomplete_dropdown_container">
                 <ul className="autocomplete_dropdown_person">
-                  {filteredAllmembersNamesPerson
-                  .map((person, index) => (
+                  {filteredAllmembersNamesPerson.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllMembersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
                 <ul className="autocomplete_dropdown_team">
-                  {filteredAllmembersNamesTeam
-                  .map((person, index) => (
+                  {filteredAllmembersNamesTeam.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllMembersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
@@ -1678,7 +2489,12 @@ const Project = () => {
               {allMembers.map((item: string, index: number) => (
                 <div key={index} className="listbox_content">
                   {item}
-                  <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
+                  <span
+                    className="remove"
+                    onClick={() => handleRecipientRemove(item)}
+                  >
+                    ×
+                  </span>
                 </div>
               ))}
             </div>
@@ -1691,11 +2507,11 @@ const Project = () => {
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
-                onChange={date => setStartDate(date)}
+                onChange={(date) => setStartDate(date)}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -1703,12 +2519,12 @@ const Project = () => {
               <span className="timespan">~</span>
               <DatePicker
                 selected={endDate}
-                onChange={date => setEndDate(date)}
+                onChange={(date) => setEndDate(date)}
                 selectsEnd
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -1718,38 +2534,73 @@ const Project = () => {
 
           <div className="body_container_content textarea_content">
             <div className="textarea_content_title">프로젝트 내용</div>
-            <textarea value={pjtMemo} onChange={(e) => setPjtMemo(e.target.value)}/>
+            <textarea
+              value={pjtMemo}
+              onChange={(e) => setPjtMemo(e.target.value)}
+            />
           </div>
         </div>
       </CustomModal>
-      
+
       {/* 메인 프로젝트 수정 모달 */}
       <CustomModal
         isOpen={isEditPjtModalOpen}
-        onClose={() => { setEditPjtModalOpen(false); resetForm(); }}
+        onClose={() => {
+          setEditPjtModalOpen(false);
+          resetForm();
+        }}
         header={rightclickedProjects?.projectName}
         headerTextColor="white"
-        footer1={'편집'}
+        footer1={"편집"}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditPjtModalOpen(false); handleEditProject(rightclickedProjects?.mainprojectIndex || 0)}}
-        footer2={'삭제'}
+        onFooter1Click={() => {
+          setEditPjtModalOpen(false);
+          handleEditProject(rightclickedProjects?.mainprojectIndex || 0);
+        }}
+        footer2={"삭제"}
         footer2Class="red-btn"
-        onFooter2Click={() => { setEditPjtModalOpen(false); resetForm(); hanelDeleteMainPjt(rightclickedProjects?.mainprojectIndex || 0)}}
+        onFooter2Click={() => {
+          setEditPjtModalOpen(false);
+          resetForm();
+          hanelDeleteMainPjt(rightclickedProjects?.mainprojectIndex || 0);
+        }}
         width="430px"
         height="510px"
       >
-        <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
+        <div
+          className="body-container custom_scroll"
+          style={{ padding: "2% 5%" }}
+        >
           <div className="body_container_content">
             <div className="body_container_content_title">상태</div>
             <div className="pjt_status" onClick={togglePjtstate}>
-              <div className={pjtStatus === '진행 중' ? 'blue_circle' : pjtStatus === '진행 완료' ? 'brown_circle' : ''}></div>
+              <div
+                className={
+                  pjtStatus === "진행 중"
+                    ? "blue_circle"
+                    : pjtStatus === "진행 완료"
+                    ? "brown_circle"
+                    : ""
+                }
+              ></div>
               {pjtStatus}
               {pjtstateIsOpen && (
                 <ul className="dropdown_menu_status">
                   {pjtstateOptions.map((option) => (
-                    <li key={option} onClick={() => handlePjtStateSelect(option)}>
+                    <li
+                      key={option}
+                      onClick={() => handlePjtStateSelect(option)}
+                    >
                       {option}
-                      <div className={option === '진행 중' ? 'blue_circle' : option === '진행 완료' ? 'brown_circle' : ''}></div>
+                      <div
+                        className={
+                          option === "진행 중"
+                            ? "blue_circle"
+                            : option === "진행 완료"
+                            ? "brown_circle"
+                            : ""
+                        }
+                      ></div>
                     </li>
                   ))}
                 </ul>
@@ -1758,7 +2609,13 @@ const Project = () => {
           </div>
 
           <div className="body_container_content">
-            <input type="text" className="input_project" value={pjtTitle} placeholder="프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)}/>
+            <input
+              type="text"
+              className="input_project"
+              value={pjtTitle}
+              placeholder="프로젝트 명"
+              onChange={(e) => setPjtTitle(e.target.value)}
+            />
           </div>
 
           <div className="body_container_content content_box">
@@ -1773,8 +2630,17 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNamesPerson.map(person => (
-                  <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
+                {filteredNamesPerson.map((person) => (
+                  <li
+                    key={person.username}
+                    onClick={() =>
+                      handleAutoCompleteClick(
+                        person.username,
+                        person.department,
+                        person.team
+                      )
+                    }
+                  >
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
                   </li>
@@ -1796,24 +2662,36 @@ const Project = () => {
             {inputAllMember && (
               <div className="autocomplete_dropdown_container">
                 <ul className="autocomplete_dropdown_person">
-                  {filteredAllmembersNamesPerson
-                  .map((person, index) => (
+                  {filteredAllmembersNamesPerson.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllMembersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
                 <ul className="autocomplete_dropdown_team">
-                  {filteredAllmembersNamesTeam
-                  .map((person, index) => (
+                  {filteredAllmembersNamesTeam.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllMembersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
@@ -1824,13 +2702,21 @@ const Project = () => {
               {allMembers.map((item: string, index: number) => (
                 <div key={index} className="listbox_content">
                   {item}
-                  <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
+                  <span
+                    className="remove"
+                    onClick={() => handleRecipientRemove(item)}
+                  >
+                    ×
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="body_container_content member_list_box" style={{height: '110px', backgroundColor: '#F4F4F4'}}>
+          <div
+            className="body_container_content member_list_box"
+            style={{ height: "110px", backgroundColor: "#F4F4F4" }}
+          >
             <input
               type="text"
               className="input_list"
@@ -1843,24 +2729,36 @@ const Project = () => {
             {inputAllReferrer && (
               <div className="autocomplete_dropdown_container">
                 <ul className="autocomplete_dropdown_person_referrer">
-                  {filteredAllReferrersNamesPerson
-                  .map((person, index) => (
+                  {filteredAllReferrersNamesPerson.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllReferrersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllReferrersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
                 <ul className="autocomplete_dropdown_team_referrer">
-                  {filteredAllReferrersNamesTeam
-                  .map((person, index) => (
+                  {filteredAllReferrersNamesTeam.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllReferrersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllReferrersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
@@ -1871,7 +2769,12 @@ const Project = () => {
               {allReferrers.map((item: string) => (
                 <div className="listbox_content">
                   {item}
-                  <span className="remove" onClick={() => handleReferrersRemove(item)}>×</span>
+                  <span
+                    className="remove"
+                    onClick={() => handleReferrersRemove(item)}
+                  >
+                    ×
+                  </span>
                 </div>
               ))}
             </div>
@@ -1884,11 +2787,11 @@ const Project = () => {
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
-                onChange={date => setStartDate(date)}
+                onChange={(date) => setStartDate(date)}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -1896,12 +2799,12 @@ const Project = () => {
               <span className="timespan">~</span>
               <DatePicker
                 selected={endDate}
-                onChange={date => setEndDate(date)}
+                onChange={(date) => setEndDate(date)}
                 selectsEnd
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -1910,33 +2813,66 @@ const Project = () => {
           </div>
         </div>
       </CustomModal>
-      
+
       {/* 서브 프로젝트 수정 모달 */}
       <CustomModal
         isOpen={isViewSubPjtModalOpen}
-        onClose={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null);}}
+        onClose={() => {
+          setViewSubPjtModalOpen(false);
+          resetForm();
+          setClickedProjects(null);
+        }}
         header={rightclickedProjects?.projectName}
         headerTextColor="White"
-        footer1={'편집'}
+        footer1={"편집"}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditSubPjtModalOpen(true); setViewSubPjtModalOpen(false);}}
-        footer2={'삭제'}
+        onFooter1Click={() => {
+          setEditSubPjtModalOpen(true);
+          setViewSubPjtModalOpen(false);
+        }}
+        footer2={"삭제"}
         footer2Class="red-btn"
-        onFooter2Click={() => { setViewSubPjtModalOpen(false); resetForm(); setClickedProjects(null); handleDeleteSubPjt(clickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
+        onFooter2Click={() => {
+          setViewSubPjtModalOpen(false);
+          resetForm();
+          setClickedProjects(null);
+          handleDeleteSubPjt(
+            clickedProjects?.mainprojectIndex || 0,
+            clickedProjects?.subprojectIndex || 0
+          );
+        }}
         width="430px"
         height="520px"
       >
-        <div className="body-container custom_scroll" style={{padding: '2% 5%'}}>
+        <div
+          className="body-container custom_scroll"
+          style={{ padding: "2% 5%" }}
+        >
           <div className="body_container_content">
             <div className="body_container_content_title">상태</div>
             <div className="view_div">
-              <div className={pjtStatus === '진행 중' ? 'blue_circle' : pjtStatus === '진행 완료' ? 'brown_circle' : ''}></div>
+              <div
+                className={
+                  pjtStatus === "진행 중"
+                    ? "blue_circle"
+                    : pjtStatus === "진행 완료"
+                    ? "brown_circle"
+                    : ""
+                }
+              ></div>
               {pjtStatus}
             </div>
           </div>
-              
+
           <div className="body_container_content">
-            <input type="text" readOnly className="input_project" value={pjtTitle} placeholder="서브 프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)} />
+            <input
+              type="text"
+              readOnly
+              className="input_project"
+              value={pjtTitle}
+              placeholder="서브 프로젝트 명"
+              onChange={(e) => setPjtTitle(e.target.value)}
+            />
           </div>
 
           <div className="body_container_content content_box">
@@ -1952,8 +2888,17 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNamesPerson.map(person => (
-                  <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
+                {filteredNamesPerson.map((person) => (
+                  <li
+                    key={person.username}
+                    onClick={() =>
+                      handleAutoCompleteClick(
+                        person.username,
+                        person.department,
+                        person.team
+                      )
+                    }
+                  >
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
                   </li>
@@ -1975,8 +2920,17 @@ const Project = () => {
             />
             {inputAllMember && (
               <ul className="autocomplete_dropdown_inbox">
-                {filteredAllmembersNames.map(person => (
-                  <li key={person.username} onClick={() => handleAutoAllMembersCompleteClick((`${person.team ? person.team : person.department} ${person.username}`))}>
+                {filteredAllmembersNames.map((person) => (
+                  <li
+                    key={person.username}
+                    onClick={() =>
+                      handleAutoAllMembersCompleteClick(
+                        `${person.team ? person.team : person.department} ${
+                          person.username
+                        }`
+                      )
+                    }
+                  >
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
                   </li>
@@ -2000,11 +2954,11 @@ const Project = () => {
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
-                onChange={date => setStartDate(date)}
+                onChange={(date) => setStartDate(date)}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -2013,12 +2967,12 @@ const Project = () => {
               <span className="timespan">~</span>
               <DatePicker
                 selected={endDate}
-                onChange={date => setEndDate(date)}
+                onChange={(date) => setEndDate(date)}
                 selectsEnd
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -2029,22 +2983,39 @@ const Project = () => {
 
           <div className="body_container_content textarea_content">
             <div className="textarea_content_title">프로젝트 내용</div>
-            <textarea readOnly value={pjtMemo} onChange={(e) => setPjtMemo(e.target.value)}/>
+            <textarea
+              readOnly
+              value={pjtMemo}
+              onChange={(e) => setPjtMemo(e.target.value)}
+            />
           </div>
         </div>
       </CustomModal>
 
       <CustomModal
         isOpen={isEditSubPjtModalOpen}
-        onClose={() => { setEditSubPjtModalOpen(false); resetForm(); }}
+        onClose={() => {
+          setEditSubPjtModalOpen(false);
+          resetForm();
+        }}
         header={rightclickedProjects?.projectName}
         headerTextColor="White"
-        footer1={'수정'}
+        footer1={"수정"}
         footer1Class="green-btn"
-        onFooter1Click={() => { setEditSubPjtModalOpen(false); resetForm(); handleEditSubProject(rightclickedProjects?.mainprojectIndex || 0, clickedProjects?.subprojectIndex || 0)}}
-        footer2={'취소'}
+        onFooter1Click={() => {
+          setEditSubPjtModalOpen(false);
+          resetForm();
+          handleEditSubProject(
+            rightclickedProjects?.mainprojectIndex || 0,
+            clickedProjects?.subprojectIndex || 0
+          );
+        }}
+        footer2={"취소"}
         footer2Class="red-btn"
-        onFooter2Click={() => { setEditSubPjtModalOpen(false); resetForm(); }}
+        onFooter2Click={() => {
+          setEditSubPjtModalOpen(false);
+          resetForm();
+        }}
         width="430px"
         height="520px"
       >
@@ -2053,13 +3024,32 @@ const Project = () => {
             <div className="body_container_content_title">상태</div>
             <div className="pjt_status" onClick={togglePjtstate}>
               {pjtStatus}
-              <div className={pjtStatus === '진행 중' ? 'blue_circle' : pjtStatus === '진행 완료' ? 'brown_circle' : ''}></div>
+              <div
+                className={
+                  pjtStatus === "진행 중"
+                    ? "blue_circle"
+                    : pjtStatus === "진행 완료"
+                    ? "brown_circle"
+                    : ""
+                }
+              ></div>
               {pjtstateIsOpen && (
                 <ul className="dropdown_menu_status">
                   {pjtstateOptions.map((option) => (
-                    <li key={option} onClick={() => handlePjtStateSelect(option)}>
+                    <li
+                      key={option}
+                      onClick={() => handlePjtStateSelect(option)}
+                    >
                       {option}
-                      <div className={option === '진행 중' ? 'blue_circle' : option === '진행 완료' ? 'brown_circle' : ''}></div>
+                      <div
+                        className={
+                          option === "진행 중"
+                            ? "blue_circle"
+                            : option === "진행 완료"
+                            ? "brown_circle"
+                            : ""
+                        }
+                      ></div>
                     </li>
                   ))}
                 </ul>
@@ -2068,7 +3058,13 @@ const Project = () => {
           </div>
 
           <div className="body_container_content">
-            <input type="text" className="input_project" value={pjtTitle} placeholder="서브 프로젝트 명" onChange={(e) => setPjtTitle(e.target.value)}/>
+            <input
+              type="text"
+              className="input_project"
+              value={pjtTitle}
+              placeholder="서브 프로젝트 명"
+              onChange={(e) => setPjtTitle(e.target.value)}
+            />
           </div>
 
           <div className="body_container_content content_box">
@@ -2083,8 +3079,17 @@ const Project = () => {
             />
             {inputteamLeader && (
               <ul className="autocomplete_dropdown">
-                {filteredNamesPerson.map(person => (
-                  <li key={person.username} onClick={() => handleAutoCompleteClick(person.username, person.department, person.team)}>
+                {filteredNamesPerson.map((person) => (
+                  <li
+                    key={person.username}
+                    onClick={() =>
+                      handleAutoCompleteClick(
+                        person.username,
+                        person.department,
+                        person.team
+                      )
+                    }
+                  >
                     {person.team ? person.team : person.department} &nbsp;
                     {person.username}
                   </li>
@@ -2106,24 +3111,36 @@ const Project = () => {
             {inputAllMember && (
               <div className="autocomplete_dropdown_container">
                 <ul className="autocomplete_dropdown_person">
-                  {filteredAllmembersNamesPerson
-                  .map((person, index) => (
+                  {filteredAllmembersNamesPerson.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllMembersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
                 <ul className="autocomplete_dropdown_team">
-                  {filteredAllmembersNamesTeam
-                  .map((person, index) => (
+                  {filteredAllmembersNamesTeam.map((person, index) => (
                     <li
                       key={person.username}
-                      onClick={() => handleAutoAllMembersCompleteClick(`${person.team ? person.team : person.department} ${person.username}`)}
+                      onClick={() =>
+                        handleAutoAllMembersCompleteClick(
+                          `${person.team ? person.team : person.department} ${
+                            person.username
+                          }`
+                        )
+                      }
                     >
-                      {person.team ? person.team : person.department} {person.username}
+                      {person.team ? person.team : person.department}{" "}
+                      {person.username}
                     </li>
                   ))}
                 </ul>
@@ -2134,7 +3151,12 @@ const Project = () => {
               {allMembers.map((item: string, index: number) => (
                 <div key={index} className="listbox_content">
                   {item}
-                  <span className="remove" onClick={() => handleRecipientRemove(item)}>×</span>
+                  <span
+                    className="remove"
+                    onClick={() => handleRecipientRemove(item)}
+                  >
+                    ×
+                  </span>
                 </div>
               ))}
             </div>
@@ -2147,11 +3169,11 @@ const Project = () => {
             <div className="body_container_content_datepicker">
               <DatePicker
                 selected={startDate}
-                onChange={date => setStartDate(date)}
+                onChange={(date) => setStartDate(date)}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -2159,12 +3181,12 @@ const Project = () => {
               <span className="timespan">~</span>
               <DatePicker
                 selected={endDate}
-                onChange={date => setEndDate(date)}
+                onChange={(date) => setEndDate(date)}
                 selectsEnd
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                placeholderText={new Date().toLocaleDateString('ko-KR')}
+                placeholderText={new Date().toLocaleDateString("ko-KR")}
                 dateFormat="yyyy-MM-dd"
                 className="datepicker"
                 popperPlacement="top"
@@ -2174,7 +3196,10 @@ const Project = () => {
 
           <div className="body_container_content textarea_content">
             <div className="textarea_content_title">프로젝트 내용</div>
-            <textarea value={pjtMemo} onChange={(e) => setPjtMemo(e.target.value)}/>
+            <textarea
+              value={pjtMemo}
+              onChange={(e) => setPjtMemo(e.target.value)}
+            />
           </div>
         </div>
       </CustomModal>
@@ -2182,25 +3207,27 @@ const Project = () => {
       <CustomModal
         isOpen={isDeletePjtModalOpen}
         onClose={() => setDeletePjtModalOpen(false)}
-        header={'알림'}
-        footer1={'삭제'}
+        header={"알림"}
+        footer1={"삭제"}
         footer1Class="red-btn"
-        onFooter1Click={() => {handleDeleteCheckboxPjt(selectedProjects)}}
-        footer2={'취소'}
+        onFooter1Click={() => {
+          handleDeleteCheckboxPjt(selectedProjects);
+        }}
+        footer2={"취소"}
         footer2Class="gray-btn"
-        onFooter2Click={() => {setDeletePjtModalOpen(false)}}
+        onFooter2Click={() => {
+          setDeletePjtModalOpen(false);
+        }}
       >
-        <div>
-          삭제하시겠습니까?
-        </div>
+        <div>삭제하시겠습니까?</div>
       </CustomModal>
 
       <CustomModal
         isOpen={ispjtModalOpen}
         onClose={() => setPjtModalOPen(false)}
-        header={'프로젝트'}
+        header={"프로젝트"}
         headerTextColor="White"
-        footer1={'확인'}
+        footer1={"확인"}
         footer1Class="back-green-btn"
         onFooter1Click={() => setPjtModalOPen(false)}
         width="400px"
@@ -2209,9 +3236,26 @@ const Project = () => {
         <div className="body-container">
           <div className="body-content">
             <div className="content-right">
-              <div className="content-type" style={{justifyContent: 'space-between'}}>
+              <div
+                className="content-type"
+                style={{ justifyContent: "space-between" }}
+              >
                 <span>{selectedEvent?.projectName}</span>
-                <div className={selectedEvent?.status === 'notstarted' ? 'green_circle' : selectedEvent?.status === 'inprogress' ? 'blue_circle' : 'brown_circle'}>{selectedEvent?.status === 'notstarted' ? '진행 예정' : selectedEvent?.status === 'inprogress' ? '진행 중' : '진행 완료'}</div>
+                <div
+                  className={
+                    selectedEvent?.status === "notstarted"
+                      ? "green_circle"
+                      : selectedEvent?.status === "inprogress"
+                      ? "blue_circle"
+                      : "brown_circle"
+                  }
+                >
+                  {selectedEvent?.status === "notstarted"
+                    ? "진행 예정"
+                    : selectedEvent?.status === "inprogress"
+                    ? "진행 중"
+                    : "진행 완료"}
+                </div>
               </div>
             </div>
           </div>
@@ -2226,12 +3270,12 @@ const Project = () => {
           <div className="body-content">
             <div className="content-right">
               <div className="content-member-container">
-                <div className="content-member-text">
-                  담당 팀원
-                </div>
+                <div className="content-member-text">담당 팀원</div>
                 <div className="content-member">
-                  {selectedEvent?.members.map((person:any, index: number) => (
-                    <div key={index} className="content-member-box">{person}</div>
+                  {selectedEvent?.members.map((person: any, index: number) => (
+                    <div key={index} className="content-member-box">
+                      {person}
+                    </div>
                   ))}
                 </div>
               </div>
@@ -2240,10 +3284,31 @@ const Project = () => {
           <div className="body-content">
             <div className="content-right">
               <div className="content-date">
-                <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <span className="content-date-name">프로젝트 기간</span>
                 </div>
-                {selectedEvent?.startDate ? new Date(selectedEvent.startDate).getFullYear() + '.' +  String(new Date(selectedEvent.startDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(selectedEvent.startDate).getDate()).padStart(2, '0') + '　 ~ 　' + new Date(selectedEvent.endDate).getFullYear() + '.' +  String(new Date(selectedEvent.endDate).getMonth() + 1).padStart(2, '0') + '.' + String(new Date(selectedEvent.endDate).getDate()).padStart(2, '0') : 'No start date available'}
+                {selectedEvent?.startDate
+                  ? new Date(selectedEvent.startDate).getFullYear() +
+                    "." +
+                    String(
+                      new Date(selectedEvent.startDate).getMonth() + 1
+                    ).padStart(2, "0") +
+                    "." +
+                    String(
+                      new Date(selectedEvent.startDate).getDate()
+                    ).padStart(2, "0") +
+                    "　 ~ 　" +
+                    new Date(selectedEvent.endDate).getFullYear() +
+                    "." +
+                    String(
+                      new Date(selectedEvent.endDate).getMonth() + 1
+                    ).padStart(2, "0") +
+                    "." +
+                    String(new Date(selectedEvent.endDate).getDate()).padStart(
+                      2,
+                      "0"
+                    )
+                  : "No start date available"}
               </div>
             </div>
           </div>
@@ -2253,8 +3318,8 @@ const Project = () => {
       <CustomModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
-        header={'알림'}
-        footer1={'확인'}
+        header={"알림"}
+        footer1={"확인"}
         footer1Class="gray-btn"
         onFooter1Click={() => setIsStatusModalOpen(false)}
         width="350px"
@@ -2267,17 +3332,23 @@ const Project = () => {
 
       <CustomModal
         isOpen={EditForceMessage}
-        onClose={() => {setEditForceMessage(false); resetForm();}}
-        header={'알림'}
-        footer1={'예'}
+        onClose={() => {
+          setEditForceMessage(false);
+          resetForm();
+        }}
+        header={"알림"}
+        footer1={"예"}
         footer1Class="gray-btn"
         onFooter1Click={() => {
-          handleEditProject(rightclickedProjects?.mainprojectIndex, true); 
-          setEditForceMessage(false); 
+          handleEditProject(rightclickedProjects?.mainprojectIndex, true);
+          setEditForceMessage(false);
         }}
-        footer2={'아니오'}
+        footer2={"아니오"}
         footer2Class="red-btn"
-        onFooter2Click={() => {setEditForceMessage(false); resetForm();}}
+        onFooter2Click={() => {
+          setEditForceMessage(false);
+          resetForm();
+        }}
         width="350px"
         height="200px"
       >
@@ -2286,7 +3357,6 @@ const Project = () => {
           <span>그래도 수정하시겠습니까?</span>
         </div>
       </CustomModal>
-
     </div>
   );
 };

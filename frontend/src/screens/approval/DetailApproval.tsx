@@ -269,6 +269,7 @@ const DetailApproval = () => {
     }
   };
 
+  console.log(signatories);
   const handleSign = (index: number) => {
     const newCheckSignUp = [...checksignup];
     newCheckSignUp[index] = true;
@@ -322,6 +323,10 @@ const DetailApproval = () => {
     return pages;
   };
 
+  useEffect(() => {
+    console.log(opinion);
+    console.log(newOpinion);
+  }, [opinion]);
   const handleOpinionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setOpinion(e.target.value);
   };
@@ -364,20 +369,22 @@ const DetailApproval = () => {
 
   //의견 작성하기
   const handleSubmitOpinion = async (report_id: string) => {
-    try {
-      const formData = {
-        userID: user.userID,
-        username: user.username,
-        position: user.position,
-        opinion: opinion,
-      };
+    if (newOpinion) {
+      try {
+        const formData = {
+          userID: user.userID,
+          username: user.username,
+          position: user.position,
+          opinion: opinion,
+        };
 
-      await WriteApprovalOp(report_id, formData);
-      setOpinion("");
-      onOpinionModalClose();
-    } catch (error) {
-      alert("Failed to submit opinion.");
-      onOpinionModalClose();
+        await WriteApprovalOp(report_id, formData);
+        setOpinion("");
+        onOpinionModalClose();
+      } catch (error) {
+        alert("Failed to submit opinion.");
+        onOpinionModalClose();
+      }
     }
   };
 
@@ -462,6 +469,8 @@ const DetailApproval = () => {
   };
 
   useEffect(() => {
+    console.log(newOpinion);
+    console.log(opinion);
     if (newOpinion) {
       setIsVisible(true);
     }
@@ -567,7 +576,10 @@ const DetailApproval = () => {
                           </button>
                           <button
                             className="white_button"
-                            onClick={onOpinionModalClose}
+                            onClick={() => {
+                              onOpinionModalClose();
+                              setOpinion("");
+                            }}
                           >
                             취소
                           </button>
@@ -731,19 +743,22 @@ const DetailApproval = () => {
                     {(documentInfo[0].opinionName || newOpinion) && (
                       <>
                         <div className="reject_requester">
+                          {newOpinion && (
+                            <>
+                              <p>의견 작성자</p>
+                              <div>{user.username}</div>
+                            </>
+                          )}
                           <p>의견 작성자</p>
                           <div>
-                            {newOpinion
-                              ? user.username
-                              : documentInfo[0].opinionName.replace(
-                                  /\s*\(작성자\)/,
-                                  ""
-                                )}
+                            {documentInfo[0].opinionName.replace(
+                              /\s*\(작성자\)/,
+                              ""
+                            )}
                           </div>
                         </div>
                         <div className={`opinion ${isVisible ? "show" : ""}`}>
-                          {newOpinion &&
-                            `${user.username} (${user.position}): ${newOpinion}`}
+                          {newOpinion && `${newOpinion}`}
                         </div>
                         <div
                           className="document_content"
