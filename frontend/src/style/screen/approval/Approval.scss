@@ -831,7 +831,13 @@
   transform: translateX(0);
 }
 
+.reject_requester.show {
+  transform: translateY(0);
+}
+
 .reject_requester {
+  transform: translateY(-20px);
+  transition: all 0.4s ease-in-out;
   display: flex;
   justify-content: space-between;
   padding-bottom: 10px;
@@ -858,11 +864,16 @@
   margin-bottom: 16px;
 }
 
-.opinion {
+.testtest {
   transform: translateY(-20px);
-  transition: all 0.4s ease-in-out;
+  transition: all 0.5s ease;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.opinion.show {
+.testtest.show {
   transform: translateY(0);
+  margin-bottom: 10px;
 }
