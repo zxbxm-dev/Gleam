@@ -14,6 +14,7 @@ const annualLeaveData = require("./attendance/annualLeave");
 const attendance = require("./attendance/officeHour");
 // 보고서
 const report = require("./workLog/workLog");
+const ReportOpinion = require("./workLog/workLogOpinion");
 // 인사평가
 const evaluation = require("./performance/performance");
 const evalOutline = require("./performance/performanceOutline");
@@ -57,6 +58,7 @@ db.Notice = noticeBoard(sequelize, Sequelize);
 db.AnnualLeave = annualLeaveData(sequelize, Sequelize);
 db.Attendance = attendance(sequelize, Sequelize);
 db.Report = report(sequelize, Sequelize);
+db.ReportOpinion = ReportOpinion(sequelize, Sequelize);
 db.JobPosting = jobPosting(sequelize, Sequelize);
 db.Evaluation = evaluation(sequelize, Sequelize);
 db.evalOutline = evalOutline(sequelize, Sequelize);
@@ -113,5 +115,9 @@ db.MessageRead.belongsTo(db.Message, { foreignKey: "messageId", as: "message" })
 db.User.hasMany(db.MessageRead, { foreignKey: "userId", as: "reads" });
 db.MessageRead.belongsTo(db.User, { foreignKey: "userId", as: "user" });
 
+//보고서 관계 설정
+//Report와 reportOpinion 간의 관계 설정
+db.Report.hasMany(db.ReportOpinion, { foreignKey: "reportId", as: "opinion"});
+db.ReportOpinion.belongsTo(db.Report, { foreignKey: "reportId", as: "report"});
 
 module.exports = db;

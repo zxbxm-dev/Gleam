@@ -35,11 +35,15 @@ module.exports = (app) => {
 
   // ⚠️⚠️ 문서 수정 및 삭제 router ----------------------------------------------------------------------- ⚠️⚠️
   router.get("/checkReport/:report_id", writeReportController.getReportById);
+  router.get(
+    "/getReportOpinions/:report_id",
+    writeReportController.getReportOpinionById
+  )
   router.delete(
     "/deleteReport/:report_id",
     writeReportController.deleteReportById
   );
-  router.post("/writeApproval/:report_id", writeReportController.cancelReportById);
+  router.post("/writeApproval/:report_id", writeReportController.rejectReportById);
   router.post("/writeApprovalOp/:report_id", writeReportController.opinionReportById);
 
   // ⚠️⚠️ 문서 결제 router ----------------------------------------------------------------------- ⚠️⚠️
