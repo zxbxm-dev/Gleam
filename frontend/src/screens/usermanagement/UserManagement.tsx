@@ -37,6 +37,7 @@ const UserManagement = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isEditCompleModalOpen, setEditCompleModalOpen] = useState(false);
   const [postPerPage, setPostPerPage] = useState<number>(10);
+  const [documentManager, setDocumentManager] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [tabHeights, setTabHeights] = useState({
     0: "41px",
@@ -50,6 +51,32 @@ const UserManagement = () => {
   });
   const [clickIdx, setClickIdx] = useState<string>("");
   const [personData, setPersonData] = useState<Person[] | null>(null);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+
+  const documentManagerData = [
+    "대표이사",
+    "이사",
+    "개발부서장",
+    "개발팀장",
+    "관리부서장",
+    "관리팀장",
+    "지원팀장",
+    "시설팀장",
+    "마케팅부",
+    "디자인팀장",
+    "기획팀장",
+    "지원담당자",
+    "휴가담당자",
+    "작성자",
+  ];
+
+  const RdDocumentManagerData = [
+    "센터장",
+    "알고리즘 연구실장",
+    "동형분석 연구실장",
+    "블록체인 연구실장",
+    "작성자",
+  ];
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -190,6 +217,7 @@ const UserManagement = () => {
     setIsPosition(false);
     setIsAssignPosition(false);
   };
+
   const toggleSelect = (dropdownIndex: any) => {
     switch (dropdownIndex) {
       case 1:
@@ -350,10 +378,7 @@ const UserManagement = () => {
       team: selectedOptions.team,
       spot: selectedOptions.spot,
       position: selectedOptions.position,
-      assignPosition:
-        selectedOptions.assignPosition === "해당 없음"
-          ? ""
-          : selectedOptions.assignPosition,
+      assignPosition: documentManager,
     };
     // API 호출
     EditUserInfoManagement(clickIdx, formData)
@@ -383,6 +408,41 @@ const UserManagement = () => {
       console.error("Error fetching person data:", err);
     }
   };
+
+  const handleDocumentManager = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDocumentManager(value);
+
+    if (selectedOptions.company === "R&D") {
+      if (value.trim()) {
+        const filteredSuggestions = RdDocumentManagerData.filter((item) =>
+          item.includes(value)
+        );
+        setSuggestions(["해당없음", ...filteredSuggestions]);
+      } else {
+        setSuggestions(["해당없음"]);
+      }
+    } else {
+      if (value.trim()) {
+        const filteredSuggestions = documentManagerData.filter((item) =>
+          item.includes(value)
+        );
+        setSuggestions(["해당없음", ...filteredSuggestions]);
+      } else {
+        setSuggestions(["해당없음"]);
+      }
+    }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    console.log(suggestion);
+    setDocumentManager(suggestion);
+    setSuggestions([]);
+  };
+
+  useEffect(() => {
+    setDocumentManager(selectedOptions.assignPosition);
+  }, [selectedOptions]);
 
   return (
     <div className="content">
@@ -970,14 +1030,40 @@ const UserManagement = () => {
           <div className="flexbox">
             <span className="FlexSpan">서류 담당</span>
             <div className="custom-select">
-              <div className="select-header" onClick={() => toggleSelect(5)}>
+              <input
+                type="text"
+                className="select-header"
+                placeholder="서류 담당자를 입력해주세요"
+                value={documentManager ?? ""}
+                onChange={(e) => {
+                  handleDocumentManager(e);
+                }}
+                style={{ cursor: "text" }}
+              />
+
+              <div className="options">
+                {suggestions.length > 0 && (
+                  <ul>
+                    {suggestions.map((suggestion, index) => (
+                      <li
+                        key={index}
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="op"
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              {/* <div className="select-header" onClick={() => toggleSelect(5)}>
                 <span>
                   {selectedOptions.assignPosition
                     ? selectedOptions.assignPosition
                     : "서류 담당자를 선택해주세요"}
                 </span>
                 <img src={isAssignPosition ? ArrowUp : ArrowDown} alt="Arrow" />
-              </div>
+              </div> */}
               {isAssignPosition && (
                 <div className="options">
                   {selectedOptions.company === "R&D" ? (
@@ -1057,6 +1143,7 @@ const UserManagement = () => {
         onFooter1Click={() => {
           setEditCompleModalOpen(false);
           fetchData();
+          setDocumentManager(null);
         }}
       >
         <div className="text-center">
