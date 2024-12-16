@@ -44,6 +44,7 @@ const Approval = () => {
   const [rejecteds, setRejected] = useState<any[]>([]); // 반려된 문서
   const [originalRejected, setOriginalRejected] = useState<any[]>([]);
   const [compleDocuments, setCompleDocument] = useState<any[]>([]); // 완료된 문서
+  const [referenceDocuments, setReferenceDocuments] = useState<any[]>([]); // 반려된 문서
   const [originalCompleDocument, setOriginalCompleDocument] = useState<any[]>(
     []
   );
@@ -109,6 +110,15 @@ const Approval = () => {
         );
         setCompleDocument(filteredDocuments);
       }
+    } else if (selectedTab === "reference") {
+      if (report === "전체 문서") {
+        setReferenceDocuments(referenceDocuments);
+      } else {
+        const filteredDocuments = referenceDocuments.filter(
+          (doc) => doc.selectForm === report
+        );
+        setReferenceDocuments(filteredDocuments);
+      }
     }
 
     setSelectedReport(report);
@@ -134,8 +144,6 @@ const Approval = () => {
     };
   }, []);
 
-  useEffect(() => {}, []);
-
   const handlePageChange = (page: number) => {
     setPage(page);
   };
@@ -149,13 +157,10 @@ const Approval = () => {
 
     try {
       const response = await getMyReports(params);
-      const index = response.data.findIndex(
-        (item: any) => item.status === "참조"
-      );
-      if (index !== -1) {
-        response.data.splice(index, 1); // 해당 요소 제거
-      }
-      return response.data;
+
+      return (response.data = response.data.filter(
+        (item: any) => item.status !== "참조"
+      ));
     } catch (error) {
       console.log("Failed to fetch data");
     }
@@ -170,6 +175,33 @@ const Approval = () => {
       console.log(error);
     },
   });
+
+  const getMyReference = async () => {
+    const params = {
+      userID: user.userID,
+      username: user.username,
+    };
+
+    try {
+      const response = await getMyReports(params);
+
+      setReferenceDocuments(
+        (response.data = response.data.filter(
+          (item: any) => item.status === "참조"
+        ))
+      );
+
+      return (response.data = response.data.filter(
+        (item: any) => item.status !== "참조"
+      ));
+    } catch (error) {
+      console.log("Failed to fetch data");
+    }
+  };
+
+  useEffect(() => {
+    getMyReference();
+  }, []);
 
   // 결재할 문서 목록 불러오기
   const fetchDocumentsToApprove = async () => {
@@ -1357,6 +1389,267 @@ const Approval = () => {
             </table>
           </>
         );
+      case "reference":
+        return (
+          <>
+            <table className="approval_board_list">
+              <colgroup>
+                <col width="6%" />
+                <col width="14%" />
+                <col width="15%" />
+                <col width="15%" />
+                <col width="10%" />
+                <col width="10%" />
+                <col width="20%" />
+                <col width="10%" />
+              </colgroup>
+              <thead>
+                <tr className="board_header">
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "id",
+                        referenceDocuments,
+                        setReferenceDocuments
+                      )
+                    }
+                  >
+                    순번
+                    {idSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "selectForm",
+                        referenceDocuments,
+                        setReferenceDocuments
+                      )
+                    }
+                  >
+                    제목
+                    {titleSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "sendDate",
+                        referenceDocuments,
+                        setReferenceDocuments
+                      )
+                    }
+                  >
+                    결재발신일자
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "updatedAt",
+                        referenceDocuments,
+                        setReferenceDocuments
+                      )
+                    }
+                  >
+                    처리일자
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th>진행상황</th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "state",
+                        referenceDocuments,
+                        setReferenceDocuments
+                      )
+                    }
+                  >
+                    처리상황
+                    {stateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "username",
+                        referenceDocuments,
+                        setReferenceDocuments
+                      )
+                    }
+                  >
+                    작성자/부서
+                    {writerSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th>확인</th>
+                </tr>
+              </thead>
+              <tbody className="board_container">
+                {(referenceDocuments || [])
+                  .slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((referencedocument, index) => {
+                    const formatDate = (dateString: string) => {
+                      const date = new Date(dateString);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const hours = String(date.getHours()).padStart(2, "0");
+                      const minutes = String(date.getMinutes()).padStart(
+                        2,
+                        "0"
+                      );
+                      return `${year}-${month}-${day} ${hours}:${minutes}`;
+                    };
+
+                    const formattedSendDate = formatDate(
+                      referencedocument.sendDate
+                    );
+                    const formattedUpdatedAt = formatDate(
+                      referencedocument.updatedAt
+                    );
+
+                    return (
+                      <tr key={referencedocument.id} className="board_content">
+                        <td>
+                          {idSortOrder === "asc"
+                            ? mydocuments.length -
+                              ((page - 1) * postPerPage + index)
+                            : (page - 1) * postPerPage + index + 1}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {referencedocument.selectForm}
+                        </td>
+                        <td>{formattedSendDate}</td>
+                        <td>{formattedUpdatedAt}</td>
+                        <td>
+                          {referencedocument.approval} /{" "}
+                          {referencedocument.currentSigner}
+                        </td>
+                        <td>{referencedocument.status}</td>
+                        <td>
+                          {referencedocument.username}{" "}
+                          {referencedocument.team
+                            ? ` / ${referencedocument.team}`
+                            : referencedocument.dept
+                            ? ` / ${referencedocument.dept}`
+                            : ""}{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="primary_button"
+                            onClick={() => {
+                              navigate(
+                                `/detailDocument/${referencedocument.id}`,
+                                {
+                                  state: { documentInfo: referencedocument },
+                                }
+                              );
+                            }}
+                          >
+                            문서확인
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+
+              <div className="approval_main_bottom">
+                <Pagination
+                  activePage={page}
+                  itemsCountPerPage={postPerPage}
+                  totalItemsCount={mydocuments?.length}
+                  pageRangeDisplayed={Math.ceil(
+                    mydocuments?.length / postPerPage
+                  )}
+                  prevPageText={<LeftIcon />}
+                  nextPageText={<RightIcon />}
+                  firstPageText={<FirstLeftIcon />}
+                  lastPageText={<LastRightIcon />}
+                  onChange={handlePageChange}
+                />
+              </div>
+            </table>
+          </>
+        );
       // case "vacation":
       //   return (
       //     <>
@@ -1566,6 +1859,7 @@ const Approval = () => {
                   setSelectedReport={setSelectedReport}
                   setSelectedTab={setSelectedTab}
                   SelectOptions={SelectOptions}
+                  referenceDocuments={referenceDocuments}
                 />
               ) : (
                 <div className="approval_top_first"></div>

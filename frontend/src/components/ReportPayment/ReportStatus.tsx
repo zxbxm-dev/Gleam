@@ -10,6 +10,7 @@ const ReportStatus = ({
   setSelectedReport,
   setSelectedTab,
   SelectOptions,
+  referenceDocuments,
 }: any) => {
   const handleTabClick = (tab: string) => {
     setSelectedReport("전체 문서");
@@ -53,7 +54,7 @@ const ReportStatus = ({
         onClick={() => handleTabClick("reference")}
       >
         <span>참조</span>{" "}
-        <span className="document_count">{rejecteds?.length}</span>
+        <span className="document_count">{referenceDocuments?.length}</span>
       </div>
     </div>
   );

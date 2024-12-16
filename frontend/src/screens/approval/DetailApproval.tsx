@@ -24,12 +24,14 @@ import {
   CheckReport,
   getDocumentsInProgress,
   getRejectedDocuments,
+  getReportOpinion,
 } from "../../services/approval/ApprovalServices";
 import {
   PersonData,
   QuitterPersonData,
 } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from "react-router-dom";
+import { RejectOp } from "./DetailDocument";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -59,6 +61,7 @@ const DetailApproval = () => {
   const [isCheckSignModalOpen, setCheckSignModalOpen] = useState(false);
   const [optionButtonDisabe, setOptionButtonDisabe] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isReferenceVisible, setIsReferenceVisible] = useState(false);
   const [modalContent, setModalContent] = useState<string>("");
   const {
     onOpen: onOpinionModalOpen,
@@ -81,6 +84,7 @@ const DetailApproval = () => {
   const [quitterPersonData, setQuitterPersonData] = useState<Person[] | null>(
     null
   );
+  const [rejectOpinionData, setRejectOpinionData] = useState<RejectOp[]>([]);
   const [opinion, setOpinion] = useState("");
   const [rejection, setRejection] = useState("");
   const [buttonDisable, setButtonDisable] = useState(true);
@@ -269,7 +273,6 @@ const DetailApproval = () => {
     }
   };
 
-  console.log(signatories);
   const handleSign = (index: number) => {
     const newCheckSignUp = [...checksignup];
     newCheckSignUp[index] = true;
@@ -323,10 +326,6 @@ const DetailApproval = () => {
     return pages;
   };
 
-  useEffect(() => {
-    console.log(opinion);
-    console.log(newOpinion);
-  }, [opinion]);
   const handleOpinionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setOpinion(e.target.value);
   };
@@ -378,7 +377,9 @@ const DetailApproval = () => {
           opinion: opinion,
         };
 
-        await WriteApprovalOp(report_id, formData);
+        if (opinion) {
+          await WriteApprovalOp(report_id, formData);
+        }
         setOpinion("");
         onOpinionModalClose();
       } catch (error) {
@@ -469,12 +470,28 @@ const DetailApproval = () => {
   };
 
   useEffect(() => {
-    console.log(newOpinion);
-    console.log(opinion);
     if (newOpinion) {
       setIsVisible(true);
     }
-  }, [newOpinion]);
+  }, [newOpinion, documentInfo]);
+
+  const reportOpinionData = async () => {
+    try {
+      const response = await getReportOpinion(report_id);
+      const sortedData = response.data.sort(
+        (a: any, b: any) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      setRejectOpinionData(sortedData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    reportOpinionData();
+  }, []);
 
   return (
     <div className="content">
@@ -567,6 +584,7 @@ const DetailApproval = () => {
                           <button
                             className="second_button"
                             onClick={() => {
+                              setIsReferenceVisible(true);
                               setOptionButtonDisabe(true);
                               addOpinion();
                               onOpinionModalClose();
@@ -737,63 +755,54 @@ const DetailApproval = () => {
                 <>
                   <div
                     className={`detail_documnet_comment ${
-                      newOpinion ? "show" : ""
+                      documentInfo[0].opinionName ||
+                      documentInfo[0].rejectName ||
+                      newOpinion
+                        ? "show"
+                        : ""
                     }`}
                   >
-                    {(documentInfo[0].opinionName || newOpinion) && (
+                    {newOpinion && (
                       <>
-                        <div className="reject_requester">
-                          {newOpinion && (
-                            <>
-                              <p>의견 작성자</p>
-                              <div>{user.username}</div>
-                            </>
-                          )}
-                          <p>의견 작성자</p>
-                          <div>
-                            {documentInfo[0].opinionName.replace(
-                              /\s*\(작성자\)/,
-                              ""
-                            )}
+                        <div className={`testtest ${isVisible ? "show" : ""}`}>
+                          <div className="reject_requester show">
+                            <p>의견 작성자</p>
+                            <div>
+                              {user.username} {user.assignPosition}
+                            </div>
                           </div>
-                        </div>
-                        <div className={`opinion ${isVisible ? "show" : ""}`}>
-                          {newOpinion && `${newOpinion}`}
-                        </div>
-                        <div
-                          className="document_content"
-                          style={{ whiteSpace: "pre-line" }}
-                        >
-                          <div>
-                            {documentInfo[0].opinionContent
-                              .split(",")
-                              .map((item: string) => item.trim())
-                              .join("\n")}
+                          <div className="opinion">
+                            {newOpinion && `${newOpinion}`}
                           </div>
                         </div>
                       </>
                     )}
-
-                    {documentInfo[0].rejectName && (
+                    {rejectOpinionData.map((reject) => (
                       <>
-                        <div className="reject_requester">
-                          <p>반려자</p>
+                        <div className="reject_requester show">
+                          <p>
+                            {reject.type === "opinion"
+                              ? "의견 작성자"
+                              : "반려자"}
+                          </p>
                           <div>
-                            {documentInfo[0].rejectName}
-                            {documentInfo[0].position}
+                            {reject.username}{" "}
+                            {reject.assignPosition !== "작성자"
+                              ? reject.assignPosition
+                              : ""}
                           </div>
                         </div>
                         <div
                           className="document_content"
                           style={{ whiteSpace: "pre-line" }}
                         >
-                          {documentInfo[0].rejectContent
+                          {reject.content
                             .split(",")
                             .map((item: string) => item.trim())
                             .join("\n\n")}
                         </div>
                       </>
-                    )}
+                    ))}
                   </div>
                 </>
               ) : null}
@@ -830,6 +839,18 @@ const DetailApproval = () => {
           {user.username}님의 서명이 존재하지않습니다. <br />
           회원수정에서 서명을 등록해주세요.
         </div>
+      </CustomModal>
+
+      <CustomModal
+        isOpen={isReferenceVisible}
+        onClose={() => setIsReferenceVisible(false)}
+        header={"알림"}
+        headerTextColor="White"
+        footer1={"확인"}
+        footer1Class="green-btn"
+        onFooter1Click={() => setIsReferenceVisible(false)}
+      >
+        <div>의견 작성이 완료되었습니다.</div>
       </CustomModal>
 
       <CustomModal
