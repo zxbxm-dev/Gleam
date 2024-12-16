@@ -455,7 +455,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     if (socket) {
       const requesterId = user.userID;
       const roomId = selectedRoomId.roomId;
-
       // console.log('requesterId',requesterId)
       // console.log('roomId',roomId)
   
@@ -502,7 +501,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         socket.off('error');
       };
     }
-  }, [selectedRoomId, user.userID]);
+  }, [selectedRoomId]);
   
   useEffect(() => {
     ChatTabGetMessage();
@@ -600,11 +599,6 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   // }
   }, [personSideGetmsg.userID]);
 
-  useEffect(() => {
-    if(selectedRoomId.roomId>0){
-      ChatTabGetMessage();
-    }
-  }, []);
 
   // 메시지가 읽혔을 때 호출되는 함수
   const handleReadMessage = useCallback((messageId: string) => {
@@ -652,19 +646,20 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   useEffect(() => {
     if (socket) {
       socket.on('newMsgData', (messageData: any) => {
-        const formattedMessage = {
-          content: messageData.content,
-          fileValue: messageData.fileValue,
-          isReadOther: messageData.isReadOther,
-          messageId: messageData.messageId,
-          timestamp: messageData.timestamp,
-          userId: messageData.senderId,
-          contentType: 'text',
-        };
-
+        // const formattedMessage = {
+        //   content: messageData.content,
+        //   fileValue: messageData.fileValue,
+        //   isReadOther: messageData.isReadOther,
+        //   messageId: messageData.messageId,
+        //   timestamp: messageData.timestamp,
+        //   userId: messageData.senderId,
+        //   contentType: 'text',
+        //   unReadCount: messageData.unReadCount,
+        // };
         // 같은 방에서 메시지가 오는 경우 메시지 업데이트
         if (messageData.roomId === selectedRoomId.roomId) {
-          setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+          // setServerMessages(prevMessages => [...prevMessages, formattedMessage]);
+          ChatTabGetMessage();
         }
       });
       
