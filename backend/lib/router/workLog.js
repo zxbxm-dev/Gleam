@@ -2,6 +2,7 @@ module.exports = (app) => {
   const reportController = require("../controller/workLog/submit_workLog");
   const checkReportController = require("../controller/workLog/check_workLog");
   const writeReportController = require("../controller/workLog/write_workLog");
+  const manageReportController = require("../controller/workLog/manage_workLog");
 
   const express = require("express");
   const router = express.Router();
@@ -46,6 +47,7 @@ module.exports = (app) => {
   router.post("/writeApproval/:report_id", writeReportController.rejectReportById);
   router.post("/writeApprovalOp/:report_id", writeReportController.opinionReportById);
 
+  router.patch("/addReferrer/:reportId", manageReportController.addReferrer);
   // ⚠️⚠️ 문서 결제 router ----------------------------------------------------------------------- ⚠️⚠️
   router.post("/handleApproval/:report_id", writeReportController.SignProgress);
 
