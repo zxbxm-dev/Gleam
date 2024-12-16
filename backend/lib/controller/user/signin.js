@@ -59,6 +59,7 @@ const login = async (req, res) => {
             entering: user.entering,
             leaving: user.leavedate,
             status: user.status,
+            assignPosition: user.assignPosition,
           },
         });
         
