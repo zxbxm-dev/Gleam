@@ -92,6 +92,33 @@ const deleteReportById = async (req, res) => {
   }
 };
 
+// 보고서 반려요청 ----------------------------------------------------------------------------
+const requestReject = async ( req, res ) => {
+  const { report_id } = req.params;
+
+  try{
+    const report = await Report.findByPk(report_id);
+    if(!report){ 
+      return res.status(404).json({error: "해당 보고서를 찾을 수 없습니다."})
+    }
+
+//현재 결재자 확인 
+const personSigning = report.personSigning.split(", ");
+const currentSigner = personSigning[personSigning.length - 1];
+
+//status 변경
+report.status = "반려 요청";
+//DB 저장 
+await report.save();  
+
+return res.status(200).json({ message: "보고서 반려 요청을 성공적으로 완료했습니다.",report});
+
+  }catch(error){
+    console.log("반려요청 중 에러가 발생했습니다.", error)
+    return res.status(500).json({ error : "보고서 반려 요청에 실패했습니다."})
+  }
+};
+
 // 보고서 반려 --------------------------------------------------------------------------------
 const rejectReportById = async (req, res) => {
   const { report_id } = req.params;
@@ -318,7 +345,7 @@ const SignProgress = async (req, res) => {
 };
 
 //보고서 결재취소 요청 -------------------------------------------------------------------
-const cancleReportById  = async (req, res) => {
+const requestCancle  = async (req, res) => {
   const {report_id} = req.params;
   const {} = req.body;
   
@@ -338,4 +365,5 @@ module.exports = {
   opinionReportById,
   SignProgress,
   getReportOpinionById,
+  requestReject,
 };

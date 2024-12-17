@@ -44,6 +44,7 @@ module.exports = (app) => {
     "/deleteReport/:report_id",
     writeReportController.deleteReportById
   );
+  router.patch("/writeApproval/:report_id", writeReportController.requestReject);
   router.post("/writeApproval/:report_id", writeReportController.rejectReportById);
   router.post("/writeApprovalOp/:report_id", writeReportController.opinionReportById);
 
