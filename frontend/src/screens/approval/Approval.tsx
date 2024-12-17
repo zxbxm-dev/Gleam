@@ -24,6 +24,7 @@ import {
   getDocumentsInProgress,
   getRejectedDocuments,
   getApprovedDocuments,
+  getRecheckDocuments,
 } from "../../services/approval/ApprovalServices";
 import ReportStatus from "../../components/ReportPayment/ReportStatus";
 
@@ -41,13 +42,18 @@ const Approval = () => {
   const [originalApprovaling, setOriginalApprovaling] = useState<any[]>([]);
   const [inProgress, setInProgress] = useState<any[]>([]); // 결재 진행중 문서
   const [originalInProgress, setOriginalInProgress] = useState<any[]>([]);
-  const [rejecteds, setRejected] = useState<any[]>([]); // 반려된 문서
+  const [rejecteds, setRejected] = useState<any[]>([]); // 만료된 문서
   const [originalRejected, setOriginalRejected] = useState<any[]>([]);
   const [compleDocuments, setCompleDocument] = useState<any[]>([]); // 완료된 문서
   const [referenceDocuments, setReferenceDocuments] = useState<any[]>([]); // 반려된 문서
   const [originalCompleDocument, setOriginalCompleDocument] = useState<any[]>(
     []
   );
+  const [recheckDocuments, setRecheckDocuments] = useState<any[]>([]); // 재확인문서
+  const [originalRecheckDocument, setOriginalRecheckDocument] = useState<any[]>(
+    []
+  );
+
   const [idSortOrder, setIdSortOrder] = useState<"asc" | "desc">("asc");
   const [titleSortOrder, setTitleSortOrder] = useState<"asc" | "desc">("asc");
   const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");
@@ -65,7 +71,7 @@ const Approval = () => {
   };
 
   const SelectOptions = (report: string) => {
-    if (selectedTab === "myDocuments") {
+    if (selectedTab === "myDocuments") { //내문서
       if (report === "전체 문서") {
         setMyDocument(originalMyDocuments);
       } else {
@@ -74,7 +80,7 @@ const Approval = () => {
         );
         setMyDocument(filteredDocuments);
       }
-    } else if (selectedTab === "approval") {
+    } else if (selectedTab === "approval") { //결재할문서
       if (report === "전체 문서") {
         setApprovaling(originalApprovaling);
       } else {
@@ -83,7 +89,7 @@ const Approval = () => {
         );
         setApprovaling(filteredDocuments);
       }
-    } else if (selectedTab === "inProgress") {
+    } else if (selectedTab === "inProgress") { //결재 진행 중
       if (report === "전체 문서") {
         setInProgress(originalInProgress);
       } else {
@@ -92,7 +98,7 @@ const Approval = () => {
         );
         setInProgress(filteredDocuments);
       }
-    } else if (selectedTab === "rejected") {
+    } else if (selectedTab === "rejected") { //만료
       if (report === "전체 문서") {
         setRejected(originalRejected);
       } else {
@@ -101,7 +107,7 @@ const Approval = () => {
         );
         setRejected(filteredDocuments);
       }
-    } else if (selectedTab === "completed") {
+    } else if (selectedTab === "completed") { //결재완료
       if (report === "전체 문서") {
         setCompleDocument(originalCompleDocument);
       } else {
@@ -110,7 +116,7 @@ const Approval = () => {
         );
         setCompleDocument(filteredDocuments);
       }
-    } else if (selectedTab === "reference") {
+    } else if (selectedTab === "reference") { //반려????
       if (report === "전체 문서") {
         setReferenceDocuments(referenceDocuments);
       } else {
@@ -118,6 +124,16 @@ const Approval = () => {
           (doc) => doc.selectForm === report
         );
         setReferenceDocuments(filteredDocuments);
+      }
+    }
+    else if (selectedTab === "recheckDocument") { //재확인
+      if (report === "전체 문서") {
+        setRecheckDocuments(originalRecheckDocument);
+      } else {
+        const filteredDocuments = originalRecheckDocument.filter(
+          (doc) => doc.selectForm === report
+        );
+        setRecheckDocuments(filteredDocuments);
       }
     }
 
@@ -303,6 +319,32 @@ const Approval = () => {
       console.log(error);
     },
   });
+
+
+    // 재확인 문서 목록 불러오기
+    const fetchRecheckDocuments = async () => {
+      const params = {
+        username: user.username,
+      };
+  
+      try {
+        const response = await getRecheckDocuments(params);
+        return response.data;
+      } catch (error) {
+        // throw new Error("Failed to fetch data");
+        console.log("Failed to fetch data");
+      }
+    };
+  
+    useQuery("RecheckDocuments", fetchRecheckDocuments, {
+      onSuccess: (data) => {
+        setRecheckDocuments(data);
+        setOriginalRecheckDocument(data);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
 
   const handleSort = (
     sortKey: string,
