@@ -21,6 +21,11 @@ const getRejectedDocuments = (params) => {
   return api.get("/getRejectedDocuments", { params });
 };
 
+// 재확인 문서 목록 조회
+const getRecheckDocuments = (params) => {
+  return api.get("/getRecheckDocuments", { params });
+};
+
 // 결재 완료된 문서 목록 조회
 const getApprovedDocuments = (params) => {
   return api.get("/getApprovedDocuments", { params });
@@ -73,4 +78,5 @@ export {
   CheckReport,
   DeleteReport,
   getReportOpinion,
+  getRecheckDocuments,
 };
