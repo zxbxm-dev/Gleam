@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
             },
             type: {
-                type: DataTypes.ENUM('opinion','rejection','canclellation'),
+                type: DataTypes.ENUM('opinion','rejection','canclellation','requestReject','requestCancle'),
                 allowNull: false,
                 defaultValue: 'opinion',
             }

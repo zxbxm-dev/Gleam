@@ -95,12 +95,32 @@ const deleteReportById = async (req, res) => {
 // 보고서 반려요청 ----------------------------------------------------------------------------
 const requestReject = async ( req, res ) => {
   const { report_id } = req.params;
+  const { opinion, userID, username, position } = req.body;
 
   try{
     const report = await Report.findByPk(report_id);
     if(!report){ 
       return res.status(404).json({error: "해당 보고서를 찾을 수 없습니다."})
     }
+
+   //반려 요청 사유 작성자의 문서결재명칭 추출
+   const {assignPosition} = await models.User.findOne({
+    where:{
+      userId: userID,
+    },
+    attributes:["assignPosition"],
+    raw: true,
+  });
+
+  //반려 요청 사유 
+  await ReportOpinion.create({
+    reportId : report_id,
+    username: username,
+    position: position,
+    assignPosition: assignPosition,
+    content: opinion,
+    type: 'requestRejection',
+    });
 
 //현재 결재자 확인 
 const personSigning = report.personSigning.split(", ");
@@ -122,7 +142,7 @@ return res.status(200).json({ message: "보고서 반려 요청을 성공적으�
 // 보고서 반려 --------------------------------------------------------------------------------
 const rejectReportById = async (req, res) => {
   const { report_id } = req.params;
-  const { rejection, userID, username, position } = req.body;
+  const { opinion, userID, username, position, type } = req.body;
 
   try {
 
@@ -182,8 +202,8 @@ const rejectReportById = async (req, res) => {
     }
 
     // 반려 내용을 저장
-    report.rejectName = `${username} (${assignPosition})`; // 반려한 사람의 이름
-    report.rejectContent = rejection; // 반려 내용
+    report.rejectName = `${username} (${assignPosition})`; // 반려/ 결재 취소한 사람의 이름
+    report.rejectContent = opinion; // 반려/ 결재 취소 사유
 
     // pending 비우기
     report.pending = ""; // pendingSigners 배열을 비움
@@ -199,8 +219,8 @@ const rejectReportById = async (req, res) => {
       username: username,
       position: position,
       assignPosition: assignPosition,
-      content: rejection,
-      type: 'rejection',
+      content: opinion,
+      type: type,
       });
       
     // 상태 업데이트 저장
@@ -208,9 +228,9 @@ const rejectReportById = async (req, res) => {
 
     console.log("저장 후 report.personSigning:", report.personSigning);
 
-    res.status(200).json({ message: "보고서가 반려되었습니다." });
+    res.status(200).json({ message: "보고서가 반려 / 결재취소 되었습니다." });
   } catch (error) {
-    console.error("보고서 반려 처리 중 오류 발생:", error);
+    console.error("보고서 반려 / 결재취소 처리 중 오류 발생:", error);
     res.status(500).json({ error: "내부 서버 오류입니다." });
   }
 };
@@ -346,17 +366,45 @@ const SignProgress = async (req, res) => {
 
 //보고서 결재취소 요청 -------------------------------------------------------------------
 const requestCancle  = async (req, res) => {
-  const {report_id} = req.params;
-  const {} = req.body;
-  
+  const {report_id} = req.params;  
+  const { opinion, userID, username, position } = req.body;
   try{
+    const report = await Report.findByPk(report_id);
+    if(!report){ 
+      return res.status(404).json({error: "해당 보고서를 찾을 수 없습니다."})
+    }
 
-    
+    //결재 취소 요청 사유 작성자의 문서결재명칭 추출
+   const {assignPosition} = await models.User.findOne({
+    where:{
+      userId: userID,
+    },
+    attributes:["assignPosition"],
+    raw: true,
+    });
+
+  //결재 취소 요청 사유 
+  await ReportOpinion.create({
+    reportId : report_id,
+    username: username,
+    position: position,
+    assignPosition: assignPosition,
+    content: opinion,
+    type: 'requestCancle',
+    });
+
+    //status 변경
+    report.status = "결재 취소 요청";
+    await report.save();  
+
+    return res.status(200).json({ message: "보고서 결재 취소 요청을 성공적으로 완료했습니다.",report});
+
   }catch(error){
-    console.error()
-    res.status(500).json({})
+    console.error("결재 취소 요청 중 에러가 발생했습니다.", error);
+    res.status(500).json({ error : " 보고서 결재 취소 요청에 실패했습니다."})
   }
 };
+
 
 module.exports = {
   getReportById,
@@ -366,4 +414,5 @@ module.exports = {
   SignProgress,
   getReportOpinionById,
   requestReject,
+  requestCancle,
 };

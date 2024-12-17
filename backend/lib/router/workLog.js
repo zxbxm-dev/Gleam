@@ -46,6 +46,7 @@ module.exports = (app) => {
   );
   router.patch("/writeApproval/:report_id", writeReportController.requestReject);
   router.post("/writeApproval/:report_id", writeReportController.rejectReportById);
+  router.patch("/writeApproval/:report_id", writeReportController.requestCancle);
   router.post("/writeApprovalOp/:report_id", writeReportController.opinionReportById);
 
   router.patch("/addReferrer/:reportId", manageReportController.addReferrer);
