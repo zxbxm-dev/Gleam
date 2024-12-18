@@ -310,7 +310,7 @@ const WriteReport = () => {
     : null;
   // const approvalFixed = members.find(member => member[0] === '이정훈') || null;
   const ManagementHeadFixed = headOffice
-    ? headOffice.find((member) => member[4] === "이사") || null
+    ? headOffice.find((member) => member[4] === "관리부서장") || null
     : null;
   const ManagementFixed = headOffice
     ? headOffice.find((member) => member[4] === "관리팀장") || null
@@ -395,14 +395,14 @@ const WriteReport = () => {
   const updateApprovalLines = (report: string) => {
     let newApprovalLines;
 
-    function RDLines() {
-      return [
-        { name: "참조", checked: false, selectedMembers: [] as Member[] },
-        { name: "대표이사", checked: true, selectedMember: approvalFixed },
-        { name: "센터장", checked: true, selectedMember: RDLead },
-        { name: "연구실장", checked: true, selectedMember: RDTeamLead },
-      ];
-    }
+    // function RDLines() {
+    //   return [
+    //     { name: "참조", checked: false, selectedMembers: [] as Member[] },
+    //     { name: "대표이사", checked: true, selectedMember: approvalFixed },
+    //     { name: "센터장", checked: true, selectedMember: RDLead },
+    //     { name: "연구실장", checked: true, selectedMember: RDTeamLead },
+    //   ];
+    // }
 
     function RDWriteLines() {
       return [
@@ -414,6 +414,7 @@ const WriteReport = () => {
       ];
     }
 
+    // 지원 결재라인
     function SupportLines() {
       return [
         { name: "참조", checked: false, selectedMembers: [] as Member[] },
@@ -434,6 +435,7 @@ const WriteReport = () => {
       ];
     }
 
+    // 관리팀 결재라인
     function ManagementLines() {
       return [
         { name: "참조", checked: false, selectedMembers: [] as Member[] },
@@ -454,6 +456,7 @@ const WriteReport = () => {
       ];
     }
 
+    // 휴가 신청서
     function vacationLines() {
       return [
         {
@@ -478,6 +481,7 @@ const WriteReport = () => {
       ];
     }
 
+    // 주간업무 일지
     function DefaltLines() {
       return [
         { name: "참조", checked: false, selectedMembers: [] as Member[] },
@@ -488,22 +492,26 @@ const WriteReport = () => {
           selectedMember: departmentDirector,
         },
         { name: `${TeamName}팀장`, checked: true, selectedMember: teamLeader },
+        { name: "작성자", checked: true, selectedMember: writer },
       ];
     }
 
+    // 예산 신청서
     function supportLast() {
       return [
         { name: "참조", checked: false, selectedMembers: [] as Member[] },
         { name: "대표이사", checked: true, selectedMember: approvalFixed },
         {
-          name: `${DepartmentName}부서장`,
+          name: "관리부서장",
           checked: true,
           selectedMember: ManagementHeadFixed,
         },
         { name: "담당자", checked: true, selectedMember: SupportFixed },
+        { name: "작성자", checked: true, selectedMember: writer },
       ];
     }
 
+    // 자기개발비, 법인카드 신청서
     function supportTeamLast() {
       return [
         { name: "참조", checked: false, selectedMembers: [] as Member[] },
@@ -525,10 +533,12 @@ const WriteReport = () => {
 
     switch (report) {
       case "주간업무일지":
-        newApprovalLines = user.company === "본사" ? DefaltLines() : RDLines();
+        newApprovalLines =
+          user.company === "본사" ? DefaltLines() : RDWriteLines();
         break;
       case "퇴직금 중간정산 신청서":
-        newApprovalLines = user.company === "본사" ? DefaltLines() : RDLines();
+        newApprovalLines =
+          user.company === "본사" ? DefaltLines() : RDWriteLines();
         break;
       case "휴가신청서":
         newApprovalLines =
@@ -615,7 +625,8 @@ const WriteReport = () => {
           user.company === "본사" ? SupportLines() : RDWriteLines();
         break;
       case "예산신청서":
-        newApprovalLines = user.company === "본사" ? supportLast() : RDLines();
+        newApprovalLines =
+          user.company === "본사" ? supportLast() : RDWriteLines();
         break;
       case "자기개발비 신청서":
         newApprovalLines =

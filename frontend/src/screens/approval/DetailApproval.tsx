@@ -768,7 +768,10 @@ const DetailApproval = () => {
                           <div className="reject_requester show">
                             <p>의견 작성자</p>
                             <div>
-                              {user.username} {user.assignPosition}
+                              {user.username}{" "}
+                              {user.assignPosition !== "작성자"
+                                ? user.assignPosition
+                                : ""}
                             </div>
                           </div>
                           <div className="opinion">

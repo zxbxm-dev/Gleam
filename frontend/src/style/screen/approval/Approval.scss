@@ -759,6 +759,10 @@
   font-family: var(--font-family-Noto-R);
 
   border: 1px solid #45c552;
+
+  &:hover {
+    background: #ddf2df;
+  }
 }
 .report_button_box_active {
   width: 175px;
@@ -772,20 +776,25 @@
 }
 
 .report_button_box2 {
-  position: relative; /* 기준 컨테이너 설정 */
+  position: relative;
   width: 175px;
   height: 40px;
   border-radius: 30px;
   font-family: var(--font-family-Noto-R);
   border: 1px solid #45c552;
+
+  &:hover {
+    background: #ddf2df;
+  }
 }
 
 .report_button_box_active2 {
+  position: relative;
   width: 175px;
   height: 40px;
   border-radius: 30px;
   font-family: var(--font-family-Noto-R);
-  border: 2px solid #45c552;
+  border: 1px solid #45c552;
   background-color: #45c552;
   color: #fff;
 }
@@ -793,8 +802,7 @@
 /* 아이콘 위치 설정 */
 .new_Icon {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -10px;
 }
 
 .child_Box {
@@ -814,6 +822,15 @@
   justify-content: center;
 }
 
+.detail_documnet_box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+
+  gap: 14px;
+}
+
 .detail_documnet_comment {
   display: flex;
   flex-direction: column;
@@ -825,6 +842,36 @@
   max-width: 420px;
 
   transition: all 0.4s ease-in-out;
+}
+
+.detail_documnet_refer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid #d9d9d9;
+  padding: 15px;
+  gap: 10px;
+
+  transition: all 0.4s ease-in-out;
+}
+
+.refer_title {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: solid 1px #d9d9d9;
+  padding-bottom: 10px;
+
+  font-family: var(--font-family-Noto-R);
+
+  p {
+    color: #929292;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  img {
+    cursor: pointer;
+  }
 }
 
 .detail_documnet_comment.show {

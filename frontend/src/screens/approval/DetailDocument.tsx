@@ -9,6 +9,8 @@ import {
   CheckReport,
   DeleteReport,
   getReportOpinion,
+  RequestCancleDocument,
+  RequestReject,
 } from "../../services/approval/ApprovalServices";
 import {
   PersonData,
@@ -17,6 +19,17 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/atoms";
+import {
+  Popover,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { add_refer } from "../../assets/images";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -70,6 +83,14 @@ const DetailDocument = () => {
     null
   );
   const [canReject, setCanReject] = useState(false);
+  const [requestReject, setRequestReject] = useState<string | null>(null);
+  const [requestCancle, setRequestCancle] = useState<string | null>(null);
+
+  const {
+    onOpen: onOpinionModalOpen,
+    onClose: onOpinionModalClose,
+    isOpen: isOpinionModalOpen,
+  } = useDisclosure();
 
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine =
@@ -302,6 +323,13 @@ const DetailDocument = () => {
       ) {
         setCanReject(true);
       }
+      if (
+        signatories.includes("연구실장") &&
+        (documentInfo[0].pending?.includes("심민지") ||
+          documentInfo[0].pending?.includes("윤민지"))
+      ) {
+        setCanReject(true);
+      }
     }
   }, [signatories]);
 
@@ -313,15 +341,60 @@ const DetailDocument = () => {
     }
   }, [documentInfo]);
 
+  // 결재 취소 요청하기
+  const handleRequestCancle = async () => {
+    try {
+      const formData = {
+        userID: user.userID,
+        username: user.username,
+        position: user.position,
+        opinion: requestReject,
+      };
+
+      if (requestReject) {
+        const res = await RequestCancleDocument(report_id, formData);
+        console.log(res.data);
+      }
+      onOpinionModalClose();
+    } catch (error) {
+      alert("Failed to submit opinion.");
+      onOpinionModalClose();
+    }
+  };
+
+  // 반려 요청하기
+  const handleRequestReject = async () => {
+    try {
+      const formData = {
+        userID: user.userID,
+        username: user.username,
+        position: user.position,
+        opinion: requestReject,
+      };
+
+      if (requestReject) {
+        const res = await RequestReject(report_id, formData);
+        console.log(res.data);
+      }
+      onOpinionModalClose();
+    } catch (error) {
+      alert("Failed to submit opinion.");
+      onOpinionModalClose();
+    }
+  };
+
   return (
     <div className="content">
       <div className="oper_header_right">
-        <button className="primary_button" onClick={() => navigate(-1)}>
+        <button
+          className="primary_button"
+          onClick={() => {
+            navigate("/approval");
+          }}
+        >
           확인
         </button>
-        <button className="white_button" onClick={exportToPDF}>
-          다운로드
-        </button>
+
         {!shouldHideDeleteButton && (
           <button
             className="red_button"
@@ -332,10 +405,185 @@ const DetailDocument = () => {
         )}
 
         {canReject ? (
-          <button className="white_button">결재취소요청</button>
+          <Popover
+            placement="right-start"
+            isOpen={isOpinionModalOpen}
+            onOpen={onOpinionModalOpen}
+            onClose={onOpinionModalClose}
+          >
+            <PopoverTrigger>
+              <button className="white_button">결재취소요청</button>
+            </PopoverTrigger>
+            <Portal>
+              <PopoverContent
+                width="400px"
+                border="0"
+                borderRadius="5px"
+                boxShadow="0px 0px 5px #444"
+              >
+                <PopoverHeader
+                  color="white"
+                  bg="#76CB7E"
+                  border="0"
+                  fontFamily="var(--font-family-Noto-B)"
+                  borderTopRadius="5px"
+                  fontSize="14px"
+                >
+                  결재취소요청
+                </PopoverHeader>
+                <PopoverCloseButton color="white" />
+                <PopoverBody
+                  display="flex"
+                  flexDirection="column"
+                  padding="0px"
+                  justifyContent="center"
+                  alignItems="center"
+                  fontSize="14px"
+                  paddingRight="15px"
+                  style={{
+                    paddingBottom: "15px",
+                  }}
+                >
+                  <div className="opinionBox">
+                    <div className="WriterBox">
+                      <div className="Write">작성자</div>
+                      <div className="Writer">
+                        {user.username}&nbsp;{user.position}
+                      </div>
+                    </div>
+                    <div className="TextAreaBox">
+                      <div className="Title">내용</div>
+                      <div>
+                        <textarea
+                          className="TextAreaStyle"
+                          placeholder="내용을 입력해주세요."
+                          // value={opinion}
+                          onChange={(e) => {
+                            setRequestCancle(e.target.value);
+                          }}
+                        />
+                        <div className="warn_text">
+                          * 결재 미완료 시 의견작성은 진행되지 않습니다.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="button-wrap">
+                    <button
+                      className="second_button"
+                      onClick={() => {
+                        handleRequestCancle();
+                        onOpinionModalClose();
+                      }}
+                    >
+                      등록
+                    </button>
+                    <button
+                      className="white_button"
+                      onClick={() => {
+                        onOpinionModalClose();
+                        // setOpinion("");
+                      }}
+                    >
+                      취소
+                    </button>
+                  </div>
+                </PopoverBody>
+              </PopoverContent>
+            </Portal>
+          </Popover>
         ) : (
-          <button className="red_button">반려요청</button>
+          <Popover
+            placement="right-start"
+            isOpen={isOpinionModalOpen}
+            onOpen={onOpinionModalOpen}
+            onClose={onOpinionModalClose}
+          >
+            <PopoverTrigger>
+              <button className="red_button">반려요청</button>
+            </PopoverTrigger>
+            <Portal>
+              <PopoverContent
+                width="400px"
+                border="0"
+                borderRadius="5px"
+                boxShadow="0px 0px 5px #444"
+              >
+                <PopoverHeader
+                  color="white"
+                  bg="#76CB7E"
+                  border="0"
+                  fontFamily="var(--font-family-Noto-B)"
+                  borderTopRadius="5px"
+                  fontSize="14px"
+                >
+                  반려요청
+                </PopoverHeader>
+                <PopoverCloseButton color="white" />
+                <PopoverBody
+                  display="flex"
+                  flexDirection="column"
+                  padding="0px"
+                  justifyContent="center"
+                  alignItems="center"
+                  fontSize="14px"
+                  paddingRight="15px"
+                  style={{
+                    paddingBottom: "15px",
+                  }}
+                >
+                  <div className="opinionBox">
+                    <div className="WriterBox">
+                      <div className="Write">작성자</div>
+                      <div className="Writer">
+                        {user.username}&nbsp;{user.position}
+                      </div>
+                    </div>
+                    <div className="TextAreaBox">
+                      <div className="Title">내용</div>
+                      <div>
+                        <textarea
+                          className="TextAreaStyle"
+                          placeholder="내용을 입력해주세요."
+                          // value={opinion}
+                          onChange={(e) => {
+                            setRequestReject(e.target.value);
+                          }}
+                        />
+                        <div className="warn_text">
+                          * 결재 미완료 시 의견작성은 진행되지 않습니다.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="button-wrap">
+                    <button
+                      className="second_button"
+                      onClick={() => {
+                        handleRequestReject();
+                        onOpinionModalClose();
+                      }}
+                    >
+                      등록
+                    </button>
+                    <button
+                      className="white_button"
+                      onClick={() => {
+                        onOpinionModalClose();
+                        // setOpinion("");
+                      }}
+                    >
+                      취소
+                    </button>
+                  </div>
+                </PopoverBody>
+              </PopoverContent>
+            </Portal>
+          </Popover>
         )}
+        <button className="white_button" onClick={exportToPDF}>
+          다운로드
+        </button>
       </div>
 
       <div className="content_container">
@@ -435,79 +683,53 @@ const DetailDocument = () => {
                 </div>
               </Document>
             </div>
-            {rejectOpinionData ? (
-              <>
-                <div
-                  className={`detail_documnet_comment ${
-                    isVisible ? "show" : ""
-                  }`}
-                >
-                  {rejectOpinionData.map((reject) => (
-                    <>
-                      <div className="reject_requester show">
-                        <p>
-                          {reject.type === "opinion" ? "의견 작성자" : "반려자"}
-                        </p>
-                        <div>
-                          {reject.username}{" "}
-                          {reject.assignPosition !== "작성자"
-                            ? reject.assignPosition
-                            : ""}
+            {(rejectOpinionData.length > 0 || documentInfo[0].referName) && (
+              <div className="detail_documnet_box">
+                {documentInfo[0].referName && (
+                  <div className="detail_documnet_refer">
+                    <div className="refer_title">
+                      <p>참조</p>
+                      <img src={add_refer} />
+                    </div>
+                    <div>{documentInfo[0].referName}</div>
+                  </div>
+                )}
+                {rejectOpinionData.length > 0 ? (
+                  <div
+                    className={`detail_documnet_comment ${
+                      isVisible ? "show" : ""
+                    }`}
+                  >
+                    {rejectOpinionData.map((reject) => (
+                      <React.Fragment key={reject.opinionId}>
+                        <div className="reject_requester show">
+                          <p>
+                            {reject.type === "opinion"
+                              ? "의견 작성자"
+                              : "반려자"}
+                          </p>
+                          <div>
+                            {reject.username}{" "}
+                            {reject.assignPosition !== "작성자"
+                              ? reject.assignPosition
+                              : ""}
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        className="document_content"
-                        style={{ whiteSpace: "pre-line" }}
-                      >
-                        {reject.content
-                          .split(",")
-                          .map((item: string) => item.trim())
-                          .join("\n\n")}
-                      </div>
-                    </>
-                  ))}
-                  {/* {documentInfo[0].rejectName && (
-                    <>
-                      <div className="reject_requester show">
-                        <p>반려자</p>
-                        <div>{documentInfo[0].rejectName}</div>
-                      </div>
-                      <div
-                        className="document_content"
-                        style={{ whiteSpace: "pre-line" }}
-                      >
-                        {documentInfo[0].rejectContent
-                          .split(",")
-                          .map((item: string) => item.trim())
-                          .join("\n\n")}
-                      </div>
-                    </>
-                  )}
-                  {documentInfo[0].opinionName && (
-                    <>
-                      <div className="reject_requester show">
-                        <p>의견 작성자</p>
-                        <div>
-                          {documentInfo[0].opinionName.replace(
-                            /\s*\(작성자\)/,
-                            ""
-                          )}
+                        <div
+                          className="document_content"
+                          style={{ whiteSpace: "pre-line" }}
+                        >
+                          {reject.content
+                            .split(",")
+                            .map((item: string) => item.trim())
+                            .join("\n\n")}
                         </div>
-                      </div>
-                      <div
-                        className="document_content"
-                        style={{ whiteSpace: "pre-line" }}
-                      >
-                        {documentInfo[0].opinionContent
-                          .split(",")
-                          .map((item: string) => item.trim())
-                          .join("\n\n")}
-                      </div>
-                    </>
-                  )} */}
-                </div>
-              </>
-            ) : null}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            )}
           </div>
         </div>
       </div>
