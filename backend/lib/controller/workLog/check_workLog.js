@@ -161,8 +161,9 @@ const getRejectedDocuments = async (req, res) => {
     const reports = await Report.findAll({
       where: {
         completed : "rejectedDoc", 
-        [Op.and]: [
+        [Op.or]: [
           { rejected: { [Op.like]: `%${username}%` } }, // 반려된 문서 중에서
+          { referName: { [Op.like]: `%${username}%`}}, //내가 참조된 문서일 때 
           //{ username: { [Op.ne]: username } } , // 작성자가 현재 사용자가 아닌 문서만 선택
         ],
       },
