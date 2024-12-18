@@ -76,7 +76,7 @@ const Header = () => {
   return (
     <div className="header">
       <div className="header-left">
-        <Link to="/">
+        <Link to="/" className="HeaderImg">
           <img src={Logo} alt="Logo" />
         </Link>
       </div>
@@ -126,14 +126,11 @@ const Header = () => {
             </PopoverTrigger>
             <Portal>
               <PopoverContent className="menu_popover" _focus={{ boxShadow: "none" }}>
-                <PopoverBody>
+                <PopoverBody className="MobileMenu">
                   <Menu>
-                    <MenuItem onClick={() => navigate('/profile')}>공지사항</MenuItem>
-                    <MenuItem onClick={() => navigate('/settings')}>사내규정</MenuItem>
-                    <MenuItem onClick={() => navigate('/profile')}>인사조직도</MenuItem>
-                    <MenuItem onClick={() => navigate('/profile')}>휴가관리</MenuItem>
-                    <MenuItem onClick={() => navigate('/settings')}>보고서 결재</MenuItem>
-                    <MenuItem onClick={() => navigate('/profile')}>채용공고</MenuItem>
+                    <MenuItem onClick={() => navigate('/calendar')}>휴가관리</MenuItem>
+                    <MenuItem onClick={() => navigate('/meetingroom')}>회의실 관리</MenuItem>
+                    <MenuItem onClick={() => navigate('/approval')}>보고서 결재</MenuItem>
                     {/* <MenuItem onClick={() => navigate('/settings')}>회원관리</MenuItem> */}
                   </Menu>
                 </PopoverBody>

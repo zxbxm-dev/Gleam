@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import Pagination from "react-js-pagination";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/atoms";
-
+import useMediaQuery from "../../hooks/MediaQuery";
 import { useQuery } from "react-query";
 import {
   getMyReports,
@@ -61,6 +61,7 @@ const Approval = () => {
   const [reportButtonValue, setReportButtonValue] = useState<String | null>(
     "myDocuments"
   );
+  const isTabletOrAbove = useMediaQuery("(max-width: 1024px)"); //브라우저 크기 측정
 
   const SelectOpen = () => {
     setSelectOpen(!selectOpen);
@@ -369,106 +370,10 @@ const Approval = () => {
       case "approval":
         return (
           <>
-            <table className="approval_board_list">
-              <colgroup>
-                <col width="6%" />
-                <col width="30%" />
-                <col width="22%" />
-                <col width="10%" />
-                <col width="22%" />
-                <col width="10%" />
-              </colgroup>
-              <thead>
-                <tr className="board_header">
-                  <th
-                    className="HoverTab"
-                    onClick={() =>
-                      handleSort("id", approvalings, setApprovaling)
-                    }
-                  >
-                    순번
-                    {idSortOrder === "asc" ? (
-                      <img
-                        src={Asc_Icon}
-                        alt="Asc_Icon"
-                        className="sort_icon"
-                      />
-                    ) : (
-                      <img
-                        src={Desc_Icon}
-                        alt="Desc_Icon"
-                        className="sort_icon"
-                      />
-                    )}
-                  </th>
-                  <th
-                    className="HoverTab"
-                    onClick={() =>
-                      handleSort("selectForm", approvalings, setApprovaling)
-                    }
-                  >
-                    제목
-                    {titleSortOrder === "asc" ? (
-                      <img
-                        src={Asc_Icon}
-                        alt="Asc_Icon"
-                        className="sort_icon"
-                      />
-                    ) : (
-                      <img
-                        src={Desc_Icon}
-                        alt="Desc_Icon"
-                        className="sort_icon"
-                      />
-                    )}
-                  </th>
-                  <th
-                    className="HoverTab"
-                    onClick={() =>
-                      handleSort("sendDate", approvalings, setApprovaling)
-                    }
-                  >
-                    결재수신일자
-                    {dateSortOrder === "asc" ? (
-                      <img
-                        src={Asc_Icon}
-                        alt="Asc_Icon"
-                        className="sort_icon"
-                      />
-                    ) : (
-                      <img
-                        src={Desc_Icon}
-                        alt="Desc_Icon"
-                        className="sort_icon"
-                      />
-                    )}
-                  </th>
-                  <th>진행상황</th>
-                  <th
-                    className="HoverTab"
-                    onClick={() =>
-                      handleSort("username", approvalings, setApprovaling)
-                    }
-                  >
-                    작성자/부서
-                    {writerSortOrder === "asc" ? (
-                      <img
-                        src={Asc_Icon}
-                        alt="Asc_Icon"
-                        className="sort_icon"
-                      />
-                    ) : (
-                      <img
-                        src={Desc_Icon}
-                        alt="Desc_Icon"
-                        className="sort_icon"
-                      />
-                    )}
-                  </th>
-                  <th>결재</th>
-                </tr>
-              </thead>
-              <tbody className="board_container">
+            {isTabletOrAbove ?
+            //APP
+            <div className="Mobile_approval_board_list">
+              <div className="board_container">
                 {(approvalings || [])
                   .slice((page - 1) * postPerPage, page * postPerPage)
                   .map((approvaling, index) => {
@@ -491,29 +396,26 @@ const Approval = () => {
                     const formattedSendDate = formatDate(approvaling.sendDate);
 
                     return (
-                      <tr key={approvaling.id} className="board_content">
-                        <td>
-                          {idSortOrder === "asc"
-                            ? approvalings.length -
-                              ((page - 1) * postPerPage + index)
-                            : (page - 1) * postPerPage + index + 1}
-                        </td>
-                        <td style={{ textAlign: "center" }}>
+                      <div key={approvaling.id} className="board_content">
+                        <div className="App_Report">
+                        <div className="App_ReportName" style={{ textAlign: "center" }}>
                           {approvaling.selectForm}
-                        </td>
-                        <td>{formattedSendDate}</td>
-                        <td>
+                        </div>
+                        <div>{formattedSendDate.split(" ")[0]}</div>
+                        <div>
                           {approvaling.approval} / {approvaling.currentSigner}
-                        </td>
-                        <td>
+                        </div>
+                        <div>
                           {approvaling.username}{" "}
                           {approvaling.team
                             ? ` / ${approvaling.team}`
                             : approvaling.dept
                             ? ` / ${approvaling.dept}`
                             : ""}{" "}
-                        </td>
-                        <td>
+                        </div>
+                        </div>
+
+                        <div>
                           <button
                             className="primary_button"
                             onClick={() => {
@@ -524,11 +426,11 @@ const Approval = () => {
                           >
                             결재하기
                           </button>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     );
                   })}
-              </tbody>
+              </div>
 
               <div className="approval_main_bottom">
                 <Pagination
@@ -545,7 +447,187 @@ const Approval = () => {
                   onChange={handlePageChange}
                 />
               </div>
-            </table>
+            </div>
+           :
+
+           //WEB
+           <table className="approval_board_list">
+           <colgroup>
+             <col width="6%" />
+             <col width="30%" />
+             <col width="22%" />
+             <col width="10%" />
+             <col width="22%" />
+             <col width="10%" />
+           </colgroup>
+           <thead>
+             <tr className="board_header">
+               <th
+                 className="HoverTab"
+                 onClick={() =>
+                   handleSort("id", approvalings, setApprovaling)
+                 }
+               >
+                 순번
+                 {idSortOrder === "asc" ? (
+                   <img
+                     src={Asc_Icon}
+                     alt="Asc_Icon"
+                     className="sort_icon"
+                   />
+                 ) : (
+                   <img
+                     src={Desc_Icon}
+                     alt="Desc_Icon"
+                     className="sort_icon"
+                   />
+                 )}
+               </th>
+               <th
+                 className="HoverTab"
+                 onClick={() =>
+                   handleSort("selectForm", approvalings, setApprovaling)
+                 }
+               >
+                 제목
+                 {titleSortOrder === "asc" ? (
+                   <img
+                     src={Asc_Icon}
+                     alt="Asc_Icon"
+                     className="sort_icon"
+                   />
+                 ) : (
+                   <img
+                     src={Desc_Icon}
+                     alt="Desc_Icon"
+                     className="sort_icon"
+                   />
+                 )}
+               </th>
+               <th
+                 className="HoverTab"
+                 onClick={() =>
+                   handleSort("sendDate", approvalings, setApprovaling)
+                 }
+               >
+                 결재수신일자
+                 {dateSortOrder === "asc" ? (
+                   <img
+                     src={Asc_Icon}
+                     alt="Asc_Icon"
+                     className="sort_icon"
+                   />
+                 ) : (
+                   <img
+                     src={Desc_Icon}
+                     alt="Desc_Icon"
+                     className="sort_icon"
+                   />
+                 )}
+               </th>
+               <th>진행상황</th>
+               <th
+                 className="HoverTab"
+                 onClick={() =>
+                   handleSort("username", approvalings, setApprovaling)
+                 }
+               >
+                 작성자/부서
+                 {writerSortOrder === "asc" ? (
+                   <img
+                     src={Asc_Icon}
+                     alt="Asc_Icon"
+                     className="sort_icon"
+                   />
+                 ) : (
+                   <img
+                     src={Desc_Icon}
+                     alt="Desc_Icon"
+                     className="sort_icon"
+                   />
+                 )}
+               </th>
+               <th>결재</th>
+             </tr>
+           </thead>
+           <tbody className="board_container">
+             {(approvalings || [])
+               .slice((page - 1) * postPerPage, page * postPerPage)
+               .map((approvaling, index) => {
+                 const formatDate = (dateString: string) => {
+                   const date = new Date(dateString);
+                   const year = date.getFullYear();
+                   const month = String(date.getMonth() + 1).padStart(
+                     2,
+                     "0"
+                   );
+                   const day = String(date.getDate()).padStart(2, "0");
+                   const hours = String(date.getHours()).padStart(2, "0");
+                   const minutes = String(date.getMinutes()).padStart(
+                     2,
+                     "0"
+                   );
+                   return `${year}-${month}-${day} ${hours}:${minutes}`;
+                 };
+
+                 const formattedSendDate = formatDate(approvaling.sendDate);
+
+                 return (
+                   <tr key={approvaling.id} className="board_content">
+                     <td>
+                       {idSortOrder === "asc"
+                         ? approvalings.length -
+                           ((page - 1) * postPerPage + index)
+                         : (page - 1) * postPerPage + index + 1}
+                     </td>
+                     <td style={{ textAlign: "center" }}>
+                       {approvaling.selectForm}
+                     </td>
+                     <td>{formattedSendDate}</td>
+                     <td>
+                       {approvaling.approval} / {approvaling.currentSigner}
+                     </td>
+                     <td>
+                       {approvaling.username}{" "}
+                       {approvaling.team
+                         ? ` / ${approvaling.team}`
+                         : approvaling.dept
+                         ? ` / ${approvaling.dept}`
+                         : ""}{" "}
+                     </td>
+                     <td>
+                       <button
+                         className="primary_button"
+                         onClick={() => {
+                           navigate(`/detailApproval/${approvaling.id}`, {
+                             state: { documentInfo: approvaling },
+                           });
+                         }}
+                       >
+                         결재하기
+                       </button>
+                     </td>
+                   </tr>
+                 );
+               })}
+           </tbody>
+
+           <div className="approval_main_bottom">
+             <Pagination
+               activePage={page}
+               itemsCountPerPage={postPerPage}
+               totalItemsCount={approvalings?.length}
+               pageRangeDisplayed={Math.ceil(
+                 approvalings?.length / postPerPage
+               )}
+               prevPageText={<LeftIcon />}
+               nextPageText={<RightIcon />}
+               firstPageText={<FirstLeftIcon />}
+               lastPageText={<LastRightIcon />}
+               onChange={handlePageChange}
+             />
+           </div>
+         </table> }
           </>
         );
       case "inProgress":
