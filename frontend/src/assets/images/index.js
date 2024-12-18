@@ -25,6 +25,7 @@ export { default as pinned_false } from "./Common/pinned_false.svg";
 export { default as report_Down } from "./Common/report_Down.svg";
 export { default as report_Up } from "./Common/report_Up.svg";
 export { default as new_Icon } from "./Common/new_Icon.svg";
+export { default as add_refer } from "./Common/add_refer.svg";
 
 // Approval
 export { default as Approval_Plus } from "./Approval/Approval_Plus.svg";
