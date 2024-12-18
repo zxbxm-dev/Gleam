@@ -470,7 +470,7 @@ const Calendar = () => {
   }, [active, annualData, calendar]);
   
   return (
-    <div className="content" style={{ padding: '0px 20px' }}>
+    <div className="content">
       <div className="content_container">
           <div className="calendar_container">
             <FullCalendar

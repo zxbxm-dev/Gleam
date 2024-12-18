@@ -7,6 +7,7 @@ import { userState } from "./recoil/atoms";
 import PrivateRoute from "./layout/PrivateRoute";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import PublicRoute from "./layout/PublicRoute";
+import useMediaQuery from "./hooks/MediaQuery";
 import {
   PageNotFound,
   PageNotAuth,
@@ -49,6 +50,7 @@ import ChatLayout from "./layout/ChatLayout";
 function App() {
   const user = useRecoilValue(userState);
   const isLogin = localStorage.getItem("isLoggedIn") === "true";
+  const isTabletOrAbove = useMediaQuery("(max-width: 1024px)"); //브라우저 크기 측정
   const isPerformance =
     (user.team === "관리팀" && user.position === "팀장") ||
     user.position === "대표이사" ||
@@ -93,6 +95,16 @@ function App() {
         {
           element: <BaseLayout />,
           children: [
+            ...(isTabletOrAbove
+              ? [
+                { path: "/calendar", element: <Calendar /> }, // 휴가관리
+                { path: "/meetingroom", element: <MeetingRoom /> }, // 회의실관리
+                { path: "/report", element: <Report /> }, // 보고서
+                { path: "/approval", element: <Approval /> }, // 결재 탭
+                { path: "/detailApproval/:id", element: <DetailApproval /> },
+                { path: "/detailDocument/:id", element: <DetailDocument /> },
+              ]
+              : []),
             { path: "/", element: <Announcement /> },
             { path: "/mail", element: <Mail /> },
             { path: "/writeMail", element: <WriteMail /> },
