@@ -2032,7 +2032,6 @@ const Approval = () => {
               }}
             >
               <div className="report_toggle_box">
-                <div></div>
                 <div>진행상태</div>
                 <img
                   src={reportStatusOpen ? report_Up : report_Down}
@@ -2055,6 +2054,7 @@ const Approval = () => {
             >
               재확인 문서
               <img src={new_Icon} alt="new_Icon" className="new_Icon" />
+              <p>{recheckDocument.length}</p>
             </button>
             <button
               className={

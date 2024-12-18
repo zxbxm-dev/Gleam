@@ -348,12 +348,14 @@ const DetailDocument = () => {
         userID: user.userID,
         username: user.username,
         position: user.position,
-        opinion: requestReject,
+        opinion: requestCancle,
       };
 
-      if (requestReject) {
+      if (requestCancle) {
         const res = await RequestCancleDocument(report_id, formData);
-        console.log(res.data);
+        if (res) {
+          reportOpinionData();
+        }
       }
       onOpinionModalClose();
     } catch (error) {
@@ -374,7 +376,9 @@ const DetailDocument = () => {
 
       if (requestReject) {
         const res = await RequestReject(report_id, formData);
-        console.log(res.data);
+        if (res) {
+          reportOpinionData();
+        }
       }
       onOpinionModalClose();
     } catch (error) {
@@ -703,11 +707,13 @@ const DetailDocument = () => {
                     {rejectOpinionData.map((reject) => (
                       <React.Fragment key={reject.opinionId}>
                         <div className="reject_requester show">
-                          <p>
-                            {reject.type === "opinion"
-                              ? "의견 작성자"
-                              : "반려자"}
-                          </p>
+                          {reject.type === "opinion" && <p>의견 작성자</p>}
+                          {reject.type === "requestReject" && <p>반려요청자</p>}
+                          {reject.type === "requestCancle" && (
+                            <p>결재취소요청자</p>
+                          )}
+                          {reject.type === "canclellation" && <p>결재취소자</p>}
+                          {reject.type === "rejection" && <p>반려자</p>}
                           <div>
                             {reject.username}{" "}
                             {reject.assignPosition !== "작성자"
@@ -720,7 +726,7 @@ const DetailDocument = () => {
                           style={{ whiteSpace: "pre-line" }}
                         >
                           {reject.content
-                            .split(",")
+                            ?.split(",")
                             .map((item: string) => item.trim())
                             .join("\n\n")}
                         </div>
