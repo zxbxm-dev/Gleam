@@ -1,7 +1,6 @@
 const models = require("../../models");
 const { Op } = require("sequelize");
 const Report = models.Report;
-
 // 내 문서 조회 --------------------------------------------------------------------------------
 const getMyReports = async (req, res) => {
   const { userID, username } = req.query;
@@ -161,16 +160,16 @@ const getRejectedDocuments = async (req, res) => {
   try {
     const reports = await Report.findAll({
       where: {
+        completed : "rejectedDoc", 
         [Op.and]: [
           { rejected: { [Op.like]: `%${username}%` } }, // 반려된 문서 중에서
-          { username: { [Op.ne]: username } } // 작성자가 현재 사용자가 아닌 문서만 선택
+          //{ username: { [Op.ne]: username } } , // 작성자가 현재 사용자가 아닌 문서만 선택
         ],
       },
       order: [
         ['id','desc'],
       ],
     });
-
     const reportsToSend = reports.map((report) => report.toJSON());
 
     console.log("클라이언트에게 반려된 문서 목록:");

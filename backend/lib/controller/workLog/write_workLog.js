@@ -119,7 +119,7 @@ const requestReject = async ( req, res ) => {
     position: position,
     assignPosition: assignPosition,
     content: opinion,
-    type: 'requestRejection',
+    type: 'requestReject',
     });
 
 //현재 결재자 확인 
@@ -154,8 +154,6 @@ const rejectReportById = async (req, res) => {
       attributes:["assignPosition"],
       raw: true,
     });
-
-
     const report = await Report.findByPk(report_id);
 
     if (!report) {
@@ -204,6 +202,7 @@ const rejectReportById = async (req, res) => {
     // 반려 내용을 저장
     report.rejectName = `${username} (${assignPosition})`; // 반려/ 결재 취소한 사람의 이름
     report.rejectContent = opinion; // 반려/ 결재 취소 사유
+    report.completed = "rejectedDoc"
 
     // pending 비우기
     report.pending = ""; // pendingSigners 배열을 비움
