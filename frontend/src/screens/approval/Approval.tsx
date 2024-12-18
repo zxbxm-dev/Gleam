@@ -45,15 +45,11 @@ const Approval = () => {
   const [rejecteds, setRejected] = useState<any[]>([]); // 만료된 문서
   const [originalRejected, setOriginalRejected] = useState<any[]>([]);
   const [compleDocuments, setCompleDocument] = useState<any[]>([]); // 완료된 문서
-  const [referenceDocuments, setReferenceDocuments] = useState<any[]>([]); // 반려된 문서
+  const [referenceDocuments, setReferenceDocuments] = useState<any[]>([]); // 참조된 문서
   const [originalCompleDocument, setOriginalCompleDocument] = useState<any[]>(
     []
   );
-  const [recheckDocuments, setRecheckDocuments] = useState<any[]>([]); // 재확인문서
-  const [originalRecheckDocument, setOriginalRecheckDocument] = useState<any[]>(
-    []
-  );
-
+  const [recheckDocument, setRecheckDocument] = useState<any[]>([]); // 재확인 문서
   const [idSortOrder, setIdSortOrder] = useState<"asc" | "desc">("asc");
   const [titleSortOrder, setTitleSortOrder] = useState<"asc" | "desc">("asc");
   const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");
@@ -71,7 +67,8 @@ const Approval = () => {
   };
 
   const SelectOptions = (report: string) => {
-    if (selectedTab === "myDocuments") { //내문서
+    if (selectedTab === "myDocuments") {
+      // 내문서
       if (report === "전체 문서") {
         setMyDocument(originalMyDocuments);
       } else {
@@ -80,7 +77,8 @@ const Approval = () => {
         );
         setMyDocument(filteredDocuments);
       }
-    } else if (selectedTab === "approval") { //결재할문서
+    } else if (selectedTab === "approval") {
+      // 결재할문서
       if (report === "전체 문서") {
         setApprovaling(originalApprovaling);
       } else {
@@ -89,7 +87,8 @@ const Approval = () => {
         );
         setApprovaling(filteredDocuments);
       }
-    } else if (selectedTab === "inProgress") { //결재 진행 중
+    } else if (selectedTab === "inProgress") {
+      // 결재 진행 중
       if (report === "전체 문서") {
         setInProgress(originalInProgress);
       } else {
@@ -98,7 +97,8 @@ const Approval = () => {
         );
         setInProgress(filteredDocuments);
       }
-    } else if (selectedTab === "rejected") { //만료
+    } else if (selectedTab === "rejected") {
+      // 만료
       if (report === "전체 문서") {
         setRejected(originalRejected);
       } else {
@@ -107,7 +107,8 @@ const Approval = () => {
         );
         setRejected(filteredDocuments);
       }
-    } else if (selectedTab === "completed") { //결재완료
+    } else if (selectedTab === "completed") {
+      // 결재완료
       if (report === "전체 문서") {
         setCompleDocument(originalCompleDocument);
       } else {
@@ -116,7 +117,8 @@ const Approval = () => {
         );
         setCompleDocument(filteredDocuments);
       }
-    } else if (selectedTab === "reference") { //반려????
+    } else if (selectedTab === "reference") {
+      // 반려
       if (report === "전체 문서") {
         setReferenceDocuments(referenceDocuments);
       } else {
@@ -124,16 +126,6 @@ const Approval = () => {
           (doc) => doc.selectForm === report
         );
         setReferenceDocuments(filteredDocuments);
-      }
-    }
-    else if (selectedTab === "recheckDocument") { //재확인
-      if (report === "전체 문서") {
-        setRecheckDocuments(originalRecheckDocument);
-      } else {
-        const filteredDocuments = originalRecheckDocument.filter(
-          (doc) => doc.selectForm === report
-        );
-        setRecheckDocuments(filteredDocuments);
       }
     }
 
@@ -285,6 +277,10 @@ const Approval = () => {
     }
   };
 
+  useEffect(() => {
+    getMyReference();
+  }, []);
+
   useQuery("RejectedDocuments", fetchRejectedDocuments, {
     onSuccess: (data) => {
       setRejected(data);
@@ -320,32 +316,6 @@ const Approval = () => {
     },
   });
 
-
-    // 재확인 문서 목록 불러오기
-    const fetchRecheckDocuments = async () => {
-      const params = {
-        username: user.username,
-      };
-  
-      try {
-        const response = await getRecheckDocuments(params);
-        return response.data;
-      } catch (error) {
-        // throw new Error("Failed to fetch data");
-        console.log("Failed to fetch data");
-      }
-    };
-  
-    useQuery("RecheckDocuments", fetchRecheckDocuments, {
-      onSuccess: (data) => {
-        setRecheckDocuments(data);
-        setOriginalRecheckDocument(data);
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    });
-
   const handleSort = (
     sortKey: string,
     targetState: any[],
@@ -359,6 +329,7 @@ const Approval = () => {
       ["id", [idSortOrder, setIdSortOrder]],
       ["selectForm", [titleSortOrder, setTitleSortOrder]],
       ["sendDate", [dateSortOrder, setDateSortOrder]],
+      ["deleteDate", [dateSortOrder, setDateSortOrder]],
       ["updatedAt", [dateSortOrder, setDateSortOrder]],
       ["state", [stateSortOrder, setStateSortOrder]],
       ["username", [writerSortOrder, setWriterSortOrder]],
@@ -859,12 +830,10 @@ const Approval = () => {
                   </th>
                   <th
                     className="HoverTab"
-                    onClick={() =>
-                      handleSort("updatedAt", rejecteds, setRejected)
-                    }
+                    onClick={() => handleSort("state", rejecteds, setRejected)}
                   >
-                    결재반려일자
-                    {dateSortOrder === "asc" ? (
+                    처리상황
+                    {stateSortOrder === "asc" ? (
                       <img
                         src={Asc_Icon}
                         alt="Asc_Icon"
@@ -878,7 +847,7 @@ const Approval = () => {
                       />
                     )}
                   </th>
-                  <th>진행상황</th>
+                  <th className="HoverTab">삭제예정일</th>
                   <th
                     className="HoverTab"
                     onClick={() =>
@@ -900,7 +869,7 @@ const Approval = () => {
                       />
                     )}
                   </th>
-                  <th>결재</th>
+                  <th>확인</th>
                 </tr>
               </thead>
               <tbody className="board_container">
@@ -924,6 +893,9 @@ const Approval = () => {
                     };
 
                     const formattedSendDate = formatDate(rejected.sendDate);
+                    const date = new Date(formattedSendDate.replace(" ", "T"));
+                    date.setDate(date.getDate() + 30);
+                    const newDate = date.toISOString().split("T")[0];
                     const formattedUpdatedAt = formatDate(rejected.updatedAt);
 
                     return (
@@ -938,10 +910,8 @@ const Approval = () => {
                           {rejected.selectForm}
                         </td>
                         <td>{formattedSendDate}</td>
-                        <td>{formattedUpdatedAt}</td>
-                        <td>
-                          {rejected.approval} / {rejected.currentSigner}
-                        </td>
+                        <td>{rejected.status}</td>
+                        <td>{newDate}</td>
                         <td>
                           {rejected.username}{" "}
                           {rejected.team
@@ -1431,6 +1401,233 @@ const Approval = () => {
             </table>
           </>
         );
+      case "recheckDocument":
+        return (
+          <>
+            <table className="approval_board_list">
+              <colgroup>
+                <col width="6%" />
+                <col width="24%" />
+                <col width="15%" />
+                <col width="15%" />
+                <col width="10%" />
+                <col width="20%" />
+                <col width="10%" />
+              </colgroup>
+              <thead>
+                <tr className="board_header">
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("id", recheckDocument, setRecheckDocument)
+                    }
+                  >
+                    순번
+                    {idSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "selectForm",
+                        recheckDocument,
+                        setRecheckDocument
+                      )
+                    }
+                  >
+                    제목
+                    {titleSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "sendDate",
+                        recheckDocument,
+                        setRecheckDocument
+                      )
+                    }
+                  >
+                    결재수신일자
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+
+                  <th>진행상황</th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort("state", recheckDocument, setRecheckDocument)
+                    }
+                  >
+                    처리상황
+                    {dateSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th
+                    className="HoverTab"
+                    onClick={() =>
+                      handleSort(
+                        "username",
+                        recheckDocument,
+                        setRecheckDocument
+                      )
+                    }
+                  >
+                    작성자/부서
+                    {writerSortOrder === "asc" ? (
+                      <img
+                        src={Asc_Icon}
+                        alt="Asc_Icon"
+                        className="sort_icon"
+                      />
+                    ) : (
+                      <img
+                        src={Desc_Icon}
+                        alt="Desc_Icon"
+                        className="sort_icon"
+                      />
+                    )}
+                  </th>
+                  <th>확인</th>
+                </tr>
+              </thead>
+              <tbody className="board_container">
+                {(recheckDocument || [])
+                  .slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((recheckDocument, index) => {
+                    const formatDate = (dateString: string) => {
+                      const date = new Date(dateString);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const hours = String(date.getHours()).padStart(2, "0");
+                      const minutes = String(date.getMinutes()).padStart(
+                        2,
+                        "0"
+                      );
+                      return `${year}-${month}-${day} ${hours}:${minutes}`;
+                    };
+
+                    const formattedSendDate = formatDate(
+                      recheckDocument.sendDate
+                    );
+                    const formattedUpdatedAt = formatDate(
+                      recheckDocument.updatedAt
+                    );
+
+                    return (
+                      <tr key={recheckDocument.id} className="board_content">
+                        <td>
+                          {idSortOrder === "asc"
+                            ? recheckDocument.length -
+                              ((page - 1) * postPerPage + index)
+                            : (page - 1) * postPerPage + index + 1}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {recheckDocument.selectForm}
+                        </td>
+                        <td>{formattedSendDate}</td>
+                        <td>{formattedUpdatedAt}</td>
+                        <td>
+                          {recheckDocument.approval} /{" "}
+                          {recheckDocument.currentSigner}
+                        </td>
+                        <td>
+                          {recheckDocument.username}{" "}
+                          {recheckDocument.team
+                            ? ` / ${recheckDocument.team}`
+                            : recheckDocument.dept
+                            ? ` / ${recheckDocument.dept}`
+                            : ""}{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="primary_button"
+                            onClick={() => {
+                              navigate(
+                                `/detailDocument/${recheckDocument.id}`,
+                                {
+                                  state: { documentInfo: recheckDocument },
+                                }
+                              );
+                            }}
+                          >
+                            문서확인
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+
+              <div className="approval_main_bottom">
+                <Pagination
+                  activePage={page}
+                  itemsCountPerPage={postPerPage}
+                  totalItemsCount={rejecteds?.length}
+                  pageRangeDisplayed={Math.ceil(
+                    rejecteds?.length / postPerPage
+                  )}
+                  prevPageText={<LeftIcon />}
+                  nextPageText={<RightIcon />}
+                  firstPageText={<FirstLeftIcon />}
+                  lastPageText={<LastRightIcon />}
+                  onChange={handlePageChange}
+                />
+              </div>
+            </table>
+          </>
+        );
       case "reference":
         return (
           <>
@@ -1852,6 +2049,7 @@ const Approval = () => {
               }
               onClick={() => {
                 reportButtonClick("recheckDocument");
+                setSelectedTab("recheckDocument");
                 setReportStatusOpen(false);
               }}
             >

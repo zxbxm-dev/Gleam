@@ -41,6 +41,16 @@ const WriteApproval = (report_id, formData) => {
   return api.post(`/writeApproval/${report_id}`, formData);
 };
 
+// 보고서 반려 요청하기
+const RequestReject = (report_id, formData) => {
+  return api.patch(`/requestReject/${report_id}`, formData);
+};
+
+// 보고서 취소 요청하기
+const RequestCancleDocument = (report_id, formData) => {
+  return api.patch(`/requestCancle/${report_id}`, formData);
+};
+
 // 결재하기
 const HandleApproval = (report_id, formData) => {
   return api.post(`/handleApproval/${report_id}`, formData);
@@ -79,4 +89,6 @@ export {
   DeleteReport,
   getReportOpinion,
   getRecheckDocuments,
+  RequestReject,
+  RequestCancleDocument,
 };
