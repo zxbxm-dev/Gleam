@@ -32,6 +32,7 @@ import {
 } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RejectOp } from "./DetailDocument";
+import { add_refer } from "../../assets/images";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -396,7 +397,8 @@ const DetailApproval = () => {
         userID: user.userID,
         username: user.username,
         position: user.position,
-        rejection: rejection,
+        opinion: rejection,
+        type: "rejection",
       };
       await WriteApproval(report_id, formData);
       getRejectedData();
@@ -748,67 +750,89 @@ const DetailApproval = () => {
                   </div>
                 </Document>
               </div>
-
-              {documentInfo[0].opinionName ||
-              documentInfo[0].rejectName ||
-              newOpinion ? (
-                <>
-                  <div
-                    className={`detail_documnet_comment ${
-                      documentInfo[0].opinionName ||
-                      documentInfo[0].rejectName ||
-                      newOpinion
-                        ? "show"
-                        : ""
-                    }`}
-                  >
-                    {newOpinion && (
-                      <>
-                        <div className={`testtest ${isVisible ? "show" : ""}`}>
-                          <div className="reject_requester show">
-                            <p>의견 작성자</p>
-                            <div>
-                              {user.username}{" "}
-                              {user.assignPosition !== "작성자"
-                                ? user.assignPosition
-                                : ""}
+              {(rejectOpinionData.length > 0 || documentInfo[0].referName) && (
+                <div className="detail_documnet_box">
+                  {documentInfo[0].referName && (
+                    <div className="detail_documnet_refer">
+                      <div className="refer_title">
+                        <p>참조</p>
+                        <img src={add_refer} />
+                      </div>
+                      <div>{documentInfo[0].referName}</div>
+                    </div>
+                  )}
+                  {rejectOpinionData.length > 0 || newOpinion ? (
+                    <>
+                      <div
+                        className={`detail_documnet_comment ${
+                          documentInfo[0].opinionName ||
+                          documentInfo[0].rejectName ||
+                          newOpinion
+                            ? "show"
+                            : ""
+                        }`}
+                      >
+                        {newOpinion && (
+                          <>
+                            <div
+                              className={`testtest ${isVisible ? "show" : ""}`}
+                            >
+                              <div className="reject_requester show">
+                                <p>의견 작성자</p>
+                                <div>
+                                  {user.username}{" "}
+                                  {user.assignPosition !== "작성자"
+                                    ? user.assignPosition
+                                    : ""}
+                                </div>
+                              </div>
+                              <div className="opinion">
+                                {newOpinion && `${newOpinion}`}
+                              </div>
                             </div>
-                          </div>
-                          <div className="opinion">
-                            {newOpinion && `${newOpinion}`}
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {rejectOpinionData.map((reject) => (
-                      <>
-                        <div className="reject_requester show">
-                          <p>
-                            {reject.type === "opinion"
-                              ? "의견 작성자"
-                              : "반려자"}
-                          </p>
-                          <div>
-                            {reject.username}{" "}
-                            {reject.assignPosition !== "작성자"
-                              ? reject.assignPosition
-                              : ""}
-                          </div>
-                        </div>
-                        <div
-                          className="document_content"
-                          style={{ whiteSpace: "pre-line" }}
-                        >
-                          {reject.content
-                            .split(",")
-                            .map((item: string) => item.trim())
-                            .join("\n\n")}
-                        </div>
-                      </>
-                    ))}
-                  </div>
-                </>
-              ) : null}
+                          </>
+                        )}
+                        {rejectOpinionData.map((reject) => (
+                          <>
+                            <div className="reject_requester show">
+                              <p>
+                                {reject.type === "opinion" && (
+                                  <p>의견 작성자</p>
+                                )}
+                                {reject.type === "requestReject" && (
+                                  <p>반려요청자</p>
+                                )}
+                                {reject.type === "requestCancle" && (
+                                  <p>결재취소요청자</p>
+                                )}
+                                {reject.type === "canclellation" && (
+                                  <p>결재취소자</p>
+                                )}
+                                {reject.type === "rejection" && <p>반려자</p>}
+                              </p>
+                              <div>
+                                {reject.username}{" "}
+                                {reject.assignPosition !== "작성자"
+                                  ? reject.assignPosition
+                                  : ""}
+                              </div>
+                            </div>
+                            <div
+                              className="document_content"
+                              style={{ whiteSpace: "pre-line" }}
+                            >
+                              {reject.content
+                                .split(",")
+                                .map((item: string) => item.trim())
+                                .join("\n\n")}
+                            </div>
+                          </>
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              )}
             </div>
           </div>
         </div>
