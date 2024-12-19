@@ -753,6 +753,7 @@
 }
 
 .report_button_box {
+  justify-content: space-between;
   display: flex;
   align-items: center;
   padding: 10px 20px;
@@ -760,14 +761,18 @@
   height: 40px;
   border-radius: 30px;
   font-family: var(--font-family-Noto-R);
-
   border: 1px solid #45c552;
+
+  p {
+    color: #929292;
+  }
 
   &:hover {
     background: #ddf2df;
   }
 }
 .report_button_box_active {
+  justify-content: space-between;
   display: flex;
   align-items: center;
   padding: 10px 20px;
@@ -872,6 +877,10 @@
   gap: 10px;
 
   transition: all 0.4s ease-in-out;
+}
+
+.refer_icon {
+  position: relative;
 }
 
 .refer_title {
