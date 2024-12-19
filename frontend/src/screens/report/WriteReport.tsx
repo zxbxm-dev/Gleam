@@ -338,15 +338,19 @@ const WriteReport = () => {
       : user.department === ""
       ? null
       : null;
-
+  console.log(headOffice);
   const teamLeader =
     user.team === "개발 1팀"
       ? headOffice
-        ? headOffice.find((member) => member[4] === "개발 1팀장") || null
+        ? headOffice.find(
+            (member) => member[4] === "개발팀장" && member[2] === "개발 1팀"
+          ) || null
         : null
       : user.team === "개발 2팀"
       ? headOffice
-        ? headOffice.find((member) => member[4] === "개발 2팀장") || null
+        ? headOffice.find(
+            (member) => member[4] === "개발팀장" && member[2] === "개발 2팀"
+          ) || null
         : null
       : user.team === "기획팀"
       ? headOffice
