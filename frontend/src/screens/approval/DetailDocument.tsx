@@ -30,6 +30,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { add_refer } from "../../assets/images";
+import SelectPaymentLine from "../../components/SelectPayment/SelectPaymentLine";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -85,6 +86,7 @@ const DetailDocument = () => {
   const [canReject, setCanReject] = useState(false);
   const [requestReject, setRequestReject] = useState<string | null>(null);
   const [requestCancle, setRequestCancle] = useState<string | null>(null);
+  const [editReferOpen, setEditReferOpen] = useState(false);
 
   const {
     onOpen: onOpinionModalOpen,
@@ -94,16 +96,18 @@ const DetailDocument = () => {
 
   const [signatories, setSignatories] = useState<any[]>([]);
   const approveLine =
-    documentInfo[0].pending?.split(",").map((item: any) => item.trim()) ?? []; // 아직 결재가 진행중일때
+    documentInfo[0]?.pending?.split(",").map((item: any) => item.trim()) ?? []; // 아직 결재가 진행중일때
   const completedapproveLine =
-    documentInfo[0].completed?.split(",").map((item: any) => item.trim()) ?? []; // 결재가 모두 완료 됐을 시 결재라인
+    documentInfo[0]?.completed?.split(",").map((item: any) => item.trim()) ??
+    []; // 결재가 모두 완료 됐을 시 결재라인
   const rejectapproveLine =
-    documentInfo[0].rejected?.split(",").map((item: any) => item.trim()) ?? []; // 반려됐을 때 결재라인
+    documentInfo[0]?.rejected?.split(",").map((item: any) => item.trim()) ?? []; // 반려됐을 때 결재라인
   const approveDates =
     documentInfo[0]?.approveDate?.split(",").map((item: any) => item.trim()) ??
     [];
   const referLine =
-    documentInfo[0].referName?.split(",").map((item: any) => item.trim()) ?? [];
+    documentInfo[0]?.referName?.split(",").map((item: any) => item.trim()) ??
+    [];
   const shouldHideDeleteButton =
     approveLine.length > 0 || referLine.includes(user.username);
 
@@ -132,7 +136,7 @@ const DetailDocument = () => {
   }, []);
   useEffect(() => {
     const initialChecks = new Array(signatories.length).fill(false);
-    const approvedCount = Number(documentInfo[0].approval);
+    const approvedCount = Number(documentInfo[0]?.approval);
 
     for (let i = 0; i < approvedCount; i++) {
       initialChecks[i] = true;
@@ -247,7 +251,7 @@ const DetailDocument = () => {
         }
       }
 
-      pdf.save(`${documentInfo[0].pdffile}`);
+      pdf.save(`${documentInfo[0]?.pdffile}`);
     } catch (error) {
       console.error("Failed to load images", error);
     }
@@ -304,22 +308,22 @@ const DetailDocument = () => {
     if (signatories.length > 0) {
       if (
         signatories.includes("관리팀장") &&
-        documentInfo[0].pending?.includes("김효은")
+        documentInfo[0]?.pending?.includes("김효은")
       ) {
         setCanReject(true);
       }
       if (
         signatories.includes("담당자") &&
-        documentInfo[0].pending?.includes("한지희")
+        documentInfo[0]?.pending?.includes("한지희")
       ) {
         setCanReject(true);
       }
       if (
         !signatories.includes("관리팀장") &&
         !signatories.includes("담당자") &&
-        (documentInfo[0].pending?.includes("진유빈") ||
-          documentInfo[0].pending?.includes("이정열") ||
-          documentInfo[0].pending?.includes("김현지"))
+        (documentInfo[0]?.pending?.includes("진유빈") ||
+          documentInfo[0]?.pending?.includes("이정열") ||
+          documentInfo[0]?.pending?.includes("김현지"))
       ) {
         setCanReject(true);
       }
@@ -334,7 +338,7 @@ const DetailDocument = () => {
   }, [signatories]);
 
   useEffect(() => {
-    if (documentInfo[0].opinionName || documentInfo[0].rejectName) {
+    if (documentInfo[0]?.opinionName || documentInfo[0]?.rejectName) {
       setIsVisible(true); // 조건이 충족될 때만 표시
     } else {
       setIsVisible(false); // 조건이 충족되지 않으면 숨김
@@ -415,10 +419,10 @@ const DetailDocument = () => {
             onOpen={onOpinionModalOpen}
             onClose={onOpinionModalClose}
           >
-            <PopoverTrigger>
+            {/* <PopoverTrigger>
               <button className="white_button">결재취소요청</button>
-            </PopoverTrigger>
-            <Portal>
+            </PopoverTrigger> */}
+            {/* <Portal>
               <PopoverContent
                 width="400px"
                 border="0"
@@ -494,7 +498,7 @@ const DetailDocument = () => {
                   </div>
                 </PopoverBody>
               </PopoverContent>
-            </Portal>
+            </Portal> */}
           </Popover>
         ) : (
           <Popover
@@ -503,10 +507,11 @@ const DetailDocument = () => {
             onOpen={onOpinionModalOpen}
             onClose={onOpinionModalClose}
           >
-            <PopoverTrigger>
+            {/* 반려요청 버튼 */}
+            {/* <PopoverTrigger>
               <button className="red_button">반려요청</button>
-            </PopoverTrigger>
-            <Portal>
+            </PopoverTrigger> */}
+            {/* <Portal>
               <PopoverContent
                 width="400px"
                 border="0"
@@ -582,7 +587,7 @@ const DetailDocument = () => {
                   </div>
                 </PopoverBody>
               </PopoverContent>
-            </Portal>
+            </Portal> */}
           </Popover>
         )}
         <button className="white_button" onClick={exportToPDF}>
@@ -658,8 +663,8 @@ const DetailDocument = () => {
                                 src={`${getSignUrl(rejectapproveLine[index])}`}
                                 alt="sign"
                               />
-                            ) : documentInfo[0].approval <
-                              documentInfo[0].currentSigner ? (
+                            ) : documentInfo[0]?.approval <
+                              documentInfo[0]?.currentSigner ? (
                               <img
                                 className="SignImg"
                                 src={`${getSignUrl(approveLine[index])}` || ""}
@@ -687,17 +692,34 @@ const DetailDocument = () => {
                 </div>
               </Document>
             </div>
-            {(rejectOpinionData.length > 0 || documentInfo[0].referName) && (
+            {/* {(rejectOpinionData.length > 0 || documentInfo[0]?.referName) && ( */}
+            {rejectOpinionData.length > 0 && (
               <div className="detail_documnet_box">
-                {documentInfo[0].referName && (
+                {/* 참조자 변경 로직 */}
+                {/* {documentInfo[0]?.referName && (
                   <div className="detail_documnet_refer">
                     <div className="refer_title">
                       <p>참조</p>
-                      <img src={add_refer} />
+                      {editReferOpen && (
+                        <SelectPaymentLine
+                          editReferOpen={editReferOpen}
+                          setEditReferOpen={setEditReferOpen}
+                        />
+                      )}
+                      <button
+                        onClick={() => setEditReferOpen(true)}
+                        className="refer_button"
+                      >
+                        <img
+                          src={add_refer}
+                          alt="참조 추가"
+                          className="refer_icon"
+                        />
+                      </button>
                     </div>
-                    <div>{documentInfo[0].referName}</div>
+                    <div>{documentInfo[0]?.referName}</div>
                   </div>
-                )}
+                )} */}
                 {rejectOpinionData.length > 0 ? (
                   <div
                     className={`detail_documnet_comment ${
@@ -708,11 +730,11 @@ const DetailDocument = () => {
                       <React.Fragment key={reject.opinionId}>
                         <div className="reject_requester show">
                           {reject.type === "opinion" && <p>의견 작성자</p>}
-                          {reject.type === "requestReject" && <p>반려요청자</p>}
+                          {/* {reject.type === "requestReject" && <p>반려요청자</p>}
                           {reject.type === "requestCancle" && (
                             <p>결재취소요청자</p>
                           )}
-                          {reject.type === "canclellation" && <p>결재취소자</p>}
+                          {reject.type === "canclellation" && <p>결재취소자</p>} */}
                           {reject.type === "rejection" && <p>반려자</p>}
                           <div>
                             {reject.username}{" "}

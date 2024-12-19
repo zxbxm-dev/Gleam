@@ -25,14 +25,15 @@ import {
   getDocumentsInProgress,
   getRejectedDocuments,
   getReportOpinion,
+  getMyReports,
 } from "../../services/approval/ApprovalServices";
 import {
   PersonData,
   QuitterPersonData,
 } from "../../services/person/PersonServices";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RejectOp } from "./DetailDocument";
 import { add_refer } from "../../assets/images";
+import { RejectOp } from "./DetailDocument";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -116,9 +117,14 @@ const DetailApproval = () => {
     [];
 
   const getNextData = async () => {
+    const params = {
+      userID: user.userID,
+      username: user.username,
+    };
     try {
-      const response = await getDocumentsInProgress(params);
+      const response = await getMyReports(params);
       const data = response.data;
+      console.log(data);
       const hi = data.find((item: any) => item.id === documentInfo[0].id);
       setNextData(hi);
     } catch (error) {
@@ -495,6 +501,10 @@ const DetailApproval = () => {
     reportOpinionData();
   }, []);
 
+  useEffect(() => {
+    console.log(nextData);
+  }, [nextData]);
+
   return (
     <div className="content">
       <div className="content_container">
@@ -750,9 +760,12 @@ const DetailApproval = () => {
                   </div>
                 </Document>
               </div>
-              {(rejectOpinionData.length > 0 || documentInfo[0].referName) && (
+              {/* {(rejectOpinionData.length > 0 ||
+                documentInfo[0].referName ||
+                newOpinion) && ( */}
+              {(rejectOpinionData.length > 0 || newOpinion) && (
                 <div className="detail_documnet_box">
-                  {documentInfo[0].referName && (
+                  {/* {documentInfo[0].referName && (
                     <div className="detail_documnet_refer">
                       <div className="refer_title">
                         <p>참조</p>
@@ -760,7 +773,7 @@ const DetailApproval = () => {
                       </div>
                       <div>{documentInfo[0].referName}</div>
                     </div>
-                  )}
+                  )} */}
                   {rejectOpinionData.length > 0 || newOpinion ? (
                     <>
                       <div

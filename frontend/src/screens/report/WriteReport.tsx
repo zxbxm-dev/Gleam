@@ -28,7 +28,7 @@ import { submitReport } from "../../services/report/ReportServices";
 import { PersonData } from "../../services/person/PersonServices";
 import { Person } from "../../components/sidebar/MemberSidebar";
 
-type Member = [string, string, string, string, string];
+export type Member = [string, string, string, string, string];
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
