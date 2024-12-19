@@ -696,7 +696,7 @@ const DetailDocument = () => {
             {rejectOpinionData.length > 0 && (
               <div className="detail_documnet_box">
                 {/* 참조자 변경 로직 */}
-                {/* {documentInfo[0]?.referName && (
+                {documentInfo[0]?.referName && (
                   <div className="detail_documnet_refer">
                     <div className="refer_title">
                       <p>참조</p>
@@ -706,7 +706,7 @@ const DetailDocument = () => {
                           setEditReferOpen={setEditReferOpen}
                         />
                       )}
-                      <button
+                      {/* <button
                         onClick={() => setEditReferOpen(true)}
                         className="refer_button"
                       >
@@ -715,11 +715,11 @@ const DetailDocument = () => {
                           alt="참조 추가"
                           className="refer_icon"
                         />
-                      </button>
+                      </button> */}
                     </div>
                     <div>{documentInfo[0]?.referName}</div>
                   </div>
-                )} */}
+                )}
                 {rejectOpinionData.length > 0 ? (
                   <div
                     className={`detail_documnet_comment ${
@@ -739,7 +739,10 @@ const DetailDocument = () => {
                           <div>
                             {reject.username}{" "}
                             {reject.assignPosition !== "작성자"
-                              ? reject.assignPosition
+                              ? reject.assignPosition === "개발 1팀장" ||
+                                reject.assignPosition === "개발 2팀장"
+                                ? "개발팀장"
+                                : reject.assignPosition
                               : ""}
                           </div>
                         </div>
