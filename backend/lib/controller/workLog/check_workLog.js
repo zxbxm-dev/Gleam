@@ -18,7 +18,10 @@ const getMyReports = async (req, res) => {
           { userId: userID },
           { referName: { [Op.like]: `%${username}%` }}
         ]},
-        {completed : {[Op.ne]: "rejectedDoc"}}
+        {[Op.or]: [
+          {completed : {[Op.ne]: "rejectedDoc"}},
+          {completed : null},
+        ]},
       ],
       },
       order: [
