@@ -795,7 +795,10 @@ const DetailApproval = () => {
                                 <div>
                                   {user.username}{" "}
                                   {user.assignPosition !== "작성자"
-                                    ? user.assignPosition
+                                    ? user.assignPosition === "개발 1팀장" ||
+                                      user.assignPosition === "개발 2팀장"
+                                      ? "개발팀장"
+                                      : user.assignPosition
                                     : ""}
                                 </div>
                               </div>
@@ -826,7 +829,10 @@ const DetailApproval = () => {
                               <div>
                                 {reject.username}{" "}
                                 {reject.assignPosition !== "작성자"
-                                  ? reject.assignPosition
+                                  ? reject.assignPosition === "개발 1팀장" ||
+                                    reject.assignPosition === "개발 2팀장"
+                                    ? "개발팀장"
+                                    : reject.assignPosition
                                   : ""}
                               </div>
                             </div>
