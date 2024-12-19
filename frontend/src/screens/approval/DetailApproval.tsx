@@ -499,11 +499,8 @@ const DetailApproval = () => {
 
   useEffect(() => {
     reportOpinionData();
+    getNextData();
   }, []);
-
-  useEffect(() => {
-    console.log(nextData);
-  }, [nextData]);
 
   return (
     <div className="content">
@@ -760,20 +757,20 @@ const DetailApproval = () => {
                   </div>
                 </Document>
               </div>
-              {/* {(rejectOpinionData.length > 0 ||
+              {(rejectOpinionData.length > 0 ||
                 documentInfo[0].referName ||
-                newOpinion) && ( */}
-              {(rejectOpinionData.length > 0 || newOpinion) && (
+                newOpinion) && (
+                // {(rejectOpinionData.length > 0 || newOpinion) && (
                 <div className="detail_documnet_box">
-                  {/* {documentInfo[0].referName && (
+                  {documentInfo[0].referName && (
                     <div className="detail_documnet_refer">
                       <div className="refer_title">
                         <p>참조</p>
-                        <img src={add_refer} />
+                        {/* <img src={add_refer} /> */}
                       </div>
                       <div>{documentInfo[0].referName}</div>
                     </div>
-                  )} */}
+                  )}
                   {rejectOpinionData.length > 0 || newOpinion ? (
                     <>
                       <div
@@ -795,10 +792,7 @@ const DetailApproval = () => {
                                 <div>
                                   {user.username}{" "}
                                   {user.assignPosition !== "작성자"
-                                    ? user.assignPosition === "개발 1팀장" ||
-                                      user.assignPosition === "개발 2팀장"
-                                      ? "개발팀장"
-                                      : user.assignPosition
+                                    ? user.assignPosition
                                     : ""}
                                 </div>
                               </div>
@@ -815,7 +809,7 @@ const DetailApproval = () => {
                                 {reject.type === "opinion" && (
                                   <p>의견 작성자</p>
                                 )}
-                                {reject.type === "requestReject" && (
+                                {/* {reject.type === "requestReject" && (
                                   <p>반려요청자</p>
                                 )}
                                 {reject.type === "requestCancle" && (
@@ -823,16 +817,13 @@ const DetailApproval = () => {
                                 )}
                                 {reject.type === "canclellation" && (
                                   <p>결재취소자</p>
-                                )}
+                                )} */}
                                 {reject.type === "rejection" && <p>반려자</p>}
                               </p>
                               <div>
                                 {reject.username}{" "}
                                 {reject.assignPosition !== "작성자"
-                                  ? reject.assignPosition === "개발 1팀장" ||
-                                    reject.assignPosition === "개발 2팀장"
-                                    ? "개발팀장"
-                                    : reject.assignPosition
+                                  ? reject.assignPosition
                                   : ""}
                               </div>
                             </div>

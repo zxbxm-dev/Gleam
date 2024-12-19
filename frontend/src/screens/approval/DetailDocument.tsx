@@ -692,8 +692,8 @@ const DetailDocument = () => {
                 </div>
               </Document>
             </div>
-            {/* {(rejectOpinionData.length > 0 || documentInfo[0]?.referName) && ( */}
-            {rejectOpinionData.length > 0 && (
+            {(rejectOpinionData.length > 0 || documentInfo[0]?.referName) && (
+              // {rejectOpinionData.length > 0 && (
               <div className="detail_documnet_box">
                 {/* 참조자 변경 로직 */}
                 {documentInfo[0]?.referName && (
@@ -739,10 +739,7 @@ const DetailDocument = () => {
                           <div>
                             {reject.username}{" "}
                             {reject.assignPosition !== "작성자"
-                              ? reject.assignPosition === "개발 1팀장" ||
-                                reject.assignPosition === "개발 2팀장"
-                                ? "개발팀장"
-                                : reject.assignPosition
+                              ? reject.assignPosition
                               : ""}
                           </div>
                         </div>
