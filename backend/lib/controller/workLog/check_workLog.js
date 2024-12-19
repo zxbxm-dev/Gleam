@@ -13,10 +13,13 @@ const getMyReports = async (req, res) => {
     // 내가 작성한 문서와 내가 참조로 들어간 문서 조회
     const documents = await Report.findAll({
       where: {
-        [Op.or]: [
+        [Op.and] :[
+        {[Op.or]: [
           { userId: userID },
-          { referName: { [Op.like]: `%${username}%` } }
-        ]
+          { referName: { [Op.like]: `%${username}%` }}
+        ]},
+        {completed : {[Op.ne]: "rejectedDoc"}}
+      ],
       },
       order: [
         ['createdAt', 'desc'], // 날짜 및 시간 순으로 내림차순 정렬
@@ -164,7 +167,7 @@ const getRejectedDocuments = async (req, res) => {
         [Op.or]: [
           { rejected: { [Op.like]: `%${username}%` } }, // 반려된 문서 중에서
           { referName: { [Op.like]: `%${username}%`}}, //내가 참조된 문서일 때 
-          //{ username: { [Op.ne]: username } } , // 작성자가 현재 사용자가 아닌 문서만 선택
+          //{ username: { [Op.ne]: username } } , // 작성자가 현재 사용자가 아닌 문서만 선택 ( 24.12.19 jw : 주석 풀면 사용자가 작성하고 반려된 문서는 조회되지 않습니다.)
         ],
       },
       order: [
