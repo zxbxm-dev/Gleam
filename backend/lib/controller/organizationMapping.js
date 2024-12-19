@@ -54,7 +54,7 @@ const organizationMapping = {
             case "연구실장":
                 return company === "R&D"? `${department}장` : "연구실장"
             case "팀장":
-                return `${team}장`;
+                return team.includes("개발")? "개발팀장" : `${team}장`;
             default:
                 return "작성자";
         }
