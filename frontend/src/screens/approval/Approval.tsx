@@ -843,9 +843,8 @@ const Approval = () => {
                 <col width="24%" />
                 <col width="15%" />
                 <col width="15%" />
-                <col width="10%" />
                 <col width="20%" />
-                <col width="10%" />
+                <col width="20%" />
               </colgroup>
               <thead>
                 <tr className="board_header">
@@ -929,7 +928,7 @@ const Approval = () => {
                       />
                     )}
                   </th>
-                  <th className="HoverTab">삭제예정일</th>
+                  {/* <th className="HoverTab">삭제예정일</th> */}
                   <th
                     className="HoverTab"
                     onClick={() =>
@@ -992,8 +991,8 @@ const Approval = () => {
                           {rejected.selectForm}
                         </td>
                         <td>{formattedSendDate}</td>
-                        <td>{rejected.status}</td>
-                        <td>{newDate}</td>
+                        <td>반려됨</td>
+                        {/* <td>{newDate}</td> */}
                         <td>
                           {rejected.username}{" "}
                           {rejected.team
@@ -2122,7 +2121,8 @@ const Approval = () => {
                 />
               </div>
             </button>
-            <button
+            {/* 재확인 문서 임시 안보임 */}
+            {/* <button
               className={
                 selectedTab === "recheckDocument"
                   ? "report_button_box_active2"
@@ -2137,7 +2137,7 @@ const Approval = () => {
               재확인 문서
               <img src={new_Icon} alt="new_Icon" className="new_Icon" />
               <p>{recheckDocument.length}</p>
-            </button>
+            </button> */}
             <button
               className={
                 selectedTab === "myDocuments"
@@ -2151,6 +2151,7 @@ const Approval = () => {
               }}
             >
               내 문서
+              <p>{mydocuments.length}</p>
             </button>
             <button
               className={
@@ -2165,6 +2166,7 @@ const Approval = () => {
               }}
             >
               만료 문서
+              <p>{rejecteds.length}</p>
             </button>
           </div>
 
