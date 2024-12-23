@@ -278,7 +278,6 @@
 
       .document_content {
         width: 95%;
-        font-family: var(--font-family-Noto-R);
       }
     }
   }
@@ -863,8 +862,15 @@
   padding: 15px;
   gap: 10px;
   max-width: 420px;
+  background: #fff;
 
   transition: all 0.4s ease-in-out;
+
+  .document_content {
+    font-size: 14px;
+    color: #323232;
+    font-family: var(--font-family-Noto-R);
+  }
 }
 
 .detail_documnet_refer {
@@ -874,8 +880,16 @@
   border: 1px solid #d9d9d9;
   padding: 15px;
   gap: 10px;
+  background: #fff;
 
   transition: all 0.4s ease-in-out;
+  font-family: var(--font-family-Noto-M);
+
+  div {
+    padding-left: 7px;
+    font-size: 14px;
+    color: #323232;
+  }
 }
 
 .refer_icon {
@@ -888,12 +902,10 @@
   border-bottom: solid 1px #d9d9d9;
   padding-bottom: 10px;
 
-  font-family: var(--font-family-Noto-R);
-
   p {
-    color: #929292;
-    font-weight: 700;
+    color: #323232;
     font-size: 14px;
+    font-family: var(--font-family-Noto-M);
   }
 
   img {
@@ -916,18 +928,19 @@
   justify-content: space-between;
   padding-bottom: 10px;
   border-bottom: 1px solid #d9d9d9;
-
-  font-family: var(--font-family-Noto-R);
+  padding-left: 2px;
+  padding-right: 2px;
 
   p {
-    color: #929292;
-    font-weight: 700;
+    color: #323232;
+    font-family: var(--font-family-Noto-M);
     font-size: 14px;
   }
 
   div {
-    font-weight: 700;
     font-size: 14px;
+    font-family: var(--font-family-Noto-M);
+    color: #323232;
   }
 }
 
@@ -950,4 +963,9 @@
 .testtest.show {
   transform: translateY(0);
   margin-bottom: 10px;
+}
+.opinion {
+  font-size: 14px;
+  color: #323232;
+  font-family: var(--font-family-Noto-R);
 }
