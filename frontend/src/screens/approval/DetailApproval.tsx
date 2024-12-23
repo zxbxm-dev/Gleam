@@ -687,7 +687,10 @@ const DetailApproval = () => {
                         <div className="button-wrap">
                           <button
                             className="second_button"
-                            onClick={() => handleSubmitRejection(report_id)}
+                            onClick={() => {
+                              handleSubmitRejection(report_id);
+                              handleSubmitOpinion(report_id);
+                            }}
                           >
                             등록
                           </button>
