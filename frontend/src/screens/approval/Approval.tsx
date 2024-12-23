@@ -583,7 +583,7 @@ const Approval = () => {
                         <tr key={approvaling.id} className="board_content">
                           <td>
                             {idSortOrder === "asc"
-                              ? approvalings.length -
+                              ? approvalings?.length -
                                 ((page - 1) * postPerPage + index)
                               : (page - 1) * postPerPage + index + 1}
                           </td>
@@ -787,7 +787,7 @@ const Approval = () => {
                       <tr key={inProgres.id} className="board_content">
                         <td>
                           {idSortOrder === "asc"
-                            ? inProgress.length -
+                            ? inProgress?.length -
                               ((page - 1) * postPerPage + index)
                             : (page - 1) * postPerPage + index + 1}
                         </td>
@@ -993,7 +993,7 @@ const Approval = () => {
                       <tr key={rejected.id} className="board_content">
                         <td>
                           {idSortOrder === "asc"
-                            ? rejecteds.length -
+                            ? rejecteds?.length -
                               ((page - 1) * postPerPage + index)
                             : (page - 1) * postPerPage + index + 1}
                         </td>
@@ -1209,7 +1209,7 @@ const Approval = () => {
                       <tr key={compledocument.id} className="board_content">
                         <td>
                           {idSortOrder === "asc"
-                            ? compleDocuments.length -
+                            ? compleDocuments?.length -
                               ((page - 1) * postPerPage + index)
                             : (page - 1) * postPerPage + index + 1}
                         </td>
@@ -1436,7 +1436,7 @@ const Approval = () => {
                       <tr key={mydocument.id} className="board_content">
                         <td>
                           {idSortOrder === "asc"
-                            ? mydocuments.length -
+                            ? mydocuments?.length -
                               ((page - 1) * postPerPage + index)
                             : (page - 1) * postPerPage + index + 1}
                         </td>
@@ -1660,7 +1660,7 @@ const Approval = () => {
                       <tr key={recheckDocument.id} className="board_content">
                         <td>
                           {idSortOrder === "asc"
-                            ? recheckDocument.length -
+                            ? recheckDocument?.length -
                               ((page - 1) * postPerPage + index)
                             : (page - 1) * postPerPage + index + 1}
                         </td>
@@ -2161,7 +2161,7 @@ const Approval = () => {
               }}
             >
               내 문서
-              <p>{mydocuments.length}</p>
+              <p>{mydocuments?.length}</p>
             </button>
             <button
               className={
@@ -2176,7 +2176,7 @@ const Approval = () => {
               }}
             >
               만료 문서
-              <p>{rejecteds.length}</p>
+              <p>{rejecteds?.length}</p>
             </button>
           </div>
 
