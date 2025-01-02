@@ -318,24 +318,38 @@ const AttendanceRegist = () => {
   });
 
   const currentMonthIndex = new Date().getMonth(); // 현재 월 인덱스
+  const currentYear = new Date().getFullYear(); // 현재 연도
+
   // 시작 월과 끝 월 계산
   const endMonthIndex = Math.min(currentMonthIndex + 1, 11); // 현재 월에서 1개월 후
-  const startMonthIndex = Math.max(currentMonthIndex - 1, 0);
-  // 시작 월부터 끝 월 정보
+  let startMonthIndex = currentMonthIndex - 1;
+  let selectedYear = currentYear; // 선택된 연도
+
   const selectedMonths = [];
-  for (let monthIndex = startMonthIndex; monthIndex <= endMonthIndex; monthIndex++) {
-    selectedMonths.push(months[monthIndex]);
+  if (startMonthIndex < 0) {
+    // 이전 연도의 마지막 달 추가
+    selectedMonths.push({
+      year: currentYear - 1,
+      month: 12,
+      name: months[11],
+    });
+    startMonthIndex = 0; // 현재 연도의 시작 월로 보정
   }
-  
+
+  // 시작 월부터 끝 월 정보
+  for (let monthIndex = startMonthIndex; monthIndex <= endMonthIndex; monthIndex++) {
+    selectedMonths.push({
+      year: selectedYear,
+      month: monthIndex + 1,
+      name: months[monthIndex],
+    });
+  }
+
   // 선택된 월에 대한 yearData 생성
-  const selectedYear = new Date().getFullYear();
-  const yearData = selectedMonths.map(month => {
-    const currentYear = selectedYear;
-    const monthIndex = months.findIndex(item => item === month);
-  
+  const yearData = selectedMonths.map(({ year, month, name }) => {
     // 월별 날짜 계산
-    const firstDayOfMonth = new Date(currentYear, monthIndex, 1);
-    const lastDayOfMonth = new Date(currentYear, monthIndex + 1, 0);
+    const firstDayOfMonth = new Date(year, month - 1, 1);
+    const lastDayOfMonth = new Date(year, month, 0);
 
     // 월 일수 계산
     const numberOfDaysInMonth = lastDayOfMonth.getDate();
@@ -345,11 +359,16 @@ const AttendanceRegist = () => {
 
     // 월 정보 저장
     return {
-      month: monthIndex + 1,
+      year,
+      month,
+      name,
       numberOfDaysInMonth,
-      firstDayOfWeek
+      firstDayOfWeek,
     };
   });
+
+  console.log(yearData);
+
 
   const DateDivs = (numberOfDaysInMonth: number, firstDayOfWeek: number) => {
     const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
@@ -1130,7 +1149,7 @@ const onSubmit = (data: any) => {
                         </table>
                         <div>
                           {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
-                          {generateDivs(monthData.numberOfDaysInMonth, selectedYear, monthData.month, HO_Data)}
+                          {generateDivs(monthData.numberOfDaysInMonth, monthData.year, monthData.month, HO_Data)}
                         </div>
                       </>
                     )}
@@ -1172,7 +1191,7 @@ const onSubmit = (data: any) => {
                     </table>
                     <div>
                       {DateDivs(monthData.numberOfDaysInMonth, monthData.firstDayOfWeek)}
-                      {generateDivsRD(monthData.numberOfDaysInMonth, selectedYear, monthData.month, HO_Data)}
+                      {generateDivsRD(monthData.numberOfDaysInMonth, monthData.year, monthData.month, HO_Data)}
                     </div>
                   </div>
                 </TabPanel>
