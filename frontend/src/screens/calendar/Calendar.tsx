@@ -97,7 +97,8 @@ const Calendar = () => {
       const filteredData = data.filter(
         (item: any) =>
           (item.dateType === "연차" || item.dateType === "반차") &&
-          item.userId === user.userID
+          item.userId === user.userID &&
+          item.year === String(new Date().getFullYear())
       );
       setAnnualData(filteredData);
     },
@@ -468,7 +469,7 @@ const Calendar = () => {
       }
     });
   }, [active, annualData, calendar]);
-  
+  console.log('연차 관리', annualData)
   return (
     <div className="content">
       <div className="content_container">
