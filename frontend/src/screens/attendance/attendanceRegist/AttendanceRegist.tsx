@@ -320,7 +320,7 @@ const AttendanceRegist = () => {
   const currentMonthIndex = new Date().getMonth(); // 현재 월 인덱스
   // 시작 월과 끝 월 계산
   const endMonthIndex = Math.min(currentMonthIndex + 1, 11); // 현재 월에서 1개월 후
-  const startMonthIndex = Math.max(currentMonthIndex - 1, 1);
+  const startMonthIndex = Math.max(currentMonthIndex - 1, 0);
   // 시작 월부터 끝 월 정보
   const selectedMonths = [];
   for (let monthIndex = startMonthIndex; monthIndex <= endMonthIndex; monthIndex++) {
@@ -333,21 +333,21 @@ const AttendanceRegist = () => {
     const currentYear = selectedYear;
     const monthIndex = months.findIndex(item => item === month);
   
-  // 월별 날짜 계산
-  const firstDayOfMonth = new Date(currentYear, monthIndex, 1);
-  const lastDayOfMonth = new Date(currentYear, monthIndex + 1, 0);
+    // 월별 날짜 계산
+    const firstDayOfMonth = new Date(currentYear, monthIndex, 1);
+    const lastDayOfMonth = new Date(currentYear, monthIndex + 1, 0);
 
-  // 월 일수 계산
-  const numberOfDaysInMonth = lastDayOfMonth.getDate();
+    // 월 일수 계산
+    const numberOfDaysInMonth = lastDayOfMonth.getDate();
 
-  // 첫 날 요일 계산
-  const firstDayOfWeek = firstDayOfMonth.getDay();
+    // 첫 날 요일 계산
+    const firstDayOfWeek = firstDayOfMonth.getDay();
 
-  // 월 정보 저장
-  return {
-    month: monthIndex + 1,
-    numberOfDaysInMonth,
-    firstDayOfWeek
+    // 월 정보 저장
+    return {
+      month: monthIndex + 1,
+      numberOfDaysInMonth,
+      firstDayOfWeek
     };
   });
 
@@ -1056,7 +1056,7 @@ const onSubmit = (data: any) => {
 
     return () => {clearTimeout(timer); setIsLoading(true)};
   }, [location.pathname]);
-
+  
   return (
     <div className="content">
       <div className="content_container">
